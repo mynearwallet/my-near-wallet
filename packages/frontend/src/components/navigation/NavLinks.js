@@ -9,6 +9,7 @@ import { isWhitelabel } from '../../config/whitelabel';
 import { Mixpanel } from '../../mixpanel/index';
 import DonateToUkraineIcon from '../svg/DonateToUkraineIcon';
 import HelpIcon from '../svg/HelpIcon';
+import SwapIcon from '../svg/SwapIcon';
 import UserIcon from '../svg/UserIcon';
 import VaultIcon from '../svg/VaultIcon';
 import WalletIcon from '../svg/WalletIcon';
@@ -114,6 +115,10 @@ const NavLinks = () => (
         <NavLink data-test-id="staking_navlink" to='/staking' activeClassName='selected' onClick={() => Mixpanel.track('Click Staking button on nav')}>
             <VaultIcon/>
             <Translate id='link.staking'/>
+        </NavLink>
+        <NavLink to='/swap' activeClassName='selected' onClick={() => Mixpanel.track('Click Swap button on nav')}>
+            <SwapIcon/>
+            <Translate id='link.swap'/>
         </NavLink>
         <NavLink to='/profile' className='account-details-link' activeClassName='selected' onClick={() => Mixpanel.track('Click Account button on nav')}>
             <UserIcon/>
