@@ -209,6 +209,7 @@ function Swap({ history }) {
 
     const { performBuyOrSellUSN } = usePerformBuyOrSellUSN();
 
+    // @note main swap handler
     const handleSwapToken = async ({
         accountId,
         amount,
