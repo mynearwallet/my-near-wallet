@@ -1,6 +1,5 @@
 import flattenDeep from 'lodash.flattendeep';
 import uniq from 'lodash.uniq';
-import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
@@ -8,7 +7,6 @@ import styled from 'styled-components';
 import { CREATE_USN_CONTRACT } from '../../../../../features';
 import { EXPLORER_URL, NEAR_TOKEN_ID, USN_CONTRACT } from '../../config';
 import { useFungibleTokensIncludingNEAR } from '../../hooks/fungibleTokensIncludingNEAR';
-import { usePerformBuyOrSellUSN } from '../../hooks/performBuyOrSellUSN';
 import { Mixpanel } from '../../mixpanel/index';
 import { showCustomAlert } from '../../redux/actions/status';
 import { selectAccountId } from '../../redux/slices/account';
@@ -18,7 +16,7 @@ import {
     actions as tokensActions,
     selectTokensLoading,
 } from '../../redux/slices/tokens';
-import { fungibleTokensService } from '../../services/FungibleTokens';
+import fungibleTokenExchange from '../../services/FungibleTokenExchange';
 import isMobile from '../../utils/isMobile';
 import { validateInput } from '../../utils/wrap-unwrap';
 import Container from '../common/styled/Container.css';
@@ -207,8 +205,6 @@ function Swap({ history }) {
         activeView,
     });
 
-    const { performBuyOrSellUSN } = usePerformBuyOrSellUSN();
-
     // @note main swap handler
     const handleSwapToken = async ({
         accountId,
@@ -220,37 +216,17 @@ function Swap({ history }) {
             'SWAP token',
             async () => {
                 setSwappingToken(true);
-                if (tokenFrom == 'wNEAR' || tokenTo == 'wNEAR') {
-                    const result =
-                        await fungibleTokensService.wrapNear({
-                            accountId,
-                            wrapAmount:
-                                parseNearAmount(amount),
-                            toWNear: tokenTo == 'wNEAR',
-                        });
-                    setTransactionHash(result.transaction.hash);
-                } else if ((tokenFrom == 'USN' || tokenTo == 'USN') && CREATE_USN_CONTRACT) {
-                    if (amount == maxFrom.numToShow) {
-                        // in the event that a user clicks "Max: x" the input box only shows an estimated number
-                        // so we must ensure that the actual amount that gets converted is the full max number
-                        amount = maxFrom.fullNum;
-                    }
-                    await performBuyOrSellUSN({
-                        accountId, 
-                        multiplier, 
-                        slippage, 
-                        amount, 
-                        tokenFrom
-                    });
-                }
-                
-                setActiveView(VIEWS.SUCCESS);
 
-                const id = Mixpanel.get_distinct_id();
-                Mixpanel.identify(id);
-                Mixpanel.people.set({
-                    last_send_token: new Date().toString(),
-                });
+                fungibleTokenExchange.swap({ slippage });
+
+                setTransactionHash('/%$^');
+                // setActiveView(VIEWS.SUCCESS);
+
+                // const id = Mixpanel.get_distinct_id();
+                // Mixpanel.identify(id);
+                // Mixpanel.people.set({
+                //     last_send_token: new Date().toString(),
+                // });
             },
             (e) => {
                 dispatch(
