@@ -1,9 +1,6 @@
 import * as nearApi from 'near-api-js';
 
-import { 
-    // REF_FINANCE_API_ENDPOINT,
-    REF_FINANCE_CONTRACT,
-} from '../config';
+import { REF_FINANCE_CONTRACT } from '../config';
 import { wallet } from '../utils/wallet';
 
 class RefFinanceSwapContract {
@@ -17,14 +14,10 @@ class RefFinanceSwapContract {
         ],
         changeMethods: [
             'swap',
-            // swap params {
-            //     token_in: id,
-            //     amount_in: number,
-            //     token_out: id,
-            //     min_amount_out: number,
-            //     admin_fee: ?,
-            // }
         ],
+        pools: {
+            startIndex: 0,
+        }
     }
 
     async #contractInstance(accountId) {
@@ -37,16 +30,41 @@ class RefFinanceSwapContract {
         );
     }
 
+    formatPoolsOutput(pools) {
+        const config = {};
+
+        pools.forEach((pool, poolId) => {
+            // @note pool has pool_kind: do we also need to filter via type?
+            const { token_account_ids } = pool;
+
+            config[JSON.stringify(token_account_ids)] = {
+                // set before the "pool content": if the pool has own 'poolId' key it will be rewritten
+                poolId,
+                ...pool,
+            };
+        });
+
+        return config;
+    }
+
     async getNumberOfPools(accountId) {
         const contract = await this.#contractInstance(accountId);
 
         return contract.get_number_of_pools();
     }
 
-    async getPools({ accountId, fromIndex, maxAmount }) {
+    async getPools({ accountId }) {
         const contract = await this.#contractInstance(accountId);
+        const endIndex = await contract.get_number_of_pools();
 
-        return contract.get_pools({ from_index: fromIndex, limit: maxAmount });
+        console.log('max pools', endIndex);
+
+        const pools = await contract.get_pools({
+            from_index: this.#config.pools.startIndex,
+            limit: 1000, // @todo fix gas limit problem when use: endIndex,
+        });
+
+        return this.formatPoolsOutput(pools);
     }
 
     async getReturn({ accountId, poolId, tokenInId, amountIn, tokenOut }) {
@@ -90,26 +108,14 @@ class RefFinanceSwapContract {
 }
 
 class FungibleTokenExchange {
-    #exchange
+    #exchange;
     
     constructor(exchangeInstance) {
         this.#exchange = exchangeInstance;
     }
 
-    async idk(accountId) {
-        const result = await this.#exchange.swap({
-            accountId,
-            poolId: 84,
-            tokenInId: 'wrap.testnet',
-            amountIn: nearApi.utils.format.parseNearAmount('0.01'),
-            tokenOut: 'dai.fakes.testnet',
-            tokenMinAmountOut: nearApi.utils.format.parseNearAmount('1'),
-        });
-        // @todo why? Check balances
-        // swap result: ERR10_ACC_NOT_REGISTERED = E10: account not registered
-        // error from the account_deposit.rs
-
-        console.log('result', result);
+    async getPools({ accountId }) {
+        return this.#exchange.getPools({ accountId });
     }
 
     async estimateSwap({
@@ -130,9 +136,5 @@ class FungibleTokenExchange {
     }) {}
 }
 
-const instance = new FungibleTokenExchange(new RefFinanceSwapContract());
-
-// instance.idk('');
-
-export default instance;
+export default new FungibleTokenExchange(new RefFinanceSwapContract());
 
