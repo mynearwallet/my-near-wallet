@@ -21,6 +21,7 @@ import {
 } from '../config';
 import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel/index';
+import SwapPage from '../pages/tokenSwap';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
@@ -94,7 +95,6 @@ import { Profile } from './profile/Profile';
 import { ReceiveContainerWrapper } from './receive-money/ReceiveContainerWrapper';
 import { SendContainerWrapper } from './send/SendContainerWrapper';
 import { StakingContainer } from './staking/StakingContainer';
-import Swap from './swap/Swap';
 import Terms from './terms/Terms';
 import '../index.css';
 import WalletMigration from './wallet-migration/WalletMigration';
@@ -642,7 +642,7 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/swap"
-                                component={Swap}
+                                component={SwapPage}
                             />
                             <Route
                                 exact
