@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { useFungibleTokensIncludingNEAR } from '../../hooks/fungibleTokensIncludingNEAR';
 import { wallet } from '../../utils/wallet';
 import SwapForm from './ui/SwapForm';
 
@@ -14,6 +15,9 @@ const SwapWrapper = styled.div`
 
 export default memo(function TokenSwap({ accountId }) {
     const [account, setAccount] = useState(null);
+    const tokens = useFungibleTokensIncludingNEAR({
+        includeNearContractName: true,
+    });
 
     useEffect(() => {
         if (accountId) {
@@ -29,7 +33,7 @@ export default memo(function TokenSwap({ accountId }) {
 
     return (
         <SwapWrapper>
-            <SwapForm account={account} />
+            <SwapForm account={account} tokens={tokens} />
         </SwapWrapper>
     );
 });

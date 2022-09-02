@@ -13,6 +13,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { SHOW_MIGRATION_BANNER, WEB3AUTH } from '../../../../features';
 import favicon from '../../src/images/mynearwallet-cropped.svg';
 import TwoFactorVerifyModal from '../components/accounts/two_factor/TwoFactorVerifyModal';
+import Swap from '../components/swap/Swap';
 import {
     IS_MAINNET,
     PUBLIC_URL,
@@ -643,6 +644,11 @@ class Routing extends Component {
                                 exact
                                 path="/swap"
                                 component={() => <SwapPage accountId={account.accountId} />}
+                            />
+                            <PrivateRoute
+                                exact
+                                path="/swap-legacy"
+                                component={Swap}
                             />
                             <Route
                                 exact

@@ -10,7 +10,7 @@ export function useReturn({
     poolId,
     tokenInId,
     amountIn = 0,
-    tokenOut,
+    tokenOutId,
     delay = 50,
 }) {
     const [amountOut, setAmountOut] = useState(AMOUNT_OUT_INIT_STATE);
@@ -28,7 +28,7 @@ export function useReturn({
                         poolId,
                         tokenInId,
                         amountIn: debounceAmountIn,
-                        tokenOut,
+                        tokenOutId,
                     });
     
                     setAmountOut(amount);
@@ -44,7 +44,7 @@ export function useReturn({
         };
 
         fetch();
-    }, [debounceAmountIn, accountId, poolId, tokenInId, tokenOut]);
+    }, [debounceAmountIn, accountId, poolId, tokenInId, tokenOutId]);
 
-    return {amountOut, loading};
+    return { amountOut, loading };
 }

@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { CREATE_USN_CONTRACT } from '../../../../../features';
 import { EXPLORER_URL, NEAR_TOKEN_ID, USN_CONTRACT } from '../../config';
 import { useFungibleTokensIncludingNEAR } from '../../hooks/fungibleTokensIncludingNEAR';
+import { usePerformBuyOrSellUSN } from '../../hooks/performBuyOrSellUSN';
 import { Mixpanel } from '../../mixpanel/index';
 import { showCustomAlert } from '../../redux/actions/status';
 import { selectAccountId } from '../../redux/slices/account';
@@ -16,7 +17,7 @@ import {
     actions as tokensActions,
     selectTokensLoading,
 } from '../../redux/slices/tokens';
-import fungibleTokenExchange from '../../services/FungibleTokenExchange';
+import { fungibleTokensService } from '../../services/FungibleTokens';
 import isMobile from '../../utils/isMobile';
 import { validateInput } from '../../utils/wrap-unwrap';
 import Container from '../common/styled/Container.css';
@@ -106,9 +107,6 @@ const StyledContainer = styled(Container)`
         display: flex;
         justify-content: center;
         margin-top:28px;
-    }
-
-    
     }
 `;
 
@@ -205,7 +203,8 @@ function Swap({ history }) {
         activeView,
     });
 
-    // @note main swap handler
+    const { performBuyOrSellUSN } = usePerformBuyOrSellUSN();
+
     const handleSwapToken = async ({
         accountId,
         amount,
@@ -217,16 +216,35 @@ function Swap({ history }) {
             async () => {
                 setSwappingToken(true);
 
-                fungibleTokenExchange.swap({ slippage });
+                if (tokenFrom == 'wNEAR' || tokenTo == 'wNEAR') {
+                    const result =
+                        await fungibleTokensService.wrapNear({
+                            accountId,
+                            amount,
+                            toWNear: tokenTo == 'wNEAR',
+                        });
+                    setTransactionHash(result.transaction.hash);
+                } else if ((tokenFrom == 'USN' || tokenTo == 'USN') && CREATE_USN_CONTRACT) {
+                    if (amount == maxFrom.numToShow) {
+                        // in the event that a user clicks "Max: x" the input box only shows an estimated number
+                        // so we must ensure that the actual amount that gets converted is the full max number
+                        amount = maxFrom.fullNum;
+                    }
+                    await performBuyOrSellUSN({
+                        accountId,
+                        multiplier,
+                        slippage,
+                        amount,
+                        tokenFrom,
+                    });
+                }
 
-                setTransactionHash('/%$^');
-                // setActiveView(VIEWS.SUCCESS);
+                setActiveView(VIEWS.SUCCESS);
 
-                // const id = Mixpanel.get_distinct_id();
-                // Mixpanel.identify(id);
-                // Mixpanel.people.set({
-                //     last_send_token: new Date().toString(),
-                // });
+                Mixpanel.identify(Mixpanel.get_distinct_id());
+                Mixpanel.people.set({
+                    last_send_token: new Date().toString(),
+                });
             },
             (e) => {
                 dispatch(

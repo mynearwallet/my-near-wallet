@@ -183,15 +183,16 @@ export default class FungibleTokens {
             ],
         });
     }
-
-    async wrapNear({ accountId, wrapAmount, toWNear }) {
+    // @note we handle both actions here
+    // separate methods (wrap/unwrap) and rename this method like swap/exchage?
+    async wrapNear({ accountId, amount, toWNear }) {
         const account = await wallet.getAccount(accountId);
         const actions = [
             functionCall(
                 toWNear ? 'near_deposit' : 'near_withdraw',
-                toWNear ? {} : { amount: wrapAmount },
+                toWNear ? {} : { amount: parseNearAmount(amount) },
                 FT_STORAGE_DEPOSIT_GAS,
-                toWNear ? wrapAmount : TOKEN_TRANSFER_DEPOSIT
+                toWNear ? parseNearAmount(amount) : TOKEN_TRANSFER_DEPOSIT
             ),
         ];
 

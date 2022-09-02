@@ -1,13 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const InputWrapper = styled.div``;
+// @todo common component: move to .../common
+import Token from '../../../components/send/components/entry_types/Token';
+import ChevronIcon from '../../../components/svg/ChevronIcon';
+
+const InputWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const TokenWrapper = styled.div`
+    display: flex;
+`;
 
 export default function Input({
     value = '',
     onChange,
+    onSelectToken,
     placeholder = '0.0',
     disabled = false,
+    tokenSymbol,
+    tokenIcon,
 }) {
     const handleChange = (event) => {
         event.preventDefault();
@@ -24,6 +38,10 @@ export default function Input({
                 placeholder={placeholder}
                 disabled={disabled}
             />
+            <TokenWrapper onClick={onSelectToken}>
+                <ChevronIcon color="#0072ce" />
+                <Token symbol={tokenSymbol} icon={tokenIcon} />
+            </TokenWrapper>
         </InputWrapper>
     );
 }

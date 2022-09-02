@@ -1,12 +1,17 @@
 import * as nearApi from 'near-api-js';
 
-import { REF_FINANCE_CONTRACT } from '../config';
+// import { Mixpanel } from '../../mixpanel';
+import { REF_FINANCE_CONTRACT, NEAR_TOKEN_ID } from '../config';
 import { wallet } from '../utils/wallet';
+import { fungibleTokensService } from './FungibleTokens';
 
 const { utils: { format } } = nearApi;
 
 class RefFinanceSwapContract {
     #config = {
+        // REF_FINANCE_API_ENDPOINT
+        // INDEXER_SERVICE_URL
+        // ACCOUNT_HELPER_URL
         contractId: REF_FINANCE_CONTRACT,
         viewMethods: [
             'get_number_of_pools', 
@@ -71,13 +76,13 @@ class RefFinanceSwapContract {
         return this.formatPoolsOutput(pools);
     }
 
-    async getReturn({ accountId, poolId, tokenInId, amountIn, tokenOut }) {
+    async getReturn({ accountId, poolId, tokenInId, amountIn, tokenOutId }) {
         const contract = await this.#contractInstance(accountId);
         const amountOut = await contract.get_return({
             pool_id: poolId,
             token_in: tokenInId,
             amount_in: format.parseNearAmount(amountIn),
-            token_out: tokenOut,
+            token_out: tokenOutId,
         });
 
         return format.formatNearAmount(amountOut);
@@ -88,8 +93,9 @@ class RefFinanceSwapContract {
         poolId,
         tokenInId,
         amountIn,
-        tokenOut,
+        tokenOutId,
         minAmountOut,
+        slippage, // @todo now to use it here?
     }) {
         const account = await wallet.getAccount(accountId);
         const contract = await new nearApi.Contract(
@@ -103,14 +109,24 @@ class RefFinanceSwapContract {
                 {
                     pool_id: poolId,
                     token_in: tokenInId,
-                    amount_in: amountIn,
-                    token_out: tokenOut,
-                    min_amount_out: minAmountOut,
+                    amount_in: format.parseNearAmount(amountIn),
+                    token_out: tokenOutId,
+                    min_amount_out: format.parseNearAmount(minAmountOut),
                 },
             ],
         });
     }
 }
+
+// @todo move it somewhere in configs (check if it exists already)
+const NEAR_ID = 'NEAR';
+
+const isNearSwap = (params) => {
+    const { tokenInId, tokenOutId } = params;
+    const ids = [tokenInId, tokenOutId];
+
+    return ids.includes(NEAR_TOKEN_ID) && ids.includes(NEAR_ID);
+};
 
 class FungibleTokenExchange {
     #exchange;
@@ -123,41 +139,27 @@ class FungibleTokenExchange {
         return this.#exchange.getPools({ accountId });
     }
 
-    async estimateSwap({
-        accountId,
-        poolId,
-        tokenInId,
-        amountIn,
-        tokenOut,
-    }) {
-        return this.#exchange.getReturn({
-            accountId,
-            poolId,
-            tokenInId,
-            amountIn,
-            tokenOut,
-        });
+    async estimateSwap(params) {
+        if (isNearSwap(params)) {
+            return params.amountIn;
+        }
+
+        return this.#exchange.getReturn(params);
     }
 
-    async swap({
-        accountId,
-        poolId,
-        tokenInId,
-        amountIn,
-        tokenOut,
-        minAmountOut,
-        slippage, // @todo now to use it here?
-    }) {
-        return this.#exchange.swap({
-            accountId,
-            poolId,
-            tokenInId,
-            amountIn,
-            tokenOut,
-            minAmountOut,
-        });
+    async swap(params) {
+        if (isNearSwap(params)) {
+            const { accountId, tokenInId, amountIn } = params;
+
+            return fungibleTokensService.wrapNear({
+                accountId,
+                amount: amountIn,
+                toWNear: tokenInId !== NEAR_TOKEN_ID,
+            });
+        }
+
+        return this.#exchange.swap(params);
     }
 }
 
 export default new FungibleTokenExchange(new RefFinanceSwapContract());
-
