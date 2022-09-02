@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { wallet } from '../../utils/wallet';
 import SwapForm from './ui/SwapForm';
 
 const SwapWrapper = styled.div`
@@ -11,15 +12,24 @@ const SwapWrapper = styled.div`
     border-radius: 8px;
 `;
 
-export default function TokenSwap() {
-    // @note Swap page dependencies:
-    // tokens (external. Optional: can be omitted?)
-    // account instance (external)
-    // pools (internal)
+export default memo(function TokenSwap({ accountId }) {
+    const [account, setAccount] = useState(null);
+
+    useEffect(() => {
+        if (accountId) {
+            const updateAccount = async () => {
+                const instance = await wallet.getAccount(accountId, true);
+
+                setAccount(instance);
+            };
+
+            updateAccount();
+        }
+    }, [accountId]);
 
     return (
         <SwapWrapper>
-            <SwapForm />
+            <SwapForm account={account} />
         </SwapWrapper>
     );
-}
+});

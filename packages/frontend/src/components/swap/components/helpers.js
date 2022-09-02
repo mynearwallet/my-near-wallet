@@ -2,6 +2,7 @@ import * as nearApiJs from 'near-api-js';
 import { useEffect, useState, useRef } from 'react';
 
 import { USN_CONTRACT } from '../../../config';
+import useDebounce from '../../../hooks/useDebounce';
 import { removeTrailingZeros, formatTokenAmount, parseTokenAmount } from '../../../utils/amounts';
 import { wallet } from '../../../utils/wallet';
 import { formatNearAmount } from '../../common/balance/helpers';
@@ -88,21 +89,6 @@ export const getBalance = (activeTokenFrom) => {
     return activeTokenFrom?.onChainFTMetadata?.symbol === 'NEAR'
         ? +formatNearAmount(activeTokenFrom?.balance)
         : +formatTokenAmount(activeTokenFrom?.balance, activeTokenFrom?.onChainFTMetadata?.decimals, 5);
-};
-
-const useDebounce = (value, delay) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [value]);
-
-    return debouncedValue;
 };
 
 const roundUSNExchange = (amount, exchangeRate) => {

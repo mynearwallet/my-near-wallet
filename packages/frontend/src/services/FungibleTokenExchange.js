@@ -3,14 +3,16 @@ import * as nearApi from 'near-api-js';
 import { REF_FINANCE_CONTRACT } from '../config';
 import { wallet } from '../utils/wallet';
 
+const { utils: { format } } = nearApi;
+
 class RefFinanceSwapContract {
     #config = {
         contractId: REF_FINANCE_CONTRACT,
         viewMethods: [
             'get_number_of_pools', 
-            'get_pools', // params { from_index: number >= 0, limit: number}
+            'get_pools',
             'get_pool',
-            'get_return', // params { token_in, amount_in, token_out, fees }
+            'get_return',
         ],
         changeMethods: [
             'swap',
@@ -34,14 +36,16 @@ class RefFinanceSwapContract {
         const config = {};
 
         pools.forEach((pool, poolId) => {
-            // @note pool has pool_kind: do we also need to filter via type?
-            const { token_account_ids } = pool;
+            const { token_account_ids, shares_total_supply, amounts  } = pool;
+            const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
 
-            config[JSON.stringify(token_account_ids)] = {
-                // set before the "pool content": if the pool has own 'poolId' key it will be rewritten
-                poolId,
-                ...pool,
-            };
+            if (hasLiquidity) {
+                config[JSON.stringify(token_account_ids)] = {
+                    // set before the "pool content": if the pool has own 'poolId' key it will be rewritten
+                    poolId,
+                    ...pool,
+                };
+            }
         });
 
         return config;
@@ -69,13 +73,14 @@ class RefFinanceSwapContract {
 
     async getReturn({ accountId, poolId, tokenInId, amountIn, tokenOut }) {
         const contract = await this.#contractInstance(accountId);
-
-        return contract.get_return({
+        const amountOut = await contract.get_return({
             pool_id: poolId,
             token_in: tokenInId,
-            amount_in: amountIn,
+            amount_in: format.parseNearAmount(amountIn),
             token_out: tokenOut,
         });
+
+        return format.formatNearAmount(amountOut);
     }
 
     async swap({
@@ -84,7 +89,7 @@ class RefFinanceSwapContract {
         tokenInId,
         amountIn,
         tokenOut,
-        tokenMinAmountOut,
+        minAmountOut,
     }) {
         const account = await wallet.getAccount(accountId);
         const contract = await new nearApi.Contract(
@@ -100,7 +105,7 @@ class RefFinanceSwapContract {
                     token_in: tokenInId,
                     amount_in: amountIn,
                     token_out: tokenOut,
-                    min_amount_out: tokenMinAmountOut,
+                    min_amount_out: minAmountOut,
                 },
             ],
         });
@@ -119,21 +124,39 @@ class FungibleTokenExchange {
     }
 
     async estimateSwap({
-        senderId,
-        receiverId,
-        tokenIn,
-        tokenInAmount,
+        accountId,
+        poolId,
+        tokenInId,
+        amountIn,
         tokenOut,
-    }) {}
+    }) {
+        return this.#exchange.getReturn({
+            accountId,
+            poolId,
+            tokenInId,
+            amountIn,
+            tokenOut,
+        });
+    }
 
     async swap({
         accountId,
-        receiverId,
-        tokenIn,
-        tokenInAmount,
+        poolId,
+        tokenInId,
+        amountIn,
         tokenOut,
-        slippage,
-    }) {}
+        minAmountOut,
+        slippage, // @todo now to use it here?
+    }) {
+        return this.#exchange.swap({
+            accountId,
+            poolId,
+            tokenInId,
+            amountIn,
+            tokenOut,
+            minAmountOut,
+        });
+    }
 }
 
 export default new FungibleTokenExchange(new RefFinanceSwapContract());

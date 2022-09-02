@@ -3,10 +3,27 @@ import styled from 'styled-components';
 
 const InputWrapper = styled.div``;
 
-export default function Input({ placeholder = '0.0' }) {
+export default function Input({
+    value = '',
+    onChange,
+    placeholder = '0.0',
+    disabled = false,
+}) {
+    const handleChange = (event) => {
+        event.preventDefault();
+
+        onChange(event.target.value);
+    };
+
     return (
         <InputWrapper>
-            <input placeholder={placeholder} />
+            <input
+                type='number'
+                value={value}
+                onChange={handleChange}
+                placeholder={placeholder}
+                disabled={disabled}
+            />
         </InputWrapper>
     );
 }

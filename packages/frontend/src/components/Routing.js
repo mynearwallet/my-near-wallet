@@ -642,7 +642,7 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/swap"
-                                component={SwapPage}
+                                component={() => <SwapPage accountId={account.accountId} />}
                             />
                             <Route
                                 exact
