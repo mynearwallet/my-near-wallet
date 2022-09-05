@@ -16,13 +16,13 @@ function buildTrackingProps() {
 }
 
 let Mixpanel = {
-    get_distinct_id: () => {},
-    identify: () => {},
-    alias: () => {},
-    track: () => {},
+    get_distinct_id: () => { },
+    identify: () => { },
+    alias: () => { },
+    track: () => { },
     people: {
-        set: () => {},
-        set_once: ()  => {}
+        set: () => { },
+        set_once: () => { }
     },
     withTracking: async (name, fn, errorOperation, finalOperation) => {
         try {
@@ -39,14 +39,14 @@ let Mixpanel = {
             }
         }
     },
-    register: () => {}
+    register: () => { }
 };
 
 const shouldEnableTracking = BROWSER_MIXPANEL_TOKEN && isWhitelabel;
 
 if (shouldEnableTracking) {
     mixpanel.init(BROWSER_MIXPANEL_TOKEN);
-    mixpanel.register({'timestamp': new Date().toString(), '$referrer': document.referrer});
+    mixpanel.register({ 'timestamp': new Date().toString(), '$referrer': document.referrer });
     Mixpanel = {
         get_distinct_id: () => {
             return mixpanel.get_distinct_id();
@@ -58,6 +58,7 @@ if (shouldEnableTracking) {
             mixpanel.alias(id);
         },
         track: (name, props) => {
+            console.log('MIXPANEL:', name, props);
             mixpanel.track(name, {
                 ...props,
                 ...buildTrackingProps(),
@@ -67,7 +68,7 @@ if (shouldEnableTracking) {
             set: (props) => {
                 mixpanel.people.set(props);
             },
-            set_once: (props)  => {
+            set_once: (props) => {
                 mixpanel.people.set_once(props);
             }
         },
@@ -76,11 +77,13 @@ if (shouldEnableTracking) {
                 mixpanel.track(`${name} start`, buildTrackingProps());
                 await fn();
                 mixpanel.track(`${name} finish`, buildTrackingProps());
+                console.log('MIXPANEL:', `${name} finish`, buildTrackingProps());
             } catch (e) {
                 mixpanel.track(`${name} fail`, {
                     error: e.message,
                     ...buildTrackingProps(),
                 });
+                console.log('MIXPANEL:', `${name} fail`, buildTrackingProps());
                 if (errorOperation) {
                     await errorOperation(e);
                 } else {
