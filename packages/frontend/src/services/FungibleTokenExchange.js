@@ -1,9 +1,20 @@
 import * as nearApi from 'near-api-js';
 
 // import { Mixpanel } from '../../mixpanel';
-import { REF_FINANCE_CONTRACT, NEAR_TOKEN_ID } from '../config';
+import {
+    REF_FINANCE_CONTRACT,
+    NEAR_TOKEN_ID,
+    FT_MINIMUM_STORAGE_BALANCE,
+    FT_STORAGE_DEPOSIT_GAS,
+    TOKEN_TRANSFER_DEPOSIT,
+} from '../config';
+import {
+    parseTokenAmount,
+    // formatTokenAmount,
+    // removeTrailingZeros,
+} from '../utils/amounts';
 import { wallet } from '../utils/wallet';
-import { fungibleTokensService } from './FungibleTokens';
+import FungibleTokens, { fungibleTokensService } from './FungibleTokens';
 
 const { utils: { format } } = nearApi;
 
@@ -76,13 +87,13 @@ class RefFinanceSwapContract {
         return this.formatPoolsOutput(pools);
     }
 
-    async getReturn({ accountId, poolId, tokenInId, amountIn, tokenOutId }) {
+    async getReturn({ accountId, poolId, tokenIn, amountIn, tokenOut }) {
         const contract = await this.#contractInstance(accountId);
         const amountOut = await contract.get_return({
             pool_id: poolId,
-            token_in: tokenInId,
+            token_in: tokenIn.contractName,
             amount_in: format.parseNearAmount(amountIn),
-            token_out: tokenOutId,
+            token_out: tokenOut.contractName,
         });
 
         return format.formatNearAmount(amountOut);
@@ -91,30 +102,72 @@ class RefFinanceSwapContract {
     async swap({
         accountId,
         poolId,
-        tokenInId,
+        tokenIn,
         amountIn,
-        tokenOutId,
+        tokenOut,
         minAmountOut,
         slippage, // @todo now to use it here?
     }) {
-        const account = await wallet.getAccount(accountId);
-        const contract = await new nearApi.Contract(
-            account,
-            this.#config.contractId,
-            this.#config
-        );
+        const transactions = [];
+        const tokenStorage = await FungibleTokens.getStorageBalance({
+            contractName: tokenOut.contractName,
+            accountId,
+        });
 
-        return contract.swap({
+        if (!tokenStorage) {
+            transactions.push({
+                receiverId: tokenOut.contractName,
+                nonce: 0,
+                actions: [
+                    nearApi.transactions.functionCall(
+                        'storage_deposit',
+                        {
+                            registration_only: true,
+                            account_id: accountId,
+                        },
+                        FT_STORAGE_DEPOSIT_GAS,
+                        FT_MINIMUM_STORAGE_BALANCE
+                    ),
+                ],
+            });
+        }
+
+        const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
+        const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
+        const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
+        const parsedAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals, 0);
+
+        transactions.push({
+            receiverId: tokenIn.contractName,
+            nonce: 1,
             actions: [
-                {
-                    pool_id: poolId,
-                    token_in: tokenInId,
-                    amount_in: format.parseNearAmount(amountIn),
-                    token_out: tokenOutId,
-                    min_amount_out: format.parseNearAmount(minAmountOut),
-                },
+                nearApi.transactions.functionCall(
+                    'ft_transfer_call',
+                    {
+                        receiver_id: this.#config.contractId,
+                        amount: parsedAmountIn,
+                        msg: JSON.stringify({
+                            force: 0, // @todo what is it for?
+                            actions: [
+                                // @note in case of routing we add many action objects here
+                                {
+                                    pool_id: poolId,
+                                    token_in: tokenIn.contractName,
+                                    token_out: tokenOut.contractName,
+                                    amount_in: parsedAmountIn,
+                                    min_amount_out: parsedAmountOut,
+                                },
+                            ],
+                        }),
+                    },
+                    // @todo why 180000000000000 for gas?
+                    '180000000000000',
+                    TOKEN_TRANSFER_DEPOSIT,
+                ),
             ],
         });
+
+        return wallet.signAndSendTransactions(transactions, accountId);
     }
 }
 
@@ -122,10 +175,16 @@ class RefFinanceSwapContract {
 const NEAR_ID = 'NEAR';
 
 const isNearSwap = (params) => {
-    const { tokenInId, tokenOutId } = params;
-    const ids = [tokenInId, tokenOutId];
+    const { tokenIn, tokenOut } = params;
+    const ids = [tokenIn.contractName, tokenOut.contractName];
 
     return ids.includes(NEAR_TOKEN_ID) && ids.includes(NEAR_ID);
+};
+
+const replaceNearIfNecessary = (token) => {
+    return token.contractName === NEAR_ID
+        ? { ...token, contractName: NEAR_TOKEN_ID }
+        : token;
 };
 
 class FungibleTokenExchange {
@@ -139,26 +198,46 @@ class FungibleTokenExchange {
         return this.#exchange.getPools({ accountId });
     }
 
-    async estimateSwap(params) {
+    async estimate(params) {
         if (isNearSwap(params)) {
-            return params.amountIn;
+            return this.estimateNearSwap(params);
         }
 
-        return this.#exchange.getReturn(params);
+        return this.estimateSwap(params);
+    }
+
+    estimateNearSwap(params) {
+        return params.amountIn;
+    }
+
+    async estimateSwap(params) {
+        const { tokenIn, tokenOut } = params;
+
+        return this.#exchange.getReturn({
+            ...params,
+            tokenIn: replaceNearIfNecessary(tokenIn),
+            tokenOut: replaceNearIfNecessary(tokenOut),
+        });
     }
 
     async swap(params) {
         if (isNearSwap(params)) {
-            const { accountId, tokenInId, amountIn } = params;
-
-            return fungibleTokensService.wrapNear({
-                accountId,
-                amount: amountIn,
-                toWNear: tokenInId !== NEAR_TOKEN_ID,
-            });
+            return this.swapNear(params);
         }
 
+        // @todo if it's IN or OUT NEAR id => at first wrap/unwrap
+        // then continue with Ref contract swap  
         return this.#exchange.swap(params);
+    }
+
+    swapNear(params) {
+        const { accountId, tokenIn, amountIn } = params;
+
+        return fungibleTokensService.wrapNear({
+            accountId,
+            amount: amountIn,
+            toWNear: tokenIn.contractName !== NEAR_TOKEN_ID,
+        });
     }
 }
 

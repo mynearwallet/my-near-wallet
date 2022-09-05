@@ -11,5 +11,5 @@ export const gtZero = (value = '0') => big(value).gt(big());
 export const gtZeroApprox = (value = '0') => big(value).gt(big(APPROX_ZERO_MIN));
 
 export const formatTokenAmount = (value, decimals = 18, precision = 2) => value && Big(value).div(Big(10).pow(decimals)).toFixed(precision);
-export const parseTokenAmount = (value, decimals = 18) => value && Big(value).times(Big(10).pow(decimals)).toFixed();
+export const parseTokenAmount = (value, decimals = 18, precision = 1) => value && Big(value).times(Big(10).pow(decimals)).toFixed(precision);
 export const removeTrailingZeros = (amount) => amount.replace(/\.?0*$/, '');

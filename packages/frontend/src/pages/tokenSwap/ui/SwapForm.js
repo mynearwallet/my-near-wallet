@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -20,7 +20,7 @@ const tokenSelectState = {
     selectOut: 2,
 };
 
-export default function SwapForm({ account, tokens }) {
+export default memo(function SwapForm({ account, tokens, pools }) {
     const [displayTokenSelect, setDisplayTokenSelect] = useState(tokenSelectState.noSelect);
 
     const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
@@ -29,6 +29,18 @@ export default function SwapForm({ account, tokens }) {
 
     const [tokenIn, setTokenIn] = useState(tokens[0]);
     const [tokenOut, setTokenOut] = useState(tokens[1]);
+    const [somePool, setSomePool] = useState(null);
+
+    // @todo create an external hook ( * routing / best pools)
+    useEffect(() => {
+        const poolKey = JSON.stringify([tokenIn?.contractName, tokenOut?.contractName]);
+        const reversePoolKey = JSON.stringify([tokenOut?.contractName, tokenIn?.contractName]);
+        const pool = pools.all[poolKey] || pools.all[reversePoolKey];
+
+        if (pool) {
+            setSomePool(pool);
+        }
+    });
 
     const handleTokenSelect = (token) => {
         switch (displayTokenSelect) {
@@ -44,24 +56,19 @@ export default function SwapForm({ account, tokens }) {
     };
 
     const [amountIn, setAmountIn] = useState('');
-    // @todo use real data
-    const config = {
-        poolId: 696,
-    };
-
     const { amountOut } = useReturn({
         accountId: account?.accountId || '',
-        poolId: config.poolId,
-        tokenInId: tokenIn?.contractName,
+        poolId: somePool?.poolId,
+        tokenIn,
         amountIn,
-        tokenOutId: tokenOut?.contractName,
+        tokenOut,
         delay: swapInfoDaley,
     });
 
     const flipInputsData = () => {};
 
     const handleSwap = async () => {
-        if (!account) {
+        if (!account || !somePool) {
             return;
         }
 
@@ -70,9 +77,9 @@ export default function SwapForm({ account, tokens }) {
             const result = await fungibleTokenExchange.swap({
                 accountId,
                 amountIn,
-                poolId: config.poolId,
-                tokenInId: tokenIn.contractName,
-                tokenOutId: tokenOut.contractName,
+                poolId: somePool.poolId,
+                tokenIn,
+                tokenOut,
                 minAmountOut: amountOut,
             });
 
@@ -122,4 +129,4 @@ export default function SwapForm({ account, tokens }) {
             )}
         </FormWrapper>
     );
-}
+});

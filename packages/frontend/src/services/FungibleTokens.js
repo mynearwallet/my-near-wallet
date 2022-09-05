@@ -196,11 +196,10 @@ export default class FungibleTokens {
             ),
         ];
 
-        const storage = await account.viewFunction(
-            NEAR_TOKEN_ID,
-            'storage_balance_of',
-            { account_id: accountId }
-        );
+        const storage = await FungibleTokens.getStorageBalance({
+            contractName: NEAR_TOKEN_ID,
+            accountId,
+        });
 
         if (!storage) {
             actions.unshift(
@@ -208,7 +207,7 @@ export default class FungibleTokens {
                     'storage_deposit',
                     {},
                     FT_STORAGE_DEPOSIT_GAS,
-                    parseNearAmount('0.00125')
+                    FT_MINIMUM_STORAGE_BALANCE,
                 )
             );
         }

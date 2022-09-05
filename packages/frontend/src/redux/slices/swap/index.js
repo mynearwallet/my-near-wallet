@@ -4,7 +4,6 @@ import { createSelector } from 'reselect';
 
 import fungibleTokenExchange from '../../../services/FungibleTokenExchange';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
-import { selectSliceByAccountId } from '../../selectors/topLevel';
 
 const SLICE_NAME = 'swap';
 // @note disable swap logs
@@ -74,7 +73,8 @@ export const actions = {
 
 export const reducer = swapSlice.reducer;
 
-const selectPoolsSlice = selectSliceByAccountId(SLICE_NAME, initialState);
+export const selectPoolsSlice = (state) => state[SLICE_NAME];
+
 const selectPools = createSelector(selectPoolsSlice, ({ pools }) => pools || {});
 
 export const selectPoolsLoading = createSelector(

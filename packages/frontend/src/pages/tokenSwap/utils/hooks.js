@@ -8,9 +8,9 @@ const AMOUNT_OUT_INIT_STATE = '';
 export function useReturn({
     accountId,
     poolId,
-    tokenInId,
+    tokenIn,
     amountIn = 0,
-    tokenOutId,
+    tokenOut,
     delay = 50,
 }) {
     const [amountOut, setAmountOut] = useState(AMOUNT_OUT_INIT_STATE);
@@ -18,20 +18,29 @@ export function useReturn({
     const debounceAmountIn = useDebounce(amountIn, delay);
 
     useEffect(() => {
+        let cancelledRequest = false;
+
         const fetch = async () => {
-            if (parseInt(debounceAmountIn) > 0) {
+            if (
+                tokenIn &&
+                tokenOut &&
+                typeof poolId === 'number' &&
+                parseInt(debounceAmountIn) > 0
+            ) {
                 setLoading(true);
 
                 try {
-                    const amount = await fungibleTokenExchange.estimateSwap({
+                    const amount = await fungibleTokenExchange.estimate({
                         accountId,
                         poolId,
-                        tokenInId,
+                        tokenIn,
                         amountIn: debounceAmountIn,
-                        tokenOutId,
+                        tokenOut,
                     });
     
-                    setAmountOut(amount);
+                    if (!cancelledRequest) {
+                        setAmountOut(amount);
+                    }
                 } catch (error) {
                     console.error(error);
                     setAmountOut(AMOUNT_OUT_INIT_STATE);
@@ -44,7 +53,11 @@ export function useReturn({
         };
 
         fetch();
-    }, [debounceAmountIn, accountId, poolId, tokenInId, tokenOutId]);
+
+        return () => {
+            cancelledRequest = true;
+        };
+    }, [debounceAmountIn, accountId, poolId, tokenIn, tokenOut]);
 
     return { amountOut, loading };
 }
