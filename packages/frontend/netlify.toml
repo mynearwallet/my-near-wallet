@@ -4,7 +4,7 @@
     ignore = "/bin/false"
 
 [build.environment]
-    NEAR_WALLET_ENV=mainnet
+    NEAR_WALLET_ENV="mainnet"
     DISABLE_PHONE_RECOVERY = "yes"
     REACT_APP_NETWORK_ID = "default"
     REACT_APP_NODE_URL = "https://rpc.mainnet.near.org"
