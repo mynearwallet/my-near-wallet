@@ -1,5 +1,6 @@
-// import TokenExchange from './FungibleTokenExchange';
+// import fungibleTokenExchange from './FungibleTokenExchange';
 
-test('TODO: add FT Exchange tests', () => {
-    // expect(1).toBe(1);
+describe('FungibleTokenExchange', () => {
+    test('TODO: add FT Exchange tests', async () => {
+    });
 });

@@ -10,6 +10,7 @@ import {
 } from '../config';
 import {
     parseTokenAmount,
+    decreaseByPercent,
     // formatTokenAmount,
     // removeTrailingZeros,
 } from '../utils/amounts';
@@ -106,7 +107,7 @@ class RefFinanceSwapContract {
         amountIn,
         tokenOut,
         minAmountOut,
-        slippage, // @todo now to use it here?
+        slippage = 0,
     }) {
         const transactions = [];
         const tokenStorage = await FungibleTokens.getStorageBalance({
@@ -117,7 +118,6 @@ class RefFinanceSwapContract {
         if (!tokenStorage) {
             transactions.push({
                 receiverId: tokenOut.contractName,
-                nonce: 0,
                 actions: [
                     nearApi.transactions.functionCall(
                         'storage_deposit',
@@ -135,11 +135,13 @@ class RefFinanceSwapContract {
         const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
         const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
-        const parsedAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals, 0);
+        // @todo better naming for 'minAmountOutWithSlippage'
+        const minAmountOutWithSlippage = decreaseByPercent(minAmountOut, slippage, tokenOutDecimals);
+        // @todo test DAI -> wNEAR: it works only if we decrase decimals by 1
+        const parsedMinAmountOut = parseTokenAmount(minAmountOutWithSlippage, tokenOutDecimals, 0);
 
         transactions.push({
             receiverId: tokenIn.contractName,
-            nonce: 1,
             actions: [
                 nearApi.transactions.functionCall(
                     'ft_transfer_call',
@@ -155,7 +157,7 @@ class RefFinanceSwapContract {
                                     token_in: tokenIn.contractName,
                                     token_out: tokenOut.contractName,
                                     amount_in: parsedAmountIn,
-                                    min_amount_out: parsedAmountOut,
+                                    min_amount_out: parsedMinAmountOut,
                                 },
                             ],
                         }),

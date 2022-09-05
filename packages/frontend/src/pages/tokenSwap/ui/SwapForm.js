@@ -6,6 +6,7 @@ import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import fungibleTokenExchange from '../../../services/FungibleTokenExchange';
+import { decreaseByPercent } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import { useReturn } from '../utils/hooks';
 import Input from './Input';
@@ -20,6 +21,8 @@ const tokenSelectState = {
     selectOut: 2,
 };
 
+const initSettings = {};
+
 export default memo(function SwapForm({ account, tokens, pools }) {
     const [displayTokenSelect, setDisplayTokenSelect] = useState(tokenSelectState.noSelect);
 
@@ -30,6 +33,7 @@ export default memo(function SwapForm({ account, tokens, pools }) {
     const [tokenIn, setTokenIn] = useState(tokens[0]);
     const [tokenOut, setTokenOut] = useState(tokens[1]);
     const [somePool, setSomePool] = useState(null);
+    const [settings, setSettings] = useState(initSettings);
 
     // @todo create an external hook ( * routing / best pools)
     useEffect(() => {
@@ -56,7 +60,7 @@ export default memo(function SwapForm({ account, tokens, pools }) {
     };
 
     const [amountIn, setAmountIn] = useState('');
-    const { amountOut } = useReturn({
+    const { amountOut, loading } = useReturn({
         accountId: account?.accountId || '',
         poolId: somePool?.poolId,
         tokenIn,
@@ -81,6 +85,7 @@ export default memo(function SwapForm({ account, tokens, pools }) {
                 tokenIn,
                 tokenOut,
                 minAmountOut: amountOut,
+                slippage: settings.slippage,
             });
 
             console.log('swap result', result);
@@ -88,6 +93,21 @@ export default memo(function SwapForm({ account, tokens, pools }) {
             console.error(error);
         }
     };
+
+
+    const [minAmountOut, setMinAmountOut] = useState(null);
+
+    useEffect(() => {
+        if (typeof settings.slippage === 'number' && amountOut && tokenOut) {
+            setMinAmountOut(
+                decreaseByPercent(
+                    amountOut,
+                    settings.slippage,
+                    tokenOut.onChainFTMetadata.decimals
+                )
+            );
+        }
+    }, [settings]);
 
     return (
         <FormWrapper>
@@ -112,12 +132,20 @@ export default memo(function SwapForm({ account, tokens, pools }) {
                     </FormButton>
                     <Input
                         value={amountOut}
+                        loading={loading}
                         onSelectToken={selectTokenOut}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.symbol}
                         disabled
                     />
-                    <SwapSettings />
+                    <SwapSettings onChange={setSettings} />
+
+                    <p>
+                        Info:
+                        <br />
+                        <span>Min received: {minAmountOut || '-'}</span>
+                    </p>
+
                     <FormButton
                         color="blue width width100"
                         onClick={handleSwap}

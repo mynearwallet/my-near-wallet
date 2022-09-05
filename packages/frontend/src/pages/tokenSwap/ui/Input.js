@@ -16,6 +16,7 @@ const TokenWrapper = styled.div`
 
 export default function Input({
     value = '',
+    loading = false,
     onChange,
     onSelectToken,
     placeholder = '0.0',
