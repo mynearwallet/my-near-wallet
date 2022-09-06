@@ -1,3 +1,4 @@
+import Big from 'big.js';
 import * as nearApi from 'near-api-js';
 
 // import { Mixpanel } from '../../mixpanel';
@@ -8,16 +9,76 @@ import {
     FT_STORAGE_DEPOSIT_GAS,
     TOKEN_TRANSFER_DEPOSIT,
 } from '../config';
-import {
-    parseTokenAmount,
-    decreaseByPercent,
-    formatTokenAmount,
-    // removeTrailingZeros,
-} from '../utils/amounts';
+import { parseTokenAmount, formatTokenAmount } from '../utils/amounts';
 import { wallet } from '../utils/wallet';
 import FungibleTokens, { fungibleTokensService } from './FungibleTokens';
 
-const { utils: { format } } = nearApi;
+const FEE_DIVISOR = 10000;
+
+// @todo check this calculations
+/* @note original method from the simple pool contract
+fn internal_get_return(
+    &self,
+    token_in: usize,
+    amount_in: Balance,
+    token_out: usize,
+) -> Balance {
+    let in_balance = U256::from(self.amounts[token_in]);
+    let out_balance = U256::from(self.amounts[token_out]);
+    assert!(
+        in_balance > U256::zero()
+            && out_balance > U256::zero()
+            && token_in != token_out
+            && amount_in > 0,
+        "{}", ERR76_INVALID_PARAMS
+    );
+    let amount_with_fee = U256::from(amount_in) * U256::from(FEE_DIVISOR - self.total_fee);
+    (amount_with_fee * out_balance / (U256::from(FEE_DIVISOR) * in_balance + amount_with_fee))
+        .as_u128()
+}
+*/
+const estimatePoolInfo = ({ pool, tokenIn, tokenOut, amountIn }) => {
+    const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
+    const { total_fee, token_account_ids, amounts } = pool;
+    const tokenInfo = {
+        [token_account_ids[0]]: amounts[0],
+        [token_account_ids[1]]: amounts[1],
+    };
+
+    const allocation = parseTokenAmount(amountIn, tokenInDecimals, 0);
+    const inAmountWithFee = Big(allocation).times(FEE_DIVISOR - total_fee).toFixed(0);
+    const reserveIn = tokenInfo[tokenIn.contractName];
+    const reserveOut = tokenInfo[tokenOut.contractName];
+
+    const amountOut = Big(Big(inAmountWithFee).times(reserveOut))
+        .div(Big(FEE_DIVISOR).times(reserveIn).plus(inAmountWithFee))
+        .toFixed(0);
+
+    return { pool, amountOut };
+};
+
+const findBestSwapPool = ({ poolsByIds, tokenIn, amountIn, tokenOut }) => {
+    let bestPool;
+    let bestAmountOut;
+
+    Object.values(poolsByIds)
+        .map((pool) =>
+            estimatePoolInfo({
+                pool,
+                tokenIn,
+                tokenOut,
+                amountIn,
+            })
+        )
+        .forEach(({ pool, amountOut }) => {
+            if (!bestPool || amountOut > bestAmountOut) {
+                bestPool = pool;
+                bestAmountOut = amountOut;
+            }
+        });
+
+    return { pool: bestPool, amountOut: bestAmountOut };
+};
 
 class RefFinanceSwapContract {
     #config = {
@@ -136,17 +197,12 @@ class RefFinanceSwapContract {
         return contract.get_pool({ pool_id: poolId });
     }
 
-    async estimate({ accountId, poolId, tokenIn, amountIn, tokenOut }) {
-        const contract = await this.#contractInstance(accountId);
-        const amountOut = await contract.get_return({
-            pool_id: poolId,
-            token_in: tokenIn.contractName,
-            amount_in: parseTokenAmount(amountIn, tokenIn.onChainFTMetadata.decimals, 0),
-            token_out: tokenOut.contractName,
-        });
+    async estimate({ poolsByIds, tokenIn, amountIn, tokenOut }) {
+        const { pool, amountOut } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
 
         return {
             amountOut: formatTokenAmount(amountOut, tokenOut.onChainFTMetadata.decimals).toString(),
+            poolId: pool.poolId,
         };
     }
 

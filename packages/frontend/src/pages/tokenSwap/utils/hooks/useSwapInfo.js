@@ -11,7 +11,7 @@ const initState = {
 
 export default function useSwapInfo({
     accountId,
-    poolId,
+    poolsByIds,
     tokenIn,
     amountIn = 0,
     tokenOut,
@@ -29,7 +29,7 @@ export default function useSwapInfo({
             if (
                 tokenIn &&
                 tokenOut &&
-                typeof poolId === 'number' &&
+                poolsByIds &&
                 parseInt(debounceAmountIn) > 0
             ) {
                 setLoading(true);
@@ -37,7 +37,7 @@ export default function useSwapInfo({
                 try {
                     const estimated = await fungibleTokenExchange.estimate({
                         accountId,
-                        poolId,
+                        poolsByIds,
                         tokenIn,
                         amountIn: debounceAmountIn,
                         tokenOut,
@@ -62,7 +62,7 @@ export default function useSwapInfo({
         return () => {
             cancelledRequest = true;
         };
-    }, [debounceAmountIn, accountId, poolId, tokenIn, tokenOut]);
+    }, [debounceAmountIn, accountId, poolsByIds, tokenIn, tokenOut]);
 
     const minAmountOut = useMemo(() => {
         if (typeof slippage === 'number' && tokenOut && info.amountOut) {

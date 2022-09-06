@@ -56,7 +56,7 @@ export default memo(function SwapForm({ account, tokens }) {
     const [amountIn, setAmountIn] = useState('');
     const { info: { amountOut, minAmountOut }, loading } = useSwapInfo({
         accountId: account?.accountId || '',
-        poolId: pools && Number(Object.keys(pools)[0]),
+        poolsByIds: pools,
         tokenIn,
         amountIn,
         tokenOut,
