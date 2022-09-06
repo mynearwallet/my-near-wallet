@@ -1,9 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { useFungibleTokensIncludingNEAR } from '../../hooks/fungibleTokensIncludingNEAR';
-import { selectPoolsSlice } from '../../redux/slices/swap';
 import { wallet } from '../../utils/wallet';
 import SwapForm from './ui/SwapForm';
 
@@ -15,7 +13,7 @@ const SwapWrapper = styled.div`
     border-radius: 8px;
 `;
 
-function TokenSwap({ accountId, pools }) {
+export default memo(function TokenSwap({ accountId }) {
     const [account, setAccount] = useState(null);
     const tokens = useFungibleTokensIncludingNEAR({
         includeNearContractName: true,
@@ -35,13 +33,7 @@ function TokenSwap({ accountId, pools }) {
 
     return (
         <SwapWrapper>
-            <SwapForm account={account} tokens={tokens} pools={pools} />
+            <SwapForm account={account} tokens={tokens} />
         </SwapWrapper>
     );
-};
-
-const mapStateToProps = (state) => ({
-    ...selectPoolsSlice(state)
 });
-
-export default connect(mapStateToProps)(memo(TokenSwap));

@@ -36,6 +36,9 @@ class RefFinanceSwapContract {
         ],
         pools: {
             startIndex: 0,
+            // if we try to get more than +-1600 items at the one request
+            // we obtain this error: FunctionCallError(HostError(GasLimitExceeded))
+            maxRequestAmount: 1000,
         }
     }
 
@@ -57,7 +60,20 @@ class RefFinanceSwapContract {
             const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
 
             if (hasLiquidity) {
-                config[JSON.stringify(token_account_ids)] = {
+                let mainKey = JSON.stringify(token_account_ids);
+                const reverseKey = JSON.stringify(token_account_ids.reverse());
+
+                if (!config[mainKey]) {
+                    config[mainKey] = {};
+                }
+                // Some pools have reverse order of the same tokens.
+                // In this condition we check if we already have
+                // such tokens and use an existing config key.
+                if (config[reverseKey] && Object.keys(config[reverseKey])?.length > 0) {
+                    mainKey = reverseKey;
+                }
+
+                config[mainKey][poolId] = {
                     // set before the "pool content": if the pool has own 'poolId' key it will be rewritten
                     poolId,
                     ...pool,
@@ -74,18 +90,50 @@ class RefFinanceSwapContract {
         return contract.get_number_of_pools();
     }
 
+    // @todo simplify this method + add some comments
     async getPools({ accountId }) {
+        const { maxRequestAmount } = this.#config.pools;
         const contract = await this.#contractInstance(accountId);
-        const endIndex = await contract.get_number_of_pools();
+        const poolsAmount = await contract.get_number_of_pools();
+        let requests =
+            poolsAmount <= maxRequestAmount
+                ? 1
+                : Math.floor(poolsAmount / maxRequestAmount);
+        const remaningPoolsAmount = poolsAmount - requests * maxRequestAmount;
 
-        console.log('max pools', endIndex);
+        if (remaningPoolsAmount) {
+            requests += 1;
+        }
 
-        const pools = await contract.get_pools({
-            from_index: this.#config.pools.startIndex,
-            limit: 1000, // @todo fix gas limit problem when use: endIndex,
-        });
+        const pools = [];
+
+        for (let i = 1; i <= requests; i++) {
+            let start = (i * maxRequestAmount) - maxRequestAmount;
+            let limit = maxRequestAmount;
+
+            if (i > 1) {
+                start += 1;
+            }
+
+            if (remaningPoolsAmount && i === requests) {
+                limit = remaningPoolsAmount;
+            }
+
+            const chunk = await contract.get_pools({
+                from_index: start,
+                limit,
+            });
+
+            pools.push(...chunk);
+        }
 
         return this.formatPoolsOutput(pools);
+    }
+
+    async getPool({ accountId, poolId }) {
+        const contract = await this.#contractInstance(accountId);
+
+        return contract.get_pool({ pool_id: poolId });
     }
 
     async getReturn({ accountId, poolId, tokenIn, amountIn, tokenOut }) {

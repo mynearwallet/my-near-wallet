@@ -8,7 +8,8 @@ import SwapIcon from '../../../components/svg/WrapIcon';
 import fungibleTokenExchange from '../../../services/FungibleTokenExchange';
 import { decreaseByPercent } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
-import { useReturn } from '../utils/hooks';
+import usePools from '../utils/hooks/usePools';
+import useReturn from '../utils/hooks/useReturn';
 import Input from './Input';
 import SwapSettings from './SwapSettings';
 
@@ -23,7 +24,7 @@ const tokenSelectState = {
 
 const initSettings = {};
 
-export default memo(function SwapForm({ account, tokens, pools }) {
+export default memo(function SwapForm({ account, tokens }) {
     const [displayTokenSelect, setDisplayTokenSelect] = useState(tokenSelectState.noSelect);
 
     const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
@@ -32,19 +33,12 @@ export default memo(function SwapForm({ account, tokens, pools }) {
 
     const [tokenIn, setTokenIn] = useState(tokens[0]);
     const [tokenOut, setTokenOut] = useState(tokens[1]);
-    const [somePool, setSomePool] = useState(null);
-    const [settings, setSettings] = useState(initSettings);
-
-    // @todo create an external hook ( * routing / best pools)
-    useEffect(() => {
-        const poolKey = JSON.stringify([tokenIn?.contractName, tokenOut?.contractName]);
-        const reversePoolKey = JSON.stringify([tokenOut?.contractName, tokenIn?.contractName]);
-        const pool = pools.all[poolKey] || pools.all[reversePoolKey];
-
-        if (pool) {
-            setSomePool(pool);
-        }
+    const pools = usePools({
+        tokenInId: tokenIn?.contractName,
+        tokenOutId: tokenOut?.contractName,
     });
+
+    const [settings, setSettings] = useState(initSettings);
 
     const handleTokenSelect = (token) => {
         switch (displayTokenSelect) {
@@ -62,7 +56,7 @@ export default memo(function SwapForm({ account, tokens, pools }) {
     const [amountIn, setAmountIn] = useState('');
     const { amountOut, loading } = useReturn({
         accountId: account?.accountId || '',
-        poolId: somePool?.poolId,
+        poolId: pools && Number(Object.keys(pools)[0]),
         tokenIn,
         amountIn,
         tokenOut,
@@ -72,7 +66,7 @@ export default memo(function SwapForm({ account, tokens, pools }) {
     const flipInputsData = () => {};
 
     const handleSwap = async () => {
-        if (!account || !somePool) {
+        if (!account || !pools) {
             return;
         }
 
@@ -81,7 +75,7 @@ export default memo(function SwapForm({ account, tokens, pools }) {
             const result = await fungibleTokenExchange.swap({
                 accountId,
                 amountIn,
-                poolId: somePool.poolId,
+                pools,
                 tokenIn,
                 tokenOut,
                 minAmountOut: amountOut,

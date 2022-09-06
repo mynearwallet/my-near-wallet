@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import useDebounce from '../../../hooks/useDebounce';
-import fungibleTokenExchange from '../../../services/FungibleTokenExchange';
+import useDebounce from '../../../../hooks/useDebounce';
+import fungibleTokenExchange from '../../../../services/FungibleTokenExchange';
 
 const AMOUNT_OUT_INIT_STATE = '';
 
-export function useReturn({
+export default function useReturn({
     accountId,
     poolId,
     tokenIn,
