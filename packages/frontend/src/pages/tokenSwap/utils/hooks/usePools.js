@@ -3,21 +3,32 @@ import { useSelector } from 'react-redux';
 
 import { selectPoolsSlice } from '../../../../redux/slices/swap';
 
-export default function usePools({ tokenInId, tokenOutId }) {
+const retrievePools = (allPools, keys) => {
+    for (const key of keys) {
+        const pools = allPools[key];
+
+        if (pools && Object.keys(pools).length) {
+            return pools;
+        }
+    }
+
+    return null;
+};
+
+export default function usePools({ token0Id, token1Id }) {
     const { pools: { all, loading } } = useSelector(selectPoolsSlice);
     const [pools, setPools] = useState(null);
 
     useEffect(() => {
-        if (tokenOutId && tokenOutId && !loading) {
-            const poolsById = all[JSON.stringify([tokenInId, tokenOutId])];
-    
-            if (poolsById && Object.keys(poolsById).length > 0) {
-                setPools(poolsById);
-            } else {
-                setPools(null);
-            }
+        if (token0Id && token1Id && !loading) {
+            const poolsById = retrievePools(all, [
+                JSON.stringify([token0Id, token1Id]),
+                JSON.stringify([token1Id, token0Id]),
+            ]);
+
+            setPools(poolsById);
         }
-    }, [tokenInId, tokenOutId]);
+    }, [token0Id, token1Id]);
 
     return pools;
 }

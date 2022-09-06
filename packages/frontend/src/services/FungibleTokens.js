@@ -183,26 +183,17 @@ export default class FungibleTokens {
             ],
         });
     }
-    // @note we handle both actions here
-    // separate methods (wrap/unwrap) and rename this method like swap/exchage?
-    async wrapNear({ accountId, amount, toWNear }) {
-        const account = await wallet.getAccount(accountId);
-        const actions = [
-            functionCall(
-                toWNear ? 'near_deposit' : 'near_withdraw',
-                toWNear ? {} : { amount: parseNearAmount(amount) },
-                FT_STORAGE_DEPOSIT_GAS,
-                toWNear ? parseNearAmount(amount) : TOKEN_TRANSFER_DEPOSIT
-            ),
-        ];
 
+    // @note is there a simpler and more informative name?
+    async #getActionsWithStorageDepositIfNeeded(accountId) {
+        const actions = [];
         const storage = await FungibleTokens.getStorageBalance({
             contractName: NEAR_TOKEN_ID,
             accountId,
         });
 
         if (!storage) {
-            actions.unshift(
+            actions.push(
                 functionCall(
                     'storage_deposit',
                     {},
@@ -212,10 +203,46 @@ export default class FungibleTokens {
             );
         }
 
-        return account.signAndSendTransaction({
-            receiverId: NEAR_TOKEN_ID,
-            actions,
-        });
+        return actions;
+    }
+
+    async getWrapNearTx({ accountId, amount }) {
+        const actions = await this.#getActionsWithStorageDepositIfNeeded(accountId);
+
+        actions.push(
+            functionCall(
+                'near_deposit',
+                {},
+                FT_STORAGE_DEPOSIT_GAS,
+                parseNearAmount(amount)
+            )
+        );
+
+        return { receiverId: NEAR_TOKEN_ID, actions };
+    }
+
+    async getUnwrapNearTx({ accountId, amount }) {
+        const actions = await this.#getActionsWithStorageDepositIfNeeded(accountId);
+
+        actions.push(
+            functionCall(
+                'near_withdraw',
+                { amount: parseNearAmount(amount) },
+                FT_STORAGE_DEPOSIT_GAS,
+                TOKEN_TRANSFER_DEPOSIT,
+            )
+        );
+
+        return { receiverId: NEAR_TOKEN_ID, actions };
+    }
+
+    async transformNear({ accountId, amount, toWNear }) {
+        const account = await wallet.getAccount(accountId);
+        const tx = await (toWNear
+            ? this.getWrapNearTx({ accountId, amount })
+            : this.getUnwrapNearTx({ accountId, amount }));
+
+        return account.signAndSendTransaction(tx);
     }
 }
 

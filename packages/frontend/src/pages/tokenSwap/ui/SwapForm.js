@@ -1,4 +1,4 @@
-import React, { useState, memo, useEffect } from 'react';
+import React, { useState, memo } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -6,10 +6,9 @@ import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import fungibleTokenExchange from '../../../services/FungibleTokenExchange';
-import { decreaseByPercent } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import usePools from '../utils/hooks/usePools';
-import useReturn from '../utils/hooks/useReturn';
+import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
 import SwapSettings from './SwapSettings';
 
@@ -34,8 +33,9 @@ export default memo(function SwapForm({ account, tokens }) {
     const [tokenIn, setTokenIn] = useState(tokens[0]);
     const [tokenOut, setTokenOut] = useState(tokens[1]);
     const pools = usePools({
-        tokenInId: tokenIn?.contractName,
-        tokenOutId: tokenOut?.contractName,
+        // @todo find a better place for such replacement
+        token0Id: tokenIn?.contractName === 'NEAR' ? 'wrap.testnet' : tokenIn?.contractName,
+        token1Id: tokenOut?.contractName === 'NEAR' ? 'wrap.testnet' : tokenOut?.contractName,
     });
 
     const [settings, setSettings] = useState(initSettings);
@@ -54,13 +54,14 @@ export default memo(function SwapForm({ account, tokens }) {
     };
 
     const [amountIn, setAmountIn] = useState('');
-    const { amountOut, loading } = useReturn({
+    const { info: { amountOut, minAmountOut }, loading } = useSwapInfo({
         accountId: account?.accountId || '',
         poolId: pools && Number(Object.keys(pools)[0]),
         tokenIn,
         amountIn,
         tokenOut,
         delay: swapInfoDaley,
+        slippage: settings.slippage,
     });
 
     const flipInputsData = () => {};
@@ -75,11 +76,10 @@ export default memo(function SwapForm({ account, tokens }) {
             const result = await fungibleTokenExchange.swap({
                 accountId,
                 amountIn,
-                pools,
+                poolId: pools && Number(Object.keys(pools)[0]),
                 tokenIn,
                 tokenOut,
-                minAmountOut: amountOut,
-                slippage: settings.slippage,
+                minAmountOut,
             });
 
             console.log('swap result', result);
@@ -87,21 +87,6 @@ export default memo(function SwapForm({ account, tokens }) {
             console.error(error);
         }
     };
-
-
-    const [minAmountOut, setMinAmountOut] = useState(null);
-
-    useEffect(() => {
-        if (typeof settings.slippage === 'number' && amountOut && tokenOut) {
-            setMinAmountOut(
-                decreaseByPercent(
-                    amountOut,
-                    settings.slippage,
-                    tokenOut.onChainFTMetadata.decimals
-                )
-            );
-        }
-    }, [settings]);
 
     return (
         <FormWrapper>

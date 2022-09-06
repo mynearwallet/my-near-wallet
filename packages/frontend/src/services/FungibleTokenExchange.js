@@ -11,7 +11,7 @@ import {
 import {
     parseTokenAmount,
     decreaseByPercent,
-    // formatTokenAmount,
+    formatTokenAmount,
     // removeTrailingZeros,
 } from '../utils/amounts';
 import { wallet } from '../utils/wallet';
@@ -136,26 +136,27 @@ class RefFinanceSwapContract {
         return contract.get_pool({ pool_id: poolId });
     }
 
-    async getReturn({ accountId, poolId, tokenIn, amountIn, tokenOut }) {
+    async estimate({ accountId, poolId, tokenIn, amountIn, tokenOut }) {
         const contract = await this.#contractInstance(accountId);
         const amountOut = await contract.get_return({
             pool_id: poolId,
             token_in: tokenIn.contractName,
-            amount_in: format.parseNearAmount(amountIn),
+            amount_in: parseTokenAmount(amountIn, tokenIn.onChainFTMetadata.decimals, 0),
             token_out: tokenOut.contractName,
         });
 
-        return format.formatNearAmount(amountOut);
+        return {
+            amountOut: formatTokenAmount(amountOut, tokenOut.onChainFTMetadata.decimals).toString(),
+        };
     }
 
-    async swap({
+    async getSwapTransactions({
         accountId,
         poolId,
         tokenIn,
         amountIn,
         tokenOut,
         minAmountOut,
-        slippage = 0,
     }) {
         const transactions = [];
         const tokenStorage = await FungibleTokens.getStorageBalance({
@@ -183,10 +184,7 @@ class RefFinanceSwapContract {
         const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
         const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
-        // @todo better naming for 'minAmountOutWithSlippage'
-        const minAmountOutWithSlippage = decreaseByPercent(minAmountOut, slippage, tokenOutDecimals);
-        // @todo test DAI -> wNEAR: it works only if we decrase decimals by 1
-        const parsedMinAmountOut = parseTokenAmount(minAmountOutWithSlippage, tokenOutDecimals, 0);
+        const parsedMinAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals, 0);
 
         transactions.push({
             receiverId: tokenIn.contractName,
@@ -217,7 +215,7 @@ class RefFinanceSwapContract {
             ],
         });
 
-        return wallet.signAndSendTransactions(transactions, accountId);
+        return transactions;
     }
 }
 
@@ -257,13 +255,15 @@ class FungibleTokenExchange {
     }
 
     estimateNearSwap(params) {
-        return params.amountIn;
+        return {
+            amountOut: params.amountIn,
+        };
     }
 
     async estimateSwap(params) {
         const { tokenIn, tokenOut } = params;
 
-        return this.#exchange.getReturn({
+        return this.#exchange.estimate({
             ...params,
             tokenIn: replaceNearIfNecessary(tokenIn),
             tokenOut: replaceNearIfNecessary(tokenOut),
@@ -275,15 +275,32 @@ class FungibleTokenExchange {
             return this.swapNear(params);
         }
 
-        // @todo if it's IN or OUT NEAR id => at first wrap/unwrap
-        // then continue with Ref contract swap  
-        return this.#exchange.swap(params);
+        const { accountId, tokenIn, tokenOut, /* amountIn */ } = params;
+        const transactions = [];
+        const swapTransactions = await this.#exchange.getSwapTransactions({
+            ...params,
+            tokenIn: replaceNearIfNecessary(tokenIn),
+            tokenOut: replaceNearIfNecessary(tokenOut),
+        });
+        // @todo how to execute many transactions? For now it does not work
+        // if (tokenIn.contractName === NEAR_ID) {
+        //     const wrapTx = await fungibleTokensService.getWrapNearTx({ accountId, amount: amountIn });
+
+        //     transactions.push(wrapTx, ...swapTransactions);
+        // } else if (tokenOut.contractName === NEAR_ID) {
+        //     const unwrapTx = await fungibleTokensService.getUnwrapNearTx({ accountId, amount: amountIn });
+
+        //     transactions.push(...swapTransactions, unwrapTx);
+        // }
+        transactions.push(...swapTransactions);
+
+        return wallet.signAndSendTransactions(transactions, accountId);
     }
 
     swapNear(params) {
         const { accountId, tokenIn, amountIn } = params;
 
-        return fungibleTokensService.wrapNear({
+        return fungibleTokensService.transformNear({
             accountId,
             amount: amountIn,
             toWNear: tokenIn.contractName !== NEAR_TOKEN_ID,

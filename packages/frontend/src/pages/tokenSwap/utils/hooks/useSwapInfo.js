@@ -1,19 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 import useDebounce from '../../../../hooks/useDebounce';
 import fungibleTokenExchange from '../../../../services/FungibleTokenExchange';
+import { decreaseByPercent } from '../../../../utils/amounts';
 
-const AMOUNT_OUT_INIT_STATE = '';
+const initState = {
+    amountOut: '',
+    minAmountOut: '',
+};
 
-export default function useReturn({
+export default function useSwapInfo({
     accountId,
     poolId,
     tokenIn,
     amountIn = 0,
     tokenOut,
     delay = 50,
+    slippage = 0,
 }) {
-    const [amountOut, setAmountOut] = useState(AMOUNT_OUT_INIT_STATE);
+    const [info, setInfo] = useState(initState);
     const [loading, setLoading] = useState(false);
     const debounceAmountIn = useDebounce(amountIn, delay);
 
@@ -30,7 +35,7 @@ export default function useReturn({
                 setLoading(true);
 
                 try {
-                    const amount = await fungibleTokenExchange.estimate({
+                    const estimated = await fungibleTokenExchange.estimate({
                         accountId,
                         poolId,
                         tokenIn,
@@ -39,16 +44,16 @@ export default function useReturn({
                     });
     
                     if (!cancelledRequest) {
-                        setAmountOut(amount);
+                        setInfo(estimated);
                     }
                 } catch (error) {
                     console.error(error);
-                    setAmountOut(AMOUNT_OUT_INIT_STATE);
+                    setInfo(initState);
                 }
 
                 setLoading(false);
-            } else if (amountOut !== AMOUNT_OUT_INIT_STATE) {
-                setAmountOut(AMOUNT_OUT_INIT_STATE);
+            } else {
+                setInfo(initState);
             }
         };
 
@@ -59,5 +64,17 @@ export default function useReturn({
         };
     }, [debounceAmountIn, accountId, poolId, tokenIn, tokenOut]);
 
-    return { amountOut, loading };
+    const minAmountOut = useMemo(() => {
+        if (typeof slippage === 'number' && tokenOut && info.amountOut) {
+            return decreaseByPercent(
+                info.amountOut,
+                slippage,
+                tokenOut.onChainFTMetadata.decimals
+            );
+        }
+
+        return '';
+    }, [slippage, tokenOut, info]);
+
+    return { info: { ...info, minAmountOut }, loading };
 }

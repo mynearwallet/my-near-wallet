@@ -218,7 +218,7 @@ function Swap({ history }) {
 
                 if (tokenFrom == 'wNEAR' || tokenTo == 'wNEAR') {
                     const result =
-                        await fungibleTokensService.wrapNear({
+                        await fungibleTokensService.transformNear({
                             accountId,
                             amount,
                             toWNear: tokenTo == 'wNEAR',
