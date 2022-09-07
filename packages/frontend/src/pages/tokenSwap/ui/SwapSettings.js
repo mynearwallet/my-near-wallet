@@ -5,7 +5,7 @@ const SettingsWrapper = styled.div``;
 
 const MarkButton = styled.button``;
 
-const MARKS = [0.1, 0.5, 1];
+const MARKS = [0.1, 0.5, 1, 5];
 const DEFAULT_SLIPPAGE = MARKS[1];
 
 // @todo add custom slippage input

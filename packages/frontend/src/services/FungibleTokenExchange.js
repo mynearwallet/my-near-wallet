@@ -13,7 +13,7 @@ import { parseTokenAmount, formatTokenAmount } from '../utils/amounts';
 import { wallet } from '../utils/wallet';
 import FungibleTokens, { fungibleTokensService } from './FungibleTokens';
 
-const FEE_DIVISOR = 10000;
+const FEE_DIVISOR = 10_000;
 
 // @todo check this calculations
 /* @note original method from the simple pool contract
@@ -152,6 +152,7 @@ class RefFinanceSwapContract {
     }
 
     // @todo simplify this method + add some comments
+    // try FungibleTokens.viewFunctionAccount.viewFunction(contract, method, args)
     async getPools({ accountId }) {
         const { maxRequestAmount } = this.#config.pools;
         const contract = await this.#contractInstance(accountId);
@@ -197,12 +198,21 @@ class RefFinanceSwapContract {
         return contract.get_pool({ pool_id: poolId });
     }
 
-    async estimate({ poolsByIds, tokenIn, amountIn, tokenOut }) {
-        const { pool, amountOut } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
+
+    async estimate({ accountId, poolsByIds, tokenIn, amountIn, tokenOut }) {        // const { pool, amountOut } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
+        const { poolId } = Object.values(poolsByIds)[0];
+
+        const contract = await this.#contractInstance(accountId);
+        const amountOut = await contract.get_return({
+            pool_id: poolId,
+            token_in: tokenIn.contractName,
+            amount_in: parseTokenAmount(amountIn, tokenIn.onChainFTMetadata.decimals, 0),
+            token_out: tokenOut.contractName,
+        });
 
         return {
             amountOut: formatTokenAmount(amountOut, tokenOut.onChainFTMetadata.decimals).toString(),
-            poolId: pool.poolId,
+            poolId //: pool.poolId,
         };
     }
 
@@ -214,64 +224,58 @@ class RefFinanceSwapContract {
         tokenOut,
         minAmountOut,
     }) {
-        const transactions = [];
+        const actions = [];
         const tokenStorage = await FungibleTokens.getStorageBalance({
             contractName: tokenOut.contractName,
             accountId,
         });
 
         if (!tokenStorage) {
-            transactions.push({
-                receiverId: tokenOut.contractName,
-                actions: [
-                    nearApi.transactions.functionCall(
-                        'storage_deposit',
-                        {
-                            registration_only: true,
-                            account_id: accountId,
-                        },
-                        FT_STORAGE_DEPOSIT_GAS,
-                        FT_MINIMUM_STORAGE_BALANCE
-                    ),
-                ],
-            });
+            actions.push(nearApi.transactions.functionCall(
+                'storage_deposit',
+                {
+                    receiver_id: tokenOut.contractName,
+                    registration_only: true,
+                    account_id: accountId,
+                },
+                FT_STORAGE_DEPOSIT_GAS,
+                FT_MINIMUM_STORAGE_BALANCE
+            ));
         }
 
         const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
         const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
         const parsedMinAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals, 0);
+        // @todo move this constant somewhere else
+        const SWAP_GAS_LIMII = '180000000000000';
 
-        transactions.push({
-            receiverId: tokenIn.contractName,
-            actions: [
-                nearApi.transactions.functionCall(
-                    'ft_transfer_call',
-                    {
-                        receiver_id: this.#config.contractId,
-                        amount: parsedAmountIn,
-                        msg: JSON.stringify({
-                            force: 0, // @todo what is it for?
-                            actions: [
-                                // @note in case of routing we add many action objects here
-                                {
-                                    pool_id: poolId,
-                                    token_in: tokenIn.contractName,
-                                    token_out: tokenOut.contractName,
-                                    amount_in: parsedAmountIn,
-                                    min_amount_out: parsedMinAmountOut,
-                                },
-                            ],
-                        }),
-                    },
-                    // @todo why 180000000000000 for gas?
-                    '180000000000000',
-                    TOKEN_TRANSFER_DEPOSIT,
-                ),
-            ],
-        });
+        actions.push(
+            nearApi.transactions.functionCall(
+                'ft_transfer_call',
+                {
+                    receiver_id: this.#config.contractId,
+                    amount: parsedAmountIn,
+                    msg: JSON.stringify({
+                        force: 0, // @todo what is it for?
+                        actions: [
+                            // @note in case of routing we add many action objects here
+                            {
+                                pool_id: poolId,
+                                token_in: tokenIn.contractName,
+                                token_out: tokenOut.contractName,
+                                amount_in: parsedAmountIn,
+                                min_amount_out: parsedMinAmountOut,
+                            },
+                        ],
+                    }),
+                },
+                SWAP_GAS_LIMII,
+                TOKEN_TRANSFER_DEPOSIT,
+            ),
+        );
 
-        return transactions;
+        return actions;
     }
 }
 
@@ -330,27 +334,54 @@ class FungibleTokenExchange {
         if (isNearSwap(params)) {
             return this.swapNear(params);
         }
-
-        const { accountId, tokenIn, tokenOut, /* amountIn */ } = params;
-        const transactions = [];
-        const swapTransactions = await this.#exchange.getSwapTransactions({
+        // @todo for now we can swap NEAR -> <TOKEN> in one batched transaction,
+        // but we cannot swap the same way in the other direction (<TOKEN> -> NEAR);
+        // so when we swap "to NEAR" it uses 2 transactions (1st for swap, 2nd for unwrapping);
+        // need to find out how to use batched tx in the second flow;
+        const { accountId, tokenIn, tokenOut, amountIn, minAmountOut } = params;
+        const account = await wallet.getAccount(accountId);
+        let receiverId = '';
+        const allActions = [];
+        const swapActions = await this.#exchange.getSwapTransactions({
             ...params,
             tokenIn: replaceNearIfNecessary(tokenIn),
             tokenOut: replaceNearIfNecessary(tokenOut),
         });
-        // @todo how to execute many transactions? For now it does not work
-        // if (tokenIn.contractName === NEAR_ID) {
-        //     const wrapTx = await fungibleTokensService.getWrapNearTx({ accountId, amount: amountIn });
 
-        //     transactions.push(wrapTx, ...swapTransactions);
-        // } else if (tokenOut.contractName === NEAR_ID) {
-        //     const unwrapTx = await fungibleTokensService.getUnwrapNearTx({ accountId, amount: amountIn });
+        const transactions = [];
 
-        //     transactions.push(...swapTransactions, unwrapTx);
-        // }
-        transactions.push(...swapTransactions);
+        if (tokenIn.contractName === NEAR_ID) {
+            const { actions } = await fungibleTokensService.getWrapNearTx({ accountId, amount: amountIn });
 
-        return wallet.signAndSendTransactions(transactions, accountId);
+            receiverId = NEAR_TOKEN_ID;
+            allActions.push(...actions, ...swapActions);
+            transactions.push({ receiverId, actions: allActions });
+        } else if (tokenOut.contractName === NEAR_ID) {
+            // const { actions } = await fungibleTokensService.getUnwrapNearTx({ accountId, amount: minAmountOut });
+            // allActions.push(...swapActions, ...actions);
+            const unwrapTx = await fungibleTokensService.getUnwrapNearTx({ accountId, amount: minAmountOut });
+
+            receiverId = tokenIn.contractName;
+            allActions.push(...swapActions);
+            transactions.push({ receiverId, actions: allActions }, unwrapTx);
+        } else {
+            receiverId = tokenIn.contractName;
+            allActions.push(...swapActions);
+            transactions.push({ receiverId, actions: allActions });
+        }
+
+        // @todo need to test this method. It doesn't work here with many TXs
+        // wallet.signAndSendTransactions(transactions, accountId);
+
+        const outcome = [];
+
+        for (const tx of transactions) {
+            const txResult = await account.signAndSendTransaction(tx);
+
+            outcome.push(txResult);
+        }
+
+        return outcome;
     }
 
     swapNear(params) {
