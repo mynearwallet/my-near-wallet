@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 
 import useDebounce from '../../../../hooks/useDebounce';
-import fungibleTokenExchange from '../../../../services/FungibleTokenExchange';
+import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { decreaseByPercent } from '../../../../utils/amounts';
 
 const initState = {

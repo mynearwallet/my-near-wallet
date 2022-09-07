@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
-import fungibleTokenExchange from '../../../services/FungibleTokenExchange';
+import fungibleTokenExchange from '../../../services/tokenExchange';
 import isMobile from '../../../utils/isMobile';
 import usePools from '../utils/hooks/usePools';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
