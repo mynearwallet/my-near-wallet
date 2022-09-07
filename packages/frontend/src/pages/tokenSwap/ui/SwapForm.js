@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -6,13 +6,19 @@ import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import fungibleTokenExchange from '../../../services/tokenExchange';
+import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import usePools from '../utils/hooks/usePools';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
+import SwapInfo from './SwapInfo';
 import SwapSettings from './SwapSettings';
 
-const FormWrapper = styled.div``;
+const SwapButtonWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
 const swapInfoDaley = 1_000;
 // @todo find a better solution
 const tokenSelectState = {
@@ -31,6 +37,16 @@ export default memo(function SwapForm({ account, tokens }) {
     const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
 
     const [tokenIn, setTokenIn] = useState(tokens[0]);
+    const tokenInHumanBalance = useMemo(() => {
+        if (tokenIn) {
+            const { balance, onChainFTMetadata } = tokenIn;
+
+            return formatTokenAmount(balance, onChainFTMetadata.decimals);
+        }
+
+        return null;
+    }, [tokenIn]);
+
     const [tokenOut, setTokenOut] = useState(tokens[1]);
     const pools = usePools({
         // @todo find a better place for such replacement
@@ -54,7 +70,7 @@ export default memo(function SwapForm({ account, tokens }) {
     };
 
     const [amountIn, setAmountIn] = useState('');
-    const { info: { amountOut, minAmountOut }, loading } = useSwapInfo({
+    const swapData = useSwapInfo({
         accountId: account?.accountId || '',
         poolsByIds: pools,
         tokenIn,
@@ -63,8 +79,19 @@ export default memo(function SwapForm({ account, tokens }) {
         delay: swapInfoDaley,
         slippage: settings.slippage,
     });
+    const {
+        info: { amountOut, minAmountOut },
+        loading: swapInfoLoading,
+    } = swapData;
 
-    const flipInputsData = () => {};
+    const flipInputsData = () => {
+        setTokenIn(tokenOut);
+        setTokenOut(tokenIn);
+
+        if (amountOut) {
+            setAmountIn(amountOut);
+        }
+    };
 
     const handleSwap = async () => {
         if (!account || !pools) {
@@ -89,7 +116,7 @@ export default memo(function SwapForm({ account, tokens }) {
     };
 
     return (
-        <FormWrapper>
+        <>
             {displayTokenSelect ? (
                 <SelectToken
                     isMobile={isMobile()}
@@ -103,28 +130,27 @@ export default memo(function SwapForm({ account, tokens }) {
                         value={amountIn}
                         onChange={setAmountIn}
                         onSelectToken={selectTokenIn}
+                        label={<Translate id="swap.from" />}
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
+                        maxBalance={tokenInHumanBalance}
                     />
-                    <FormButton color="small-rounded" onClick={flipInputsData}>
-                        <SwapIcon />
-                    </FormButton>
+                    <SwapButtonWrapper>
+                        <FormButton onClick={flipInputsData}>
+                            <SwapIcon color="#fff" />
+                        </FormButton>
+                    </SwapButtonWrapper>
                     <Input
                         value={amountOut}
-                        loading={loading}
+                        loading={swapInfoLoading}
                         onSelectToken={selectTokenOut}
+                        label={<Translate id="swap.to" />}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.symbol}
                         disabled
                     />
                     <SwapSettings onChange={setSettings} />
-
-                    <p>
-                        Info:
-                        <br />
-                        <span>Min received: {minAmountOut || '-'}</span>
-                    </p>
-
+                    <SwapInfo data={swapData} />
                     <FormButton
                         color="blue width width100"
                         onClick={handleSwap}
@@ -134,6 +160,6 @@ export default memo(function SwapForm({ account, tokens }) {
                     </FormButton>
                 </>
             )}
-        </FormWrapper>
+        </>
     );
 });

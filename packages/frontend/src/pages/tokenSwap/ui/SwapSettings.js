@@ -3,7 +3,12 @@ import styled from 'styled-components';
 
 const SettingsWrapper = styled.div``;
 
-const MarkButton = styled.button``;
+const MarkButton = styled.button`
+    &.active {
+        background: blue;
+        color: white;
+    }
+`;
 
 const MARKS = [0.1, 0.5, 1, 5];
 const DEFAULT_SLIPPAGE = MARKS[1];
@@ -26,7 +31,11 @@ export default function SwapSettings({ onChange }) {
         <SettingsWrapper onClick={onSettingsChange}>
             <p>Slippage tolerance:</p>
             {MARKS.map((percent, i) => (
-                <MarkButton value={percent} key={i}>
+                <MarkButton
+                    value={percent}
+                    key={i}
+                    className={`${percent === slippage ? 'active' : ''}`}
+                >
                     {percent}%
                 </MarkButton>
             ))}
