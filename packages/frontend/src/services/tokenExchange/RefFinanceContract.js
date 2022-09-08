@@ -23,6 +23,9 @@ class RefFinanceContract {
         changeMethods: [
             'swap',
         ],
+        gasLimit: {
+            swap: '180000000000000',
+        },
         pools: {
             startIndex: 0,
             // if we try to get more than +-1600 items at the one request
@@ -127,7 +130,7 @@ class RefFinanceContract {
     async estimate({ accountId, poolsByIds, tokenIn, amountIn, tokenOut }) {
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
         const contract = await this.#contractInstance(accountId);
-        const { pool, /* amountOut */ } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
+        const { pool } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
 
         const amountOut = await contract.get_return({
             pool_id: pool.poolId,
@@ -173,8 +176,6 @@ class RefFinanceContract {
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
         const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
         const parsedMinAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals, 0);
-        // @todo move this constant somewhere else
-        const SWAP_GAS_LIMII = '180000000000000';
 
         actions.push(
             nearApi.transactions.functionCall(
@@ -196,7 +197,7 @@ class RefFinanceContract {
                         ],
                     }),
                 },
-                SWAP_GAS_LIMII,
+                this.#config.gasLimit.swap,
                 TOKEN_TRANSFER_DEPOSIT,
             ),
         );

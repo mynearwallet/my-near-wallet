@@ -1,4 +1,4 @@
-import React, { useState, memo, useMemo, useEffect } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -6,10 +6,10 @@ import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import { NEAR_TOKEN_ID } from '../../../config';
-import fungibleTokenExchange from '../../../services/tokenExchange';
 import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import usePools from '../utils/hooks/usePools';
+import useSwapCallback from '../utils/hooks/useSwapCallback';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
 import SwapInfo from './SwapInfo';
@@ -98,7 +98,7 @@ export default memo(function SwapForm({ account, tokens }) {
         slippage: settings.slippage,
     });
     const {
-        info: { amountOut, minAmountOut },
+        info: { poolId, amountOut, minAmountOut },
         loading: swapInfoLoading,
     } = swapData;
 
@@ -111,40 +111,32 @@ export default memo(function SwapForm({ account, tokens }) {
         }
     };
 
-    const handleSwap = async () => {
-        if (!account || !pools) {
-            return;
-        }
+    const { callback: swapCallback, pending: swapPending } = useSwapCallback({
+        accountId: account?.accountId,
+        amountIn,
+        poolId,
+        tokenIn,
+        tokenOut,
+        minAmountOut,
+    });
 
-        try {
-            const { accountId } = account;
-            const result = await fungibleTokenExchange.swap({
-                accountId,
-                amountIn,
-                poolId: pools && Number(Object.keys(pools)[0]),
-                tokenIn,
-                tokenOut,
-                minAmountOut,
-            });
+    const handleSwap = () => swapCallback();
 
-            console.log('swap result', result);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const [cannotSwap, setCannotSwap] = useState(true);
-
-    useEffect(() => {
-        setCannotSwap(
+    const cannotSwap = useMemo(() => {
+        if (
             !tokenIn ||
             !tokenOut ||
             !pools ||
             !amountIn ||
             !amountOut ||
-            swapInfoLoading
-        );
-    }, [tokenIn, tokenOut, pools, amountIn, amountOut, swapInfoLoading]);
+            swapInfoLoading ||
+            swapPending
+        ) {
+            return true;
+        }
+
+        return false;
+    }, [tokenIn, tokenOut, pools, amountIn, amountOut, swapInfoLoading, swapPending]);
 
     return (
         <SwapFormWrapper>
@@ -188,7 +180,7 @@ export default memo(function SwapForm({ account, tokens }) {
                         className="swap-button"
                         disabled={cannotSwap}
                     >
-                        <Translate id="swap.confirm" />
+                        {swapPending ? 'Processing ...' : <Translate id="swap.confirm" />}
                     </FormButton>
                 </>
             )}

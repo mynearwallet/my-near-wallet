@@ -1618,8 +1618,10 @@
         "reviewInfo": "You are swapping",
         "slippage": "Slippage tolerance",
         "successTitle": "Transaction complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
+        "success": "Successful swap",
         "title": "Swap",
         "to": "To",
+        "error": "Swap error",
         "translateIdInfoTooltip": {
             "fee": "The estimated cost of processing your transaction.",
             "minimumReceived": "The minimum amount you will receive from the trade.",

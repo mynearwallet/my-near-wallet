@@ -1,5 +1,5 @@
 import { NEAR_TOKEN_ID } from '../../config';
-import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
+import { formatTokenAmount } from '../../utils/amounts';
 
 // @todo move it somewhere in configs (check if it exists already)
 export const NEAR_ID = 'NEAR';
@@ -21,59 +21,33 @@ export const replaceNearIfNecessary = (token) => {
 const FEE_DIVISOR = 10_000;
 
 export const estimatePoolInfo = ({ pool, tokenIn, tokenOut, amountIn }) => {
-/* 
-  const allocation = toReadableNumber(
-    tokenIn.decimals,
-    scientificNotationToString(tokenInAmount)
-  );
-
-  const amount_with_fee = Number(allocation) * (FEE_DIVISOR - pool.fee);
-  const in_balance = toReadableNumber(
-    tokenIn.decimals,
-    pool.supplies[tokenIn.id]
-  );
-  const out_balance = toReadableNumber(
-    tokenOut.decimals,
-    pool.supplies[tokenOut.id]
-  );
-  const estimate = new BigNumber(
-    (
-      (amount_with_fee * Number(out_balance)) /
-      (FEE_DIVISOR * Number(in_balance) + amount_with_fee)
-    ).toString()
-  ).toFixed();
-*/
-
-    console.group('%c estimate pool info', 'color: brown;');
-    console.log("pool", pool);
-    console.log("tokenIn", tokenIn);
-    console.log("tokenOut", tokenOut);
-    console.log("amountIn", amountIn);
-
-    const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
-    const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
+    const {
+        onChainFTMetadata: { decimals: tokenInDecimals },
+    } = tokenIn;
+    const {
+        onChainFTMetadata: { decimals: tokenOutDecimals },
+    } = tokenOut;
     const { total_fee, token_account_ids, amounts } = pool;
     const tokenInfo = {
         [token_account_ids[0]]: amounts[0],
         [token_account_ids[1]]: amounts[1],
     };
 
-    console.log("🚀 tokenInfo", tokenInfo)
-
-    const reserveIn = tokenInfo[tokenIn.contractName]; // formatTokenAmount(tokenInfo[tokenIn.contractName], tokenInDecimals, tokenInDecimals);
-    const reserveOut = tokenInfo[tokenOut.contractName]; // formatTokenAmount(tokenInfo[tokenOut.contractName], tokenOutDecimals, tokenOutDecimals);
-    const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
+    const reserveIn = formatTokenAmount(
+        tokenInfo[tokenIn.contractName],
+        tokenInDecimals,
+        tokenInDecimals
+    );
+    const reserveOut = formatTokenAmount(
+        tokenInfo[tokenOut.contractName],
+        tokenOutDecimals,
+        tokenOutDecimals
+    );
+    const parsedAmountIn = amountIn;
     const amountInWithFee = parsedAmountIn * (FEE_DIVISOR - total_fee);
-
-    console.log('reserveIn', reserveIn);
-    console.log('reserveOut', reserveOut);
-    console.log('parsedAmountIn', parsedAmountIn);
-    console.log('amountInWithFee', amountInWithFee);
-
-    const amountOut = amountInWithFee * reserveOut / (FEE_DIVISOR * reserveIn + amountInWithFee);
-
-    console.log('🚀 amountOut', amountOut);
-    console.groupEnd();
+    const amountOut =
+        (amountInWithFee * reserveOut) /
+        (FEE_DIVISOR * reserveIn + amountInWithFee);
 
     return { pool, amountOut };
 };

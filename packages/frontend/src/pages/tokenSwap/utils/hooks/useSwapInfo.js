@@ -5,6 +5,7 @@ import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { decreaseByPercent } from '../../../../utils/amounts';
 
 const initState = {
+    poolId: '',
     amountOut: '',
     minAmountOut: '',
 };
@@ -35,7 +36,7 @@ export default function useSwapInfo({
                 setLoading(true);
 
                 try {
-                    const estimated = await fungibleTokenExchange.estimate({
+                    const { amountOut, poolId } = await fungibleTokenExchange.estimate({
                         accountId,
                         poolsByIds,
                         tokenIn,
@@ -44,7 +45,7 @@ export default function useSwapInfo({
                     });
     
                     if (!cancelledRequest) {
-                        setInfo(estimated);
+                        setInfo({ amountOut, poolId, minAmountOut: '' });
                     }
                 } catch (error) {
                     console.error(error);
