@@ -1,10 +1,11 @@
-import React, { useState, memo, useMemo } from 'react';
+import React, { useState, memo, useMemo, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
+import { NEAR_TOKEN_ID } from '../../../config';
 import fungibleTokenExchange from '../../../services/tokenExchange';
 import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
@@ -14,7 +15,18 @@ import Input from './Input';
 import SwapInfo from './SwapInfo';
 import SwapSettings from './SwapSettings';
 
+const mobile = isMobile();
+
+const SwapFormWrapper = styled.div`
+    font-size: 1.2rem;
+
+    .swap-button {
+        width: 100%;
+    }
+`;
+
 const SwapButtonWrapper = styled.div`
+    margin-bottom: 1.6rem;
     display: flex;
     justify-content: center;
 `;
@@ -50,8 +62,8 @@ export default memo(function SwapForm({ account, tokens }) {
     const [tokenOut, setTokenOut] = useState(tokens[1]);
     const pools = usePools({
         // @todo find a better place for such replacement
-        token0Id: tokenIn?.contractName === 'NEAR' ? 'wrap.testnet' : tokenIn?.contractName,
-        token1Id: tokenOut?.contractName === 'NEAR' ? 'wrap.testnet' : tokenOut?.contractName,
+        token0Id: tokenIn?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenIn?.contractName,
+        token1Id: tokenOut?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenOut?.contractName,
     });
 
     const [settings, setSettings] = useState(initSettings);
@@ -59,9 +71,15 @@ export default memo(function SwapForm({ account, tokens }) {
     const handleTokenSelect = (token) => {
         switch (displayTokenSelect) {
             case tokenSelectState.selectIn:
+                if (token.contractName === tokenOut.contractName) {
+                    setTokenOut(tokenIn);
+                }
                 setTokenIn(token);
                 break;
             case tokenSelectState.selectOut:
+                if (token.contractName === tokenIn.contractName) {
+                    setTokenIn(tokenOut);
+                }
                 setTokenOut(token);
                 break;
         }
@@ -115,11 +133,24 @@ export default memo(function SwapForm({ account, tokens }) {
         }
     };
 
+    const [cannotSwap, setCannotSwap] = useState(true);
+
+    useEffect(() => {
+        setCannotSwap(
+            !tokenIn ||
+            !tokenOut ||
+            !pools ||
+            !amountIn ||
+            !amountOut ||
+            swapInfoLoading
+        );
+    }, [tokenIn, tokenOut, pools, amountIn, amountOut, swapInfoLoading]);
+
     return (
-        <>
+        <SwapFormWrapper>
             {displayTokenSelect ? (
                 <SelectToken
-                    isMobile={isMobile()}
+                    isMobile={mobile}
                     onClickGoBack={hideTokenSelection}
                     fungibleTokens={tokens}
                     onSelectToken={handleTokenSelect}
@@ -152,14 +183,15 @@ export default memo(function SwapForm({ account, tokens }) {
                     <SwapSettings onChange={setSettings} />
                     <SwapInfo data={swapData} />
                     <FormButton
-                        color="blue width width100"
+                        color="blue"
                         onClick={handleSwap}
-                        // disabled={}
+                        className="swap-button"
+                        disabled={cannotSwap}
                     >
                         <Translate id="swap.confirm" />
                     </FormButton>
                 </>
             )}
-        </>
+        </SwapFormWrapper>
     );
 });
