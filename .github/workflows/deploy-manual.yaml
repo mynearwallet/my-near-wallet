@@ -2,13 +2,13 @@ name: Build and Deploy Frontend Manual
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        required: true
-        type: string
-      near_wallet_env:
-        required: true
-        type: string
+#     inputs:
+#       environment:
+#         required: true
+#         type: string
+#       near_wallet_env:
+#         required: true
+#         type: string
 
 jobs:
   bundle-frontend:
