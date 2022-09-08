@@ -63,6 +63,8 @@ export default function Input({
     disabled = false,
     tokenSymbol,
     tokenIcon,
+    inputTestId,
+    tokenSelectTestId,
 }) {
     const handleChange = (event) => {
         event.preventDefault();
@@ -95,8 +97,13 @@ export default function Input({
                     onChange={handleChange}
                     placeholder={placeholder}
                     disabled={disabled}
+                    data-test-id={inputTestId}
                 />
-                <TokenWrapper className="token" onClick={onSelectToken}>
+                <TokenWrapper
+                    className="token"
+                    onClick={onSelectToken}
+                    data-test-id={tokenSelectTestId}
+                >
                     <Token symbol={tokenSymbol} icon={tokenIcon} />
                 </TokenWrapper>
             </Footer>

@@ -118,6 +118,7 @@ export default memo(function SwapForm({ account, tokens }) {
         tokenIn,
         tokenOut,
         minAmountOut,
+        isNearTransformation,
     });
 
     const handleSwap = () => swapCallback();
@@ -136,7 +137,16 @@ export default memo(function SwapForm({ account, tokens }) {
         }
 
         return false;
-    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, swapInfoLoading, swapPending]);
+    }, [
+        tokenIn,
+        tokenOut,
+        poolId,
+        amountIn,
+        amountOut,
+        swapInfoLoading,
+        swapPending,
+        isNearTransformation,
+    ]);
 
     return (
         <SwapFormWrapper>
@@ -157,6 +167,8 @@ export default memo(function SwapForm({ account, tokens }) {
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
                         maxBalance={tokenInHumanBalance}
+                        inputTestId="swapPageInputAmountField"
+                        tokenSelectTestId="swapPageInputTokenSelector"
                     />
                     <SwapButtonWrapper>
                         <FormButton onClick={flipInputsData}>
@@ -170,6 +182,8 @@ export default memo(function SwapForm({ account, tokens }) {
                         label={<Translate id="swap.to" />}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.symbol}
+                        inputTestId="swapPageOutputAmountField"
+                        tokenSelectTestId="swapPageOutputTokenSelector"
                         disabled
                     />
                     <SwapSettings onChange={setSettings} />
@@ -179,6 +193,7 @@ export default memo(function SwapForm({ account, tokens }) {
                         onClick={handleSwap}
                         className="swap-button"
                         disabled={cannotSwap}
+                        data-test-id="swapPageSwapConfirmationButton"
                     >
                         {swapPending ? 'Processing ...' : <Translate id="swap.confirm" />}
                     </FormButton>

@@ -11,6 +11,7 @@ export default function useSwapCallback({
     tokenIn,
     tokenOut,
     minAmountOut,
+    isNearTransformation,
 }) {
     const dispatch = useDispatch();
     const [pending, setPending] = useState(false);
@@ -19,7 +20,7 @@ export default function useSwapCallback({
         if (
             !accountId ||
             !amountIn ||
-            !poolId ||
+            (!isNearTransformation && !poolId) ||
             !tokenIn ||
             !tokenOut ||
             !minAmountOut
@@ -70,6 +71,7 @@ export default function useSwapCallback({
         tokenIn,
         tokenOut,
         minAmountOut,
+        isNearTransformation,
     ]);
 
     return { callback, pending };
