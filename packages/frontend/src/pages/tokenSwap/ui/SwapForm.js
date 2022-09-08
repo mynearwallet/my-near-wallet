@@ -1,14 +1,12 @@
-import React, { useState, memo, useMemo } from 'react';
+import React, { useState, memo, useMemo, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
-import { NEAR_TOKEN_ID } from '../../../config';
 import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
-import usePools from '../utils/hooks/usePools';
 import useSwapCallback from '../utils/hooks/useSwapCallback';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
@@ -49,6 +47,7 @@ export default memo(function SwapForm({ account, tokens }) {
     const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
 
     const [tokenIn, setTokenIn] = useState(tokens[0]);
+    const [tokenOut, setTokenOut] = useState(tokens[1]);
     const tokenInHumanBalance = useMemo(() => {
         if (tokenIn) {
             const { balance, onChainFTMetadata } = tokenIn;
@@ -59,12 +58,14 @@ export default memo(function SwapForm({ account, tokens }) {
         return null;
     }, [tokenIn]);
 
-    const [tokenOut, setTokenOut] = useState(tokens[1]);
-    const pools = usePools({
-        // @todo find a better place for such replacement
-        token0Id: tokenIn?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenIn?.contractName,
-        token1Id: tokenOut?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenOut?.contractName,
-    });
+    useEffect(() => {
+        if (!tokenIn && tokens[0]) {
+            setTokenIn(tokens[0]);
+        }
+        if (!tokenOut && tokens[1]) {
+            setTokenOut(tokens[1]);
+        }
+    }, [tokens]);
 
     const [settings, setSettings] = useState(initSettings);
 
@@ -90,7 +91,6 @@ export default memo(function SwapForm({ account, tokens }) {
     const [amountIn, setAmountIn] = useState('');
     const swapData = useSwapInfo({
         accountId: account?.accountId || '',
-        poolsByIds: pools,
         tokenIn,
         amountIn,
         tokenOut,
@@ -98,7 +98,7 @@ export default memo(function SwapForm({ account, tokens }) {
         slippage: settings.slippage,
     });
     const {
-        info: { poolId, amountOut, minAmountOut },
+        info: { isNearTransformation, poolId, amountOut, minAmountOut },
         loading: swapInfoLoading,
     } = swapData;
 
@@ -126,7 +126,7 @@ export default memo(function SwapForm({ account, tokens }) {
         if (
             !tokenIn ||
             !tokenOut ||
-            !pools ||
+            (!poolId && !isNearTransformation) ||
             !amountIn ||
             !amountOut ||
             swapInfoLoading ||
@@ -136,7 +136,7 @@ export default memo(function SwapForm({ account, tokens }) {
         }
 
         return false;
-    }, [tokenIn, tokenOut, pools, amountIn, amountOut, swapInfoLoading, swapPending]);
+    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, swapInfoLoading, swapPending]);
 
     return (
         <SwapFormWrapper>

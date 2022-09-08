@@ -22,7 +22,6 @@ import {
 } from '../config';
 import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel/index';
-import SwapPage from '../pages/tokenSwap';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
@@ -35,6 +34,7 @@ import { SetupLedgerNewAccountWrapper } from '../routes/SetupLedgerNewAccountWra
 import { SetupPassphraseNewAccountWrapper } from '../routes/SetupPassphraseNewAccountWrapper';
 import { SetupRecoveryImplicitAccountWrapper } from '../routes/SetupRecoveryImplicitAccountWrapper';
 import { SignWrapper } from '../routes/SignWrapper';
+import SwapWrapper from '../routes/SwapWrapper';
 import { VerifyOwnerWrapper } from '../routes/VerifyOwnerWrapper';
 import { WalletWrapper } from '../routes/WalletWrapper';
 import translations_en from '../translations/en.global.json';
@@ -78,6 +78,7 @@ import { SetupImplicitWithRouter } from './accounts/SetupImplicit';
 import { SetupSeedPhraseWithRouter } from './accounts/SetupSeedPhrase';
 import { EnableTwoFactor } from './accounts/two_factor/EnableTwoFactor';
 import { BuyNear } from './buy/BuyNear';
+import Bootstrap from './common/Bootstrap';
 import Footer from './common/Footer';
 import GlobalAlert from './common/GlobalAlert';
 import GuestLandingRoute from './common/GuestLandingRoute';
@@ -351,6 +352,7 @@ class Routing extends Component {
                 ])}
                 id="app-container"
             >
+                <Bootstrap />
                 <GlobalStyle />
                 <ConnectedRouter
                     basename={PATH_PREFIX}
@@ -644,7 +646,7 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/swap"
-                                component={() => <SwapPage accountId={account.accountId} />}
+                                component={SwapWrapper}
                             />
                             <PrivateRoute
                                 exact
