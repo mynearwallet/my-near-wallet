@@ -3,42 +3,71 @@ import set from 'lodash.set';
 import { createSelector } from 'reselect';
 
 import fungibleTokenExchange from '../../../services/tokenExchange';
+import { wallet } from '../../../utils/wallet';
+import { showCustomAlert } from '../../actions/status';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
+import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
 
 const SLICE_NAME = 'swap';
-// @note disable swap logs
-const ENABLE_DEBUG = true;
-
-const debugLog = (...args) => ENABLE_DEBUG && (function () {
-    console.group(`%c ${SLICE_NAME}Slice`, 'color: brown;');
-    console.log(`${SLICE_NAME}Slice`, ...args);
-    console.groupEnd();
-})();
 
 const initialState = {
+    tokensList: [],
+    tokens: {},
     pools: {
         loading: false,
-        all: {/* 
-            [token id]: {
-                [pool id]: { pool info }
-            }
-        */},
+        all: {},
     },
 };
 
-const fetchPools = createAsyncThunk(
-    `${SLICE_NAME}/fetchPools`,
-    async ({ accountId }, { dispatch }) => {
-        debugLog('THUNK/fetchPools');
-        const { actions: { addPools } } = swapSlice;
+const fetchTokensData = createAsyncThunk(
+    `${SLICE_NAME}/fetchTokensData`,
+    async (_, { getState, dispatch }) => {
+        const { actions: { addTokens } } = swapSlice;
+        const { swap: { tokensList } } = getState();
+        const tokens = {};
 
         try {
-            const pools = await fungibleTokenExchange.getPools({ accountId });
+            await Promise.allSettled(
+                tokensList.map(async (contractName) => {
+                    const metadata = await getCachedContractMetadataOrFetch(
+                        contractName,
+                        getState()
+                    );
 
-            dispatch(addPools({ pools }));
+                    tokens[contractName] = {
+                        contractName,
+                        onChainFTMetadata: metadata,
+                    };
+                })
+            );
         } catch (error) {
-            console.error(error);
-            // show some notification + set error state  
+            console.error('Error loading token data', error);
+        }
+
+        dispatch(addTokens({ tokens }));
+    }
+);
+
+const fetchData = createAsyncThunk(
+    `${SLICE_NAME}/fetchData`,
+    async ({ accountId }, { dispatch }) => {
+        const { actions: { addPools, addTokensList } } = swapSlice;
+        const account = await wallet.getAccount(accountId);
+
+        try {
+            const { pools, tokens } = await fungibleTokenExchange.getData({ account });
+
+            dispatch(addTokensList({ tokensList: tokens }));
+            dispatch(addPools({ pools }));
+            dispatch(fetchTokensData());
+        } catch (error) {
+            console.error('Error loading swap data', error);
+            dispatch(showCustomAlert({
+                success: false,
+                messageCodeHeader: 'error',
+                messageCode: 'swap.errorToFetchData',
+                errorMessage: error.message
+            }));
         }
     }
 );
@@ -48,16 +77,25 @@ const swapSlice = createSlice({
     initialState,
     reducers: {
         addPools(state, { payload }) {
-            debugLog('REDUCER/addPools');
             const { pools } = payload;
 
             set(state, ['pools', 'all'], pools);
         },
+        addTokensList(state, { payload }) {
+            const { tokensList } = payload;
+
+            set(state, ['tokensList'], tokensList);
+        },
+        addTokens(state, { payload }) {
+            const { tokens } = payload;
+
+            set(state, ['tokens'], tokens);
+        },
     },
     extraReducers: ((builder) => {
         handleAsyncThunkStatus({
-            asyncThunk: fetchPools,
-            buildStatusPath: () => ['pools', 'all'],
+            asyncThunk: fetchData,
+            buildStatusPath: () => [],
             builder,
         });
     })
@@ -67,13 +105,15 @@ const swapSlice = createSlice({
 export default swapSlice;
 
 export const actions = {
-    fetchPools,
+    fetchData,
+    fetchTokensData,
     ...swapSlice.actions
 };
 
 export const reducer = swapSlice.reducer;
 
-export const selectPoolsSlice = (state) => state[SLICE_NAME];
+export const selectPoolsSlice = (state) => state[SLICE_NAME].pools;
+export const selectTokensSlice = (state) => Object.values(state[SLICE_NAME].tokens);
 
 const selectPools = createSelector(selectPoolsSlice, ({ pools }) => pools || {});
 

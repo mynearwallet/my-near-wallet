@@ -5,7 +5,7 @@ import SwapPage from '../pages/tokenSwap';
 import { selectAccountId } from '../redux/slices/account';
 import { actions } from '../redux/slices/swap';
 
-const { fetchPools } = actions;
+const { fetchData } = actions;
 
 export default function SwapWrapper() {
     const dispatch = useDispatch();
@@ -13,7 +13,7 @@ export default function SwapWrapper() {
 
     useEffect(() => {
         if (accountId) {
-            dispatch(fetchPools({ accountId }));
+            dispatch(fetchData({ accountId }));
         }
     }, [accountId]);
 

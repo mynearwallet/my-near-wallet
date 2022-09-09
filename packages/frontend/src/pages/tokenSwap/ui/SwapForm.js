@@ -9,6 +9,7 @@ import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import useSwapCallback from '../utils/hooks/useSwapCallback';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
+import useTokens from '../utils/hooks/useTokens';
 import Input from './Input';
 import SwapInfo from './SwapInfo';
 import SwapSettings from './SwapSettings';
@@ -39,15 +40,17 @@ const tokenSelectState = {
 
 const initSettings = {};
 
-export default memo(function SwapForm({ account, tokens }) {
+export default memo(function SwapForm({ account, userTokens }) {
     const [displayTokenSelect, setDisplayTokenSelect] = useState(tokenSelectState.noSelect);
+
+    const swapTokens = useTokens();
 
     const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
     const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
     const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
 
-    const [tokenIn, setTokenIn] = useState(tokens[0]);
-    const [tokenOut, setTokenOut] = useState(tokens[1]);
+    const [tokenIn, setTokenIn] = useState(userTokens[0]);
+    const [tokenOut, setTokenOut] = useState(userTokens[1]);
     const tokenInHumanBalance = useMemo(() => {
         if (tokenIn) {
             const { balance, onChainFTMetadata } = tokenIn;
@@ -59,13 +62,13 @@ export default memo(function SwapForm({ account, tokens }) {
     }, [tokenIn]);
 
     useEffect(() => {
-        if (!tokenIn && tokens[0]) {
-            setTokenIn(tokens[0]);
+        if (!tokenIn && userTokens[0]) {
+            setTokenIn(userTokens[0]);
         }
-        if (!tokenOut && tokens[1]) {
-            setTokenOut(tokens[1]);
+        if (!tokenOut && userTokens[1]) {
+            setTokenOut(userTokens[1]);
         }
-    }, [tokens]);
+    }, [userTokens]);
 
     const [settings, setSettings] = useState(initSettings);
 
@@ -90,7 +93,7 @@ export default memo(function SwapForm({ account, tokens }) {
 
     const [amountIn, setAmountIn] = useState('');
     const swapData = useSwapInfo({
-        accountId: account?.accountId || '',
+        account,
         tokenIn,
         amountIn,
         tokenOut,
@@ -112,7 +115,7 @@ export default memo(function SwapForm({ account, tokens }) {
     };
 
     const { callback: swapCallback, pending: swapPending } = useSwapCallback({
-        accountId: account?.accountId,
+        account,
         amountIn,
         poolId,
         tokenIn,
@@ -154,7 +157,7 @@ export default memo(function SwapForm({ account, tokens }) {
                 <SelectToken
                     isMobile={mobile}
                     onClickGoBack={hideTokenSelection}
-                    fungibleTokens={tokens}
+                    fungibleTokens={swapTokens}
                     onSelectToken={handleTokenSelect}
                 />
             ) : (

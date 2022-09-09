@@ -32,7 +32,7 @@ const Header = styled.div`
 
 export default memo(function TokenSwap({ accountId }) {
     const [account, setAccount] = useState(null);
-    const tokens = useFungibleTokensIncludingNEAR({
+    const userTokens = useFungibleTokensIncludingNEAR({
         includeNearContractName: true,
     });
 
@@ -56,8 +56,7 @@ export default memo(function TokenSwap({ accountId }) {
                     <Translate id="swap.title" />
                 </h4>
             </Header>
-
-            <SwapForm account={account} tokens={tokens} />
+            <SwapForm account={account} userTokens={userTokens} />
         </SwapWrapper>
     );
 });

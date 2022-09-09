@@ -16,7 +16,7 @@ const retrievePools = (allPools, keys) => {
 };
 
 export default function usePools({ token0Id, token1Id }) {
-    const { pools: { all, loading } } = useSelector(selectPoolsSlice);
+    const { all, loading } = useSelector(selectPoolsSlice);
     const [pools, setPools] = useState(null);
 
     useEffect(() => {

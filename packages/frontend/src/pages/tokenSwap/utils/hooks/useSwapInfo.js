@@ -22,7 +22,7 @@ const isNearTransformation = (token0, token1) => {
 };
 
 export default function useSwapInfo({
-    accountId,
+    account,
     tokenIn,
     amountIn = 0,
     tokenOut,
@@ -53,7 +53,7 @@ export default function useSwapInfo({
 
                 try {
                     const { amountOut, poolId } = await fungibleTokenExchange.estimate({
-                        accountId,
+                        account,
                         poolsByIds: pools,
                         tokenIn,
                         amountIn: debounceAmountIn,
@@ -79,7 +79,7 @@ export default function useSwapInfo({
         return () => {
             cancelledRequest = true;
         };
-    }, [debounceAmountIn, accountId, pools, tokenIn, tokenOut]);
+    }, [debounceAmountIn, account, pools, tokenIn, tokenOut]);
 
     const minAmountOut = useMemo(() => {
         if (typeof slippage === 'number' && tokenOut && info.amountOut) {

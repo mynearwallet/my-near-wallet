@@ -5,7 +5,7 @@ import { showCustomAlert } from '../../../../redux/actions/status';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 
 export default function useSwapCallback({
-    accountId,
+    account,
     amountIn,
     poolId,
     tokenIn,
@@ -18,7 +18,7 @@ export default function useSwapCallback({
 
     const callback = useCallback(() => {
         if (
-            !accountId ||
+            !account ||
             !amountIn ||
             (!isNearTransformation && !poolId) ||
             !tokenIn ||
@@ -32,7 +32,7 @@ export default function useSwapCallback({
 
         fungibleTokenExchange
             .swap({
-                accountId,
+                account,
                 amountIn,
                 poolId,
                 tokenIn,
@@ -65,7 +65,7 @@ export default function useSwapCallback({
             });
     }, [
         dispatch,
-        accountId,
+        account,
         amountIn,
         poolId,
         tokenIn,

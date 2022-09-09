@@ -7,7 +7,6 @@ import {
     TOKEN_TRANSFER_DEPOSIT,
 } from '../../config';
 import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
-import { wallet } from '../../utils/wallet';
 import FungibleTokens from '../FungibleTokens';
 import { findBestSwapPool } from './utils';
 
@@ -34,9 +33,7 @@ class RefFinanceContract {
         }
     }
 
-    async #contractInstance(accountId) {
-        const account = await wallet.getAccount(accountId);
- 
+    async #newContract(account) {
         return await new nearApi.Contract(
             account,
             this.#config.contractId,
@@ -44,28 +41,32 @@ class RefFinanceContract {
         );
     }
 
-    formatPoolsOutput(pools) {
-        const config = {};
+    processExchangeData(inputPools) {
+        const pools = {};
+        const tokens = new Set();
 
-        pools.forEach((pool, poolId) => {
+        inputPools.forEach((pool, poolId) => {
             const { token_account_ids, shares_total_supply, amounts  } = pool;
             const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
 
             if (hasLiquidity) {
+                tokens.add(token_account_ids[0]);
+                tokens.add(token_account_ids[1]);
+
                 let mainKey = JSON.stringify(token_account_ids);
                 const reverseKey = JSON.stringify(token_account_ids.reverse());
 
-                if (!config[mainKey]) {
-                    config[mainKey] = {};
+                if (!pools[mainKey]) {
+                    pools[mainKey] = {};
                 }
                 // Some pools have reverse order of the same tokens.
                 // In this condition we check if we already have
-                // such tokens and use an existing config key.
-                if (config[reverseKey] && Object.keys(config[reverseKey])?.length > 0) {
+                // such tokens and use an existing pools key.
+                if (pools[reverseKey] && Object.keys(pools[reverseKey])?.length > 0) {
                     mainKey = reverseKey;
                 }
 
-                config[mainKey][poolId] = {
+                pools[mainKey][poolId] = {
                     // set before the "pool content": if the pool has own 'poolId' key it will be rewritten
                     poolId,
                     ...pool,
@@ -73,20 +74,15 @@ class RefFinanceContract {
             }
         });
 
-        return config;
+        return { pools, tokens: [...tokens] };
     }
 
-    async getNumberOfPools(accountId) {
-        const contract = await this.#contractInstance(accountId);
-
-        return contract.get_number_of_pools();
-    }
-
-    async getPools({ accountId }) {
+    // @todo simplify and add clarification comments
+    async getData({ account }) {
         const { maxRequestAmount } = this.#config.pools;
-        const contract = await this.#contractInstance(accountId);
+        const contract = await this.#newContract(account);
         const poolsAmount = await contract.get_number_of_pools();
-        const pools = [];
+        const sourcePools = [];
 
         let requests =
             poolsAmount <= maxRequestAmount
@@ -115,21 +111,16 @@ class RefFinanceContract {
                 limit,
             });
 
-            pools.push(...chunk);
+            sourcePools.push(...chunk);
         }
 
-        return this.formatPoolsOutput(pools);
+        return this.processExchangeData(sourcePools);
     }
 
-    async getPool({ accountId, poolId }) {
-        const contract = await this.#contractInstance(accountId);
-
-        return contract.get_pool({ pool_id: poolId });
-    }
     // @todo remove get_return when findBestSwapPool() would be fixed
-    async estimate({ accountId, poolsByIds, tokenIn, amountIn, tokenOut }) {
+    async estimate({ account, poolsByIds, tokenIn, amountIn, tokenOut }) {
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
-        const contract = await this.#contractInstance(accountId);
+        const contract = await this.#newContract(account);
         const { pool } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
 
         const amountOut = await contract.get_return({
@@ -146,13 +137,14 @@ class RefFinanceContract {
     }
 
     async getSwapTransactions({
-        accountId,
+        account,
         poolId,
         tokenIn,
         amountIn,
         tokenOut,
         minAmountOut,
     }) {
+        const { accountId } = account;
         const actions = [];
         const tokenStorage = await FungibleTokens.getStorageBalance({
             contractName: tokenOut.contractName,
