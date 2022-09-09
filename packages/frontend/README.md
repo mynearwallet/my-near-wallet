@@ -24,7 +24,7 @@ environment, please run `yarn prebuild` first.
 
 Netlify
 ===
-To setup Netlify previews, you will need to add the following environment variables to your Netlify Deployment in UI:
+To setup Netlify preview, you will need to add the following environment variables to your Netlify Deployment in UI:
 ```
 NEAR_WALLET_ENV=development | testnet | mainnet
 SENTRY_ORG="sentry organization name (slug)"
