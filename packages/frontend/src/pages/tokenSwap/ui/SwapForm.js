@@ -9,23 +9,18 @@ import SwapIcon from '../../../components/svg/WrapIcon';
 import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import useSwapCallback from '../utils/hooks/useSwapCallback';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import useTokens from '../utils/hooks/useTokens';
 import Input from './Input';
-import SwapInfo from './SwapInfo';
 
 const mobile = isMobile();
 
 const SwapFormWrapper = styled.div`
     font-size: 1.2rem;
-
-    .swap-button {
-        width: 100%;
-    }
 `;
 
 const Header = styled.div`
+    margin-bottom: 34px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 
@@ -64,6 +59,13 @@ const SwapButtonWrapper = styled.div`
     }
 `;
 
+const Footer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 28px;
+`;
+
 const swapInfoDaley = 1_000;
 // @todo find a better solution
 const tokenSelectState = {
@@ -71,8 +73,6 @@ const tokenSelectState = {
     selectIn: 1,
     selectOut: 2,
 };
-
-const initSettings = {};
 
 export default memo(function SwapForm({ onGoBack, account, userTokens }) {
     const [displayTokenSelect, setDisplayTokenSelect] = useState(
@@ -87,6 +87,7 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
             amountIn,
         },
         events: {
+            setViewState,
             setTokenIn,
             setTokenOut,
             setAmountIn,
@@ -96,6 +97,8 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
             setIsNearTransformation,
         },
     } = useSwapData();
+
+    const onClickReview = () => setViewState(VIEW_STATE.preview);
 
     const selectTokenIn = () =>
         setDisplayTokenSelect(tokenSelectState.selectIn);
@@ -164,18 +167,6 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
         }
     };
 
-    const { callback: swapCallback, pending: swapPending } = useSwapCallback({
-        account,
-        amountIn,
-        poolId,
-        tokenIn,
-        tokenOut,
-        minAmountOut,
-        isNearTransformation,
-    });
-
-    const handleSwap = () => swapCallback();
-
     const cannotSwap = useMemo(() => {
         if (
             !tokenIn ||
@@ -183,8 +174,7 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
             (!poolId && !isNearTransformation) ||
             !amountIn ||
             !amountOut ||
-            swapInfoLoading ||
-            swapPending
+            swapInfoLoading
         ) {
             return true;
         }
@@ -197,7 +187,6 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
         amountIn,
         amountOut,
         swapInfoLoading,
-        swapPending,
         isNearTransformation,
     ]);
 
@@ -248,20 +237,18 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
                         tokenSelectTestId='swapPageOutputTokenSelector'
                         disabled
                     />
-                    <SwapInfo data={swapData} />
-                    <FormButton
-                        color='blue'
-                        onClick={handleSwap}
-                        className='swap-button'
-                        disabled={cannotSwap}
-                        data-test-id='swapPageSwapConfirmationButton'
-                    >
-                        {swapPending ? (
-                            'Processing ...'
-                        ) : (
-                            <Translate id='swap.confirm' />
-                        )}
-                    </FormButton>
+                    <Footer>
+                        <FormButton
+                            disabled={cannotSwap}
+                            onClick={onClickReview}
+                            data-test-id='swapPageSwapPreviewStateButton'
+                        >
+                            <Translate id="swap.review" />
+                        </FormButton>
+                        <FormButton color="gray link" onClick={onGoBack}>
+                            <Translate id="button.cancel" />
+                        </FormButton>
+                    </Footer>
                 </>
             )}
         </SwapFormWrapper>
