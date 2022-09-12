@@ -1,13 +1,7 @@
 import * as nearApi from 'near-api-js';
 
-import {
-    REF_FINANCE_CONTRACT,
-    FT_MINIMUM_STORAGE_BALANCE,
-    FT_STORAGE_DEPOSIT_GAS,
-    TOKEN_TRANSFER_DEPOSIT,
-} from '../../config';
+import { REF_FINANCE_CONTRACT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
 import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
-import FungibleTokens from '../FungibleTokens';
 import { findBestSwapPool } from './utils';
 
 class RefFinanceContract {
@@ -136,7 +130,7 @@ class RefFinanceContract {
         };
     }
 
-    async getSwapTransactions({
+    async getSwapActions({
         account,
         poolId,
         tokenIn,
@@ -144,26 +138,7 @@ class RefFinanceContract {
         tokenOut,
         minAmountOut,
     }) {
-        const { accountId } = account;
         const actions = [];
-        const tokenStorage = await FungibleTokens.getStorageBalance({
-            contractName: tokenOut.contractName,
-            accountId,
-        });
-
-        if (!tokenStorage) {
-            actions.push(nearApi.transactions.functionCall(
-                'storage_deposit',
-                {
-                    receiver_id: tokenOut.contractName,
-                    registration_only: true,
-                    account_id: accountId,
-                },
-                FT_STORAGE_DEPOSIT_GAS,
-                FT_MINIMUM_STORAGE_BALANCE
-            ));
-        }
-
         const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
         const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
@@ -173,6 +148,7 @@ class RefFinanceContract {
             nearApi.transactions.functionCall(
                 'ft_transfer_call',
                 {
+                    account_id: account.accountId,
                     receiver_id: this.#config.contractId,
                     amount: parsedAmountIn,
                     msg: JSON.stringify({
