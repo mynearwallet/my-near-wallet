@@ -7,7 +7,7 @@ import { actions } from '../redux/slices/swap';
 
 const { fetchData } = actions;
 
-export default function SwapWrapper() {
+export default function SwapWrapper({ history }) {
     const dispatch = useDispatch();
     const accountId = useSelector(selectAccountId);
 
@@ -17,5 +17,5 @@ export default function SwapWrapper() {
         }
     }, [accountId]);
 
-    return <SwapPage accountId={accountId} />;
+    return <SwapPage history={history} accountId={accountId} />;
 }
