@@ -15,20 +15,20 @@ const retrievePools = (allPools, keys) => {
     return null;
 };
 
-export default function usePools({ token0Id, token1Id }) {
+export default function usePools({ tokenIn, tokenOut }) {
     const { all, loading } = useSelector(selectPoolsSlice);
     const [pools, setPools] = useState(null);
 
     useEffect(() => {
-        if (token0Id && token1Id && !loading) {
+        if (tokenIn && tokenOut && !loading) {
             const poolsById = retrievePools(all, [
-                JSON.stringify([token0Id, token1Id]),
-                JSON.stringify([token1Id, token0Id]),
+                JSON.stringify([tokenIn, tokenOut]),
+                JSON.stringify([tokenOut, tokenIn]),
             ]);
 
             setPools(poolsById);
         }
-    }, [token0Id, token1Id]);
+    }, [tokenIn, tokenOut]);
 
     return pools;
 }

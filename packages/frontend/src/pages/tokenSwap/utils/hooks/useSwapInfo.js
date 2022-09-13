@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 import { NEAR_TOKEN_ID } from '../../../../config';
 import useDebounce from '../../../../hooks/useDebounce';
@@ -24,12 +24,15 @@ export default function useSwapInfo({
     const [poolId, setPoolId] = useState(-1);
     const [amountOut, setAmountOut] = useState('');
     const [loading, setLoading] = useState(false);
-    const [isTransformation] = useState(isNearTransformation(tokenIn, tokenOut));
     const debounceAmountIn = useDebounce(amountIn, delay);
+    const isTransformation = useMemo(
+        () => isNearTransformation(tokenIn, tokenOut),
+        [tokenIn, tokenOut]
+    );
 
     const pools = usePools({
-        token0Id: tokenIn?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenIn?.contractName,
-        token1Id: tokenOut?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenOut?.contractName,
+        tokenIn: tokenIn?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenIn?.contractName,
+        tokenOut: tokenOut?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenOut?.contractName,
     });
 
     useEffect(() => {

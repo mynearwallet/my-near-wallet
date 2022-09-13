@@ -17,6 +17,25 @@ const mobile = isMobile();
 
 const SwapFormWrapper = styled.div`
     font-size: 1.2rem;
+    // Styles for the <SelectToken /> component.
+    // We use the same styles in the old swap components.
+    // @todo find a way to use it in one place.
+    // Can we put it in <SelectToken /> ?
+    div.header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #272729;
+        font-weight: 600;
+        font-size: 20px;
+        word-break: break-all;
+
+        .back-arrow-button {
+            position: absolute;
+            left: 0;
+        }
+    }
 `;
 
 const Header = styled.div`
@@ -155,7 +174,7 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
-    const { poolId, amountOut, isNearTransformation } = useSwapInfo({
+    const { poolId, amountOut, isNearTransformation, loading } = useSwapInfo({
         account,
         tokenIn,
         amountIn,
@@ -241,6 +260,7 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
                         label={<Translate id="swap.to" />}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.icon}
+                        loading={loading}
                         inputTestId="swapPageOutputAmountField"
                         tokenSelectTestId="swapPageOutputTokenSelector"
                         disabled

@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react';
 import Success from '../../../components/swap/components/Success';
 import { SwapReviewForm } from '../../../components/swap/components/SwapReviewForm';
 import { decreaseByPercent } from '../../../utils/amounts';
+import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwap from '../utils/hooks/useSwap';
 import SwapForm from './SwapForm';
@@ -17,6 +18,7 @@ export default function SwapWrapper({ history, account, userTokens }) {
             amountOut,
             swapPoolId,
             isNearTransformation,
+            lastSwapTxHash,
         },
         events: { setViewState },
     } = useSwapData();
@@ -26,21 +28,21 @@ export default function SwapWrapper({ history, account, userTokens }) {
 
     const [slippage, setSlippage] = useState(0);
     const minAmountOut = useMemo(() => {
-        // if (
-        //     typeof slippage === 'number' &&
-        //     tokenOut?.onChainFTMetadata?.decimals &&
-        //     amountOut
-        // ) {
-        //     if (!slippage) {
-        //         return amountOut;
-        //     }
+        if (
+            typeof slippage === 'number' &&
+            tokenOut?.onChainFTMetadata?.decimals &&
+            amountOut
+        ) {
+            if (!slippage) {
+                return amountOut;
+            }
 
-        //     return decreaseByPercent(
-        //         amountOut,
-        //         slippage,
-        //         tokenOut.onChainFTMetadata.decimals
-        //     );
-        // }
+            return decreaseByPercent(
+                amountOut,
+                slippage,
+                tokenOut.onChainFTMetadata.decimals
+            );
+        }
 
         return '';
     }, [slippage, tokenOut, amountOut]);
@@ -53,7 +55,7 @@ export default function SwapWrapper({ history, account, userTokens }) {
         return 1;
     }, [amountIn, amountOut]);
 
-    const { swap } = useSwap({
+    const { swap, pending: swapPending } = useSwap({
         account,
         amountIn,
         poolId: swapPoolId,
@@ -63,7 +65,15 @@ export default function SwapWrapper({ history, account, userTokens }) {
         isNearTransformation,
     });
 
-    const handleSwap = swap();
+    const handleSwap = () => {
+        if (swap) {
+            swap();
+        }
+    };
+
+    const openTransaction = () => {
+        openTransactionInExplorer(lastSwapTxHash);
+    };
 
     return viewState === VIEW_STATE.inputForm ? (
         <SwapForm onGoBack={goHome} account={account} userTokens={userTokens} />
@@ -78,16 +88,19 @@ export default function SwapWrapper({ history, account, userTokens }) {
             handleSwapToken={handleSwap}
             exchangeRate={exchangeRate}
             tradingFee={0}
+            swappingToken={swapPending}
             setSlippage={setSlippage}
             showSlippageOption
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success
-            amountFrom={amountIn}
-            amountTo={amountOut}
+            // @todo It's not an amount fields. In the old swap component
+            // we pass token symbols as well as here. We have to rename it.
+            amountFrom={`${amountIn} ${tokenIn?.onChainFTMetadata?.symbol}`}
+            amountTo={`${amountOut} ${tokenOut?.onChainFTMetadata?.symbol}`}
             onClickContinue={showForm}
-            // transactionHash={}
-            // onClickGoToExplorer={}
+            transactionHash={lastSwapTxHash}
+            onClickGoToExplorer={openTransaction}
         />
     ) : null;
 }

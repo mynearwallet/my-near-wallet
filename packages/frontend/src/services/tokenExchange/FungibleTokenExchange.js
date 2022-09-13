@@ -249,7 +249,9 @@ class FungibleTokenExchange {
             outcome.push(txResult);
         }
 
-        return outcome;
+        return {
+            swapTxHash: '',
+        };
     }
 }
 
