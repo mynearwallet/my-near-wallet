@@ -1,7 +1,8 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 
-import { 
+import {
+    NEAR_ID,
     NEAR_TOKEN_ID,
     TOKEN_TRANSFER_DEPOSIT,
     FT_TRANSFER_GAS,
@@ -34,7 +35,7 @@ export default class FungibleTokens {
 
     static getParsedTokenAmount(amount, symbol, decimals) {
         const parsedTokenAmount =
-            symbol === 'NEAR'
+            symbol === NEAR_ID
                 ? parseNearAmount(amount)
                 : parseTokenAmount(amount, decimals);
 
@@ -43,7 +44,7 @@ export default class FungibleTokens {
 
     static getFormattedTokenAmount(amount, symbol, decimals) {
         const formattedTokenAmount =
-            symbol === 'NEAR'
+            symbol === NEAR_ID
                 ? formatNearAmount(amount, 5)
                 : removeTrailingZeros(formatTokenAmount(amount, decimals, 5));
 

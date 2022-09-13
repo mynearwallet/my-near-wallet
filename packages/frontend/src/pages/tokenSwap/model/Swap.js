@@ -6,7 +6,7 @@ export const VIEW_STATE = {
     result: 'result',
 };
 
-export const initialState = {
+const initialState = {
     viewState: VIEW_STATE.inputForm,
     tokenIn: null,
     amountIn: '',
@@ -17,7 +17,7 @@ export const initialState = {
     lastSwapTxHash: '',
 };
 
-export const ACTION = {
+const ACTION = {
     SET_VIEW_STATE: 'setViewState',
     SET_TOKEN_IN: 'setTokenIn',
     SET_TOKEN_OUT: 'setTokenOut',
@@ -28,7 +28,7 @@ export const ACTION = {
     SET_LAST_SWAP_TX_HASH: 'setLastSwapTxHash',
 };
 
-export function swapReducer(state, action) {
+function swapReducer(state, action) {
     const payload = action.payload;
 
     switch (action.type) {

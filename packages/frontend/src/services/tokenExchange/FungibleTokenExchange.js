@@ -1,76 +1,77 @@
 import * as nearApi from 'near-api-js';
 
 import {
+    NEAR_ID,
     NEAR_TOKEN_ID,
     FT_MINIMUM_STORAGE_BALANCE,
     FT_STORAGE_DEPOSIT_GAS,
 } from '../../config';
 import FungibleTokens, { fungibleTokensService } from '../FungibleTokens';
 import refFinanceContract from './RefFinanceContract';
-import { NEAR_ID, isNearSwap, replaceNearIfNecessary } from './utils';
+import { isNearTransformation, replaceNearIfNecessary } from './utils';
 
 class FungibleTokenExchange {
-    #exchange;
+    _exchange;
 
     constructor(exchangeInstance) {
-        this.#exchange = exchangeInstance;
+        this._exchange = exchangeInstance;
     }
 
     async getData({ account }) {
-        return this.#exchange.getData({ account });
+        return this._exchange.getData({ account });
     }
 
     async estimate(params) {
-        if (isNearSwap(params)) {
-            return this.estimateNearSwap(params);
+        if (isNearTransformation(params)) {
+            return this._estimateNearSwap(params);
         }
 
-        return this.estimateSwap(params);
+        return this._estimateSwap(params);
     }
 
-    estimateNearSwap(params) {
+    async swap(params) {
+        if (isNearTransformation(params)) {
+            return this._transformNear(params);
+        }
+
+        const { tokenIn, tokenOut } = params;
+
+        if (tokenIn.contractName === NEAR_ID) {
+            return this._swapNearToToken(params);
+        }
+
+        if (tokenIn.contractName === NEAR_TOKEN_ID) {
+            return this._swapWNearToToken(params);
+        }
+
+        if (tokenOut.contractName === NEAR_ID) {
+            return this._swapTokenToNear(params);
+        }
+
+        if (tokenOut.contractName === NEAR_TOKEN_ID) {
+            return this._swapTokenToWNear(params);
+        }
+
+        return this._swapTokenToToken(params);
+    }
+
+    _estimateNearSwap(params) {
         return {
             amountOut: params.amountIn,
         };
     }
 
-    async estimateSwap(params) {
+    async _estimateSwap(params) {
         const { tokenIn, tokenOut } = params;
 
-        return this.#exchange.estimate({
+        return this._exchange.estimate({
             ...params,
             tokenIn: replaceNearIfNecessary(tokenIn),
             tokenOut: replaceNearIfNecessary(tokenOut),
         });
     }
 
-    async swap(params) {
-        if (isNearSwap(params)) {
-            return this.swapNear(params);
-        }
-
-        const { tokenIn, tokenOut } = params;
-
-        if (tokenIn.contractName === NEAR_ID) {
-            return this.swapNearToToken(params);
-        }
-
-        if (tokenIn.contractName === NEAR_TOKEN_ID) {
-            return this.swapWNearToToken(params);
-        }
-
-        if (tokenOut.contractName === NEAR_ID) {
-            return this.swapTokenToNear(params);
-        }
-
-        if (tokenOut.contractName === NEAR_TOKEN_ID) {
-            return this.swapTokenToWNear(params);
-        }
-
-        return this.swapTokenToToken(params);
-    }
-
-    swapNear(params) {
+    _transformNear(params) {
         const { account, tokenIn, amountIn } = params;
 
         return fungibleTokensService.transformNear({
@@ -80,10 +81,10 @@ class FungibleTokenExchange {
         });
     }
 
-    async swapNearToToken(params) {
+    async _swapNearToToken(params) {
         const { account, tokenIn, tokenOut, amountIn } = params;
         const transactions = [];
-        const depositTransactions = await this.getDepositTransactions(
+        const depositTransactions = await this._getDepositTransactions(
             account.accountId,
             [tokenOut.contractName]
         );
@@ -96,7 +97,7 @@ class FungibleTokenExchange {
             accountId: account.accountId,
             amount: amountIn,
         });
-        const swapActions = await this.#exchange.getSwapActions({
+        const swapActions = await this._exchange.getSwapActions({
             ...params,
             tokenIn: replaceNearIfNecessary(tokenIn),
         });
@@ -106,13 +107,13 @@ class FungibleTokenExchange {
             actions: swapActions,
         });
 
-        return this.#processTransactions(account, transactions);
+        return this._processTransactions(account, transactions);
     }
 
-    async swapWNearToToken(params) {
+    async _swapWNearToToken(params) {
         const { account, tokenOut } = params;
         const transactions = [];
-        const depositTransactions = await this.getDepositTransactions(
+        const depositTransactions = await this._getDepositTransactions(
             account.accountId,
             [tokenOut.contractName]
         );
@@ -121,21 +122,21 @@ class FungibleTokenExchange {
             transactions.push(...depositTransactions);
         }
 
-        const swapActions = await this.#exchange.getSwapActions(params);
+        const swapActions = await this._exchange.getSwapActions(params);
 
         transactions.push({
             receiverId: NEAR_TOKEN_ID,
             actions: swapActions,
         });
 
-        return this.#processTransactions(account, transactions);
+        return this._processTransactions(account, transactions);
     }
 
     // @todo add NEAR in the token list and check this flow
-    async swapTokenToNear(params) {
+    async _swapTokenToNear(params) {
         const { account, tokenIn, tokenOut, amountIn } = params;
         const transactions = [];
-        const depositTransactions = await this.getDepositTransactions(
+        const depositTransactions = await this._getDepositTransactions(
             account.accountId,
             [tokenOut.contractName]
         );
@@ -144,7 +145,7 @@ class FungibleTokenExchange {
             transactions.push(...depositTransactions);
         }
 
-        const swapActions = await this.#exchange.getSwapActions({
+        const swapActions = await this._exchange.getSwapActions({
             ...params,
             tokenOut: replaceNearIfNecessary(tokenOut),
         });
@@ -161,13 +162,13 @@ class FungibleTokenExchange {
             unwrapNear
         );
 
-        return this.#processTransactions(account, transactions);
+        return this._processTransactions(account, transactions);
     }
 
-    async swapTokenToWNear(params) {
+    async _swapTokenToWNear(params) {
         const { account, tokenIn, tokenOut } = params;
         const transactions = [];
-        const depositTransactions = await this.getDepositTransactions(
+        const depositTransactions = await this._getDepositTransactions(
             account.accountId,
             [tokenOut.contractName]
         );
@@ -176,20 +177,20 @@ class FungibleTokenExchange {
             transactions.push(...depositTransactions);
         }
 
-        const swapActions = await this.#exchange.getSwapActions(params);
+        const swapActions = await this._exchange.getSwapActions(params);
 
         transactions.push({
             receiverId: tokenIn.contractName,
             actions: swapActions,
         });
 
-        return this.#processTransactions(account, transactions);
+        return this._processTransactions(account, transactions);
     }
 
-    async swapTokenToToken(params) {
+    async _swapTokenToToken(params) {
         const { account, tokenIn, tokenOut } = params;
         const transactions = [];
-        const depositTransactions = await this.getDepositTransactions(
+        const depositTransactions = await this._getDepositTransactions(
             account.accountId,
             [tokenIn.contractName, tokenOut.contractName]
         );
@@ -198,17 +199,17 @@ class FungibleTokenExchange {
             transactions.push(...depositTransactions);
         }
 
-        const swapActions = await this.#exchange.getSwapActions(params);
+        const swapActions = await this._exchange.getSwapActions(params);
 
         transactions.push({
             receiverId: tokenIn.contractName,
             actions: swapActions,
         });
 
-        return this.#processTransactions(account, transactions);
+        return this._processTransactions(account, transactions);
     }
 
-    async getDepositTransactions(accountId, contracts) {
+    async _getDepositTransactions(accountId, contracts) {
         const txs = [];
 
         for (const name of contracts) {
@@ -240,18 +241,26 @@ class FungibleTokenExchange {
         return txs.length ? txs : null;
     }
 
-    async #processTransactions(account, txs) {
-        const outcome = [];
+    async _processTransactions(account, txs) {
+        const swapResult = {};
 
         for (const tx of txs) {
-            const txResult = await account.signAndSendTransaction(tx);
+            const {
+                transaction: { hash, actions },
+            } = await account.signAndSendTransaction(tx);
 
-            outcome.push(txResult);
+            const swapTx = actions.find((action) => {
+                if (action['FunctionCall']?.method_name === 'ft_transfer_call') {
+                    return true;
+                }
+            });
+
+            if (swapTx) {
+                swapResult.swapTxHash = hash;
+            }
         }
 
-        return {
-            swapTxHash: '',
-        };
+        return swapResult;
     }
 }
 

@@ -4,38 +4,39 @@ import { REF_FINANCE_CONTRACT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
 import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
 import { findBestSwapPool } from './utils';
 
-class RefFinanceContract {
-    #config = {
-        contractId: REF_FINANCE_CONTRACT,
-        viewMethods: [
-            'get_number_of_pools', 
-            'get_pools',
-            'get_pool',
-            'get_return',
-        ],
-        changeMethods: [
-            'swap',
-        ],
-        gasLimit: {
-            swap: '180000000000000',
-        },
-        pools: {
-            startIndex: 0,
-            // if we try to get more than +-1600 items at the one request
-            // we obtain this error: FunctionCallError(HostError(GasLimitExceeded))
-            maxRequestAmount: 1000,
-        }
+const contractConfig = {
+    contractId: REF_FINANCE_CONTRACT,
+    viewMethods: [
+        'get_number_of_pools',
+        'get_pools',
+        'get_pool',
+        'get_return',
+    ],
+    changeMethods: [
+        'swap',
+    ],
+    gasLimit: {
+        swap: '180000000000000',
+    },
+    pools: {
+        startIndex: 0,
+        // Max amount of pools in one request.
+        // If we try to get more than +-1600 items at one point we
+        // obtain a error: FunctionCallError(HostError(GasLimitExceeded))
+        maxRequestAmount: 1000,
     }
+};
 
-    async #newContract(account) {
+class RefFinanceContract {
+    async _newContract(account) {
         return await new nearApi.Contract(
             account,
-            this.#config.contractId,
-            this.#config
+            contractConfig.contractId,
+            contractConfig
         );
     }
 
-    processExchangeData(inputPools) {
+    formatPoolsData(inputPools) {
         const pools = {};
         const tokens = new Set();
 
@@ -61,7 +62,7 @@ class RefFinanceContract {
                 }
 
                 pools[mainKey][poolId] = {
-                    // set before the "pool content": if the pool has own 'poolId' key it will be rewritten
+                    // set before the "...pool": if the pool has own 'poolId' key it will be rewritten
                     poolId,
                     ...pool,
                 };
@@ -71,50 +72,56 @@ class RefFinanceContract {
         return { pools, tokens: [...tokens] };
     }
 
-    // @todo simplify and add clarification comments
     async getData({ account }) {
-        const { maxRequestAmount } = this.#config.pools;
-        const contract = await this.#newContract(account);
-        const poolsAmount = await contract.get_number_of_pools();
-        const sourcePools = [];
+        const { maxRequestAmount } = contractConfig.pools;
+        const contract = await this._newContract(account);
+        const totalNumberOfPools = await contract.get_number_of_pools();
+        const pools = [];
 
-        let requests =
-            poolsAmount <= maxRequestAmount
+        let numberOfRequests =
+            totalNumberOfPools <= maxRequestAmount
                 ? 1
-                : Math.floor(poolsAmount / maxRequestAmount);
-        const remaningPoolsAmount = poolsAmount - requests * maxRequestAmount;
+                : Math.floor(totalNumberOfPools / maxRequestAmount);
+        const remaningNumberOfPools = totalNumberOfPools - numberOfRequests * maxRequestAmount;
 
-        if (remaningPoolsAmount) {
-            requests += 1;
+        if (remaningNumberOfPools) {
+            numberOfRequests += 1;
         }
 
-        for (let i = 1; i <= requests; i++) {
-            let start = (i * maxRequestAmount) - maxRequestAmount;
-            let limit = maxRequestAmount;
+        for (let req = 1; req <= numberOfRequests; req++) {
+            let startPoolsIndex = (req * maxRequestAmount) - maxRequestAmount;
+            let poolsAmountLimit = maxRequestAmount;
 
-            if (i > 1) {
-                start += 1;
+            if (req > 1) {
+                startPoolsIndex += 1;
             }
 
-            if (remaningPoolsAmount && i === requests) {
-                limit = remaningPoolsAmount;
+            if (req === numberOfRequests && remaningNumberOfPools) {
+                poolsAmountLimit = remaningNumberOfPools;
             }
 
-            const chunk = await contract.get_pools({
-                from_index: start,
-                limit,
-            });
+            try {
+                const chunk = await contract.get_pools({
+                    from_index: startPoolsIndex,
+                    limit: poolsAmountLimit,
+                });
 
-            sourcePools.push(...chunk);
+                pools.push(...chunk);
+            } catch (error) {
+                console.error(
+                    'RefFinanceContract: Error in the request for a part of pools',
+                    error
+                );
+            }
         }
 
-        return this.processExchangeData(sourcePools);
+        return this.formatPoolsData(pools);
     }
 
     // @todo remove get_return when findBestSwapPool() would be fixed
     async estimate({ account, poolsByIds, tokenIn, amountIn, tokenOut }) {
         const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
-        const contract = await this.#newContract(account);
+        const contract = await this._newContract(account);
         const { pool } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
 
         const amountOut = await contract.get_return({
@@ -149,12 +156,12 @@ class RefFinanceContract {
                 'ft_transfer_call',
                 {
                     account_id: account.accountId,
-                    receiver_id: this.#config.contractId,
+                    receiver_id: contractConfig.contractId,
                     amount: parsedAmountIn,
                     msg: JSON.stringify({
                         force: 0, // @todo what is it for?
                         actions: [
-                            // @note in case of routing we add many action objects here
+                            // @note in case of multihop swaps we add extra objects here
                             {
                                 pool_id: poolId,
                                 token_in: tokenIn.contractName,
@@ -165,7 +172,7 @@ class RefFinanceContract {
                         ],
                     }),
                 },
-                this.#config.gasLimit.swap,
+                contractConfig.gasLimit.swap,
                 TOKEN_TRANSFER_DEPOSIT,
             ),
         );
