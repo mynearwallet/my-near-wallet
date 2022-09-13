@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { showCustomAlert } from '../../../../redux/actions/status';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 
-export default function useSwapCallback({
+export default function useSwap({
     account,
     amountIn,
     poolId,
@@ -16,7 +16,7 @@ export default function useSwapCallback({
     const dispatch = useDispatch();
     const [pending, setPending] = useState(false);
 
-    const callback = useCallback(() => {
+    const swap = useCallback(() => {
         if (
             !account ||
             !amountIn ||
@@ -74,5 +74,5 @@ export default function useSwapCallback({
         isNearTransformation,
     ]);
 
-    return { callback, pending };
+    return { swap, pending };
 }

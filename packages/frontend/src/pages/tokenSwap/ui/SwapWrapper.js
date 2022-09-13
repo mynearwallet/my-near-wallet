@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 
 import Success from '../../../components/swap/components/Success';
 import { SwapReviewForm } from '../../../components/swap/components/SwapReviewForm';
+import { decreaseByPercent } from '../../../utils/amounts';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import useSwapCallback from '../utils/hooks/useSwapCallback';
+import useSwap from '../utils/hooks/useSwap';
 import SwapForm from './SwapForm';
 
 export default function SwapWrapper({ history, account, userTokens }) {
@@ -14,8 +15,7 @@ export default function SwapWrapper({ history, account, userTokens }) {
             amountIn,
             tokenOut,
             amountOut,
-            swapPool,
-            minAmountOut,
+            swapPoolId,
             isNearTransformation,
         },
         events: { setViewState },
@@ -24,17 +24,46 @@ export default function SwapWrapper({ history, account, userTokens }) {
     const goHome = () => history.push('/');
     const showForm = () => setViewState(VIEW_STATE.inputForm);
 
-    const { callback: swapCallback, pending: swapPending } = useSwapCallback({
+    const [slippage, setSlippage] = useState(0);
+    const minAmountOut = useMemo(() => {
+        // if (
+        //     typeof slippage === 'number' &&
+        //     tokenOut?.onChainFTMetadata?.decimals &&
+        //     amountOut
+        // ) {
+        //     if (!slippage) {
+        //         return amountOut;
+        //     }
+
+        //     return decreaseByPercent(
+        //         amountOut,
+        //         slippage,
+        //         tokenOut.onChainFTMetadata.decimals
+        //     );
+        // }
+
+        return '';
+    }, [slippage, tokenOut, amountOut]);
+
+    const exchangeRate = useMemo(() => {
+        if (amountIn && amountOut) {
+            return amountIn / amountOut;
+        }
+
+        return 1;
+    }, [amountIn, amountOut]);
+
+    const { swap } = useSwap({
         account,
         amountIn,
-        poolId: swapPool?.poolId,
+        poolId: swapPoolId,
         tokenIn,
         tokenOut,
         minAmountOut,
         isNearTransformation,
     });
 
-    const handleSwap = swapCallback();
+    const handleSwap = swap();
 
     return viewState === VIEW_STATE.inputForm ? (
         <SwapForm onGoBack={goHome} account={account} userTokens={userTokens} />
@@ -47,18 +76,18 @@ export default function SwapWrapper({ history, account, userTokens }) {
             activeTokenTo={tokenOut}
             accountId={account.accountId}
             handleSwapToken={handleSwap}
-            // swappingToken={}
-            // setSlippage={}
-            // exchangeRate={}
-            // tradingFee={}
+            exchangeRate={exchangeRate}
+            tradingFee={0}
+            setSlippage={setSlippage}
+            showSlippageOption
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success
-            // amountFrom={}
-            // amountTo={}
+            amountFrom={amountIn}
+            amountTo={amountOut}
+            onClickContinue={showForm}
             // transactionHash={}
             // onClickGoToExplorer={}
-            onClickContinue={showForm}
         />
     ) : null;
 }

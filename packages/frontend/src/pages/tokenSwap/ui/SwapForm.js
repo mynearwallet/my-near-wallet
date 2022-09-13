@@ -1,4 +1,4 @@
-import React, { useState, memo, useMemo, useEffect, useContext } from 'react';
+import React, { useState, memo, useMemo, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -20,15 +20,15 @@ const SwapFormWrapper = styled.div`
 `;
 
 const Header = styled.div`
-    margin-bottom: 34px;
+    margin-bottom: 2.125rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 
     .title {
-        font-family: 'Inter';
+        font-family: "Inter";
         font-style: normal;
-        font-size: 20px;
-        line-height: 24px;
+        font-size: 1.25rem;
+        line-height: 1.5rem;
         text-align: center;
         font-weight: 900;
         margin: auto;
@@ -41,11 +41,17 @@ const SwapButtonWrapper = styled.div`
     justify-content: center;
 
     .reverse-button {
-        border-radius: 50px;
-        width: 72px;
-        height: 40px;
+        border-radius: 3.125rem;
+        width: 4.5rem;
+        height: 2.5rem;
         background-color: #d6edff;
         border: 0;
+
+        svg {
+            width: initial !important;
+            height: initial !important;
+            margin: initial !important;
+        }
 
         :hover {
             background-color: #0072ce;
@@ -63,7 +69,16 @@ const Footer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 28px;
+    align-items: center;
+    margin-top: 1.75rem;
+
+    button {
+        width: 100%;
+    }
+
+    .cancel-button-wrapper {
+        margin-top: 1.75rem;
+    }
 `;
 
 const swapInfoDaley = 1_000;
@@ -81,19 +96,14 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
 
     const swapTokens = useTokens();
     const {
-        swapState: {
-            tokenIn,
-            tokenOut,
-            amountIn,
-        },
+        swapState: { tokenIn, tokenOut, amountIn },
         events: {
             setViewState,
             setTokenIn,
             setTokenOut,
             setAmountIn,
             setAmountOut,
-            setSwapPool,
-            setMinAmountOut,
+            setSwapPoolId,
             setIsNearTransformation,
         },
     } = useSwapData();
@@ -145,18 +155,19 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
-    const swapData = useSwapInfo({
+    const { poolId, amountOut, isNearTransformation } = useSwapInfo({
         account,
         tokenIn,
         amountIn,
         tokenOut,
         delay: swapInfoDaley,
-        slippage: 0,
     });
-    const {
-        info: { isNearTransformation, poolId, amountOut, minAmountOut },
-        loading: swapInfoLoading,
-    } = swapData;
+
+    useEffect(() => {
+        setAmountOut(amountOut);
+        setSwapPoolId(poolId);
+        setIsNearTransformation(isNearTransformation);
+    }, [amountOut, poolId, isNearTransformation]);
 
     const flipInputsData = () => {
         setTokenIn(tokenOut);
@@ -173,8 +184,7 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
             !tokenOut ||
             (!poolId && !isNearTransformation) ||
             !amountIn ||
-            !amountOut ||
-            swapInfoLoading
+            !amountOut
         ) {
             return true;
         }
@@ -186,7 +196,6 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
         poolId,
         amountIn,
         amountOut,
-        swapInfoLoading,
         isNearTransformation,
     ]);
 
@@ -203,51 +212,52 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
                 <>
                     <Header>
                         <BackArrowButton onClick={onGoBack} />
-                        <h4 className='title'>
-                            <Translate id='swap.title' />
+                        <h4 className="title">
+                            <Translate id="swap.title" />
                         </h4>
                     </Header>
                     <Input
                         value={amountIn}
                         onChange={setAmountIn}
                         onSelectToken={selectTokenIn}
-                        label={<Translate id='swap.from' />}
+                        label={<Translate id="swap.from" />}
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
                         maxBalance={tokenInHumanBalance}
-                        inputTestId='swapPageInputAmountField'
-                        tokenSelectTestId='swapPageInputTokenSelector'
+                        inputTestId="swapPageInputAmountField"
+                        tokenSelectTestId="swapPageInputTokenSelector"
                     />
                     <SwapButtonWrapper>
                         <FormButton
-                            color='reverse-button'
+                            color="reverse-button"
                             onClick={flipInputsData}
                         >
-                            <SwapIcon color='#006ADC' />
+                            <SwapIcon color="#006ADC" />
                         </FormButton>
                     </SwapButtonWrapper>
                     <Input
                         value={amountOut}
-                        loading={swapInfoLoading}
                         onSelectToken={selectTokenOut}
-                        label={<Translate id='swap.to' />}
+                        label={<Translate id="swap.to" />}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
-                        tokenIcon={tokenOut?.onChainFTMetadata?.symbol}
-                        inputTestId='swapPageOutputAmountField'
-                        tokenSelectTestId='swapPageOutputTokenSelector'
+                        tokenIcon={tokenOut?.onChainFTMetadata?.icon}
+                        inputTestId="swapPageOutputAmountField"
+                        tokenSelectTestId="swapPageOutputTokenSelector"
                         disabled
                     />
                     <Footer>
                         <FormButton
                             disabled={cannotSwap}
                             onClick={onClickReview}
-                            data-test-id='swapPageSwapPreviewStateButton'
+                            data-test-id="swapPageSwapPreviewStateButton"
                         >
                             <Translate id="swap.review" />
                         </FormButton>
-                        <FormButton color="gray link" onClick={onGoBack}>
-                            <Translate id="button.cancel" />
-                        </FormButton>
+                        <div className="cancel-button-wrapper">
+                            <FormButton color="link gray" onClick={onGoBack}>
+                                <Translate id="button.cancel" />
+                            </FormButton>
+                        </div>
                     </Footer>
                 </>
             )}

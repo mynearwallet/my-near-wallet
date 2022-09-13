@@ -71,8 +71,12 @@ export function SwapReviewForm({
     swappingToken,
     setSlippage,
     exchangeRate,
-    tradingFee
+    tradingFee,
+    showSlippageOption,
 }) {
+    const tokenFromFiatPrice = activeTokenFrom?.fiatValueMetadata?.usd;
+    const tokenFromFiatAmount = tokenFromFiatPrice ? amountTokenFrom * tokenFromFiatPrice : null;
+
     return (
         <StyledContainer>
             <div className="header">
@@ -97,9 +101,11 @@ export function SwapReviewForm({
                         ? removeTrailingZeros(amountTokenFrom)
                         : amountTokenFrom
                 } ${activeTokenFrom.onChainFTMetadata?.symbol}`}</h1>
-                <div>{`≈ ${(
-                    amountTokenFrom * activeTokenFrom.fiatValueMetadata.usd
-                ).toFixed(2)} USD`}</div>
+                {tokenFromFiatAmount && (
+                    <div>{`≈ ${(
+                        amountTokenFrom * activeTokenFrom.fiatValueMetadata.usd
+                    ).toFixed(2)} USD`}</div>
+                )}
             </div>
             <TransactionDetails
                 amountTokenFrom={amountTokenFrom}
@@ -109,6 +115,7 @@ export function SwapReviewForm({
                 exchangeRate={exchangeRate}
                 setSlippage={setSlippage}
                 tradingFee={tradingFee}
+                showSlippageOption={showSlippageOption}
             />
             <FormButton
                 color="blue width100"

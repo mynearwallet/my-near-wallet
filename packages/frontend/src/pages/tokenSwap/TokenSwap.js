@@ -1,16 +1,10 @@
 import React, { memo, useEffect, useState } from 'react';
-import styled from 'styled-components';
 
+import Container from '../../components/common/styled/Container.css';
 import { useFungibleTokensIncludingNEAR } from '../../hooks/fungibleTokensIncludingNEAR';
 import { wallet } from '../../utils/wallet';
 import { SwapProvider } from './model/Swap';
 import SwapWrapper from './ui/SwapWrapper';
-
-const TokenSwapWrapper = styled.div`
-    max-width: 30rem;
-    margin: 0 auto;
-    padding: 0.5rem;
-`;
 
 export default memo(function TokenSwap({ history, accountId }) {
     const [account, setAccount] = useState(null);
@@ -32,13 +26,13 @@ export default memo(function TokenSwap({ history, accountId }) {
 
     return (
         <SwapProvider>
-            <TokenSwapWrapper>
+            <Container className="small-centered">
                 <SwapWrapper
                     history={history}
                     account={account}
                     userTokens={userTokens}
                 />
-            </TokenSwapWrapper>
+            </Container>
         </SwapProvider>
     );
 });

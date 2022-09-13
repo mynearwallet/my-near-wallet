@@ -137,6 +137,7 @@ export default memo(function Input({
                 </TokenWrapper>
                 <input
                     type="number"
+                    min={0}
                     value={loading ? '' : value}
                     onChange={handleChange}
                     placeholder={placeholder}
