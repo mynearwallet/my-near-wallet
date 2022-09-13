@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { memo, useState, useMemo } from 'react';
 
 import Success from '../../../components/swap/components/Success';
 import { SwapReviewForm } from '../../../components/swap/components/SwapReviewForm';
@@ -8,7 +8,7 @@ import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwap from '../utils/hooks/useSwap';
 import SwapForm from './SwapForm';
 
-export default function SwapWrapper({ history, account, userTokens }) {
+export default memo(function SwapWrapper({ history, account, tokens }) {
     const {
         swapState: {
             viewState,
@@ -76,7 +76,11 @@ export default function SwapWrapper({ history, account, userTokens }) {
     };
 
     return viewState === VIEW_STATE.inputForm ? (
-        <SwapForm onGoBack={goHome} account={account} userTokens={userTokens} />
+        <SwapForm
+            onGoBack={goHome}
+            account={account}
+            tokens={tokens}
+        />
     ) : viewState === VIEW_STATE.preview ? (
         <SwapReviewForm
             onClickGoBack={showForm}
@@ -94,7 +98,7 @@ export default function SwapWrapper({ history, account, userTokens }) {
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success
-            // @todo It's not an amount fields. In the old swap component
+            // @todo It's not amount fields. In the old swap component
             // we pass token symbols as well as here. We have to rename it.
             amountFrom={`${amountIn} ${tokenIn?.onChainFTMetadata?.symbol}`}
             amountTo={`${amountOut} ${tokenOut?.onChainFTMetadata?.symbol}`}
@@ -103,4 +107,4 @@ export default function SwapWrapper({ history, account, userTokens }) {
             onClickGoToExplorer={openTransaction}
         />
     ) : null;
-}
+});

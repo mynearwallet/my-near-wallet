@@ -10,7 +10,6 @@ import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
-import useTokens from '../utils/hooks/useTokens';
 import Input from './Input';
 
 const mobile = isMobile();
@@ -108,12 +107,11 @@ const tokenSelectState = {
     selectOut: 2,
 };
 
-export default memo(function SwapForm({ onGoBack, account, userTokens }) {
+export default memo(function SwapForm({ onGoBack, account, tokens }) {
     const [displayTokenSelect, setDisplayTokenSelect] = useState(
         tokenSelectState.noSelect
     );
 
-    const swapTokens = useTokens();
     const {
         swapState: { tokenIn, tokenOut, amountIn },
         events: {
@@ -147,13 +145,13 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
     }, [tokenIn]);
 
     useEffect(() => {
-        if (!tokenIn && userTokens[0]) {
-            setTokenIn(userTokens[0]);
+        if (!tokenIn && tokens[0]) {
+            setTokenIn(tokens[0]);
         }
-        if (!tokenOut && userTokens[1]) {
-            setTokenOut(userTokens[1]);
+        if (!tokenOut && tokens[1]) {
+            setTokenOut(tokens[1]);
         }
-    }, [userTokens]);
+    }, [tokens]);
 
     const handleTokenSelect = (token) => {
         switch (displayTokenSelect) {
@@ -224,7 +222,7 @@ export default memo(function SwapForm({ onGoBack, account, userTokens }) {
                 <SelectToken
                     isMobile={mobile}
                     onClickGoBack={hideTokenSelection}
-                    fungibleTokens={swapTokens}
+                    fungibleTokens={tokens}
                     onSelectToken={handleTokenSelect}
                 />
             ) : (

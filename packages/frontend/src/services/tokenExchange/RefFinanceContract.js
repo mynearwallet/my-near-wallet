@@ -27,6 +27,8 @@ const contractConfig = {
     }
 };
 
+const DEV_CONTRACT_ID_REGEXP = /^dev-[0-9]+-[0-9]+$/;
+
 class RefFinanceContract {
     async _newContract(account) {
         return await new nearApi.Contract(
@@ -45,8 +47,15 @@ class RefFinanceContract {
             const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
 
             if (hasLiquidity) {
-                tokens.add(token_account_ids[0]);
-                tokens.add(token_account_ids[1]);
+                const isToken0Dev = token_account_ids[0].match(DEV_CONTRACT_ID_REGEXP);
+                const isToken1Dev = token_account_ids[1].match(DEV_CONTRACT_ID_REGEXP);
+
+                if (!isToken0Dev) {
+                    tokens.add(token_account_ids[0]);
+                }
+                if (!isToken1Dev) {
+                    tokens.add(token_account_ids[1]);
+                }
 
                 let mainKey = JSON.stringify(token_account_ids);
                 const reverseKey = JSON.stringify(token_account_ids.reverse());
