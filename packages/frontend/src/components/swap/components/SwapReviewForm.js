@@ -122,6 +122,7 @@ export function SwapReviewForm({
                 disabled={swappingToken === true}
                 sending={swappingToken === true}
                 sendingString="swapping"
+                data-test-id="swapPageStartSwapButton"
                 onClick={async () => {
                     await handleSwapToken({
                         accountId,

@@ -91,6 +91,7 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
             accountId={account.accountId}
             handleSwapToken={handleSwap}
             exchangeRate={exchangeRate}
+            // @todo calculate tradingFee
             tradingFee={0}
             swappingToken={swapPending}
             setSlippage={setSlippage}

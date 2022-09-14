@@ -123,7 +123,7 @@ const NavLinks = () => (
                 <Translate id='link.explore'/>
             </NavLink>
         )}
-        <NavLink to='/swap' activeClassName='selected' onClick={() => Mixpanel.track('Click Swap button on nav')}>
+        <NavLink data-test-id="swap_navlink" to='/swap' activeClassName='selected' onClick={() => Mixpanel.track('Click Swap button on nav')}>
             <SwapIcon/>
             <Translate id='link.swap'/>
         </NavLink>
