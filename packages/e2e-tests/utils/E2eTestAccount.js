@@ -123,6 +123,14 @@ class E2eTestAccount {
         await this.connectToNearApiJs();
         return this.nearApiJsAccount.getAccountBalance();
     }
+    async getTokenBalance(contractId) {
+        await this.connectToNearApiJs();
+        return this.nearApiJsAccount.viewFunction(
+            contractId,
+            'ft_balance_of',
+            { account_id: this.accountId }
+        );
+    }
     async getAmountStakedWithValidator(validatorAccountId) {
         const balanceString = await this.nearApiJsAccount.viewFunction(validatorAccountId, "get_account_staked_balance", {
             account_id: this.accountId,

@@ -1,11 +1,15 @@
-const BN = require("bn.js");
 const nearApi = require("near-api-js");
 
 const { test, expect } = require("../playwrightWithFixtures");
 const { CONTRACT } = require("../constants");
 const { HomePage } = require("../register/models/Home");
 const { SwapPage } = require("./models/Swap");
+const {
+    NEAR_DEPOSIT_FEE,
+    NEAR_WITHDRAW_FEE,
+} = require("./constants");
 
+const { utils: { format } } = nearApi;
 const { describe, beforeAll, afterAll } = test;
 const { TESTNET } = CONTRACT;
 
@@ -17,7 +21,9 @@ const getResultMessageRegExp = ({ fromSymbol, fromAmount, toSymbol, toAmount }) 
 
 describe("Swap NEAR with wrapped NEAR", () => {
     const swapAmount = 1;
-    const parsedSwapAmount = nearApi.utils.format.parseNearAmount(`${swapAmount}`);
+    const parsedSwapAmount = format.parseNearAmount(`${swapAmount}`);
+    // Limit on amount decimals because we don't know the exact transaction fees
+    const maxDecimalsToCheck = 2;
     let account;
 
     beforeAll(async ({ bankAccount }) => {
@@ -74,10 +80,18 @@ describe("Swap NEAR with wrapped NEAR", () => {
         );
 
         const nearBalanceAfter = await account.getUpdatedBalance();
-        const nearBefore = new BN(nearBalanceBefore.total);
-        const nearAfter = new BN(nearBalanceAfter.total);
+        const spentInSwap = swapAmount + NEAR_DEPOSIT_FEE;
+        const parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
+        const parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
 
-        // expect(nearAfter.eq(nearBefore.sub(new BN(parsedSwapAmount)))).toBe(true);
+        expect(Number(parsedTotalAfter)).toBeCloseTo(
+            parsedTotalBefore - spentInSwap,
+            maxDecimalsToCheck
+        );
+
+        const wrappedNearBalance = await account.getTokenBalance(TESTNET.wNEAR.id);
+
+        expect(Number(format.formatNearAmount(wrappedNearBalance))).toEqual(swapAmount);
 
         await homePage.close();
         await swapPage.close();
