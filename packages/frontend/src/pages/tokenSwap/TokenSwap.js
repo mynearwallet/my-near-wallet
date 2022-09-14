@@ -21,15 +21,23 @@ export default function TokenSwap({ history, accountId }) {
     }, [userTokens, swapTokens]);
 
     useEffect(() => {
+        let mounted = true;
+
         if (accountId) {
             const updateAccount = async () => {
                 const instance = await wallet.getAccount(accountId, true);
 
-                setAccount(instance);
+                if (mounted) {
+                    setAccount(instance);
+                }
             };
 
             updateAccount();
         }
+
+        return () => {
+            mounted = false;
+        };
     }, [accountId]);
 
     return (

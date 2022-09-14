@@ -6,7 +6,7 @@ import {
     FT_MINIMUM_STORAGE_BALANCE,
     FT_STORAGE_DEPOSIT_GAS,
 } from '../../config';
-import FungibleTokens, { fungibleTokensService } from '../FungibleTokens';
+import { fungibleTokensService } from '../FungibleTokens';
 import refFinanceContract from './RefFinanceContract';
 import { isNearTransformation, replaceNearIfNecessary } from './utils';
 
@@ -71,7 +71,7 @@ class FungibleTokenExchange {
         });
     }
 
-    _transformNear(params) {
+    async _transformNear(params) {
         const { account, tokenIn, amountIn } = params;
 
         return fungibleTokensService.transformNear({
@@ -209,25 +209,27 @@ class FungibleTokenExchange {
         return this._processTransactions(account, transactions);
     }
 
-    async _getDepositTransactions(accountId, contracts) {
+    async _getDepositTransactions(account, tokenIds) {
         const txs = [];
+        const { accountId } = account;
 
-        for (const name of contracts) {
-            const tokenOutStorage = await FungibleTokens.getStorageBalance({
-                contractName: name,
-                accountId,
-            });
+        for (const id of tokenIds) {
+            const tokenStorage = await account.viewFunction(
+                id,
+                'storage_balance_of',
+                { account_id: accountId }
+            );
 
-            if (!tokenOutStorage) {
+            if (!tokenStorage) {
                 txs.push({
-                    receiverId: name,
+                    receiverId: id,
                     actions: [
                         nearApi.transactions.functionCall(
                             'storage_deposit',
                             {
                                 account_id: accountId,
                                 signer_id: accountId,
-                                receiver_id: name,
+                                receiver_id: id,
                                 registration_only: true,
                             },
                             FT_STORAGE_DEPOSIT_GAS,

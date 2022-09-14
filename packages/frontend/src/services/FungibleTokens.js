@@ -185,30 +185,8 @@ export default class FungibleTokens {
         });
     }
 
-    // @note is there a simpler and more informative name?
-    async #getActionsWithStorageDepositIfNeeded(accountId) {
-        const actions = [];
-        const storage = await FungibleTokens.getStorageBalance({
-            contractName: NEAR_TOKEN_ID,
-            accountId,
-        });
-
-        if (!storage) {
-            actions.push(
-                functionCall(
-                    'storage_deposit',
-                    {},
-                    FT_STORAGE_DEPOSIT_GAS,
-                    FT_MINIMUM_STORAGE_BALANCE,
-                )
-            );
-        }
-
-        return actions;
-    }
-
     async getWrapNearTx({ accountId, amount }) {
-        const actions = await this.#getActionsWithStorageDepositIfNeeded(accountId);
+        const actions = await this._getStorageDepositActions(accountId);
 
         actions.push(
             functionCall(
@@ -223,7 +201,7 @@ export default class FungibleTokens {
     }
 
     async getUnwrapNearTx({ accountId, amount }) {
-        const actions = await this.#getActionsWithStorageDepositIfNeeded(accountId);
+        const actions = await this._getStorageDepositActions(accountId);
 
         actions.push(
             functionCall(
@@ -244,6 +222,27 @@ export default class FungibleTokens {
             : this.getUnwrapNearTx({ accountId, amount }));
 
         return account.signAndSendTransaction(tx);
+    }
+
+    async _getStorageDepositActions(accountId) {
+        const actions = [];
+        const storage = await FungibleTokens.getStorageBalance({
+            contractName: NEAR_TOKEN_ID,
+            accountId,
+        });
+
+        if (!storage) {
+            actions.push(
+                functionCall(
+                    'storage_deposit',
+                    {},
+                    FT_STORAGE_DEPOSIT_GAS,
+                    FT_MINIMUM_STORAGE_BALANCE,
+                )
+            );
+        }
+
+        return actions;
     }
 }
 

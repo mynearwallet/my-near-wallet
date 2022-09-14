@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectPoolsSlice } from '../../../../redux/slices/swap';
+import { selectAllPools, selectPoolsLoading } from '../../../../redux/slices/swap';
 
 const retrievePools = (allPools, keys) => {
     for (const key of keys) {
@@ -16,18 +16,18 @@ const retrievePools = (allPools, keys) => {
 };
 
 export default function usePools({ tokenIn, tokenOut }) {
-    const { all, loading } = useSelector(selectPoolsSlice);
-    const [pools, setPools] = useState(null);
+    const allPools = useSelector(selectAllPools);
+    const loading = useSelector(selectPoolsLoading);
 
-    useEffect(() => {
+    const pools = useMemo(() => {
         if (tokenIn && tokenOut && !loading) {
-            const poolsById = retrievePools(all, [
+            return retrievePools(allPools, [
                 JSON.stringify([tokenIn, tokenOut]),
                 JSON.stringify([tokenOut, tokenIn]),
             ]);
-
-            setPools(poolsById);
         }
+
+        return null;
     }, [tokenIn, tokenOut]);
 
     return pools;

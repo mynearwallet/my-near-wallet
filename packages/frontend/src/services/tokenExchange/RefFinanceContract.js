@@ -30,57 +30,6 @@ const contractConfig = {
 const DEV_CONTRACT_ID_REGEXP = /^dev-[0-9]+-[0-9]+$/;
 
 class RefFinanceContract {
-    async _newContract(account) {
-        return await new nearApi.Contract(
-            account,
-            contractConfig.contractId,
-            contractConfig
-        );
-    }
-
-    formatPoolsData(inputPools) {
-        const pools = {};
-        const tokens = new Set();
-
-        inputPools.forEach((pool, poolId) => {
-            const { token_account_ids, shares_total_supply, amounts  } = pool;
-            const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
-
-            if (hasLiquidity) {
-                const isToken0Dev = token_account_ids[0].match(DEV_CONTRACT_ID_REGEXP);
-                const isToken1Dev = token_account_ids[1].match(DEV_CONTRACT_ID_REGEXP);
-
-                if (!isToken0Dev) {
-                    tokens.add(token_account_ids[0]);
-                }
-                if (!isToken1Dev) {
-                    tokens.add(token_account_ids[1]);
-                }
-
-                let mainKey = JSON.stringify(token_account_ids);
-                const reverseKey = JSON.stringify(token_account_ids.reverse());
-
-                if (!pools[mainKey]) {
-                    pools[mainKey] = {};
-                }
-                // Some pools have reverse order of the same tokens.
-                // In this condition we check if we already have
-                // such tokens and use an existing pools key.
-                if (pools[reverseKey] && Object.keys(pools[reverseKey])?.length > 0) {
-                    mainKey = reverseKey;
-                }
-
-                pools[mainKey][poolId] = {
-                    // set before the "...pool": if the pool has own 'poolId' key it will be rewritten
-                    poolId,
-                    ...pool,
-                };
-            }
-        });
-
-        return { pools, tokens: [...tokens] };
-    }
-
     async getData({ account }) {
         const { maxRequestAmount } = contractConfig.pools;
         const contract = await this._newContract(account);
@@ -124,7 +73,7 @@ class RefFinanceContract {
             }
         }
 
-        return this.formatPoolsData(pools);
+        return this._formatPoolsData(pools);
     }
 
     // @todo remove get_return when findBestSwapPool() would be fixed
@@ -187,6 +136,57 @@ class RefFinanceContract {
         );
 
         return actions;
+    }
+
+    _formatPoolsData(inputPools) {
+        const pools = {};
+        const tokens = new Set();
+
+        inputPools.forEach((pool, poolId) => {
+            const { token_account_ids, shares_total_supply, amounts  } = pool;
+            const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
+
+            if (hasLiquidity) {
+                const isToken0Dev = token_account_ids[0].match(DEV_CONTRACT_ID_REGEXP);
+                const isToken1Dev = token_account_ids[1].match(DEV_CONTRACT_ID_REGEXP);
+
+                if (!isToken0Dev) {
+                    tokens.add(token_account_ids[0]);
+                }
+                if (!isToken1Dev) {
+                    tokens.add(token_account_ids[1]);
+                }
+
+                let mainKey = JSON.stringify(token_account_ids);
+                const reverseKey = JSON.stringify(token_account_ids.reverse());
+
+                if (!pools[mainKey]) {
+                    pools[mainKey] = {};
+                }
+                // Some pools have reverse order of the same tokens.
+                // In this condition we check if we already have
+                // such tokens and use an existing pools key.
+                if (pools[reverseKey] && Object.keys(pools[reverseKey])?.length > 0) {
+                    mainKey = reverseKey;
+                }
+
+                pools[mainKey][poolId] = {
+                    // set before the "...pool": if the pool has own 'poolId' key it will be rewritten
+                    poolId,
+                    ...pool,
+                };
+            }
+        });
+
+        return { pools, tokens: [...tokens] };
+    }
+
+    async _newContract(account) {
+        return await new nearApi.Contract(
+            account,
+            contractConfig.contractId,
+            contractConfig
+        );
     }
 }
 

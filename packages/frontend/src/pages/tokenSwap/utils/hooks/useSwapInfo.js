@@ -1,15 +1,15 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { NEAR_TOKEN_ID } from '../../../../config';
+import { NEAR_ID, NEAR_TOKEN_ID } from '../../../../config';
 import useDebounce from '../../../../hooks/useDebounce';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import usePools from './usePools';
 
 const isNearTransformation = (token0, token1) => {
     return (
-        (token0?.contractName === 'NEAR' &&
+        (token0?.contractName === NEAR_ID &&
             token1?.contractName === NEAR_TOKEN_ID) ||
-        (token1?.contractName === 'NEAR' &&
+        (token1?.contractName === NEAR_ID &&
             token0?.contractName === NEAR_TOKEN_ID)
     );
 };
@@ -31,8 +31,8 @@ export default function useSwapInfo({
     );
 
     const pools = usePools({
-        tokenIn: tokenIn?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenIn?.contractName,
-        tokenOut: tokenOut?.contractName === 'NEAR' ? NEAR_TOKEN_ID : tokenOut?.contractName,
+        tokenIn: tokenIn?.contractName === NEAR_ID ? NEAR_TOKEN_ID : tokenIn?.contractName,
+        tokenOut: tokenOut?.contractName === NEAR_ID ? NEAR_TOKEN_ID : tokenOut?.contractName,
     });
 
     useEffect(() => {
