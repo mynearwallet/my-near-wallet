@@ -55,6 +55,14 @@ class SwapPage {
     async waitResultMessageElement() {
         return this.page.waitForSelector('data-test-id=sendTransactionSuccessMessage')
     }
+
+    async navigateAndfillForm(tokenInId, tokenOutId) {
+        await this.navigate();
+        // wait while token list is loaded
+        await this.wait(3_000);
+        await this.selectInputAsset(tokenInId);
+        await this.selectOutputAsset(tokenOutId);
+    }
 }
 
 module.exports = { SwapPage };

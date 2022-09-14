@@ -25,11 +25,16 @@ describe("Swap NEAR with wrapped NEAR", () => {
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
+    let totalBalanceOnStart;
 
     beforeAll(async ({ bankAccount }) => {
         account = bankAccount.spawnRandomSubAccountInstance();
 
         await account.create();
+
+        const { total } = await account.getUpdatedBalance();
+
+        totalBalanceOnStart = Number(format.formatNearAmount(total));
     });
 
     afterAll(async () => {
@@ -38,21 +43,13 @@ describe("Swap NEAR with wrapped NEAR", () => {
 
     test("should swap NEAR for wrapped NEAR", async ({ page }) => {
         const homePage = new HomePage(page);
-
-        await homePage.navigate();
-        await homePage.loginWithSeedPhraseLocalStorage(account.accountId, account.seedPhrase);
-        await homePage.navigate();
-
         const swapPage = new SwapPage(page);
 
-        await swapPage.navigate();
+        await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
+        await swapPage.navigateAndfillForm(TESTNET.NEAR.id, TESTNET.wNEAR.id);
 
         expect(swapPage.page).toHaveURL(/.*\/swap$/);
 
-        // wait while token list is loaded
-        await swapPage.wait(3_000);
-        await swapPage.selectInputAsset(TESTNET.NEAR.id);
-        await swapPage.selectOutputAsset(TESTNET.wNEAR.id);
         await swapPage.typeInputAmount(swapAmount);
         // wait while output amount is loading
         await swapPage.wait(1_000);
@@ -92,6 +89,60 @@ describe("Swap NEAR with wrapped NEAR", () => {
         const wrappedNearBalance = await account.getTokenBalance(TESTNET.wNEAR.id);
 
         expect(Number(format.formatNearAmount(wrappedNearBalance))).toEqual(swapAmount);
+
+        await homePage.close();
+        await swapPage.close();
+    });
+
+    test("should swap wrapped NEAR for NEAR", async ({ page }) => {
+        const homePage = new HomePage(page);
+        const swapPage = new SwapPage(page);
+
+        await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
+        await swapPage.navigateAndfillForm(TESTNET.wNEAR.id, TESTNET.NEAR.id);
+        await swapPage.typeInputAmount(swapAmount);
+        // wait while output amount is loading
+        await swapPage.wait(1_000);
+
+        const outInput = await swapPage.getOutputInput();
+        const outAmount = await outInput.inputValue();
+
+        expect(outAmount).toEqual(`${swapAmount}`);
+
+        const nearBalanceBefore = await account.getUpdatedBalance();
+        // Additional balance check after the first swap
+        expect(Number(format.formatNearAmount(nearBalanceBefore.total))).toBeCloseTo(
+            totalBalanceOnStart - swapAmount - NEAR_DEPOSIT_FEE,
+            maxDecimalsToCheck
+        );
+
+        await swapPage.clickOnPreviewButton();
+        await swapPage.confirmSwap();
+
+        const resultElement = await swapPage.waitResultMessageElement();
+        const resultMessage = await resultElement.innerText();
+        // We might receive multiline string here. So at first remove line breaks from it.
+        expect(resultMessage.replace(/\r?\n|\r/g, ' ')).toMatch(
+            getResultMessageRegExp({
+                fromSymbol: TESTNET.wNEAR.symbol,
+                fromAmount: swapAmount,
+                toSymbol: TESTNET.NEAR.symbol,
+                toAmount: swapAmount,
+            })
+        );
+
+        const nearBalanceAfter = await account.getUpdatedBalance();
+        const parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
+        const parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+
+        expect(Number(parsedTotalAfter)).toBeCloseTo(
+            Number(parsedTotalBefore) + swapAmount - NEAR_WITHDRAW_FEE,
+            maxDecimalsToCheck
+        );
+
+        const wrappedNearBalance = await account.getTokenBalance(TESTNET.wNEAR.id);
+
+        expect(Number(format.formatNearAmount(wrappedNearBalance))).toEqual(0);
 
         await homePage.close();
         await swapPage.close();

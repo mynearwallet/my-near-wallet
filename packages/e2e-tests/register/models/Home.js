@@ -40,5 +40,11 @@ class HomePage {
     async getNearBalanceInNear() {
         return this.page.textContent("data-test-id=walletHomeNearBalance").then((bal) => bal.split(" ")[0]);
     }
+
+    async loginAndNavigate(accountId, seed) {
+        await this.navigate();
+        await this.loginWithSeedPhraseLocalStorage(accountId, seed);
+        await this.navigate();
+    }
 }
 module.exports = { HomePage };
