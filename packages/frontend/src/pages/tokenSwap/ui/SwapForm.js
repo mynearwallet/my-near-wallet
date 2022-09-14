@@ -2,24 +2,54 @@ import React, { useState, memo, useMemo, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import BackArrowButton from '../../../components/common/BackArrowButton';
 import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
-import useSwapCallback from '../utils/hooks/useSwapCallback';
+import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
-import SwapInfo from './SwapInfo';
-import SwapSettings from './SwapSettings';
 
 const mobile = isMobile();
 
 const SwapFormWrapper = styled.div`
     font-size: 1.2rem;
+    // Styles for the <SelectToken /> component.
+    // We use the same styles in the old swap components.
+    // @todo find a way to use it in one place.
+    // Can we put it in <SelectToken /> ?
+    div.header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #272729;
+        font-weight: 600;
+        font-size: 20px;
+        word-break: break-all;
 
-    .swap-button {
-        width: 100%;
+        .back-arrow-button {
+            position: absolute;
+            left: 0;
+        }
+    }
+`;
+
+const Header = styled.div`
+    margin-bottom: 2.125rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    .title {
+        font-family: "Inter";
+        font-style: normal;
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+        text-align: center;
+        font-weight: 900;
+        margin: auto;
     }
 `;
 
@@ -27,6 +57,46 @@ const SwapButtonWrapper = styled.div`
     margin-bottom: 1.6rem;
     display: flex;
     justify-content: center;
+
+    .reverse-button {
+        border-radius: 3.125rem;
+        width: 4.5rem;
+        height: 2.5rem;
+        background-color: #d6edff;
+        border: 0;
+
+        svg {
+            width: initial !important;
+            height: initial !important;
+            margin: initial !important;
+        }
+
+        :hover {
+            background-color: #0072ce;
+
+            svg {
+                path {
+                    fill: #ffffff;
+                }
+            }
+        }
+    }
+`;
+
+const Footer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.75rem;
+
+    button {
+        width: 100%;
+    }
+
+    .cancel-button-wrapper {
+        margin-top: 1.75rem;
+    }
 `;
 
 const swapInfoDaley = 1_000;
@@ -37,17 +107,33 @@ const tokenSelectState = {
     selectOut: 2,
 };
 
-const initSettings = {};
+export default memo(function SwapForm({ onGoBack, account, tokens }) {
+    const [displayTokenSelect, setDisplayTokenSelect] = useState(
+        tokenSelectState.noSelect
+    );
 
-export default memo(function SwapForm({ account, tokens }) {
-    const [displayTokenSelect, setDisplayTokenSelect] = useState(tokenSelectState.noSelect);
+    const {
+        swapState: { tokenIn, tokenOut, amountIn },
+        events: {
+            setViewState,
+            setTokenIn,
+            setTokenOut,
+            setAmountIn,
+            setAmountOut,
+            setSwapPoolId,
+            setIsNearTransformation,
+        },
+    } = useSwapData();
 
-    const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
-    const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
-    const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
+    const onClickReview = () => setViewState(VIEW_STATE.preview);
 
-    const [tokenIn, setTokenIn] = useState(tokens[0]);
-    const [tokenOut, setTokenOut] = useState(tokens[1]);
+    const selectTokenIn = () =>
+        setDisplayTokenSelect(tokenSelectState.selectIn);
+    const selectTokenOut = () =>
+        setDisplayTokenSelect(tokenSelectState.selectOut);
+    const hideTokenSelection = () =>
+        setDisplayTokenSelect(tokenSelectState.noSelect);
+
     const tokenInHumanBalance = useMemo(() => {
         if (tokenIn) {
             const { balance, onChainFTMetadata } = tokenIn;
@@ -66,8 +152,6 @@ export default memo(function SwapForm({ account, tokens }) {
             setTokenOut(tokens[1]);
         }
     }, [tokens]);
-
-    const [settings, setSettings] = useState(initSettings);
 
     const handleTokenSelect = (token) => {
         switch (displayTokenSelect) {
@@ -88,19 +172,19 @@ export default memo(function SwapForm({ account, tokens }) {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
-    const [amountIn, setAmountIn] = useState('');
-    const swapData = useSwapInfo({
-        accountId: account?.accountId || '',
+    const { poolId, amountOut, isNearTransformation, loading } = useSwapInfo({
+        account,
         tokenIn,
         amountIn,
         tokenOut,
         delay: swapInfoDaley,
-        slippage: settings.slippage,
     });
-    const {
-        info: { isNearTransformation, poolId, amountOut, minAmountOut },
-        loading: swapInfoLoading,
-    } = swapData;
+
+    useEffect(() => {
+        setAmountOut(amountOut);
+        setSwapPoolId(poolId);
+        setIsNearTransformation(isNearTransformation);
+    }, [amountOut, poolId, isNearTransformation]);
 
     const flipInputsData = () => {
         setTokenIn(tokenOut);
@@ -111,27 +195,13 @@ export default memo(function SwapForm({ account, tokens }) {
         }
     };
 
-    const { callback: swapCallback, pending: swapPending } = useSwapCallback({
-        accountId: account?.accountId,
-        amountIn,
-        poolId,
-        tokenIn,
-        tokenOut,
-        minAmountOut,
-        isNearTransformation,
-    });
-
-    const handleSwap = () => swapCallback();
-
     const cannotSwap = useMemo(() => {
         if (
             !tokenIn ||
             !tokenOut ||
             (!poolId && !isNearTransformation) ||
             !amountIn ||
-            !amountOut ||
-            swapInfoLoading ||
-            swapPending
+            !amountOut
         ) {
             return true;
         }
@@ -143,8 +213,6 @@ export default memo(function SwapForm({ account, tokens }) {
         poolId,
         amountIn,
         amountOut,
-        swapInfoLoading,
-        swapPending,
         isNearTransformation,
     ]);
 
@@ -159,6 +227,12 @@ export default memo(function SwapForm({ account, tokens }) {
                 />
             ) : (
                 <>
+                    <Header>
+                        <BackArrowButton onClick={onGoBack} />
+                        <h4 className="title">
+                            <Translate id="swap.title" />
+                        </h4>
+                    </Header>
                     <Input
                         value={amountIn}
                         onChange={setAmountIn}
@@ -171,32 +245,38 @@ export default memo(function SwapForm({ account, tokens }) {
                         tokenSelectTestId="swapPageInputTokenSelector"
                     />
                     <SwapButtonWrapper>
-                        <FormButton onClick={flipInputsData}>
-                            <SwapIcon color="#fff" />
+                        <FormButton
+                            color="reverse-button"
+                            onClick={flipInputsData}
+                        >
+                            <SwapIcon color="#006ADC" />
                         </FormButton>
                     </SwapButtonWrapper>
                     <Input
                         value={amountOut}
-                        loading={swapInfoLoading}
                         onSelectToken={selectTokenOut}
                         label={<Translate id="swap.to" />}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
-                        tokenIcon={tokenOut?.onChainFTMetadata?.symbol}
+                        tokenIcon={tokenOut?.onChainFTMetadata?.icon}
+                        loading={loading}
                         inputTestId="swapPageOutputAmountField"
                         tokenSelectTestId="swapPageOutputTokenSelector"
                         disabled
                     />
-                    <SwapSettings onChange={setSettings} />
-                    <SwapInfo data={swapData} />
-                    <FormButton
-                        color="blue"
-                        onClick={handleSwap}
-                        className="swap-button"
-                        disabled={cannotSwap}
-                        data-test-id="swapPageSwapConfirmationButton"
-                    >
-                        {swapPending ? 'Processing ...' : <Translate id="swap.confirm" />}
-                    </FormButton>
+                    <Footer>
+                        <FormButton
+                            disabled={cannotSwap}
+                            onClick={onClickReview}
+                            data-test-id="swapPageSwapPreviewStateButton"
+                        >
+                            <Translate id="swap.review" />
+                        </FormButton>
+                        <div className="cancel-button-wrapper">
+                            <FormButton color="link gray" onClick={onGoBack}>
+                                <Translate id="button.cancel" />
+                            </FormButton>
+                        </div>
+                    </Footer>
                 </>
             )}
         </SwapFormWrapper>

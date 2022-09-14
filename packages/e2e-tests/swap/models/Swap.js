@@ -3,8 +3,34 @@ class SwapPage {
         this.page = page;
     }
 
+    async wait(ms) {
+        await this.page.waitForTimeout(ms);
+    }
+
+    async close() {
+        await this.page.close();
+    }
+
     async navigate() {
         await this.page.goto('/swap');
+    }
+
+    async clickOnSwapLink() {
+        await this.page.click('data-test-id=swap_navlink');
+    }
+
+    async selectInputAsset(contractName) {
+        await this.page.click('data-test-id=swapPageInputTokenSelector');
+        await this.page.click(
+            `data-test-id=token-selection-${contractName}`
+        );
+    }
+
+    async selectOutputAsset(contractName) {
+        await this.page.click('data-test-id=swapPageOutputTokenSelector');
+        await this.page.click(
+            `data-test-id=token-selection-${contractName}`
+        );
     }
 
     async typeInputAmount(amount) {
@@ -14,29 +40,20 @@ class SwapPage {
         );
     }
 
-    async selectInputAsset(contractName) {
-        await this.page.click(`data-test-id=swapPageInputTokenSelector`);
-        await this.page.click(
-            `data-test-id=token-selection-${contractName}`
-        );
+    async getOutputInput() {
+        return this.page.waitForSelector('data-test-id=swapPageOutputAmountField');
     }
 
-    async selectOutputAsset(contractName) {
-        await this.page.click(`data-test-id=swapPageOutputTokenSelector`);
-        await this.page.click(
-            `data-test-id=token-selection-${contractName}`
-        );
-    }
-
-    async waitForOutputAmount() {
-        // wait for the balance display to contain any character more than 0
-        await this.page.waitForSelector(
-            '[data-test-id=swapPageOutputAmountField] >> div:text-matches("[1-9]")'
-        );
+    async clickOnPreviewButton() {
+        await this.page.click('data-test-id=swapPageSwapPreviewStateButton');
     }
 
     async confirmSwap() {
-        await this.page.click("data-test-id=swapPageSwapConfirmationButton");
+        await this.page.click('data-test-id=swapPageStartSwapButton');
+    }
+
+    async waitResultMessageElement() {
+        return this.page.waitForSelector('data-test-id=sendTransactionSuccessMessage')
     }
 }
 

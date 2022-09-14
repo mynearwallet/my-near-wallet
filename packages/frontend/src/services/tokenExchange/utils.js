@@ -1,10 +1,7 @@
-import { NEAR_TOKEN_ID } from '../../config';
+import { NEAR_ID, NEAR_TOKEN_ID } from '../../config';
 import { formatTokenAmount } from '../../utils/amounts';
 
-// @todo move it somewhere in configs (check if it exists already)
-export const NEAR_ID = 'NEAR';
-
-export const isNearSwap = (params) => {
+export const isNearTransformation = (params) => {
     const { tokenIn, tokenOut } = params;
     const ids = [tokenIn.contractName, tokenOut.contractName];
 

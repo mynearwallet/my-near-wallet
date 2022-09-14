@@ -1,11 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { showCustomAlert } from '../../../../redux/actions/status';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
+import { useSwapData, VIEW_STATE } from '../../model/Swap';
 
-export default function useSwapCallback({
-    accountId,
+export default function useSwap({
+    account,
     amountIn,
     poolId,
     tokenIn,
@@ -15,33 +16,38 @@ export default function useSwapCallback({
 }) {
     const dispatch = useDispatch();
     const [pending, setPending] = useState(false);
+    const { events } = useSwapData();
 
-    const callback = useCallback(() => {
+    const swap = useMemo(() => {
         if (
-            !accountId ||
+            !account ||
             !amountIn ||
             (!isNearTransformation && !poolId) ||
             !tokenIn ||
             !tokenOut ||
             !minAmountOut
         ) {
-            return;
+            return null;
         }
 
-        setPending(true);
+        return async () => {
+            setPending(true);
 
-        fungibleTokenExchange
-            .swap({
-                accountId,
-                amountIn,
-                poolId,
-                tokenIn,
-                tokenOut,
-                minAmountOut,
-            })
-            .then((result) => {
-                // @note result is an array of swap transactions
-                // what could we show in a notification, especially in case of many txs?
+            try {
+                const { swapTxHash } = await fungibleTokenExchange.swap({
+                    account,
+                    amountIn,
+                    poolId,
+                    tokenIn,
+                    tokenOut,
+                    minAmountOut,
+                });
+
+                events.setLastSwapTxHash(swapTxHash);
+                events.setViewState(VIEW_STATE.result);
+
+                // we show a swap result page if this page is mounted
+                // @todo how to show this alert when it's unmounted?
                 dispatch(
                     showCustomAlert({
                         success: true,
@@ -50,8 +56,7 @@ export default function useSwapCallback({
                         errorMessage: `${tokenIn.contractName} to ${tokenOut.contractName}`,
                     })
                 );
-            })
-            .catch((error) => {
+            } catch (error) {
                 dispatch(
                     showCustomAlert({
                         success: false,
@@ -59,13 +64,13 @@ export default function useSwapCallback({
                         errorMessage: error.message,
                     })
                 );
-            })
-            .finally(() => {
-                setPending(false);
-            });
+            }
+
+            setPending(false);
+        };
     }, [
         dispatch,
-        accountId,
+        account,
         amountIn,
         poolId,
         tokenIn,
@@ -74,5 +79,5 @@ export default function useSwapCallback({
         isNearTransformation,
     ]);
 
-    return { callback, pending };
+    return { swap, pending };
 }

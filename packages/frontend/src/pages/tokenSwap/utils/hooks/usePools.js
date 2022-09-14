@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectPoolsSlice } from '../../../../redux/slices/swap';
+import { selectAllPools, selectPoolsLoading } from '../../../../redux/slices/swap';
 
 const retrievePools = (allPools, keys) => {
     for (const key of keys) {
@@ -15,20 +15,20 @@ const retrievePools = (allPools, keys) => {
     return null;
 };
 
-export default function usePools({ token0Id, token1Id }) {
-    const { pools: { all, loading } } = useSelector(selectPoolsSlice);
-    const [pools, setPools] = useState(null);
+export default function usePools({ tokenIn, tokenOut }) {
+    const allPools = useSelector(selectAllPools);
+    const loading = useSelector(selectPoolsLoading);
 
-    useEffect(() => {
-        if (token0Id && token1Id && !loading) {
-            const poolsById = retrievePools(all, [
-                JSON.stringify([token0Id, token1Id]),
-                JSON.stringify([token1Id, token0Id]),
+    const pools = useMemo(() => {
+        if (tokenIn && tokenOut && !loading) {
+            return retrievePools(allPools, [
+                JSON.stringify([tokenIn, tokenOut]),
+                JSON.stringify([tokenOut, tokenIn]),
             ]);
-
-            setPools(poolsById);
         }
-    }, [token0Id, token1Id]);
+
+        return null;
+    }, [tokenIn, tokenOut]);
 
     return pools;
 }

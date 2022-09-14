@@ -149,15 +149,16 @@ export const exchangeRateTranslation = ({ inputtedAmountOfToken, calculateAmount
         return;
     }
 
+    const activeTokenFromSymbol = inputtedAmountOfToken?.onChainFTMetadata?.symbol;
+    const activeTokenToSymbol = calculateAmountOfToken?.onChainFTMetadata?.symbol;
     const convertBalanceWithExchangeRate = {
         'NEAR->USN': balance * exchangeRate,
         'USN->NEAR': balance / exchangeRate,
         'NEAR->wNEAR': '1:1',
-        'wNEAR->NEAR': '1:1'
+        'wNEAR->NEAR': '1:1',
+        [`${activeTokenFromSymbol}->${activeTokenToSymbol}`]: balance / exchangeRate,
     };
-    
-    const activeTokenFromSymbol = inputtedAmountOfToken?.onChainFTMetadata?.symbol;
-    const activeTokenToSymbol = calculateAmountOfToken?.onChainFTMetadata?.symbol;
+
     const operation = convertBalanceWithExchangeRate[`${activeTokenFromSymbol}->${activeTokenToSymbol}`];
 
     if (operation == '1:1') {

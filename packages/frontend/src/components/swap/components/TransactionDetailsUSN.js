@@ -15,7 +15,7 @@ const TransactionDetailsUSN = ({
     amount,
     exchangeRate,
     tradingFee,
-    setSlippage
+    setSlippage,
 }) => {
     const [open, setOpen] = useState(false);
 

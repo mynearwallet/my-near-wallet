@@ -1,106 +1,268 @@
-import { NEAR_TOKEN_ID } from '../../config';
-import { wallet } from '../../utils/wallet';
+import * as nearApi from 'near-api-js';
+
+import {
+    NEAR_ID,
+    NEAR_TOKEN_ID,
+    FT_MINIMUM_STORAGE_BALANCE,
+    FT_STORAGE_DEPOSIT_GAS,
+} from '../../config';
 import { fungibleTokensService } from '../FungibleTokens';
 import refFinanceContract from './RefFinanceContract';
-import { NEAR_ID, isNearSwap, replaceNearIfNecessary } from './utils';
+import { isNearTransformation, replaceNearIfNecessary } from './utils';
 
 class FungibleTokenExchange {
-    #exchange;
+    _exchange;
 
     constructor(exchangeInstance) {
-        this.#exchange = exchangeInstance;
+        this._exchange = exchangeInstance;
     }
 
-    async getPools({ accountId }) {
-        return this.#exchange.getPools({ accountId });
+    async getData({ account }) {
+        return this._exchange.getData({ account });
     }
 
     async estimate(params) {
-        if (isNearSwap(params)) {
-            return this.estimateNearSwap(params);
+        if (isNearTransformation(params)) {
+            return this._estimateNearSwap(params);
         }
 
-        return this.estimateSwap(params);
+        return this._estimateSwap(params);
     }
 
-    estimateNearSwap(params) {
+    async swap(params) {
+        if (isNearTransformation(params)) {
+            return this._transformNear(params);
+        }
+
+        const { tokenIn, tokenOut } = params;
+
+        if (tokenIn.contractName === NEAR_ID) {
+            return this._swapNearToToken(params);
+        }
+
+        if (tokenIn.contractName === NEAR_TOKEN_ID) {
+            return this._swapWNearToToken(params);
+        }
+
+        if (tokenOut.contractName === NEAR_ID) {
+            return this._swapTokenToNear(params);
+        }
+
+        if (tokenOut.contractName === NEAR_TOKEN_ID) {
+            return this._swapTokenToWNear(params);
+        }
+
+        return this._swapTokenToToken(params);
+    }
+
+    _estimateNearSwap(params) {
         return {
             amountOut: params.amountIn,
         };
     }
 
-    async estimateSwap(params) {
+    async _estimateSwap(params) {
         const { tokenIn, tokenOut } = params;
 
-        return this.#exchange.estimate({
+        return this._exchange.estimate({
             ...params,
             tokenIn: replaceNearIfNecessary(tokenIn),
             tokenOut: replaceNearIfNecessary(tokenOut),
         });
     }
 
-    async swap(params) {
-        if (isNearSwap(params)) {
-            return this.swapNear(params);
-        }
-        // @todo for now we can swap NEAR -> <TOKEN> in one batched transaction,
-        // but we cannot swap the same way in the other direction (<TOKEN> -> NEAR);
-        // so when we swap "to NEAR" it uses 2 transactions (1st for swap, 2nd for unwrapping);
-        // need to find out how to use batched tx in the second flow;
-        const { accountId, tokenIn, tokenOut, amountIn, minAmountOut } = params;
-        const account = await wallet.getAccount(accountId);
-        let receiverId = '';
-        const allActions = [];
-        const swapActions = await this.#exchange.getSwapTransactions({
-            ...params,
-            tokenIn: replaceNearIfNecessary(tokenIn),
-            tokenOut: replaceNearIfNecessary(tokenOut),
-        });
-
-        const transactions = [];
-
-        if (tokenIn.contractName === NEAR_ID) {
-            const { actions } = await fungibleTokensService.getWrapNearTx({ accountId, amount: amountIn });
-
-            receiverId = NEAR_TOKEN_ID;
-            allActions.push(...actions, ...swapActions);
-            transactions.push({ receiverId, actions: allActions });
-        } else if (tokenOut.contractName === NEAR_ID) {
-            // const { actions } = await fungibleTokensService.getUnwrapNearTx({ accountId, amount: minAmountOut });
-            // allActions.push(...swapActions, ...actions);
-            const unwrapTx = await fungibleTokensService.getUnwrapNearTx({ accountId, amount: minAmountOut });
-
-            receiverId = tokenIn.contractName;
-            allActions.push(...swapActions);
-            transactions.push({ receiverId, actions: allActions }, unwrapTx);
-        } else {
-            receiverId = tokenIn.contractName;
-            allActions.push(...swapActions);
-            transactions.push({ receiverId, actions: allActions });
-        }
-
-        // @todo need to test this method. It doesn't work here with many TXs
-        // wallet.signAndSendTransactions(transactions, accountId);
-
-        const outcome = [];
-
-        for (const tx of transactions) {
-            const txResult = await account.signAndSendTransaction(tx);
-
-            outcome.push(txResult);
-        }
-
-        return outcome;
-    }
-
-    swapNear(params) {
-        const { accountId, tokenIn, amountIn } = params;
+    async _transformNear(params) {
+        const { account, tokenIn, amountIn } = params;
 
         return fungibleTokensService.transformNear({
-            accountId,
+            accountId: account.accountId,
             amount: amountIn,
             toWNear: tokenIn.contractName !== NEAR_TOKEN_ID,
         });
+    }
+
+    async _swapNearToToken(params) {
+        const { account, tokenIn, tokenOut, amountIn } = params;
+        const transactions = [];
+        const depositTransactions = await this._getDepositTransactions(
+            account.accountId,
+            [tokenOut.contractName]
+        );
+
+        if (depositTransactions) {
+            transactions.push(...depositTransactions);
+        }
+
+        const wrapNear = await fungibleTokensService.getWrapNearTx({
+            accountId: account.accountId,
+            amount: amountIn,
+        });
+        const swapActions = await this._exchange.getSwapActions({
+            ...params,
+            tokenIn: replaceNearIfNecessary(tokenIn),
+        });
+
+        transactions.push(wrapNear, {
+            receiverId: NEAR_TOKEN_ID,
+            actions: swapActions,
+        });
+
+        return this._processTransactions(account, transactions);
+    }
+
+    async _swapWNearToToken(params) {
+        const { account, tokenOut } = params;
+        const transactions = [];
+        const depositTransactions = await this._getDepositTransactions(
+            account.accountId,
+            [tokenOut.contractName]
+        );
+
+        if (depositTransactions) {
+            transactions.push(...depositTransactions);
+        }
+
+        const swapActions = await this._exchange.getSwapActions(params);
+
+        transactions.push({
+            receiverId: NEAR_TOKEN_ID,
+            actions: swapActions,
+        });
+
+        return this._processTransactions(account, transactions);
+    }
+
+    // @todo add NEAR in the token list and check this flow
+    async _swapTokenToNear(params) {
+        const { account, tokenIn, tokenOut, amountIn } = params;
+        const transactions = [];
+        const depositTransactions = await this._getDepositTransactions(
+            account.accountId,
+            [tokenOut.contractName]
+        );
+
+        if (depositTransactions) {
+            transactions.push(...depositTransactions);
+        }
+
+        const swapActions = await this._exchange.getSwapActions({
+            ...params,
+            tokenOut: replaceNearIfNecessary(tokenOut),
+        });
+        const unwrapNear = await fungibleTokensService.getUnwrapNearTx({
+            accountId: account.accountId,
+            amount: amountIn,
+        });
+
+        transactions.push(
+            {
+                receiverId: tokenIn.contractName,
+                actions: swapActions,
+            },
+            unwrapNear
+        );
+
+        return this._processTransactions(account, transactions);
+    }
+
+    async _swapTokenToWNear(params) {
+        const { account, tokenIn, tokenOut } = params;
+        const transactions = [];
+        const depositTransactions = await this._getDepositTransactions(
+            account.accountId,
+            [tokenOut.contractName]
+        );
+
+        if (depositTransactions) {
+            transactions.push(...depositTransactions);
+        }
+
+        const swapActions = await this._exchange.getSwapActions(params);
+
+        transactions.push({
+            receiverId: tokenIn.contractName,
+            actions: swapActions,
+        });
+
+        return this._processTransactions(account, transactions);
+    }
+
+    async _swapTokenToToken(params) {
+        const { account, tokenIn, tokenOut } = params;
+        const transactions = [];
+        const depositTransactions = await this._getDepositTransactions(
+            account.accountId,
+            [tokenIn.contractName, tokenOut.contractName]
+        );
+
+        if (depositTransactions) {
+            transactions.push(...depositTransactions);
+        }
+
+        const swapActions = await this._exchange.getSwapActions(params);
+
+        transactions.push({
+            receiverId: tokenIn.contractName,
+            actions: swapActions,
+        });
+
+        return this._processTransactions(account, transactions);
+    }
+
+    async _getDepositTransactions(account, tokenIds) {
+        const txs = [];
+        const { accountId } = account;
+
+        for (const id of tokenIds) {
+            const tokenStorage = await account.viewFunction(
+                id,
+                'storage_balance_of',
+                { account_id: accountId }
+            );
+
+            if (!tokenStorage) {
+                txs.push({
+                    receiverId: id,
+                    actions: [
+                        nearApi.transactions.functionCall(
+                            'storage_deposit',
+                            {
+                                account_id: accountId,
+                                signer_id: accountId,
+                                receiver_id: id,
+                                registration_only: true,
+                            },
+                            FT_STORAGE_DEPOSIT_GAS,
+                            FT_MINIMUM_STORAGE_BALANCE
+                        ),
+                    ],
+                });
+            }
+        }
+
+        return txs.length ? txs : null;
+    }
+
+    async _processTransactions(account, txs) {
+        const swapResult = {};
+
+        for (const tx of txs) {
+            const {
+                transaction: { hash, actions },
+            } = await account.signAndSendTransaction(tx);
+
+            const swapTx = actions.find((action) => {
+                if (action['FunctionCall']?.method_name === 'ft_transfer_call') {
+                    return true;
+                }
+            });
+
+            if (swapTx) {
+                swapResult.swapTxHash = hash;
+            }
+        }
+
+        return swapResult;
     }
 }
 

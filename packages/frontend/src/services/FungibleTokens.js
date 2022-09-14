@@ -1,7 +1,8 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 
-import { 
+import {
+    NEAR_ID,
     NEAR_TOKEN_ID,
     TOKEN_TRANSFER_DEPOSIT,
     FT_TRANSFER_GAS,
@@ -34,7 +35,7 @@ export default class FungibleTokens {
 
     static getParsedTokenAmount(amount, symbol, decimals) {
         const parsedTokenAmount =
-            symbol === 'NEAR'
+            symbol === NEAR_ID
                 ? parseNearAmount(amount)
                 : parseTokenAmount(amount, decimals);
 
@@ -43,7 +44,7 @@ export default class FungibleTokens {
 
     static getFormattedTokenAmount(amount, symbol, decimals) {
         const formattedTokenAmount =
-            symbol === 'NEAR'
+            symbol === NEAR_ID
                 ? formatNearAmount(amount, 5)
                 : removeTrailingZeros(formatTokenAmount(amount, decimals, 5));
 
@@ -184,30 +185,8 @@ export default class FungibleTokens {
         });
     }
 
-    // @note is there a simpler and more informative name?
-    async #getActionsWithStorageDepositIfNeeded(accountId) {
-        const actions = [];
-        const storage = await FungibleTokens.getStorageBalance({
-            contractName: NEAR_TOKEN_ID,
-            accountId,
-        });
-
-        if (!storage) {
-            actions.push(
-                functionCall(
-                    'storage_deposit',
-                    {},
-                    FT_STORAGE_DEPOSIT_GAS,
-                    FT_MINIMUM_STORAGE_BALANCE,
-                )
-            );
-        }
-
-        return actions;
-    }
-
     async getWrapNearTx({ accountId, amount }) {
-        const actions = await this.#getActionsWithStorageDepositIfNeeded(accountId);
+        const actions = await this._getStorageDepositActions(accountId);
 
         actions.push(
             functionCall(
@@ -222,7 +201,7 @@ export default class FungibleTokens {
     }
 
     async getUnwrapNearTx({ accountId, amount }) {
-        const actions = await this.#getActionsWithStorageDepositIfNeeded(accountId);
+        const actions = await this._getStorageDepositActions(accountId);
 
         actions.push(
             functionCall(
@@ -243,6 +222,27 @@ export default class FungibleTokens {
             : this.getUnwrapNearTx({ accountId, amount }));
 
         return account.signAndSendTransaction(tx);
+    }
+
+    async _getStorageDepositActions(accountId) {
+        const actions = [];
+        const storage = await FungibleTokens.getStorageBalance({
+            contractName: NEAR_TOKEN_ID,
+            accountId,
+        });
+
+        if (!storage) {
+            actions.push(
+                functionCall(
+                    'storage_deposit',
+                    {},
+                    FT_STORAGE_DEPOSIT_GAS,
+                    FT_MINIMUM_STORAGE_BALANCE,
+                )
+            );
+        }
+
+        return actions;
     }
 }
 

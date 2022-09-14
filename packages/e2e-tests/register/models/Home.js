@@ -4,6 +4,9 @@ class HomePage {
     constructor(page) {
         this.page = page;
     }
+    async close() {
+        await this.page.close();
+    }
     async navigate() {
         await this.page.goto(`/`);
     }

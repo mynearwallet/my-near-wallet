@@ -8,7 +8,7 @@ import { IS_MAINNET } from '../../config';
 import { isWhitelabel } from '../../config/whitelabel';
 import { Mixpanel } from '../../mixpanel/index';
 import DonateToUkraineIcon from '../svg/DonateToUkraineIcon';
-// import ExploreIcon from '../svg/ExploreIcon';
+import ExploreIcon from '../svg/ExploreIcon';
 import HelpIcon from '../svg/HelpIcon';
 import SwapIcon from '../svg/SwapIcon';
 import UserIcon from '../svg/UserIcon';
@@ -117,14 +117,13 @@ const NavLinks = () => (
             <VaultIcon/>
             <Translate id='link.staking'/>
         </NavLink>
-        {/* TODO: Enable explore page link once image rendering issues have been fixed */}
-        {/* {isWhitelabel && (
+        {isWhitelabel && (
             <NavLink data-test-id="explore_navlink" to='/explore' activeClassName='selected' onClick={() => Mixpanel.track('Click Explore button on nav')}>
                 <ExploreIcon/>
                 <Translate id='link.explore'/>
             </NavLink>
-        )} */}
-        <NavLink to='/swap' activeClassName='selected' onClick={() => Mixpanel.track('Click Swap button on nav')}>
+        )}
+        <NavLink data-test-id="swap_navlink" to='/swap' activeClassName='selected' onClick={() => Mixpanel.track('Click Swap button on nav')}>
             <SwapIcon/>
             <Translate id='link.swap'/>
         </NavLink>

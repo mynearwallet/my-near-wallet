@@ -25,6 +25,7 @@
   "scripts": {
     "test": "node -r dotenv/config index.js",
     "e2e": "npx playwright test",
+    "e2e:swap-chrome": "npx playwright test ./swap/ --project=Desktop_Chromium --debug",
     "e2e:debug": "PWDEBUG=1 npx playwright test"
   }
 }
