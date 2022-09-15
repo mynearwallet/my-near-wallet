@@ -154,11 +154,11 @@ class FungibleTokenExchange {
     }
 
     async _swapTokenToNear(params) {
-        const { account, tokenInId, tokenOutId, minAmountOut } = params;
+        const { account, tokenInId, minAmountOut } = params;
         const transactions = [];
         const depositTransactions = await this._getDepositTransactions(
             account,
-            [tokenInId, tokenOutId]
+            [tokenInId]
         );
 
         if (depositTransactions) {
@@ -268,6 +268,7 @@ class FungibleTokenExchange {
     async _processTransactions(account, txs) {
         const swapResult = {
             success: true,
+            swapTxHash: '',
         };
 
         for (const tx of txs) {

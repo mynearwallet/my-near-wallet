@@ -109,7 +109,6 @@ class RefFinanceContract {
     }
 
     async getSwapActions({
-        account,
         poolId,
         tokenInId,
         tokenInDecimals,
