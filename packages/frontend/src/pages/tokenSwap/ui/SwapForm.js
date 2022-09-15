@@ -6,7 +6,6 @@ import BackArrowButton from '../../../components/common/BackArrowButton';
 import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
-import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
@@ -134,16 +133,6 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
     const hideTokenSelection = () =>
         setDisplayTokenSelect(tokenSelectState.noSelect);
 
-    const tokenInHumanBalance = useMemo(() => {
-        if (tokenIn) {
-            const { balance, onChainFTMetadata } = tokenIn;
-
-            return formatTokenAmount(balance, onChainFTMetadata.decimals);
-        }
-
-        return null;
-    }, [tokenIn]);
-
     useEffect(() => {
         if (!tokenIn && tokens[0]) {
             setTokenIn(tokens[0]);
@@ -240,7 +229,8 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                         label={<Translate id="swap.from" />}
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
-                        maxBalance={tokenInHumanBalance}
+                        tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
+                        maxBalance={tokenIn?.balance}
                         inputTestId="swapPageInputAmountField"
                         tokenSelectTestId="swapPageInputTokenSelector"
                     />
@@ -258,6 +248,8 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                         label={<Translate id="swap.to" />}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.icon}
+                        tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
+                        maxBalance={tokenOut?.balance}
                         loading={loading}
                         inputTestId="swapPageOutputAmountField"
                         tokenSelectTestId="swapPageOutputTokenSelector"

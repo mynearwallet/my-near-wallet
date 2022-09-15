@@ -4,6 +4,7 @@ import { batch } from 'react-redux';
 
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
+import { formatTokenAmount } from '../../../utils/amounts';
 import { wallet } from '../../../utils/wallet';
 import { showCustomAlert } from '../../actions/status';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
@@ -12,7 +13,7 @@ import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
 const SLICE_NAME = 'swap';
 
 const initialState = {
-    tokensList: [],
+    tokenNames: [],
     tokens: {},
     pools: {
         loading: false,
@@ -20,16 +21,26 @@ const initialState = {
     },
 };
 
+const sortTokensWithBalanceInDecreasingOrder = (tokens) => {
+    return tokens.sort((t1, t2) => {
+        const balance1 = formatTokenAmount(t1.balance, t1.onChainFTMetadata.decimals);
+        const balance2 = formatTokenAmount(t2.balance, t2.onChainFTMetadata.decimals);
+
+        return balance2 - balance1;
+    });
+};
+
 const fetchTokensData = createAsyncThunk(
     `${SLICE_NAME}/fetchTokensData`,
     async (accountId, { getState, dispatch }) => {
         const { actions: { addTokens } } = swapSlice;
-        const { tokenFiatValues, swap: { tokensList } } = getState();
-        const tokens = {};
+        const { tokenFiatValues, swap: { tokenNames } } = getState();
+        const tokens = [];
+        const tokensWithBalance = [];
 
         try {
             await Promise.allSettled(
-                tokensList.map(async (contractName) => {
+                tokenNames.map(async (contractName) => {
                     const onChainFTMetadata = await getCachedContractMetadataOrFetch(
                         contractName,
                         getState()
@@ -38,20 +49,32 @@ const fetchTokensData = createAsyncThunk(
                         contractName,
                         accountId,
                     });
-
-                    tokens[contractName] = {
+                    const config = {
                         contractName,
                         balance,
                         onChainFTMetadata,
                         fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                     };
+
+                    if (balance > 0) {
+                        tokensWithBalance.push(config);
+                    } else {
+                        tokens.push(config);
+                    }
                 })
             );
         } catch (error) {
             console.error('Error loading token data', error);
         }
 
-        dispatch(addTokens({ tokens }));
+        dispatch(
+            addTokens({
+                tokens: [
+                    ...sortTokensWithBalanceInDecreasingOrder(tokensWithBalance),
+                    ...tokens,
+                ],
+            })
+        );
     }
 );
 
@@ -59,7 +82,7 @@ const fetchData = createAsyncThunk(
     `${SLICE_NAME}/fetchData`,
     async ({ accountId }, { dispatch }) => {
         const {
-            actions: { setPoolsLoading, addPools, addTokensList },
+            actions: { setPoolsLoading, addPools, addTokenNames },
         } = swapSlice;
 
         dispatch(setPoolsLoading(true));
@@ -71,7 +94,7 @@ const fetchData = createAsyncThunk(
             });
 
             batch(() => {
-                dispatch(addTokensList({ tokensList: tokens }));
+                dispatch(addTokenNames({ tokenNames: tokens }));
                 dispatch(addPools({ pools }));
                 dispatch(setPoolsLoading(false));
                 dispatch(fetchTokensData(accountId));
@@ -102,10 +125,10 @@ const swapSlice = createSlice({
 
             set(state, ['pools', 'all'], pools);
         },
-        addTokensList(state, { payload }) {
-            const { tokensList } = payload;
+        addTokenNames(state, { payload }) {
+            const { tokenNames } = payload;
 
-            set(state, ['tokensList'], tokensList);
+            set(state, ['tokenNames'], tokenNames);
         },
         addTokens(state, { payload }) {
             const { tokens } = payload;

@@ -20,11 +20,15 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
             isNearTransformation,
             lastSwapTxHash,
         },
-        events: { setViewState },
+        events: { setViewState, setAmountIn },
     } = useSwapData();
 
     const goHome = () => history.push('/');
     const showForm = () => setViewState(VIEW_STATE.inputForm);
+    const resetForm = () => {
+        setAmountIn('');
+        setViewState(VIEW_STATE.inputForm);
+    };
 
     const [slippage, setSlippage] = useState(0);
     const minAmountOut = useMemo(() => {
@@ -103,7 +107,7 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
             // we pass token symbols as well as here. We have to rename it.
             amountFrom={`${amountIn} ${tokenIn?.onChainFTMetadata?.symbol}`}
             amountTo={`${amountOut} ${tokenOut?.onChainFTMetadata?.symbol}`}
-            onClickContinue={showForm}
+            onClickContinue={resetForm}
             transactionHash={lastSwapTxHash}
             onClickGoToExplorer={openTransaction}
         />

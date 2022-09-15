@@ -17,6 +17,25 @@ const NEP141_TOKENS = {
         //     name: 'Tether USD',
         //     decimals: 6,
         // },
+    ],
+};
+
+const NEP141_TOKEN_PAIRS = {
+    TESTNET: [
+        {
+            token0: {
+                id: 'aurora.fakes.testnet',
+                symbol: 'AURORA',
+                name: 'Aurora',
+                decimals: 18,
+            },
+            token1: {
+                id: 'dai.fakes.testnet',
+                symbol: 'DAI',
+                name: 'Dai Stablecoin',
+                decimals: 18,
+            },
+        }
     ]
 };
 
@@ -25,4 +44,5 @@ module.exports = {
     NEAR_WITHDRAW_FEE,
     SWAP_FEE,
     NEP141_TOKENS,
+    NEP141_TOKEN_PAIRS,
 };

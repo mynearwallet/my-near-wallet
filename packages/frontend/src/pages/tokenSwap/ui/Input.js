@@ -1,10 +1,11 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import styled from 'styled-components';
 
 import SafeTranslate from '../../../components/SafeTranslate';
 // @todo common component: move to .../common
 import Token from '../../../components/send/components/entry_types/Token';
 import ChevronIcon from '../../../components/svg/ChevronIcon';
+import { formatTokenAmount } from '../../../utils/amounts';
 
 const InputWrapper = styled.div`
     padding: 1rem;
@@ -31,7 +32,11 @@ const Balance = styled.button`
     background-color: transparent;
     border: none;
 
-    :hover {
+    &.disabled {
+        cursor: default;
+    }
+
+    :hover:not(.disabled) {
         text-decoration: underline;
     }
 `;
@@ -95,11 +100,12 @@ export default memo(function Input({
     onChange,
     onSelectToken,
     label,
-    maxBalance,
+    maxBalance = 0,
     placeholder = '0.0',
     disabled = false,
     tokenSymbol,
     tokenIcon,
+    tokenDecimals,
     inputTestId,
     tokenSelectTestId,
 }) {
@@ -109,10 +115,14 @@ export default memo(function Input({
         onChange(event.target.value);
     };
 
-    const setMaxBalance = () => onChange(maxBalance);
+    const humanBalanceFormat = useMemo(() => {
+        return maxBalance ? formatTokenAmount(maxBalance, tokenDecimals) : null;
+    }, [maxBalance]);
+
+    const setMaxBalance = () => !disabled && onChange(humanBalanceFormat);
 
     const balanceData = {
-        amount: maxBalance,
+        amount: humanBalanceFormat,
         symbol: tokenSymbol,
     };
 
@@ -120,8 +130,8 @@ export default memo(function Input({
         <InputWrapper>
             <Header>
                 {label && <Label>{label}</Label>}
-                {maxBalance && (
-                    <Balance onClick={setMaxBalance}>
+                {humanBalanceFormat && (
+                    <Balance onClick={setMaxBalance} className={`${disabled ? 'disabled' : ''}`}>
                         <SafeTranslate id="swap.max" data={balanceData} />
                     </Balance>
                 )}
@@ -138,6 +148,7 @@ export default memo(function Input({
                 <input
                     type="number"
                     min={0}
+                    max={humanBalanceFormat || 0}
                     value={loading ? '' : value}
                     onChange={handleChange}
                     placeholder={placeholder}
