@@ -25,7 +25,7 @@
   "scripts": {
     "test": "node -r dotenv/config index.js",
     "e2e": "npx playwright test",
-    "e2e:swap-chrome": "npx playwright test ./swap/ --project=Desktop_Chromium --debug",
+    "e2e:swap-near-wnear": "npx playwright test ./swap/near-with-wnear.spec.js --project=Desktop_Chromium",
     "e2e:debug": "PWDEBUG=1 npx playwright test"
   }
 }

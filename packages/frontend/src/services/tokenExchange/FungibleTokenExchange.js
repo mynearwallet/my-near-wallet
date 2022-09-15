@@ -85,7 +85,7 @@ class FungibleTokenExchange {
         const { account, tokenIn, tokenOut, amountIn } = params;
         const transactions = [];
         const depositTransactions = await this._getDepositTransactions(
-            account.accountId,
+            account,
             [tokenOut.contractName]
         );
 
@@ -114,7 +114,7 @@ class FungibleTokenExchange {
         const { account, tokenOut } = params;
         const transactions = [];
         const depositTransactions = await this._getDepositTransactions(
-            account.accountId,
+            account,
             [tokenOut.contractName]
         );
 
@@ -137,7 +137,7 @@ class FungibleTokenExchange {
         const { account, tokenIn, tokenOut, amountIn } = params;
         const transactions = [];
         const depositTransactions = await this._getDepositTransactions(
-            account.accountId,
+            account,
             [tokenOut.contractName]
         );
 
@@ -169,7 +169,7 @@ class FungibleTokenExchange {
         const { account, tokenIn, tokenOut } = params;
         const transactions = [];
         const depositTransactions = await this._getDepositTransactions(
-            account.accountId,
+            account,
             [tokenOut.contractName]
         );
 
@@ -191,7 +191,7 @@ class FungibleTokenExchange {
         const { account, tokenIn, tokenOut } = params;
         const transactions = [];
         const depositTransactions = await this._getDepositTransactions(
-            account.accountId,
+            account,
             [tokenIn.contractName, tokenOut.contractName]
         );
 

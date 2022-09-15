@@ -48,20 +48,24 @@ class SwapPage {
         await this.page.click('data-test-id=swapPageSwapPreviewStateButton');
     }
 
+    async clickOnContinueAfterSwapButton() {
+        await this.page.click('data-test-id=swapPageContinueAfterSwapButton');
+    }
+
     async confirmSwap() {
         await this.page.click('data-test-id=swapPageStartSwapButton');
     }
 
     async waitResultMessageElement() {
-        return this.page.waitForSelector('data-test-id=sendTransactionSuccessMessage')
+        return this.page.waitForSelector('data-test-id=swapPageSuccessMessage')
     }
 
-    async navigateAndfillForm(tokenInId, tokenOutId) {
-        await this.navigate();
+    async fillForm({ inId, inAmount, outId }) {
         // wait while token list is loaded
         await this.wait(3_000);
-        await this.selectInputAsset(tokenInId);
-        await this.selectOutputAsset(tokenOutId);
+        await this.selectInputAsset(inId);
+        await this.selectOutputAsset(outId);
+        await this.typeInputAmount(inAmount);
     }
 }
 

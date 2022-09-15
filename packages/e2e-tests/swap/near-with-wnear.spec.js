@@ -21,13 +21,21 @@ const getResultMessageRegExp = ({ fromSymbol, fromAmount, toSymbol, toAmount }) 
 
 describe("Swap NEAR with wrapped NEAR", () => {
     const swapAmount = 1;
-    const parsedSwapAmount = format.parseNearAmount(`${swapAmount}`);
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
     let totalBalanceOnStart;
+    let page;
+    let homePage;
+    let swapPage;
 
-    beforeAll(async ({ bankAccount }) => {
+    beforeAll(async ({ browser, bankAccount }) => {
+        const context = await browser.newContext();
+
+        page = await context.newPage();
+        homePage = new HomePage(page);
+        swapPage = new SwapPage(page);
+
         account = bankAccount.spawnRandomSubAccountInstance();
 
         await account.create();
@@ -38,21 +46,24 @@ describe("Swap NEAR with wrapped NEAR", () => {
     });
 
     afterAll(async () => {
+        await homePage.close();
+        await swapPage.close();
         await account.delete();
     });
 
-    test("should swap NEAR for wrapped NEAR", async ({ page }) => {
-        const homePage = new HomePage(page);
-        const swapPage = new SwapPage(page);
-
+    test("should swap NEAR for wrapped NEAR", async () => {
         await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
-        await swapPage.navigateAndfillForm(TESTNET.NEAR.id, TESTNET.wNEAR.id);
+        await swapPage.navigate();
 
         expect(swapPage.page).toHaveURL(/.*\/swap$/);
 
-        await swapPage.typeInputAmount(swapAmount);
+        await swapPage.fillForm({
+            inId: TESTNET.NEAR.id,
+            inAmount: swapAmount,
+            outId: TESTNET.wNEAR.id,
+        });
         // wait while output amount is loading
-        await swapPage.wait(1_000);
+        await swapPage.wait(1_200);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -90,19 +101,17 @@ describe("Swap NEAR with wrapped NEAR", () => {
 
         expect(Number(format.formatNearAmount(wrappedNearBalance))).toEqual(swapAmount);
 
-        await homePage.close();
-        await swapPage.close();
+        await swapPage.clickOnContinueAfterSwapButton();
     });
 
-    test("should swap wrapped NEAR for NEAR", async ({ page }) => {
-        const homePage = new HomePage(page);
-        const swapPage = new SwapPage(page);
-
-        await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
-        await swapPage.navigateAndfillForm(TESTNET.wNEAR.id, TESTNET.NEAR.id);
-        await swapPage.typeInputAmount(swapAmount);
+    test("should swap wrapped NEAR for NEAR", async () => {
+        await swapPage.fillForm({
+            inId: TESTNET.wNEAR.id,
+            inAmount: swapAmount,
+            outId: TESTNET.NEAR.id,
+        });
         // wait while output amount is loading
-        await swapPage.wait(1_000);
+        await swapPage.wait(1_200);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -143,8 +152,5 @@ describe("Swap NEAR with wrapped NEAR", () => {
         const wrappedNearBalance = await account.getTokenBalance(TESTNET.wNEAR.id);
 
         expect(Number(format.formatNearAmount(wrappedNearBalance))).toEqual(0);
-
-        await homePage.close();
-        await swapPage.close();
     });
 });
