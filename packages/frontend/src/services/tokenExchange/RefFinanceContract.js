@@ -77,16 +77,29 @@ class RefFinanceContract {
     }
 
     // @todo remove get_return when findBestSwapPool() would be fixed
-    async estimate({ account, poolsByIds, tokenIn, amountIn, tokenOut }) {
-        const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
+    async estimate({
+        account,
+        poolsByIds,
+        tokenInId,
+        tokenInDecimals,
+        amountIn,
+        tokenOutId,
+        tokenOutDecimals,
+    }) {
         const contract = await this._newContract(account);
-        const { pool } = findBestSwapPool({ poolsByIds, tokenIn, amountIn, tokenOut });
-
+        const { pool } = findBestSwapPool({
+            poolsByIds,
+            tokenInId,
+            tokenInDecimals,
+            amountIn,
+            tokenOutId,
+            tokenOutDecimals,
+        });
         const amountOut = await contract.get_return({
             pool_id: pool.poolId,
-            token_in: tokenIn.contractName,
-            amount_in: parseTokenAmount(amountIn, tokenIn.onChainFTMetadata.decimals, 0),
-            token_out: tokenOut.contractName,
+            token_in: tokenInId,
+            amount_in: parseTokenAmount(amountIn, tokenInDecimals, 0),
+            token_out: tokenOutId,
         });
 
         return {
@@ -98,14 +111,14 @@ class RefFinanceContract {
     async getSwapActions({
         account,
         poolId,
-        tokenIn,
+        tokenInId,
+        tokenInDecimals,
         amountIn,
-        tokenOut,
+        tokenOutId,
+        tokenOutDecimals,
         minAmountOut,
     }) {
         const actions = [];
-        const { onChainFTMetadata: { decimals: tokenInDecimals } } = tokenIn;
-        const { onChainFTMetadata: { decimals: tokenOutDecimals } } = tokenOut;
         const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
         const parsedMinAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals, 0);
 
@@ -113,7 +126,6 @@ class RefFinanceContract {
             nearApi.transactions.functionCall(
                 'ft_transfer_call',
                 {
-                    account_id: account.accountId,
                     receiver_id: contractConfig.contractId,
                     amount: parsedAmountIn,
                     msg: JSON.stringify({
@@ -122,8 +134,8 @@ class RefFinanceContract {
                             // @note in case of multihop swaps we add extra objects here
                             {
                                 pool_id: poolId,
-                                token_in: tokenIn.contractName,
-                                token_out: tokenOut.contractName,
+                                token_in: tokenInId,
+                                token_out: tokenOutId,
                                 amount_in: parsedAmountIn,
                                 min_amount_out: parsedMinAmountOut,
                             },

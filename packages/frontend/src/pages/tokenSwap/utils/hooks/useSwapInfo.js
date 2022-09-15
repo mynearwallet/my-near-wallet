@@ -14,6 +14,8 @@ const isNearTransformation = (token0, token1) => {
     );
 };
 
+const IMPOSSIBLE_POOL_ID = -1;
+
 export default function useSwapInfo({
     account,
     tokenIn,
@@ -21,7 +23,7 @@ export default function useSwapInfo({
     tokenOut,
     delay = 50,
 }) {
-    const [poolId, setPoolId] = useState(-1);
+    const [poolId, setPoolId] = useState(IMPOSSIBLE_POOL_ID);
     const [amountOut, setAmountOut] = useState('');
     const [loading, setLoading] = useState(false);
     const debounceAmountIn = useDebounce(amountIn, delay);
@@ -43,7 +45,7 @@ export default function useSwapInfo({
                 tokenIn &&
                 tokenOut &&
                 (pools || isTransformation) &&
-                parseInt(debounceAmountIn) > 0
+                debounceAmountIn > 0
             ) {
                 setLoading(true);
 
@@ -61,10 +63,13 @@ export default function useSwapInfo({
                         setAmountOut(amountOut);
                     }
                 } catch (error) {
-                    console.error(error);
+                    console.error('Fail to get swap info', error);
                 }
 
                 setLoading(false);
+            } else if (debounceAmountIn <= 0) {
+                setPoolId(IMPOSSIBLE_POOL_ID);
+                setAmountOut('');
             }
         };
 

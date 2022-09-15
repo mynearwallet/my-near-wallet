@@ -8,22 +8,21 @@ export const isNearTransformation = (params) => {
     return ids.includes(NEAR_TOKEN_ID) && ids.includes(NEAR_ID);
 };
 
-export const replaceNearIfNecessary = (token) => {
-    return token.contractName === NEAR_ID
-        ? { ...token, contractName: NEAR_TOKEN_ID }
-        : token;
+export const replaceNearIfNecessary = (id) => {
+    return id === NEAR_ID ? NEAR_TOKEN_ID : id;
 };
 
 // taken from the 'ref-contracts' repo
 const FEE_DIVISOR = 10_000;
 
-export const estimatePoolInfo = ({ pool, tokenIn, tokenOut, amountIn }) => {
-    const {
-        onChainFTMetadata: { decimals: tokenInDecimals },
-    } = tokenIn;
-    const {
-        onChainFTMetadata: { decimals: tokenOutDecimals },
-    } = tokenOut;
+export const estimatePoolInfo = ({
+    pool,
+    tokenInId,
+    tokenInDecimals,
+    amountIn,
+    tokenOutId,
+    tokenOutDecimals,
+}) => {
     const { total_fee, token_account_ids, amounts } = pool;
     const tokenInfo = {
         [token_account_ids[0]]: amounts[0],
@@ -31,17 +30,16 @@ export const estimatePoolInfo = ({ pool, tokenIn, tokenOut, amountIn }) => {
     };
 
     const reserveIn = formatTokenAmount(
-        tokenInfo[tokenIn.contractName],
+        tokenInfo[tokenInId],
         tokenInDecimals,
         tokenInDecimals
     );
     const reserveOut = formatTokenAmount(
-        tokenInfo[tokenOut.contractName],
+        tokenInfo[tokenOutId],
         tokenOutDecimals,
         tokenOutDecimals
     );
-    const parsedAmountIn = amountIn;
-    const amountInWithFee = parsedAmountIn * (FEE_DIVISOR - total_fee);
+    const amountInWithFee = amountIn * (FEE_DIVISOR - total_fee);
     const amountOut =
         (amountInWithFee * reserveOut) /
         (FEE_DIVISOR * reserveIn + amountInWithFee);
@@ -49,7 +47,7 @@ export const estimatePoolInfo = ({ pool, tokenIn, tokenOut, amountIn }) => {
     return { pool, amountOut };
 };
 
-export const findBestSwapPool = ({ poolsByIds, tokenIn, amountIn, tokenOut }) => {
+export const findBestSwapPool = ({ poolsByIds, ...restParams }) => {
     let bestPool;
     let bestAmountOut;
 
@@ -57,9 +55,7 @@ export const findBestSwapPool = ({ poolsByIds, tokenIn, amountIn, tokenOut }) =>
         .map((pool) =>
             estimatePoolInfo({
                 pool,
-                tokenIn,
-                tokenOut,
-                amountIn,
+                ...restParams,
             })
         )
         .forEach(({ pool, amountOut }) => {
