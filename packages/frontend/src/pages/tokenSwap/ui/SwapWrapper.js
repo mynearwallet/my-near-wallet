@@ -84,10 +84,10 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
     ) : viewState === VIEW_STATE.preview ? (
         <SwapReviewForm
             onClickGoBack={showForm}
-            amountTokenFrom={amountIn}
-            amountTokenTo={amountOut}
             activeTokenFrom={tokenIn}
+            amountTokenFrom={amountIn}
             activeTokenTo={tokenOut}
+            amountTokenTo={amountOut}
             accountId={account.accountId}
             handleSwapToken={handleSwap}
             exchangeRate={exchangeRate}

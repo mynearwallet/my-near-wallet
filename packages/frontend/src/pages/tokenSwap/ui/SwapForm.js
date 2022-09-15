@@ -175,7 +175,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
     const { poolId, amountOut, isNearTransformation, loading } = useSwapInfo({
         account,
         tokenIn,
-        amountIn,
+        amountIn: Number(amountIn),
         tokenOut,
         delay: swapInfoDaley,
     });

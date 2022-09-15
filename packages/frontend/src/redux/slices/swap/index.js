@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit'
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
+import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
 import { wallet } from '../../../utils/wallet';
 import { showCustomAlert } from '../../actions/status';
@@ -21,22 +22,28 @@ const initialState = {
 
 const fetchTokensData = createAsyncThunk(
     `${SLICE_NAME}/fetchTokensData`,
-    async (_, { getState, dispatch }) => {
+    async (accountId, { getState, dispatch }) => {
         const { actions: { addTokens } } = swapSlice;
-        const { swap: { tokensList } } = getState();
+        const { tokenFiatValues, swap: { tokensList } } = getState();
         const tokens = {};
 
         try {
             await Promise.allSettled(
                 tokensList.map(async (contractName) => {
-                    const metadata = await getCachedContractMetadataOrFetch(
+                    const onChainFTMetadata = await getCachedContractMetadataOrFetch(
                         contractName,
                         getState()
                     );
+                    const balance = await FungibleTokens.getBalanceOf({
+                        contractName,
+                        accountId,
+                    });
 
                     tokens[contractName] = {
                         contractName,
-                        onChainFTMetadata: metadata,
+                        balance,
+                        onChainFTMetadata,
+                        fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                     };
                 })
             );
@@ -67,7 +74,7 @@ const fetchData = createAsyncThunk(
                 dispatch(addTokensList({ tokensList: tokens }));
                 dispatch(addPools({ pools }));
                 dispatch(setPoolsLoading(false));
-                dispatch(fetchTokensData());
+                dispatch(fetchTokensData(accountId));
             });
         } catch (error) {
             console.error('Error loading swap data', error);
