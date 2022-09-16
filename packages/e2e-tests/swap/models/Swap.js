@@ -1,3 +1,8 @@
+const {
+    AMOUNT_LOADING_DELAY,
+    TOKENS_LOADING_DELAY,
+} = require("../constants");
+
 class SwapPage {
     constructor(page) {
         this.page = page;
@@ -61,11 +66,11 @@ class SwapPage {
     }
 
     async fillForm({ inId, inAmount, outId }) {
-        // wait while token list is loaded
-        await this.wait(3_000);
+        await this.wait(TOKENS_LOADING_DELAY);
         await this.selectInputAsset(inId);
         await this.selectOutputAsset(outId);
         await this.typeInputAmount(inAmount);
+        await this.wait(AMOUNT_LOADING_DELAY);
     }
 }
 

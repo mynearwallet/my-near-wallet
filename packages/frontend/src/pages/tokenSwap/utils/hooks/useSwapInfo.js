@@ -25,6 +25,7 @@ export default function useSwapInfo({
 }) {
     const [poolId, setPoolId] = useState(IMPOSSIBLE_POOL_ID);
     const [amountOut, setAmountOut] = useState('');
+    const [swapFee, setSwapFee] = useState(0);
     const [loading, setLoading] = useState(false);
     const debounceAmountIn = useDebounce(amountIn, delay);
     const isTransformation = useMemo(
@@ -50,17 +51,18 @@ export default function useSwapInfo({
                 setLoading(true);
 
                 try {
-                    const { amountOut, poolId } = await fungibleTokenExchange.estimate({
+                    const { amountOut, poolId, swapFee } = await fungibleTokenExchange.estimate({
                         account,
                         poolsByIds: pools,
                         tokenIn,
                         amountIn: debounceAmountIn,
                         tokenOut,
                     });
-    
+
                     if (!cancelledRequest) {
                         setPoolId(poolId);
                         setAmountOut(amountOut);
+                        setSwapFee(swapFee);
                     }
                 } catch (error) {
                     console.error('Fail to get swap info', error);
@@ -80,5 +82,5 @@ export default function useSwapInfo({
         };
     }, [debounceAmountIn, account, pools, tokenIn, tokenOut]);
 
-    return { poolId, amountOut, isNearTransformation, loading };
+    return { poolId, swapFee, amountOut, isNearTransformation, loading };
 }

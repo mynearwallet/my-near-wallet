@@ -5,10 +5,11 @@ const { CONTRACT } = require("../constants");
 const { formatAmount } = require("../utils/amount");
 const { HomePage } = require("../register/models/Home");
 const { SwapPage } = require("./models/Swap");
-const { getResultMessageRegExp } = require("./utils");
+const { getResultMessageRegExp, removeStringBrakes } = require("./utils");
 const {
     SWAP_FEE,
     NEP141_TOKENS,
+    TRANSACTIONS_LOADING_DELAY,
 } = require("./constants");
 
 const { utils: { format } } = nearApi;
@@ -19,7 +20,6 @@ test.setTimeout(140_000)
 
 describe("Swap NEAR with NEP141", () => {
     const swapAmount = 0.5;
-    const outputAmountLoadingDelay = 3_000;
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
@@ -64,7 +64,6 @@ describe("Swap NEAR with NEP141", () => {
             inAmount: swapAmount,
             outId: token.id,
         });
-        await swapPage.wait(outputAmountLoadingDelay);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -78,8 +77,8 @@ describe("Swap NEAR with NEP141", () => {
 
         const resultElement = await swapPage.waitResultMessageElement();
         const resultMessage = await resultElement.innerText();
-        // We might receive multiline string here. So at first remove line breaks from it.
-        expect(resultMessage.replace(/\r?\n|\r/g, ' ')).toMatch(
+
+        expect(removeStringBrakes(resultMessage)).toMatch(
             getResultMessageRegExp({
                 fromSymbol: TESTNET.NEAR.symbol,
                 fromAmount: swapAmount,
@@ -113,7 +112,6 @@ describe("Swap NEAR with NEP141", () => {
             inAmount: tokenBalanceAfterSwap,
             outId: TESTNET.NEAR.id,
         });
-        await swapPage.wait(outputAmountLoadingDelay);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -129,6 +127,7 @@ describe("Swap NEAR with NEP141", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
 
         const nearBalanceAfter = await account.getUpdatedBalance();
         const parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
@@ -136,8 +135,8 @@ describe("Swap NEAR with NEP141", () => {
 
         const resultElement = await swapPage.waitResultMessageElement();
         const resultMessage = await resultElement.innerText();
-        // We might receive multiline string here. So at first remove line breaks from it.
-        expect(resultMessage.replace(/\r?\n|\r/g, ' ')).toMatch(
+
+        expect(removeStringBrakes(resultMessage)).toMatch(
             getResultMessageRegExp({
                 fromSymbol: token.symbol,
                 fromAmount: tokenBalanceAfterSwap,

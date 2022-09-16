@@ -1,10 +1,12 @@
-import React, { memo, useState, useMemo } from 'react';
+import React, { memo, useState } from 'react';
 
 import Success from '../../../components/swap/components/Success';
 import { SwapReviewForm } from '../../../components/swap/components/SwapReviewForm';
-import { decreaseByPercent } from '../../../utils/amounts';
+import { cutDecimalsIfNeeded } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
+import { DECIMALS_TO_SAFE } from '../utils/constants';
+import useCalculatedValues from '../utils/hooks/useCalculatedValues';
 import useSwap from '../utils/hooks/useSwap';
 import SwapForm from './SwapForm';
 
@@ -17,43 +19,28 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
             tokenOut,
             amountOut,
             swapPoolId,
+            swapFee,
             isNearTransformation,
             lastSwapTxHash,
         },
-        events: { setViewState },
+        events: { setViewState, setAmountIn },
     } = useSwapData();
 
     const goHome = () => history.push('/');
     const showForm = () => setViewState(VIEW_STATE.inputForm);
+    const updateForm = () => {
+        setAmountIn('');
+        setViewState(VIEW_STATE.inputForm);
+    };
 
     const [slippage, setSlippage] = useState(0);
-    const minAmountOut = useMemo(() => {
-        if (
-            typeof slippage === 'number' &&
-            tokenOut?.onChainFTMetadata?.decimals &&
-            amountOut
-        ) {
-            if (!slippage) {
-                return amountOut;
-            }
-
-            return decreaseByPercent(
-                amountOut,
-                slippage,
-                tokenOut.onChainFTMetadata.decimals
-            );
-        }
-
-        return '';
-    }, [slippage, tokenOut, amountOut]);
-
-    const exchangeRate = useMemo(() => {
-        if (amountIn && amountOut) {
-            return amountIn / amountOut;
-        }
-
-        return 1;
-    }, [amountIn, amountOut]);
+    const { minAmountOut, exchangeRate, tradingFee } = useCalculatedValues({
+        amountIn,
+        tokenOut,
+        amountOut,
+        slippage,
+        swapFee,
+    });
 
     const { swap, pending: swapPending } = useSwap({
         account,
@@ -75,6 +62,9 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
         openTransactionInExplorer(lastSwapTxHash);
     };
 
+    const amountInToShow = cutDecimalsIfNeeded(amountIn, DECIMALS_TO_SAFE);
+    const amountOutToShow = cutDecimalsIfNeeded(amountOut, DECIMALS_TO_SAFE);
+
     return viewState === VIEW_STATE.inputForm ? (
         <SwapForm
             onGoBack={goHome}
@@ -85,25 +75,23 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
         <SwapReviewForm
             onClickGoBack={showForm}
             activeTokenFrom={tokenIn}
-            amountTokenFrom={amountIn}
+            amountTokenFrom={amountInToShow}
             activeTokenTo={tokenOut}
-            amountTokenTo={amountOut}
+            amountTokenTo={amountOutToShow}
             accountId={account.accountId}
             handleSwapToken={handleSwap}
             exchangeRate={exchangeRate}
-            // @todo calculate tradingFee
-            tradingFee={0}
+            tradingFee={tradingFee}
             swappingToken={swapPending}
             setSlippage={setSlippage}
             showSlippageOption
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success
-            // @todo It's not amount fields. In the old swap component
-            // we pass token symbols as well as here. We have to rename it.
-            amountFrom={`${amountIn} ${tokenIn?.onChainFTMetadata?.symbol}`}
-            amountTo={`${amountOut} ${tokenOut?.onChainFTMetadata?.symbol}`}
-            onClickContinue={showForm}
+            // @todo It's not amount fields. We have to rename it.
+            amountFrom={`${amountInToShow} ${tokenIn?.onChainFTMetadata?.symbol}`}
+            amountTo={`${amountOutToShow} ${tokenOut?.onChainFTMetadata?.symbol}`}
+            onClickContinue={updateForm}
             transactionHash={lastSwapTxHash}
             onClickGoToExplorer={openTransaction}
         />

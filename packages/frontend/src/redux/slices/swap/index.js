@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
+import merge from 'lodash.merge';
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
+import { formatTokenAmount } from '../../../utils/amounts';
 import { wallet } from '../../../utils/wallet';
 import { showCustomAlert } from '../../actions/status';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
@@ -12,24 +14,76 @@ import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
 const SLICE_NAME = 'swap';
 
 const initialState = {
-    tokensList: [],
-    tokens: {},
+    tokenNames: [],
+    tokens: {
+        loading: false,
+        all: {},
+    },
     pools: {
         loading: false,
         all: {},
     },
 };
 
-const fetchTokensData = createAsyncThunk(
-    `${SLICE_NAME}/fetchTokensData`,
-    async (accountId, { getState, dispatch }) => {
+const sortTokensWithBalanceInDecreasingOrder = (tokens) => {
+    return Object.values(tokens)
+        .sort((t1, t2) => {
+            const balance1 = formatTokenAmount(
+                t1.balance,
+                t1.onChainFTMetadata.decimals
+            );
+            const balance2 = formatTokenAmount(
+                t2.balance,
+                t2.onChainFTMetadata.decimals
+            );
+
+            return balance2 - balance1;
+        })
+        .reduce((acc, token) => ({ ...acc, [token.contractName]: token }), {});
+};
+
+const updateTokensBalance = createAsyncThunk(
+    `${SLICE_NAME}/updateTokensBalance`,
+    async ({ accountId, tokenIds }, { getState, dispatch }) => {
         const { actions: { addTokens } } = swapSlice;
-        const { tokenFiatValues, swap: { tokensList } } = getState();
-        const tokens = {};
+        const { swap: { tokens: { all } } } = getState();
+        const updatedTokens = {};
 
         try {
             await Promise.allSettled(
-                tokensList.map(async (contractName) => {
+                tokenIds.map(async (contractName) => {
+                    const balance = await FungibleTokens.getBalanceOf({
+                        contractName,
+                        accountId,
+                    });
+
+                    updatedTokens[contractName] = {
+                        ...all[contractName],
+                        balance,
+                    };
+                })
+            );
+        } catch (error) {
+            console.error('Error loading token balance', error);
+        }
+
+        dispatch(addTokens({ tokens: updatedTokens }));
+    }
+);
+
+const updateAllTokensData = createAsyncThunk(
+    `${SLICE_NAME}/updateAllTokensData`,
+    async (accountId, { getState, dispatch }) => {
+        const { actions: { setAllTokensLoading, addAllTokens } } = swapSlice;
+        const { tokenFiatValues, swap: { tokenNames } } = getState();
+        const tokens = {};
+        const tokensWithBalance = {};
+
+        dispatch(setAllTokensLoading(true));
+
+        try {
+            await Promise.allSettled(
+                tokenNames.map(async (contractName) => {
                     const onChainFTMetadata = await getCachedContractMetadataOrFetch(
                         contractName,
                         getState()
@@ -38,20 +92,35 @@ const fetchTokensData = createAsyncThunk(
                         contractName,
                         accountId,
                     });
-
-                    tokens[contractName] = {
+                    const config = {
                         contractName,
                         balance,
                         onChainFTMetadata,
                         fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                     };
+
+                    if (balance > 0) {
+                        tokensWithBalance[contractName] = config;
+                    } else {
+                        tokens[contractName] = config;
+                    }
                 })
             );
         } catch (error) {
             console.error('Error loading token data', error);
         }
 
-        dispatch(addTokens({ tokens }));
+        batch(() => {
+            dispatch(
+                addAllTokens({
+                    tokens: {
+                        ...sortTokensWithBalanceInDecreasingOrder(tokensWithBalance),
+                        ...tokens,
+                    },
+                })
+            );
+            dispatch(setAllTokensLoading(false));
+        });
     }
 );
 
@@ -59,7 +128,7 @@ const fetchData = createAsyncThunk(
     `${SLICE_NAME}/fetchData`,
     async ({ accountId }, { dispatch }) => {
         const {
-            actions: { setPoolsLoading, addPools, addTokensList },
+            actions: { setPoolsLoading, addPools, addTokenNames },
         } = swapSlice;
 
         dispatch(setPoolsLoading(true));
@@ -71,10 +140,10 @@ const fetchData = createAsyncThunk(
             });
 
             batch(() => {
-                dispatch(addTokensList({ tokensList: tokens }));
+                dispatch(addTokenNames({ tokenNames: tokens }));
                 dispatch(addPools({ pools }));
                 dispatch(setPoolsLoading(false));
-                dispatch(fetchTokensData(accountId));
+                dispatch(updateAllTokensData(accountId));
             });
         } catch (error) {
             console.error('Error loading swap data', error);
@@ -102,15 +171,23 @@ const swapSlice = createSlice({
 
             set(state, ['pools', 'all'], pools);
         },
-        addTokensList(state, { payload }) {
-            const { tokensList } = payload;
+        addTokenNames(state, { payload }) {
+            const { tokenNames } = payload;
 
-            set(state, ['tokensList'], tokensList);
+            set(state, ['tokenNames'], tokenNames);
+        },
+        setAllTokensLoading(state, { payload }) {
+            set(state, ['tokens', 'loading'], payload);
+        },
+        addAllTokens(state, { payload }) {
+            const { tokens } = payload;
+
+            set(state, ['tokens', 'all'], tokens);
         },
         addTokens(state, { payload }) {
             const { tokens } = payload;
 
-            set(state, ['tokens'], tokens);
+            merge(state, { tokens: { all: tokens } });
         },
     },
     extraReducers: (builder) => {
@@ -126,16 +203,19 @@ export default swapSlice;
 
 export const actions = {
     fetchData,
-    fetchTokensData,
+    updateTokensBalance,
     ...swapSlice.actions
 };
 
 export const reducer = swapSlice.reducer;
 
-const selectTokenConfigs = (state) => Object.values(state[SLICE_NAME].tokens);
+const selectAllTokenConfigs = (state) => state[SLICE_NAME].tokens.all;
+const selectAllTokenLoading = (state) => state[SLICE_NAME].tokens.loading;
 const selectPools = (state) => state[SLICE_NAME].pools;
 
-export const selectTokens = createSelector(selectTokenConfigs, (tokens) => tokens);
+export const selectAllTokens = createSelector(selectAllTokenConfigs, (tokens) => tokens);
+export const selectAllTokensLoading = createSelector(selectAllTokenLoading, (loading) => loading);
+
 export const selectAllPools = createSelector(selectPools, ({ all }) => all);
 export const selectPoolsLoading = createSelector(
     selectPools,

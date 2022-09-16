@@ -12,6 +12,7 @@ const initialState = {
     amountIn: '',
     tokenOut: null,
     amountOut: '',
+    swapFee: 0,
     swapPoolId: null,
     isNearTransformation: false,
     lastSwapTxHash: '',
@@ -24,6 +25,7 @@ const ACTION = {
     SET_AMOUNT_IN: 'setAmountIn',
     SET_AMOUNT_OUT: 'setAmountOut',
     SET_SWAP_POOL_ID: 'setSwapPoolId',
+    SET_SWAP_FEE: 'setSwapFee',
     SET_IS_NEAR_TRANSFORMATION: 'setIsNearTransformation',
     SET_LAST_SWAP_TX_HASH: 'setLastSwapTxHash',
 };
@@ -44,6 +46,8 @@ function swapReducer(state, action) {
             return { ...state, amountOut: payload };
         case ACTION.SET_SWAP_POOL_ID:
             return { ...state, swapPoolId: payload };
+        case ACTION.SET_SWAP_FEE:
+            return { ...state, swapFee: payload };
         case ACTION.SET_IS_NEAR_TRANSFORMATION:
             return { ...state, isNearTransformation: payload };
         case ACTION.SET_LAST_SWAP_TX_HASH:
@@ -73,10 +77,10 @@ export function SwapProvider({ children }) {
             setViewState: (payload) => {
                 dispatch({ type: ACTION.SET_VIEW_STATE, payload });
             },
-            setTokenIn: (payload) => {
+            setTokenIn: (payload = null) => {
                 dispatch({ type: ACTION.SET_TOKEN_IN, payload });
             },
-            setTokenOut: (payload) => {
+            setTokenOut: (payload = null) => {
                 dispatch({ type: ACTION.SET_TOKEN_OUT, payload });
             },
             setAmountIn: (payload) => {
@@ -87,6 +91,9 @@ export function SwapProvider({ children }) {
             },
             setSwapPoolId: (payload) => {
                 dispatch({ type: ACTION.SET_SWAP_POOL_ID, payload });
+            },
+            setSwapFee: (payload) => {
+                dispatch({ type: ACTION.SET_SWAP_FEE, payload });
             },
             setIsNearTransformation: (payload) => {
                 dispatch({ type: ACTION.SET_IS_NEAR_TRANSFORMATION, payload });

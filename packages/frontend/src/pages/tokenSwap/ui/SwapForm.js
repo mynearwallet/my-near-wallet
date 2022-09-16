@@ -6,7 +6,6 @@ import BackArrowButton from '../../../components/common/BackArrowButton';
 import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
-import { formatTokenAmount } from '../../../utils/amounts';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
@@ -108,6 +107,7 @@ const tokenSelectState = {
 };
 
 export default memo(function SwapForm({ onGoBack, account, tokens }) {
+    const tokenList = Object.values(tokens);
     const [displayTokenSelect, setDisplayTokenSelect] = useState(
         tokenSelectState.noSelect
     );
@@ -121,37 +121,29 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
             setAmountIn,
             setAmountOut,
             setSwapPoolId,
+            setSwapFee,
             setIsNearTransformation,
         },
     } = useSwapData();
 
-    const onClickReview = () => setViewState(VIEW_STATE.preview);
-
-    const selectTokenIn = () =>
-        setDisplayTokenSelect(tokenSelectState.selectIn);
-    const selectTokenOut = () =>
-        setDisplayTokenSelect(tokenSelectState.selectOut);
-    const hideTokenSelection = () =>
-        setDisplayTokenSelect(tokenSelectState.noSelect);
-
-    const tokenInHumanBalance = useMemo(() => {
-        if (tokenIn) {
-            const { balance, onChainFTMetadata } = tokenIn;
-
-            return formatTokenAmount(balance, onChainFTMetadata.decimals);
-        }
-
-        return null;
-    }, [tokenIn]);
-
     useEffect(() => {
-        if (!tokenIn && tokens[0]) {
-            setTokenIn(tokens[0]);
+        if (!tokenIn && tokenList[0]) {
+            setTokenIn(tokenList[0]);
+        } else {
+            setTokenIn(tokens[tokenIn?.contractName]);
         }
-        if (!tokenOut && tokens[1]) {
-            setTokenOut(tokens[1]);
+
+        if (!tokenOut && tokenList[1]) {
+            setTokenOut(tokenList[1]);
+        } else {
+            setTokenOut(tokens[tokenOut?.contractName]);
         }
     }, [tokens]);
+
+    const onClickReview = () => setViewState(VIEW_STATE.preview);
+    const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
+    const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
+    const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
 
     const handleTokenSelect = (token) => {
         switch (displayTokenSelect) {
@@ -172,7 +164,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
-    const { poolId, amountOut, isNearTransformation, loading } = useSwapInfo({
+    const { poolId, swapFee, amountOut, isNearTransformation, loading } = useSwapInfo({
         account,
         tokenIn,
         amountIn: Number(amountIn),
@@ -183,6 +175,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
     useEffect(() => {
         setAmountOut(amountOut);
         setSwapPoolId(poolId);
+        setSwapFee(swapFee);
         setIsNearTransformation(isNearTransformation);
     }, [amountOut, poolId, isNearTransformation]);
 
@@ -207,14 +200,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
         }
 
         return false;
-    }, [
-        tokenIn,
-        tokenOut,
-        poolId,
-        amountIn,
-        amountOut,
-        isNearTransformation,
-    ]);
+    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, isNearTransformation]);
 
     return (
         <SwapFormWrapper>
@@ -222,7 +208,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                 <SelectToken
                     isMobile={mobile}
                     onClickGoBack={hideTokenSelection}
-                    fungibleTokens={tokens}
+                    fungibleTokens={tokenList}
                     onSelectToken={handleTokenSelect}
                 />
             ) : (
@@ -240,7 +226,8 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                         label={<Translate id="swap.from" />}
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
-                        maxBalance={tokenInHumanBalance}
+                        tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
+                        maxBalance={tokenIn?.balance}
                         inputTestId="swapPageInputAmountField"
                         tokenSelectTestId="swapPageInputTokenSelector"
                     />
@@ -258,6 +245,8 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                         label={<Translate id="swap.to" />}
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.icon}
+                        tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
+                        maxBalance={tokenOut?.balance}
                         loading={loading}
                         inputTestId="swapPageOutputAmountField"
                         tokenSelectTestId="swapPageOutputTokenSelector"

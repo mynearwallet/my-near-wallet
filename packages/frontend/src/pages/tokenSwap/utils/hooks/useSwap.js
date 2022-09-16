@@ -2,8 +2,11 @@ import { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { showCustomAlert } from '../../../../redux/actions/status';
+import { actions } from '../../../../redux/slices/swap';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { useSwapData, VIEW_STATE } from '../../model/Swap';
+
+const { updateTokensBalance } = actions;
 
 export default function useSwap({
     account,
@@ -46,6 +49,12 @@ export default function useSwap({
                 events.setLastSwapTxHash(swapTxHash);
                 events.setViewState(VIEW_STATE.result);
 
+                dispatch(
+                    updateTokensBalance({
+                        accountId: account.accountId,
+                        tokenIds: [tokenIn.contractName, tokenOut.contractName],
+                    })
+                );
                 // we show a swap result page if this page is mounted
                 // @todo how to show this alert when it's unmounted?
                 dispatch(
