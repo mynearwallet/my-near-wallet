@@ -98,7 +98,7 @@ class RefFinanceContract {
         const amountOut = await contract.get_return({
             pool_id: pool.poolId,
             token_in: tokenInId,
-            amount_in: parseTokenAmount(amountIn, tokenInDecimals, 0),
+            amount_in: parseTokenAmount(amountIn, tokenInDecimals),
             token_out: tokenOutId,
         });
 
@@ -118,8 +118,8 @@ class RefFinanceContract {
         minAmountOut,
     }) {
         const actions = [];
-        const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals, 0);
-        const parsedMinAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals, 0);
+        const parsedAmountIn = parseTokenAmount(amountIn, tokenInDecimals);
+        const parsedMinAmountOut = parseTokenAmount(minAmountOut, tokenOutDecimals);
 
         actions.push(
             nearApi.transactions.functionCall(

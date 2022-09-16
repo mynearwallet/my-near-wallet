@@ -25,7 +25,7 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
 
     const goHome = () => history.push('/');
     const showForm = () => setViewState(VIEW_STATE.inputForm);
-    const resetForm = () => {
+    const updateForm = () => {
         setAmountIn('');
         setViewState(VIEW_STATE.inputForm);
     };
@@ -107,7 +107,7 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
             // we pass token symbols as well as here. We have to rename it.
             amountFrom={`${amountIn} ${tokenIn?.onChainFTMetadata?.symbol}`}
             amountTo={`${amountOut} ${tokenOut?.onChainFTMetadata?.symbol}`}
-            onClickContinue={resetForm}
+            onClickContinue={updateForm}
             transactionHash={lastSwapTxHash}
             onClickGoToExplorer={openTransaction}
         />

@@ -107,6 +107,7 @@ const tokenSelectState = {
 };
 
 export default memo(function SwapForm({ onGoBack, account, tokens }) {
+    const tokenList = Object.values(tokens);
     const [displayTokenSelect, setDisplayTokenSelect] = useState(
         tokenSelectState.noSelect
     );
@@ -124,23 +125,25 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
         },
     } = useSwapData();
 
-    const onClickReview = () => setViewState(VIEW_STATE.preview);
+    useEffect(() => {
+        if (!tokenIn && tokenList[0]) {
+            setTokenIn(tokenList[0]);
+        }
 
-    const selectTokenIn = () =>
-        setDisplayTokenSelect(tokenSelectState.selectIn);
-    const selectTokenOut = () =>
-        setDisplayTokenSelect(tokenSelectState.selectOut);
-    const hideTokenSelection = () =>
-        setDisplayTokenSelect(tokenSelectState.noSelect);
+        if (!tokenOut && tokenList[1]) {
+            setTokenOut(tokenList[1]);
+        }
+    }, []);
 
     useEffect(() => {
-        if (!tokenIn && tokens[0]) {
-            setTokenIn(tokens[0]);
-        }
-        if (!tokenOut && tokens[1]) {
-            setTokenOut(tokens[1]);
-        }
+        setTokenIn(tokens[tokenIn?.contractName]);
+        setTokenOut(tokens[tokenOut?.contractName]);
     }, [tokens]);
+
+    const onClickReview = () => setViewState(VIEW_STATE.preview);
+    const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
+    const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
+    const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
 
     const handleTokenSelect = (token) => {
         switch (displayTokenSelect) {
@@ -196,14 +199,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
         }
 
         return false;
-    }, [
-        tokenIn,
-        tokenOut,
-        poolId,
-        amountIn,
-        amountOut,
-        isNearTransformation,
-    ]);
+    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, isNearTransformation]);
 
     return (
         <SwapFormWrapper>
@@ -211,7 +207,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                 <SelectToken
                     isMobile={mobile}
                     onClickGoBack={hideTokenSelection}
-                    fungibleTokens={tokens}
+                    fungibleTokens={tokenList}
                     onSelectToken={handleTokenSelect}
                 />
             ) : (

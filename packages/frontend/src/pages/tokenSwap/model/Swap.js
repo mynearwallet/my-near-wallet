@@ -73,10 +73,10 @@ export function SwapProvider({ children }) {
             setViewState: (payload) => {
                 dispatch({ type: ACTION.SET_VIEW_STATE, payload });
             },
-            setTokenIn: (payload) => {
+            setTokenIn: (payload = null) => {
                 dispatch({ type: ACTION.SET_TOKEN_IN, payload });
             },
-            setTokenOut: (payload) => {
+            setTokenOut: (payload = null) => {
                 dispatch({ type: ACTION.SET_TOKEN_OUT, payload });
             },
             setAmountIn: (payload) => {

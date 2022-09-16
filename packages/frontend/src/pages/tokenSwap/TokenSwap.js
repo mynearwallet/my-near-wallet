@@ -1,24 +1,23 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import Container from '../../components/common/styled/Container.css';
-import { useFungibleTokensIncludingNEAR } from '../../hooks/fungibleTokensIncludingNEAR';
+import selectNEARAsTokenWithMetadata from '../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
+import { selectAllTokens } from '../../redux/slices/swap';
 import { wallet } from '../../utils/wallet';
 import { SwapProvider } from './model/Swap';
 import SwapWrapper from './ui/SwapWrapper';
-import useTokens from './utils/hooks/useTokens';
 
 export default function TokenSwap({ history, accountId }) {
     const [account, setAccount] = useState(null);
-    const userTokens = useFungibleTokensIncludingNEAR({
-        includeNearContractName: true,
-    });
-    const swapTokens = useTokens();
-    // userTokens[0] = NEAR config
-    // @todo Find a better solution. 
-    // Set all tokens in the redux state, including NEAR "token"
+    const NEARConfig = useSelector((state) =>
+        selectNEARAsTokenWithMetadata(state, { includeNearContractName: true })
+    );
+    const tokens = useSelector(selectAllTokens);
+
     const availableTokens = useMemo(() => {
-        return [userTokens[0], ...swapTokens];
-    }, [userTokens, swapTokens]);
+        return { [NEARConfig.contractName]: NEARConfig, ...tokens };
+    }, [NEARConfig, tokens]);
 
     useEffect(() => {
         let mounted = true;
@@ -41,14 +40,14 @@ export default function TokenSwap({ history, accountId }) {
     }, [accountId]);
 
     return (
-        <SwapProvider>
-            <Container className="small-centered">
+        <Container className="small-centered">
+            <SwapProvider>
                 <SwapWrapper
                     history={history}
                     account={account}
                     tokens={availableTokens}
                 />
-            </Container>
-        </SwapProvider>
+            </SwapProvider>
+        </Container>
     );
 };
