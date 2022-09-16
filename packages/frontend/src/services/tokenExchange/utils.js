@@ -1,5 +1,8 @@
+import Big from 'big.js';
+
 import { NEAR_ID, NEAR_TOKEN_ID } from '../../config';
 import { formatTokenAmount } from '../../utils/amounts';
+import { MAX_PERCENTAGE } from '../../utils/constants';
 
 export const isNearTransformation = (params) => {
     const { tokenIn, tokenOut } = params;
@@ -12,8 +15,13 @@ export const replaceNearIfNecessary = (id) => {
     return id === NEAR_ID ? NEAR_TOKEN_ID : id;
 };
 
-// taken from the 'ref-contracts' repo
+// taken from the 'ref-contracts' repository
 const FEE_DIVISOR = 10_000;
+
+export const formatTotalFee = (fee) => {
+    // transform to usual percent notation relative to 100%
+    return Number(Big(fee).div(FEE_DIVISOR).times(MAX_PERCENTAGE).toFixed());
+};
 
 export const estimatePoolInfo = ({
     pool,

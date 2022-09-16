@@ -121,6 +121,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
             setAmountIn,
             setAmountOut,
             setSwapPoolId,
+            setSwapFee,
             setIsNearTransformation,
         },
     } = useSwapData();
@@ -128,16 +129,15 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
     useEffect(() => {
         if (!tokenIn && tokenList[0]) {
             setTokenIn(tokenList[0]);
+        } else {
+            setTokenIn(tokens[tokenIn?.contractName]);
         }
 
         if (!tokenOut && tokenList[1]) {
             setTokenOut(tokenList[1]);
+        } else {
+            setTokenOut(tokens[tokenOut?.contractName]);
         }
-    }, []);
-
-    useEffect(() => {
-        setTokenIn(tokens[tokenIn?.contractName]);
-        setTokenOut(tokens[tokenOut?.contractName]);
     }, [tokens]);
 
     const onClickReview = () => setViewState(VIEW_STATE.preview);
@@ -164,7 +164,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
-    const { poolId, amountOut, isNearTransformation, loading } = useSwapInfo({
+    const { poolId, swapFee, amountOut, isNearTransformation, loading } = useSwapInfo({
         account,
         tokenIn,
         amountIn: Number(amountIn),
@@ -175,6 +175,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
     useEffect(() => {
         setAmountOut(amountOut);
         setSwapPoolId(poolId);
+        setSwapFee(swapFee);
         setIsNearTransformation(isNearTransformation);
     }, [amountOut, poolId, isNearTransformation]);
 

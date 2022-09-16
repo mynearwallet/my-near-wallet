@@ -9,6 +9,7 @@ const { getResultMessageRegExp, removeStringBrakes } = require("./utils");
 const {
     SWAP_FEE,
     NEP141_TOKENS,
+    TRANSACTIONS_LOADING_DELAY,
 } = require("./constants");
 
 const { utils: { format } } = nearApi;
@@ -19,8 +20,6 @@ test.setTimeout(140_000)
 
 describe("Swap NEAR with NEP141", () => {
     const swapAmount = 0.5;
-    const outputAmountLoadingDelay = 3_000;
-    const waitForCompletedTransactions = 16_000;
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
@@ -65,7 +64,6 @@ describe("Swap NEAR with NEP141", () => {
             inAmount: swapAmount,
             outId: token.id,
         });
-        await swapPage.wait(outputAmountLoadingDelay);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -114,7 +112,6 @@ describe("Swap NEAR with NEP141", () => {
             inAmount: tokenBalanceAfterSwap,
             outId: TESTNET.NEAR.id,
         });
-        await swapPage.wait(outputAmountLoadingDelay);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -130,8 +127,7 @@ describe("Swap NEAR with NEP141", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
-
-        await swapPage.wait(waitForCompletedTransactions);
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
 
         const nearBalanceAfter = await account.getUpdatedBalance();
         const parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);

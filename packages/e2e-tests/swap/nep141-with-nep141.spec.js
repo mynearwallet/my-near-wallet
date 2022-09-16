@@ -9,6 +9,7 @@ const { getResultMessageRegExp, removeStringBrakes } = require("./utils");
 const {
     SWAP_FEE,
     NEP141_TOKEN_PAIRS,
+    TRANSACTIONS_LOADING_DELAY,
 } = require("./constants");
 
 const { utils: { format } } = nearApi;
@@ -19,8 +20,6 @@ test.setTimeout(150_000)
 
 describe("Swap NEP141 with NEP141", () => {
     const swapAmount = 1.5;
-    const outputAmountLoadingDelay = 3_000;
-    const waitForCompletedTransactions = 16_000;
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
@@ -65,7 +64,6 @@ describe("Swap NEP141 with NEP141", () => {
             inAmount: swapAmount,
             outId: token0.id,
         });
-        await swapPage.wait(outputAmountLoadingDelay);
 
         const outInput = await swapPage.getOutputInput();
         const token0OutAmount = await outInput.inputValue();
@@ -94,7 +92,6 @@ describe("Swap NEP141 with NEP141", () => {
             inAmount: token0OutAmount,
             outId: token1.id,
         });
-        await swapPage.wait(outputAmountLoadingDelay);
 
         const token1OutInput = await swapPage.getOutputInput();
         const token1OutAmount = await token1OutInput.inputValue();
@@ -118,7 +115,7 @@ describe("Swap NEP141 with NEP141", () => {
             })
         );
 
-        await swapPage.wait(waitForCompletedTransactions);
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
 
         nearBalanceAfter = await account.getUpdatedBalance();
         parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
@@ -136,7 +133,5 @@ describe("Swap NEP141 with NEP141", () => {
 
         expect(token0ParsedBalanceAfter).toEqual(token0ParsedBalance - token0OutAmount);
         expect(token1ParsedBalanceAfter).toEqual(Number(token1OutAmount));
-
-        await swapPage.clickOnContinueAfterSwapButton();
     });
 });

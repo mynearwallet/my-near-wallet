@@ -4,10 +4,11 @@ const { test, expect } = require("../playwrightWithFixtures");
 const { CONTRACT } = require("../constants");
 const { HomePage } = require("../register/models/Home");
 const { SwapPage } = require("./models/Swap");
-const { getResultMessageRegExp } = require("./utils");
+const { getResultMessageRegExp, removeStringBrakes } = require("./utils");
 const {
     NEAR_DEPOSIT_FEE,
     NEAR_WITHDRAW_FEE,
+    TRANSACTIONS_LOADING_DELAY,
 } = require("./constants");
 
 const { utils: { format } } = nearApi;
@@ -59,8 +60,6 @@ describe("Swap NEAR with wrapped NEAR", () => {
             inAmount: swapAmount,
             outId: TESTNET.wNEAR.id,
         });
-        // wait while output amount is loading
-        await swapPage.wait(1_200);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -71,11 +70,12 @@ describe("Swap NEAR with wrapped NEAR", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
 
         const resultElement = await swapPage.waitResultMessageElement();
         const resultMessage = await resultElement.innerText();
-        // We might receive multiline string here. So at first remove line breaks from it.
-        expect(resultMessage.replace(/\r?\n|\r/g, ' ')).toMatch(
+
+        expect(removeStringBrakes(resultMessage)).toMatch(
             getResultMessageRegExp({
                 fromSymbol: TESTNET.NEAR.symbol,
                 fromAmount: swapAmount,
@@ -107,8 +107,6 @@ describe("Swap NEAR with wrapped NEAR", () => {
             inAmount: swapAmount,
             outId: TESTNET.NEAR.id,
         });
-        // wait while output amount is loading
-        await swapPage.wait(1_200);
 
         const outInput = await swapPage.getOutputInput();
         const outAmount = await outInput.inputValue();
@@ -124,11 +122,12 @@ describe("Swap NEAR with wrapped NEAR", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
 
         const resultElement = await swapPage.waitResultMessageElement();
         const resultMessage = await resultElement.innerText();
-        // We might receive multiline string here. So at first remove line breaks from it.
-        expect(resultMessage.replace(/\r?\n|\r/g, ' ')).toMatch(
+
+        expect(removeStringBrakes(resultMessage)).toMatch(
             getResultMessageRegExp({
                 fromSymbol: TESTNET.wNEAR.symbol,
                 fromAmount: swapAmount,

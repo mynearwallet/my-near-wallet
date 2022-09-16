@@ -2,7 +2,7 @@ import * as nearApi from 'near-api-js';
 
 import { REF_FINANCE_CONTRACT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
 import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
-import { findBestSwapPool } from './utils';
+import { findBestSwapPool, formatTotalFee } from './utils';
 
 const contractConfig = {
     contractId: REF_FINANCE_CONTRACT,
@@ -95,8 +95,10 @@ class RefFinanceContract {
             tokenOutId,
             tokenOutDecimals,
         });
+        const { poolId, total_fee } = pool;
+
         const amountOut = await contract.get_return({
-            pool_id: pool.poolId,
+            pool_id: poolId,
             token_in: tokenInId,
             amount_in: parseTokenAmount(amountIn, tokenInDecimals),
             token_out: tokenOutId,
@@ -104,7 +106,8 @@ class RefFinanceContract {
 
         return {
             amountOut: formatTokenAmount(amountOut, tokenOutDecimals, tokenOutDecimals),
-            poolId: pool.poolId,
+            poolId,
+            swapFee: formatTotalFee(total_fee),
         };
     }
 
