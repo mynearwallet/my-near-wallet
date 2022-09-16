@@ -7,8 +7,9 @@ const { HomePage } = require("../register/models/Home");
 const { SwapPage } = require("./models/Swap");
 const { getResultMessageRegExp, removeStringBrakes } = require("./utils");
 const {
+    NEAR_DEPOSIT_FEE,
     SWAP_FEE,
-    NEP141_TOKEN_PAIRS,
+    NEP141_TOKENS,
     TRANSACTIONS_LOADING_DELAY,
 } = require("./constants");
 
@@ -16,13 +17,14 @@ const { utils: { format } } = nearApi;
 const { describe, beforeAll, afterAll } = test;
 const { TESTNET } = CONTRACT;
 
-test.setTimeout(150_000)
+test.setTimeout(140_000)
 
-describe("Swap NEP141 with NEP141", () => {
-    const swapAmount = 1.5;
+describe("Swap wrapped NEAR with NEP141", () => {
+    const swapAmount = 0.5;
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
+    let totalBalanceOnStart;
     let page;
     let homePage;
     let swapPage;
@@ -49,24 +51,25 @@ describe("Swap NEP141 with NEP141", () => {
         await account.delete();
     });
 
-    const { token0, token1 } = NEP141_TOKEN_PAIRS.TESTNET[0];
+    const token = NEP141_TOKENS.TESTNET[0];
+    let tokenBalanceAfterSwap;
 
-    test(`should swap ${token0.name} for ${token1.name}`, async () => {
+    test(`should swap wrapped NEAR for ${token.name}`, async () => {
         await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
         await swapPage.navigate();
 
         expect(swapPage.page).toHaveURL(/.*\/swap$/);
 
-        // At first we swap NEAR to TOKEN 0
+        // At first we swap NEAR to wrapped NEAR
 
         await swapPage.fillForm({
             inId: TESTNET.NEAR.id,
             inAmount: swapAmount,
-            outId: token0.id,
+            outId: TESTNET.wNEAR.id,
         });
 
-        const outInput = await swapPage.getOutputInput();
-        const token0OutAmount = await outInput.inputValue();
+        let outInput = await swapPage.getOutputInput();
+        const wrappedNearAmount = await outInput.inputValue();
         let nearBalanceBefore = await account.getUpdatedBalance();
         let parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
 
@@ -78,60 +81,68 @@ describe("Swap NEP141 with NEP141", () => {
         let parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
 
         expect(Number(parsedTotalAfter)).toBeCloseTo(
-            parsedTotalBefore - (swapAmount + SWAP_FEE),
+            parsedTotalBefore - (swapAmount + NEAR_DEPOSIT_FEE),
             maxDecimalsToCheck
         );
 
-        // Start swap between tokens
-
-        const token0Balance = await account.getTokenBalance(token0.id);
-        const token0ParsedBalance = Number(formatAmount(token0Balance, token0.decimals));
+        // Start swap wrapped NEAR to NEP141 token
 
         await swapPage.fillForm({
-            inId: token0.id,
-            inAmount: token0OutAmount,
-            outId: token1.id,
+            inId: TESTNET.wNEAR.id,
+            inAmount: swapAmount,
+            outId: token.id,
         });
 
-        const token1OutInput = await swapPage.getOutputInput();
-        const token1OutAmount = await token1OutInput.inputValue();
+        outInput = await swapPage.getOutputInput();
+        outAmount = await outInput.inputValue();
+
+        expect(Number(outAmount) > 0).toBeTruthy();
+
+        // Fetch NEAR and wNEAR before the swap
         nearBalanceBefore = await account.getUpdatedBalance();
         parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
-
-        expect(Number(token1OutAmount) > 0).toBeTruthy();
+        const wNearBalanceBefore = await account.getTokenBalance(TESTNET.wNEAR.id);
+        const wNearParsedBalanceBefore = Number(formatAmount(wNearBalanceBefore, TESTNET.wNEAR.decimals));
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
 
         const resultElement = await swapPage.waitResultMessageElement();
         const resultMessage = await resultElement.innerText();
 
         expect(removeStringBrakes(resultMessage)).toMatch(
             getResultMessageRegExp({
-                fromSymbol: token0.symbol,
-                fromAmount: token0OutAmount,
-                toSymbol: token1.symbol,
-                toAmount: token1OutAmount,
+                fromSymbol: TESTNET.wNEAR.symbol,
+                fromAmount: swapAmount,
+                toSymbol: token.symbol,
+                toAmount: outAmount,
+                acceptableOutputDifference: 2,
             })
         );
 
-        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
-
+        // Fetch NEAR and wNEAR after the swap
         nearBalanceAfter = await account.getUpdatedBalance();
         parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
+        const wNearBalanceAfter = await account.getTokenBalance(TESTNET.wNEAR.id);
+        const wNearParsedBalanceAfter = Number(formatAmount(wNearBalanceAfter, TESTNET.wNEAR.decimals));
 
         expect(Number(parsedTotalAfter)).toBeCloseTo(
             parsedTotalBefore - SWAP_FEE,
             maxDecimalsToCheck
         );
+        expect(Number(wNearParsedBalanceAfter)).toBeCloseTo(
+            wNearParsedBalanceBefore - swapAmount,
+            maxDecimalsToCheck
+        );
 
-        const token0BalanceAfter = await account.getTokenBalance(token0.id);
-        const token0ParsedBalanceAfter = Number(formatAmount(token0BalanceAfter, token0.decimals));
+        // Fetch and check NEP141 balance
+        const tokenBalance = await account.getTokenBalance(token.id);
 
-        const token1BalanceAfter = await account.getTokenBalance(token1.id);
-        const token1ParsedBalanceAfter = Number(formatAmount(token1BalanceAfter, token1.decimals));
+        tokenBalanceAfterSwap = Number(formatAmount(tokenBalance, token.decimals));
 
-        expect(token0ParsedBalanceAfter).toEqual(token0ParsedBalance - token0OutAmount);
-        expect(token1ParsedBalanceAfter).toEqual(Number(token1OutAmount));
+        expect(tokenBalanceAfterSwap).toEqual(Number(outAmount));
+
+        await swapPage.clickOnContinueAfterSwapButton();
     });
 });

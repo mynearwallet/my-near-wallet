@@ -57,20 +57,24 @@ module.exports = {
             NEAR: {
                 id: "NEAR",
                 symbol: "NEAR",
+                decimals: 24,
             },
             wNEAR: {
                 id: "wrap.near",
                 symbol: "wNEAR",
+                decimals: 24,
             },
         },
         TESTNET: {
             NEAR: {
                 id: "NEAR",
                 symbol: "NEAR",
+                decimals: 24,
             },
             wNEAR: {
                 id: "wrap.testnet",
                 symbol: "wNEAR",
+                decimals: 24,
             },
         }
     },
