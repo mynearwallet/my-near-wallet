@@ -84,6 +84,7 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
             tradingFee={tradingFee}
             swappingToken={swapPending}
             setSlippage={setSlippage}
+            feeTakenFromInput
             showSlippageOption
         />
     ) : viewState === VIEW_STATE.result ? (

@@ -44,8 +44,6 @@ export default function useCalculatedValues({
         
         return 0;
     }, [amountIn, swapFee]);
-    
-    console.log("🚀 ~ file: useCalculatedValues.js ~ line 43 ~ tradingFee ~ swapFee", swapFee)
-    console.log("🚀 ~ file: useCalculatedValues.js ~ line 50 ~ tradingFee", tradingFee)
+
     return { minAmountOut, exchangeRate, tradingFee };
 }
