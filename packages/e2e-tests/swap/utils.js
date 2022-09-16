@@ -20,9 +20,13 @@ function getResultMessageRegExp({
     fromAmount,
     toSymbol,
     toAmount,
+    acceptableInputDifference = 0,
     acceptableOutputDifference = 0,
 }) {
-    const expectedFromAmount = cutDecimalsIfPossible(fromAmount, VISIBLE_DECIMALS);
+    const expectedFromAmount = cutDecimalsIfPossible(
+        fromAmount,
+        VISIBLE_DECIMALS - acceptableInputDifference
+    );
     const expectedToAmount = cutDecimalsIfPossible(
       toAmount,
       VISIBLE_DECIMALS - acceptableOutputDifference
