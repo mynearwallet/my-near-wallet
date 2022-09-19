@@ -33,10 +33,25 @@ export default function useSwapInfo({
         [tokenIn, tokenOut]
     );
 
-    const pools = usePools({
+    const { pools, poolsLoading } = usePools({
         tokenIn: tokenIn?.contractName === NEAR_ID ? NEAR_TOKEN_ID : tokenIn?.contractName,
         tokenOut: tokenOut?.contractName === NEAR_ID ? NEAR_TOKEN_ID : tokenOut?.contractName,
     });
+
+    const swapNotification = useMemo(() => {
+        if (tokenIn && tokenOut && !pools && !poolsLoading && !isTransformation) {
+            return {
+                id: 'swap.noPoolAvailable',
+                type: 'warning',
+                data: {
+                    tokenIn: tokenIn.onChainFTMetadata.symbol,
+                    tokenOut: tokenOut.onChainFTMetadata.symbol,
+                },
+            };
+        }
+
+        return null;
+    }, [tokenIn, tokenOut, pools, poolsLoading, isTransformation]);
 
     useEffect(() => {
         let cancelledRequest = false;
@@ -82,5 +97,5 @@ export default function useSwapInfo({
         };
     }, [debounceAmountIn, account, pools, tokenIn, tokenOut]);
 
-    return { poolId, swapFee, amountOut, isNearTransformation, loading };
+    return { poolId, swapFee, amountOut, isNearTransformation, swapNotification, loading };
 }

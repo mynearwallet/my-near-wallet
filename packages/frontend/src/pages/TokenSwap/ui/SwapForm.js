@@ -10,6 +10,7 @@ import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
+import Notification from './Notification';
 
 const mobile = isMobile();
 
@@ -175,7 +176,14 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
-    const { poolId, swapFee, amountOut, isNearTransformation, loading } = useSwapInfo({
+    const {
+        poolId,
+        swapFee,
+        amountOut,
+        isNearTransformation,
+        swapNotification,
+        loading,
+    } = useSwapInfo({
         account,
         tokenIn,
         amountIn: Number(amountIn),
@@ -264,6 +272,13 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         disabled
                     />
                     <Footer>
+                        {swapNotification && (
+                            <Notification
+                                id={swapNotification.id}
+                                type={swapNotification.type}
+                                data={swapNotification.data}
+                            />
+                        )}
                         <FormButton
                             disabled={cannotSwap}
                             onClick={onClickReview}

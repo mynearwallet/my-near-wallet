@@ -17,10 +17,10 @@ const retrievePools = (allPools, keys) => {
 
 export default function usePools({ tokenIn, tokenOut }) {
     const allPools = useSelector(selectAllPools);
-    const loading = useSelector(selectPoolsLoading);
+    const poolsLoading = useSelector(selectPoolsLoading);
 
     const pools = useMemo(() => {
-        if (tokenIn && tokenOut && !loading) {
+        if (tokenIn && tokenOut && !poolsLoading) {
             return retrievePools(allPools, [
                 JSON.stringify([tokenIn, tokenOut]),
                 JSON.stringify([tokenOut, tokenIn]),
@@ -28,7 +28,7 @@ export default function usePools({ tokenIn, tokenOut }) {
         }
 
         return null;
-    }, [tokenIn, tokenOut]);
+    }, [tokenIn, tokenOut, poolsLoading]);
 
-    return pools;
+    return { pools, poolsLoading };
 }

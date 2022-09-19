@@ -1623,6 +1623,7 @@
         "to": "To",
         "error": "Swap error",
         "errorToFetchData": "Error loading data for exchange",
+        "noPoolAvailable": "No pool available to make a swap from ${tokenIn} -> ${tokenOut}",
         "translateIdInfoTooltip": {
             "fee": "The estimated cost of processing your transaction.",
             "minimumReceived": "The minimum amount you will receive from the trade.",
