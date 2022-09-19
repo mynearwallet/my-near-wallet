@@ -18,6 +18,7 @@ const initialState = {
     tokens: {
         loading: false,
         all: {},
+        withBalance: {},
     },
     pools: {
         loading: false,
@@ -74,10 +75,10 @@ const updateTokensBalance = createAsyncThunk(
 const updateAllTokensData = createAsyncThunk(
     `${SLICE_NAME}/updateAllTokensData`,
     async (accountId, { getState, dispatch }) => {
-        const { actions: { setAllTokensLoading, addAllTokens } } = swapSlice;
+        const { actions: { setAllTokensLoading, addAllTokens, addTokensWithBalance } } = swapSlice;
         const { tokenFiatValues, swap: { tokenNames } } = getState();
         const tokens = {};
-        const tokensWithBalance = {};
+        let tokensWithBalance = {};
 
         dispatch(setAllTokensLoading(true));
 
@@ -110,11 +111,14 @@ const updateAllTokensData = createAsyncThunk(
             console.error('Error loading token data', error);
         }
 
+        tokensWithBalance = sortTokensWithBalanceInDecreasingOrder(tokensWithBalance);
+
         batch(() => {
+            dispatch(addTokensWithBalance({ tokens: tokensWithBalance }));
             dispatch(
                 addAllTokens({
                     tokens: {
-                        ...sortTokensWithBalanceInDecreasingOrder(tokensWithBalance),
+                        ...tokensWithBalance,
                         ...tokens,
                     },
                 })
@@ -184,6 +188,11 @@ const swapSlice = createSlice({
 
             set(state, ['tokens', 'all'], tokens);
         },
+        addTokensWithBalance(state, { payload }) {
+            const { tokens } = payload;
+
+            set(state, ['tokens', 'withBalance'], tokens);
+        },
         addTokens(state, { payload }) {
             const { tokens } = payload;
 
@@ -209,11 +218,12 @@ export const actions = {
 
 export const reducer = swapSlice.reducer;
 
-const selectAllTokenConfigs = (state) => state[SLICE_NAME].tokens.all;
+const selectTokens = (state) => state[SLICE_NAME].tokens;
 const selectAllTokenLoading = (state) => state[SLICE_NAME].tokens.loading;
 const selectPools = (state) => state[SLICE_NAME].pools;
 
-export const selectAllTokens = createSelector(selectAllTokenConfigs, (tokens) => tokens);
+export const selectAllTokens = createSelector(selectTokens, ({ all }) => all);
+export const selectTokensWithBalance = createSelector(selectTokens, ({ withBalance }) => withBalance);
 export const selectAllTokensLoading = createSelector(selectAllTokenLoading, (loading) => loading);
 
 export const selectAllPools = createSelector(selectPools, ({ all }) => all);

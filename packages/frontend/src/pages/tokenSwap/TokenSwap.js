@@ -1,23 +1,14 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 
 import Container from '../../components/common/styled/Container.css';
-import selectNEARAsTokenWithMetadata from '../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
-import { selectAllTokens } from '../../redux/slices/swap';
 import { wallet } from '../../utils/wallet';
 import { SwapProvider } from './model/Swap';
 import SwapWrapper from './ui/SwapWrapper';
+import useTokens from './utils/hooks/useTokens';
 
 export default function TokenSwap({ history, accountId }) {
     const [account, setAccount] = useState(null);
-    const NEARConfig = useSelector((state) =>
-        selectNEARAsTokenWithMetadata(state, { includeNearContractName: true })
-    );
-    const tokens = useSelector(selectAllTokens);
-
-    const availableTokens = useMemo(() => {
-        return { [NEARConfig.contractName]: NEARConfig, ...tokens };
-    }, [NEARConfig, tokens]);
+    const tokensConfig = useTokens();
 
     useEffect(() => {
         let mounted = true;
@@ -45,7 +36,7 @@ export default function TokenSwap({ history, accountId }) {
                 <SwapWrapper
                     history={history}
                     account={account}
-                    tokens={availableTokens}
+                    tokensConfig={tokensConfig}
                 />
             </SwapProvider>
         </Container>

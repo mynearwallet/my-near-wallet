@@ -99,19 +99,14 @@ const Footer = styled.div`
 `;
 
 const swapInfoDaley = 1_000;
-// @todo find a better solution
 const tokenSelectState = {
     noSelect: 0,
     selectIn: 1,
     selectOut: 2,
 };
 
-export default memo(function SwapForm({ onGoBack, account, tokens }) {
-    const tokenList = Object.values(tokens);
-    const [displayTokenSelect, setDisplayTokenSelect] = useState(
-        tokenSelectState.noSelect
-    );
-
+export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
+    const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
     const {
         swapState: { tokenIn, tokenOut, amountIn },
         events: {
@@ -127,20 +122,36 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
     } = useSwapData();
 
     useEffect(() => {
-        if (!tokenIn && tokenList[0]) {
-            setTokenIn(tokenList[0]);
+        if (!tokenIn && listOfTokensIn[0]) {
+            setTokenIn(listOfTokensIn[0]);
         } else {
-            setTokenIn(tokens[tokenIn?.contractName]);
+            setTokenIn(tokensIn[tokenIn?.contractName]);
         }
+    }, [listOfTokensIn]);
 
-        if (!tokenOut && tokenList[1]) {
-            setTokenOut(tokenList[1]);
+    useEffect(() => {
+        if (!tokenOut && listOfTokensOut[1]) {
+            setTokenOut(listOfTokensOut[1]);
         } else {
-            setTokenOut(tokens[tokenOut?.contractName]);
+            setTokenOut(tokensOut[tokenOut?.contractName]);
         }
-    }, [tokens]);
+    }, [listOfTokensOut]);
 
     const onClickReview = () => setViewState(VIEW_STATE.preview);
+
+    const [displayTokenSelect, setDisplayTokenSelect] = useState(
+        tokenSelectState.noSelect
+    );
+    const tokensToSelect = useMemo(() => {
+        if (!displayTokenSelect) {
+            return [];
+        }
+
+        return displayTokenSelect === tokenSelectState.selectIn
+            ? listOfTokensIn
+            : listOfTokensOut;
+    }, [displayTokenSelect]);
+
     const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
     const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
     const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
@@ -208,7 +219,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                 <SelectToken
                     isMobile={mobile}
                     onClickGoBack={hideTokenSelection}
-                    fungibleTokens={tokenList}
+                    fungibleTokens={tokensToSelect}
                     onSelectToken={handleTokenSelect}
                 />
             ) : (

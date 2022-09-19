@@ -27,7 +27,7 @@ const contractConfig = {
     }
 };
 
-const DEV_CONTRACT_ID_REGEXP = /^dev-[0-9]+-[0-9]+$/;
+const DEV_CONTRACT_ID_REGEXP = /dev-[0-9]+-[0-9]+/;
 
 class RefFinanceContract {
     async getData({ account }) {
@@ -173,6 +173,10 @@ class RefFinanceContract {
 
                 let mainKey = JSON.stringify(token_account_ids);
                 const reverseKey = JSON.stringify(token_account_ids.reverse());
+                // Skip pool addition for DEV contracts
+                if (mainKey.match(DEV_CONTRACT_ID_REGEXP)) {
+                    return;
+                }
 
                 if (!pools[mainKey]) {
                     pools[mainKey] = {};

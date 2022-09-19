@@ -10,7 +10,7 @@ import useCalculatedValues from '../utils/hooks/useCalculatedValues';
 import useSwap from '../utils/hooks/useSwap';
 import SwapForm from './SwapForm';
 
-export default memo(function SwapWrapper({ history, account, tokens }) {
+export default memo(function SwapWrapper({ history, account, tokensConfig }) {
     const {
         swapState: {
             viewState,
@@ -69,7 +69,7 @@ export default memo(function SwapWrapper({ history, account, tokens }) {
         <SwapForm
             onGoBack={goHome}
             account={account}
-            tokens={tokens}
+            tokensConfig={tokensConfig}
         />
     ) : viewState === VIEW_STATE.preview ? (
         <SwapReviewForm
