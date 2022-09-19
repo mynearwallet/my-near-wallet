@@ -1,11 +1,11 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import SafeTranslate from '../../../components/SafeTranslate';
 // @todo common component: move to .../common
 import Token from '../../../components/send/components/entry_types/Token';
 import ChevronIcon from '../../../components/svg/ChevronIcon';
-import { formatTokenAmount } from '../../../utils/amounts';
+import { formatTokenAmount, isValidAmount } from '../../../utils/amounts';
 
 const InputWrapper = styled.div`
     padding: 1rem;
@@ -63,8 +63,9 @@ const Footer = styled.div`
         }
     }
 
-    input[disabled] {
-        cursor: not-allowed;
+    input.error {
+        border-color: #fc5b5b;
+        color: #fc5b5b;
     }
 
     .token {
@@ -106,6 +107,7 @@ export default memo(function Input({
     tokenSymbol,
     tokenIcon,
     tokenDecimals,
+    setIsValidInput,
     inputTestId,
     tokenSelectTestId,
 }) {
@@ -118,6 +120,21 @@ export default memo(function Input({
     const humanBalanceFormat = useMemo(() => {
         return maxBalance ? formatTokenAmount(maxBalance, tokenDecimals) : null;
     }, [maxBalance]);
+
+    const [isWrongBalance, setIsWrongBalance] = useState(false);
+
+    useEffect(() => {
+        const invalid =
+            !disabled &&
+            value &&
+            !isValidAmount(value, humanBalanceFormat, tokenDecimals);
+
+        if (setIsValidInput) {
+            setIsValidInput(!invalid);
+        }
+
+        setIsWrongBalance(invalid);
+    }, [disabled, value, humanBalanceFormat, tokenDecimals]);
 
     const setMaxBalance = () => !disabled && onChange(humanBalanceFormat);
 
@@ -146,6 +163,7 @@ export default memo(function Input({
                     <ChevronIcon color="#0072ce" />
                 </TokenWrapper>
                 <input
+                    className={`${isWrongBalance ? 'error' : ''}`}
                     type="number"
                     min={0}
                     max={humanBalanceFormat || 0}

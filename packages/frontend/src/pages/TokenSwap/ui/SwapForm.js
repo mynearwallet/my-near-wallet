@@ -207,19 +207,22 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         }
     };
 
+    const [isValidInput, setIsValidInput] = useState(false);
+
     const cannotSwap = useMemo(() => {
         if (
             !tokenIn ||
             !tokenOut ||
             (!poolId && !isNearTransformation) ||
             !amountIn ||
-            !amountOut
+            !amountOut ||
+            !isValidInput
         ) {
             return true;
         }
 
         return false;
-    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, isNearTransformation]);
+    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, isNearTransformation, isValidInput]);
 
     return (
         <SwapFormWrapper>
@@ -247,6 +250,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
                         tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
                         maxBalance={tokenIn?.balance}
+                        setIsValidInput={setIsValidInput}
                         inputTestId="swapPageInputAmountField"
                         tokenSelectTestId="swapPageInputTokenSelector"
                     />

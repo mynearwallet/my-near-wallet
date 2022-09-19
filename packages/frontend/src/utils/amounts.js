@@ -43,3 +43,21 @@ export const decreaseByPercent = (value, percent, precision = 0) => {
         .minus(Big(value).div(MAX_PERCENTAGE).times(percent))
         .toFixed(precision);
 };
+
+
+const MAX_DECIMALS = 24;
+
+export const isValidAmount = (amount, maxAmount, decimals = MAX_DECIMALS) => {
+    if (!amount || Big(amount).gt(maxAmount)) {
+        return false;
+    }
+
+    const strAmount = Big(amount).toFixed().replace(/,/g, '.');
+    const fractionalPart = strAmount?.split('.')[1];
+
+    if (fractionalPart?.length > decimals) {
+        return false;
+    }
+
+    return true;
+};
