@@ -3,6 +3,7 @@ import merge from 'lodash.merge';
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
+import { TEMPLATE_ACCOUNT_ID } from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
 import { formatTokenAmount } from '../../../utils/amounts';
@@ -89,10 +90,15 @@ const updateAllTokensData = createAsyncThunk(
                         contractName,
                         getState()
                     );
-                    const balance = await FungibleTokens.getBalanceOf({
-                        contractName,
-                        accountId,
-                    });
+                    let balance = '';
+
+                    if (accountId) {
+                        balance = await FungibleTokens.getBalanceOf({
+                            contractName,
+                            accountId,
+                        });
+                    }
+
                     const config = {
                         contractName,
                         balance,
@@ -128,8 +134,8 @@ const updateAllTokensData = createAsyncThunk(
     }
 );
 
-const fetchData = createAsyncThunk(
-    `${SLICE_NAME}/fetchData`,
+const fetchSwapData = createAsyncThunk(
+    `${SLICE_NAME}/fetchSwapData`,
     async ({ accountId }, { dispatch }) => {
         const {
             actions: { setPoolsLoading, addPools, addTokenNames },
@@ -138,7 +144,7 @@ const fetchData = createAsyncThunk(
         dispatch(setPoolsLoading(true));
 
         try {
-            const account = await wallet.getAccount(accountId);
+            const account = wallet.getAccountBasic(TEMPLATE_ACCOUNT_ID);
             const { pools, tokens } = await fungibleTokenExchange.getData({
                 account,
             });
@@ -201,7 +207,7 @@ const swapSlice = createSlice({
     },
     extraReducers: (builder) => {
         handleAsyncThunkStatus({
-            asyncThunk: fetchData,
+            asyncThunk: fetchSwapData,
             buildStatusPath: () => [],
             builder,
         });
@@ -211,7 +217,7 @@ const swapSlice = createSlice({
 export default swapSlice;
 
 export const actions = {
-    fetchData,
+    fetchSwapData,
     updateTokensBalance,
     ...swapSlice.actions
 };
