@@ -10,6 +10,7 @@ import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
+import Notification from './Notification';
 
 const mobile = isMobile();
 
@@ -98,20 +99,15 @@ const Footer = styled.div`
     }
 `;
 
-const swapInfoDaley = 1_000;
-// @todo find a better solution
+const swapInfoDaley = 600;
 const tokenSelectState = {
     noSelect: 0,
     selectIn: 1,
     selectOut: 2,
 };
 
-export default memo(function SwapForm({ onGoBack, account, tokens }) {
-    const tokenList = Object.values(tokens);
-    const [displayTokenSelect, setDisplayTokenSelect] = useState(
-        tokenSelectState.noSelect
-    );
-
+export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
+    const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
     const {
         swapState: { tokenIn, tokenOut, amountIn },
         events: {
@@ -127,20 +123,36 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
     } = useSwapData();
 
     useEffect(() => {
-        if (!tokenIn && tokenList[0]) {
-            setTokenIn(tokenList[0]);
+        if (!tokenIn && listOfTokensIn[0]) {
+            setTokenIn(listOfTokensIn[0]);
         } else {
-            setTokenIn(tokens[tokenIn?.contractName]);
+            setTokenIn(tokensIn[tokenIn?.contractName]);
         }
+    }, [listOfTokensIn]);
 
-        if (!tokenOut && tokenList[1]) {
-            setTokenOut(tokenList[1]);
+    useEffect(() => {
+        if (!tokenOut && listOfTokensOut[1]) {
+            setTokenOut(listOfTokensOut[1]);
         } else {
-            setTokenOut(tokens[tokenOut?.contractName]);
+            setTokenOut(tokensOut[tokenOut?.contractName]);
         }
-    }, [tokens]);
+    }, [listOfTokensOut]);
 
     const onClickReview = () => setViewState(VIEW_STATE.preview);
+
+    const [displayTokenSelect, setDisplayTokenSelect] = useState(
+        tokenSelectState.noSelect
+    );
+    const tokensToSelect = useMemo(() => {
+        if (!displayTokenSelect) {
+            return [];
+        }
+
+        return displayTokenSelect === tokenSelectState.selectIn
+            ? listOfTokensIn
+            : listOfTokensOut;
+    }, [displayTokenSelect]);
+
     const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
     const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
     const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
@@ -164,7 +176,14 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
-    const { poolId, swapFee, amountOut, isNearTransformation, loading } = useSwapInfo({
+    const {
+        poolId,
+        swapFee,
+        amountOut,
+        isNearTransformation,
+        swapNotification,
+        loading,
+    } = useSwapInfo({
         account,
         tokenIn,
         amountIn: Number(amountIn),
@@ -188,19 +207,22 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
         }
     };
 
+    const [isValidInput, setIsValidInput] = useState(false);
+
     const cannotSwap = useMemo(() => {
         if (
             !tokenIn ||
             !tokenOut ||
             (!poolId && !isNearTransformation) ||
             !amountIn ||
-            !amountOut
+            !amountOut ||
+            !isValidInput
         ) {
             return true;
         }
 
         return false;
-    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, isNearTransformation]);
+    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, isNearTransformation, isValidInput]);
 
     return (
         <SwapFormWrapper>
@@ -208,7 +230,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                 <SelectToken
                     isMobile={mobile}
                     onClickGoBack={hideTokenSelection}
-                    fungibleTokens={tokenList}
+                    fungibleTokens={tokensToSelect}
                     onSelectToken={handleTokenSelect}
                 />
             ) : (
@@ -228,6 +250,7 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
                         tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
                         maxBalance={tokenIn?.balance}
+                        setIsValidInput={setIsValidInput}
                         inputTestId="swapPageInputAmountField"
                         tokenSelectTestId="swapPageInputTokenSelector"
                     />
@@ -253,6 +276,13 @@ export default memo(function SwapForm({ onGoBack, account, tokens }) {
                         disabled
                     />
                     <Footer>
+                        {swapNotification && (
+                            <Notification
+                                id={swapNotification.id}
+                                type={swapNotification.type}
+                                data={swapNotification.data}
+                            />
+                        )}
                         <FormButton
                             disabled={cannotSwap}
                             onClick={onClickReview}

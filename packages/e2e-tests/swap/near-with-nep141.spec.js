@@ -84,6 +84,7 @@ describe("Swap NEAR with NEP141", () => {
                 fromAmount: swapAmount,
                 toSymbol: token.symbol,
                 toAmount: outAmount,
+                acceptableOutputDifference: 2,
             })
         );
 
@@ -119,8 +120,10 @@ describe("Swap NEAR with NEP141", () => {
         expect(Number(outAmount)).toBeCloseTo(swapAmount, maxDecimalsToCheck);
 
         const nearBalanceBefore = await account.getUpdatedBalance();
+        const parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+
         // Additional balance check after the first swap
-        expect(Number(format.formatNearAmount(nearBalanceBefore.total))).toBeCloseTo(
+        expect(Number(parsedTotalBefore)).toBeCloseTo(
             totalBalanceOnStart - swapAmount - SWAP_FEE,
             maxDecimalsToCheck
         );
@@ -131,7 +134,6 @@ describe("Swap NEAR with NEP141", () => {
 
         const nearBalanceAfter = await account.getUpdatedBalance();
         const parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
-        const parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
 
         const resultElement = await swapPage.waitResultMessageElement();
         const resultMessage = await resultElement.innerText();
@@ -141,7 +143,8 @@ describe("Swap NEAR with NEP141", () => {
                 fromSymbol: token.symbol,
                 fromAmount: tokenBalanceAfterSwap,
                 toSymbol: TESTNET.NEAR.symbol,
-                toAmount: parsedTotalAfter,
+                toAmount: outAmount,
+                acceptableOutputDifference: 2,
             })
         );
 

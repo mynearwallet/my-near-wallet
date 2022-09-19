@@ -3,6 +3,7 @@ import merge from 'lodash.merge';
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
+import { TEMPLATE_ACCOUNT_ID } from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
 import { formatTokenAmount } from '../../../utils/amounts';
@@ -18,6 +19,7 @@ const initialState = {
     tokens: {
         loading: false,
         all: {},
+        withBalance: {},
     },
     pools: {
         loading: false,
@@ -74,10 +76,10 @@ const updateTokensBalance = createAsyncThunk(
 const updateAllTokensData = createAsyncThunk(
     `${SLICE_NAME}/updateAllTokensData`,
     async (accountId, { getState, dispatch }) => {
-        const { actions: { setAllTokensLoading, addAllTokens } } = swapSlice;
+        const { actions: { setAllTokensLoading, addAllTokens, addTokensWithBalance } } = swapSlice;
         const { tokenFiatValues, swap: { tokenNames } } = getState();
         const tokens = {};
-        const tokensWithBalance = {};
+        let tokensWithBalance = {};
 
         dispatch(setAllTokensLoading(true));
 
@@ -88,10 +90,15 @@ const updateAllTokensData = createAsyncThunk(
                         contractName,
                         getState()
                     );
-                    const balance = await FungibleTokens.getBalanceOf({
-                        contractName,
-                        accountId,
-                    });
+                    let balance = '';
+
+                    if (accountId) {
+                        balance = await FungibleTokens.getBalanceOf({
+                            contractName,
+                            accountId,
+                        });
+                    }
+
                     const config = {
                         contractName,
                         balance,
@@ -110,11 +117,14 @@ const updateAllTokensData = createAsyncThunk(
             console.error('Error loading token data', error);
         }
 
+        tokensWithBalance = sortTokensWithBalanceInDecreasingOrder(tokensWithBalance);
+
         batch(() => {
+            dispatch(addTokensWithBalance({ tokens: tokensWithBalance }));
             dispatch(
                 addAllTokens({
                     tokens: {
-                        ...sortTokensWithBalanceInDecreasingOrder(tokensWithBalance),
+                        ...tokensWithBalance,
                         ...tokens,
                     },
                 })
@@ -124,8 +134,8 @@ const updateAllTokensData = createAsyncThunk(
     }
 );
 
-const fetchData = createAsyncThunk(
-    `${SLICE_NAME}/fetchData`,
+const fetchSwapData = createAsyncThunk(
+    `${SLICE_NAME}/fetchSwapData`,
     async ({ accountId }, { dispatch }) => {
         const {
             actions: { setPoolsLoading, addPools, addTokenNames },
@@ -134,7 +144,7 @@ const fetchData = createAsyncThunk(
         dispatch(setPoolsLoading(true));
 
         try {
-            const account = await wallet.getAccount(accountId);
+            const account = wallet.getAccountBasic(TEMPLATE_ACCOUNT_ID);
             const { pools, tokens } = await fungibleTokenExchange.getData({
                 account,
             });
@@ -184,6 +194,11 @@ const swapSlice = createSlice({
 
             set(state, ['tokens', 'all'], tokens);
         },
+        addTokensWithBalance(state, { payload }) {
+            const { tokens } = payload;
+
+            set(state, ['tokens', 'withBalance'], tokens);
+        },
         addTokens(state, { payload }) {
             const { tokens } = payload;
 
@@ -192,7 +207,7 @@ const swapSlice = createSlice({
     },
     extraReducers: (builder) => {
         handleAsyncThunkStatus({
-            asyncThunk: fetchData,
+            asyncThunk: fetchSwapData,
             buildStatusPath: () => [],
             builder,
         });
@@ -202,18 +217,19 @@ const swapSlice = createSlice({
 export default swapSlice;
 
 export const actions = {
-    fetchData,
+    fetchSwapData,
     updateTokensBalance,
     ...swapSlice.actions
 };
 
 export const reducer = swapSlice.reducer;
 
-const selectAllTokenConfigs = (state) => state[SLICE_NAME].tokens.all;
+const selectTokens = (state) => state[SLICE_NAME].tokens;
 const selectAllTokenLoading = (state) => state[SLICE_NAME].tokens.loading;
 const selectPools = (state) => state[SLICE_NAME].pools;
 
-export const selectAllTokens = createSelector(selectAllTokenConfigs, (tokens) => tokens);
+export const selectAllTokens = createSelector(selectTokens, ({ all }) => all);
+export const selectTokensWithBalance = createSelector(selectTokens, ({ withBalance }) => withBalance);
 export const selectAllTokensLoading = createSelector(selectAllTokenLoading, (loading) => loading);
 
 export const selectAllPools = createSelector(selectPools, ({ all }) => all);

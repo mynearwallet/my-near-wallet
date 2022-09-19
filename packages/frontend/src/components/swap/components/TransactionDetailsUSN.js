@@ -16,10 +16,12 @@ const TransactionDetailsUSN = ({
     exchangeRate,
     tradingFee,
     setSlippage,
+    feeTakenFromInput,
 }) => {
     const [open, setOpen] = useState(false);
 
     const commissionFee = tradingFee?.toFixed(5);
+    const commissionToken = feeTakenFromInput ? selectedTokenFrom : selectedTokenTo;
     const minimumReceived = exchangeRateTranslation({
         inputtedAmountOfToken: selectedTokenFrom,
         calculateAmountOfToken: selectedTokenTo,
@@ -47,7 +49,7 @@ const TransactionDetailsUSN = ({
                     className="details-info"
                     translateIdTitle={'swap.fee'}
                     amount={commissionFee.toString()}
-                    symbol={selectedTokenTo.onChainFTMetadata?.symbol}
+                    symbol={commissionToken.onChainFTMetadata?.symbol}
                     decimals={0}
                     translateIdInfoTooltip="swap.translateIdInfoTooltip.fee"
                 />

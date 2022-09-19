@@ -151,6 +151,7 @@ const TransactionDetails = ({
     setSlippage,
     exchangeRate,
     tradingFee,
+    feeTakenFromInput,
     showSlippageOption,
 }) => {
     let estimatedMinReceived = '';
@@ -182,6 +183,7 @@ const TransactionDetails = ({
                     exchangeRate={exchangeRate}
                     tradingFee={tradingFee}
                     setSlippage={setSlippage}
+                    feeTakenFromInput={feeTakenFromInput}
                 />
             );
         }

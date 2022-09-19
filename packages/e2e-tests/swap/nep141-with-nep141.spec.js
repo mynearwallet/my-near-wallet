@@ -82,10 +82,10 @@ describe("Swap NEP141 with NEP141", () => {
             maxDecimalsToCheck
         );
 
+        // Start swap between tokens
+
         const token0Balance = await account.getTokenBalance(token0.id);
         const token0ParsedBalance = Number(formatAmount(token0Balance, token0.decimals));
-
-        // Start swap between tokens
 
         await swapPage.fillForm({
             inId: token0.id,

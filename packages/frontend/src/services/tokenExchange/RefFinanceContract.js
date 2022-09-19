@@ -27,7 +27,7 @@ const contractConfig = {
     }
 };
 
-const DEV_CONTRACT_ID_REGEXP = /^dev-[0-9]+-[0-9]+$/;
+const DEV_CONTRACT_ID_REGEXP = /dev-[0-9]+-[0-9]+/;
 
 class RefFinanceContract {
     async getData({ account }) {
@@ -49,10 +49,6 @@ class RefFinanceContract {
         for (let req = 1; req <= numberOfRequests; req++) {
             let startPoolsIndex = (req * maxRequestAmount) - maxRequestAmount;
             let poolsAmountLimit = maxRequestAmount;
-
-            if (req > 1) {
-                startPoolsIndex += 1;
-            }
 
             if (req === numberOfRequests && remaningNumberOfPools) {
                 poolsAmountLimit = remaningNumberOfPools;
@@ -173,6 +169,10 @@ class RefFinanceContract {
 
                 let mainKey = JSON.stringify(token_account_ids);
                 const reverseKey = JSON.stringify(token_account_ids.reverse());
+                // Skip pool addition for DEV contracts
+                if (mainKey.match(DEV_CONTRACT_ID_REGEXP)) {
+                    return;
+                }
 
                 if (!pools[mainKey]) {
                     pools[mainKey] = {};

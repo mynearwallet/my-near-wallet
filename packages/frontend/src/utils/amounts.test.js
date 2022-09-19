@@ -10,7 +10,7 @@ describe('amounts', () => {
         expect(amounts.decreaseByPercent(0.000079630313987476842385, 0.1, 18)).toBe('0.000079550683673489');
     });
 
-    test('should correcly cut specified amount of decimal places if necessary', () => {
+    test('should correctly cut specified amount of decimal places if necessary', () => {
         expect(amounts.cutDecimalsIfNeeded(1)).toBe('1');
         expect(amounts.cutDecimalsIfNeeded(1.1)).toBe('1.1');
         expect(amounts.cutDecimalsIfNeeded(1.1, 3)).toBe('1.1');
@@ -19,7 +19,7 @@ describe('amounts', () => {
         expect(amounts.cutDecimalsIfNeeded(1.0123456789, 4)).toBe('1.0123');
     });
 
-    test('should correcly get specified percent from the amount', () => {
+    test('should correctly get specified percent from the amount', () => {
         expect(amounts.getPercentFrom(100, 100)).toBe('100');
         expect(amounts.getPercentFrom(100, 10)).toBe('10');
         expect(amounts.getPercentFrom(100, 60)).toBe('60');
@@ -27,6 +27,16 @@ describe('amounts', () => {
         expect(amounts.getPercentFrom(5, 10)).toBe('0.5');
         expect(amounts.getPercentFrom(1, 0.3)).toBe('0.003');
         expect(amounts.getPercentFrom(1, 0.003)).toBe('0.00003');
+    });
+
+    test('should correctly validate amount', () => {
+        expect(amounts.isValidAmount(0.9, 1)).toBe(true);
+        expect(amounts.isValidAmount(1, 1)).toBe(true);
+        expect(amounts.isValidAmount(1.1, 1)).toBe(false);
+        expect(amounts.isValidAmount(0.0000001, 1, 6)).toBe(false);
+        expect(amounts.isValidAmount(0.0000001, 1, 7)).toBe(true);
+        expect(amounts.isValidAmount(0.0000000000000000000000001, 1)).toBe(false);
+        expect(amounts.isValidAmount(0.000000000000000000000001, 1)).toBe(true);
     });
 });
 

@@ -22,6 +22,7 @@ import {
 } from '../config';
 import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel/index';
+import TokenSwap from '../pages/TokenSwap';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
@@ -34,7 +35,6 @@ import { SetupLedgerNewAccountWrapper } from '../routes/SetupLedgerNewAccountWra
 import { SetupPassphraseNewAccountWrapper } from '../routes/SetupPassphraseNewAccountWrapper';
 import { SetupRecoveryImplicitAccountWrapper } from '../routes/SetupRecoveryImplicitAccountWrapper';
 import { SignWrapper } from '../routes/SignWrapper';
-import SwapWrapper from '../routes/SwapWrapper';
 import { VerifyOwnerWrapper } from '../routes/VerifyOwnerWrapper';
 import { WalletWrapper } from '../routes/WalletWrapper';
 import translations_en from '../translations/en.global.json';
@@ -646,7 +646,7 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/swap"
-                                component={SwapWrapper}
+                                component={TokenSwap}
                             />
                             <PrivateRoute
                                 exact

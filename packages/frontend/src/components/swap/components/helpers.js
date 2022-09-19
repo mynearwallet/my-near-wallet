@@ -1,5 +1,5 @@
 import * as nearApiJs from 'near-api-js';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import { USN_CONTRACT } from '../../../config';
 import useDebounce from '../../../hooks/useDebounce';
@@ -166,23 +166,4 @@ export const exchangeRateTranslation = ({ inputtedAmountOfToken, calculateAmount
     }
     const removedZeros = removeTrailingZeros(`${operation.toFixed(5)}`);
     return removedZeros;
-};
-
-
-export const useInterval = (cb, interval) => {
-    const callback = useRef();
-
-    useEffect(() => {
-        callback.current = cb;
-    }, [callback]);
-
-    useEffect(() => {
-        function tick() {
-            callback.current();
-        }
-        if (interval !== null) {
-            const intervalFunction = setInterval(tick, interval);
-            return () => clearInterval(intervalFunction);
-        }
-    }, [interval]);
 };
