@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import { NEAR_ID, NEAR_TOKEN_ID } from '../../config';
-import { formatTokenAmount } from '../../utils/amounts';
+import { parseTokenAmount } from '../../utils/amounts';
 import { MAX_PERCENTAGE } from '../../utils/constants';
 
 export const isNearTransformation = (params) => {
@@ -29,7 +29,6 @@ export const estimatePoolInfo = ({
     tokenInDecimals,
     amountIn,
     tokenOutId,
-    tokenOutDecimals,
 }) => {
     const { total_fee, token_account_ids, amounts } = pool;
     const tokenInfo = {
@@ -37,17 +36,9 @@ export const estimatePoolInfo = ({
         [token_account_ids[1]]: amounts[1],
     };
 
-    const reserveIn = formatTokenAmount(
-        tokenInfo[tokenInId],
-        tokenInDecimals,
-        tokenInDecimals
-    );
-    const reserveOut = formatTokenAmount(
-        tokenInfo[tokenOutId],
-        tokenOutDecimals,
-        tokenOutDecimals
-    );
-    const amountInWithFee = amountIn * (FEE_DIVISOR - total_fee);
+    const reserveIn = tokenInfo[tokenInId];
+    const reserveOut = tokenInfo[tokenOutId];
+    const amountInWithFee = parseTokenAmount(amountIn, tokenInDecimals) * (FEE_DIVISOR - total_fee);
     const amountOut =
         (amountInWithFee * reserveOut) /
         (FEE_DIVISOR * reserveIn + amountInWithFee);

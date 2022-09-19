@@ -98,7 +98,7 @@ const Footer = styled.div`
     }
 `;
 
-const swapInfoDaley = 1_000;
+const swapInfoDaley = 600;
 const tokenSelectState = {
     noSelect: 0,
     selectIn: 1,

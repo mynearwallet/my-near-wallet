@@ -50,10 +50,6 @@ class RefFinanceContract {
             let startPoolsIndex = (req * maxRequestAmount) - maxRequestAmount;
             let poolsAmountLimit = maxRequestAmount;
 
-            if (req > 1) {
-                startPoolsIndex += 1;
-            }
-
             if (req === numberOfRequests && remaningNumberOfPools) {
                 poolsAmountLimit = remaningNumberOfPools;
             }
