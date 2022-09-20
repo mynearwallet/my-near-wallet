@@ -14,6 +14,10 @@ export const gtZero = (value = '0') => big(value).gt(big());
 export const gtZeroApprox = (value = '0') => big(value).gt(big(APPROX_ZERO_MIN));
 
 export const cutDecimalsIfNeeded = (value, precision) => {
+    if (!value || !precision) {
+        return String(value);
+    }
+
     const strValue = String(value);
     const decimalPointIndex = strValue.indexOf('.');
     const lengthOfDecimalPlaces = decimalPointIndex
@@ -24,7 +28,7 @@ export const cutDecimalsIfNeeded = (value, precision) => {
     );
 
     if (!precision || !lengthOfDecimalPlaces || lengthOfDecimalPlaces <= precision || !remaningAmount) {
-        return strValue;
+        return Big(value).toFixed();
     }
 
     return Big(value).toFixed(precision);

@@ -1611,6 +1611,7 @@
         "fee": "Estimated fees",
         "from": "From",
         "max": "Max: ${amount} ${symbol}",
+        "available": "Available: ${amount} ${symbol}",
         "minReceived": "Minimum received",
         "price": "Price",
         "priceImpact": "Price impact",

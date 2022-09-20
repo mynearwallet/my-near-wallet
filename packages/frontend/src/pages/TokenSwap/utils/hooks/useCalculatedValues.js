@@ -19,11 +19,11 @@ export default function useCalculatedValues({
                 return amountOut;
             }
 
-            return Number(decreaseByPercent(
+            return decreaseByPercent(
                 amountOut,
                 slippage,
                 tokenOut.onChainFTMetadata.decimals
-            ));
+            );
         }
 
         return '';

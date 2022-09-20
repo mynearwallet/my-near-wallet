@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { showCustomAlert } from '../../../../redux/actions/status';
@@ -18,8 +18,9 @@ export default function useSwap({
     isNearTransformation,
 }) {
     const dispatch = useDispatch();
-    const [pending, setPending] = useState(false);
-    const { events } = useSwapData();
+    const {
+        events: { setSwapPending, setCompletedSwapState, setViewState },
+    } = useSwapData();
 
     const swap = useMemo(() => {
         if (
@@ -34,10 +35,10 @@ export default function useSwap({
         }
 
         return async () => {
-            setPending(true);
+            setSwapPending(true);
 
             try {
-                const { swapTxHash } = await fungibleTokenExchange.swap({
+                const { swapTxHash, success } = await fungibleTokenExchange.swap({
                     account,
                     amountIn,
                     poolId,
@@ -46,25 +47,19 @@ export default function useSwap({
                     minAmountOut,
                 });
 
-                events.setLastSwapTxHash(swapTxHash);
-                events.setViewState(VIEW_STATE.result);
-
                 dispatch(
                     updateTokensBalance({
                         accountId: account.accountId,
                         tokenIds: [tokenIn.contractName, tokenOut.contractName],
                     })
                 );
-                // we show a swap result page if this page is mounted
-                // @todo how to show this alert when it's unmounted?
-                dispatch(
-                    showCustomAlert({
-                        success: true,
-                        messageCodeHeader: 'swap.success',
-                        // @note is there a way different way to show custom data?
-                        errorMessage: `${tokenIn.contractName} to ${tokenOut.contractName}`,
-                    })
-                );
+                setCompletedSwapState({
+                    success,
+                    hash: swapTxHash,
+                    tokenInId: tokenIn.contractName,
+                    tokenOutId: tokenOut.contractName,
+                });
+                setViewState(VIEW_STATE.result);
             } catch (error) {
                 dispatch(
                     showCustomAlert({
@@ -75,7 +70,7 @@ export default function useSwap({
                 );
             }
 
-            setPending(false);
+            setSwapPending(false);
         };
     }, [
         dispatch,
@@ -88,5 +83,5 @@ export default function useSwap({
         isNearTransformation,
     ]);
 
-    return { swap, pending };
+    return swap;
 }

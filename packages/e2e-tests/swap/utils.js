@@ -5,6 +5,11 @@ const VISIBLE_DECIMALS = 7;
 const cutDecimalsIfPossible = (amount, decimals) => {
     const strAmount = String(amount);
     const decimalPointIndex = strAmount.indexOf('.');
+
+    if (decimalPointIndex === -1) {
+        return strAmount;
+    }
+
     const firstDecimalIndex = decimalPointIndex <= 0 ? -1 : decimalPointIndex + 1;
 
     return firstDecimalIndex

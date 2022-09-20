@@ -151,7 +151,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         return displayTokenSelect === tokenSelectState.selectIn
             ? listOfTokensIn
             : listOfTokensOut;
-    }, [displayTokenSelect]);
+    }, [displayTokenSelect, listOfTokensIn, listOfTokensOut]);
 
     const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
     const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);

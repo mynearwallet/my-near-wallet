@@ -22,6 +22,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             swapFee,
             isNearTransformation,
             lastSwapTxHash,
+            swapPending,
         },
         events: { setViewState, setAmountIn },
     } = useSwapData();
@@ -42,7 +43,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         swapFee,
     });
 
-    const { swap, pending: swapPending } = useSwap({
+    const swap = useSwap({
         account,
         amountIn,
         poolId: swapPoolId,

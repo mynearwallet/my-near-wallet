@@ -100,9 +100,9 @@ describe("Swap NEAR with NEP141", () => {
 
         const tokenBalance = await account.getTokenBalance(token.id);
 
-        tokenBalanceAfterSwap = Number(formatAmount(tokenBalance, token.decimals));
+        tokenBalanceAfterSwap = formatAmount(tokenBalance, token.decimals);
 
-        expect(tokenBalanceAfterSwap).toEqual(Number(outAmount));
+        expect(tokenBalanceAfterSwap).toMatch(new RegExp(outAmount));
 
         await swapPage.clickOnContinueAfterSwapButton();
     });
