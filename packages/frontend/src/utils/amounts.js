@@ -15,7 +15,7 @@ export const gtZeroApprox = (value = '0') => big(value).gt(big(APPROX_ZERO_MIN))
 
 export const cutDecimalsIfNeeded = (value, precision) => {
     if (!value || !precision) {
-        return value;
+        return String(value);
     }
 
     const strValue = String(value);
