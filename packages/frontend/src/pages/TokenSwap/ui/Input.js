@@ -5,7 +5,12 @@ import SafeTranslate from '../../../components/SafeTranslate';
 // @todo common component: move to .../common
 import Token from '../../../components/send/components/entry_types/Token';
 import ChevronIcon from '../../../components/svg/ChevronIcon';
-import { formatTokenAmount, isValidAmount } from '../../../utils/amounts';
+import {
+    formatTokenAmount,
+    isValidAmount,
+    cutDecimalsIfNeeded,
+} from '../../../utils/amounts';
+import { DECIMALS_TO_SAFE } from '../utils/constants';
 
 const InputWrapper = styled.div`
     padding: 1rem;
@@ -26,11 +31,14 @@ const Label = styled.span`
 `;
 
 const Balance = styled.button`
-    font-style: italic;
-    color: #2f98f3;
     cursor: pointer;
-    background-color: transparent;
+    font-style: italic;
     border: none;
+    background-color: transparent;
+
+    &:not(.disabled) {
+        color: #2f98f3;
+    }
 
     &.disabled {
         cursor: default;
@@ -114,7 +122,9 @@ export default memo(function Input({
     const handleChange = (event) => {
         event.preventDefault();
 
-        onChange(event.target.value);
+        if (!disabled) {
+            onChange(event.target.value);
+        }
     };
 
     const humanBalanceFormat = useMemo(() => {
@@ -143,13 +153,21 @@ export default memo(function Input({
         symbol: tokenSymbol,
     };
 
+    const valueToShow =
+        disabled && value
+            ? cutDecimalsIfNeeded(value, DECIMALS_TO_SAFE)
+            : value;
+
     return (
         <InputWrapper>
             <Header>
                 {label && <Label>{label}</Label>}
                 {humanBalanceFormat && (
                     <Balance onClick={setMaxBalance} className={`${disabled ? 'disabled' : ''}`}>
-                        <SafeTranslate id="swap.max" data={balanceData} />
+                        <SafeTranslate
+                            id={disabled ? 'swap.available' : 'swap.max'}
+                            data={balanceData}
+                        />
                     </Balance>
                 )}
             </Header>
@@ -167,7 +185,7 @@ export default memo(function Input({
                     type="number"
                     min={0}
                     max={humanBalanceFormat || 0}
-                    value={loading ? '' : value}
+                    value={loading ? '' : valueToShow}
                     onChange={handleChange}
                     placeholder={placeholder}
                     disabled={disabled}
