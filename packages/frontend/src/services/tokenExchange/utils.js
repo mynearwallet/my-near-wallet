@@ -15,7 +15,7 @@ export const replaceNearIfNecessary = (id) => {
     return id === NEAR_ID ? NEAR_TOKEN_ID : id;
 };
 
-// taken from the 'ref-contracts' repository
+// taken from the RefFinance 'ref-contracts' repository
 const FEE_DIVISOR = 10_000;
 
 export const formatTotalFee = (fee) => {
@@ -23,7 +23,7 @@ export const formatTotalFee = (fee) => {
     return Number(Big(fee).div(FEE_DIVISOR).times(MAX_PERCENTAGE).toFixed());
 };
 
-export const estimatePoolInfo = ({
+const estimatePoolInfo = ({
     pool,
     tokenInId,
     tokenInDecimals,
@@ -43,26 +43,24 @@ export const estimatePoolInfo = ({
         (amountInWithFee * reserveOut) /
         (FEE_DIVISOR * reserveIn + amountInWithFee);
 
-    return { pool, amountOut };
+    return amountOut;
 };
 
 export const findBestSwapPool = ({ poolsByIds, ...restParams }) => {
     let bestPool;
     let bestAmountOut;
 
-    Object.values(poolsByIds)
-        .map((pool) =>
-            estimatePoolInfo({
-                pool,
-                ...restParams,
-            })
-        )
-        .forEach(({ pool, amountOut }) => {
-            if (!bestPool || amountOut > bestAmountOut) {
-                bestPool = pool;
-                bestAmountOut = amountOut;
-            }
+    Object.values(poolsByIds).forEach((pool) => {
+        const amountOut = estimatePoolInfo({
+            pool,
+            ...restParams,
         });
+
+        if (!bestPool || amountOut > bestAmountOut) {
+            bestPool = pool;
+            bestAmountOut = amountOut;
+        }
+    });
 
     return { pool: bestPool, amountOut: bestAmountOut };
 };

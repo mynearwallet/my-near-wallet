@@ -253,6 +253,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         setIsValidInput={setIsValidInput}
                         inputTestId="swapPageInputAmountField"
                         tokenSelectTestId="swapPageInputTokenSelector"
+                        disabled={!tokenIn}
                     />
                     <SwapButtonWrapper>
                         <FormButton

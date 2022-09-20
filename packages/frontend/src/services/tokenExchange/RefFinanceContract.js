@@ -72,7 +72,6 @@ class RefFinanceContract {
         return this._formatPoolsData(pools);
     }
 
-    // @todo remove get_return when findBestSwapPool() would be fixed
     async estimate({
         account,
         poolsByIds,
@@ -83,6 +82,7 @@ class RefFinanceContract {
         tokenOutDecimals,
     }) {
         const contract = await this._newContract(account);
+        // @todo remove get_return when findBestSwapPool() would be fixed
         const { pool } = findBestSwapPool({
             poolsByIds,
             tokenInId,
