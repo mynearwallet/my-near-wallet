@@ -1,4 +1,14 @@
-import React, { createContext, useReducer, useMemo, useContext } from 'react';
+import React, {
+    createContext,
+    useReducer,
+    useMemo,
+    useContext,
+    useCallback,
+} from 'react';
+import { useDispatch } from 'react-redux';
+
+import useIsMounted from '../../../hooks/useIsMounted';
+import { showCustomAlert } from '../../../redux/actions/status';
 
 export const VIEW_STATE = {
     inputForm: 'inputForm',
@@ -16,6 +26,7 @@ const initialState = {
     swapPoolId: null,
     isNearTransformation: false,
     lastSwapTxHash: '',
+    swapPending: false,
 };
 
 const ACTION = {
@@ -27,7 +38,8 @@ const ACTION = {
     SET_SWAP_POOL_ID: 'setSwapPoolId',
     SET_SWAP_FEE: 'setSwapFee',
     SET_IS_NEAR_TRANSFORMATION: 'setIsNearTransformation',
-    SET_LAST_SWAP_TX_HASH: 'setLastSwapTxHash',
+    SET_SWAP_PENDING: 'setSwapPending',
+    SET_COMPLETED_SWAP_STATE: 'setCompletedSwapState',
 };
 
 function swapReducer(state, action) {
@@ -50,8 +62,10 @@ function swapReducer(state, action) {
             return { ...state, swapFee: payload };
         case ACTION.SET_IS_NEAR_TRANSFORMATION:
             return { ...state, isNearTransformation: payload };
-        case ACTION.SET_LAST_SWAP_TX_HASH:
-            return { ...state, lastSwapTxHash: payload };
+        case ACTION.SET_SWAP_PENDING:
+            return { ...state, swapPending: payload };
+        case ACTION.SET_COMPLETED_SWAP_STATE:
+            return { ...state, lastSwapTxHash: payload.hash };
         default:
             return state;
     }
@@ -70,39 +84,63 @@ export const useSwapData = () => {
 };
 
 export function SwapProvider({ children }) {
-    const [swapState, dispatch] = useReducer(swapReducer, initialState);
+    const dispatch = useDispatch();
+    const isMounted = useIsMounted();
+    const [swapState, dispatchSwapAction] = useReducer(swapReducer, initialState);
 
-    const events = useMemo(() => {
-        return {
-            setViewState: (payload) => {
-                dispatch({ type: ACTION.SET_VIEW_STATE, payload });
+    const dispatchIfMounted = useCallback((type, payload) => {
+        if (isMounted()) {
+            dispatchSwapAction({ type, payload });
+        } else if (type === ACTION.SET_COMPLETED_SWAP_STATE) {
+            const { success, tokenInId, tokenOutId } = payload;
+
+            dispatch(
+                showCustomAlert({
+                    success,
+                    messageCodeHeader: success ? 'swap.success' : 'swap.error',
+                    // @note is there a different way to show custom data
+                    // instead of 'errorMessage' key?
+                    errorMessage: `${tokenInId} to ${tokenOutId}`,
+                })
+            );
+        }
+    }, [isMounted]);
+
+    const events = useMemo(
+        () => ({
+            setViewState(payload) {
+                dispatchIfMounted(ACTION.SET_VIEW_STATE, payload);
             },
-            setTokenIn: (payload = null) => {
-                dispatch({ type: ACTION.SET_TOKEN_IN, payload });
+            setTokenIn(payload = null) {
+                dispatchSwapAction({ type: ACTION.SET_TOKEN_IN, payload });
             },
-            setTokenOut: (payload = null) => {
-                dispatch({ type: ACTION.SET_TOKEN_OUT, payload });
+            setTokenOut(payload = null) {
+                dispatchSwapAction({ type: ACTION.SET_TOKEN_OUT, payload });
             },
-            setAmountIn: (payload) => {
-                dispatch({ type: ACTION.SET_AMOUNT_IN, payload });
+            setAmountIn(payload) {
+                dispatchSwapAction({ type: ACTION.SET_AMOUNT_IN, payload });
             },
-            setAmountOut: (payload) => {
-                dispatch({ type: ACTION.SET_AMOUNT_OUT, payload });
+            setAmountOut(payload) {
+                dispatchIfMounted(ACTION.SET_AMOUNT_OUT, payload);
             },
-            setSwapPoolId: (payload) => {
-                dispatch({ type: ACTION.SET_SWAP_POOL_ID, payload });
+            setSwapPoolId(payload) {
+                dispatchIfMounted(ACTION.SET_SWAP_POOL_ID, payload);
             },
-            setSwapFee: (payload) => {
-                dispatch({ type: ACTION.SET_SWAP_FEE, payload });
+            setSwapFee(payload) {
+                dispatchIfMounted(ACTION.SET_SWAP_FEE, payload);
             },
-            setIsNearTransformation: (payload) => {
-                dispatch({ type: ACTION.SET_IS_NEAR_TRANSFORMATION, payload });
+            setIsNearTransformation(payload) {
+                dispatchIfMounted(ACTION.SET_IS_NEAR_TRANSFORMATION, payload);
             },
-            setLastSwapTxHash: (payload) => {
-                dispatch({ type: ACTION.SET_LAST_SWAP_TX_HASH, payload });
+            setSwapPending(payload) {
+                dispatchIfMounted(ACTION.SET_SWAP_PENDING, payload);
             },
-        };
-    }, []);
+            setCompletedSwapState(payload) {
+                dispatchIfMounted(ACTION.SET_COMPLETED_SWAP_STATE, payload);
+            },
+        }),
+        []
+    );
 
     const contextValue = useMemo(() => ({ swapState, events }), [swapState]);
 
