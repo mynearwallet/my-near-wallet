@@ -38,19 +38,22 @@ export default function useSwapInfo({
         tokenOut: tokenOut?.contractName === NEAR_ID ? NEAR_TOKEN_ID : tokenOut?.contractName,
     });
 
-    const swapNotification = useMemo(() => {
+    const [swapNotification, setSwapNotification] = useState(null);
+
+    useEffect(() => {
         if (tokenIn && tokenOut && !pools && !poolsLoading && !isTransformation) {
-            return {
+            setAmountOut('');
+            setSwapNotification({
                 id: 'swap.noPoolAvailable',
                 type: 'warning',
                 data: {
                     tokenIn: tokenIn.onChainFTMetadata.symbol,
                     tokenOut: tokenOut.onChainFTMetadata.symbol,
                 },
-            };
+            });
+        } else if (swapNotification) {
+            setSwapNotification(null);
         }
-
-        return null;
     }, [tokenIn, tokenOut, pools, poolsLoading, isTransformation]);
 
     useEffect(() => {

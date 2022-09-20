@@ -48,7 +48,7 @@ export const decreaseByPercent = (value, percent, precision = 0) => {
 const MAX_DECIMALS = 24;
 
 export const isValidAmount = (amount, maxAmount, decimals = MAX_DECIMALS) => {
-    if (!amount || Big(amount).gt(maxAmount)) {
+    if (!amount || !maxAmount || Big(amount).gt(maxAmount)) {
         return false;
     }
 

@@ -104,8 +104,10 @@ export function SwapProvider({ children }) {
         };
     }, []);
 
+    const contextValue = useMemo(() => ({ swapState, events }), [swapState]);
+
     return (
-        <SwapContext.Provider value={{ swapState, events }}>
+        <SwapContext.Provider value={contextValue}>
             {children}
         </SwapContext.Provider>
     );

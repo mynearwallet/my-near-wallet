@@ -17,6 +17,7 @@ const StyledContainer = styled.div`
         text-align: center;
         font-weight: 900;
         margin: auto;
+        white-space: nowrap;
     }
     div.header {
         display: grid;

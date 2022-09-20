@@ -121,7 +121,7 @@ export default memo(function Input({
         return maxBalance ? formatTokenAmount(maxBalance, tokenDecimals) : null;
     }, [maxBalance]);
 
-    const [isWrongBalance, setIsWrongBalance] = useState(false);
+    const [isWrongAmount, setIsWrongAmount] = useState(false);
 
     useEffect(() => {
         const invalid =
@@ -133,7 +133,7 @@ export default memo(function Input({
             setIsValidInput(!invalid);
         }
 
-        setIsWrongBalance(invalid);
+        setIsWrongAmount(invalid);
     }, [disabled, value, humanBalanceFormat, tokenDecimals]);
 
     const setMaxBalance = () => !disabled && onChange(humanBalanceFormat);
@@ -163,7 +163,7 @@ export default memo(function Input({
                     <ChevronIcon color="#0072ce" />
                 </TokenWrapper>
                 <input
-                    className={`${isWrongBalance ? 'error' : ''}`}
+                    className={`${isWrongAmount ? 'error' : ''}`}
                     type="number"
                     min={0}
                     max={humanBalanceFormat || 0}
