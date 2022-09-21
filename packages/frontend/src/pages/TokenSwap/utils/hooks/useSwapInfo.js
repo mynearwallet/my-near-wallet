@@ -5,15 +5,6 @@ import useDebounce from '../../../../hooks/useDebounce';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import usePools from './usePools';
 
-const isNearTransformation = (token0, token1) => {
-    return (
-        (token0?.contractName === NEAR_ID &&
-            token1?.contractName === NEAR_TOKEN_ID) ||
-        (token1?.contractName === NEAR_ID &&
-            token0?.contractName === NEAR_TOKEN_ID)
-    );
-};
-
 const IMPOSSIBLE_POOL_ID = -1;
 
 export default function useSwapInfo({
@@ -28,8 +19,14 @@ export default function useSwapInfo({
     const [swapFee, setSwapFee] = useState(0);
     const [loading, setLoading] = useState(false);
     const debounceAmountIn = useDebounce(amountIn, delay);
-    const isTransformation = useMemo(
-        () => isNearTransformation(tokenIn, tokenOut),
+    const isNearTransformation = useMemo(
+        () => {
+            if (tokenIn && tokenOut) {
+                return fungibleTokenExchange.isNearTransformation({ tokenIn, tokenOut });
+            }
+
+            return false;
+        },
         [tokenIn, tokenOut]
     );
 
@@ -41,7 +38,7 @@ export default function useSwapInfo({
     const [swapNotification, setSwapNotification] = useState(null);
 
     useEffect(() => {
-        if (tokenIn && tokenOut && !pools && !poolsLoading && !isTransformation) {
+        if (tokenIn && tokenOut && !pools && !poolsLoading && !isNearTransformation) {
             setAmountOut('');
             setSwapNotification({
                 id: 'swap.noPoolAvailable',
@@ -54,7 +51,7 @@ export default function useSwapInfo({
         } else if (swapNotification) {
             setSwapNotification(null);
         }
-    }, [tokenIn, tokenOut, pools, poolsLoading, isTransformation]);
+    }, [tokenIn, tokenOut, pools, poolsLoading, isNearTransformation]);
 
     useEffect(() => {
         let cancelledRequest = false;
@@ -63,7 +60,7 @@ export default function useSwapInfo({
             if (
                 tokenIn &&
                 tokenOut &&
-                (pools || isTransformation) &&
+                (pools || isNearTransformation) &&
                 debounceAmountIn > 0
             ) {
                 setLoading(true);
@@ -98,7 +95,14 @@ export default function useSwapInfo({
         return () => {
             cancelledRequest = true;
         };
-    }, [debounceAmountIn, account, pools, tokenIn, tokenOut]);
+    }, [debounceAmountIn, account, pools, tokenIn, tokenOut, isNearTransformation]);
 
-    return { poolId, swapFee, amountOut, isNearTransformation, swapNotification, loading };
+    return {
+        poolId,
+        swapFee,
+        amountOut,
+        isNearTransformation,
+        swapNotification,
+        loading,
+    };
 }

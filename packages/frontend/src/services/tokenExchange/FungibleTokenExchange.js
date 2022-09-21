@@ -8,7 +8,6 @@ import {
 } from '../../config';
 import { fungibleTokensService } from '../FungibleTokens';
 import refFinanceContract from './RefFinanceContract';
-import { isNearTransformation, replaceNearIfNecessary } from './utils';
 
 class FungibleTokenExchange {
     constructor({ exchaingeContract, tokenService }) {
@@ -21,7 +20,7 @@ class FungibleTokenExchange {
     }
 
     async estimate(params) {
-        if (isNearTransformation(params)) {
+        if (this.isNearTransformation(params)) {
             return this._estimateNearSwap(params);
         }
 
@@ -29,7 +28,7 @@ class FungibleTokenExchange {
     }
 
     async swap(params) {
-        if (isNearTransformation(params)) {
+        if (this.isNearTransformation(params)) {
             return this._transformNear(params);
         }
 
@@ -73,6 +72,17 @@ class FungibleTokenExchange {
         return this._swapTokenToToken(swapParams);
     }
 
+    isNearTransformation(params) {
+        const { tokenIn, tokenOut } = params;
+        const ids = [tokenIn.contractName, tokenOut.contractName];
+
+        return ids.includes(NEAR_TOKEN_ID) && ids.includes(NEAR_ID);
+    }
+
+    replaceNearIdIfNecessary(id) {
+        return id === NEAR_ID ? NEAR_TOKEN_ID : id;
+    }
+
     _estimateNearSwap(params) {
         return {
             amountOut: params.amountIn,
@@ -84,9 +94,9 @@ class FungibleTokenExchange {
 
         return this._exchangeContract.estimate({
             ...params,
-            tokenInId: replaceNearIfNecessary(tokenIn.contractName),
+            tokenInId: this.replaceNearIdIfNecessary(tokenIn.contractName),
             tokenInDecimals: tokenIn.onChainFTMetadata.decimals,
-            tokenOutId: replaceNearIfNecessary(tokenOut.contractName),
+            tokenOutId: this.replaceNearIdIfNecessary(tokenOut.contractName),
             tokenOutDecimals: tokenOut.onChainFTMetadata.decimals,
         });
     }

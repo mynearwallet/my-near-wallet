@@ -8,6 +8,7 @@ import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
 import { formatTokenAmount } from '../../../utils/amounts';
 import { wallet } from '../../../utils/wallet';
+import { getBalance } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
@@ -69,7 +70,10 @@ const updateTokensBalance = createAsyncThunk(
             console.error('Error loading token balance', error);
         }
 
-        dispatch(addTokens({ tokens: updatedTokens }));
+        batch(() => {
+            dispatch(getBalance());
+            dispatch(addTokens({ tokens: updatedTokens }));
+        });
     }
 );
 

@@ -61,8 +61,8 @@ class SwapPage {
         return this.page.waitForSelector('data-test-id=swapPageSuccessMessage')
     }
 
-    async fillForm({ inId, inAmount, outId }) {
-        await this.wait(TOKENS_LOADING_DELAY);
+    async fillForm({ inId, inAmount, outId, initialDelay = TOKENS_LOADING_DELAY }) {
+        await this.wait(initialDelay);
         await this.selectInputAsset(inId);
         await this.selectOutputAsset(outId);
         await this.typeInputAmount(inAmount);

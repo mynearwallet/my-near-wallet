@@ -41,7 +41,7 @@ export default function useCalculatedValues({
         if (amountIn && swapFee >= 0) {
             return Number(getPercentFrom(amountIn, swapFee));
         }
-        
+
         return 0;
     }, [amountIn, swapFee]);
 

@@ -11,12 +11,6 @@ const NEP141_TOKENS = {
             name: 'Aurora',
             decimals: 18,
         },
-        // {
-        //     id: 'usdt.fakes.testnet',
-        //     symbol: 'USDT',
-        //     name: 'Tether USD',
-        //     decimals: 6,
-        // },
     ],
 };
 

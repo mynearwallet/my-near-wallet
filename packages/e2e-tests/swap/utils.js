@@ -47,7 +47,12 @@ function removeStringBrakes(str) {
     return str.replace(/\r?\n|\r/g, ' ');
 };
 
+function withoutLastChars(str, amountToRemove) {
+    return amountToRemove ? str.slice(0, -amountToRemove) : str;
+}
+
 module.exports = {
     getResultMessageRegExp,
     removeStringBrakes,
+    withoutLastChars,
 };
