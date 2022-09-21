@@ -19,6 +19,7 @@ test.setTimeout(180_000)
 
 describe("Swap NEAR with wrapped NEAR", () => {
     const swapAmount = 1;
+    const waitAfterSwapWhileBalancesLoading = 20_000;
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
@@ -106,6 +107,7 @@ describe("Swap NEAR with wrapped NEAR", () => {
             inId: TESTNET.wNEAR.id,
             inAmount: swapAmount,
             outId: TESTNET.NEAR.id,
+            initialDelay: waitAfterSwapWhileBalancesLoading,
         });
 
         const outInput = await swapPage.getOutputInput();

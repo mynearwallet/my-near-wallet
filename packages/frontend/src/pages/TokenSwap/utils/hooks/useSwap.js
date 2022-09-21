@@ -50,7 +50,14 @@ export default function useSwap({
                 dispatch(
                     updateTokensBalance({
                         accountId: account.accountId,
-                        tokenIds: [tokenIn.contractName, tokenOut.contractName],
+                        tokenIds: [
+                            fungibleTokenExchange.replaceNearIdIfNecessary(
+                                tokenIn.contractName
+                            ),
+                            fungibleTokenExchange.replaceNearIdIfNecessary(
+                                tokenOut.contractName
+                            ),
+                        ],
                     })
                 );
                 setCompletedSwapState({

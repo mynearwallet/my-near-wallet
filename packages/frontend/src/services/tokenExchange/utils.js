@@ -1,23 +1,11 @@
 import Big from 'big.js';
 
-import { NEAR_ID, NEAR_TOKEN_ID } from '../../config';
 import {
     parseTokenAmount,
     formatTokenAmount,
     removeTrailingZeros,
 } from '../../utils/amounts';
 import { MAX_PERCENTAGE } from '../../utils/constants';
-
-export const isNearTransformation = (params) => {
-    const { tokenIn, tokenOut } = params;
-    const ids = [tokenIn.contractName, tokenOut.contractName];
-
-    return ids.includes(NEAR_TOKEN_ID) && ids.includes(NEAR_ID);
-};
-
-export const replaceNearIfNecessary = (id) => {
-    return id === NEAR_ID ? NEAR_TOKEN_ID : id;
-};
 
 // taken from the RefFinance 'ref-contracts' repository
 const FEE_DIVISOR = 10_000;
@@ -45,16 +33,21 @@ const getAmountOut = ({
         [token_account_ids[1]]: amounts[1],
     };
 
-    const reserveIn = tokenReserve[tokenInId];
-    const reserveOut = tokenReserve[tokenOutId];
-    const amountInWithFee =
-        parseTokenAmount(amountIn, tokenInDecimals) * (FEE_DIVISOR - total_fee);
+    try {
+        const reserveIn = tokenReserve[tokenInId];
+        const reserveOut = tokenReserve[tokenOutId];
+        const amountInWithFee =
+            parseTokenAmount(amountIn, tokenInDecimals) * (FEE_DIVISOR - total_fee);
 
-    const amountOut =
-        (amountInWithFee * reserveOut) /
-        (FEE_DIVISOR * reserveIn + amountInWithFee);
+        const amountOut =
+            (amountInWithFee * reserveOut) /
+            (FEE_DIVISOR * reserveIn + amountInWithFee);
 
-    return amountOut;
+        return amountOut;
+    } catch (error) {
+        console.error('Error in output amount calculation', error);
+        return '';
+    }
 };
 
 export const findBestSwapPool = ({ poolsByIds, ...restParams }) => {

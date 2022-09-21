@@ -5,7 +5,7 @@ const { CONTRACT } = require("../constants");
 const { formatAmount } = require("../utils/amount");
 const { HomePage } = require("../register/models/Home");
 const { SwapPage } = require("./models/Swap");
-const { getResultMessageRegExp, removeStringBrakes } = require("./utils");
+const { getResultMessageRegExp, removeStringBrakes, withoutLastChars } = require("./utils");
 const {
     SWAP_FEE,
     NEP141_TOKEN_PAIRS,
@@ -20,6 +20,7 @@ test.setTimeout(150_000)
 
 describe("Swap NEP141 with NEP141", () => {
     const swapAmount = 1.5;
+    const waitAfterSwapWhileBalancesLoading = 20_000;
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
@@ -57,7 +58,7 @@ describe("Swap NEP141 with NEP141", () => {
 
         expect(swapPage.page).toHaveURL(/.*\/swap$/);
 
-        // At first we swap NEAR to TOKEN 0
+        // At first we swap NEAR to NEP141
 
         await swapPage.fillForm({
             inId: TESTNET.NEAR.id,
@@ -72,6 +73,7 @@ describe("Swap NEP141 with NEP141", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
         await swapPage.clickOnContinueAfterSwapButton();
 
         let nearBalanceAfter = await account.getUpdatedBalance();
@@ -85,12 +87,15 @@ describe("Swap NEP141 with NEP141", () => {
         // Start swap between tokens
 
         const token0Balance = await account.getTokenBalance(token0.id);
-        const token0ParsedBalance = Number(formatAmount(token0Balance, token0.decimals));
+        const token0ParsedBalance = formatAmount(token0Balance, token0.decimals);
+
+        expect(token0ParsedBalance).toMatch(new RegExp(withoutLastChars(token0OutAmount, 1)))
 
         await swapPage.fillForm({
             inId: token0.id,
-            inAmount: token0OutAmount,
+            inAmount: token0ParsedBalance,
             outId: token1.id,
+            initialDelay: waitAfterSwapWhileBalancesLoading,
         });
 
         const token1OutInput = await swapPage.getOutputInput();
@@ -102,6 +107,7 @@ describe("Swap NEP141 with NEP141", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
+        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
 
         const resultElement = await swapPage.waitResultMessageElement();
         const resultMessage = await resultElement.innerText();
@@ -131,7 +137,7 @@ describe("Swap NEP141 with NEP141", () => {
         const token1BalanceAfter = await account.getTokenBalance(token1.id);
         const token1ParsedBalanceAfter = Number(formatAmount(token1BalanceAfter, token1.decimals));
 
-        expect(token0ParsedBalanceAfter).toEqual(token0ParsedBalance - token0OutAmount);
-        expect(token1ParsedBalanceAfter).toEqual(Number(token1OutAmount));
+        expect(token0ParsedBalanceAfter).toEqual(0);
+        expect(token1ParsedBalanceAfter).toMatch(new RegExp(withoutLastChars(token1OutAmount, 1)))
     });
 });
