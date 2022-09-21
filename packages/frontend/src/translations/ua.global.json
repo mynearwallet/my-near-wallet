@@ -1474,6 +1474,12 @@
         "successTitle": "Transaction complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
         "title": "Swap",
         "to": "To",
+        "success": "Успішний обмін",
+        "available": "Доступно: ${amount} ${symbol}",
+        "error": "Помилка обміну",
+        "errorToFetchData": "Помилка завантаження даних для обміну",
+        "noPoolAvailable": "Немає пулу, доступного для виконання обміну з ${tokenIn} -> ${tokenOut}",
+        "availableToSwap": "Доступно для обміну",
         "translateIdInfoTooltip": {
             "fee": "The estimated cost of processing your transaction.",
             "minimumReceived": "The minimum amount you will receive from the trade.",

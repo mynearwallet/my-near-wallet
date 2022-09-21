@@ -1,16 +1,15 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import SafeTranslate from '../../../components/SafeTranslate';
 // @todo common component: move to .../common
 import Token from '../../../components/send/components/entry_types/Token';
 import ChevronIcon from '../../../components/svg/ChevronIcon';
-import {
-    formatTokenAmount,
-    isValidAmount,
-    cutDecimalsIfNeeded,
-} from '../../../utils/amounts';
+import { isValidAmount, cutDecimalsIfNeeded } from '../../../utils/amounts';
+import { getFormatBalance } from '../../../utils/wrap-unwrap';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
+
+const emptyObj = {};
 
 const InputWrapper = styled.div`
     padding: 1rem;
@@ -35,6 +34,7 @@ const Balance = styled.button`
     font-style: italic;
     border: none;
     background-color: transparent;
+    color: #787f85;
 
     &:not(.disabled) {
         color: #2f98f3;
@@ -110,7 +110,6 @@ export default memo(function Input({
     onSelectToken,
     label,
     maxBalance = 0,
-    placeholder = '0.0',
     disabled = false,
     tokenSymbol,
     tokenIcon,
@@ -127,29 +126,27 @@ export default memo(function Input({
         }
     };
 
-    const humanBalanceFormat = useMemo(() => {
-        return maxBalance ? formatTokenAmount(maxBalance, tokenDecimals) : null;
-    }, [maxBalance]);
-
+    const balanceConfig = maxBalance && tokenDecimals ? getFormatBalance(maxBalance, tokenDecimals) : emptyObj;
     const [isWrongAmount, setIsWrongAmount] = useState(false);
 
     useEffect(() => {
         const invalid =
             !disabled &&
             value &&
-            !isValidAmount(value, humanBalanceFormat, tokenDecimals);
+            balanceConfig &&
+            !isValidAmount(value, balanceConfig.fullNum, tokenDecimals);
 
         if (setIsValidInput) {
             setIsValidInput(!invalid);
         }
 
         setIsWrongAmount(invalid);
-    }, [disabled, value, humanBalanceFormat, tokenDecimals]);
+    }, [disabled, value, balanceConfig, tokenDecimals]);
 
-    const setMaxBalance = () => !disabled && onChange(humanBalanceFormat);
+    const setMaxBalance = () => !disabled && onChange(balanceConfig.fullNum);
 
     const balanceData = {
-        amount: humanBalanceFormat,
+        amount: balanceConfig.numToShow,
         symbol: tokenSymbol,
     };
 
@@ -162,7 +159,7 @@ export default memo(function Input({
         <InputWrapper>
             <Header>
                 {label && <Label>{label}</Label>}
-                {humanBalanceFormat && (
+                {balanceConfig.numToShow && (
                     <Balance onClick={setMaxBalance} className={`${disabled ? 'disabled' : ''}`}>
                         <SafeTranslate
                             id={disabled ? 'swap.available' : 'swap.max'}
@@ -184,10 +181,10 @@ export default memo(function Input({
                     className={`${isWrongAmount ? 'error' : ''}`}
                     type="number"
                     min={0}
-                    max={humanBalanceFormat || 0}
+                    max={Number(balanceConfig.fullNum) || 0}
                     value={loading ? '' : valueToShow}
                     onChange={handleChange}
-                    placeholder={placeholder}
+                    placeholder="0"
                     disabled={disabled}
                     data-test-id={inputTestId}
                 />

@@ -56,8 +56,8 @@ export default function useSwap({
                 setCompletedSwapState({
                     success,
                     hash: swapTxHash,
-                    tokenInId: tokenIn.contractName,
-                    tokenOutId: tokenOut.contractName,
+                    tokenIn: tokenIn.onChainFTMetadata.symbol,
+                    tokenOut: tokenOut.onChainFTMetadata.symbol,
                 });
                 setViewState(VIEW_STATE.result);
             } catch (error) {

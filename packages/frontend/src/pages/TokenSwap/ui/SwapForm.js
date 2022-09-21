@@ -15,7 +15,6 @@ import Notification from './Notification';
 const mobile = isMobile();
 
 const SwapFormWrapper = styled.div`
-    font-size: 1.2rem;
     // Styles for the <SelectToken /> component.
     // We use the same styles in the old swap components.
     // @todo find a way to use it in one place.
@@ -48,22 +47,19 @@ const Header = styled.div`
         font-size: 1.25rem;
         line-height: 1.5rem;
         text-align: center;
-        font-weight: 900;
+        font-weight: 700;
         margin: auto;
     }
 `;
 
 const SwapButtonWrapper = styled.div`
-    margin-bottom: 1.6rem;
+    margin: 0.8rem 0;
     display: flex;
     justify-content: center;
 
     .reverse-button {
-        border-radius: 3.125rem;
         width: 4.5rem;
-        height: 2.5rem;
-        background-color: #d6edff;
-        border: 0;
+        background-color: #E1F0FF;
 
         svg {
             width: initial !important;
@@ -232,6 +228,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                     onClickGoBack={hideTokenSelection}
                     fungibleTokens={tokensToSelect}
                     onSelectToken={handleTokenSelect}
+                    balanceLabelId="swap.availableToSwap"
                 />
             ) : (
                 <>
@@ -259,6 +256,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         <FormButton
                             color="reverse-button"
                             onClick={flipInputsData}
+                            swapButton
                         >
                             <SwapIcon color="#006ADC" />
                         </FormButton>

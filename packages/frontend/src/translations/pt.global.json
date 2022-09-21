@@ -1366,6 +1366,12 @@
         "successTitle": "Transaction complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
         "title": "Swap",
         "to": "To",
+        "success": "Swap bem sucedido",
+        "available": "Disponivel: ${amount} ${symbol}",
+        "error": "Erro de troca",
+        "errorToFetchData": "Erro ao carregar dados para o exchange",
+        "noPoolAvailable": "Nenhum pool disponível para fazer uma troca de ${tokenIn} -> ${tokenOut}",
+        "availableToSwap": "Disponível para swap",
         "translateIdInfoTooltip": {
             "fee": "The estimated cost of processing your transaction.",
             "minimumReceived": "The minimum amount you will receive from the trade.",

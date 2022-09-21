@@ -15,7 +15,7 @@ const StyledContainer = styled.div`
         font-size: 20px;
         line-height: 24px;
         text-align: center;
-        font-weight: 900;
+        font-weight: 700;
         margin: auto;
         white-space: nowrap;
     }
