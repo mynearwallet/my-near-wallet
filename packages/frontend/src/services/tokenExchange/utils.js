@@ -91,7 +91,7 @@ export const getPriceImpactPercent = ({
     tokenOutId,
     tokenOutDecimals,
 }) => {
-    const { token_account_ids, amounts } = pool;
+    const { token_account_ids, amounts, total_fee = 0 } = pool;
     const tokenReserve = {
         [token_account_ids[0]]: amounts[0],
         [token_account_ids[1]]: amounts[1],
@@ -110,12 +110,14 @@ export const getPriceImpactPercent = ({
         );
 
         const constantProduct = Big(reserveIn).times(reserveOut);
-        const newReserveIn = Big(reserveIn).plus(amountIn);
+        const currentMarketPrice = Big(reserveIn).div(reserveOut);
+        const amountInWithFee = Big(amountIn).times(getFeeMultiplier(total_fee));
+
+        const newReserveIn = Big(reserveIn).plus(amountInWithFee);
         const newReserveOut = constantProduct.div(newReserveIn);
 
-        const currentMarketPrice = Big(reserveIn).div(reserveOut);
         const amountOut = Big(reserveOut).minus(newReserveOut);
-        const newMarketPrice = Big(amountIn).div(amountOut);
+        const newMarketPrice = Big(amountInWithFee).div(amountOut);
 
         const priceImpact = newMarketPrice
             .minus(currentMarketPrice)
