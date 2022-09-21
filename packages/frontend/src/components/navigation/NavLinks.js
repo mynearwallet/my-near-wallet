@@ -10,7 +10,6 @@ import { Mixpanel } from '../../mixpanel/index';
 import DonateToUkraineIcon from '../svg/DonateToUkraineIcon';
 import ExploreIcon from '../svg/ExploreIcon';
 import HelpIcon from '../svg/HelpIcon';
-import SwapIcon from '../svg/SwapIcon';
 import UserIcon from '../svg/UserIcon';
 import VaultIcon from '../svg/VaultIcon';
 import WalletIcon from '../svg/WalletIcon';
@@ -123,10 +122,6 @@ const NavLinks = () => (
                 <Translate id='link.explore'/>
             </NavLink>
         )}
-        <NavLink data-test-id="swap_navlink" to='/swap' activeClassName='selected' onClick={() => Mixpanel.track('Click Swap button on nav')}>
-            <SwapIcon/>
-            <Translate id='link.swap'/>
-        </NavLink>
         <NavLink to='/profile' className='account-details-link' activeClassName='selected' onClick={() => Mixpanel.track('Click Account button on nav')}>
             <UserIcon/>
             <Translate id='link.account'/>

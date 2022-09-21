@@ -1420,6 +1420,14 @@
     "stakingPoolUnstaked": "Questi NEAR sono attualmente in un pool di staking ma non sono attualmente in staking. Potrebbe ad esempio essere in uno stato di attesa di rilascio.",
     "success": "Successo",
     "sync": "Sync",
+    "swap": {
+        "success": "Scambio di successo",
+        "available": "Disponibile: ${amount} ${symbol}",
+        "error": "Errore di swap",
+        "errorToFetchData": "Errore nel caricamento dei dati per exchange",
+        "noPoolAvailable": "Nessun pool disponibile per effettuare uno swap da ${tokenIn} -> ${tokenOut}",
+        "availableToSwap": "Disponibile per lo scambio"
+    },
     "tokenBox": {
         "priceUnavailable": "Prezzo non disponibile"
     },

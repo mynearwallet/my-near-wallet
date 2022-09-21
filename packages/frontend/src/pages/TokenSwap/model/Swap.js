@@ -92,7 +92,7 @@ export function SwapProvider({ children }) {
         if (isMounted()) {
             dispatchSwapAction({ type, payload });
         } else if (type === ACTION.SET_COMPLETED_SWAP_STATE) {
-            const { success, tokenInId, tokenOutId } = payload;
+            const { success, tokenIn, tokenOut } = payload;
 
             dispatch(
                 showCustomAlert({
@@ -100,7 +100,7 @@ export function SwapProvider({ children }) {
                     messageCodeHeader: success ? 'swap.success' : 'swap.error',
                     // @note is there a different way to show custom data
                     // instead of 'errorMessage' key?
-                    errorMessage: `${tokenInId} to ${tokenOutId}`,
+                    errorMessage: `${tokenIn} to ${tokenOut}`,
                 })
             );
         }

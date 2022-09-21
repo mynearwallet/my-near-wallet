@@ -20,10 +20,6 @@ class SwapPage {
         await this.page.goto('/swap');
     }
 
-    async clickOnSwapLink() {
-        await this.page.click('data-test-id=swap_navlink');
-    }
-
     async selectInputAsset(contractName) {
         await this.page.click('data-test-id=swapPageInputTokenSelector');
         await this.page.click(

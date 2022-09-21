@@ -15,7 +15,7 @@ const CustomButton = styled.button`
         margin: ${({ swapButton }) => (swapButton ? 0 : '24px 0 0 0')};
         border: 2px solid;
         font-weight: 600;
-        height: 56px;
+        height: ${({ swapButton }) => (swapButton ? '44px' : '56px')};
         border-radius: 30px;
         transition: 100ms;
         font-size: 14px;
