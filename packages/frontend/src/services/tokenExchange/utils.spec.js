@@ -122,10 +122,32 @@ describe('Ref Finance utils', () => {
                 pool: pool0,
                 tokenInId: token0.id,
                 tokenInDecimals: token0.decimals,
+                amountIn: 5,
+                tokenOutId: token1.id,
+                tokenOutDecimals: token1.decimals,
+            })
+        ).toBe('0.5');
+
+        expect(
+            utils.getPriceImpactPercent({
+                pool: pool0,
+                tokenInId: token0.id,
+                tokenInDecimals: token0.decimals,
                 amountIn: 50,
                 tokenOutId: token1.id,
                 tokenOutDecimals: token1.decimals,
             })
         ).toBe('4.75');
+
+        expect(
+            utils.getPriceImpactPercent({
+                pool: pool0,
+                tokenInId: token0.id,
+                tokenInDecimals: token0.decimals,
+                amountIn: 0.00001,
+                tokenOutId: token1.id,
+                tokenOutDecimals: token1.decimals,
+            })
+        ).toBe('0');
     });
 });

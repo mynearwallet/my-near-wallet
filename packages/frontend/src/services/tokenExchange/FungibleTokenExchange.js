@@ -3,7 +3,7 @@ import * as nearApi from 'near-api-js';
 import {
     NEAR_ID,
     NEAR_TOKEN_ID,
-    FT_MINIMUM_STORAGE_BALANCE,
+    FT_MINIMUM_STORAGE_BALANCE_LARGE,
     FT_STORAGE_DEPOSIT_GAS,
 } from '../../config';
 import { fungibleTokensService } from '../FungibleTokens';
@@ -262,7 +262,7 @@ class FungibleTokenExchange {
                                 registration_only: true,
                             },
                             FT_STORAGE_DEPOSIT_GAS,
-                            FT_MINIMUM_STORAGE_BALANCE
+                            FT_MINIMUM_STORAGE_BALANCE_LARGE
                         ),
                     ],
                 });

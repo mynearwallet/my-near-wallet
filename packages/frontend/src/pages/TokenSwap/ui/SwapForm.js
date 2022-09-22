@@ -122,7 +122,9 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         if (!tokenIn && listOfTokensIn[0]) {
             setTokenIn(listOfTokensIn[0]);
         } else {
-            setTokenIn(tokensIn[tokenIn?.contractName]);
+            const newTokenIn = tokensIn[tokenIn?.contractName] || tokensOut[tokenIn?.contractName];
+
+            setTokenIn(newTokenIn);
         }
     }, [listOfTokensIn]);
 
