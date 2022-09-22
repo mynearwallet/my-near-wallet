@@ -1,4 +1,4 @@
-import { parseTokenAmount } from '../../utils/amounts';
+import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
 import * as utils from './utils';
 
 const token0 = {
@@ -10,7 +10,7 @@ const token1 = {
     decimals: 18,
 };
 const pool0 = {
-    total_fee: 20,
+    total_fee: 20, // 0.2%
     token_account_ids: [token1.id, token0.id],
     amounts: [
         parseTokenAmount(2_000_000, token1.decimals),
@@ -44,6 +44,54 @@ describe('Ref Finance utils', () => {
         expect(utils.formatTotalFeePercent(utils.FEE_DIVISOR + 1)).toBe('100');
         expect(utils.formatTotalFeePercent(-1)).toBe('0');
         expect(utils.formatTotalFeePercent(0)).toBe('0');
+    });
+
+    test('should correctly calculate output amount for swap', () => {
+        expect(
+            formatTokenAmount(
+                utils.getAmountOut({
+                    pool: pool0,
+                    tokenInId: token0.id,
+                    tokenInDecimals: token0.decimals,
+                    amountIn: 10,
+                    tokenOutId: token1.id,
+                    tokenOutDecimals: token1.decimals,
+                }),
+                token1.decimals,
+                9
+            )
+        ).toBe('19762.767579556');
+
+        expect(
+            formatTokenAmount(
+                utils.getAmountOut({
+                    // increase fee to 2%
+                    pool: { ...pool0, total_fee: 200 },
+                    tokenInId: token0.id,
+                    tokenInDecimals: token0.decimals,
+                    amountIn: 10,
+                    tokenOutId: token1.id,
+                    tokenOutDecimals: token1.decimals,
+                }),
+                token1.decimals,
+                9
+            )
+        ).toBe('19409.784115666');
+
+        expect(
+            formatTokenAmount(
+                utils.getAmountOut({
+                    pool: pool0,
+                    tokenInId: token1.id,
+                    tokenInDecimals: token1.decimals,
+                    amountIn: 10_000,
+                    tokenOutId: token0.id,
+                    tokenOutDecimals: token0.decimals,
+                }),
+                token0.decimals,
+                9
+            )
+        ).toBe('4.965223535');
     });
 
     test('should correctly calculate price impact percentage', () => {

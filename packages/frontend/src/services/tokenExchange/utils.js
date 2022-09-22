@@ -48,7 +48,6 @@ export const getAmountOut = ({
     tokenInDecimals,
     amountIn,
     tokenOutId,
-    tokenOutDecimals,
 }) => {
     const { total_fee, token_account_ids, amounts } = pool;
     const tokenReserve = {
