@@ -8,24 +8,47 @@ import {
 import { MAX_PERCENTAGE } from '../../utils/constants';
 
 // taken from the RefFinance 'ref-contracts' repository
-const FEE_DIVISOR = 10_000;
+export const FEE_DIVISOR = 10_000;
 
-// calculate fee multiplier relative to 100%
-const getFeeMultiplier = (fee) => {
+// Calculate fee multiplier relative to 100%
+// Examples:
+// input amount is 5
+// 1% fee = fee (1) and fee divisor (100) -> 0.99 multiplier -> amount with fee is 4.95
+// 5% (5) and fee divisor (100) -> 0.95 multiplier -> amount with fee is 4.75
+// 3% (30) and fee divisor (1_000) -> 0.97 multiplier -> amount with fee is 4.85
+// 0.3% (30) and fee divisor (10_000) -> 0.985 multiplier -> amount with fee is 4.985
+export const getFeeMultiplier = (fee) => {
+    if (fee <= 0) {
+        return '1';
+    }
+
+    if (fee > FEE_DIVISOR) {
+        return '0';
+    }
+
     return Big(1).minus(Big(fee).div(FEE_DIVISOR)).toFixed();
 };
 
-// transform to usual percent notation relative to 100%
-export const formatTotalFee = (fee) => {
-    return Number(Big(fee).div(FEE_DIVISOR).times(MAX_PERCENTAGE).toFixed());
+// Transform to usual percent notation relative to 100%
+export const formatTotalFeePercent = (fee) => {
+    if (fee <= 0) {
+        return '0';
+    }
+
+    if (fee > FEE_DIVISOR) {
+        return '100';
+    }
+
+    return Big(fee).div(FEE_DIVISOR).times(MAX_PERCENTAGE).toFixed();
 };
 
-const getAmountOut = ({
+export const getAmountOut = ({
     pool,
     tokenInId,
     tokenInDecimals,
     amountIn,
     tokenOutId,
+    tokenOutDecimals,
 }) => {
     const { total_fee, token_account_ids, amounts } = pool;
     const tokenReserve = {
@@ -37,7 +60,8 @@ const getAmountOut = ({
         const reserveIn = tokenReserve[tokenInId];
         const reserveOut = tokenReserve[tokenOutId];
         const amountInWithFee =
-            parseTokenAmount(amountIn, tokenInDecimals) * (FEE_DIVISOR - total_fee);
+            parseTokenAmount(amountIn, tokenInDecimals) *
+            (FEE_DIVISOR - total_fee);
 
         const amountOut =
             (amountInWithFee * reserveOut) /
@@ -104,7 +128,9 @@ export const getPriceImpactPercent = ({
 
         const constantProduct = Big(reserveIn).times(reserveOut);
         const currentMarketPrice = Big(reserveIn).div(reserveOut);
-        const amountInWithFee = Big(amountIn).times(getFeeMultiplier(total_fee));
+        const amountInWithFee = Big(amountIn).times(
+            getFeeMultiplier(total_fee)
+        );
 
         const newReserveIn = Big(reserveIn).plus(amountInWithFee);
         const newReserveOut = constantProduct.div(newReserveIn);
