@@ -7,7 +7,6 @@ import {
 } from '../../utils/amounts';
 import { MAX_PERCENTAGE } from '../../utils/constants';
 
-// taken from the RefFinance 'ref-contracts' repository
 export const FEE_DIVISOR = 10_000;
 
 // Calculate fee multiplier relative to 100%
