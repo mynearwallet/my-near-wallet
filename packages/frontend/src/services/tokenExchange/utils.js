@@ -41,6 +41,15 @@ export const formatTotalFeePercent = (fee) => {
     return Big(fee).div(FEE_DIVISOR).times(MAX_PERCENTAGE).toFixed();
 };
 
+/**
+ * amount IN with fee = amount IN * (FEE_DIVISOR - pool swap fee)
+ *
+ *
+ *                      <amount IN with fee> * <output token reserve>
+ * Output amount = ------------------------------------------------------
+ *                 FEE_DIVISOR * <input token reserve> + <amount IN with fee>
+ *
+ */
 export const getAmountOut = ({
     pool,
     tokenInId,
