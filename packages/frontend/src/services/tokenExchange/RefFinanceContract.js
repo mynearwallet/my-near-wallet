@@ -2,7 +2,7 @@ import * as nearApi from 'near-api-js';
 
 import { REF_FINANCE_CONTRACT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
 import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
-import { findBestSwapPool, formatTotalFeePercent } from './utils';
+import { findBestSwapPool, formatTotalFeePercent, getPriceImpactPercent } from './utils';
 
 const contractConfig = {
     contractId: REF_FINANCE_CONTRACT,
@@ -85,29 +85,25 @@ class RefFinanceContract {
             return {};
         }
 
-        const contract = await this._newContract(account);
-        // @todo remove get_return when findBestSwapPool() would be fixed
-        const { pool } = findBestSwapPool({
-            poolsByIds,
+        const commonParams = {
             tokenInId,
             tokenInDecimals,
             amountIn,
             tokenOutId,
             tokenOutDecimals,
+        };
+
+        const { pool, amountOut } = findBestSwapPool({
+            poolsByIds,
+            ...commonParams,
         });
         const { poolId, total_fee } = pool;
 
-        const amountOut = await contract.get_return({
-            pool_id: poolId,
-            token_in: tokenInId,
-            amount_in: parseTokenAmount(amountIn, tokenInDecimals),
-            token_out: tokenOutId,
-        });
-
         return {
-            amountOut: formatTokenAmount(amountOut, tokenOutDecimals, tokenOutDecimals),
-            swapFee: formatTotalFeePercent(total_fee),
             poolId,
+            amountOut,
+            swapFee: formatTotalFeePercent(total_fee),
+            priceImpactPercent: getPriceImpactPercent({ pool, ...commonParams }),
         };
     }
 
@@ -131,7 +127,7 @@ class RefFinanceContract {
                     receiver_id: contractConfig.contractId,
                     amount: parsedAmountIn,
                     msg: JSON.stringify({
-                        force: 0, // @todo what is it for?
+                        force: 0, // @todo it doesn't do anything, delete and check swaps without it
                         actions: [
                             // @note in case of multihop swaps we add extra objects here
                             {
@@ -189,9 +185,12 @@ class RefFinanceContract {
                 }
 
                 pools[mainKey][poolId] = {
-                    // set before the "...pool": if the pool has own 'poolId' key it will be rewritten
+                    // Set before the "...pool": if the pool has own 'poolId' key it will be rewritten
                     poolId,
                     ...pool,
+                    // We receive the wrong order of token IDs relative to amounts.
+                    // Reverse it to be able to match it using array indexes.
+                    token_account_ids: token_account_ids.reverse(),
                 };
             }
         });

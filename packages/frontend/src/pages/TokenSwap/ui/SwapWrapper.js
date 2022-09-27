@@ -5,8 +5,8 @@ import { SwapReviewForm } from '../../../components/swap/components/SwapReviewFo
 import { cutDecimalsIfNeeded } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
+import { getCalculatedValues } from '../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
-import useCalculatedValues from '../utils/hooks/useCalculatedValues';
 import useSwap from '../utils/hooks/useSwap';
 import SwapForm from './SwapForm';
 
@@ -20,6 +20,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             amountOut,
             swapPoolId,
             swapFee,
+            priceImpactPercent,
             isNearTransformation,
             lastSwapTxHash,
             swapPending,
@@ -35,7 +36,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
     };
 
     const [slippage, setSlippage] = useState(0);
-    const { minAmountOut, exchangeRate, tradingFee } = useCalculatedValues({
+    const { minAmountOut, exchangeRate, tradingFee } = getCalculatedValues({
         amountIn,
         tokenOut,
         amountOut,

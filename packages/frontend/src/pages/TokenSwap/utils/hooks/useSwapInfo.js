@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 
 import useDebounce from '../../../../hooks/useDebounce';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
+import { useSwapData } from '../../model/Swap';
 import usePools from './usePools';
 
 const IMPOSSIBLE_POOL_ID = -1;
@@ -13,9 +14,16 @@ export default function useSwapInfo({
     tokenOut,
     delay = 50,
 }) {
-    const [poolId, setPoolId] = useState(IMPOSSIBLE_POOL_ID);
-    const [amountOut, setAmountOut] = useState('');
-    const [swapFee, setSwapFee] = useState(0);
+    const {
+        events: {
+            setAmountOut,
+            setSwapPoolId,
+            setSwapFee,
+            setPriceImpactPercent,
+            setIsNearTransformation,
+        },
+    } = useSwapData();
+
     const [loading, setLoading] = useState(false);
     const debounceAmountIn = useDebounce(amountIn, delay);
     const isNearTransformation = useMemo(
@@ -27,6 +35,11 @@ export default function useSwapInfo({
             return false;
         },
         [tokenIn, tokenOut]
+    );
+
+    useEffect(
+        () => setIsNearTransformation(isNearTransformation),
+        [isNearTransformation]
     );
 
     const { pools, poolsLoading } = usePools({
@@ -65,7 +78,7 @@ export default function useSwapInfo({
                 setLoading(true);
 
                 try {
-                    const { amountOut, poolId, swapFee } = await fungibleTokenExchange.estimate({
+                    const { amountOut, poolId, swapFee, priceImpactPercent } = await fungibleTokenExchange.estimate({
                         account,
                         poolsByIds: pools,
                         tokenIn,
@@ -74,9 +87,10 @@ export default function useSwapInfo({
                     });
 
                     if (!cancelledRequest) {
-                        setPoolId(poolId);
+                        setSwapPoolId(poolId);
                         setAmountOut(amountOut);
                         setSwapFee(swapFee);
+                        setPriceImpactPercent(priceImpactPercent);
                     }
                 } catch (error) {
                     console.error('Fail to get swap info', error);
@@ -84,8 +98,10 @@ export default function useSwapInfo({
 
                 setLoading(false);
             } else if (debounceAmountIn <= 0) {
-                setPoolId(IMPOSSIBLE_POOL_ID);
+                setSwapPoolId(IMPOSSIBLE_POOL_ID);
+                setSwapFee(0);
                 setAmountOut('');
+                setPriceImpactPercent('');
             }
         };
 
@@ -97,10 +113,6 @@ export default function useSwapInfo({
     }, [debounceAmountIn, account, pools, tokenIn, tokenOut, isNearTransformation]);
 
     return {
-        poolId,
-        swapFee,
-        amountOut,
-        isNearTransformation,
         swapNotification,
         loading,
     };

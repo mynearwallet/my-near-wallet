@@ -56,6 +56,7 @@ export const getAmountOut = ({
     tokenInDecimals,
     amountIn,
     tokenOutId,
+    tokenOutDecimals,
 }) => {
     const { total_fee, token_account_ids, amounts } = pool;
     const tokenReserve = {
@@ -74,7 +75,7 @@ export const getAmountOut = ({
             (amountInWithFee * reserveOut) /
             (FEE_DIVISOR * reserveIn + amountInWithFee);
 
-        return amountOut;
+        return formatTokenAmount(amountOut, tokenOutDecimals, tokenOutDecimals);
     } catch (error) {
         console.error('Error in output amount calculation', error);
         return '';

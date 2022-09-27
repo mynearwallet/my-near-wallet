@@ -1,4 +1,4 @@
-import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
+import { parseTokenAmount } from '../../utils/amounts';
 import * as utils from './utils';
 
 const token0 = {
@@ -48,50 +48,38 @@ describe('Ref Finance utils', () => {
 
     test('should correctly calculate output amount for swap', () => {
         expect(
-            formatTokenAmount(
-                utils.getAmountOut({
-                    pool: pool0,
-                    tokenInId: token0.id,
-                    tokenInDecimals: token0.decimals,
-                    amountIn: 10,
-                    tokenOutId: token1.id,
-                    tokenOutDecimals: token1.decimals,
-                }),
-                token1.decimals,
-                9
-            )
-        ).toBe('19762.767579556');
+            utils.getAmountOut({
+                pool: pool0,
+                tokenInId: token0.id,
+                tokenInDecimals: token0.decimals,
+                amountIn: 10,
+                tokenOutId: token1.id,
+                tokenOutDecimals: token1.decimals,
+            })
+        ).toBe('19762.767579556033000000');
 
         expect(
-            formatTokenAmount(
-                utils.getAmountOut({
-                    // increase fee to 2%
-                    pool: { ...pool0, total_fee: 200 },
-                    tokenInId: token0.id,
-                    tokenInDecimals: token0.decimals,
-                    amountIn: 10,
-                    tokenOutId: token1.id,
-                    tokenOutDecimals: token1.decimals,
-                }),
-                token1.decimals,
-                9
-            )
-        ).toBe('19409.784115666');
+            utils.getAmountOut({
+                // increase fee to 2%
+                pool: { ...pool0, total_fee: 200 },
+                tokenInId: token0.id,
+                tokenInDecimals: token0.decimals,
+                amountIn: 10,
+                tokenOutId: token1.id,
+                tokenOutDecimals: token1.decimals,
+            })
+        ).toBe('19409.784115666470000000');
 
         expect(
-            formatTokenAmount(
-                utils.getAmountOut({
-                    pool: pool0,
-                    tokenInId: token1.id,
-                    tokenInDecimals: token1.decimals,
-                    amountIn: 10_000,
-                    tokenOutId: token0.id,
-                    tokenOutDecimals: token0.decimals,
-                }),
-                token0.decimals,
-                9
-            )
-        ).toBe('4.965223535');
+            utils.getAmountOut({
+                pool: pool0,
+                tokenInId: token1.id,
+                tokenInDecimals: token1.decimals,
+                amountIn: 10_000,
+                tokenOutId: token0.id,
+                tokenOutDecimals: token0.decimals,
+            })
+        ).toBe('4.965223534562533000000000');
     });
 
     test('should correctly calculate price impact percentage', () => {

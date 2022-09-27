@@ -105,16 +105,19 @@ const tokenSelectState = {
 export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
     const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
     const {
-        swapState: { tokenIn, tokenOut, amountIn },
+        swapState: {
+            tokenIn,
+            tokenOut,
+            amountIn,
+            isNearTransformation,
+            amountOut,
+            swapPoolId,
+        },
         events: {
             setViewState,
             setTokenIn,
             setTokenOut,
             setAmountIn,
-            setAmountOut,
-            setSwapPoolId,
-            setSwapFee,
-            setIsNearTransformation,
         },
     } = useSwapData();
 
@@ -175,10 +178,6 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
     };
 
     const {
-        poolId,
-        swapFee,
-        amountOut,
-        isNearTransformation,
         swapNotification,
         loading,
     } = useSwapInfo({
@@ -188,13 +187,6 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         tokenOut,
         delay: swapInfoDaley,
     });
-
-    useEffect(() => {
-        setAmountOut(amountOut);
-        setSwapPoolId(poolId);
-        setSwapFee(swapFee);
-        setIsNearTransformation(isNearTransformation);
-    }, [amountOut, poolId, isNearTransformation]);
 
     const flipInputsData = () => {
         setTokenIn(tokenOut);
@@ -211,7 +203,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         if (
             !tokenIn ||
             !tokenOut ||
-            (!poolId && !isNearTransformation) ||
+            (!swapPoolId && !isNearTransformation) ||
             !amountIn ||
             !amountOut ||
             !isValidInput
@@ -220,7 +212,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         }
 
         return false;
-    }, [tokenIn, tokenOut, poolId, amountIn, amountOut, isNearTransformation, isValidInput]);
+    }, [tokenIn, tokenOut, swapPoolId, amountIn, amountOut, isNearTransformation, isValidInput]);
 
     return (
         <SwapFormWrapper>
