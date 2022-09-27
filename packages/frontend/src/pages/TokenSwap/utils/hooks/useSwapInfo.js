@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { NEAR_ID, NEAR_TOKEN_ID } from '../../../../config';
 import useDebounce from '../../../../hooks/useDebounce';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import usePools from './usePools';
@@ -31,8 +30,8 @@ export default function useSwapInfo({
     );
 
     const { pools, poolsLoading } = usePools({
-        tokenIn: tokenIn?.contractName === NEAR_ID ? NEAR_TOKEN_ID : tokenIn?.contractName,
-        tokenOut: tokenOut?.contractName === NEAR_ID ? NEAR_TOKEN_ID : tokenOut?.contractName,
+        tokenIn,
+        tokenOut,
     });
 
     const [swapNotification, setSwapNotification] = useState(null);

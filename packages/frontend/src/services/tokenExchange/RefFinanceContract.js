@@ -81,6 +81,10 @@ class RefFinanceContract {
         tokenOutId,
         tokenOutDecimals,
     }) {
+        if (!Object.keys(poolsByIds).keys) {
+            return {};
+        }
+
         const contract = await this._newContract(account);
         // @todo remove get_return when findBestSwapPool() would be fixed
         const { pool } = findBestSwapPool({
