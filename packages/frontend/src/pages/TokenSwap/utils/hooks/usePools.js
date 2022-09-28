@@ -26,7 +26,7 @@ export default function usePools({ tokenIn, tokenOut }) {
     const poolsError = useSelector(selectPoolsError);
 
     const pools = useMemo(() => {
-        if (tokenIn && tokenOut && !poolsLoading) {
+        if (tokenIn && tokenOut && !poolsLoading && !poolsError) {
             const tokenInId = fungibleTokenExchange.replaceNearIdIfNecessary(
                 tokenIn?.contractName
             );
@@ -45,7 +45,7 @@ export default function usePools({ tokenIn, tokenOut }) {
         }
 
         return null;
-    }, [tokenIn, tokenOut, poolsLoading]);
+    }, [tokenIn, tokenOut, poolsLoading, poolsError]);
 
     return { pools, poolsLoading, poolsError };
 }

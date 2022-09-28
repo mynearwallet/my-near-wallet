@@ -29,21 +29,42 @@ const initialState = {
     },
 };
 
-const sortTokensWithBalanceInDecreasingOrder = (tokens) => {
+const sortTokens = (tokens, sortCallback) => {
     return Object.values(tokens)
-        .sort((t1, t2) => {
-            const balance1 = formatTokenAmount(
-                t1.balance,
-                t1.onChainFTMetadata.decimals
-            );
-            const balance2 = formatTokenAmount(
-                t2.balance,
-                t2.onChainFTMetadata.decimals
-            );
+        .sort(sortCallback)
+        .reduce((allTokens, token) => ({ ...allTokens, [token.contractName]: token }), {});
+};
 
-            return balance2 - balance1;
-        })
-        .reduce((acc, token) => ({ ...acc, [token.contractName]: token }), {});
+const sortTokensWithBalanceInDecreasingOrder = (tokens) => {
+    return sortTokens(tokens, (t1, t2) => {
+        const balance1 = formatTokenAmount(
+            t1.balance,
+            t1.onChainFTMetadata.decimals
+        );
+        const balance2 = formatTokenAmount(
+            t2.balance,
+            t2.onChainFTMetadata.decimals
+        );
+
+        return balance2 - balance1;
+    });
+};
+
+const sortTokensWithFiatPriceInDecreasingOrder = (tokens) => {
+    return sortTokens(tokens, (t1, t2) => {
+        const price1 = t1.fiatValueMetadata?.usd;
+        const price2 = t2.fiatValueMetadata?.usd;
+
+        if (typeof price1 !== 'number') {
+            return 1;
+        }
+
+        if (typeof price2 !== 'number') {
+            return -1;
+        }
+
+        return price2 - price1;
+    });
 };
 
 const updateTokensBalance = createAsyncThunk(
@@ -130,7 +151,7 @@ const updateAllTokensData = createAsyncThunk(
                 addAllTokens({
                     tokens: {
                         ...tokensWithBalance,
-                        ...tokens,
+                        ...sortTokensWithFiatPriceInDecreasingOrder(tokens),
                     },
                 })
             );
@@ -143,7 +164,7 @@ const fetchSwapData = createAsyncThunk(
     `${SLICE_NAME}/fetchSwapData`,
     async ({ accountId }, { dispatch }) => {
         const {
-            actions: { setPoolsLoading, addPools, addTokenNames },
+            actions: { setPoolsLoading, setPoolsError, addPools, addTokenNames },
         } = swapSlice;
 
         dispatch(setPoolsLoading(true));
@@ -170,6 +191,10 @@ const fetchSwapData = createAsyncThunk(
                     errorMessage: error.message,
                 })
             );
+
+            if (error?.message) {
+                setPoolsError(error.message);
+            }
         }
     }
 );
@@ -180,6 +205,9 @@ const swapSlice = createSlice({
     reducers: {
         setPoolsLoading(state, { payload }) {
             set(state, ['pools', 'loading'], payload);
+        },
+        setPoolsError(state, { payload }) {
+            set(state, ['pools', 'error'], payload);
         },
         addPools(state, { payload }) {
             const { pools } = payload;

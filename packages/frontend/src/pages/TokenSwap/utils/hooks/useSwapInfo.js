@@ -3,10 +3,8 @@ import { useEffect, useState, useMemo } from 'react';
 import useDebouncedValue from '../../../../hooks/useDebouncedValue';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { useSwapData } from '../../model/Swap';
-import { SWAP_INFO_DELAY } from '../constants';
+import { SWAP_INFO_DELAY, IMPOSSIBLE_POOL_ID, NOTIFICATION_TYPE } from '../constants';
 import usePools from './usePools';
-
-const IMPOSSIBLE_POOL_ID = -1;
 
 export default function useSwapInfo({
     account,
@@ -43,7 +41,7 @@ export default function useSwapInfo({
         [isNearTransformation]
     );
 
-    const { pools, poolsLoading } = usePools({
+    const { pools, poolsLoading, poolsError } = usePools({
         tokenIn,
         tokenOut,
     });
@@ -55,16 +53,21 @@ export default function useSwapInfo({
             setAmountOut('');
             setSwapNotification({
                 id: 'swap.noPoolAvailable',
-                type: 'warning',
+                type: NOTIFICATION_TYPE.warning,
                 data: {
                     tokenIn: tokenIn.onChainFTMetadata.symbol,
                     tokenOut: tokenOut.onChainFTMetadata.symbol,
                 },
             });
+        } else if (poolsError) {
+            setSwapNotification({
+                id: 'swap.poolsError',
+                type: NOTIFICATION_TYPE.error,
+            });
         } else if (swapNotification) {
             setSwapNotification(null);
         }
-    }, [tokenIn, tokenOut, pools, poolsLoading, isNearTransformation]);
+    }, [tokenIn, tokenOut, pools, poolsLoading, poolsError, isNearTransformation]);
 
     useEffect(() => {
         let cancelledRequest = false;

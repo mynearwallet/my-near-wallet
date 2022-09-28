@@ -1,7 +1,6 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import useHover from '../../hooks/useHover';
 import WrapIcon from '../svg/WrapIcon';
 
 const FlipButtonWrapper = styled.button`
@@ -16,18 +15,19 @@ const FlipButtonWrapper = styled.button`
     background-color: #e1f0ff;
     transition: 100ms;
 
+    --color-icon: var(--color-1);
+
     :hover {
         background-color: var(--color-1);
+
+        --color-icon: #ffffff;
     }
 `;
 
 export default function FlipButton({ onClick }) {
-    const hoverRef = useRef(null);
-    const isHover = useHover(hoverRef);
-
     return (
-        <FlipButtonWrapper ref={hoverRef} onClick={onClick}>
-            <WrapIcon color={isHover ? '#ffffff' : 'var(--color-1)'} />
+        <FlipButtonWrapper onClick={onClick}>
+            <WrapIcon color="var(--color-icon)" />
         </FlipButtonWrapper>
     );
 }

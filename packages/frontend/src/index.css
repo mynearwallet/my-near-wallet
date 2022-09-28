@@ -65,5 +65,7 @@
     /* @todo Need to decide what these colors for and rename it */
     --color-warning: #AD5700;
     --color-warning-background: #FFF4D5;
+    --color-error: #CD2B31;
+    --color-error-background: #FFEFEF;
     --color-1: #0072ce;
 }

@@ -66,6 +66,9 @@ class RefFinanceContract {
                     'RefFinanceContract: Error in the request for a part of pools',
                     error
                 );
+                // It makes no sense to continue fetching, because the pool IDs are array indexes,
+                // if any of the chunks (except the last one) isn't fetched, we will have incorrect IDs.
+                break;
             }
         }
 
