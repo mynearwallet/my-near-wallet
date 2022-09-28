@@ -8,6 +8,7 @@ import { useSwapData, VIEW_STATE } from '../model/Swap';
 import { getCalculatedValues } from '../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 import useSwap from '../utils/hooks/useSwap';
+import PriceImpact from './PriceImpact';
 import SwapForm from './SwapForm';
 
 export default memo(function SwapWrapper({ history, account, tokensConfig }) {
@@ -86,8 +87,9 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             tradingFee={tradingFee}
             swappingToken={swapPending}
             setSlippage={setSlippage}
+            showAllInfo={!isNearTransformation}
+            priceImpactElement={<PriceImpact percent={priceImpactPercent} />}
             feeTakenFromInput
-            showSlippageOption
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success

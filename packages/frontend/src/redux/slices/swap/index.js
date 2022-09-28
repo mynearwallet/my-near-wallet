@@ -132,10 +132,10 @@ const updateAllTokensData = createAsyncThunk(
                         fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                     };
 
+                    tokens[contractName] = config;
+
                     if (balance > 0) {
                         tokensWithBalance[contractName] = config;
-                    } else {
-                        tokens[contractName] = config;
                     }
                 })
             );
@@ -143,16 +143,17 @@ const updateAllTokensData = createAsyncThunk(
             console.error('Error loading token data', error);
         }
 
-        tokensWithBalance = sortTokensWithBalanceInDecreasingOrder(tokensWithBalance);
-
         batch(() => {
-            dispatch(addTokensWithBalance({ tokens: tokensWithBalance }));
+            dispatch(
+                addTokensWithBalance({
+                    tokens: sortTokensWithBalanceInDecreasingOrder(
+                        tokensWithBalance
+                    ),
+                })
+            );
             dispatch(
                 addAllTokens({
-                    tokens: {
-                        ...tokensWithBalance,
-                        ...sortTokensWithFiatPriceInDecreasingOrder(tokens),
-                    },
+                    tokens: sortTokensWithFiatPriceInDecreasingOrder(tokens),
                 })
             );
             dispatch(setAllTokensLoading(false));

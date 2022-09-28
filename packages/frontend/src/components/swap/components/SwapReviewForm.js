@@ -73,8 +73,9 @@ export function SwapReviewForm({
     setSlippage,
     exchangeRate,
     tradingFee,
+    priceImpactElement,
     feeTakenFromInput,
-    showSlippageOption,
+    showAllInfo,
 }) {
     const tokenFromFiatPrice = activeTokenFrom?.fiatValueMetadata?.usd;
     const tokenFromFiatAmount = tokenFromFiatPrice ? amountTokenFrom * tokenFromFiatPrice : null;
@@ -117,8 +118,9 @@ export function SwapReviewForm({
                 exchangeRate={exchangeRate}
                 setSlippage={setSlippage}
                 tradingFee={tradingFee}
+                priceImpactElement={priceImpactElement}
                 feeTakenFromInput={feeTakenFromInput}
-                showSlippageOption={showSlippageOption}
+                showAllInfo={showAllInfo}
             />
             <FormButton
                 color="blue width100"

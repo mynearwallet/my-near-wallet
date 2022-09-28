@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
+import { Translate } from 'react-localize-redux';
+import styled from 'styled-components';
 
 import classNames from '../../../utils/classNames';
 import Accordion from '../../common/Accordion';
+import Tooltip from '../../common/Tooltip';
 import AccordionTrigger from '../../send/components/AccordionTrigger';
 import Breakdown from '../../send/components/css/Breakdown.css';
 import Amount from '../../send/components/entry_types/Amount';
 import { exchangeRateTranslation } from './helpers';
 import SlippagePicker from './SlippagePicker';
 
+const PriceImpactWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 15px;
+    color: #72727A;
+
+    span {
+        display: flex;
+    }
+`;
 
 const TransactionDetailsUSN = ({
     selectedTokenFrom,
@@ -15,6 +29,7 @@ const TransactionDetailsUSN = ({
     amount,
     exchangeRate,
     tradingFee,
+    priceImpactElement,
     setSlippage,
     feeTakenFromInput,
 }) => {
@@ -45,6 +60,15 @@ const TransactionDetailsUSN = ({
                     translateIdInfoTooltip="swap.translateIdInfoTooltip.slippage"
                     setSlippage={setSlippage}
                 />
+                {priceImpactElement && (
+                    <PriceImpactWrapper>
+                        <span>
+                            <Translate id="swap.priceImpact" />
+                            <Tooltip translate="swap.translateIdInfoTooltip.priceImpact" />
+                        </span>
+                        {priceImpactElement}
+                    </PriceImpactWrapper>
+                )}
                 <Amount
                     className="details-info"
                     translateIdTitle={'swap.fee'}

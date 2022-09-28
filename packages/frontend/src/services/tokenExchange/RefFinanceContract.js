@@ -130,7 +130,6 @@ class RefFinanceContract {
                     receiver_id: contractConfig.contractId,
                     amount: parsedAmountIn,
                     msg: JSON.stringify({
-                        force: 0, // @todo it doesn't do anything, delete and check swaps without it
                         actions: [
                             // @note in case of multihop swaps we add extra objects here
                             {

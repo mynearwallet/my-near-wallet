@@ -112,7 +112,7 @@ const ReviewForm = styled.div`
         font-weight: 400;
         font-size: 16px;
         line-height: 20px;
-        color: #5bb98c;
+        color: var(--color-success);
     }
 
     .details-info {
@@ -151,8 +151,9 @@ const TransactionDetails = ({
     setSlippage,
     exchangeRate,
     tradingFee,
+    priceImpactElement,
     feeTakenFromInput,
-    showSlippageOption,
+    showAllInfo,
 }) => {
     let estimatedMinReceived = '';
     try {
@@ -174,7 +175,7 @@ const TransactionDetails = ({
         && CREATE_USN_CONTRACT;
 
     const getTransactionDetails = (tokenName) => {
-        if (showSlippageOption || tokenName === 'USN') {
+        if (showAllInfo || tokenName === 'USN') {
             return (
                 <TransactionDetailsUSN
                     selectedTokenFrom={tokenFrom}
@@ -182,6 +183,7 @@ const TransactionDetails = ({
                     amount={amountTokenFrom}
                     exchangeRate={exchangeRate}
                     tradingFee={tradingFee}
+                    priceImpactElement={priceImpactElement}
                     setSlippage={setSlippage}
                     feeTakenFromInput={feeTakenFromInput}
                 />
