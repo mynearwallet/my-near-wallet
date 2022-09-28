@@ -3,14 +3,14 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import BackArrowButton from '../../../components/common/BackArrowButton';
+import FlipButton from '../../../components/common/FlipButton';
+import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
-import SwapIcon from '../../../components/svg/WrapIcon';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
 import Notification from './Notification';
-import SwapButton from './SwapButton';
 
 const mobile = isMobile();
 
@@ -224,9 +224,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         disabled={!tokenIn}
                     />
                     <SwapButtonWrapper>
-                        <SwapButton onClick={flipInputsData} flip low>
-                            <SwapIcon color="var(--color-1)" />
-                        </SwapButton>
+                        <FlipButton onClick={flipInputsData} />
                     </SwapButtonWrapper>
                     <Input
                         value={amountOut}
@@ -249,17 +247,17 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                                 data={swapNotification.data}
                             />
                         )}
-                        <SwapButton
+                        <FormButton
                             disabled={cannotSwap}
                             onClick={onClickReview}
                             data-test-id="swapPageSwapPreviewStateButton"
                         >
                             <Translate id="swap.review" />
-                        </SwapButton>
+                        </FormButton>
                         <div className="cancel-button-wrapper">
-                            <SwapButton color="link gray" onClick={onGoBack}>
+                            <FormButton color="link gray" onClick={onGoBack}>
                                 <Translate id="button.cancel" />
-                            </SwapButton>
+                            </FormButton>
                         </div>
                     </Footer>
                 </>

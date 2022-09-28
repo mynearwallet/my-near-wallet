@@ -24,6 +24,7 @@ const initialState = {
     },
     pools: {
         loading: false,
+        error: undefined,
         all: {},
     },
 };
@@ -240,4 +241,8 @@ export const selectAllPools = createSelector(selectPools, ({ all }) => all);
 export const selectPoolsLoading = createSelector(
     selectPools,
     ({ loading }) => loading
+);
+export const selectPoolsError = createSelector(
+    selectPools,
+    ({ error }) => error
 );
