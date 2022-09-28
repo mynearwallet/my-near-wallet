@@ -1,8 +1,9 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import useDebounce from '../../../../hooks/useDebounce';
+import useDebouncedValue from '../../../../hooks/useDebouncedValue';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { useSwapData } from '../../model/Swap';
+import { SWAP_INFO_DELAY } from '../constants';
 import usePools from './usePools';
 
 const IMPOSSIBLE_POOL_ID = -1;
@@ -12,7 +13,7 @@ export default function useSwapInfo({
     tokenIn,
     amountIn = 0,
     tokenOut,
-    delay = 50,
+    delay = SWAP_INFO_DELAY,
 }) {
     const {
         events: {
@@ -25,7 +26,7 @@ export default function useSwapInfo({
     } = useSwapData();
 
     const [loading, setLoading] = useState(false);
-    const debounceAmountIn = useDebounce(amountIn, delay);
+    const debounceAmountIn = useDebouncedValue(amountIn, delay);
     const isNearTransformation = useMemo(
         () => {
             if (tokenIn && tokenOut) {

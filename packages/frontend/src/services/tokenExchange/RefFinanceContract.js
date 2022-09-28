@@ -1,7 +1,7 @@
 import * as nearApi from 'near-api-js';
 
 import { REF_FINANCE_CONTRACT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
-import { parseTokenAmount, formatTokenAmount } from '../../utils/amounts';
+import { parseTokenAmount } from '../../utils/amounts';
 import { findBestSwapPool, formatTotalFeePercent, getPriceImpactPercent } from './utils';
 
 const contractConfig = {
@@ -190,7 +190,8 @@ class RefFinanceContract {
                     ...pool,
                     // We receive the wrong order of token IDs relative to amounts.
                     // Reverse it to be able to match it using array indexes.
-                    token_account_ids: token_account_ids.reverse(),
+                    // Create a new array in order not to change the original token_account_ids
+                    token_account_ids: [...token_account_ids].reverse(),
                 };
             }
         });

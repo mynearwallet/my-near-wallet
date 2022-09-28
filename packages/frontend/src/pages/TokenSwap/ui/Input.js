@@ -175,7 +175,7 @@ export default memo(function Input({
                     data-test-id={tokenSelectTestId}
                 >
                     <Token symbol={tokenSymbol} icon={tokenIcon} />
-                    <ChevronIcon color="#0072ce" />
+                    <ChevronIcon color="var(--color-1)" />
                 </TokenWrapper>
                 <input
                     className={`${isWrongAmount ? 'error' : ''}`}

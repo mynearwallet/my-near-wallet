@@ -13,7 +13,9 @@ export default function useInterval(cb, interval, dependencies = []) {
         }
 
         function tick() {
-            callback.current();
+            if (typeof callback.current === 'function') {
+                callback.current();
+            }
         }
 
         tick();

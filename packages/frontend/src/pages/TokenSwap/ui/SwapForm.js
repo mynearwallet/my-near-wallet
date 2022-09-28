@@ -3,7 +3,6 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import BackArrowButton from '../../../components/common/BackArrowButton';
-import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import isMobile from '../../../utils/isMobile';
@@ -11,6 +10,7 @@ import { useSwapData, VIEW_STATE } from '../model/Swap';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
 import Notification from './Notification';
+import SwapButton from './SwapButton';
 
 const mobile = isMobile();
 
@@ -56,27 +56,6 @@ const SwapButtonWrapper = styled.div`
     margin: 0.8rem 0;
     display: flex;
     justify-content: center;
-
-    .reverse-button {
-        width: 4.5rem;
-        background-color: #E1F0FF;
-
-        svg {
-            width: initial !important;
-            height: initial !important;
-            margin: initial !important;
-        }
-
-        :hover {
-            background-color: #0072ce;
-
-            svg {
-                path {
-                    fill: #ffffff;
-                }
-            }
-        }
-    }
 `;
 
 const Footer = styled.div`
@@ -95,7 +74,6 @@ const Footer = styled.div`
     }
 `;
 
-const swapInfoDaley = 600;
 const tokenSelectState = {
     noSelect: 0,
     selectIn: 1,
@@ -185,7 +163,6 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         tokenIn,
         amountIn: Number(amountIn),
         tokenOut,
-        delay: swapInfoDaley,
     });
 
     const flipInputsData = () => {
@@ -247,13 +224,9 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         disabled={!tokenIn}
                     />
                     <SwapButtonWrapper>
-                        <FormButton
-                            color="reverse-button"
-                            onClick={flipInputsData}
-                            swapButton
-                        >
-                            <SwapIcon color="#006ADC" />
-                        </FormButton>
+                        <SwapButton onClick={flipInputsData} flip low>
+                            <SwapIcon color="var(--color-1)" />
+                        </SwapButton>
                     </SwapButtonWrapper>
                     <Input
                         value={amountOut}
@@ -276,17 +249,17 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                                 data={swapNotification.data}
                             />
                         )}
-                        <FormButton
+                        <SwapButton
                             disabled={cannotSwap}
                             onClick={onClickReview}
                             data-test-id="swapPageSwapPreviewStateButton"
                         >
                             <Translate id="swap.review" />
-                        </FormButton>
+                        </SwapButton>
                         <div className="cancel-button-wrapper">
-                            <FormButton color="link gray" onClick={onGoBack}>
+                            <SwapButton color="link gray" onClick={onGoBack}>
                                 <Translate id="button.cancel" />
-                            </FormButton>
+                            </SwapButton>
                         </div>
                     </Footer>
                 </>

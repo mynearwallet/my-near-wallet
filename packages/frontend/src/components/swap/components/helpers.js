@@ -2,7 +2,7 @@ import * as nearApiJs from 'near-api-js';
 import { useEffect, useState } from 'react';
 
 import { USN_CONTRACT } from '../../../config';
-import useDebounce from '../../../hooks/useDebounce';
+import useDebouncedValue from '../../../hooks/useDebouncedValue';
 import { removeTrailingZeros, formatTokenAmount, parseTokenAmount } from '../../../utils/amounts';
 import { wallet } from '../../../utils/wallet';
 import { formatNearAmount } from '../../common/balance/helpers';
@@ -123,7 +123,7 @@ async function fetchCommission({ accountId, amount, exchangeRate, token }) {
 
 export const commission = ({ accountId, amount, delay, exchangeRate, token }) => {
     const [commissionFee, setCommissionFee] = useState('');
-    const debounceValue = useDebounce(amount, delay);
+    const debounceValue = useDebouncedValue(amount, delay);
 
     useEffect(() => {
         const getCommission = async () => {

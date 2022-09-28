@@ -23,7 +23,9 @@ export default function Bootstrap() {
 
     useInterval(
         () => {
-            dispatch(fetchSwapData({ accountId }));
+            if (accountId) {
+                dispatch(fetchSwapData({ accountId }));
+            }
         },
         ONE_MINUTE,
         [accountId]
