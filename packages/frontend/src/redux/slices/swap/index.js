@@ -35,25 +35,18 @@ const sortTokens = (tokens, sortCallback) => {
         .reduce((allTokens, token) => ({ ...allTokens, [token.contractName]: token }), {});
 };
 
-const sortTokensWithBalanceInDecreasingOrder = (tokens) => {
+const sortTokensInDecreasingOrderByPrice = (tokens) => {
     return sortTokens(tokens, (t1, t2) => {
+        const price1 = t1.fiatValueMetadata?.usd;
         const balance1 = formatTokenAmount(
             t1.balance,
             t1.onChainFTMetadata.decimals
         );
+        const price2 = t2.fiatValueMetadata?.usd;
         const balance2 = formatTokenAmount(
             t2.balance,
             t2.onChainFTMetadata.decimals
         );
-
-        return balance2 - balance1;
-    });
-};
-
-const sortTokensWithFiatPriceInDecreasingOrder = (tokens) => {
-    return sortTokens(tokens, (t1, t2) => {
-        const price1 = t1.fiatValueMetadata?.usd;
-        const price2 = t2.fiatValueMetadata?.usd;
 
         if (typeof price1 !== 'number') {
             return 1;
@@ -63,7 +56,7 @@ const sortTokensWithFiatPriceInDecreasingOrder = (tokens) => {
             return -1;
         }
 
-        return price2 - price1;
+        return balance2 * price2 - balance1 * price1;
     });
 };
 
@@ -146,14 +139,14 @@ const updateAllTokensData = createAsyncThunk(
         batch(() => {
             dispatch(
                 addTokensWithBalance({
-                    tokens: sortTokensWithBalanceInDecreasingOrder(
+                    tokens: sortTokensInDecreasingOrderByPrice(
                         tokensWithBalance
                     ),
                 })
             );
             dispatch(
                 addAllTokens({
-                    tokens: sortTokensWithFiatPriceInDecreasingOrder(tokens),
+                    tokens: sortTokensInDecreasingOrderByPrice(tokens),
                 })
             );
             dispatch(setAllTokensLoading(false));

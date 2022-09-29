@@ -37,7 +37,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
     };
 
     const [slippage, setSlippage] = useState(0);
-    const { minAmountOut, exchangeRate, tradingFee } = getCalculatedValues({
+    const { minAmountOut, exchangeRate, swapFeeAmount } = getCalculatedValues({
         amountIn,
         tokenOut,
         amountOut,
@@ -84,12 +84,14 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             accountId={account.accountId}
             handleSwapToken={handleSwap}
             exchangeRate={exchangeRate}
-            tradingFee={tradingFee}
+            swapFee={swapFee}
+            swapFeeAmount={swapFeeAmount}
+            // @todo calculate gas for all swap cases
+            transactionFeeAmount={0}
             swappingToken={swapPending}
             setSlippage={setSlippage}
             showAllInfo={!isNearTransformation}
             priceImpactElement={<PriceImpact percent={priceImpactPercent} />}
-            feeTakenFromInput
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success

@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { CREATE_USN_CONTRACT } from '../../../../../features';
 import { EXPLORER_URL, NEAR_TOKEN_ID } from '../../config';
 import { useFungibleTokensIncludingNEAR } from '../../hooks/fungibleTokensIncludingNEAR';
-import { usePerformBuyOrSellUSN } from '../../hooks/performBuyOrSellUSN';
 import useInterval from  '../../hooks/useInterval';
 import { Mixpanel } from '../../mixpanel/index';
 import { showCustomAlert } from '../../redux/actions/status';
@@ -193,7 +192,6 @@ function Swap({ history }) {
         }
     }, [activeTokenFrom]);
 
-    const [slippage, setSlippage] = useState(1);
     const commissionFee = commission({
         accountId,
         amount: amountTokenFrom,
@@ -202,8 +200,6 @@ function Swap({ history }) {
         token: activeTokenFrom,
         activeView,
     });
-
-    const { performBuyOrSellUSN } = usePerformBuyOrSellUSN();
 
     const handleSwapToken = async ({
         accountId,
@@ -224,19 +220,6 @@ function Swap({ history }) {
                             toWNear: tokenTo == 'wNEAR',
                         });
                     setTransactionHash(result.transaction.hash);
-                } else if ((tokenFrom == 'USN' || tokenTo == 'USN') && CREATE_USN_CONTRACT) {
-                    if (amount == maxFrom.numToShow) {
-                        // in the event that a user clicks "Max: x" the input box only shows an estimated number
-                        // so we must ensure that the actual amount that gets converted is the full max number
-                        amount = maxFrom.fullNum;
-                    }
-                    await performBuyOrSellUSN({
-                        accountId,
-                        multiplier,
-                        slippage,
-                        amount,
-                        tokenFrom
-                    });
                 }
 
                 setActiveView(VIEWS.SUCCESS);
@@ -329,9 +312,8 @@ function Swap({ history }) {
                         accountId={accountId}
                         handleSwapToken={handleSwapToken}
                         swappingToken={swappingToken}
-                        setSlippage={setSlippage}
                         exchangeRate={formatMultiplier}
-                        tradingFee={commissionFee?.result}
+                        transactionFeeAmount={commissionFee?.result?.toString()}
                     />
                 );
 

@@ -1,8 +1,11 @@
+import { USN_CONTRACT } from '../../../config';
+
 // Amount of decimal places to save in the displayed amounts.
 // Not used in the real calculations.
 export const DECIMALS_TO_SAFE = 7;
 
-// Amount of milliseconds before making a request for swap information
+// The number of milliseconds before making a request for swap information
+// after the user changes the input amount.
 export const SWAP_INFO_DELAY = 400;
 
 // Token pool IDs are array indexes, we use this value
@@ -22,3 +25,6 @@ export const PRICE_IMPACT_THRESHOLD = {
     warning: 4,
     error: 10,
 };
+
+// Used to initialize output token in the form.
+export const DEFAULT_OUTPUT_TOKEN_ID = USN_CONTRACT || '';

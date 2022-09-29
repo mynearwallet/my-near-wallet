@@ -8,6 +8,7 @@ import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
+import { DEFAULT_OUTPUT_TOKEN_ID } from '../utils/constants';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
 import Notification from './Notification';
@@ -110,8 +111,8 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
     }, [listOfTokensIn]);
 
     useEffect(() => {
-        if (!tokenOut && listOfTokensOut[1]) {
-            setTokenOut(listOfTokensOut[1]);
+        if (!tokenOut) {
+            setTokenOut(tokensOut[DEFAULT_OUTPUT_TOKEN_ID] || listOfTokensOut[1]);
         } else {
             setTokenOut(tokensOut[tokenOut?.contractName]);
         }

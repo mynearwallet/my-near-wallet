@@ -11,7 +11,7 @@ import Amount from '../../send/components/entry_types/Amount';
 import { exchangeRateTranslation } from './helpers';
 import SlippagePicker from './SlippagePicker';
 
-const PriceImpactWrapper = styled.div`
+const RowWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -21,6 +21,19 @@ const PriceImpactWrapper = styled.div`
     span {
         display: flex;
     }
+
+    .tooltip {
+        width: 0.938rem;
+    }
+`;
+
+const SwapFeeDetails = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+
+    span:not(:first-child) {
+        margin-left: 0.3rem;
+    }
 `;
 
 const TransactionDetailsUSN = ({
@@ -28,21 +41,20 @@ const TransactionDetailsUSN = ({
     selectedTokenTo,
     amount,
     exchangeRate,
-    tradingFee,
+    swapFee,
+    swapFeeAmount,
+    transactionFeeAmount,
     priceImpactElement,
     setSlippage,
-    feeTakenFromInput,
 }) => {
     const [open, setOpen] = useState(false);
 
-    const commissionFee = tradingFee?.toFixed(5);
-    const commissionToken = feeTakenFromInput ? selectedTokenFrom : selectedTokenTo;
     const minimumReceived = exchangeRateTranslation({
         inputtedAmountOfToken: selectedTokenFrom,
         calculateAmountOfToken: selectedTokenTo,
         balance: amount,
         exchangeRate
-    }) - tradingFee;
+    }) - transactionFeeAmount;
 
     return (
         <Breakdown
@@ -61,22 +73,40 @@ const TransactionDetailsUSN = ({
                     setSlippage={setSlippage}
                 />
                 {priceImpactElement && (
-                    <PriceImpactWrapper>
+                    <RowWrapper>
                         <span>
                             <Translate id="swap.priceImpact" />
                             <Tooltip translate="swap.translateIdInfoTooltip.priceImpact" />
                         </span>
                         {priceImpactElement}
-                    </PriceImpactWrapper>
+                    </RowWrapper>
                 )}
-                <Amount
-                    className="details-info"
-                    translateIdTitle={'swap.fee'}
-                    amount={commissionFee.toString()}
-                    symbol={commissionToken.onChainFTMetadata?.symbol}
-                    decimals={0}
-                    translateIdInfoTooltip="swap.translateIdInfoTooltip.fee"
-                />
+                {swapFee && (
+                    <RowWrapper>
+                        <span>
+                            <Translate id="swap.swapFee" />
+                            <Tooltip translate="swap.translateIdInfoTooltip.swapFee" />
+                        </span>
+                        <SwapFeeDetails>
+                            <span>
+                                {swapFee} %
+                            </span>
+                            {swapFeeAmount
+                                ? <span>/ {swapFeeAmount} {selectedTokenFrom.onChainFTMetadata?.symbol}</span>
+                                : ''}
+                        </SwapFeeDetails>
+                    </RowWrapper>
+                )}
+                {!!transactionFeeAmount && (
+                    <Amount
+                        className="details-info"
+                        translateIdTitle={'swap.fee'}
+                        amount={transactionFeeAmount}
+                        symbol="NEAR"
+                        decimals={24}
+                        translateIdInfoTooltip="swap.translateIdInfoTooltip.fee"
+                    />
+                )}
                 <Amount
                     className="details-info"
                     translateIdTitle={'swap.minReceived'}

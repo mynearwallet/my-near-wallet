@@ -25,10 +25,10 @@ export function getCalculatedValues({
 
     const exchangeRate = amountIn && amountOut ? amountIn / amountOut : 1;
 
-    const tradingFee =
+    const swapFeeAmount =
         amountIn && swapFee >= 0
             ? Number(getPercentFrom(amountIn, swapFee))
             : 0;
 
-    return { minAmountOut, exchangeRate, tradingFee };
+    return { minAmountOut, exchangeRate, swapFeeAmount };
 }

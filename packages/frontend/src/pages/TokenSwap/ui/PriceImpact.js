@@ -8,11 +8,11 @@ const PriceImpactWrapper = styled.span`
     align-items: center;
     color: var(--color-success);
 
-    .error {
+    &.error {
         color: var(--color-error);
     }
 
-    .warning {
+    &.warning {
         color: var(--color-warning);
     }
 `;
@@ -27,7 +27,7 @@ export default function PriceImpact({ percent = '-' }) {
 
     return (
         <PriceImpactWrapper className={className}>
-            {percent} %
+            {percent <= 0 ? '< 0.01' : percent} %
         </PriceImpactWrapper>
     );
 }
