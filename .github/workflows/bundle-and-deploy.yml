@@ -30,7 +30,7 @@ jobs:
       - run: yarn test
       - run: yarn bundle --outDir=dist/${{ inputs.environment }}
       - uses: aws-actions/configure-aws-credentials@v1
-      - if : ${{ inputs.environment }} == testnet
+        if : ${{ inputs.environment }} == testnet
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -39,7 +39,7 @@ jobs:
           role-skip-session-tagging: true
           role-duration-seconds: 900
       - uses: aws-actions/configure-aws-credentials@v1
-      - if : ${{ inputs.environment }} == mainnet
+        if : ${{ inputs.environment }} == mainnet
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
