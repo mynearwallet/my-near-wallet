@@ -65,16 +65,16 @@ export function SwapReviewForm({
     onClickGoBack,
     amountTokenFrom,
     amountTokenTo,
+    minReceivedAmount,
     activeTokenFrom,
     activeTokenTo,
     accountId,
     handleSwapToken,
     swappingToken,
     setSlippage,
-    exchangeRate,
     swapFee,
     swapFeeAmount,
-    transactionFeeAmount,
+    estimatedFee,
     priceImpactElement,
     showAllInfo,
 }) {
@@ -114,13 +114,13 @@ export function SwapReviewForm({
             <TransactionDetails
                 amountTokenFrom={amountTokenFrom}
                 amountTokenTo={amountTokenTo}
+                minReceivedAmount={minReceivedAmount}
                 tokenFrom={activeTokenFrom}
                 tokenTo={activeTokenTo}
-                exchangeRate={exchangeRate}
                 setSlippage={setSlippage}
                 swapFee={swapFee}
                 swapFeeAmount={swapFeeAmount}
-                transactionFeeAmount={transactionFeeAmount}
+                estimatedFee={estimatedFee}
                 priceImpactElement={priceImpactElement}
                 showAllInfo={showAllInfo}
             />

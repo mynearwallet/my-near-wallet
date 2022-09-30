@@ -145,13 +145,13 @@ const getFontSize = (charLength) => {
 const TransactionDetails = ({
     amountTokenFrom,
     amountTokenTo,
+    minReceivedAmount,
     tokenFrom,
     tokenTo,
     setSlippage,
-    exchangeRate,
     swapFee,
     swapFeeAmount,
-    transactionFeeAmount,
+    estimatedFee,
     priceImpactElement,
     showAllInfo,
 }) => {
@@ -223,11 +223,10 @@ const TransactionDetails = ({
                 <TransactionDetailsUSN
                     selectedTokenFrom={tokenFrom}
                     selectedTokenTo={tokenTo}
-                    amount={amountTokenFrom}
-                    exchangeRate={exchangeRate}
+                    minReceivedAmount={minReceivedAmount}
                     swapFee={swapFee}
                     swapFeeAmount={swapFeeAmount}
-                    transactionFeeAmount={transactionFeeAmount}
+                    estimatedFee={estimatedFee}
                     priceImpactElement={priceImpactElement}
                     setSlippage={setSlippage}
                 />

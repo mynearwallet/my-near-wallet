@@ -1,14 +1,14 @@
 import React, { memo, useState } from 'react';
 
 import Success from '../../../components/swap/components/Success';
-import { SwapReviewForm } from '../../../components/swap/components/SwapReviewForm';
 import { cutDecimalsIfNeeded } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import { getCalculatedValues } from '../utils/calculations';
+import { getCalculatedSwapValues } from '../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 import useSwap from '../utils/hooks/useSwap';
 import PriceImpact from './PriceImpact';
+import ReviewFormWrapper from './ReviewFormWrapper';
 import SwapForm from './SwapForm';
 
 export default memo(function SwapWrapper({ history, account, tokensConfig }) {
@@ -37,7 +37,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
     };
 
     const [slippage, setSlippage] = useState(0);
-    const { minAmountOut, exchangeRate, swapFeeAmount } = getCalculatedValues({
+    const { minAmountOut, swapFeeAmount } = getCalculatedSwapValues({
         amountIn,
         tokenOut,
         amountOut,
@@ -67,6 +67,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
 
     const amountInToShow = cutDecimalsIfNeeded(amountIn, DECIMALS_TO_SAFE);
     const amountOutToShow = cutDecimalsIfNeeded(amountOut, DECIMALS_TO_SAFE);
+    const minAmountOutToShow = cutDecimalsIfNeeded(minAmountOut, DECIMALS_TO_SAFE);
 
     return viewState === VIEW_STATE.inputForm ? (
         <SwapForm
@@ -75,19 +76,17 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             tokensConfig={tokensConfig}
         />
     ) : viewState === VIEW_STATE.preview ? (
-        <SwapReviewForm
+        <ReviewFormWrapper
             onClickGoBack={showForm}
             activeTokenFrom={tokenIn}
             amountTokenFrom={amountInToShow}
             activeTokenTo={tokenOut}
             amountTokenTo={amountOutToShow}
+            minReceivedAmount={minAmountOutToShow}
             accountId={account.accountId}
             handleSwapToken={handleSwap}
-            exchangeRate={exchangeRate}
             swapFee={swapFee}
             swapFeeAmount={swapFeeAmount}
-            // @todo calculate gas for all swap cases
-            transactionFeeAmount={0}
             swappingToken={swapPending}
             setSlippage={setSlippage}
             showAllInfo={!isNearTransformation}

@@ -312,8 +312,7 @@ function Swap({ history }) {
                         accountId={accountId}
                         handleSwapToken={handleSwapToken}
                         swappingToken={swappingToken}
-                        exchangeRate={formatMultiplier}
-                        transactionFeeAmount={commissionFee?.result?.toString()}
+                        estimatedFee={commissionFee?.result?.toString()}
                     />
                 );
 

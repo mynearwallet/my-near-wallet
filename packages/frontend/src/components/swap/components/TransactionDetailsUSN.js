@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import { NEAR_ID, NEAR_DECIMALS } from '../../../config';
 import classNames from '../../../utils/classNames';
 import Accordion from '../../common/Accordion';
 import Tooltip from '../../common/Tooltip';
 import AccordionTrigger from '../../send/components/AccordionTrigger';
 import Breakdown from '../../send/components/css/Breakdown.css';
 import Amount from '../../send/components/entry_types/Amount';
-import { exchangeRateTranslation } from './helpers';
 import SlippagePicker from './SlippagePicker';
 
 const RowWrapper = styled.div`
@@ -39,22 +39,14 @@ const SwapFeeDetails = styled.div`
 const TransactionDetailsUSN = ({
     selectedTokenFrom,
     selectedTokenTo,
-    amount,
-    exchangeRate,
+    minReceivedAmount,
     swapFee,
     swapFeeAmount,
-    transactionFeeAmount,
+    estimatedFee,
     priceImpactElement,
     setSlippage,
 }) => {
     const [open, setOpen] = useState(false);
-
-    const minimumReceived = exchangeRateTranslation({
-        inputtedAmountOfToken: selectedTokenFrom,
-        calculateAmountOfToken: selectedTokenTo,
-        balance: amount,
-        exchangeRate
-    }) - transactionFeeAmount;
 
     return (
         <Breakdown
@@ -97,20 +89,21 @@ const TransactionDetailsUSN = ({
                         </SwapFeeDetails>
                     </RowWrapper>
                 )}
-                {!!transactionFeeAmount && (
+                {!!estimatedFee && (
                     <Amount
                         className="details-info"
                         translateIdTitle={'swap.fee'}
-                        amount={transactionFeeAmount}
-                        symbol="NEAR"
-                        decimals={24}
+                        amount={estimatedFee}
+                        symbol={NEAR_ID}
+                        decimals={NEAR_DECIMALS}
                         translateIdInfoTooltip="swap.translateIdInfoTooltip.fee"
+                        isApproximate
                     />
                 )}
                 <Amount
                     className="details-info"
                     translateIdTitle={'swap.minReceived'}
-                    amount={minimumReceived.toString()}
+                    amount={minReceivedAmount}
                     symbol={selectedTokenTo.onChainFTMetadata?.symbol}
                     decimals={0}
                     translateIdInfoTooltip="swap.translateIdInfoTooltip.minimumReceived"

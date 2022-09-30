@@ -28,3 +28,10 @@ export const PRICE_IMPACT_THRESHOLD = {
 
 // Used to initialize output token in the form.
 export const DEFAULT_OUTPUT_TOKEN_ID = USN_CONTRACT || '';
+
+// Precalculated unit amounts for common swap actions.
+export const SWAP_GAS_UNITS = {
+    nearWithWnear: '6000000000000', // for deposit or withdraw NEAR
+    nearWithFT: '41000000000000', // for deposit or withdraw NEAR and a swap action
+    ftWithFt: '35000000000000', // for a swap action
+};
