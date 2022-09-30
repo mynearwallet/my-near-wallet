@@ -1,4 +1,4 @@
-import * as nearApi from 'near-api-js';
+import { transactions } from 'near-api-js';
 
 import {
     NEAR_ID,
@@ -104,11 +104,18 @@ class FungibleTokenExchange {
     async _transformNear(params) {
         const { account, tokenIn, amountIn } = params;
 
-        return this._tokenService.transformNear({
+        const {
+            transaction: { hash },
+        } = await this._tokenService.transformNear({
             accountId: account.accountId,
             amount: amountIn,
             toWNear: tokenIn.contractName !== NEAR_TOKEN_ID,
         });
+
+        return {
+            success: true,
+            swapTxHash: hash,
+        };
     }
 
     async _swapNearToToken(params) {
@@ -253,7 +260,7 @@ class FungibleTokenExchange {
                 txs.push({
                     receiverId: id,
                     actions: [
-                        nearApi.transactions.functionCall(
+                        transactions.functionCall(
                             'storage_deposit',
                             {
                                 account_id: accountId,

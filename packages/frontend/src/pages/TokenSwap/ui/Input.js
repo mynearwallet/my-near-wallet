@@ -23,13 +23,14 @@ const InputWrapper = styled.div`
 const Header = styled.div`
     display: flex;
     justify-content: space-between;
+    padding: 0.7rem 0.8rem 0;
 `;
 
 const Label = styled.span`
     font-size: 0.9rem;
 `;
 
-const Balance = styled.button`
+const Balance = styled.div`
     cursor: pointer;
     font-style: italic;
     border: none;
@@ -68,6 +69,10 @@ const Footer = styled.div`
 
         :focus {
             background-color: #ffffff;
+        }
+
+        :disabled {
+            opacity: 1; // fix opacity effect on iOS
         }
     }
 
@@ -180,6 +185,7 @@ export default memo(function Input({
                 <input
                     className={`${isWrongAmount ? 'error' : ''}`}
                     type="number"
+                    inputMode="decimal"
                     min={0}
                     max={Number(balanceConfig.fullNum) || 0}
                     value={loading ? '' : valueToShow}
