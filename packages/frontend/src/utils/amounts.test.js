@@ -30,13 +30,23 @@ describe('amounts', () => {
     });
 
     test('should correctly validate amount', () => {
+        expect(amounts.isValidAmount(0.9)).toBe(true);
+        expect(amounts.isValidAmount(1.123)).toBe(true);
+        expect(amounts.isValidAmount(123)).toBe(true);
         expect(amounts.isValidAmount(0.9, 1)).toBe(true);
         expect(amounts.isValidAmount(1, 1)).toBe(true);
+        expect(amounts.isValidAmount(0.0000001, 1, 7)).toBe(true);
+        expect(amounts.isValidAmount(0.000000000000000000000001, 1)).toBe(true);
+        expect(amounts.isValidAmount('0.', 1)).toBe(true);
+        expect(amounts.isValidAmount(0., 1)).toBe(true);
+
+        expect(amounts.isValidAmount('')).toBe(false);
+        expect(amounts.isValidAmount('', 1)).toBe(false);
         expect(amounts.isValidAmount(1.1, 1)).toBe(false);
         expect(amounts.isValidAmount(0.0000001, 1, 6)).toBe(false);
-        expect(amounts.isValidAmount(0.0000001, 1, 7)).toBe(true);
         expect(amounts.isValidAmount(0.0000000000000000000000001, 1)).toBe(false);
-        expect(amounts.isValidAmount(0.000000000000000000000001, 1)).toBe(true);
+        expect(amounts.isValidAmount('a', 1)).toBe(false);
+        expect(amounts.isValidAmount('0.a', 1)).toBe(false);
     });
 });
 

@@ -52,14 +52,27 @@ export const decreaseByPercent = (value, percent, precision = 0) => {
 const MAX_DECIMALS = 24;
 
 export const isValidAmount = (amount, maxAmount, decimals = MAX_DECIMALS) => {
-    if (!amount || !maxAmount || Big(amount).gt(maxAmount)) {
+    // Allow empty values
+    if (!String(amount).length) {
+        return true;
+    }
+
+    // Firstly check NaN, because "big.js" cannot work with such values
+    if (Number.isNaN(Number(amount))) {
         return false;
     }
 
-    const strAmount = Big(amount).toFixed().replace(/,/g, '.');
+    const fixedAmount = Big(amount).toFixed();
+    const isMoreThanAllowed = maxAmount && Big(amount).gt(maxAmount);
+
+    if (!fixedAmount.match(/^\d*(\.)?(\d+)?$/) || isMoreThanAllowed) {
+        return false;
+    }
+
+    const strAmount = fixedAmount.replace(/,/g, '.');
     const fractionalPart = strAmount?.split('.')[1];
 
-    if (fractionalPart?.length > decimals) {
+    if (fractionalPart && fractionalPart?.length > decimals) {
         return false;
     }
 

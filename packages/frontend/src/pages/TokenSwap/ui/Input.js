@@ -126,8 +126,10 @@ export default memo(function Input({
     const handleChange = (event) => {
         event.preventDefault();
 
-        if (!disabled) {
-            onChange(event.target.value);
+        const value = event.target.value.replace(',', '.');
+
+        if (!disabled && isValidAmount(value)) {
+            onChange(value);
         }
     };
 
@@ -184,7 +186,6 @@ export default memo(function Input({
                 </TokenWrapper>
                 <input
                     className={`${isWrongAmount ? 'error' : ''}`}
-                    type="number"
                     inputMode="decimal"
                     min={0}
                     max={Number(balanceConfig.fullNum) || 0}
