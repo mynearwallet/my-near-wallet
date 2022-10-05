@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import { CREATE_USN_CONTRACT } from '../../../../../features';
-import { EXPLORER_URL } from '../../config';
+import { EXPLORER_URL, NEAR_ID } from '../../config';
 import Balance from '../common/balance/Balance';
 import TokenIcon from '../send/components/TokenIcon';
 import TokenAmount from './TokenAmount';
@@ -149,39 +149,47 @@ const StyledContainer = styled.div`
     }
 `;
 
+const TokenTitle = ({ title, isLinkTitle }) => {
+    const stopPropagation = (event) => event.stopPropagation();
+
+    return (
+        <span className="symbol" title={title}>
+            {isLinkTitle ? (
+                <a
+                    href={`${EXPLORER_URL}/accounts/${title}`}
+                    onClick={stopPropagation}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {title}
+                </a>
+            ) : (
+                title
+            )}
+        </span>
+    );
+};
+
 const TokenBox = ({ token, onClick, currentLanguage }) => {
+    const { symbol = '', name = '', icon = '' } = token.onChainFTMetadata;
+    const title = symbol || name;
+
     return (
         <StyledContainer
             className='token-box'
             onClick={onClick ? () => onClick(token) : null}
-            data-test-id={`token-selection-${token.contractName || 'NEAR'}`}
-            IS_USN={CREATE_USN_CONTRACT && token.onChainFTMetadata?.symbol === 'USN'}
+            data-test-id={`token-selection-${token.contractName || NEAR_ID}`}
+            IS_USN={CREATE_USN_CONTRACT && symbol === 'USN'}
         >
             <div style={{ display: 'flex', width: '100%' }}>
                 <div className='icon'>
-                    <TokenIcon
-                        symbol={token.onChainFTMetadata?.symbol}
-                        icon={token.onChainFTMetadata?.icon}
-                    />
+                    <TokenIcon symbol={symbol} icon={icon} />
                 </div>
                 <div className='desc'>
-                    {token.contractName ? (
-                        <span className='symbol' title={token.contractName}>
-                            <a
-                                href={`${EXPLORER_URL}/accounts/${token.contractName}`}
-                                onClick={(e) => e.stopPropagation()}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                            >
-                                {token.onChainFTMetadata?.name ||
-                                    token.onChainFTMetadata?.symbol}
-                            </a>
-                        </span>
-                    ) : (
-                        <span className='symbol'>
-                            {token.onChainFTMetadata?.symbol}
-                        </span>
-                    )}
+                    <TokenTitle
+                        title={title}
+                        isLinkTitle={!!token.contractName}
+                    />
                     <span className='fiat-rate'>
                         {token.fiatValueMetadata?.usd ? (
                             <>
@@ -198,23 +206,25 @@ const TokenBox = ({ token, onClick, currentLanguage }) => {
                         )}
                     </span>
                 </div>
-                {token.onChainFTMetadata?.symbol === 'NEAR' &&
-                !token.contractName ? (
-                        <div className='balance'>
-                            <Balance
-                                amount={token.balance}
-                                data-test-id='walletHomeNearBalance'
-                                symbol={false}
-                                showSymbolNEAR={!CREATE_USN_CONTRACT}
-                            />
-                        </div>
-                    ) : (
-                        <TokenAmount
-                            token={token}
-                            className={token.onChainFTMetadata?.symbol  !== 'USN' && CREATE_USN_CONTRACT ? 'balance tokenAmount':'balance'}
-                            withSymbol={token.onChainFTMetadata?.symbol !== 'USN' || !CREATE_USN_CONTRACT}
+                {symbol === NEAR_ID && !token.contractName ? (
+                    <div className="balance">
+                        <Balance
+                            amount={token.balance}
+                            data-test-id="walletHomeNearBalance"
+                            symbol={false}
+                            showSymbolNEAR={!CREATE_USN_CONTRACT}
                         />
-                    )}
+                    </div>
+                ) : (
+                    <TokenAmount
+                        token={token}
+                        className={
+                            symbol !== 'USN' && CREATE_USN_CONTRACT
+                                ? 'balance tokenAmount'
+                                : 'balance'
+                        }
+                    />
+                )}
             </div>
         </StyledContainer>
     );
