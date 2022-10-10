@@ -71,8 +71,10 @@ const Footer = styled.div`
             background-color: #ffffff;
         }
 
-        :disabled {
-            opacity: 1; // fix opacity effect on iOS
+        input:not(:placeholder-shown) {
+            // fix opacity effect on iOS
+            -webkit-text-fill-color: #24272A;
+            opacity: 1;
         }
     }
 
