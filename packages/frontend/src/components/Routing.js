@@ -2,7 +2,7 @@ import { ConnectedRouter, getRouter } from 'connected-react-router';
 import isString from 'lodash.isstring';
 import { parseSeedPhrase } from 'near-seed-phrase';
 import PropTypes from 'prop-types';
-import { stringify } from 'query-string';
+import { parse, stringify } from 'query-string';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { withLocalize } from 'react-localize-redux';
@@ -87,6 +87,7 @@ import NetworkBanner from './common/NetworkBanner';
 import PrivateRoute from './common/routing/PrivateRoute';
 import PublicRoute from './common/routing/PublicRoute';
 import Route from './common/routing/Route';
+import TwoFactorDisableBanner from './common/TwoFactorDisableBanner';
 import { ExploreContainer } from './explore/ExploreContainer';
 import GlobalStyle from './GlobalStyle';
 import { LoginCliLoginSuccess } from './login/LoginCliLoginSuccess';
@@ -370,6 +371,15 @@ class Routing extends Component {
                         <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
+                        {
+                            !isWhitelabel && (
+                                <Switch>
+                                    <Route
+                                        path={['/', '/staking', '/profile']} component={TwoFactorDisableBanner}
+                                    />
+                                </Switch>
+                            )
+                        }
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}
@@ -666,7 +676,11 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/sign"
-                                component={SignWrapper}
+                                render={() => (
+                                    <SignWrapper
+                                        urlQuery={parse(this.props.router.location.hash)}
+                                    />
+                                )}
                             />
                             <PrivateRoute
                                 path="/staking"
