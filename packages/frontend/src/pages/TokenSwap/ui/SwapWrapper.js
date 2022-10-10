@@ -1,6 +1,7 @@
 import React, { memo, useState } from 'react';
 
 import Success from '../../../components/swap/components/Success';
+import { Mixpanel } from '../../../mixpanel';
 import { cutDecimalsIfNeeded } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
@@ -57,6 +58,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
 
     const handleSwap = () => {
         if (swap) {
+            Mixpanel.track('Click Confirm & Swap on Swap page');
             swap();
         }
     };

@@ -1,12 +1,52 @@
+import Big from 'big.js';
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { NEAR_TOKEN_ID } from '../../../../config';
+import { Mixpanel } from '../../../../mixpanel';
 import { showCustomAlert } from '../../../../redux/actions/status';
+import selectNEARAsTokenWithMetadata from '../../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 import { actions } from '../../../../redux/slices/swap';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { useSwapData, VIEW_STATE } from '../../model/Swap';
 
 const { updateTokensBalance } = actions;
+
+const getUsdVolume = (amount, usdPrice) => {
+    return !amount || typeof usdPrice !== 'number'
+        ? 'Unavailable'
+        : Big(amount).times(usdPrice).toFixed();
+};
+
+const getAmountStats = ({ tokenIn, amountIn, tokenOut, amountOut, nearUsdPrice }) => {
+    const tokenInId = fungibleTokenExchange.replaceNearIdIfNecessary(
+        tokenIn.contractName
+    );
+    const tokenOutId = fungibleTokenExchange.replaceNearIdIfNecessary(
+        tokenOut.contractName
+    );
+
+    if (
+        fungibleTokenExchange.isNearTransformation({ tokenIn, tokenOut }) ||
+        tokenInId === NEAR_TOKEN_ID
+    ) {
+        return {
+            volumeNear: amountIn,
+            volumeUSD: getUsdVolume(amountIn, nearUsdPrice),
+        };
+    }
+
+    if (tokenOutId === NEAR_TOKEN_ID) {
+        return {
+            volumeNear: amountOut,
+            volumeUSD: getUsdVolume(amountOut, nearUsdPrice),
+        };
+    }
+
+    return {
+        inputAmountUSD: getUsdVolume(amountIn, tokenIn.fiatValueMetadata.usd),
+    };
+};
 
 export default function useSwap({
     account,
@@ -17,6 +57,9 @@ export default function useSwap({
     minAmountOut,
     isNearTransformation,
 }) {
+    const nearConfig = useSelector((state) =>
+        selectNEARAsTokenWithMetadata(state, { includeNearContractName: true })
+    );
     const dispatch = useDispatch();
     const {
         events: { setSwapPending, setCompletedSwapState, setViewState },
@@ -47,6 +90,20 @@ export default function useSwap({
                     minAmountOut,
                 });
 
+                Mixpanel.track('Swap:done', {
+                    tokenFrom: tokenIn.onChainFTMetadata.symbol,
+                    tokenFromAddress: tokenIn.contractName,
+                    tokenTo: tokenOut.onChainFTMetadata.symbol,
+                    tokenToAddress: tokenOut.contractName,
+                    ...getAmountStats({
+                        tokenIn,
+                        amountIn,
+                        tokenOut,
+                        amountOut: minAmountOut,
+                        nearUsdPrice: nearConfig.fiatValueMetadata.usd,
+                    }),
+                });
+
                 dispatch(
                     updateTokensBalance({
                         accountId: account.accountId,
@@ -68,6 +125,9 @@ export default function useSwap({
                 });
                 setViewState(VIEW_STATE.result);
             } catch (error) {
+                Mixpanel.track('Swap:failed', {
+                    errorMessage: error.message,
+                });
                 dispatch(
                     showCustomAlert({
                         success: false,

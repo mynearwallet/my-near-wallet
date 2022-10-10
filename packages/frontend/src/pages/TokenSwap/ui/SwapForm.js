@@ -251,6 +251,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         <FormButton
                             disabled={cannotSwap}
                             onClick={onClickReview}
+                            trackingId="Click Preview swap on Swap page"
                             data-test-id="swapPageSwapPreviewStateButton"
                         >
                             <Translate id="swap.review" />
