@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import BN from 'bn.js';
 import set from 'lodash.set';
+import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 
 import { WHITELISTED_CONTRACTS, USN_CONTRACT } from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
+import { fetchBlacklistedTokens } from '../../../services/security/tokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import { createParameterSelector, selectSliceByAccountId } from '../../selectors/topLevel';
@@ -14,7 +16,9 @@ import tokensMetadataSlice, { getCachedContractMetadataOrFetch, selectContractsM
 const SLICE_NAME = 'tokens';
 
 const initialState = {
-    ownedTokens: {}
+    ownedTokens: {},
+    blacklisted: [],
+    allowed: {},
 };
 
 const initialOwnedTokenState = {
@@ -47,6 +51,24 @@ const fetchOwnedTokensForContract = createAsyncThunk(
     }
 );
 
+const initializeBlacklistedTokens = createAsyncThunk(
+    `${SLICE_NAME}/initializeBlacklistedTokens`,
+    async (_, thunkAPI) => {
+        const { dispatch } = thunkAPI;
+        const { actions: { setBlacklistedTokens } } = tokensSlice;
+
+        try {
+            const blacklisted = await fetchBlacklistedTokens();
+
+            if (blacklisted.length) {
+                dispatch(setBlacklistedTokens(blacklisted));
+            }
+        } catch (error) {
+            console.error('Error on fetching blacklisted tokens', error);
+        }
+    }
+);
+
 const fetchTokens = createAsyncThunk(
     `${SLICE_NAME}/fetchTokens`,
     async ({ accountId }, thunkAPI) => {
@@ -54,9 +76,9 @@ const fetchTokens = createAsyncThunk(
 
         const likelyContracts = [...new Set([...(await FungibleTokens.getLikelyTokenContracts({ accountId })), ...WHITELISTED_CONTRACTS])];
 
-
         await Promise.all(likelyContracts.map(async (contractName) => {
             const { actions: { setContractMetadata } } = tokensMetadataSlice;
+
             try {
                 const contractMetadata = await getCachedContractMetadataOrFetch(contractName, getState());
                 if (!selectOneContractMetadata(getState(), { contractName })) {
@@ -74,7 +96,11 @@ const fetchTokens = createAsyncThunk(
                 console.warn(`Failed to load FT for ${contractName}`, e);
             }
         }));
-        dispatch(tokenFiatValueActions.fetchTokenFiatValues());
+
+        batch(() => {
+            dispatch(initializeBlacklistedTokens());
+            dispatch(tokenFiatValueActions.fetchTokenFiatValues());
+        });
     }
 );
 
@@ -114,6 +140,9 @@ const tokensSlice = createSlice({
             const { contractName, balance } = payload;
             set(state, ['ownedTokens', contractName, 'balance'], balance);
         },
+        setBlacklistedTokens(state, { payload }) {
+            set(state, ['blacklisted'], payload);
+        },
     },
     extraReducers: (builder) => {
         handleAsyncThunkStatus({
@@ -129,6 +158,7 @@ export default tokensSlice;
 export const actions = {
     fetchToken,
     fetchTokens,
+    initializeBlacklistedTokens,
     ...tokensSlice.actions,
 };
 export const reducer = tokensSlice.reducer;

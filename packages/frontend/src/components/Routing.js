@@ -76,6 +76,7 @@ import { SetupImplicitWithRouter } from './accounts/SetupImplicit';
 import { SetupSeedPhraseWithRouter } from './accounts/SetupSeedPhrase';
 import { EnableTwoFactor } from './accounts/two_factor/EnableTwoFactor';
 import { BuyNear } from './buy/BuyNear';
+import Bootstrap from './common/Bootstrap';
 import Footer from './common/Footer';
 import GlobalAlert from './common/GlobalAlert';
 import GuestLandingRoute from './common/GuestLandingRoute';
@@ -351,6 +352,7 @@ class Routing extends Component {
                 ])}
                 id="app-container"
             >
+                <Bootstrap />
                 <GlobalStyle />
                 <ConnectedRouter
                     basename={PATH_PREFIX}
