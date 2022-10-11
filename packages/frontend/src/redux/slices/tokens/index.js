@@ -204,16 +204,20 @@ export const selectTokensWithMetadataForAccountId = createSelector(
 export const selectAllowedTokens = createSelector(
     [selectTokensFiatValueUSD, selectOwnedTokens, selectBlacklistedTokenNames, selectNEARAsTokenWithMetadata],
     (tokensFiatData, userTokens, blacklistedNames, nearConfig) => {
-        const tokens = Object.values(userTokens)
-            .filter(
-                ({ contractName }) => !blacklistedNames.includes(contractName)
-            )
-            .map((tokenData) => ({
-                ...tokenData,
-                fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
-            }));
+        const tokenList = Object.values(userTokens).map((tokenData) => ({
+            ...tokenData,
+            fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
+        }));
 
-        return [nearConfig, ...tokens];
+        if (!blacklistedNames.length) {
+            return [nearConfig, ...tokenList];
+        }
+
+        const allowedTokens = tokenList.filter(
+            ({ contractName }) => !blacklistedNames.includes(contractName)
+        );
+
+        return [nearConfig, ...allowedTokens];
     }
 );
 
