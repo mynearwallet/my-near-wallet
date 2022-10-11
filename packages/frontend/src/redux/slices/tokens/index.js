@@ -64,6 +64,10 @@ const fetchTokens = createAsyncThunk(
 
             try {
                 const onChainFTMetadata = await getCachedContractMetadataOrFetch(contractName, getState());
+                const balance = await FungibleTokens.getBalanceOf({
+                    contractName,
+                    accountId,
+                });
 
                 if (!selectOneContractMetadata(getState(), { contractName })) {
                     dispatch(setContractMetadata({
@@ -77,16 +81,12 @@ const fetchTokens = createAsyncThunk(
                         contractName,
                         data: {
                             contractName,
+                            balance,
                             onChainFTMetadata,
                             fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                         },
                     })
                 );
-
-                await dispatch(fetchTokenBalance({
-                    accountId,
-                    contractName,
-                }));
             } catch (e) {
                 // Continue loading other likely contracts on failures
                 console.warn(`Failed to load FT for ${contractName}`, e);
