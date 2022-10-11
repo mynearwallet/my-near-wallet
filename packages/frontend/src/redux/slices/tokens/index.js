@@ -7,6 +7,7 @@ import { WHITELISTED_CONTRACTS, USN_CONTRACT } from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
+import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 import { createParameterSelector, selectSliceByAccountId } from '../../selectors/topLevel';
 import { selectBlacklistedTokenNames } from '../security';
 import { selectUSDNTokenFiatValueUSD, selectTokensFiatValueUSD } from '../tokenFiatValues';
@@ -201,9 +202,9 @@ export const selectTokensWithMetadataForAccountId = createSelector(
     });
 
 export const selectAllowedTokens = createSelector(
-    [selectTokensFiatValueUSD, selectOwnedTokens, selectBlacklistedTokenNames],
-    (tokensFiatData, userTokens, blacklistedNames) => {
-        return Object.values(userTokens)
+    [selectTokensFiatValueUSD, selectOwnedTokens, selectBlacklistedTokenNames, selectNEARAsTokenWithMetadata],
+    (tokensFiatData, userTokens, blacklistedNames, nearConfig) => {
+        const tokens = Object.values(userTokens)
             .filter(
                 ({ contractName }) => !blacklistedNames.includes(contractName)
             )
@@ -211,6 +212,8 @@ export const selectAllowedTokens = createSelector(
                 ...tokenData,
                 fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
             }));
+
+        return [nearConfig, ...tokens];
     }
 );
 
