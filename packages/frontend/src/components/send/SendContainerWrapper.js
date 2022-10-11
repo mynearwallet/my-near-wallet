@@ -30,6 +30,10 @@ const LoaderWrapper = styled.div`
     padding: 2.5rem 0.625rem 0.625rem;
     max-width: 31.25rem;
     margin: 0 auto;
+
+    .animation {
+        border-radius: 0.5rem;
+    }
 `;
 
 export function SendContainerWrapper({ match }) {
@@ -48,11 +52,7 @@ export function SendContainerWrapper({ match }) {
     if (!allowedTokens.length) {
         return (
             <LoaderWrapper>
-                <SkeletonLoading
-                    height="6.375rem"
-                    number={1}
-                    show
-                />
+                <SkeletonLoading height="6.375rem" show />
             </LoaderWrapper>
         );
     }
