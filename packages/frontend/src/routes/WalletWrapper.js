@@ -10,7 +10,7 @@ import { selectZeroBalanceAccountImportMethod, actions as importZeroBalanceAccou
 import { selectLinkdropAmount, actions as linkdropActions } from '../redux/slices/linkdrop';
 import { selectTokensWithMetadataForAccountId, actions as nftActions } from '../redux/slices/nft';
 import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId } from '../redux/slices/recoveryMethods';
-import { selectTokensLoading } from '../redux/slices/tokens';
+import { selectTokensLoading, selectAllowedTokens } from '../redux/slices/tokens';
 
 const { fetchNFTs } = nftActions;
 const { setLinkdropAmount } = linkdropActions;
@@ -35,8 +35,7 @@ export function WalletWrapper({
     const availableAccounts = useSelector(selectAvailableAccounts);
     const sortedNFTs = useSelector((state) => selectTokensWithMetadataForAccountId(state, { accountId }));
     const userRecoveryMethods = useSelector((state) => selectRecoveryMethodsByAccountId(state, { accountId }));
-
-    const blacklist = { allowedTokens: [], };
+    const allowedTokens = useSelector(selectAllowedTokens);
 
     useEffect(() => {
         if (accountId) {
@@ -62,7 +61,7 @@ export function WalletWrapper({
             createFromImplicitSuccess={createFromImplicitSuccess}
             createCustomName={createCustomName}
             zeroBalanceAccountImportMethod={zeroBalanceAccountImportMethod}
-            fungibleTokensList={blacklist.allowedTokens}
+            fungibleTokensList={allowedTokens}
             tokensLoading={tokensLoading}
             availableAccounts={availableAccounts}
             sortedNFTs={sortedNFTs}

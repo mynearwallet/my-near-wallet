@@ -1,20 +1,16 @@
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { selectAccountId } from '../../redux/slices/account';
-import { actions as tokensActions } from '../../redux/slices/tokens';
+import { actions as securityActions } from '../../redux/slices/security';
 
-const { fetchTokens } = tokensActions;
+const { initializeBlacklistedTokens } = securityActions;
 
 export default function Bootstrap() {
     const dispatch = useDispatch();
-    const accountId = useSelector(selectAccountId);
 
     useEffect(() => {
-        if (accountId) {
-            dispatch(fetchTokens({ accountId }));
-        }
-    }, [accountId]);
+        dispatch(initializeBlacklistedTokens());
+    }, []);
 
     return null;
 }
