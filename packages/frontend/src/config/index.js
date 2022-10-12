@@ -8,6 +8,13 @@ import mainnet_STAGING from './environmentDefaults/mainnet_STAGING';
 import testnet from './environmentDefaults/testnet';
 import testnet_STAGING from './environmentDefaults/testnet_STAGING';
 
+const insertCommonData = (config) => {
+    return {
+        ...config,
+        NEAR_DECIMALS: 24,
+    };
+};
+
 const envDefaults = {
     [Environments.DEVELOPMENT]: development,
     [Environments.TESTNET]: testnet,
@@ -21,5 +28,5 @@ const envDefaults = {
 
 module.exports = defaults(
     environmentConfig,
-    envDefaults[environmentConfig.NEAR_WALLET_ENV]
+    insertCommonData(envDefaults[environmentConfig.NEAR_WALLET_ENV])
 );
