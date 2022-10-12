@@ -1,13 +1,12 @@
 import Big from 'big.js';
 
-// import { NEAR_DECIMALS } from '../config';
-import { MAX_PERCENTAGE } from './constants';
+import { MAX_PERCENTAGE, NEAR_DECIMALS } from './constants';
 
 const APPROX_ZERO_MIN = 10;
 
 export const BOATLOAD_OF_GAS = Big(1).times(10 ** 14).toFixed();
 
-const yoctoNearCoefficient = Big(10).pow(24 /* NEAR_DECIMALS */).toFixed();
+const yoctoNearCoefficient = Big(10).pow(NEAR_DECIMALS).toFixed();
 
 export const toNear = (value = '0') => Big(value).times(yoctoNearCoefficient).toFixed();
 export const nearTo = (value = '0', to = 2) => Big(value).div(yoctoNearCoefficient).toFixed(to === 0 ? undefined : to);
@@ -50,7 +49,7 @@ export const decreaseByPercent = (value, percent, precision = 0) => {
         .toFixed(precision);
 };
 
-export const isValidAmount = (amount, maxAmount, decimals = 24 /* NEAR_DECIMALS */) => {
+export const isValidAmount = (amount, maxAmount, decimals = NEAR_DECIMALS) => {
     // Allow empty values
     if (!String(amount).length) {
         return true;
