@@ -2,7 +2,7 @@ import { ConnectedRouter, getRouter } from 'connected-react-router';
 import isString from 'lodash.isstring';
 import { parseSeedPhrase } from 'near-seed-phrase';
 import PropTypes from 'prop-types';
-import { stringify } from 'query-string';
+import { parse, stringify } from 'query-string';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { withLocalize } from 'react-localize-redux';
@@ -13,6 +13,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { SHOW_MIGRATION_BANNER, WEB3AUTH } from '../../../../features';
 import favicon from '../../src/images/mynearwallet-cropped.svg';
 import TwoFactorVerifyModal from '../components/accounts/two_factor/TwoFactorVerifyModal';
+import Swap from '../components/swap/Swap';
 import {
     IS_MAINNET,
     PUBLIC_URL,
@@ -21,6 +22,7 @@ import {
 } from '../config';
 import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel/index';
+import TokenSwap from '../pages/TokenSwap';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
@@ -76,6 +78,7 @@ import { SetupImplicitWithRouter } from './accounts/SetupImplicit';
 import { SetupSeedPhraseWithRouter } from './accounts/SetupSeedPhrase';
 import { EnableTwoFactor } from './accounts/two_factor/EnableTwoFactor';
 import { BuyNear } from './buy/BuyNear';
+import Bootstrap from './common/Bootstrap';
 import Footer from './common/Footer';
 import GlobalAlert from './common/GlobalAlert';
 import GuestLandingRoute from './common/GuestLandingRoute';
@@ -84,6 +87,7 @@ import NetworkBanner from './common/NetworkBanner';
 import PrivateRoute from './common/routing/PrivateRoute';
 import PublicRoute from './common/routing/PublicRoute';
 import Route from './common/routing/Route';
+import TwoFactorDisableBanner from './common/TwoFactorDisableBanner';
 import { ExploreContainer } from './explore/ExploreContainer';
 import GlobalStyle from './GlobalStyle';
 import { LoginCliLoginSuccess } from './login/LoginCliLoginSuccess';
@@ -95,7 +99,6 @@ import { Profile } from './profile/Profile';
 import { ReceiveContainerWrapper } from './receive-money/ReceiveContainerWrapper';
 import { SendContainerWrapper } from './send/SendContainerWrapper';
 import { StakingContainer } from './staking/StakingContainer';
-import Swap from './swap/Swap';
 import Terms from './terms/Terms';
 import '../index.css';
 import WalletMigration from './wallet-migration/WalletMigration';
@@ -350,6 +353,7 @@ class Routing extends Component {
                 ])}
                 id="app-container"
             >
+                <Bootstrap />
                 <GlobalStyle />
                 <ConnectedRouter
                     basename={PATH_PREFIX}
@@ -367,6 +371,15 @@ class Routing extends Component {
                         <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
+                        {
+                            !isWhitelabel && (
+                                <Switch>
+                                    <Route
+                                        path={['/', '/staking', '/profile']} component={TwoFactorDisableBanner}
+                                    />
+                                </Switch>
+                            )
+                        }
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}
@@ -643,6 +656,11 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/swap"
+                                component={TokenSwap}
+                            />
+                            <PrivateRoute
+                                exact
+                                path="/swap-legacy"
                                 component={Swap}
                             />
                             <Route
@@ -658,7 +676,11 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/sign"
-                                component={SignWrapper}
+                                render={() => (
+                                    <SignWrapper
+                                        urlQuery={parse(this.props.router.location.hash)}
+                                    />
+                                )}
                             />
                             <PrivateRoute
                                 path="/staking"

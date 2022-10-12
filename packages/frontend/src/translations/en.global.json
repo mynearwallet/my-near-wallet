@@ -1609,19 +1609,28 @@
         "confirm": "Confirm & Swap",
         "details": "Transaction details",
         "fee": "Estimated fees",
+        "swapFee": "Swap fee",
         "from": "From",
         "max": "Max: ${amount} ${symbol}",
+        "available": "Available: ${amount} ${symbol}",
         "minReceived": "Minimum received",
         "price": "Price",
         "priceImpact": "Price impact",
         "review": "Review Swap",
         "reviewInfo": "You are swapping",
         "slippage": "Slippage tolerance",
-        "successTitle": "Transaction complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
+        "successTitle": "Swap complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
+        "success": "Successful swap",
         "title": "Swap",
         "to": "To",
+        "error": "Swap error",
+        "errorToFetchData": "Error loading data for exchange",
+        "noPoolAvailable": "No pool available to make a swap from ${tokenIn} -> ${tokenOut}",
+        "availableToSwap": "Available to swap",
+        "poolsError": "An error occurred in token pools. Try to reload this page.",
         "translateIdInfoTooltip": {
             "fee": "The estimated cost of processing your transaction.",
+            "swapFee": "Fee for liquidity providers taken on the amount paid in.",
             "minimumReceived": "The minimum amount you will receive from the trade.",
             "priceImpact": "The difference between the market price and estimated price due to trade size.",
             "slippage": "The percentage the price may increase before the transaction fails."
@@ -1652,12 +1661,14 @@
     "transfer": {
         "estimatedFees": "Estimated fees",
         "from": "From",
-        "to": "To"
+        "privateShard": "Private shard",
+        "to": "To",
+        "tooltip": "Private shard transactions are executed inside private shard environment. They will not affect you main account."
     },
     "twoFactor": {
         "action": {
             "addKey": {
-                "full": "WARNING: Entering the code below will authorize full access to your NEAR account: ${accountId}. If you did not initiate this action, please DO NOT continue.<br /><br />This should only be done if you are adding a new full access key to your account. In all other cases, this is very dangerous.<br /><br /> The public key you are adding is: ${publicKey} ",
+                "full": "Entering the code below will authorize full access to your NEAR account: ${accountId} If you did not initiate this action, please DO NOT continue.",
                 "limited": "Adding key ${publicKey} limited to call ${methodNames} on ${receiverId} and spend up to ${allowance} NEAR on gas"
             },
             "deleteKey": "Deleting key ${publicKey}",
@@ -1699,6 +1710,22 @@
             "resent": "Code sent!",
             "title": "Enter Two-Factor Verification Code"
         }
+    },
+    "twoFactorDisableLocked": {
+        "descOne": "We couldn’t verify your 2FA method for ",
+        "descTwo": "If you can no longer access your account, you can rotate your keys and recover it. You will need your secure passphrase to unlock your account.",
+        "title": "Is your account locked?"
+    },
+    "twoFactorDisbleBanner": {
+        "button": "Disable 2FA",
+        "desc": "NEAR wallet (wallet.near.org) will soon remove support for two-factor authentication, please disable 2FA for your connected accounts.",
+        "titlePlural": "Accounts Need Your Attention",
+        "titleSingular": "Account Needs Your Attention"
+    },
+    "twoFactorRemoveAuth": {
+        "button": "Remove 2FA",
+        "desc": "Enter your secure passphrase to remove 2FA from the account:",
+        "title": "Remove Two-Factor Authentication?"
     },
     "unlockedAvailTransfer": "This NEAR is unlocked, and can be transferred out of your lockup contract.",
     "unlockedBalance": "This NEAR is still in a lockup contract, but unlocked.",
