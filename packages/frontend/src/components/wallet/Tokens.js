@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import FungibleTokens from '../../services/FungibleTokens';
-import TokenBox from './TokenBox';
+import TokenBox from '../common/token/TokenBox';
 
 const { getUniqueTokenIdentity } = FungibleTokens;
 

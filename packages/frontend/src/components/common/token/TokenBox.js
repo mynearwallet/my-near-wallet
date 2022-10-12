@@ -2,11 +2,11 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import { CREATE_USN_CONTRACT } from '../../../../../features';
-import { EXPLORER_URL, NEAR_ID } from '../../config';
-import Balance from '../common/balance/Balance';
-import TokenIcon from '../send/components/TokenIcon';
+import { CREATE_USN_CONTRACT } from '../../../../../../features';
+import { EXPLORER_URL, NEAR_ID } from '../../../config';
+import Balance from '../balance/Balance';
 import TokenAmount from './TokenAmount';
+import TokenIcon from './TokenIcon';
 
 const StyledContainer = styled.div`
     display: flex;
@@ -48,8 +48,8 @@ const StyledContainer = styled.div`
         align-items: flex-start;
         margin-left: 14px;
         display: block;
-        min-width: ${({IS_USN}) =>(IS_USN ? '55px' : 0)};
-        margin-right: ${({IS_USN}) =>(IS_USN ? '25px' : 0)};
+        min-width: ${({ IS_USN }) => (IS_USN ? '55px' : 0)};
+        margin-right: ${({ IS_USN }) => (IS_USN ? '25px' : 0)};
 
         .symbol {
             font-weight: 700;
@@ -88,7 +88,7 @@ const StyledContainer = styled.div`
         font-size: 16px;
         font-weight: 600;
         color: #24272a;
-        text-align:${({IS_USN}) =>(IS_USN ? 'left' : 'right')};
+        text-align: ${({ IS_USN }) => (IS_USN ? 'left' : 'right')};
         white-space: nowrap;
 
         .fiat-amount {
@@ -153,13 +153,13 @@ const TokenTitle = ({ title, isLinkTitle }) => {
     const stopPropagation = (event) => event.stopPropagation();
 
     return (
-        <span className="symbol" title={title}>
+        <span className='symbol' title={title}>
             {isLinkTitle ? (
                 <a
                     href={`${EXPLORER_URL}/accounts/${title}`}
                     onClick={stopPropagation}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target='_blank'
+                    rel='noopener noreferrer'
                 >
                     {title}
                 </a>
@@ -207,10 +207,10 @@ const TokenBox = ({ token, onClick, currentLanguage }) => {
                     </span>
                 </div>
                 {symbol === NEAR_ID && !token.contractName ? (
-                    <div className="balance">
+                    <div className='balance'>
                         <Balance
                             amount={token.balance}
-                            data-test-id="walletHomeNearBalance"
+                            data-test-id='walletHomeNearBalance'
                             symbol={false}
                             showSymbolNEAR={!CREATE_USN_CONTRACT}
                         />
