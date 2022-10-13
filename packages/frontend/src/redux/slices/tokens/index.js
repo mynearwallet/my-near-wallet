@@ -9,7 +9,7 @@ import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 import { createParameterSelector, selectSliceByAccountId } from '../../selectors/topLevel';
-import { selectBlacklistedTokenNames } from '../security';
+import { selectSetOfBlacklistedTokenNames } from '../security';
 import { selectUSDNTokenFiatValueUSD, selectTokensFiatValueUSD } from '../tokenFiatValues';
 import tokensMetadataSlice, { getCachedContractMetadataOrFetch, selectContractsMetadata, selectOneContractMetadata } from '../tokensMetadata';
 
@@ -88,7 +88,7 @@ const fetchTokens = createAsyncThunk(
                     },
                 };
 
-                if (balance > 0) {
+                if (typeof Number(balance) === 'number' && balance > 0) {
                     dispatch(addTokenWithBalance(config));
                 } else {
                     dispatch(addToken(config));
@@ -214,19 +214,19 @@ export const selectTokensWithMetadataForAccountId = createSelector(
     });
 
 export const selectAllowedTokens = createSelector(
-    [selectTokensFiatValueUSD, selectTokensWithBalance, selectBlacklistedTokenNames, selectNEARAsTokenWithMetadata],
-    (tokensFiatData, tokensWithBalance, blacklistedNames, nearConfig) => {
+    [selectTokensFiatValueUSD, selectTokensWithBalance, selectSetOfBlacklistedTokenNames, selectNEARAsTokenWithMetadata],
+    (tokensFiatData, tokensWithBalance, setOfBlacklistedNames, nearConfig) => {
         const tokenList = Object.values(tokensWithBalance).map((tokenData) => ({
             ...tokenData,
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
         }));
 
-        if (!blacklistedNames.length) {
+        if (![...setOfBlacklistedNames].length) {
             return [nearConfig, ...tokenList];
         }
 
         const allowedTokens = tokenList.filter(
-            ({ contractName }) => !blacklistedNames.includes(contractName)
+            ({ contractName }) => !setOfBlacklistedNames.has(contractName)
         );
 
         return [nearConfig, ...allowedTokens];

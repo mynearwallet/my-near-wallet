@@ -12,7 +12,7 @@ const SLICE_NAME = 'security';
 
 const initialState = {
     blacklistedTokens: [],
-    blacklistedTokenNames: [], 
+    setOfBlacklistedTokenNames: new Set(),
 };
 
 const initializeBlacklistedTokens = createAsyncThunk(
@@ -29,11 +29,7 @@ const initializeBlacklistedTokens = createAsyncThunk(
             if (blacklisted.length) {
                 batch(() => {
                     dispatch(setBlacklistedTokens(blacklisted));
-                    dispatch(
-                        setBlacklistedTokenNames(
-                            blacklisted.map(({ address }) => address)
-                        )
-                    );
+                    dispatch(setBlacklistedTokenNames(new Set(blacklisted.map(({ address }) => address))));
                 });
             }
         } catch (error) {
@@ -50,7 +46,7 @@ const securitySlice = createSlice({
             set(state, ['blacklistedTokens'], payload);
         },
         setBlacklistedTokenNames(state, { payload }) {
-            set(state, ['blacklistedTokenNames'], payload);
+            state.setOfBlacklistedTokenNames = payload;
         },
     },
 });
@@ -69,7 +65,7 @@ export const selectBlacklistedTokens = createSelector(
     (state) => state.blacklistedTokens
 );
 
-export const selectBlacklistedTokenNames = createSelector(
+export const selectSetOfBlacklistedTokenNames = createSelector(
     selectSecuritySlice,
-    (state) => state.blacklistedTokenNames
+    (state) => state.setOfBlacklistedTokenNames
 );
