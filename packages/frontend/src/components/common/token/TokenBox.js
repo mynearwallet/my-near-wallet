@@ -1,5 +1,4 @@
 import React from 'react';
-import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import { CREATE_USN_CONTRACT } from '../../../../../../features';
@@ -66,7 +65,7 @@ const StyledContainer = styled.div`
             }
         }
 
-        .fiat-rate {
+        .subTitle {
             color: #72727a;
             margin-top: 6px;
             white-space: nowrap;
@@ -173,6 +172,7 @@ const TokenTitle = ({ title, isLinkTitle }) => {
 const TokenBox = ({ token, onClick, currentLanguage }) => {
     const { symbol = '', name = '', icon = '' } = token.onChainFTMetadata;
     const title = symbol || name;
+    const subTitle = name || symbol;
 
     return (
         <StyledContainer
@@ -190,21 +190,7 @@ const TokenBox = ({ token, onClick, currentLanguage }) => {
                         title={title}
                         isLinkTitle={!!token.contractName}
                     />
-                    <span className='fiat-rate'>
-                        {token.fiatValueMetadata?.usd ? (
-                            <>
-                                $
-                                {new Intl.NumberFormat(`${currentLanguage}`, {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                }).format(token.fiatValueMetadata?.usd)}
-                            </>
-                        ) : (
-                            <span>
-                                <Translate id='tokenBox.priceUnavailable' />
-                            </span>
-                        )}
-                    </span>
+                    {subTitle && <span className='subTitle'>{subTitle}</span>}
                 </div>
                 {symbol === NEAR_ID && !token.contractName ? (
                     <div className='balance'>
