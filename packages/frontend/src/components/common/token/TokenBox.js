@@ -1,4 +1,5 @@
 import React from 'react';
+import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import { CREATE_USN_CONTRACT } from '../../../../../../features';
@@ -134,7 +135,7 @@ const TokenBoxWrapper = styled.div`
     display: flex;
 `;
 
-const TokenTitle = ({ title, isLinkTitle }) => {
+const Title = ({ title, isLinkTitle }) => {
     const stopPropagation = (event) => event.stopPropagation();
 
     return (
@@ -155,9 +156,32 @@ const TokenTitle = ({ title, isLinkTitle }) => {
     );
 };
 
-const TokenBox = ({ token, onClick, currentLanguage }) => {
+const SubTitle = ({ showFiatPrice, price, currentLanguage, name = '-' }) => {
+    const fiatDecimals = 2;
+
+    return (
+        <span className="subTitle">
+            {showFiatPrice ? (
+                price ? (
+                    <>
+                        $
+                        {new Intl.NumberFormat(`${currentLanguage}`, {
+                            minimumFractionDigits: fiatDecimals,
+                            maximumFractionDigits: fiatDecimals,
+                        }).format(price)}
+                    </>
+                ) : (
+                    <Translate id="tokenBox.priceUnavailable" />
+                )
+            ) : (
+                name
+            )}
+        </span>
+    );
+};
+
+const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) => {
     const { symbol = '', name = '', icon = '' } = token.onChainFTMetadata;
-    const subTitle = name || symbol;
 
     const selectToken = () => {
         if (typeof onClick === 'function') {
@@ -176,11 +200,16 @@ const TokenBox = ({ token, onClick, currentLanguage }) => {
                     <TokenIcon symbol={symbol} icon={icon} />
                 </div>
                 <div className='desc'>
-                    <TokenTitle
+                    <Title
                         title={symbol}
                         isLinkTitle={!!token.contractName}
                     />
-                    {subTitle && <span className='subTitle'>{subTitle}</span>}
+                    <SubTitle
+                        showFiatPrice={showFiatPrice}
+                        currentLanguage={currentLanguage}
+                        name={name || symbol}
+                        price={token.fiatValueMetadata?.usd}
+                    />
                 </div>
                 {symbol === NEAR_ID && !token.contractName ? (
                     <div className='balance'>
