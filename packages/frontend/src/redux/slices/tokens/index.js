@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import BN from 'bn.js';
 import set from 'lodash.set';
+import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 
 import { WHITELISTED_CONTRACTS, USN_CONTRACT } from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
+import { sortTokensInDecreasingOrderByPrice } from '../../../utils/tokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
@@ -56,12 +58,14 @@ const fetchTokens = createAsyncThunk(
     `${SLICE_NAME}/fetchTokens`,
     async ({ accountId }, thunkAPI) => {
         const { dispatch, getState } = thunkAPI;
-        const { actions: { addToken, addTokenWithBalance } } = tokensSlice;
+        const { actions: { setTokens, setTokensWithBalance } } = tokensSlice;
         const { tokenFiatValues } = getState();
 
-        const likelyContracts = [...new Set([...(await FungibleTokens.getLikelyTokenContracts({ accountId })), ...WHITELISTED_CONTRACTS])];
+        const likelyContractNames = [...new Set([...(await FungibleTokens.getLikelyTokenContracts({ accountId })), ...WHITELISTED_CONTRACTS])];
+        const tokens = {};
+        const tokensWithBalance = {};
 
-        await Promise.all(likelyContracts.map(async (contractName) => {
+        await Promise.all(likelyContractNames.map(async (contractName) => {
             const { actions: { setContractMetadata } } = tokensMetadataSlice;
 
             try {
@@ -78,26 +82,32 @@ const fetchTokens = createAsyncThunk(
                     }));
                 }
 
-                const config = {
+                const tokenConfig = {
                     contractName,
-                    data: {
-                        contractName,
-                        balance,
-                        onChainFTMetadata,
-                        fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
-                    },
+                    balance,
+                    onChainFTMetadata,
+                    fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                 };
 
+                tokens[contractName] = tokenConfig;
+
                 if (Number(balance)) {
-                    dispatch(addTokenWithBalance(config));
-                } else {
-                    dispatch(addToken(config));
+                    tokensWithBalance[contractName] = tokenConfig;
                 }
             } catch (e) {
                 // Continue loading other likely contracts on failures
                 console.warn(`Failed to load FT for ${contractName}`, e);
             }
         }));
+
+        batch(() => {
+            dispatch(setTokens(tokens));
+            dispatch(
+                setTokensWithBalance(
+                    sortTokensInDecreasingOrderByPrice(tokensWithBalance)
+                )
+            );
+        });
     }
 );
 
@@ -133,6 +143,12 @@ const tokensSlice = createSlice({
     name: SLICE_NAME,
     initialState,
     reducers: {
+        setTokens(state, { payload }) {
+            set(state, ['ownedTokens'], payload);
+        },
+        setTokensWithBalance(state, { payload }) {
+            set(state, ['withBalance'], payload);
+        },
         addToken(state, { payload }) {
             const { contractName, data } = payload;
 
