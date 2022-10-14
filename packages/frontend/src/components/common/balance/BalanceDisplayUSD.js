@@ -6,8 +6,8 @@ import { getRoundedBalanceInFiat, formatWithCommas } from './helpers';
 const BalanceDisplayUSD = ({
     amount,
     showAlmostEqualSignUSD = false,
+    showSymbolUSD = false,
     showSignUSD = true,
-    showSymbolUSD = true,
     nearTokenFiatValueUSD,
     isNear = false,
     decimals,
