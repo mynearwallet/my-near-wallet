@@ -47,8 +47,6 @@ const StyledContainer = styled.div`
         align-items: flex-start;
         margin-left: 14px;
         display: block;
-        min-width: ${({ IS_USN }) => (IS_USN ? '55px' : 0)};
-        margin-right: ${({ IS_USN }) => (IS_USN ? '25px' : 0)};
 
         .symbol {
             font-weight: 700;
@@ -79,23 +77,6 @@ const StyledContainer = styled.div`
                 font-size: 12px;
                 display: block;
             }
-        }
-    }
-
-    .balanceMargin {
-        margin-left: auto;
-        font-size: 16px;
-        font-weight: 600;
-        color: #24272a;
-        text-align: ${({ IS_USN }) => (IS_USN ? 'left' : 'right')};
-        white-space: nowrap;
-
-        .fiat-amount {
-            font-size: 14px;
-            font-weight: 400;
-            margin-top: 6px;
-            color: #72727a;
-            line-height: normal;
         }
     }
 
@@ -148,6 +129,11 @@ const StyledContainer = styled.div`
     }
 `;
 
+const TokenBoxWrapper = styled.div`
+    width: 100%;
+    display: flex;
+`;
+
 const TokenTitle = ({ title, isLinkTitle }) => {
     const stopPropagation = (event) => event.stopPropagation();
 
@@ -171,23 +157,27 @@ const TokenTitle = ({ title, isLinkTitle }) => {
 
 const TokenBox = ({ token, onClick, currentLanguage }) => {
     const { symbol = '', name = '', icon = '' } = token.onChainFTMetadata;
-    const title = symbol || name;
     const subTitle = name || symbol;
+
+    const selectToken = () => {
+        if (typeof onClick === 'function') {
+            onClick(token);
+        }
+    };
 
     return (
         <StyledContainer
             className='token-box'
-            onClick={onClick ? () => onClick(token) : null}
+            onClick={selectToken}
             data-test-id={`token-selection-${token.contractName || NEAR_ID}`}
-            IS_USN={CREATE_USN_CONTRACT && symbol === 'USN'}
         >
-            <div style={{ display: 'flex', width: '100%' }}>
+            <TokenBoxWrapper>
                 <div className='icon'>
                     <TokenIcon symbol={symbol} icon={icon} />
                 </div>
                 <div className='desc'>
                     <TokenTitle
-                        title={title}
+                        title={symbol}
                         isLinkTitle={!!token.contractName}
                     />
                     {subTitle && <span className='subTitle'>{subTitle}</span>}
@@ -211,7 +201,7 @@ const TokenBox = ({ token, onClick, currentLanguage }) => {
                         }
                     />
                 )}
-            </div>
+            </TokenBoxWrapper>
         </StyledContainer>
     );
 };
