@@ -88,7 +88,7 @@ const fetchTokens = createAsyncThunk(
                     },
                 };
 
-                if (typeof Number(balance) === 'number' && balance > 0) {
+                if (Number(balance)) {
                     dispatch(addTokenWithBalance(config));
                 } else {
                     dispatch(addToken(config));
