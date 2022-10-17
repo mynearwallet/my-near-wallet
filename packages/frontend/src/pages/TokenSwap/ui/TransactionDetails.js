@@ -1,20 +1,14 @@
-import * as nearApiJs from 'near-api-js';
+import { utils } from 'near-api-js';
 import React from 'react';
 import { Translate } from 'react-localize-redux';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
 
+import Token from '../../../components/send/components/entry_types/Token';
+import SwapIcon from '../../../components/svg/WrapIcon';
 import { removeTrailingZeros } from '../../../utils/amounts';
-import Token from '../../send/components/entry_types/Token';
-import SwapIcon from '../../svg/WrapIcon';
-import TransactionDetailsUSN from './TransactionDetailsUSN';
-import TransactionDetailsWrappedNear from './TransactionDetailsWrappedNear';
-
-const {
-    utils: {
-        format: { parseNearAmount },
-    },
-} = nearApiJs;
+import FtSwapDetails from './FtSwapDetails';
+import NearTransformationDetails from './NearTransformationDetails';
 
 const ReviewForm = styled.div`
     display: flex;
@@ -58,7 +52,7 @@ const ReviewForm = styled.div`
             border-radius: 8px;
         }
         &.first {
-            color: #11181C;
+            color: #11181c;
             border-radius: 8px 8px 0 0;
         }
         &.last {
@@ -94,7 +88,7 @@ const ReviewForm = styled.div`
 
     h2 {
         margin-left: 16px;
-        font-family: "Inter";
+        font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         font-size: 24px;
@@ -106,7 +100,7 @@ const ReviewForm = styled.div`
         height: 15px;
     }
     .green div.amount {
-        font-family: "Inter";
+        font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
         font-size: 16px;
@@ -157,22 +151,24 @@ const TransactionDetails = ({
 }) => {
     let estimatedMinReceived = '';
     try {
-        estimatedMinReceived = parseNearAmount(amountTokenTo.toString());
+        estimatedMinReceived = utils.format.parseNearAmount(
+            amountTokenTo.toString()
+        );
     } catch {
         console.log('error parseNearAmount');
     }
 
     const ratio = () => {
-        const ratio = amountTokenFrom/amountTokenTo;
+        const ratio = amountTokenFrom / amountTokenTo;
         const isAFraction = !!(ratio % 1);
         return isAFraction
-            ? (ratio).toFixed(5)
-            : removeTrailingZeros((ratio).toString());
+            ? ratio.toFixed(5)
+            : removeTrailingZeros(ratio.toString());
     };
 
     return (
         <ReviewForm>
-            <div className="flex space-between bg radius">
+            <div className='flex space-between bg radius'>
                 <h2
                     style={{
                         fontSize: `${
@@ -191,10 +187,10 @@ const TransactionDetails = ({
                     icon={tokenFrom.onChainFTMetadata?.icon}
                 />
             </div>
-            <div className="flexCenter">
-                <SwapIcon color="#C1C8CD" />
+            <div className='flexCenter'>
+                <SwapIcon color='#C1C8CD' />
             </div>
-            <div className="flex space-between bg radius">
+            <div className='flex space-between bg radius'>
                 <h2
                     style={{
                         fontSize: `${
@@ -213,14 +209,14 @@ const TransactionDetails = ({
                     icon={tokenTo.onChainFTMetadata?.icon}
                 />
             </div>
-            <div className="bg height60 first index">
-                <Translate id="swap.price" />
+            <div className='bg height60 first index'>
+                <Translate id='swap.price' />
                 <div>{`${ratio()} ${tokenFrom.onChainFTMetadata?.symbol} per ${
                     tokenTo.onChainFTMetadata?.symbol
                 }`}</div>
             </div>
             {showAllInfo ? (
-                <TransactionDetailsUSN
+                <FtSwapDetails
                     selectedTokenFrom={tokenFrom}
                     selectedTokenTo={tokenTo}
                     minReceivedAmount={minReceivedAmount}
@@ -231,7 +227,7 @@ const TransactionDetails = ({
                     setSlippage={setSlippage}
                 />
             ) : (
-                <TransactionDetailsWrappedNear
+                <NearTransformationDetails
                     selectedTokenFrom={tokenFrom}
                     selectedTokenTo={tokenTo}
                     estimatedFeesInNear={`${

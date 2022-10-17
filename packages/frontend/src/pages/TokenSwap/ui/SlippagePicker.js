@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import Tooltip from '../../common/Tooltip';
+import Tooltip from '../../../components/common/Tooltip';
 
 const StyledContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 20px 15px;
-    color: #72727A;
+    color: #72727a;
 
     .tooltip {
         margin-right: auto;
@@ -30,26 +30,26 @@ const StyledContainer = styled.div`
         border-style: solid;
         padding: 4px 10px;
         :hover {
-            border-color: #006ADC;
-            background-color: #006ADC;
+            border-color: #006adc;
+            background-color: #006adc;
             color: white;
         }
     }
 
     .active {
-        border-color: #006ADC;
-        background-color: #006ADC;
+        border-color: #006adc;
+        background-color: #006adc;
         color: white;
     }
 `;
 
 const slippageValues = [0.5, 1, 3];
 
-const SlippagePicker = ({
+export default function SlippagePicker({
     translateIdTitle,
     translateIdInfoTooltip,
-    setSlippage
-}) => {
+    setSlippage,
+}) {
     const [active, setActive] = useState(1);
 
     useEffect(() => setSlippage(active), []);
@@ -62,10 +62,10 @@ const SlippagePicker = ({
     return (
         <StyledContainer>
             <Translate id={translateIdTitle} />
-            {translateIdInfoTooltip &&
+            {translateIdInfoTooltip && (
                 <Tooltip translate={translateIdInfoTooltip} />
-            }
-            <div className={'buttonsContainer'} >
+            )}
+            <div className={'buttonsContainer'}>
                 {slippageValues.map((value) => (
                     <button
                         key={value}
@@ -78,6 +78,4 @@ const SlippagePicker = ({
             </div>
         </StyledContainer>
     );
-};
-
-export default SlippagePicker;
+}

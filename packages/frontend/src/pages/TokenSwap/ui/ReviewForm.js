@@ -2,14 +2,14 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import BackArrowButton from '../../../components/common/BackArrowButton';
+import FormButton from '../../../components/common/FormButton';
 import { removeTrailingZeros } from '../../../utils/amounts';
-import BackArrowButton from '../../common/BackArrowButton';
-import FormButton from '../../common/FormButton';
 import TransactionDetails from './TransactionDetails';
 
 const StyledContainer = styled.div`
     h4 {
-        font-family: "Inter";
+        font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         font-size: 20px;
@@ -19,25 +19,30 @@ const StyledContainer = styled.div`
         margin: auto;
         white-space: nowrap;
     }
+
     div.header {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
     }
+
     div.flexCenter {
         display: flex;
         justify-content: center;
     }
+
     div.flexCenterColumn {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
     }
+
     div.flexCenterButton {
         display: flex;
         justify-content: center;
         margin-top: 28px;
     }
+
     .width100 {
         width: 100%;
     }
@@ -46,10 +51,6 @@ const StyledContainer = styled.div`
 const getFontSize = (charLength) => {
     let baseSize = 24;
 
-    if (charLength > 5) {
-        baseSize = 24;
-    }
-
     if (charLength > 10) {
         baseSize = 20;
     }
@@ -57,11 +58,11 @@ const getFontSize = (charLength) => {
     if (charLength >= baseSize) {
         baseSize = 16;
     }
-    const fontSize = baseSize;
-    return fontSize;
+
+    return baseSize;
 };
 
-export function SwapReviewForm({
+export default function ReviewForm({
     onClickGoBack,
     amountTokenFrom,
     amountTokenTo,
@@ -69,24 +70,35 @@ export function SwapReviewForm({
     activeTokenFrom,
     activeTokenTo,
     accountId,
-    handleSwapToken,
+    startSwap,
     swappingToken,
     setSlippage,
     swapFee,
     swapFeeAmount,
-    estimatedFee,
     priceImpactElement,
     showAllInfo,
+    estimatedFee,
 }) {
     const tokenFromFiatPrice = activeTokenFrom?.fiatValueMetadata?.usd;
-    const tokenFromFiatAmount = tokenFromFiatPrice ? amountTokenFrom * tokenFromFiatPrice : null;
+    const tokenFromFiatAmount = tokenFromFiatPrice
+        ? amountTokenFrom * tokenFromFiatPrice
+        : null;
+
+    const handleSwap = () => {
+        if (typeof startSwap === 'function') {
+            startSwap({
+                accountId,
+                amount: amountTokenFrom.toString(),
+                tokenFrom: activeTokenFrom.onChainFTMetadata?.symbol,
+                tokenTo: activeTokenTo.onChainFTMetadata?.symbol,
+            });
+        }
+    };
 
     return (
         <StyledContainer>
             <div className="header">
-                <BackArrowButton
-                    onClick={onClickGoBack}
-                />
+                <BackArrowButton onClick={onClickGoBack} />
                 <h4>
                     <Translate id="swap.reviewInfo" />
                 </h4>
@@ -130,22 +142,13 @@ export function SwapReviewForm({
                 sending={swappingToken === true}
                 sendingString="swapping"
                 data-test-id="swapPageStartSwapButton"
-                onClick={async () => {
-                    await handleSwapToken({
-                        accountId,
-                        amount: amountTokenFrom.toString(),
-                        tokenFrom: activeTokenFrom.onChainFTMetadata?.symbol,
-                        tokenTo: activeTokenTo.onChainFTMetadata?.symbol
-                    });
-                }}
+                onClick={handleSwap}
             >
                 <Translate id="swap.confirm" />
             </FormButton>
+
             <div className="flexCenterButton">
-                <FormButton
-                    color="gray link"
-                    onClick={onClickGoBack}
-                >
+                <FormButton color="gray link" onClick={onClickGoBack}>
                     <Translate id="button.cancel" />
                 </FormButton>
             </div>

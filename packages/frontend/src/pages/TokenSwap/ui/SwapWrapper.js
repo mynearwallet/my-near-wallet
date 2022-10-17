@@ -1,15 +1,15 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 
-import Success from '../../../components/swap/components/Success';
 import { Mixpanel } from '../../../mixpanel';
 import { cutDecimalsIfNeeded } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import { getCalculatedSwapValues } from '../utils/calculations';
+import ReviewForm from '../ui/ReviewForm';
+import Success from '../ui/Success';
+import { getCalculatedSwapValues, getSwapCost } from '../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 import useSwap from '../utils/hooks/useSwap';
 import PriceImpact from './PriceImpact';
-import ReviewFormWrapper from './ReviewFormWrapper';
 import SwapForm from './SwapForm';
 
 export default memo(function SwapWrapper({ history, account, tokensConfig }) {
@@ -56,6 +56,18 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         isNearTransformation,
     });
 
+    const [estimatedFee, setEstimatedFee] = useState('');
+
+    useEffect(() => {
+        const fetch = async () => {
+            const fee = await getSwapCost(tokenIn, tokenOut);
+
+            setEstimatedFee(fee);
+        };
+
+        fetch();
+    }, []);
+
     const handleSwap = () => {
         if (swap) {
             Mixpanel.track('Click Confirm & Swap on Swap page');
@@ -69,7 +81,10 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
 
     const amountInToShow = cutDecimalsIfNeeded(amountIn, DECIMALS_TO_SAFE);
     const amountOutToShow = cutDecimalsIfNeeded(amountOut, DECIMALS_TO_SAFE);
-    const minAmountOutToShow = cutDecimalsIfNeeded(minAmountOut, DECIMALS_TO_SAFE);
+    const minAmountOutToShow = cutDecimalsIfNeeded(
+        minAmountOut,
+        DECIMALS_TO_SAFE
+    );
 
     return viewState === VIEW_STATE.inputForm ? (
         <SwapForm
@@ -78,7 +93,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             tokensConfig={tokensConfig}
         />
     ) : viewState === VIEW_STATE.preview ? (
-        <ReviewFormWrapper
+        <ReviewForm
             onClickGoBack={showForm}
             activeTokenFrom={tokenIn}
             amountTokenFrom={amountInToShow}
@@ -86,19 +101,21 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             amountTokenTo={amountOutToShow}
             minReceivedAmount={minAmountOutToShow}
             accountId={account.accountId}
-            handleSwapToken={handleSwap}
+            startSwap={handleSwap}
             swapFee={swapFee}
             swapFeeAmount={swapFeeAmount}
             swappingToken={swapPending}
             setSlippage={setSlippage}
             showAllInfo={!isNearTransformation}
             priceImpactElement={<PriceImpact percent={priceImpactPercent} />}
+            estimatedFee={estimatedFee}
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success
-            // @todo It's not amount fields. We have to rename it.
-            amountFrom={`${amountInToShow} ${tokenIn?.onChainFTMetadata?.symbol}`}
-            amountTo={`${amountOutToShow} ${tokenOut?.onChainFTMetadata?.symbol}`}
+            tokenIn={tokenIn}
+            amountIn={amountInToShow}
+            tokenOut={tokenOut}
+            amountOut={amountOutToShow}
             onClickContinue={updateForm}
             transactionHash={lastSwapTxHash}
             onClickGoToExplorer={openTransaction}
