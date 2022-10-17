@@ -4,9 +4,8 @@ import set from 'lodash.set';
 import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 
-import { WHITELISTED_CONTRACTS, USN_CONTRACT } from '../../../config';
+import { WHITELISTED_CONTRACTS, USN_CONTRACT, NEAR_ID } from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
-import { sortTokensInDecreasingOrderByPrice } from '../../../utils/tokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
@@ -102,11 +101,7 @@ const fetchTokens = createAsyncThunk(
 
         batch(() => {
             dispatch(setTokens(tokens));
-            dispatch(
-                setTokensWithBalance(
-                    sortTokensInDecreasingOrderByPrice(tokensWithBalance)
-                )
-            );
+            dispatch(setTokensWithBalance(tokensWithBalance));
         });
     }
 );
@@ -232,20 +227,25 @@ export const selectTokensWithMetadataForAccountId = createSelector(
 export const selectAllowedTokens = createSelector(
     [selectTokensFiatValueUSD, selectTokensWithBalance, selectSetOfBlacklistedTokenNames, selectNEARAsTokenWithMetadata],
     (tokensFiatData, tokensWithBalance, setOfBlacklistedNames, nearConfig) => {
+        const nearConfigWithName = {
+            ...nearConfig,
+            contractName: NEAR_ID,
+        };
+
         const tokenList = Object.values(tokensWithBalance).map((tokenData) => ({
             ...tokenData,
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
         }));
 
         if (![...setOfBlacklistedNames].length) {
-            return [nearConfig, ...tokenList];
+            return [nearConfigWithName, ...tokenList];
         }
 
         const allowedTokens = tokenList.filter(
             ({ contractName }) => !setOfBlacklistedNames.has(contractName)
         );
 
-        return [nearConfig, ...allowedTokens];
+        return [nearConfigWithName, ...allowedTokens];
     }
 );
 

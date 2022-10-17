@@ -202,7 +202,7 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
                 <div className='desc'>
                     <Title
                         title={symbol}
-                        isLinkTitle={!!token.contractName}
+                        isLinkTitle={!!token.contractName || token.contractName === NEAR_ID}
                     />
                     <SubTitle
                         showFiatPrice={showFiatPrice}

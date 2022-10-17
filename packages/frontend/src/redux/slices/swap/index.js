@@ -6,7 +6,6 @@ import { batch } from 'react-redux';
 import { TEMPLATE_ACCOUNT_ID } from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
-import { sortTokensInDecreasingOrderByPrice } from '../../../utils/tokens';
 import { wallet } from '../../../utils/wallet';
 import { getBalance } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
@@ -106,18 +105,8 @@ const updateAllTokensData = createAsyncThunk(
         }
 
         batch(() => {
-            dispatch(
-                addTokensWithBalance({
-                    tokens: sortTokensInDecreasingOrderByPrice(
-                        tokensWithBalance
-                    ),
-                })
-            );
-            dispatch(
-                addAllTokens({
-                    tokens: sortTokensInDecreasingOrderByPrice(tokens),
-                })
-            );
+            dispatch(addTokensWithBalance(tokensWithBalance));
+            dispatch(addAllTokens(tokens));
             dispatch(setAllTokensLoading(false));
         });
     }
@@ -186,14 +175,10 @@ const swapSlice = createSlice({
             set(state, ['tokens', 'loading'], payload);
         },
         addAllTokens(state, { payload }) {
-            const { tokens } = payload;
-
-            set(state, ['tokens', 'all'], tokens);
+            set(state, ['tokens', 'all'], payload);
         },
         addTokensWithBalance(state, { payload }) {
-            const { tokens } = payload;
-
-            set(state, ['tokens', 'withBalance'], tokens);
+            set(state, ['tokens', 'withBalance'], payload);
         },
         addTokens(state, { payload }) {
             const { tokens } = payload;
