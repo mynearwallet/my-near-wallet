@@ -18,7 +18,7 @@
     "skipLibCheck": true,
     "strict": false,
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "target": "es2020",
     "jsx": "react-jsx"
   },
