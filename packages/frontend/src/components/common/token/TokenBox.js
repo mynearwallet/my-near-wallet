@@ -210,7 +210,7 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
                         price={token.fiatValueMetadata?.usd}
                     />
                 </div>
-                {symbol === NEAR_ID && !token.contractName ? (
+                {!token.contractName || token.contractName === NEAR_ID ? (
                     <div className='balance'>
                         <Balance
                             amount={token.balance}
@@ -222,11 +222,7 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
                 ) : (
                     <TokenAmount
                         token={token}
-                        className={
-                            symbol !== 'USN' && CREATE_USN_CONTRACT
-                                ? 'balance tokenAmount'
-                                : 'balance'
-                        }
+                        className="balance"
                     />
                 )}
             </TokenBoxWrapper>
