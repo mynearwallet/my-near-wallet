@@ -3,17 +3,11 @@ import { decreaseByPercent, getPercentFrom } from '../../../utils/amounts';
 import { getTotalGasFee } from '../../../utils/gasPrice';
 import { SWAP_GAS_UNITS } from './constants';
 
-export function getCalculatedSwapValues({
-    amountIn,
-    tokenOut,
-    amountOut,
-    slippage,
-    swapFee,
-}) {
+export function getMinAmountOut({ tokenOut, amountOut, slippage }) {
     let minAmountOut = '';
     const canCalculateMinAmount =
         typeof slippage === 'number' &&
-        tokenOut?.onChainFTMetadata?.decimals &&
+        typeof tokenOut?.onChainFTMetadata?.decimals === 'number' &&
         amountOut;
 
     if (canCalculateMinAmount) {
@@ -26,12 +20,13 @@ export function getCalculatedSwapValues({
             );
     }
 
-    const swapFeeAmount =
-        amountIn && swapFee >= 0
-            ? Number(getPercentFrom(amountIn, swapFee))
-            : 0;
+    return minAmountOut;
+}
 
-    return { minAmountOut, swapFeeAmount };
+export function getSwapFeeAmount({ amountIn, swapFee }) {
+    return amountIn && swapFee >= 0
+        ? Number(getPercentFrom(amountIn, swapFee))
+        : 0;
 }
 
 export async function getSwapCost(tokenIn, tokenOut) {

@@ -12,6 +12,7 @@ import { DEFAULT_OUTPUT_TOKEN_ID } from '../utils/constants';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
 import Notification from './Notification';
+import SwapDetails from './SwapDetails/SwapDetails';
 
 const mobile = isMobile();
 
@@ -241,6 +242,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         disabled
                     />
                     <Footer>
+                        <SwapDetails />
                         {swapNotification && (
                             <Notification
                                 id={swapNotification.id}

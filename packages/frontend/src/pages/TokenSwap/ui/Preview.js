@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import BackArrowButton from '../../../components/common/BackArrowButton';
 import FormButton from '../../../components/common/FormButton';
 import { removeTrailingZeros } from '../../../utils/amounts';
-import TransactionDetails from './TransactionDetails';
+import PreviewInfo from './PreviewInfo';
 
 const StyledContainer = styled.div`
     h4 {
@@ -62,22 +62,15 @@ const getFontSize = (charLength) => {
     return baseSize;
 };
 
-export default function ReviewForm({
+export default function Preview({
     onClickGoBack,
     amountTokenFrom,
     amountTokenTo,
-    minReceivedAmount,
     activeTokenFrom,
     activeTokenTo,
     accountId,
     startSwap,
     swappingToken,
-    setSlippage,
-    swapFee,
-    swapFeeAmount,
-    priceImpactElement,
-    showAllInfo,
-    estimatedFee,
 }) {
     const tokenFromFiatPrice = activeTokenFrom?.fiatValueMetadata?.usd;
     const tokenFromFiatAmount = tokenFromFiatPrice
@@ -123,18 +116,11 @@ export default function ReviewForm({
                     ).toFixed(2)} USD`}</div>
                 )}
             </div>
-            <TransactionDetails
+            <PreviewInfo
                 amountTokenFrom={amountTokenFrom}
-                amountTokenTo={amountTokenTo}
-                minReceivedAmount={minReceivedAmount}
                 tokenFrom={activeTokenFrom}
                 tokenTo={activeTokenTo}
-                setSlippage={setSlippage}
-                swapFee={swapFee}
-                swapFeeAmount={swapFeeAmount}
-                estimatedFee={estimatedFee}
-                priceImpactElement={priceImpactElement}
-                showAllInfo={showAllInfo}
+                amountTokenTo={amountTokenTo}
             />
             <FormButton
                 color="blue width100"

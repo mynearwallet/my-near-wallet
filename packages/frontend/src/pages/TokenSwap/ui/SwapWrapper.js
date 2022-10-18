@@ -1,15 +1,14 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo } from 'react';
 
 import { Mixpanel } from '../../../mixpanel';
 import { cutDecimalsIfNeeded } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import ReviewForm from '../ui/ReviewForm';
-import Success from '../ui/Success';
-import { getCalculatedSwapValues, getSwapCost } from '../utils/calculations';
+import { getMinAmountOut } from '../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 import useSwap from '../utils/hooks/useSwap';
-import PriceImpact from './PriceImpact';
+import Preview from './Preview';
+import Success from './Success';
 import SwapForm from './SwapForm';
 
 export default memo(function SwapWrapper({ history, account, tokensConfig }) {
@@ -21,8 +20,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             tokenOut,
             amountOut,
             swapPoolId,
-            swapFee,
-            priceImpactPercent,
+            slippage,
             isNearTransformation,
             lastSwapTxHash,
             swapPending,
@@ -37,13 +35,10 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         setViewState(VIEW_STATE.inputForm);
     };
 
-    const [slippage, setSlippage] = useState(0);
-    const { minAmountOut, swapFeeAmount } = getCalculatedSwapValues({
-        amountIn,
+    const minAmountOut = getMinAmountOut({
         tokenOut,
         amountOut,
         slippage,
-        swapFee,
     });
 
     const swap = useSwap({
@@ -55,18 +50,6 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         minAmountOut,
         isNearTransformation,
     });
-
-    const [estimatedFee, setEstimatedFee] = useState('');
-
-    useEffect(() => {
-        const fetch = async () => {
-            const fee = await getSwapCost(tokenIn, tokenOut);
-
-            setEstimatedFee(fee);
-        };
-
-        fetch();
-    }, []);
 
     const handleSwap = () => {
         if (swap) {
@@ -81,10 +64,6 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
 
     const amountInToShow = cutDecimalsIfNeeded(amountIn, DECIMALS_TO_SAFE);
     const amountOutToShow = cutDecimalsIfNeeded(amountOut, DECIMALS_TO_SAFE);
-    const minAmountOutToShow = cutDecimalsIfNeeded(
-        minAmountOut,
-        DECIMALS_TO_SAFE
-    );
 
     return viewState === VIEW_STATE.inputForm ? (
         <SwapForm
@@ -93,22 +72,15 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             tokensConfig={tokensConfig}
         />
     ) : viewState === VIEW_STATE.preview ? (
-        <ReviewForm
+        <Preview
             onClickGoBack={showForm}
             activeTokenFrom={tokenIn}
             amountTokenFrom={amountInToShow}
             activeTokenTo={tokenOut}
             amountTokenTo={amountOutToShow}
-            minReceivedAmount={minAmountOutToShow}
             accountId={account.accountId}
             startSwap={handleSwap}
-            swapFee={swapFee}
-            swapFeeAmount={swapFeeAmount}
             swappingToken={swapPending}
-            setSlippage={setSlippage}
-            showAllInfo={!isNearTransformation}
-            priceImpactElement={<PriceImpact percent={priceImpactPercent} />}
-            estimatedFee={estimatedFee}
         />
     ) : viewState === VIEW_STATE.result ? (
         <Success

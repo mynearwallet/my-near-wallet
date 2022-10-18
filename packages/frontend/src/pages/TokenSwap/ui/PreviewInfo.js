@@ -1,16 +1,15 @@
-import { utils } from 'near-api-js';
 import React from 'react';
 import { Translate } from 'react-localize-redux';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
 
+import SkeletonLoading from '../../../components/common/SkeletonLoading';
 import Token from '../../../components/send/components/entry_types/Token';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import { removeTrailingZeros } from '../../../utils/amounts';
-import FtSwapDetails from './FtSwapDetails';
-import NearTransformationDetails from './NearTransformationDetails';
+import SwapDetails from './SwapDetails/SwapDetails';
 
-const ReviewForm = styled.div`
+const Preview = styled.div`
     display: flex;
     flex-direction: column;
     margin: 34px 0 0 0;
@@ -136,28 +135,22 @@ const getFontSize = (charLength) => {
     return fontSize;
 };
 
-const TransactionDetails = ({
-    amountTokenFrom,
-    amountTokenTo,
-    minReceivedAmount,
-    tokenFrom,
-    tokenTo,
-    setSlippage,
-    swapFee,
-    swapFeeAmount,
-    estimatedFee,
-    priceImpactElement,
-    showAllInfo,
-}) => {
-    let estimatedMinReceived = '';
-    try {
-        estimatedMinReceived = utils.format.parseNearAmount(
-            amountTokenTo.toString()
-        );
-    } catch {
-        console.log('error parseNearAmount');
-    }
+const LoaderWrapper = styled.div`
+    padding: 2.5rem 0.625rem 0.625rem;
+    max-width: 31.25rem;
+    margin: 0 auto;
 
+    .animation {
+        border-radius: 0.5rem;
+    }
+`;
+
+export default withRouter(function PreviewInfo({
+    tokenFrom,
+    amountTokenFrom,
+    tokenTo,
+    amountTokenTo,
+}) {
     const ratio = () => {
         const ratio = amountTokenFrom / amountTokenTo;
         const isAFraction = !!(ratio % 1);
@@ -166,8 +159,16 @@ const TransactionDetails = ({
             : removeTrailingZeros(ratio.toString());
     };
 
+    if (!tokenFrom || !tokenTo) {
+        return (
+            <LoaderWrapper>
+                <SkeletonLoading height="6.375rem" show />
+            </LoaderWrapper>
+        );
+    }
+
     return (
-        <ReviewForm>
+        <Preview>
             <div className='flex space-between bg radius'>
                 <h2
                     style={{
@@ -183,8 +184,8 @@ const TransactionDetails = ({
                         : amountTokenFrom}
                 </h2>
                 <Token
-                    symbol={tokenFrom.onChainFTMetadata?.symbol}
-                    icon={tokenFrom.onChainFTMetadata?.icon}
+                    symbol={tokenFrom?.onChainFTMetadata?.symbol}
+                    icon={tokenFrom?.onChainFTMetadata?.icon}
                 />
             </div>
             <div className='flexCenter'>
@@ -205,41 +206,17 @@ const TransactionDetails = ({
                         : amountTokenTo}
                 </h2>
                 <Token
-                    symbol={tokenTo.onChainFTMetadata?.symbol}
-                    icon={tokenTo.onChainFTMetadata?.icon}
+                    symbol={tokenTo?.onChainFTMetadata?.symbol}
+                    icon={tokenTo?.onChainFTMetadata?.icon}
                 />
             </div>
             <div className='bg height60 first index'>
                 <Translate id='swap.price' />
                 <div>{`${ratio()} ${tokenFrom.onChainFTMetadata?.symbol} per ${
-                    tokenTo.onChainFTMetadata?.symbol
+                    tokenTo?.onChainFTMetadata?.symbol
                 }`}</div>
             </div>
-            {showAllInfo ? (
-                <FtSwapDetails
-                    selectedTokenFrom={tokenFrom}
-                    selectedTokenTo={tokenTo}
-                    minReceivedAmount={minReceivedAmount}
-                    swapFee={swapFee}
-                    swapFeeAmount={swapFeeAmount}
-                    estimatedFee={estimatedFee}
-                    priceImpactElement={priceImpactElement}
-                    setSlippage={setSlippage}
-                />
-            ) : (
-                <NearTransformationDetails
-                    selectedTokenFrom={tokenFrom}
-                    selectedTokenTo={tokenTo}
-                    estimatedFeesInNear={`${
-                        amountTokenFrom > 1
-                            ? Math.trunc(amountTokenFrom).toString()
-                            : '1'
-                    }`}
-                    estimatedMinReceived={estimatedMinReceived}
-                />
-            )}
-        </ReviewForm>
+            <SwapDetails />
+        </Preview>
     );
-};
-
-export default withRouter(TransactionDetails);
+});

@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import Accordion from '../../../components/common/Accordion';
-import Tooltip from '../../../components/common/Tooltip';
-import AccordionTrigger from '../../../components/send/components/AccordionTrigger';
-import Breakdown from '../../../components/send/components/css/Breakdown.css';
-import Amount from '../../../components/send/components/entry_types/Amount';
-import { NEAR_ID, NEAR_DECIMALS } from '../../../config';
-import classNames from '../../../utils/classNames';
+import Accordion from '../../../../components/common/Accordion';
+import Tooltip from '../../../../components/common/Tooltip';
+import AccordionTrigger from '../../../../components/send/components/AccordionTrigger';
+import Breakdown from '../../../../components/send/components/css/Breakdown.css';
+import Amount from '../../../../components/send/components/entry_types/Amount';
+import { NEAR_ID, NEAR_DECIMALS } from '../../../../config';
+import { useSwapData } from '../../model/Swap';
+import PriceImpact from '../PriceImpact';
 import SlippagePicker from './SlippagePicker';
-
 
 const RowWrapper = styled.div`
     display: flex;
@@ -37,43 +37,48 @@ const SwapFeeDetails = styled.div`
     }
 `;
 
+const slippageMarks = [0.5, 1, 3];
+
 export default function FtSwapDetails({
-    selectedTokenFrom,
-    selectedTokenTo,
-    minReceivedAmount,
-    swapFee,
+    minAmountOut,
     swapFeeAmount,
     estimatedFee,
-    priceImpactElement,
-    setSlippage,
 }) {
+    const {
+        swapState: { tokenIn, tokenOut, swapFee, priceImpactPercent, slippage },
+        events: { setSlippage },
+    } = useSwapData();
+
+    // Init default slippage value
+    useEffect(() => {
+        setSlippage(slippageMarks[1]);
+    }, []);
+
     const [open, setOpen] = useState(false);
+
+    const toggleDetailsView = () => setOpen((view) => !view);
 
     return (
         <Breakdown
-            className={classNames([
-                'transaction-details-breakdown',
-                open ? 'open' : '',
-            ])}
+            className={`transaction-details-breakdown ${open ? 'open' : ''}`}
         >
             <Accordion
                 trigger='transaction-details-breakdown'
                 className='breakdown'
             >
                 <SlippagePicker
-                    translateIdTitle={'swap.slippage'}
-                    translateIdInfoTooltip='swap.translateIdInfoTooltip.slippage'
+                    value={slippage}
                     setSlippage={setSlippage}
+                    marks={slippageMarks}
                 />
-                {priceImpactElement && (
-                    <RowWrapper>
-                        <span>
-                            <Translate id='swap.priceImpact' />
-                            <Tooltip translate='swap.translateIdInfoTooltip.priceImpact' />
-                        </span>
-                        {priceImpactElement}
-                    </RowWrapper>
-                )}
+                <RowWrapper>
+                    <span>
+                        <Translate id='swap.priceImpact' />
+                        <Tooltip translate='swap.translateIdInfoTooltip.priceImpact' />
+                    </span>
+                    <PriceImpact percent={priceImpactPercent || 0} />
+                </RowWrapper>
+
                 {swapFee && (
                     <RowWrapper>
                         <span>
@@ -86,7 +91,7 @@ export default function FtSwapDetails({
                                 <span>
                                     / {swapFeeAmount}{' '}
                                     {
-                                        selectedTokenFrom.onChainFTMetadata
+                                        tokenIn.onChainFTMetadata
                                             ?.symbol
                                     }
                                 </span>
@@ -96,10 +101,11 @@ export default function FtSwapDetails({
                         </SwapFeeDetails>
                     </RowWrapper>
                 )}
-                {!!estimatedFee && (
+
+                {estimatedFee && (
                     <Amount
                         className='details-info'
-                        translateIdTitle={'swap.fee'}
+                        translateIdTitle='swap.fee'
                         amount={estimatedFee}
                         symbol={NEAR_ID}
                         decimals={NEAR_DECIMALS}
@@ -107,11 +113,12 @@ export default function FtSwapDetails({
                         isApproximate
                     />
                 )}
+
                 <Amount
                     className='details-info'
-                    translateIdTitle={'swap.minReceived'}
-                    amount={minReceivedAmount}
-                    symbol={selectedTokenTo.onChainFTMetadata?.symbol}
+                    translateIdTitle='swap.minReceived'
+                    amount={minAmountOut}
+                    symbol={tokenOut.onChainFTMetadata?.symbol}
                     decimals={0}
                     translateIdInfoTooltip='swap.translateIdInfoTooltip.minimumReceived'
                 />
@@ -120,7 +127,7 @@ export default function FtSwapDetails({
                 id='transaction-details-breakdown'
                 translateIdTitle='sendV2.accordionTriggerTitle.transactionDetails'
                 open={open}
-                onClick={() => setOpen(!open)}
+                onClick={toggleDetailsView}
             />
         </Breakdown>
     );
