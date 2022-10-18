@@ -1616,6 +1616,7 @@
         "available": "Available: ${amount} ${symbol}",
         "minReceived": "Minimum received",
         "price": "Price",
+        "priceRation": "${from} per ${to}",
         "priceImpact": "Price impact",
         "review": "Review Swap",
         "reviewInfo": "You are swapping",

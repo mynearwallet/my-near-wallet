@@ -39,9 +39,9 @@ const MarksWrapper = styled.div`
     }
 `;
 
-export default function SlippagePicker({ value, setSlippage, marks }) {
+export default function SlippagePicker({ value, setSlippage, marks, className = '' }) {
     return (
-        <StyledContainer>
+        <StyledContainer className={className}>
             <Translate id='swap.slippage' />
             <Tooltip translate='swap.translateIdInfoTooltip.slippage' />
 

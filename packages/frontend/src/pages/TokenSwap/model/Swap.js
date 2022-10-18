@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 
 import useIsMounted from '../../../hooks/useIsMounted';
 import { showCustomAlert } from '../../../redux/actions/status';
+import { DEFAULT_SLIPPAGE_PERCENT } from '../utils/constants';
 
 export const VIEW_STATE = {
     inputForm: 'inputForm',
@@ -23,7 +24,7 @@ const initialState = {
     tokenOut: null,
     amountOut: '',
     swapFee: 0,
-    slippage: 0,
+    slippage: DEFAULT_SLIPPAGE_PERCENT,
     priceImpactPercent: '',
     swapPoolId: null,
     isNearTransformation: false,

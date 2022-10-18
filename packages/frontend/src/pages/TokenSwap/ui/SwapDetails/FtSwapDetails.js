@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import Accordion from '../../../../components/common/Accordion';
 import Tooltip from '../../../../components/common/Tooltip';
-import AccordionTrigger from '../../../../components/send/components/AccordionTrigger';
-import Breakdown from '../../../../components/send/components/css/Breakdown.css';
 import Amount from '../../../../components/send/components/entry_types/Amount';
 import { NEAR_ID, NEAR_DECIMALS } from '../../../../config';
 import { useSwapData } from '../../model/Swap';
@@ -49,86 +46,62 @@ export default function FtSwapDetails({
         events: { setSlippage },
     } = useSwapData();
 
-    // Init default slippage value
-    useEffect(() => {
-        setSlippage(slippageMarks[1]);
-    }, []);
-
-    const [open, setOpen] = useState(false);
-
-    const toggleDetailsView = () => setOpen((view) => !view);
-
     return (
-        <Breakdown
-            className={`transaction-details-breakdown ${open ? 'open' : ''}`}
-        >
-            <Accordion
-                trigger='transaction-details-breakdown'
-                className='breakdown'
-            >
-                <SlippagePicker
-                    value={slippage}
-                    setSlippage={setSlippage}
-                    marks={slippageMarks}
-                />
-                <RowWrapper>
-                    <span>
-                        <Translate id='swap.priceImpact' />
-                        <Tooltip translate='swap.translateIdInfoTooltip.priceImpact' />
-                    </span>
-                    <PriceImpact percent={priceImpactPercent || 0} />
-                </RowWrapper>
-
-                {swapFee && (
-                    <RowWrapper>
-                        <span>
-                            <Translate id='swap.swapFee' />
-                            <Tooltip translate='swap.translateIdInfoTooltip.swapFee' />
-                        </span>
-                        <SwapFeeDetails>
-                            <span>{swapFee} %</span>
-                            {swapFeeAmount ? (
-                                <span>
-                                    / {swapFeeAmount}{' '}
-                                    {
-                                        tokenIn.onChainFTMetadata
-                                            ?.symbol
-                                    }
-                                </span>
-                            ) : (
-                                ''
-                            )}
-                        </SwapFeeDetails>
-                    </RowWrapper>
-                )}
-
-                {estimatedFee && (
-                    <Amount
-                        className='details-info'
-                        translateIdTitle='swap.fee'
-                        amount={estimatedFee}
-                        symbol={NEAR_ID}
-                        decimals={NEAR_DECIMALS}
-                        translateIdInfoTooltip='swap.translateIdInfoTooltip.fee'
-                        isApproximate
-                    />
-                )}
-
-                <Amount
-                    className='details-info'
-                    translateIdTitle='swap.minReceived'
-                    amount={minAmountOut}
-                    symbol={tokenOut.onChainFTMetadata?.symbol}
-                    decimals={0}
-                    translateIdInfoTooltip='swap.translateIdInfoTooltip.minimumReceived'
-                />
-            </Accordion>
-            <AccordionTrigger
-                id='transaction-details-breakdown'
-                translateIdTitle='sendV2.accordionTriggerTitle.transactionDetails'
-                open={open}
-                onClick={toggleDetailsView}
+        <>
+            <SlippagePicker
+                className='detailsRow'
+                value={slippage}
+                setSlippage={setSlippage}
+                marks={slippageMarks}
             />
-        </Breakdown>
+            <RowWrapper className='detailsRow'>
+                <span>
+                    <Translate id='swap.priceImpact' />
+                    <Tooltip translate='swap.translateIdInfoTooltip.priceImpact' />
+                </span>
+                <PriceImpact percent={priceImpactPercent || 0} />
+            </RowWrapper>
+
+            {swapFee && (
+                <RowWrapper className='detailsRow'>
+                    <span>
+                        <Translate id='swap.swapFee' />
+                        <Tooltip translate='swap.translateIdInfoTooltip.swapFee' />
+                    </span>
+                    <SwapFeeDetails>
+                        <span>{swapFee} %</span>
+                        {swapFeeAmount ? (
+                            <span>
+                                / {swapFeeAmount}{' '}
+                                {tokenIn.onChainFTMetadata?.symbol}
+                            </span>
+                        ) : (
+                            ''
+                        )}
+                    </SwapFeeDetails>
+                </RowWrapper>
+            )}
+
+            {estimatedFee && (
+                <Amount
+                    className='detailsRow'
+                    translateIdTitle='swap.fee'
+                    amount={estimatedFee}
+                    symbol={NEAR_ID}
+                    decimals={NEAR_DECIMALS}
+                    translateIdInfoTooltip='swap.translateIdInfoTooltip.fee'
+                    isApproximate
+                />
+            )}
+
+            <Amount
+                className='detailsRow'
+                translateIdTitle='swap.minReceived'
+                amount={minAmountOut}
+                symbol={tokenOut.onChainFTMetadata?.symbol}
+                decimals={0}
+                translateIdInfoTooltip='swap.translateIdInfoTooltip.minimumReceived'
+            />
+        </>
     );
 }

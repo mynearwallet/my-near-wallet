@@ -65,14 +65,14 @@ const Footer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 1.75rem;
+    margin-top: 0.8rem;
 
     button {
         width: 100%;
     }
 
     .cancel-button-wrapper {
-        margin-top: 1.75rem;
+        margin-top: 1rem;
     }
 `;
 
