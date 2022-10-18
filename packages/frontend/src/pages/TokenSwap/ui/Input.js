@@ -115,15 +115,16 @@ export default memo(function Input({
     loading = false,
     onChange,
     onSelectToken,
-    label,
+    labelId,
     maxBalance = 0,
-    disabled = false,
     tokenSymbol,
     tokenIcon,
     tokenDecimals,
     setIsValidInput,
     inputTestId,
     tokenSelectTestId,
+    disabled,
+    autoFocus,
 }) {
     const handleChange = (event) => {
         event.preventDefault();
@@ -167,7 +168,11 @@ export default memo(function Input({
     return (
         <InputWrapper>
             <Header>
-                {label && <Label>{label}</Label>}
+                {labelId && (
+                    <Label>
+                        <SafeTranslate id={labelId} />
+                    </Label>
+                )}
                 {balanceConfig.numToShow && (
                     <Balance onClick={setMaxBalance} className={`${disabled ? 'disabled' : ''}`}>
                         <SafeTranslate
@@ -194,6 +199,7 @@ export default memo(function Input({
                     value={loading ? '' : valueToShow}
                     onChange={handleChange}
                     placeholder="0"
+                    autoFocus={autoFocus}
                     disabled={disabled}
                     data-test-id={inputTestId}
                 />

@@ -215,7 +215,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         value={amountIn}
                         onChange={setAmountIn}
                         onSelectToken={selectTokenIn}
-                        label={<Translate id="swap.from" />}
+                        labelId="swap.from"
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
                         tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
@@ -223,7 +223,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                         setIsValidInput={setIsValidInput}
                         inputTestId="swapPageInputAmountField"
                         tokenSelectTestId="swapPageInputTokenSelector"
-                        disabled={!tokenIn}
+                        autoFocus
                     />
                     <SwapButtonWrapper>
                         <FlipButton onClick={flipInputsData} />
@@ -231,7 +231,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                     <Input
                         value={amountOut}
                         onSelectToken={selectTokenOut}
-                        label={<Translate id="swap.to" />}
+                        labelId="swap.to"
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.icon}
                         tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
