@@ -140,7 +140,7 @@ const Title = ({ content, title }) => {
 
     return (
         <span className='symbol' title={title || content}>
-            {title ? (
+            {title && title !== NEAR_ID ? (
                 <a
                     href={`${EXPLORER_URL}/accounts/${title}`}
                     onClick={stopPropagation}
