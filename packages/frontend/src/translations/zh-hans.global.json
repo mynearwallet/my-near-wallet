@@ -184,7 +184,6 @@
         "pageTitle": "已授权应用",
         "publicKey": "公钥"
     },
-    "available": "可供选择",
     "availableBalanceInfo": "你可以使用的 NEAR 余额，不包括锁定或质押的资金。<a href='/profile'>查看资产组合详情 →</a>",
     "availableBalanceProfile": "「可用余额」是指你当前账号内可消耗 NEAR 通证，可用余额少于你的总共余额。",
     "back": "返回",

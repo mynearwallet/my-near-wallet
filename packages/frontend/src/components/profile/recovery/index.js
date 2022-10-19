@@ -43,7 +43,7 @@ export const Recovery = ({
     const [showDisabledModal, setShowDisabledModal] = useState(false);
 
     useEffect(() => {
-        /** Cache list for fast searching */
+        /** Cache list for easy access */
         setMethodsMap(createUserRecoveryMethodsMap(userRecoveryMethods));
     }, [userRecoveryMethods]);
 
@@ -76,7 +76,6 @@ export const Recovery = ({
     }, [account]);
 
     const handlePhraseDelete = useCallback(async () => {
-        console.log(phraseMethod);
         setPhraseProcessing(true);
         await Mixpanel.withTracking(
             'SR-SP Delete method',
@@ -113,7 +112,7 @@ export const Recovery = ({
                 <Translate id='profile.security.mostSecure' />
                 <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
             </h4>
-            {/* TODO: add retry button in case recovery methods are not loaded */}
+
             {!twoFactor && (
                 <HardwareDevices
                     recoveryMethods={userRecoveryMethods}

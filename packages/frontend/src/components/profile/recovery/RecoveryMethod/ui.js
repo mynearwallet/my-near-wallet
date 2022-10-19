@@ -19,7 +19,7 @@ export const Main = styled.div`
 `;
 
 export const TitleWrapper = styled.div`
-  display: flex;
+    display: flex;
 `;
 
 export const Title = styled.div`

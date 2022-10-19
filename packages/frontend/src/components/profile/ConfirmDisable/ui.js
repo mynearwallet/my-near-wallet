@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const Container = styled.form`
     &&& {
-
         border: 2px solid #FF585D;
         border-radius: 8px;
         margin: -21px;

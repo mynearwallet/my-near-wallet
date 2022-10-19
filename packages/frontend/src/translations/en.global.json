@@ -184,7 +184,6 @@
         "pageTitle": "Authorized Apps",
         "publicKey": "Public Key"
     },
-    "available": "Available",
     "availableBalanceInfo": "Your spendable NEAR balance excluding funds locked or staked. <a href='/profile'>View Balance Breakdown →</a>",
     "availableBalanceProfile": "This is your spendable NEAR balance, and can be used or transferred immediately.",
     "back": "Back",
