@@ -71,12 +71,10 @@ export default function SwapDetails() {
         }`,
     };
 
-    if (!tokenIn || !tokenOut || !amountIn || !amountOut) {
-        return null;
-    }
+    const isVisible = tokenIn && tokenOut && amountIn && amountOut;
 
     return (
-        <SwapDetailsWrapper>
+        <SwapDetailsWrapper className={`${isVisible ? 'visible' : ''}`}>
             <AccordionTitle id="swapDetailsTitle" className={`${isActive ? 'active' : ''}`} onClick={toggleDetailsView}>
                 <SafeTranslate id='swap.priceRation' data={translateData} />
                 <ChevronIcon color='var(--color-1)'/>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -98,7 +98,7 @@ export default function FtSwapDetails({
                 className='detailsRow'
                 translateIdTitle='swap.minReceived'
                 amount={minAmountOut}
-                symbol={tokenOut.onChainFTMetadata?.symbol}
+                symbol={tokenOut?.onChainFTMetadata?.symbol}
                 decimals={0}
                 translateIdInfoTooltip='swap.translateIdInfoTooltip.minimumReceived'
             />

@@ -4,6 +4,16 @@ export const SwapDetailsWrapper = styled.div`
     width: 100%;
     border-radius: 0.5rem;
     background-color: #eceef0;
+    visibility: hidden;
+    overflow: hidden;
+    transition: max-height 0.12s;
+    max-height: 0;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.visible {
+        max-height: 43.75rem;
+        visibility: visible;
+    }
 
     .detailsRow:not(:last-child) {
         border-bottom: 1px solid var(--color-5);

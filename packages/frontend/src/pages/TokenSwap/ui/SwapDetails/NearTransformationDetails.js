@@ -26,8 +26,8 @@ export default function NearTransformationDetails({
                 className='detailsRow'
                 translateIdTitle='swap.minReceived'
                 amount={parseTokenAmount(minAmountOut, NEAR_DECIMALS)}
-                symbol={tokenOut.onChainFTMetadata?.symbol}
-                decimals={tokenOut.onChainFTMetadata?.decimals}
+                symbol={tokenOut?.onChainFTMetadata?.symbol}
+                decimals={tokenOut?.onChainFTMetadata?.decimals}
                 translateIdInfoTooltip='swap.translateIdInfoTooltip.minimumReceived'
             />
         </>
