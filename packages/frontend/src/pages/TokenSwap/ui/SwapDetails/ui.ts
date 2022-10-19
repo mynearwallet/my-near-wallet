@@ -13,6 +13,7 @@ export const SwapDetailsWrapper = styled.div`
     &.visible {
         max-height: 43.75rem;
         visibility: visible;
+        overflow: visible;
     }
 
     .detailsRow:not(:last-child) {
