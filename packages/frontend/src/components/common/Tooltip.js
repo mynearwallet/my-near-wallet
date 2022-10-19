@@ -134,9 +134,11 @@ const Tooltip = ({ className, children, translate, data, position, icon, modalOn
             style={{ cursor: modalOnly ? 'pointer' : 'default' }}
         >
             {children ? children : <InfoIconRounded/>}
-            {show && !mobile && !modalOnly &&
-                <div className={classNames(['hover-content', show ? 'show' : ''])}><SafeTranslate id={translate} data={{ data: data }}/></div>
-            }
+            {show && !mobile && !modalOnly && (
+                <div className={classNames(['hover-content', show ? 'show' : ''])}>
+                    <SafeTranslate id={translate} data={{ data: data }}/>
+                </div>
+            )}
             {show && (mobile || modalOnly) && (
                 <Modal
                     isOpen={show}

@@ -876,6 +876,10 @@
         "returnToWallet": "Return to Wallet",
         "title": "Whoops, looks like this page is missing."
     },
+    "passwordProtection": {
+        "description": "You will use this to protect your wallet.",
+        "title": "Password Protection"
+    },
     "poweredByCoinGecko": "Prices powered by <a href='https://www.coingecko.com/en/api' target='_blank' rel='noopener noreferrer'>CoinGecko</a>",
     "profile": {
         "account": {
@@ -1011,14 +1015,13 @@
         "disableInputPlaceholder": "Enter your account ID to confirm",
         "disableNo": "No, keep",
         "disableNotAllowed": "Accounts are required to have at least one active recovery method. Please first enable an alternative recovery method to proceed.",
-        "disableTextLink": "The magic link you received will be permanently deactivated.",
         "disableTextPhrase": "Your current passphrase will be permanently deactivated.",
         "disableTitle": "Are you sure you want to disable this method?",
         "enabled": "Enabled",
         "methodTitle": {
             "email": "Email",
             "phone": "Phone",
-            "phrase": "Passphrase"
+            "phrase": "Seed phrase"
         },
         "noRecoveryMethod": "You have no method to recover your account. please add a method below.",
         "recoveryLinkSent": "Recovery Link Sent!",
@@ -1026,9 +1029,7 @@
             "email": "Resend Email",
             "phone": "Resend SMS"
         },
-        "title": "Recovery Methods",
-        "unsupportedMethodEmail": "We're removing support for email as recovery method. Once you've disabled this method, you will not be able to re-enable it.",
-        "unsupportedMethodPhone": "We're removing support for SMS as recovery method. Once you've disabled this method, you will not be able to re-enable it."
+        "title": "Recovery Methods"
     },
     "reduxActions": {
         "ADD_ACCESS_KEY": {
@@ -1606,34 +1607,34 @@
     "stakingPoolUnstaked": "This NEAR is currently in a staking pool but unstaked. It could for example be in a pending release state.",
     "success": "Success",
     "swap": {
+        "available": "Available: ${amount} ${symbol}",
+        "availableToSwap": "Available to swap",
         "confirm": "Confirm & Swap",
         "details": "Transaction details",
+        "error": "Swap error",
+        "errorToFetchData": "Error loading data for exchange",
         "fee": "Estimated fees",
-        "swapFee": "Swap fee",
         "from": "From",
         "max": "Max: ${amount} ${symbol}",
-        "available": "Available: ${amount} ${symbol}",
         "minReceived": "Minimum received",
+        "noPoolAvailable": "No pool available to make a swap from ${tokenIn} -> ${tokenOut}",
+        "poolsError": "An error occurred in token pools. Try to reload this page.",
         "price": "Price",
         "priceImpact": "Price impact",
         "review": "Review Swap",
         "reviewInfo": "You are swapping",
         "slippage": "Slippage tolerance",
-        "successTitle": "Swap complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
         "success": "Successful swap",
+        "successTitle": "Swap complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
+        "swapFee": "Swap fee",
         "title": "Swap",
         "to": "To",
-        "error": "Swap error",
-        "errorToFetchData": "Error loading data for exchange",
-        "noPoolAvailable": "No pool available to make a swap from ${tokenIn} -> ${tokenOut}",
-        "availableToSwap": "Available to swap",
-        "poolsError": "An error occurred in token pools. Try to reload this page.",
         "translateIdInfoTooltip": {
             "fee": "The estimated cost of processing your transaction.",
-            "swapFee": "Fee for liquidity providers taken on the amount paid in.",
             "minimumReceived": "The minimum amount you will receive from the trade.",
             "priceImpact": "The difference between the market price and estimated price due to trade size.",
-            "slippage": "The percentage the price may increase before the transaction fails."
+            "slippage": "The percentage the price may increase before the transaction fails.",
+            "swapFee": "Fee for liquidity providers taken on the amount paid in."
         }
     },
     "swapping": "Swapping",
