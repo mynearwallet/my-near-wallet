@@ -160,6 +160,7 @@
         "pageTitle": "Các ứng dụng được ủy quyền",
         "publicKey": "Khóa công khai"
     },
+    "available": "Có sẵn",
     "availableBalanceInfo": "Số dư NEAR có thể chi tiêu của bạn không bao gồm các khoản đã bị khóa hoặc đã stake. <a href='/profile'>Xem Phân tích Số dư →</a>",
     "availableBalanceProfile": "Đây là số dư NEAR bạn có thể sử dụng hoặc chuyển đi ngay lập tức. Số này sẽ nhỏ hơn tổng số dư của bạn.",
     "back": "Trở lại",
@@ -1273,7 +1274,6 @@
     "success": "Thành công",
     "swap": {
         "available": "Có sẵn: ${amount} ${symbol}",
-        "availableToSwap": "Có sẵn để trao đổi",
         "confirm": "Xác Nhận & Trao Đổi",
         "details": "Chi tiết giao dịch",
         "error": "lỗi Trao đổi",

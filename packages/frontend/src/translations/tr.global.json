@@ -157,6 +157,7 @@
         "pageTitle": "Yetkili Uygulamalar",
         "publicKey": "Açık Adres"
     },
+    "available": "Mevcut",
     "availableBalanceInfo": "Kilitlenen veya Katılım sağlanan fonlar hariç harcanabilir NEAR bakiyeniz. <a href='/profile'>Bakiye Dökümünü Görüntüle →</a>",
     "availableBalanceProfile": "Bu, anlık kullanılabilir NEAR bakiyenizdir.",
     "back": "Geri",
@@ -1318,7 +1319,6 @@
     "success": "Başarılı",
     "swap": {
         "available": "Kullanılabilir: ${amount} ${symbol}",
-        "availableToSwap": "Takas edilebilir",
         "confirm": "Onayla ve Değiştir",
         "details": "İşlem detayları",
         "error": "Takas hatası",

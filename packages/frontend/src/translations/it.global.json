@@ -171,6 +171,7 @@
         "pageTitle": "App autorizzate",
         "publicKey": "Chiave pubblica"
     },
+    "available": "Disponibile",
     "availableBalanceInfo": "Il tuo saldo spendibile di NEAR esclusi i fondi bloccati o in stake. <a href='/profile'>Visualizzare la ripartizione del saldo →</a>",
     "availableBalanceProfile": "Questo è il tuo saldo spendibile di NEAR e può essere utilizzato o trasferito immediatamente .",
     "back": "Indietro",
@@ -1420,7 +1421,6 @@
     "success": "Successo",
     "swap": {
         "available": "Disponibile: ${amount} ${symbol}",
-        "availableToSwap": "Disponibile per lo scambio",
         "confirm": "Conferma & Scambia",
         "details": "Dettagli della transazione",
         "error": "Errore di swap",
