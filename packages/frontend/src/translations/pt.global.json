@@ -176,6 +176,7 @@
         "pageTitle": "Apps Autorizados",
         "publicKey": "Chave Pública"
     },
+    "available": "Disponivel",
     "availableBalanceInfo": "Saldo NEAR disponível excluindo valores em stake ou bloqueados. <a href='/profile'>Ver saldo detalhado→</a>",
     "availableBalanceProfile": "Este é o seu saldo NEAR gastável e pode ser usado ou transferido imediatamente. Isso será inferior ao seu saldo total.",
     "back": "Voltar",

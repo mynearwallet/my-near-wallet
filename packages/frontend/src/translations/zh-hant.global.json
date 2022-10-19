@@ -184,6 +184,7 @@
         "pageTitle": "已授權應用",
         "publicKey": "公鑰"
     },
+    "available": "可供选择",
     "availableBalanceInfo": "你可以使用的 NEAR 餘額，不包括鎖定或質押的資金。<a href='/profile'>查看資產組合詳情 →</a>",
     "availableBalanceProfile": "「可用餘額」是指你當前賬號內可消耗 NEAR 通證，可用餘額少於你的總共餘額。",
     "back": "返回",
