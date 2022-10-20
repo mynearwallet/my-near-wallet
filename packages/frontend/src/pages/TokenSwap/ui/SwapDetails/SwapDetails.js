@@ -1,7 +1,7 @@
+import Big from 'big.js';
 import React, { useState } from 'react';
 
 import Accordion from '../../../../components/common/Accordion';
-import SafeTranslate from '../../../../components/SafeTranslate';
 import ChevronIcon from '../../../../components/svg/ChevronIcon';
 import { cutDecimalsIfNeeded } from '../../../../utils/amounts';
 import { useSwapData } from '../../model/Swap';
@@ -46,22 +46,21 @@ export default function SwapDetails() {
         DECIMALS_TO_SAFE
     );
 
-    const translateData = {
-        from: `${cutDecimalsIfNeeded(amountIn, DECIMALS_TO_SAFE)} ${
-            tokenIn?.onChainFTMetadata?.symbol
-        }`,
-        to: `${cutDecimalsIfNeeded(amountOut, DECIMALS_TO_SAFE)} ${
-            tokenOut?.onChainFTMetadata?.symbol
-        }`,
-    };
-
-    const isVisible = tokenIn && tokenOut && amountIn && amountOut;
+    const isVisible = tokenIn && tokenOut && Number(amountIn);
+    const price =
+        isVisible && amountOut
+            ? cutDecimalsIfNeeded(
+                Big(amountIn).div(amountOut).toFixed(),
+                DECIMALS_TO_SAFE
+            ) : '-';
 
     return (
         <SwapDetailsWrapper className={`${isVisible ? 'visible' : ''}`}>
             <AccordionTitle id="swapDetailsTitle" className={`${isActive ? 'active' : ''}`} onClick={toggleDetailsView}>
-                <SafeTranslate id='swap.priceRation' data={translateData} />
-                <ChevronIcon color='var(--color-1)'/>
+                1 {tokenOut?.onChainFTMetadata?.symbol}
+                {' = '}
+                {price} {tokenIn?.onChainFTMetadata?.symbol}
+                <ChevronIcon color="var(--color-1)" />
             </AccordionTitle>
             <Accordion
                 trigger='swapDetailsTitle'

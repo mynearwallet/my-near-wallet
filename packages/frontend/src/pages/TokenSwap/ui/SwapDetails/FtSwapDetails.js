@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Tooltip from '../../../../components/common/Tooltip';
 import Amount from '../../../../components/send/components/entry_types/Amount';
+import StyledContainer from '../../../../components/send/components/entry_types/css/Style.css';
 import { NEAR_ID, NEAR_DECIMALS } from '../../../../config';
 import { useSwapData } from '../../model/Swap';
 import PriceImpact from '../PriceImpact';
@@ -62,7 +63,7 @@ export default function FtSwapDetails({
                 <PriceImpact percent={priceImpactPercent || 0} />
             </RowWrapper>
 
-            {swapFee && (
+            {swapFee ? (
                 <RowWrapper className='detailsRow'>
                     <span>
                         <Translate id='swap.swapFee' />
@@ -80,9 +81,9 @@ export default function FtSwapDetails({
                         )}
                     </SwapFeeDetails>
                 </RowWrapper>
-            )}
+            ) : null}
 
-            {estimatedFee && (
+            {estimatedFee ? (
                 <Amount
                     className='detailsRow'
                     translateIdTitle='swap.fee'
@@ -92,16 +93,16 @@ export default function FtSwapDetails({
                     translateIdInfoTooltip='swap.translateIdInfoTooltip.fee'
                     isApproximate
                 />
-            )}
+            ) : null}
 
-            <Amount
-                className='detailsRow'
-                translateIdTitle='swap.minReceived'
-                amount={minAmountOut}
-                symbol={tokenOut?.onChainFTMetadata?.symbol}
-                decimals={0}
-                translateIdInfoTooltip='swap.translateIdInfoTooltip.minimumReceived'
-            />
+            <StyledContainer className="detailsRow">
+                <Translate id="swap.minReceived" />
+                <Tooltip translate="swap.translateIdInfoTooltip.minimumReceived" />
+
+                <div className='amount'>
+                    {minAmountOut || '-'} {tokenOut?.onChainFTMetadata?.symbol}
+                </div>
+            </StyledContainer>
         </>
     );
 }

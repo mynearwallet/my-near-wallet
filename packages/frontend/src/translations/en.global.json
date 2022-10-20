@@ -1613,7 +1613,6 @@
         "noPoolAvailable": "No pool available to make a swap from ${tokenIn} -> ${tokenOut}",
         "poolsError": "An error occurred in token pools. Try to reload this page.",
         "price": "Price",
-        "priceRation": "${from} per ${to}",
         "insufficientBalanceForFee": "Insufficient balance to pay swap fee",
         "insufficientBalanceForAmountAndFee": "Insufficient balance to pay input amount and swap fee",
         "priceImpact": "Price impact",

@@ -104,6 +104,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
             setTokenIn,
             setTokenOut,
             setAmountIn,
+            setAmountOut,
         },
     } = useSwapData();
 
@@ -163,6 +164,11 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
         setDisplayTokenSelect(tokenSelectState.noSelect);
     };
 
+    const handleInputAmountChange = (value) => {
+        setAmountIn(value);
+        setAmountOut('');
+    }; 
+
     const {
         swapNotification,
         loading,
@@ -176,7 +182,9 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
     const [notification, setNotification] = useState(null);
 
     useEffect(() => {
-        if (estimatedFee && availableBalance) {
+        if (swapNotification) {
+            setNotification(swapNotification);
+        } else if (estimatedFee && availableBalance) {
             // If we have NEAR in the input field check is available balance >= amount + swap fee
             if (
                 tokenIn?.contractName === NEAR_ID &&
@@ -193,8 +201,6 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
                     type: NOTIFICATION_TYPE.warning,
                 });
             }
-        } else if (swapNotification) {
-            setNotification(swapNotification);
         } else {
             setNotification(null);
         }
@@ -246,7 +252,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
                     </Header>
                     <Input
                         value={amountIn}
-                        onChange={setAmountIn}
+                        onChange={handleInputAmountChange}
                         onSelectToken={selectTokenIn}
                         labelId="swap.from"
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
