@@ -140,17 +140,15 @@ export default memo(function Input({
     const [isWrongAmount, setIsWrongAmount] = useState(false);
 
     useEffect(() => {
-        const invalid =
-            !disabled &&
-            value &&
-            balanceConfig &&
-            !isValidAmount(value, balanceConfig.fullNum, tokenDecimals);
+        if (!disabled && value && balanceConfig) {
+            const isValid = isValidAmount(value, balanceConfig.fullNum, tokenDecimals);
 
-        if (setIsValidInput) {
-            setIsValidInput(!invalid);
+            setIsWrongAmount(!isValid);
+
+            if (setIsValidInput) {
+                setIsValidInput(isValid);
+            }
         }
-
-        setIsWrongAmount(invalid);
     }, [disabled, value, balanceConfig, tokenDecimals]);
 
     const setMaxBalance = () => !disabled && onChange(balanceConfig.fullNum);

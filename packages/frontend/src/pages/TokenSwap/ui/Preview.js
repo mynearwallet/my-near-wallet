@@ -68,7 +68,6 @@ export default function Preview({
     amountTokenTo,
     activeTokenFrom,
     activeTokenTo,
-    accountId,
     startSwap,
     swappingToken,
 }) {
@@ -79,12 +78,7 @@ export default function Preview({
 
     const handleSwap = () => {
         if (typeof startSwap === 'function') {
-            startSwap({
-                accountId,
-                amount: amountTokenFrom.toString(),
-                tokenFrom: activeTokenFrom.onChainFTMetadata?.symbol,
-                tokenTo: activeTokenTo.onChainFTMetadata?.symbol,
-            });
+            startSwap();
         }
     };
 

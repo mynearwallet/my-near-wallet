@@ -1,10 +1,11 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 
+import useIsMounted from '../../../hooks/useIsMounted';
 import { Mixpanel } from '../../../mixpanel';
 import { cutDecimalsIfNeeded } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import { getMinAmountOut } from '../utils/calculations';
+import { getMinAmountOut, getSwapCost } from '../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 import useSwap from '../utils/hooks/useSwap';
 import Preview from './Preview';
@@ -12,6 +13,7 @@ import Success from './Success';
 import SwapForm from './SwapForm';
 
 export default memo(function SwapWrapper({ history, account, tokensConfig }) {
+    const isMounted = useIsMounted();
     const {
         swapState: {
             viewState,
@@ -25,8 +27,20 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             lastSwapTxHash,
             swapPending,
         },
-        events: { setViewState, setAmountIn },
+        events: { setViewState, setAmountIn, setEstimatedFee },
     } = useSwapData();
+
+    useEffect(() => {
+        const fetch = async () => {
+            const fee = await getSwapCost({ account, tokenIn, tokenOut });
+
+            if (isMounted) {
+                setEstimatedFee(fee);
+            }
+        };
+
+        fetch();
+    }, [tokenIn, tokenOut, isMounted]);
 
     const goHome = () => history.push('/');
     const showForm = () => setViewState(VIEW_STATE.inputForm);
@@ -78,7 +92,6 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             amountTokenFrom={amountInToShow}
             activeTokenTo={tokenOut}
             amountTokenTo={amountOutToShow}
-            accountId={account.accountId}
             startSwap={handleSwap}
             swappingToken={swapPending}
         />

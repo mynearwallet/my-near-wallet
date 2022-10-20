@@ -1617,6 +1617,8 @@
         "minReceived": "Minimum received",
         "price": "Price",
         "priceRation": "${from} per ${to}",
+        "insufficientBalanceForFee": "Insufficient balance to pay swap fee",
+        "insufficientBalanceForAmountAndFee": "Insufficient balance to pay input amount and swap fee",
         "priceImpact": "Price impact",
         "review": "Review Swap",
         "reviewInfo": "You are swapping",

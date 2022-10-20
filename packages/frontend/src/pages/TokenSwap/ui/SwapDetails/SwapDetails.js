@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import Accordion from '../../../../components/common/Accordion';
 import SafeTranslate from '../../../../components/SafeTranslate';
 import ChevronIcon from '../../../../components/svg/ChevronIcon';
-import useIsMounted from '../../../../hooks/useIsMounted';
 import { cutDecimalsIfNeeded } from '../../../../utils/amounts';
 import { useSwapData } from '../../model/Swap';
 import {
-    getSwapCost,
     getMinAmountOut,
     getSwapFeeAmount,
 } from '../../utils/calculations';
@@ -25,28 +23,14 @@ export default function SwapDetails() {
             amountOut,
             slippage,
             swapFee,
+            estimatedFee,
             isNearTransformation,
         },
     } = useSwapData();
 
-    const isMounted = useIsMounted();
     const [isActive, setIsActive] = useState(false);
 
     const toggleDetailsView = () => setIsActive((view) => !view);
-
-    const [estimatedFee, setEstimatedFee] = useState('');
-
-    useEffect(() => {
-        const fetch = async () => {
-            const fee = await getSwapCost(tokenIn, tokenOut);
-
-            if (isMounted) {
-                setEstimatedFee(fee);
-            }
-        };
-
-        fetch();
-    }, [tokenIn, tokenOut, isMounted]);
 
     const swapFeeAmount = getSwapFeeAmount({
         amountIn,

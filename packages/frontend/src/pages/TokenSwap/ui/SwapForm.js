@@ -1,14 +1,18 @@
+import Big from 'big.js';
 import React, { useState, memo, useMemo, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import BackArrowButton from '../../../components/common/BackArrowButton';
 import FlipButton from '../../../components/common/FlipButton';
 import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
+import { NEAR_ID } from '../../../config';
+import { selectAvailableBalance } from '../../../redux/slices/account';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import { DEFAULT_OUTPUT_TOKEN_ID } from '../utils/constants';
+import { DEFAULT_OUTPUT_TOKEN_ID, NOTIFICATION_TYPE } from '../utils/constants';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 import Input from './Input';
 import Notification from './Notification';
@@ -82,7 +86,8 @@ const tokenSelectState = {
     selectOut: 2,
 };
 
-export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
+const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
+    const availableBalance = useSelector(selectAvailableBalance);
     const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
     const {
         swapState: {
@@ -92,6 +97,7 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
             isNearTransformation,
             amountOut,
             swapPoolId,
+            estimatedFee,
         },
         events: {
             setViewState,
@@ -166,6 +172,33 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         amountIn: Number(amountIn),
         tokenOut,
     });
+
+    const [notification, setNotification] = useState(null);
+
+    useEffect(() => {
+        if (estimatedFee) {
+            // If we have NEAR in the input field check is available balance >= amount + swap fee
+            if (
+                tokenIn?.contractName === NEAR_ID &&
+                amountIn &&
+                Big(estimatedFee).plus(amountIn).gt(availableBalance)
+            ) {
+                setNotification({
+                    id: 'swap.insufficientBalanceForAmountAndFee',
+                    type: NOTIFICATION_TYPE.warning,
+                });
+            } else if (Big(estimatedFee).gt(availableBalance)) {
+                setNotification({
+                    id: 'swap.insufficientBalanceForFee',
+                    type: NOTIFICATION_TYPE.warning,
+                });
+            }
+        } else if (swapNotification) {
+            setNotification(swapNotification);
+        } else {
+            setNotification(null);
+        }
+    }, [tokenIn, amountIn, availableBalance, estimatedFee, swapNotification]);
 
     const flipInputsData = () => {
         setTokenIn(tokenOut);
@@ -243,13 +276,11 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
                     />
                     <Footer>
                         <SwapDetails />
-                        {swapNotification && (
-                            <Notification
-                                id={swapNotification.id}
-                                type={swapNotification.type}
-                                data={swapNotification.data}
-                            />
+
+                        {notification && (
+                            <Notification content={notification} />
                         )}
+
                         <FormButton
                             disabled={cannotSwap}
                             onClick={onClickReview}
@@ -269,3 +300,5 @@ export default memo(function SwapForm({ onGoBack, account, tokensConfig  }) {
         </SwapFormWrapper>
     );
 });
+
+export default SwapForm;
