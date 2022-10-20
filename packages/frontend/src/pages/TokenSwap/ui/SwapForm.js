@@ -176,7 +176,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
     const [notification, setNotification] = useState(null);
 
     useEffect(() => {
-        if (estimatedFee) {
+        if (estimatedFee && availableBalance) {
             // If we have NEAR in the input field check is available balance >= amount + swap fee
             if (
                 tokenIn?.contractName === NEAR_ID &&
