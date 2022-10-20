@@ -151,7 +151,11 @@ export default memo(function Input({
         }
     }, [disabled, value, balanceConfig, tokenDecimals]);
 
-    const setMaxBalance = () => !disabled && onChange(balanceConfig.fullNum);
+    const setMaxBalance = () => {
+        if (!disabled && balanceConfig.fullNum && value !== balanceConfig.fullNum) {
+            onChange(balanceConfig.fullNum);
+        }
+    };
 
     const balanceData = {
         amount: balanceConfig.numToShow,
@@ -193,7 +197,7 @@ export default memo(function Input({
                     className={`${isWrongAmount ? 'error' : ''}`}
                     inputMode="decimal"
                     min={0}
-                    max={Number(balanceConfig.fullNum) || 0}
+                    max={Number(maxBalance) || 0}
                     value={loading ? '' : valueToShow}
                     onChange={handleChange}
                     placeholder="0"

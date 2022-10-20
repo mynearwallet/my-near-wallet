@@ -19,6 +19,7 @@ export default function NearTransformationDetails({
                 className='detailsRow'
                 translateIdTitle='swap.fee'
                 amount={estimatedFee}
+                decimals={0}
                 symbol={NEAR_ID}
                 translateIdInfoTooltip='swap.translateIdInfoTooltip.fee'
             />

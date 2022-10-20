@@ -1,8 +1,9 @@
 import React, { memo, useEffect } from 'react';
 
+import { NEAR_DECIMALS } from '../../../config';
 import useIsMounted from '../../../hooks/useIsMounted';
 import { Mixpanel } from '../../../mixpanel';
-import { cutDecimalsIfNeeded } from '../../../utils/amounts';
+import { cutDecimalsIfNeeded, formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import { getMinAmountOut, getSwapCost } from '../utils/calculations';
@@ -35,7 +36,11 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             const fee = await getSwapCost({ account, tokenIn, tokenOut });
 
             if (isMounted) {
-                setEstimatedFee(fee);
+                setEstimatedFee(
+                    removeTrailingZeros(
+                        formatTokenAmount(fee, NEAR_DECIMALS, NEAR_DECIMALS)
+                    )
+                );
             }
         };
 

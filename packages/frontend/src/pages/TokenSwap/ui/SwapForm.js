@@ -10,6 +10,8 @@ import FormButton from '../../../components/common/FormButton';
 import SelectToken from '../../../components/send/components/views/SelectToken';
 import { NEAR_ID } from '../../../config';
 import { selectAvailableBalance } from '../../../redux/slices/account';
+import { formatTokenAmount } from '../../../utils/amounts';
+import { NEAR_DECIMALS } from '../../../utils/constants';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import { DEFAULT_OUTPUT_TOKEN_ID, NOTIFICATION_TYPE } from '../utils/constants';
@@ -175,34 +177,38 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
     } = useSwapInfo({
         account,
         tokenIn,
-        amountIn: Number(amountIn),
+        amountIn,
         tokenOut,
     });
 
     const [notification, setNotification] = useState(null);
 
     useEffect(() => {
+        if (notification) {
+            setNotification(null);
+        };
+
         if (swapNotification) {
             setNotification(swapNotification);
         } else if (estimatedFee && availableBalance) {
+            const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
+
             // If we have NEAR in the input field check is available balance >= amount + swap fee
             if (
                 tokenIn?.contractName === NEAR_ID &&
                 amountIn &&
-                Big(estimatedFee).plus(amountIn).gt(availableBalance)
+                Big(estimatedFee).plus(amountIn).gt(formattedBalance)
             ) {
                 setNotification({
                     id: 'swap.insufficientBalanceForAmountAndFee',
                     type: NOTIFICATION_TYPE.warning,
                 });
-            } else if (Big(estimatedFee).gt(availableBalance)) {
+            } else if (Big(estimatedFee).gt(formattedBalance)) {
                 setNotification({
                     id: 'swap.insufficientBalanceForFee',
                     type: NOTIFICATION_TYPE.warning,
                 });
             }
-        } else {
-            setNotification(null);
         }
     }, [tokenIn, amountIn, availableBalance, estimatedFee, swapNotification]);
 
@@ -217,20 +223,38 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
 
     const [isValidInput, setIsValidInput] = useState(false);
 
-    const cannotSwap = useMemo(() => {
-        if (
-            !tokenIn ||
-            !tokenOut ||
-            (!swapPoolId && !isNearTransformation) ||
-            !amountIn ||
-            !amountOut ||
-            !isValidInput
-        ) {
-            return true;
+    const canSwap = useMemo(() => {
+        const formIsFilled = Boolean(
+            tokenIn &&
+                tokenOut &&
+                (swapPoolId || isNearTransformation) &&
+                amountIn &&
+                amountOut
+        );
+
+        if (formIsFilled && availableBalance) {
+            const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
+            const isInsufficientBalance = Big(estimatedFee)
+                .plus(tokenIn?.contractName === NEAR_ID ? amountIn : 0)
+                .gt(formattedBalance);
+
+            if (isValidInput && !isInsufficientBalance) {
+                return true;
+            }
         }
 
         return false;
-    }, [tokenIn, tokenOut, swapPoolId, amountIn, amountOut, isNearTransformation, isValidInput]);
+    }, [
+        tokenIn,
+        tokenOut,
+        swapPoolId,
+        amountIn,
+        amountOut,
+        isNearTransformation,
+        isValidInput,
+        estimatedFee,
+        availableBalance,
+    ]);
 
     return (
         <SwapFormWrapper>
@@ -288,7 +312,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
                         )}
 
                         <FormButton
-                            disabled={cannotSwap}
+                            disabled={!canSwap}
                             onClick={onClickReview}
                             trackingId="Click Preview swap on Swap page"
                             data-test-id="swapPageSwapPreviewStateButton"
