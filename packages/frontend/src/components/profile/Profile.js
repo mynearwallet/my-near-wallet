@@ -42,7 +42,7 @@ import BalanceContainer from './balances/BalanceContainer';
 import LockupAvailTransfer from './balances/LockupAvailTransfer';
 import ExportKeyWrapper from './export_private_key/ExportKeyWrapper';
 import MobileSharingWrapper from './mobile_sharing/MobileSharingWrapper';
-import { Recovery } from './Recovery';
+import { Recovery } from './recovery';
 import RemoveAccountWrapper from './remove_account/RemoveAccountWrapper';
 import TwoFactorAuth from './two_factor/TwoFactorAuth';
 import { StyledContainer } from './ui';
