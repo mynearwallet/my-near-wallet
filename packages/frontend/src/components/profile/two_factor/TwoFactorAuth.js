@@ -111,7 +111,7 @@ const TwoFactorAuth = ({ twoFactor, history, isBrickedAccount, onDisableBrickedA
                     onConfirmDisable={handleConfirmDisable}
                     onKeepEnabled={() => setConfirmDisable(false)}
                     accountId={account.accountId}
-                    disabling={confirmDisabling}
+                    isDisable={confirmDisabling}
                     component='twoFactor'
                     twoFactorKind={twoFactor.kind}
                 />

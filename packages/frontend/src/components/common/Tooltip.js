@@ -125,6 +125,8 @@ const Tooltip = ({ className, children, translate, data, position, icon, modalOn
         }
     };
 
+    const shouldShowContent = show && !mobile && !modalOnly;
+
     return (
         <Container
             className={classNames(['tooltip', position, icon])}
@@ -134,7 +136,7 @@ const Tooltip = ({ className, children, translate, data, position, icon, modalOn
             style={{ cursor: modalOnly ? 'pointer' : 'default' }}
         >
             {children ? children : <InfoIconRounded/>}
-            {show && !mobile && !modalOnly && (
+            {shouldShowContent && (
                 <div className={classNames(['hover-content', show ? 'show' : ''])}>
                     <SafeTranslate id={translate} data={{ data: data }}/>
                 </div>

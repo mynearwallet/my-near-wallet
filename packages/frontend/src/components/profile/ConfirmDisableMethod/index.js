@@ -13,7 +13,7 @@ const ConfirmDisableMethod = ({
     description,
     acccountId,
     isOpen,
-    process,
+    isProcessing,
     onClose,
     onSubmit
 }) => {
@@ -50,7 +50,7 @@ const ConfirmDisableMethod = ({
                     color='red'
                     type='submit'
                     sendingString='button.disabling'
-                    sending={process}
+                    sending={isProcessing}
                     disabled={!accountIdConfirmed}
                     onClick={onSubmit}
                 >

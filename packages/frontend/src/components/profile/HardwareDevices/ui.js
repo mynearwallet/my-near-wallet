@@ -8,7 +8,6 @@ export const Container = styled(Card)`
         display: block;
         color: #A1A1A9;
         font-style: normal;
-
     }
 
     .color-red {

@@ -8,7 +8,7 @@ const ConfirmDisable = ({
     onConfirmDisable,
     onKeepEnabled,
     accountId,
-    disabling,
+    isDisable,
     component,
     twoFactorKind
 }) => {
@@ -36,7 +36,7 @@ const ConfirmDisable = ({
                         onChange={(e) => setUsername(e.target.value)}
                         autoComplete='off'
                         spellCheck='false'
-                        disabled={disabling}
+                        disabled={isDisable}
                     />
                 )}
             </Translate>
@@ -44,8 +44,8 @@ const ConfirmDisable = ({
                 <FormButton
                     type='submit'
                     color='red small'
-                    sending={disabling}
-                    disabled={(username !== accountId) || disabling}
+                    sending={isDisable}
+                    disabled={(username !== accountId) || isDisable}
                 >
                     <Translate id={`${component}.disable.disable`}/>
                 </FormButton>

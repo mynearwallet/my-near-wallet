@@ -34,7 +34,8 @@ const HardwareDevices = ({
     const [confirmDisable, setConfirmDisable] = useState(false);
     const dispatch = useDispatch();
 
-    const account = useSelector(selectAccountSlice);;
+    const account = useSelector(selectAccountSlice);
+    const { accountId } = account;
     let userRecoveryMethods = recoveryMethods || [];
     const recoveryKeys = userRecoveryMethods.filter((method) =>
         method.kind !== 'ledger').map((key) => key.publicKey);
@@ -44,7 +45,7 @@ const HardwareDevices = ({
     const hasOtherMethods = publicKeys.some((key) => recoveryKeys.includes(key));
 
     const loadingStatus = useSelector((state) =>
-        selectRecoveryMethodsStatus(state, { accountId: account.accountId }));
+        selectRecoveryMethodsStatus(state, { accountId }));
 
     const handleConfirmDisable = async () => {
         await Mixpanel.withTracking('SR-Ledger Handle confirm disable',
@@ -57,7 +58,7 @@ const HardwareDevices = ({
                 await dispatch(getAccessKeys());
                 await dispatch(getLedgerKey());
                 await dispatch(fetchRecoveryMethods({
-                    accountId: account.accountId
+                    accountId
                 }));
                 setDisabling(false);
                 setConfirmDisable(false);
@@ -71,7 +72,7 @@ const HardwareDevices = ({
                 await dispatch(addLedgerAccessKey());
                 await dispatch(getLedgerKey());
                 await dispatch(fetchRecoveryMethods({
-                    accountId: account.accountId
+                    accountId
                 }));
             }
         );
@@ -151,7 +152,7 @@ const HardwareDevices = ({
                     onConfirmDisable={handleConfirmDisable}
                     onKeepEnabled={() => setConfirmDisable(false)}
                     accountId={account.accountId}
-                    disabling={disabling}
+                    isDisable={disabling}
                     component='hardwareDevices'
                 />
             )}

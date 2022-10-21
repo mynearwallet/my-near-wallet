@@ -164,7 +164,7 @@ export const Recovery = ({
                     <ConfirmDisableMethod
                         title={<Translate id='recoveryMgmt.disableTitle' />}
                         description={<Translate id='recoveryMgmt.disableTextPhrase' />}
-                        process={isPhraseProcessing}
+                        isProcessing={isPhraseProcessing}
                         isOpen={showPhraseDisabling}
                         onClose={() => setPhraseDisabling(false)}
                         onSubmit={handlePhraseDelete}
