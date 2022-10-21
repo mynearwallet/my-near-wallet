@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import {
     CREATE_USN_CONTRACT,
 } from '../../../../../features';
+// TODO: remove isWhitelabel
 import { isWhitelabel } from '../../config/whitelabel';
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
 import classNames from '../../utils/classNames';
@@ -24,10 +25,8 @@ import AllTokensTotalBalanceUSD from './AllTokensTotalBalanceUSD';
 import CreateCustomNameModal from './CreateCustomNameModal';
 import CreateFromImplicitSuccessModal from './CreateFromImplicitSuccessModal';
 import DepositNearBanner from './DepositNearBanner';
-import ExploreApps from './ExploreApps';
 import LinkDropSuccessModal from './LinkDropSuccessModal';
 import NFTs from './NFTs';
-import Sidebar from './Sidebar';
 import SidebarLight from './SidebarLight';
 import Tokens from './Tokens';
 import { ZeroBalanceAccountImportedModal } from './ZeroBalanceAccountImportedModal';
@@ -323,6 +322,7 @@ export function Wallet({
         currentLanguage
     );
 
+    // TODO: remove?
     const shouldShowRemoveLinkRecoveryBanner = !isWhitelabel && (userRecoveryMethods.some(({ kind }) => kind === 'email')
         || userRecoveryMethods.some(({ kind }) => kind === 'phone'));
 
@@ -370,12 +370,7 @@ export function Wallet({
                     )}
                 </div>
                 <div className="right">
-                    {isWhitelabel
-                        ? <SidebarLight availableAccounts={accountExists && availableAccounts} />
-                        : accountExists
-                            ? <Sidebar availableAccounts={availableAccounts} />
-                            : <ExploreApps />
-                    }
+                    <SidebarLight availableAccounts={accountExists && availableAccounts} />
                     <ActivitiesWrapper />
                 </div>
             </div>

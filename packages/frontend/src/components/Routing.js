@@ -11,7 +11,6 @@ import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { SHOW_MIGRATION_BANNER, WEB3AUTH } from '../../../../features';
-import favicon from '../../src/images/mynearwallet-cropped.svg';
 import TwoFactorVerifyModal from '../components/accounts/two_factor/TwoFactorVerifyModal';
 import {
     IS_MAINNET,
@@ -19,6 +18,7 @@ import {
     SHOW_PRERELEASE_WARNING,
     DISABLE_CREATE_ACCOUNT,
 } from '../config';
+// TODO: remove isWhitelabel
 import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
@@ -219,11 +219,6 @@ class Routing extends Component {
     }
 
     componentDidMount = async () => {
-        if (isWhitelabel && document) {
-            document.title = 'MyNearWallet';
-            document.querySelector('link[rel~="icon"]').href = favicon;
-        }
-
         const {
             refreshAccount,
             handleRefreshUrl,
@@ -347,7 +342,7 @@ class Routing extends Component {
                         <NavigationWrapper />
                         <GlobalAlert />
                         {
-                            !isWhitelabel && (
+                            !isWhitelabel && ( // TODO: remove?
                                 <Switch>
                                     <Route
                                         path={['/', '/staking', '/profile']}
@@ -661,13 +656,11 @@ class Routing extends Component {
                                     />
                                 )}
                             />
-                            {isWhitelabel && (
-                                <PrivateRoute
-                                    exact
-                                    path="/explore"
-                                    component={ExploreContainer}
-                                />
-                            )}
+                            <PrivateRoute
+                                exact
+                                path="/explore"
+                                component={ExploreContainer}
+                            />
                             <Route
                                 exact
                                 path="/cli-login-success"

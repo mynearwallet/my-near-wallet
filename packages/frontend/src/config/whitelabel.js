@@ -1,3 +1,4 @@
+// TODO: remove file
 import Environments from '../../../../features/environments.json';
 import { NEAR_WALLET_ENV } from './configFromEnvironment';
 
