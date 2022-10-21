@@ -5,13 +5,13 @@ const Bundler = require('parcel-bundler');
 
 const Config = require('./config');
 
-const getOutputPath = (output) => path.join(__dirname, '../dist/static', output);
+const getOutputPath = (output) => path.join(__dirname, '../dist', output);
 const getWasmPath = (wasm) => path.join(__dirname, '../src/wasm/', wasm);
 const getSSLPath = (ssl) => path.join(__dirname, '../devServerCertificates/', ssl);
 
 class ParcelBundler {
     constructor({
-        outDir = path.join(__dirname, '../dist/static'),
+        outDir = path.join(__dirname, '../dist'),
         entryPath = path.join(__dirname, '../src/index.html'),
         cloudflareBaseUrl = Config.CLOUDFLARE_BASE_URL,
         shouldUseCloudflare = Config.SHOULD_USE_CLOUDFLARE,
