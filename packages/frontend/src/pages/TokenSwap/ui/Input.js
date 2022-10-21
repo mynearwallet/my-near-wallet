@@ -5,11 +5,13 @@ import SafeTranslate from '../../../components/SafeTranslate';
 // @todo common component: move to .../common
 import Token from '../../../components/send/components/entry_types/Token';
 import ChevronIcon from '../../../components/svg/ChevronIcon';
-import { isValidAmount, cutDecimalsIfNeeded } from '../../../utils/amounts';
-import { getFormatBalance } from '../../../utils/wrap-unwrap';
+import {
+    isValidAmount,
+    toSignificantDecimals,
+    formatTokenAmount,
+    removeTrailingZeros,
+} from '../../../utils/amounts';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
-
-const emptyObj = {};
 
 const InputWrapper = styled.div`
     padding: 1rem;
@@ -136,12 +138,16 @@ export default memo(function Input({
         }
     };
 
-    const balanceConfig = maxBalance && tokenDecimals ? getFormatBalance(maxBalance, tokenDecimals) : emptyObj;
+    const formattedMaxBalance =
+        maxBalance && typeof tokenDecimals === 'number'
+            ? removeTrailingZeros(formatTokenAmount(maxBalance, tokenDecimals, tokenDecimals))
+            : undefined;
+
     const [isWrongAmount, setIsWrongAmount] = useState(false);
 
     useEffect(() => {
-        if (!disabled && value && balanceConfig) {
-            const isValid = isValidAmount(value, balanceConfig.fullNum, tokenDecimals);
+        if (!disabled && value && formattedMaxBalance) {
+            const isValid = isValidAmount(value, formattedMaxBalance, tokenDecimals);
 
             setIsWrongAmount(!isValid);
 
@@ -149,22 +155,22 @@ export default memo(function Input({
                 setIsValidInput(isValid);
             }
         }
-    }, [disabled, value, balanceConfig, tokenDecimals]);
+    }, [disabled, value, formattedMaxBalance, tokenDecimals]);
 
     const setMaxBalance = () => {
-        if (!disabled && balanceConfig.fullNum && value !== balanceConfig.fullNum) {
-            onChange(balanceConfig.fullNum);
+        if (!disabled && formattedMaxBalance && value !== formattedMaxBalance) {
+            onChange(formattedMaxBalance);
         }
     };
 
     const balanceData = {
-        amount: balanceConfig.numToShow,
+        amount: toSignificantDecimals(formattedMaxBalance),
         symbol: tokenSymbol,
     };
 
     const valueToShow =
         disabled && value
-            ? cutDecimalsIfNeeded(value, DECIMALS_TO_SAFE)
+            ? toSignificantDecimals(value, DECIMALS_TO_SAFE)
             : value;
 
     return (
@@ -175,7 +181,7 @@ export default memo(function Input({
                         <SafeTranslate id={labelId} />
                     </Label>
                 )}
-                {balanceConfig.numToShow && (
+                {formattedMaxBalance && (
                     <Balance onClick={setMaxBalance} className={`${disabled ? 'disabled' : ''}`}>
                         <SafeTranslate
                             id={disabled ? 'swap.available' : 'swap.max'}

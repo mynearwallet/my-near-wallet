@@ -3,7 +3,7 @@ import React, { memo, useEffect } from 'react';
 import { NEAR_DECIMALS } from '../../../config';
 import useIsMounted from '../../../hooks/useIsMounted';
 import { Mixpanel } from '../../../mixpanel';
-import { cutDecimalsIfNeeded, formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
+import { toSignificantDecimals, formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
 import { openTransactionInExplorer } from '../../../utils/window';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import { getMinAmountOut, getSwapCost } from '../utils/calculations';
@@ -81,8 +81,8 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         openTransactionInExplorer(lastSwapTxHash);
     };
 
-    const amountInToShow = cutDecimalsIfNeeded(amountIn, DECIMALS_TO_SAFE);
-    const amountOutToShow = cutDecimalsIfNeeded(amountOut, DECIMALS_TO_SAFE);
+    const amountInToShow = toSignificantDecimals(amountIn, DECIMALS_TO_SAFE);
+    const amountOutToShow = toSignificantDecimals(amountOut, DECIMALS_TO_SAFE);
 
     return viewState === VIEW_STATE.inputForm ? (
         <SwapForm

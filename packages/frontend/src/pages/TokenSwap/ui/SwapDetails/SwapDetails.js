@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import Accordion from '../../../../components/common/Accordion';
 import ChevronIcon from '../../../../components/svg/ChevronIcon';
-import { cutDecimalsIfNeeded } from '../../../../utils/amounts';
+import { toSignificantDecimals } from '../../../../utils/amounts';
 import { useSwapData } from '../../model/Swap';
 import {
     getMinAmountOut,
@@ -41,7 +41,7 @@ export default function SwapDetails() {
         amountOut,
         slippage,
     });
-    const minAmountOutToShow = cutDecimalsIfNeeded(
+    const minAmountOutToShow = toSignificantDecimals(
         minAmountOut,
         DECIMALS_TO_SAFE
     );
@@ -49,7 +49,7 @@ export default function SwapDetails() {
     const isVisible = tokenIn && tokenOut && Number(amountIn);
     const price =
         isVisible && amountOut
-            ? cutDecimalsIfNeeded(
+            ? toSignificantDecimals(
                 Big(amountIn).div(amountOut).toFixed(),
                 DECIMALS_TO_SAFE
             ) : '-';
