@@ -50,7 +50,7 @@ import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrap
 
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 
-export function Profile({ match }) {
+const Profile = ({ match }) => {
     const [transferring, setTransferring] = useState(false);
     const accountExists = useSelector(selectAccountExists);
     const has2fa = useSelector(selectAccountHas2fa);
@@ -276,4 +276,6 @@ export function Profile({ match }) {
             <ZeroBalanceAccountWrapper />
         </StyledContainer>
     );
-}
+};
+
+export default Profile;

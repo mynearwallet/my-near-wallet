@@ -444,12 +444,6 @@
                 "desc": "Your passphrase has been verified! Once you’ve funded your new address, your passphrase will be shared by <b>${numberOfAccounts} accounts.</b>",
                 "descTwo": "Whenever this passphrase is used to recover your wallet, the following accounts will be imported:",
                 "tite": "Your Shared Passphrase"
-            },
-            "verifyPassphrase": {
-                "desc": "Enter an existing passphrase below to secure your new account.",
-                "passPhrasePlaceholder": "bubble word sun join impact exist ramp skull title hollow symbol very",
-                "tite": "Verify Your Passphrase",
-                "yourPassphrase": "Your Passphrase"
             }
         },
         "step": "Step ${step}/${total}",
@@ -1615,6 +1609,8 @@
         "errorToFetchData": "Error loading data for exchange",
         "fee": "Estimated fees",
         "from": "From",
+        "insufficientBalanceForAmountAndFee": "Insufficient balance to pay input amount and swap fee",
+        "insufficientBalanceForFee": "Insufficient balance to pay swap fee",
         "max": "Max: ${amount} ${symbol}",
         "minReceived": "Minimum received",
         "noPoolAvailable": "No pool available to make a swap from ${tokenIn} -> ${tokenOut}",

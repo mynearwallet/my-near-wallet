@@ -438,12 +438,6 @@
                 "desc": "你的助记词已验证。一旦你向新账户充值，你的助记词将在 <b>${numberOfAccounts} 个账户</b>间共享。",
                 "descTwo": "一旦当你使用该助记词恢复账户，以下账户也将会被恢复：",
                 "tite": "你的共享助记词"
-            },
-            "verifyPassphrase": {
-                "desc": "请输入已有的助记词来绑定新的账户。",
-                "passPhrasePlaceholder": "bubble word sun join impact exist ramp skull title hollow symbol very",
-                "tite": "验证助记词",
-                "yourPassphrase": "你的助记词"
             }
         },
         "step": "步骤 ${step}/${total}",
@@ -1584,6 +1578,8 @@
         "errorToFetchData": "加载数据以进行交换时出错",
         "fee": "估计费用",
         "from": "来自",
+        "insufficientBalanceForAmountAndFee": "余额不足以支付输入金额和掉期费用",
+        "insufficientBalanceForFee": "余额不足以支付掉期费用",
         "max": "最多：${amount} ${symbol}",
         "minReceived": "收到的最低数额",
         "noPoolAvailable": "没有可用于交换的池 ${tokenIn} -> ${tokenOut}",

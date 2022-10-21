@@ -1325,6 +1325,8 @@
         "errorToFetchData": "Exchange için veri yüklenirken hata oluştu",
         "fee": "Tahmini Ücretler",
         "from": "From",
+        "insufficientBalanceForAmountAndFee": "Girdi tutarını ve takas ücretini ödemek için yetersiz bakiye",
+        "insufficientBalanceForFee": "Takas ücretini ödemek için yetersiz bakiye",
         "max": "Maks: ${amount} ${symbol}",
         "minReceived": "Minimum alınan",
         "noPoolAvailable": "${tokenIn} -> ${tokenOut} arasında takas yapılabilecek havuz yok",

@@ -344,12 +344,6 @@
                 "desc": "La tua passphrase è stata verificata! Dopo aver finanziato il tuo nuovo indirizzo, la tua passphrase sarà condivisa da account <b>${numberOfAccounts}.</b>",
                 "descTwo": "Ogni volta che questa passphrase viene utilizzata per recuperare il tuo portafoglio, verranno importati i seguenti account:",
                 "tite": "La tua passphrase condivisa"
-            },
-            "verifyPassphrase": {
-                "desc": "Enter an existing passphrase below to secure your new account.",
-                "passPhrasePlaceholder": "bolla parola sole unire impatto esiste rampa teschio titolo cavo simbolo molto",
-                "tite": "Verifica la tua Passphrase",
-                "yourPassphrase": "La tua Passphrase"
             }
         },
         "step": "Passo ${step}/${total}",
@@ -1427,6 +1421,8 @@
         "errorToFetchData": "Errore nel caricamento dei dati per exchange",
         "fee": "Tariffe stimate",
         "from": "From",
+        "insufficientBalanceForAmountAndFee": "Saldo insufficiente per pagare l'importo dell'input e la commissione di swap",
+        "insufficientBalanceForFee": "Saldo insufficiente per pagare la commissione di swap",
         "max": "Massimo: ${amount} ${symbol}",
         "minReceived": "Minimo ricevuto",
         "noPoolAvailable": "Nessun pool disponibile per effettuare uno swap da ${tokenIn} -> ${tokenOut}",

@@ -1281,6 +1281,8 @@
         "ExpectedPrice": "Giá cả dự kiến",
         "fee": "Phí ước tính",
         "from": "Từ",
+        "insufficientBalanceForAmountAndFee": "Không đủ số dư để thanh toán số tiền đầu vào và phí hoán đổi",
+        "insufficientBalanceForFee": "Không đủ số dư để trả phí hoán đổi",
         "max": "Tối đa: ${amount} ${symbol}",
         "MinimumReceived": "Số tiền nhận được tối thiểu",
         "minReceived": "Tối thiểu nhận được",

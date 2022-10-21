@@ -1359,6 +1359,8 @@
         "errorToFetchData": "Erro ao carregar dados para o exchange",
         "fee": "Taxas estimadas",
         "from": "From",
+        "insufficientBalanceForAmountAndFee": "Saldo insuficiente para pagar o montante da contribuição e a taxa de swap",
+        "insufficientBalanceForFee": "Saldo insuficiente para pagar a taxa de swap",
         "max": "Maximo: ${amount} ${symbol}",
         "minReceived": "Mínimo recebido",
         "noPoolAvailable": "Nenhum pool disponível para fazer uma troca de ${tokenIn} -> ${tokenOut}",
