@@ -94,7 +94,7 @@ class ParcelBundler {
     }
 
     composeNetlifyBuildConfig() {
-        const buildContext = Config.CONTEXT; // production | deploy-preview | branch-deploy
+        const buildContext = Config.CONTEXT; // production | deploy-preview | branch-deploy 
         const primeUrl = Config.DEPLOY_PRIME_URL;
         const pullRequestId = Config.REVIEW_ID;
         const branchName = Config.BRANCH;
