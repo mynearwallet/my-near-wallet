@@ -5,23 +5,30 @@ const Bundler = require('parcel-bundler');
 
 const Config = require('./config');
 
-const getOutputPath = (output) => path.join(__dirname, '../dist', output);
-const getWasmPath = (wasm) => path.join(__dirname, '../src/wasm/', wasm);
-const getSSLPath = (ssl) => path.join(__dirname, '../devServerCertificates/', ssl);
+const DIST_PATH = path.join(__dirname, '../dist');
+const ENTRY_FILE_PATH = path.join(__dirname, '../src/index.html');
+const WASM_PATH = path.join(__dirname, '../src/wasm/');
+const SSL_PATH = path.join(__dirname, '../devServerCertificates/');
+
+const enableDebugLogging = Config.DEBUG_BUILD;
 
 class ParcelBundler {
     constructor({
-        outDir = path.join(__dirname, '../dist'),
-        entryPath = path.join(__dirname, '../src/index.html'),
+        outDir = DIST_PATH,
+        entryPath = ENTRY_FILE_PATH,
+        wasmSourcePath = WASM_PATH,
+        sslPath = SSL_PATH,
         cloudflareBaseUrl = Config.CLOUDFLARE_BASE_URL,
         shouldUseCloudflare = Config.SHOULD_USE_CLOUDFLARE,
-        isDebug = Config.DEBUG_BUILD,
+        isDebug = enableDebugLogging,
         isRender = Config.IS_RENDER,
         isNetlify = Config.IS_NETLIFY,
         isDevelopment = Config.IS_DEVELOPMENT,
     } = {}) {
         this.entryPath = entryPath;
         this.outDir = outDir;
+        this.wasmSourcePath = wasmSourcePath;
+        this.sslPath = sslPath;
         this.isDebug = isDebug;
         this.isRender = isRender;
         this.isNetlify = isNetlify;
@@ -55,6 +62,18 @@ class ParcelBundler {
             publicUrl: '/static/',
         };
 
+    }
+
+    buildOutputPath(filename) {
+        return path.join(this.outDir, filename);
+    }
+
+    buildWasmSourcePath(filename) {
+        return path.join(this.wasmSourcePath, filename);
+    }
+
+    buildSslPath(filename) {
+        return path.join(this.sslPath, filename);
     }
 
     buildCloudflarePath(path) {
@@ -94,7 +113,7 @@ class ParcelBundler {
     }
 
     composeNetlifyBuildConfig() {
-        const buildContext = Config.CONTEXT; // production | deploy-preview | branch-deploy 
+        const buildContext = Config.CONTEXT; // production | deploy-preview | branch-deploy
         const primeUrl = Config.DEPLOY_PRIME_URL;
         const pullRequestId = Config.REVIEW_ID;
         const branchName = Config.BRANCH;
@@ -149,7 +168,7 @@ class ParcelBundler {
         const { isRender, isNetlify, isDevelopment } = this;
 
         if (isDevelopment || !this.shouldUseCloudflare) {
-            return this.getBaseConfig();
+            return { ...this.getBaseConfig(), publicUrl: '/' };
         }
 
         if (isNetlify) {
@@ -170,10 +189,10 @@ class ParcelBundler {
         this.debugLog('entryPath', this.entryPath);
         this.debugLog('bundlerConfig', bundlerConfig);
         this.bundler = new Bundler(this.entryPath, bundlerConfig);
-        this.bundler.on('bundled', () => {
-            fs.copyFileSync(getWasmPath('multisig.wasm'), getOutputPath('multisig.wasm'));
-            fs.copyFileSync(getWasmPath('main.wasm'), getOutputPath('main.wasm'));
-            fs.copyFileSync(getWasmPath('state_cleanup.wasm'), getOutputPath('state_cleanup.wasm'));
+        this.bundler.on('bundled', (bundle) => {
+            fs.copyFileSync(this.buildWasmSourcePath('multisig.wasm'), this.buildOutputPath('multisig.wasm'));
+            fs.copyFileSync(this.buildWasmSourcePath('main.wasm'), this.buildOutputPath('main.wasm'));
+            fs.copyFileSync(this.buildWasmSourcePath('state_cleanup.wasm'), this.buildOutputPath('state_cleanup.wasm'));
         });
 
         return this.bundler;
@@ -186,8 +205,8 @@ class ParcelBundler {
             // FIXME: Why does HMR not work with this configuration?
             // Watch mode with custom dev SSL certs
             await this.bundler.serve(undefined, {
-                cert: getSSLPath('primary.crt'),
-                key: getSSLPath('private.pem'),
+                cert: this.buildSslPath('primary.crt'),
+                key: this.buildSslPath('private.pem')
             });
         } else {
             await this.bundler.bundle();
