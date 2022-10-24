@@ -168,7 +168,7 @@ class ParcelBundler {
         const { isRender, isNetlify, isDevelopment } = this;
 
         if (isDevelopment || !this.shouldUseCloudflare) {
-            return { ...this.getBaseConfig(), publicUrl: '/' };
+            return this.getBaseConfig();
         }
 
         if (isNetlify) {
