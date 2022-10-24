@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { SHOW_MIGRATION_BANNER, WEB3AUTH } from '../../../../features';
+import { WEB3AUTH } from '../../../../features';
 import favicon from '../../src/images/mynearwallet-cropped.svg';
 import TwoFactorVerifyModal from '../components/accounts/two_factor/TwoFactorVerifyModal';
 import {
@@ -81,7 +81,6 @@ import Bootstrap from './common/Bootstrap';
 import Footer from './common/Footer';
 import GlobalAlert from './common/GlobalAlert';
 import GuestLandingRoute from './common/GuestLandingRoute';
-import MigrationBanner from './common/MigrationBanner';
 import NetworkBanner from './common/NetworkBanner';
 import PrivateRoute from './common/routing/PrivateRoute';
 import PublicRoute from './common/routing/PublicRoute';
@@ -336,13 +335,6 @@ class Routing extends Component {
                 >
                     <ThemeProvider theme={theme}>
                         <ScrollToTop />
-                        {
-                            SHOW_MIGRATION_BANNER && (
-                                <MigrationBanner
-                                    account={account}
-                                    onTransfer={this.handleTransferClick} />
-                            )}
-
                         <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
