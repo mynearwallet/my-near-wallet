@@ -5,7 +5,7 @@ const Bundler = require('parcel-bundler');
 
 const Config = require('./config');
 
-const DIST_PATH = path.join(__dirname, '../dist');
+const DIST_PATH = path.join(__dirname, '../dist/static');
 const ENTRY_FILE_PATH = path.join(__dirname, '../src/index.html');
 const WASM_PATH = path.join(__dirname, '../src/wasm/');
 const SSL_PATH = path.join(__dirname, '../devServerCertificates/');
