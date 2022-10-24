@@ -12,7 +12,6 @@ export const getMyNearWalletUrl = (https = true) => {
     return `${https ? 'https://' : ''}${prefix || ''}mynearwallet.com`;
 };
 
-// TODO: remove?
 export const getMyNearWalletUrlFromNEARORG = (https = true) => {
     const prefix = {
         [Environments.TESTNET_NEARORG]: 'testnet.',
@@ -24,7 +23,6 @@ export const getMyNearWalletUrlFromNEARORG = (https = true) => {
     return `${https ? 'https://' : ''}${prefix || ''}mynearwallet.com`;
 };
 
-// TODO: remove?
 export const getMeteorWalletUrl = () => {
     return 'https://wallet.meteorwallet.app';
 };

@@ -18,8 +18,6 @@ import {
     SHOW_PRERELEASE_WARNING,
     DISABLE_CREATE_ACCOUNT,
 } from '../config';
-// TODO: remove isWhitelabel
-import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
 import * as accountActions from '../redux/actions/account';
@@ -86,7 +84,6 @@ import NetworkBanner from './common/NetworkBanner';
 import PrivateRoute from './common/routing/PrivateRoute';
 import PublicRoute from './common/routing/PublicRoute';
 import Route from './common/routing/Route';
-import TwoFactorDisableBanner from './common/TwoFactorDisableBanner';
 import Updater from './common/Updater';
 import { ExploreContainer } from './explore/ExploreContainer';
 import GlobalStyle from './GlobalStyle';
@@ -341,16 +338,6 @@ class Routing extends Component {
                         <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
-                        {
-                            !isWhitelabel && ( // TODO: remove?
-                                <Switch>
-                                    <Route
-                                        path={['/', '/staking', '/profile']}
-                                        component={TwoFactorDisableBanner}
-                                    />
-                                </Switch>
-                            )
-                        }
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}

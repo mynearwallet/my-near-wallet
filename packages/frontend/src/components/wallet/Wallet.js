@@ -6,14 +6,11 @@ import styled from 'styled-components';
 import {
     CREATE_USN_CONTRACT,
 } from '../../../../../features';
-// TODO: remove isWhitelabel
-import { isWhitelabel } from '../../config/whitelabel';
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
 import classNames from '../../utils/classNames';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
 import { getTotalBalanceInFiat } from '../common/balance/helpers';
 import FormButton from '../common/FormButton';
-import RemoveLinkRecoveryBanner from '../common/RemoveLinkRecoveryBanner';
 import Container from '../common/styled/Container.css';
 import Tooltip from '../common/Tooltip';
 import DownArrowIcon from '../svg/DownArrowIcon';
@@ -322,17 +319,10 @@ export function Wallet({
         currentLanguage
     );
 
-    // TODO: remove?
-    const shouldShowRemoveLinkRecoveryBanner = !isWhitelabel && (userRecoveryMethods.some(({ kind }) => kind === 'email')
-        || userRecoveryMethods.some(({ kind }) => kind === 'phone'));
-
     return (
         <StyledContainer
             className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}
         >
-            {shouldShowRemoveLinkRecoveryBanner &&
-                <RemoveLinkRecoveryBanner />
-            }
             <div className="split">
                 <div className="left">
                     <div className="tab-selector">
