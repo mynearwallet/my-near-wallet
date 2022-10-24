@@ -165,7 +165,7 @@ class RefFinanceContract {
 
         try {
             const allPools = await fetch(
-                `${REF_FINANCE_API_ENDPOINT}/list-top-pools`
+                `${refConfig.indexerAddress}/list-top-pools`
             ).then((res) => res.json());
 
             allPools.forEach(({ id, tvl }) => {
