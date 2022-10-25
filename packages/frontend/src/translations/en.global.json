@@ -1620,7 +1620,7 @@
         "reviewInfo": "You are swapping",
         "slippage": "Slippage tolerance",
         "success": "Successful swap",
-        "failTitle": "Swap failed",
+        "failTitle": "Swap failed!",
         "successTitle": "Swap complete!</br>You swapped <span class='color-blue space'>${amountFrom}</span></br>to <span class='color-green'>${amountTo}</span>",
         "swapFee": "Swap fee",
         "title": "Swap",

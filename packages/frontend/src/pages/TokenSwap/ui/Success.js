@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import FormButton from '../../../components/common/FormButton';
 import SafeTranslate from '../../../components/SafeTranslate';
 import AvatarSuccessIcon from '../../../components/svg/AvatarSuccessIcon';
+import FailIcon from '../../../components/svg/FailIcon';
 import { useSwapData } from '../model/Swap';
 
 const StyledContainer = styled.div`
@@ -23,12 +24,12 @@ const Header = styled.div`
     word-break: break-all;
 `;
 
+const FailTitle = styled.div`
+    margin-bottom: 1rem;
+`;
+
 const Reason = styled.p`
-    font-family: 'IBM Plex Mono', monospace;
-    margin-top: 0.9rem;
-    padding: 0.8rem;
-    color: var(--color-warning);
-    background-color: var(--color-warning-background);
+    font-weight: 400;
 `;
 
 const ButtonsWrapper = styled.div`
@@ -37,11 +38,6 @@ const ButtonsWrapper = styled.div`
     > button {
         display: block;
         width: 100%;
-    }
-
-    .link {
-        display: block;
-        margin: 20px auto;
     }
 `;
 
@@ -59,17 +55,30 @@ export default function Success({ onClickContinue, onClickGoToExplorer }) {
 
     return (
         <StyledContainer className="buttons-bottom">
-            <AvatarSuccessIcon />
-            <Header data-test-id="swapPageSuccessMessage">
-                {success ? (
-                    <SafeTranslate id="swap.successTitle" data={successData} />
-                ) : (
-                    <>
-                        <SafeTranslate id="swap.failTitle" />
-                        {failReason && <Reason>{failReason}</Reason>}
-                    </>
-                )}
-            </Header>
+            {success ? (
+                <>
+                    <AvatarSuccessIcon />
+                    <Header>
+                        <SafeTranslate
+                            id="swap.successTitle"
+                            data={successData}
+                            data-test-id="swapPageSuccessMessage"
+                        />
+                    </Header>
+                </>
+            ) : (
+                <>
+                    <FailIcon />
+                    <Header>
+                        <FailTitle>
+                            <SafeTranslate id="swap.failTitle" />
+                        </FailTitle>
+                        {failReason && (
+                            <Reason className="font-monospace">{failReason}</Reason>
+                        )}
+                    </Header>
+                </>
+            )}
             <ButtonsWrapper>
                 <FormButton
                     data-test-id="swapPageContinueAfterSwapButton"
