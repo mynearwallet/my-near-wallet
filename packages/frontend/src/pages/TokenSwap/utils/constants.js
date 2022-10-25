@@ -1,4 +1,4 @@
-import { USN_CONTRACT } from '../../../config';
+import CONFIG from '../../../config';
 
 // Amount of decimal places to save in the displayed amounts.
 // Not used in the real calculations.

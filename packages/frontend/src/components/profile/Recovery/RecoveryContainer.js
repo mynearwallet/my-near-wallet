@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DISABLE_PHONE_RECOVERY } from '../../../config';
+import CONFIG from '../../../config';
 import { Mixpanel } from '../../../mixpanel/index';
 import { deleteRecoveryMethod } from '../../../redux/actions/account';
 import { selectAccountSlice } from '../../../redux/slices/account';
@@ -70,7 +70,7 @@ const RecoveryContainer = ({ type, recoveryMethods }) => {
     }
 
     const currentTypeEnabledMethods = activeMethods.filter(({ kind, publicKey }) => {
-        if (DISABLE_PHONE_RECOVERY && kind === 'phone' && !publicKey) {
+        if (CONFIG.DISABLE_PHONE_RECOVERY && kind === 'phone' && !publicKey) {
             return false;
         }
 

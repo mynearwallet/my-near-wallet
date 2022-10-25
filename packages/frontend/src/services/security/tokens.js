@@ -1,4 +1,4 @@
-import { TOKEN_BLACKLIST_ENDPOINT } from '../../config';
+import CONFIG from '../../config';
 
 export async function fetchBlacklistedTokens() {
     if (!TOKEN_BLACKLIST_ENDPOINT) {

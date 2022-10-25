@@ -10,15 +10,9 @@ import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { WEB3AUTH } from '../../../../features';
 import favicon from '../../src/images/mynearwallet-cropped.svg';
 import TwoFactorVerifyModal from '../components/accounts/two_factor/TwoFactorVerifyModal';
-import {
-    IS_MAINNET,
-    PUBLIC_URL,
-    SHOW_PRERELEASE_WARNING,
-    DISABLE_CREATE_ACCOUNT,
-} from '../config';
+import CONFIG from '../config';
 import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
@@ -116,7 +110,10 @@ const { handleFlowLimitation } = flowLimitationActions;
 
 const theme = {};
 
-const PATH_PREFIX = PUBLIC_URL;
+const PATH_PREFIX = CONFIG.PUBLIC_URL;
+
+// TODO: https://mnw.atlassian.net/browse/MNW-98
+const WEB3AUTH_FEATURE_ENABLED = false;
 
 const Container = styled.div`
     min-height: 100vh;
@@ -320,7 +317,7 @@ class Routing extends Component {
                     'App',
                     {
                         'network-banner':
-                            !IS_MAINNET || SHOW_PRERELEASE_WARNING,
+                            !CONFIG.IS_MAINNET || CONFIG.SHOW_PRERELEASE_WARNING,
                     },
                     { 'hide-footer-mobile': hideFooterOnMobile },
                 ])}
@@ -414,7 +411,7 @@ class Routing extends Component {
                                 exact
                                 path="/create"
                                 render={(props) =>
-                                    accountFound || !DISABLE_CREATE_ACCOUNT ? (
+                                    accountFound || !CONFIG.DISABLE_CREATE_ACCOUNT ? (
                                         <CreateAccountWithRouter
                                             {...props}
                                         />
@@ -677,7 +674,7 @@ class Routing extends Component {
                                 component={Privacy}
                                 indexBySearchEngines={true}
                             />
-                            {WEB3AUTH && (
+                            {WEB3AUTH_FEATURE_ENABLED && (
                                 <PrivateRoute
                                     exact
                                     path="/verify-owner"

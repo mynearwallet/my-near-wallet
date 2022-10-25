@@ -1,6 +1,6 @@
 import { stringifyUrl } from 'query-string';
 
-import { TRANSAK_API_KEY, TRANSAK_BUY_URL } from '../../../config';
+import CONFIG from '../../../config';
 
 export function buildTransakPayLink(accountId) {
     const url = {

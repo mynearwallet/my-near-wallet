@@ -1,6 +1,6 @@
 import mixpanel from 'mixpanel-browser';
 
-import { BROWSER_MIXPANEL_TOKEN } from '../config';
+import CONFIG from '../config';
 import { isWhitelabel } from '../config/whitelabel';
 
 function buildTrackingProps() {
@@ -42,10 +42,10 @@ let Mixpanel = {
     register: () => {}
 };
 
-const shouldEnableTracking = BROWSER_MIXPANEL_TOKEN && isWhitelabel;
+const shouldEnableTracking = CONFIG.BROWSER_MIXPANEL_TOKEN && isWhitelabel;
 
 if (shouldEnableTracking) {
-    mixpanel.init(BROWSER_MIXPANEL_TOKEN);
+    mixpanel.init(CONFIG.BROWSER_MIXPANEL_TOKEN);
     mixpanel.register({'timestamp': new Date().toString(), '$referrer': document.referrer});
     Mixpanel = {
         get_distinct_id: () => {

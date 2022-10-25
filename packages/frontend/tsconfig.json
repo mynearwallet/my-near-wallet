@@ -1,26 +1,29 @@
 {
   "compilerOptions": {
-    "composite": false,
-    "declaration": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "forceConsistentCasingInFileNames": true,
-    "inlineSources": false,
+
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["dom", "es2020"],
     "module": "ESNext",
     "moduleResolution": "node",
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "outDir": "./dist",
-    "preserveWatchOutput": true,
-    "rootDir": "./src",
-    "skipLibCheck": true,
-    "strict": false,
+
     "allowJs": true,
     "checkJs": false,
     "target": "es2020",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+
+    "inlineSources": false,
+    "preserveWatchOutput": true,
+    "experimentalDecorators": true,
+    "jsxImportSource": "preact",
+
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "include": ["src", "declarations.d.ts"],
   "exclude": [

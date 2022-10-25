@@ -1498,7 +1498,6 @@
             "title": "Deposite NEAR"
         },
         "status": "Status",
-        "tokenBalance": "Saldo de tokens",
         "tokens": "Tokens",
         "totalBalance": "Saldo total",
         "totalBalanceTitle": "Saldo total",

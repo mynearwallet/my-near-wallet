@@ -1617,7 +1617,6 @@
             "title": "Депозит NEAR"
         },
         "status": "Статус",
-        "tokenBalance": "Баланс токенів",
         "tokens": "Токени",
         "totalBalance": "Загальний баланс",
         "totalBalanceTitle": "Загальний баланс",

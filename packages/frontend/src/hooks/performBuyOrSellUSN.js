@@ -1,7 +1,7 @@
 import * as nearApiJs from 'near-api-js';
 import { useState } from 'react';
 
-import { USN_CONTRACT } from '../config';
+import CONFIG from '../config';
 import { parseTokenAmount } from '../utils/amounts';
 import { wallet } from '../utils/wallet';
 
@@ -55,13 +55,13 @@ export const usePerformBuyOrSellUSN = () => {
         const account = await wallet.getAccount(accountId);
         const usnContract = new nearApiJs.Contract(
             account,
-            USN_CONTRACT,
+            CONFIG,
             usnMethods
         );
-       
+
         if (tokenFrom === 'NEAR') {
             await usnContract.buy(setArgsUSNContractBuy({multiplier, slippage, amount}));
-           
+
         } else {
             await usnContract.sell(setArgsUSNContractSell({multiplier, slippage, amount}));
         }

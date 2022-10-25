@@ -2,27 +2,24 @@ import assert from 'assert';
 
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
-import Environments from '../../../../features/environments.json';
+import ENVIRONMENT from './enviroment';
 import {
     envValIsSet,
     parseBooleanFromShell,
     parseCommaSeperatedStringAsArrayFromShell
 } from './envParsers';
 
-const NEAR_WALLET_ENV = process.env.NEAR_WALLET_ENV;
+const NEAR_WALLET_ENV = process.env.NEAR_WALLET_ENV as ENVIRONMENT;
 
 assert(
-    Object.values(Environments).some((env) => NEAR_WALLET_ENV === env),
+    Object.values(ENVIRONMENT).some((env) => NEAR_WALLET_ENV === env),
     `Invalid environment: "${NEAR_WALLET_ENV}"`
 );
 
-module.exports = {
+export default {
     ACCOUNT_HELPER_URL: process.env.REACT_APP_ACCOUNT_HELPER_URL,
     ACCOUNT_ID_SUFFIX: process.env.REACT_APP_ACCOUNT_ID_SUFFIX,
     ACCESS_KEY_FUNDING_AMOUNT: process.env.REACT_APP_ACCESS_KEY_FUNDING_AMOUNT,
-    ALLOW_2FA_ENABLE_HASHES: parseCommaSeperatedStringAsArrayFromShell(
-        process.env.ALLOW_2FA_ENABLE_HASHES
-    ),
     BROWSER_MIXPANEL_TOKEN: process.env.BROWSER_MIXPANEL_TOKEN,
     DISABLE_CREATE_ACCOUNT: parseBooleanFromShell(
         process.env.DISABLE_CREATE_ACCOUNT
@@ -37,10 +34,8 @@ module.exports = {
         process.env.HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL
     ),
     IS_MAINNET: [
-        Environments.MAINNET,
-        Environments.MAINNET_STAGING,
-        Environments.MAINNET_STAGING_NEARORG,
-        Environments.MAINNET_NEARORG,
+        ENVIRONMENT.MAINNET,
+        ENVIRONMENT.MAINNET_STAGING,
     ].some((env) => env === NEAR_WALLET_ENV),
     LINKDROP_GAS: process.env.LINKDROP_GAS,
     TOKEN_TRANSFER_DEPOSIT: process.env.TOKEN_TRANSFER_DEPOSIT || '1',
@@ -50,7 +45,6 @@ module.exports = {
     FT_MINIMUM_STORAGE_BALANCE_LARGE: process.env.FT_MINIMUM_STORAGE_BALANCE_LARGE || '12500000000000000000000',
     SEND_NEAR_GAS: process.env.SEND_NEAR_GAS || '450000000000',
     NFT_TRANSFER_GAS: process.env.NFT_TRANSFER_GAS || '100000000000000',
-    LOCKUP_ACCOUNT_ID_SUFFIX: process.env.LOCKUP_ACCOUNT_ID_SUFFIX,
     MIN_BALANCE_FOR_GAS: process.env.REACT_APP_MIN_BALANCE_FOR_GAS,
     MIN_BALANCE_TO_CREATE: process.env.MIN_BALANCE_TO_CREATE,
     MOONPAY_API_KEY: process.env.MOONPAY_API_KEY,
@@ -61,8 +55,6 @@ module.exports = {
         process.env.MULTISIG_CONTRACT_HASHES
     ),
     MULTISIG_MIN_AMOUNT: process.env.REACT_APP_MULTISIG_MIN_AMOUNT,
-    MULTISIG_MIN_PROMPT_AMOUNT:
-        process.env.REACT_APP_MULTISIG_MIN_PROMPT_AMOUNT,
     NEAR_WALLET_ENV,
     NETWORK_ID: process.env.REACT_APP_NETWORK_ID,
     NODE_URL: process.env.REACT_APP_NODE_URL,
@@ -96,6 +88,5 @@ module.exports = {
     FARMING_CLAIM_YOCTO: process.env.FARMING_CLAIM_YOCTO || '1',
     REF_FINANCE_API_ENDPOINT: process.env.REF_FINANCE_API_ENDPOINT,
     REF_FINANCE_CONTRACT: process.env.REF_FINANCE_CONTRACT,
-    HAPI_PROTOCOL_ADDRESS: process.env.HAPI_PROTOCOL_ADDRESS,
-    CALIMERO_PROTOCOL_ADDRESS: process.env.CALIMERO_PROTOCOL_ADDRESS
+    HAPI_PROTOCOL_ADDRESS: process.env.HAPI_PROTOCOL_ADDRESS
 };

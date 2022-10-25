@@ -2,7 +2,7 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import { EXPLORE_APPS_URL, EXPLORE_DEFI_URL } from '../../config';
+import CONFIG from '../../config';
 import BerryClubLogo from '../../images/berryclub-logo.svg';
 import FluxLogo from '../../images/flux-logo.svg';
 import HashRushLogo from '../../images/hash-rush-logo.svg';
@@ -127,14 +127,14 @@ const ExploreApps = () => {
             </div>
             <div className='buttons'>
                 <FormButton
-                    linkTo={EXPLORE_APPS_URL}
+                    linkTo={CONFIG.EXPLORE_APPS_URL}
                     color='dark-gray-light-blue'
                     trackingId='Click explore apps button'
                 >
                     <Translate id='exploreApps.exploreApps'/>
                 </FormButton>
                 <FormButton
-                    linkTo={EXPLORE_DEFI_URL}
+                    linkTo={CONFIG.EXPLORE_DEFI_URL}
                     color='dark-gray-light-blue'
                     trackingId='Click explore defi button'
                 >

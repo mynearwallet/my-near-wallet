@@ -5,7 +5,7 @@ import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { IS_MAINNET, MIN_BALANCE_FOR_GAS } from '../../config';
+import CONFIG from '../../config';
 import { useAccount } from '../../hooks/allAccounts';
 import { Mixpanel } from '../../mixpanel/index';
 import {
@@ -288,7 +288,7 @@ const Profile = ({ match }) => {
                             account={account}
                             profileBalance={profileBalance}
                             hasLockup={hasLockup}
-                            MIN_BALANCE_FOR_GAS_FORMATTED={formatNearAmount(MIN_BALANCE_FOR_GAS)}
+                            balanceForGas={formatNearAmount(CONFIG.MIN_BALANCE_FOR_GAS)}
                         />
                     ) : (
                         <SkeletonLoading
@@ -362,7 +362,7 @@ const Profile = ({ match }) => {
                             {secretKey ? <ExportKeyWrapper secretKey={secretKey} /> : null}
                             <RemoveAccountWrapper />
                         </>
-                        {!IS_MAINNET && !account.ledgerKey && !isMobile() &&
+                        {!CONFIG.IS_MAINNET && !account.ledgerKey && !isMobile() &&
                             <MobileSharingWrapper />
                         }
                     </div>

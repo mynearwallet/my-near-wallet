@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { getPayMethods } from '../../config/buyNearConfig';
+import CONFIG from '../../config/buyNearConfig';
 import { isWhitelabel } from '../../config/whitelabel';
 import { Mixpanel } from '../../mixpanel';
 import { selectAccountId } from '../../redux/slices/account';

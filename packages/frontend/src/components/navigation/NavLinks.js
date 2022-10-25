@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { IS_MAINNET } from '../../config';
+import CONFIG from '../../config';
 import { isWhitelabel } from '../../config/whitelabel';
 import { Mixpanel } from '../../mixpanel/index';
 import ExploreIcon from '../svg/ExploreIcon';

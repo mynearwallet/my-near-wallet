@@ -1,11 +1,11 @@
 import * as nearApi from 'near-api-js';
 
-import { REF_FINANCE_CONTRACT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
+import CONFIG from '../../config';
 import { parseTokenAmount } from '../../utils/amounts';
 import { findBestSwapPool, formatTotalFeePercent, getPriceImpactPercent } from './utils';
 
 const contractConfig = {
-    contractId: REF_FINANCE_CONTRACT,
+    contractId: CONFIG.REF_FINANCE_CONTRACT,
     viewMethods: [
         'get_number_of_pools',
         'get_pools',
@@ -142,7 +142,7 @@ class RefFinanceContract {
                     }),
                 },
                 contractConfig.gasLimit.swap,
-                TOKEN_TRANSFER_DEPOSIT,
+                CONFIG.TOKEN_TRANSFER_DEPOSIT,
             ),
         );
 

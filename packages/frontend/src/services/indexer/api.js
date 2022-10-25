@@ -1,6 +1,6 @@
 import { stringifyUrl } from 'query-string';
 
-import { INDEXER_SERVICE_URL } from '../../config';
+import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
 

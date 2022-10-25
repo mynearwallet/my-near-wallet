@@ -1,6 +1,6 @@
 import React, { memo, useEffect } from 'react';
 
-import { NEAR_DECIMALS } from '../../../config';
+import CONFIG from '../../../config';
 import useIsMounted from '../../../hooks/useIsMounted';
 import { Mixpanel } from '../../../mixpanel';
 import { toSignificantDecimals, formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
@@ -38,7 +38,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             if (isMounted) {
                 setEstimatedFee(
                     removeTrailingZeros(
-                        formatTokenAmount(fee, NEAR_DECIMALS, NEAR_DECIMALS)
+                        formatTokenAmount(fee, CONFIG.NEAR_DECIMALS, CONFIG.NEAR_DECIMALS)
                     )
                 );
             }
