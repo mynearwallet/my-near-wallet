@@ -6,7 +6,9 @@ import FormButton from '../../../components/common/FormButton';
 import SafeTranslate from '../../../components/SafeTranslate';
 import AvatarSuccessIcon from '../../../components/svg/AvatarSuccessIcon';
 import FailIcon from '../../../components/svg/FailIcon';
+import { toSignificantDecimals } from '../../../utils/amounts';
 import { useSwapData } from '../model/Swap';
+import { DECIMALS_TO_SAFE } from '../utils/constants';
 
 const StyledContainer = styled.div`
     > svg {
@@ -49,8 +51,12 @@ export default function Success({ onClickContinue, onClickGoToExplorer }) {
     const { success, hash: swapHash, failReason } = lastSwapState;
 
     const successData = {
-        amountFrom: `${amountIn} ${tokenIn?.onChainFTMetadata?.symbol}`,
-        amountTo: `${amountOut} ${tokenOut?.onChainFTMetadata?.symbol}`,
+        amountFrom: `${toSignificantDecimals(amountIn, DECIMALS_TO_SAFE)} ${
+            tokenIn?.onChainFTMetadata?.symbol
+        }`,
+        amountTo: `${toSignificantDecimals(amountOut, DECIMALS_TO_SAFE)} ${
+            tokenOut?.onChainFTMetadata?.symbol
+        }`,
     };
 
     return (
