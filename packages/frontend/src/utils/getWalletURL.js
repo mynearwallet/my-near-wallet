@@ -1,18 +1,5 @@
 import CONFIG from '../config';
 import ENVIRONMENT from '../config/enviroment';
-import { isWhitelabel } from '../config/whitelabel';
-
-export const getNearOrgWalletUrl = (https = true) => {
-    let networkName = '';
-
-    if (CONFIG.SHOW_PRERELEASE_WARNING) {
-        networkName = 'staging.';
-    } else if (!CONFIG.IS_MAINNET) {
-        networkName = 'testnet.';
-    }
-
-    return `${https ? 'https://' : ''}wallet.${networkName}near.org`;
-};
 
 export const getMyNearWalletUrl = (https = true) => {
     const prefix = {
@@ -39,4 +26,4 @@ export const getMeteorWalletUrl = () => {
     return 'https://wallet.meteorwallet.app';
 };
 
-export default isWhitelabel ? getMyNearWalletUrl : getNearOrgWalletUrl;
+export default getMyNearWalletUrl;
