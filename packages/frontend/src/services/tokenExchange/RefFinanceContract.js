@@ -5,6 +5,7 @@ import { parseTokenAmount } from '../../utils/amounts';
 import { findBestSwapPool, formatTotalFeePercent, getPriceImpactPercent } from './utils';
 
 const refConfig = {
+    errorRegExp: /[A-Z][0-9]+: ?[a-zA-Z0-9_$\- ]+/,
     contractId: REF_FINANCE_CONTRACT,
     indexerAddress: REF_FINANCE_API_ENDPOINT,
     viewMethods: [
@@ -150,6 +151,20 @@ class RefFinanceContract {
         );
 
         return actions;
+    }
+
+    extractErrorMessage(data) {
+        if (!refConfig.errorRegExp) {
+            return '';
+        }
+
+        try {
+            return JSON.stringify(data).match(refConfig.errorRegExp);
+        } catch (error) {
+            console.error('Error on getting error message', error);
+        }
+
+        return '';
     }
 
     async _getTopPoolIds() {
