@@ -33,7 +33,7 @@ const LoginWrapper = () => {
 
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
 
-    let requestingFullAccess = !contractId || (publicKey && contractId?.endsWith(`.${LOCKUP_CONFIG.ACCOUNT_ID_SUFFIX}`)) || contractId === accountLocalStorageAccountId;
+    let requestingFullAccess = !contractId || (publicKey && contractId?.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`)) || contractId === accountLocalStorageAccountId;
     const requestAccountIdOnly = !publicKey && !contractId;
     if (requestAccountIdOnly) {
         requestingFullAccess = false;

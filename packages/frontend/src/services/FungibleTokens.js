@@ -145,7 +145,7 @@ export default class FungibleTokens {
                             receiver_id: receiverId,
                         },
                         CONFIG.FT_TRANSFER_GAS,
-                        TOKEN_TRANSFER_DEPOSIT
+                        CONFIG.TOKEN_TRANSFER_DEPOSIT
                     ),
                 ],
             });

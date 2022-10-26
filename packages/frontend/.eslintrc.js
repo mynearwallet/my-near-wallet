@@ -42,6 +42,7 @@ module.exports = {
             SwitchCase: 1,
         }],
         'max-statements-per-line': ['error', { max: 1 }],
+        'no-process-env': ['error'],
         'no-restricted-globals': ['error', {
             'name': 'URLSearchParams',
             'message': 'Use `query-string` package instead'
@@ -74,8 +75,8 @@ module.exports = {
     overrides: [
         {
             files: [
-                "src/config/configFromEnvironment.js",
-                "ci/configFromEnvironment.js",
+                "src/config/configFromEnvironment.ts",
+                "ci/config.js",
             ],
             rules: {
                 'no-process-env': ['off']

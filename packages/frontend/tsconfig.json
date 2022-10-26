@@ -19,8 +19,6 @@
 
     "inlineSources": false,
     "preserveWatchOutput": true,
-    "experimentalDecorators": true,
-    "jsxImportSource": "preact",
 
     "outDir": "./dist",
     "rootDir": "./src"

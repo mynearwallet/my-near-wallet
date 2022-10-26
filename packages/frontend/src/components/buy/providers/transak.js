@@ -4,9 +4,9 @@ import CONFIG from '../../../config';
 
 export function buildTransakPayLink(accountId) {
     const url = {
-        url: TRANSAK_BUY_URL,
+        url: CONFIG.TRANSAK_BUY_URL,
         query: {
-            apiKey: TRANSAK_API_KEY,
+            apiKey: CONFIG.TRANSAK_API_KEY,
             cryptoCurrencyList: 'NEAR',
             walletAddress: accountId,
             disableWalletAddressForm: true,

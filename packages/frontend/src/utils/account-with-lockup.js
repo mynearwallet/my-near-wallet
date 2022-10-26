@@ -158,7 +158,7 @@ export function getLockupAccountId(accountId) {
     if (CONFIG.REACT_APP_USE_TESTINGLOCKUP && accountId.length < 64) {
         return `testinglockup.${accountId}`;
     }
-    return sha256(Buffer.from(accountId)).substring(0, 40) + '.' + LOCKUP_CONFIG.ACCOUNT_ID_SUFFIX;
+    return sha256(Buffer.from(accountId)).substring(0, 40) + '.' + CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX;
 }
 
 function subtractReservedForGas(balance) {

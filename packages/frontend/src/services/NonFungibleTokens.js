@@ -127,7 +127,7 @@ export default class NonFungibleTokens {
                         token_id: tokenId
                     },
                     CONFIG.NFT_TRANSFER_GAS,
-                    TOKEN_TRANSFER_DEPOSIT
+                    CONFIG.TOKEN_TRANSFER_DEPOSIT
                 )
             ]
         });

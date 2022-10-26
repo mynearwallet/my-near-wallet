@@ -6,6 +6,15 @@ import mainnet_STAGING from './environmentDefaults/mainnet_STAGING';
 import testnet from './environmentDefaults/testnet';
 import testnet_STAGING from './environmentDefaults/testnet_STAGING';
 
+const clearEmptyProps = <T>(config: T): T => Object.entries(config)
+    .reduce<T>((cfg, [key, value]) => {
+        if (typeof value !== 'undefined') {
+            cfg[key] = value;
+        }
+
+        return cfg;
+    }, {} as T);
+
 const defaults = {
     [ENVIRONMENT.DEVELOPMENT]: development,
     [ENVIRONMENT.TESTNET]: testnet,
@@ -16,7 +25,7 @@ const defaults = {
 
 const CONFIG = {
     ...defaults,
-    ...environmentConfig
+    ...clearEmptyProps(environmentConfig),
 };
 
 export default CONFIG;

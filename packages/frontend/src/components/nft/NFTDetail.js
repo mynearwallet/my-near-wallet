@@ -112,7 +112,7 @@ const UserIcon = styled.div`
 export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
     const [transferNftDetail, setTransferNftDetail] = useState();
 
-    const transferMax = new BN((parseInt(CONFIG.NFT_TRANSFER_GAS, 10) + TOKEN_TRANSFER_DEPOSIT).toString());
+    const transferMax = new BN((parseInt(CONFIG.NFT_TRANSFER_GAS, 10) + CONFIG.TOKEN_TRANSFER_DEPOSIT).toString());
     const hasSufficientBalance = (new BN(nearBalance)).gte(transferMax);
 
     return (

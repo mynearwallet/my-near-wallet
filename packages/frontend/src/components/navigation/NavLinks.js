@@ -3,7 +3,6 @@ import { Translate } from 'react-localize-redux';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-import CONFIG from '../../config';
 import { Mixpanel } from '../../mixpanel/index';
 import ExploreIcon from '../svg/ExploreIcon';
 import HelpIcon from '../svg/HelpIcon';

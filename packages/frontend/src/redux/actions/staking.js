@@ -493,7 +493,7 @@ export const handleStakingAction = (action, validatorId, amount) => async (dispa
     const accountId = selectStakingMainAccountId(getState());
     const currentAccountId = selectStakingCurrentAccountAccountId(getState());
 
-    const isLockup = currentAccountId.endsWith(`.${LOCKUP_CONFIG.ACCOUNT_ID_SUFFIX}`);
+    const isLockup = currentAccountId.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`);
 
     if (amount && amount.length < 15) {
         amount = parseNearAmount(amount);
@@ -573,7 +573,7 @@ export const claimFarmRewards = (validatorId, token_id) => async (dispatch, getS
     try {
         const accountId = selectStakingMainAccountId(getState());
         const currentAccountId = selectStakingCurrentAccountAccountId(getState());
-        const isLockup = currentAccountId.endsWith(`.${LOCKUP_CONFIG.ACCOUNT_ID_SUFFIX}`);
+        const isLockup = currentAccountId.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`);
 
         const validators = selectStakingAllValidators(getState());
         const validator = { ...validators.find((validator) => validator?.accountId === validatorId)};
