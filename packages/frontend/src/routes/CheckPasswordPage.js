@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Translate } from 'react-localize-redux';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import FormButton from '../components/common/FormButton';
 import Container from '../components/common/styled/Container.css';
-import { redirectTo } from '../redux/actions/account';
+// import { redirectTo } from '../redux/actions/account';
 
 const StyledContainer = styled(Container)`
     h1 {
@@ -65,7 +65,7 @@ export default function CheckPasswordPage () {
         setIsError(false);
         setIsLoading(true);
         
-        const value = e.target.password.value;
+        // const value = e.target.password.value;
         try {
             // api call to check password
             // useDispatch(redirectTo('/'));
