@@ -35,7 +35,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
                 </FormButton>
             </Submit>
             <WithoutPassword hide={password !== null}>
-                <Translate id='setupPasswordProtection.witoutPassword' />
+                <Translate id='setupPasswordProtection.withoutPassword' />
             </WithoutPassword>
         </>
     );

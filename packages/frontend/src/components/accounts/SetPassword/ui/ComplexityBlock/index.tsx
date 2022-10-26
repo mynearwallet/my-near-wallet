@@ -22,21 +22,22 @@ export const renderComplexityTrans = (
             return <Translate id='setupPasswordProtection.week' />;
         case 'average':
             return <Translate id='setupPasswordProtection.average' />;
-        case 'strong': <Translate id='setupPasswordProtection.strong' />;
+        case 'strong':
+            return <Translate id='setupPasswordProtection.strong' />;
     }
 };
 
 const ComplexityBlock: FC<ComplexityBlockProps> = (props) => {
-    const levels = getLevelsFromComplexity(props.complexity);
-
     return (
         <Wrapper show={props.show}>
             <Content>
                 <LevelWrapper>
                     {
-                        Array(levels).fill(undefined).map((_, index) =>
-                            <Level level={index + 1} />
-                        )
+                        Array(getLevelsFromComplexity(props.complexity))
+                            .fill(undefined)
+                            .map((_, index) =>
+                                <Level level={index + 1} />
+                            )
                     }
                 </LevelWrapper>
                 <Description>

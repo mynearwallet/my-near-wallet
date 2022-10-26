@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useState} from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
@@ -22,8 +22,8 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
     const handleCommonChange = useCallback((pass: string, confirm: string) => {
         if (!inLength(pass)) {
             setLengthError(true);
-            onChange(null);
 
+            onChange(null);
             return;
         }
         setLengthError(false);
@@ -34,7 +34,6 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
             }
 
             onChange(null);
-
             return;
         }
 
@@ -43,7 +42,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
     }, []);
 
 
-    const handleChangePassword = useCallback((value) => {
+    const handleChangePassword = useCallback((value: string) => {
         setPassword(value);
         handleCommonChange(value, confirmPassValue);
     }, [confirmPassValue]);
@@ -57,7 +56,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
         handleCommonChange(password, confirmPassValue);
     }, [password, confirmPassValue]);
 
-    const handleChangeConfirmPassword = useCallback((value) => {
+    const handleChangeConfirmPassword = useCallback((value: string) => {
         setConfirmPassValue(value);
         handleCommonChange(password, value);
     }, [password]);

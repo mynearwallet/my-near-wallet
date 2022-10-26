@@ -1313,7 +1313,7 @@
         "pageTitle": "Create a Password",
         "strong": "Strong password",
         "week": "Week password",
-        "witoutPassword": "Continue without creating a password"
+        "withoutPassword": "Continue without creating a password"
     },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",

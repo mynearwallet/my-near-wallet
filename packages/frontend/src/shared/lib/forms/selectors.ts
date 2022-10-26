@@ -15,7 +15,6 @@ type CheckedEvent = {
 
 type Evt<T> = (evt: Target<ValueEvent>) => T;
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function targetValue(handler: Handler<string>): Evt<string>;
 export function targetValue(handler: Handler<number>, radix: number): Evt<number>;
 export function targetValue(handler: Handler<any>, radix?: number): Evt<any> {
