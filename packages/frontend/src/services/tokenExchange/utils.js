@@ -7,6 +7,33 @@ import {
 } from '../../utils/amounts';
 import { MAX_PERCENTAGE } from '../../utils/constants';
 
+const localCache = {};
+
+export const getTopPoolIds = async ({ indexerAddress, minTvl }) => {
+    if (localCache.topPoolIds) {
+        return localCache.topPoolIds;
+    }
+
+    const poolIds = new Set();
+
+    try {
+        const allPools = await fetch(`${indexerAddress}/list-top-pools`).then((res) =>
+            res.json()
+        );
+
+        allPools.forEach(({ id, tvl }) => {
+            if (Number(tvl) >= minTvl) {
+                poolIds.add(Number(id));
+            }
+        });
+        localCache.topPoolIds = poolIds;
+
+        return poolIds;
+    } catch (error) {
+        console.error('Error on fetching top pools', error);
+    }
+};
+
 export const FEE_DIVISOR = 10_000;
 
 // Calculate fee multiplier relative to 100%

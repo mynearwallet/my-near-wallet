@@ -297,9 +297,7 @@ class FungibleTokenExchange {
                 ({ outcome: { status } }) => !!status?.Failure
             );
 
-            if (status?.Failure) {
-                swapResult.success = false;
-            }
+            swapResult.success = !status?.Failure;
 
             if (failedResult?.outcome?.status?.Failure) {
                 swapResult.success = false;

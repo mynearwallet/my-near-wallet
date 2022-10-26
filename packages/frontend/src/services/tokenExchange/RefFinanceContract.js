@@ -2,7 +2,12 @@ import * as nearApi from 'near-api-js';
 
 import { REF_FINANCE_CONTRACT, REF_FINANCE_API_ENDPOINT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
 import { parseTokenAmount } from '../../utils/amounts';
-import { findBestSwapPool, formatTotalFeePercent, getPriceImpactPercent } from './utils';
+import {
+    findBestSwapPool,
+    formatTotalFeePercent,
+    getPriceImpactPercent,
+    getTopPoolIds,
+} from './utils';
 
 const refConfig = {
     errorRegExp: /[A-Z][0-9]+: ?[a-zA-Z0-9_$\- ]+/,
@@ -31,7 +36,6 @@ const refConfig = {
 };
 
 const DEV_CONTRACT_ID_REGEXP = /dev-[0-9]+-[0-9]+/;
-const localCache = {};
 
 class RefFinanceContract {
     async getData({ account }) {
@@ -154,7 +158,7 @@ class RefFinanceContract {
     }
 
     extractErrorMessage(data) {
-        if (!refConfig.errorRegExp) {
+        if (!data || !refConfig.errorRegExp) {
             return '';
         }
 
@@ -167,39 +171,13 @@ class RefFinanceContract {
         return '';
     }
 
-    async _getTopPoolIds() {
-        if (!refConfig.indexerAddress) {
-            return;
-        }
-
-        if (localCache.topPoolIds) {
-            return localCache.topPoolIds;
-        }
-
-        const poolIds = new Set();
-
-        try {
-            const allPools = await fetch(
-                `${refConfig.indexerAddress}/list-top-pools`
-            ).then((res) => res.json());
-
-            allPools.forEach(({ id, tvl }) => {
-                if (Number(tvl) >= refConfig.pools.minimumTvlRequired) {
-                    poolIds.add(Number(id));
-                }
-            });
-            localCache.topPoolIds = poolIds;
-
-            return poolIds;
-        } catch (error) {
-            console.error('Error on fetching top pools', error);
-        }
-    }
-
     async _formatPoolsData(inputPools) {
         const pools = {};
         const tokens = new Set();
-        const topPoolIds = await this._getTopPoolIds();
+        const topPoolIds = await getTopPoolIds({
+            indexerAddress: refConfig.indexerAddress,
+            minTvl: refConfig.pools.minimumTvlRequired,
+        });
 
         inputPools.forEach((pool, poolId) => {
             if (topPoolIds && !topPoolIds.has(poolId)) {
@@ -208,7 +186,14 @@ class RefFinanceContract {
 
             const { token_account_ids, shares_total_supply, amounts  } = pool;
             const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
-            let mainKey = JSON.stringify(token_account_ids);
+            let mainKey = '';
+
+            try {
+                mainKey = JSON.stringify(token_account_ids);
+            } catch (error) {
+                console.error('Error on stringify token_account_ids', error);
+                return;
+            }
 
             if (hasLiquidity && !mainKey.match(DEV_CONTRACT_ID_REGEXP)) {
                 tokens.add(token_account_ids[0]);

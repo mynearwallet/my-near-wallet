@@ -17,13 +17,12 @@ const StyledContainer = styled.div`
     }
 `;
 
-const Header = styled.div`
+const StyledHeader = styled.div`
     text-align: center;
     line-height: 140%;
     color: #272729;
     font-weight: 600;
     font-size: 20px;
-    word-break: break-all;
 `;
 
 const FailTitle = styled.div`
@@ -43,7 +42,9 @@ const ButtonsWrapper = styled.div`
     }
 `;
 
-export default function Success({ onClickContinue, onClickGoToExplorer }) {
+const noop = () => {};
+
+export default function Success({ onClickContinue = noop, onClickGoToExplorer }) {
     const {
         swapState: { tokenIn, amountIn, tokenOut, amountOut, lastSwapState = {} },
     } = useSwapData();
@@ -64,25 +65,25 @@ export default function Success({ onClickContinue, onClickGoToExplorer }) {
             {success ? (
                 <>
                     <AvatarSuccessIcon />
-                    <Header>
+                    <StyledHeader>
                         <SafeTranslate
                             id="swap.successTitle"
                             data={successData}
                             data-test-id="swapPageSuccessMessage"
                         />
-                    </Header>
+                    </StyledHeader>
                 </>
             ) : (
                 <>
                     <FailIcon />
-                    <Header>
+                    <StyledHeader>
                         <FailTitle>
                             <SafeTranslate id="swap.failTitle" />
                         </FailTitle>
                         {failReason && (
                             <Reason className="font-monospace">{failReason}</Reason>
                         )}
-                    </Header>
+                    </StyledHeader>
                 </>
             )}
             <ButtonsWrapper>
@@ -93,7 +94,7 @@ export default function Success({ onClickContinue, onClickGoToExplorer }) {
                     <Translate id="button.continue" />
                 </FormButton>
 
-                {typeof onClickGoToExplorer === 'function' && swapHash && (
+                {swapHash && (
                     <FormButton color="gray-gray" onClick={onClickGoToExplorer}>
                         <Translate id="button.viewOnExplorer" />
                     </FormButton>
