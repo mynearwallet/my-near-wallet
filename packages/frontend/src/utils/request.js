@@ -1,13 +1,4 @@
-export const retryRequestIfFailed = async (
-    callback: (...params: unknown[]) => unknown,
-    {
-        attempts = 1,
-        delay = 100,
-    }: {
-        attempts: number;
-        delay: number;
-    }
-) => {
+export const retryRequestIfFailed = async (callback, { attempts = 1, delay = 100 }) => {
     for (let attempt = 1; attempt <= attempts; attempt++) {
         try {
             return await callback();
