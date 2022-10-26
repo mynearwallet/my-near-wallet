@@ -2,6 +2,7 @@ import * as nearApi from 'near-api-js';
 
 import { REF_FINANCE_CONTRACT, REF_FINANCE_API_ENDPOINT, TOKEN_TRANSFER_DEPOSIT } from '../../config';
 import { parseTokenAmount } from '../../utils/amounts';
+import { ERROR_MESSAGES } from './constants';
 import {
     findBestSwapPool,
     formatTotalFeePercent,
@@ -163,7 +164,9 @@ class RefFinanceContract {
         }
 
         try {
-            return JSON.stringify(data).match(refConfig.errorRegExp);
+            const sourceMsg = JSON.stringify(data).match(refConfig.errorRegExp);
+
+            return ERROR_MESSAGES[sourceMsg] || sourceMsg;
         } catch (error) {
             console.error('Error on getting error message', error);
         }
