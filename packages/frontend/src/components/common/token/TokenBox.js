@@ -42,14 +42,15 @@ const StyledContainer = styled.div`
         }
     }
 
-    .desc {
+    .description {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        min-width: 0px;
         margin-left: 14px;
         display: block;
 
-        .symbol {
+        .title {
             font-weight: 700;
             font-size: 16px;
             color: #24272a;
@@ -67,9 +68,10 @@ const StyledContainer = styled.div`
         .subTitle {
             color: #72727a;
             margin-top: 6px;
-            white-space: nowrap;
             display: block;
-            width: fit-content;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
 
             > span {
                 background-color: #f0f0f1;
@@ -139,7 +141,7 @@ const Title = ({ content, title }) => {
     const stopPropagation = (event) => event.stopPropagation();
 
     return (
-        <span className='symbol' title={title || content}>
+        <span className='title' title={title || content}>
             {title && title !== NEAR_ID ? (
                 <a
                     href={`${EXPLORER_URL}/accounts/${title}`}
@@ -201,7 +203,7 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
                 <div className='icon'>
                     <TokenIcon symbol={symbol} icon={icon} />
                 </div>
-                <div className='desc'>
+                <div className='description'>
                     <Title title={token.contractName} content={symbol} />
                     <SubTitle
                         showFiatPrice={showFiatPrice}
