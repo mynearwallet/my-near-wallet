@@ -2,10 +2,10 @@ import React, { FC, useCallback, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
-import { inLength, isEqual } from './lib/validation';
+import { inLength, isEqual, MIN_PASS_LEN } from './lib/validation';
 import { Confirm, Enter } from './ui';
-import ComplexityBlock from './ui/ComplexityBlock';
-import { validatePassword } from './ui/ComplexityBlock/lib/complexity';
+import ComplexityBlock from '../ComplexityBlock';
+import { validatePassword } from '../ComplexityBlock/lib/complexity';
 import Input from './ui/Input';
 
 type SetPasswordProps = {
@@ -98,8 +98,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
                 </Translate>
             </Confirm>
             <ComplexityBlock
-                show={isPassFocused}
-                complexity={validatePassword(password)} />
+                complexity={validatePassword(password, MIN_PASS_LEN)} />
         </>
     );
 };

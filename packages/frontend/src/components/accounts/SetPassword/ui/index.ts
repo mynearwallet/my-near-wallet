@@ -5,5 +5,5 @@ export const Enter = styled.div`
 `;
 
 export const Confirm = styled.div`
-  margin-bottom: 14px;
+  margin-bottom: 26px;
 `;

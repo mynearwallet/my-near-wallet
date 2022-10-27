@@ -8,7 +8,6 @@ import {
 import { Content, Level, Wrapper, Description, LevelWrapper } from './ui';
 
 type ComplexityBlockProps = {
-    show: boolean;
     complexity: PasswordComplexity;
 }
 
@@ -29,14 +28,14 @@ export const renderComplexityTrans = (
 
 const ComplexityBlock: FC<ComplexityBlockProps> = (props) => {
     return (
-        <Wrapper show={props.show}>
+        <Wrapper>
             <Content>
                 <LevelWrapper>
                     {
                         Array(getLevelsFromComplexity(props.complexity))
                             .fill(undefined)
                             .map((_, index) =>
-                                <Level level={index + 1} />
+                                <Level key={index} level={index + 1} />
                             )
                     }
                 </LevelWrapper>

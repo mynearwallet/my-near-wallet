@@ -1307,7 +1307,7 @@
         "average": "Average password",
         "confirm": "Confirm Password",
         "enter": "Enter password",
-        "lengthError": "Password should be 8 ~ 20 characters",
+        "lengthError": "At least 8 characters",
         "matchError": "Passwords do not match",
         "pageText": "You will use this to unlock your wallet.",
         "pageTitle": "Create a Password",

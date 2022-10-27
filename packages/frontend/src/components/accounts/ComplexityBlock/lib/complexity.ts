@@ -17,7 +17,10 @@ export const getLevelsFromComplexity = (
     }
 };
 
-export const validatePassword = (value: string): PasswordComplexity => {
+export const validatePassword = (
+    value: string,
+    minLength: number
+): PasswordComplexity => {
     const regExpWeak = /[a-z]/;
     const regExpMedium = /\d+/;
     const regExpStrong = /.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/;
@@ -29,16 +32,19 @@ export const validatePassword = (value: string): PasswordComplexity => {
     const week = value.match(regExpWeak);
     const average = value.match(regExpMedium);
     const strong = value.match(regExpStrong);
+    const inLength = value.length >= minLength;
 
-    if (week && average && strong) {
+    if (week && average && strong && inLength) {
         return 'strong';
     }
 
-    if ((week && average) || (average && strong) || (week && strong)) {
+    if (((week && average) || (average && strong) || (week && strong)) && inLength) {
         return 'average';
     }
 
     if (week || average || strong) {
         return 'week';
     }
+
+    return 'none';
 };

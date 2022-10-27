@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Wrapper = styled.div<{ show: boolean }>`
-    opacity: ${(props) => props.show ? '1' : '0'};
+export const Wrapper = styled.div`
     height: 4px;
 `;
 
