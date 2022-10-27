@@ -1,5 +1,5 @@
 [build]
-    publish = "./dist/static"
+    publish = "./dist"
     command = "yarn build"
     ignore = "/bin/false"
 
