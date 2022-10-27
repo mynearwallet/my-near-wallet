@@ -6,7 +6,6 @@ export default {
     ACCOUNT_ID_SUFFIX: 'testnet',
     ACCESS_KEY_FUNDING_AMOUNT: nearApiJs.utils.format.parseNearAmount('0.25'),
     DISABLE_CREATE_ACCOUNT: false,
-    DISABLE_PHONE_RECOVERY: true,
     EXPLORE_APPS_URL: 'https://awesomenear.com/',
     EXPLORE_DEFI_URL: 'https://awesomenear.com/categories/defi/',
     EXPLORER_URL: 'https://explorer.testnet.near.org',

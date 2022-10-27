@@ -7,7 +7,6 @@ export default {
     ACCESS_KEY_FUNDING_AMOUNT: nearApiJs.utils.format.parseNearAmount('0.25'),
     BROWSER_MIXPANEL_TOKEN: '778bd24eec7329cf885f0cecfc3d4f5d',
     DISABLE_CREATE_ACCOUNT: false,
-    DISABLE_PHONE_RECOVERY: false,
     EXPLORE_APPS_URL: 'https://awesomenear.com/',
     EXPLORE_DEFI_URL: 'https://awesomenear.com/categories/defi/',
     EXPLORER_URL: 'https://explorer.testnet.near.org',

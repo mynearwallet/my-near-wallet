@@ -29,9 +29,6 @@
     "test",
     "dist",
     ".cache",
-    "../../features",
-    "../feature-flags",
-    "../utilities",
     "../e2e-tests"
   ]
 }
