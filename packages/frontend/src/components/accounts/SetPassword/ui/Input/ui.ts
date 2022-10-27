@@ -9,6 +9,7 @@ export const InputContent = styled.div`
 
 export const InputElement = styled.input<{error: boolean}>`
     margin-top: 0 !important;
+    padding-right: 50px;
     
     ${props => props.error && css`
         box-shadow: 0px 0px 0px 2px rgba(242, 0, 0, 0.2);

@@ -11,7 +11,7 @@ export const Content = styled.div`
 `;
 
 export const LevelWrapper = styled.div`
-    display: flex;;
+    display: flex;
     max-width: 70%;
 `;
 
