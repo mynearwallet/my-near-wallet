@@ -12,6 +12,7 @@ export const Content = styled.div`
 
 export const LevelWrapper = styled.div`
     display: flex;;
+    max-width: 70%;
 `;
 
 export const Level = styled.div<{ level: number }>`
