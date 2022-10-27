@@ -6,6 +6,7 @@ const Bundler = require('parcel-bundler');
 const Config = require('./config');
 
 const DIST_PATH = path.join(__dirname, '../dist/static');
+const DIST_INDEX_PATH = path.join(__dirname, '../dist');
 const ENTRY_FILE_PATH = path.join(__dirname, '../src/index.html');
 const WASM_PATH = path.join(__dirname, '../src/wasm/');
 const SSL_PATH = path.join(__dirname, '../devServerCertificates/');
@@ -15,6 +16,7 @@ const enableDebugLogging = Config.DEBUG_BUILD;
 class ParcelBundler {
     constructor({
         outDir = DIST_PATH,
+        outIndexDir = DIST_INDEX_PATH,
         entryPath = ENTRY_FILE_PATH,
         wasmSourcePath = WASM_PATH,
         sslPath = SSL_PATH,
@@ -27,6 +29,7 @@ class ParcelBundler {
     } = {}) {
         this.entryPath = entryPath;
         this.outDir = outDir;
+        this.outIndexDir = outIndexDir;
         this.wasmSourcePath = wasmSourcePath;
         this.sslPath = sslPath;
         this.isDebug = isDebug;
@@ -50,7 +53,7 @@ class ParcelBundler {
 
     getBaseConfig() {
         return {
-            outDir: path.join(__dirname, '../dist'),
+            outDir: this.outIndexDir,
             outFile: 'index.html',
             logLevel: 3, // 5 = save everything to a file, 4 = like 3, but with timestamps and additionally log http requests to dev server, 3 = log info, warnings & errors, 2 = log warnings & errors, 1 = log errors, 0 = log nothing
             watch: this.isDevelopment,
