@@ -6,8 +6,6 @@ const Bundler = require('parcel-bundler');
 const Config = require('./config');
 
 const DIST_PATH = path.join(__dirname, '../dist/static');
-const ENTRY_INDEX_PATH = path.join(__dirname, '../dist/static/index.html');
-const DIST_INDEX_PATH = path.join(__dirname, '../dist/index.html');
 const ENTRY_FILE_PATH = path.join(__dirname, '../src/index.html');
 const WASM_PATH = path.join(__dirname, '../src/wasm/');
 const SSL_PATH = path.join(__dirname, '../devServerCertificates/');
@@ -195,7 +193,7 @@ class ParcelBundler {
             fs.copyFileSync(this.buildWasmSourcePath('multisig.wasm'), this.buildOutputPath('multisig.wasm'));
             fs.copyFileSync(this.buildWasmSourcePath('main.wasm'), this.buildOutputPath('main.wasm'));
             fs.copyFileSync(this.buildWasmSourcePath('state_cleanup.wasm'), this.buildOutputPath('state_cleanup.wasm'));
-            fs.copyFileSync(ENTRY_INDEX_PATH, DIST_INDEX_PATH);
+            fs.copyFileSync(path.join(__dirname, '../dist/static/index.html'), path.join(__dirname, '../dist/index.html'));
         });
 
         return this.bundler;
