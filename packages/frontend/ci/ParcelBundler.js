@@ -50,7 +50,7 @@ class ParcelBundler {
 
     getBaseConfig() {
         return {
-            outDir: this.outDir,
+            outDir: path.join(__dirname, '../dist'),
             outFile: 'index.html',
             logLevel: 3, // 5 = save everything to a file, 4 = like 3, but with timestamps and additionally log http requests to dev server, 3 = log info, warnings & errors, 2 = log warnings & errors, 1 = log errors, 0 = log nothing
             watch: this.isDevelopment,
