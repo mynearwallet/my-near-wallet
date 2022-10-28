@@ -1,12 +1,12 @@
 name: PR
 
 on:
-  push:
+  pull_request:
     branches:
-      - feat/move-static-to-static-folder
+      - master
 
 concurrency:
-  group: 'test'
+  group: ${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -38,4 +38,3 @@ jobs:
       environment: mainnet-preview
       near_wallet_env: mainnet_STAGING
     secrets: inherit
-
