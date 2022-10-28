@@ -123,10 +123,7 @@ const Container = styled.div`
         padding-top: 0;
 
         .App {
-            padding-top: 0;
-            
             .main {
-                padding-top: 0;
                 padding-bottom: 0px;
             }
         }

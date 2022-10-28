@@ -10,14 +10,15 @@ import ExploreIcon from '../svg/ExploreIcon';
 import UserIcon from '../svg/UserIcon';
 import VaultIcon from '../svg/VaultIcon';
 import WalletIcon from '../svg/WalletIcon';
+import DesktopMenu from './DesktopMenu';
 import Logo from './Logo';
 import {
-    StyledNavigation,
     StyledHeader,
+    StyledTop,
+    StyledNavigation,
     StyledLinks,
     StyledNavItem,
     StyledFooter,
-    StyledDivider,
 } from './ui';
 import UserAccount from './UserAccount';
 
@@ -29,7 +30,6 @@ const links = [
         link: '/',
         trackMsg: 'Click Wallet button on nav',
         icon: <WalletIcon />,
-        testId: '',
     },
     {
         nameId: 'link.staking',
@@ -43,41 +43,47 @@ const links = [
         link: '/explore',
         trackMsg: 'Click Explore button on nav',
         icon: <ExploreIcon />,
-        testId: '',
+        testId: 'explore_navlink',
     },
     {
         nameId: 'link.account',
         link: '/profile',
         trackMsg: 'Click Account button on nav',
         icon: <UserIcon />,
-        testId: '',
     },
     // {
     //     nameId: 'link.help',
     //     link: 'https://support.mynearwallet.com/en',
     //     trackMsg: 'Click Help button on nav',
     //     icon: <HelpIcon/>,
-    //     testId: '',
     // }
 ];
 
 const isMobileDevice = isMobile();
 
 type NavigationProps = {
-    selectAccount: any;
-    accounts: any;
-    currentAccount: any;
+    accounts: string[];
+    currentAccount: {
+        accountId: string;
+        accountsBalance: any;
+        localStorage: {
+            accountFound: boolean;
+            accountId: string;
+        };
+    };
+    selectAccount: (accountId: string) => void;
+    refreshBalance: (accountId: string) => void;
 };
 
 const Navigation: FC<NavigationProps> = ({
-    selectAccount,
-    // flowLimitationMainMenu,
-    // flowLimitationSubMenu,
     accounts,
     currentAccount,
+    selectAccount,
+    refreshBalance,
 }) => {
-    const { accountId, localStorage } = currentAccount;
+    const { accountId, accountsBalance, localStorage } = currentAccount;
     const [isNavigationOpen, setIsNavigationOpen] = useState(!isMobileDevice);
+    const [isAccountMenuVisible, setIsAccountMenuVisible] = useState(isMobileDevice);
 
     const toggleNavigation = () => {
         if (isMobileDevice) {
@@ -85,78 +91,63 @@ const Navigation: FC<NavigationProps> = ({
         }
     };
 
-    /* 
-    Desktop: 
-    - vertical layout
-    - always display
-    Order:
-    - logo + (account btn (trigger only accounts display) & accounts (hidden) in absolute)
-    - nav links
-    - devider
-    - support link
-    - lang switcher
+    const handleAccountClick = () => {
+        if (isMobileDevice) {
+            setIsNavigationOpen(!isNavigationOpen);
+        } else {
+            // TODO: add outside click hook
+            setIsAccountMenuVisible(!isAccountMenuVisible);
+        }
+    };
 
-    Mobile:
-    - vertical layout
-    - condition display (header is always)
-    Order:
-    - logo + account btn (trigger whole navigation display)
-    - nav links
-    - support link
-    - lang swticher
-    - accounts (always visible)
-    */
+    const isContentVisible = !isMobileDevice || isNavigationOpen;
 
     return (
-        <StyledNavigation id="nav-container">
-            <StyledHeader>
+        <StyledHeader id="nav-container">
+            <StyledTop>
                 <Logo mode={isMobileDevice ? 'mobile' : undefined} link />
                 <UserAccount
                     accountId={accountId || localStorage?.accountId}
-                    onClick={toggleNavigation}
+                    onClick={handleAccountClick}
                     withIcon={!isMobileDevice}
-                    // TODO simplify prop name
-                    flowLimitationSubMenu={!isMobileDevice}
                 />
-                {isMobileDevice && (
-                    <UserIcon
-                        background={true}
-                        color="#A2A2A8"
-                        onClick={toggleNavigation}
-                    />
-                )}
-            </StyledHeader>
+                {isMobileDevice && <UserIcon onClick={toggleNavigation} background />}
+            </StyledTop>
 
-            {(!isMobileDevice || isNavigationOpen) && (
-                <>
-                    <StyledLinks>
-                        {links.map(({ nameId, link, trackMsg, icon }, index) => (
-                            <StyledNavItem key={index}>
-                                <NavLink
-                                    to={link}
-                                    onClick={() => track(trackMsg)}
-                                    data-test-id
-                                >
-                                    {icon}
+            <StyledNavigation hidden={!isContentVisible}>
+                <StyledLinks>
+                    {links.map(({ nameId, link, trackMsg, icon, testId = '' }, index) => (
+                        <StyledNavItem key={index}>
+                            <NavLink
+                                exact
+                                to={link}
+                                onClick={() => track(trackMsg)}
+                                data-test-id={testId}
+                                className="link"
+                            >
+                                {icon}
+                                <span className="name">
                                     <Translate id={nameId} />
-                                </NavLink>
-                            </StyledNavItem>
-                        ))}
-                    </StyledLinks>
+                                </span>
+                            </NavLink>
+                        </StyledNavItem>
+                    ))}
+                </StyledLinks>
 
-                    {!isMobileDevice && (
-                        <StyledDivider />
-                    )}
-
-                    <StyledFooter>
-                        <LangSwitcher />
-                        {null
-                            // account component with main actions + languages
-                        }
-                    </StyledFooter>
-                </>
-            )}
-        </StyledNavigation>
+                <StyledFooter showDivider={!isMobileDevice}>
+                    <LangSwitcher />
+                    {/* TODO: rename with smth like "AccountMenu" or "AccountSelector" */}
+                    <DesktopMenu
+                        show={isAccountMenuVisible}
+                        accounts={accounts}
+                        handleSelectAccount={selectAccount}
+                        accountIdLocalStorage={localStorage?.accountId}
+                        accountsBalance={accountsBalance}
+                        refreshBalance={refreshBalance}
+                    />
+                </StyledFooter>
+            </StyledNavigation>
+        </StyledHeader>
     );
 };
 

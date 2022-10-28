@@ -64,8 +64,9 @@ const Container = styled.div`
     }
 `;
 
-const NetworkBanner = ({ account }) => {
+const isBannerVisible = !CONFIG.IS_MAINNET || CONFIG.SHOW_PRERELEASE_WARNING;
 
+const NetworkBanner = ({ account }) => {
     useEffect(() => {
         Mixpanel.register({network_id: CONFIG.IS_MAINNET ? 'mainnet' : CONFIG.NETWORK_ID === 'default' ? 'testnet': CONFIG.NETWORK_ID});
         setBannerHeight();
@@ -75,13 +76,17 @@ const NetworkBanner = ({ account }) => {
         };
     }, [account]);
 
+    // TODO: find a better way to display this component. Do not access html elements directly
     const setBannerHeight = () => {
         const banner =  document.getElementById('top-banner');
         const bannerHeight = banner ? banner.getBoundingClientRect().top + banner.offsetHeight : 0;
         const app = document.getElementById('app-container');
         const navContainer = document.getElementById('nav-container');
         navContainer.style.top = bannerHeight ? `${bannerHeight}px` : 0;
-        app.style.paddingTop = bannerHeight ? `${bannerHeight + 85}px` : '75px';
+
+        if (isBannerVisible) {
+            app.style.paddingTop = bannerHeight ? `${bannerHeight + 85}px` : '75px';
+        }
     };
 
     if (!CONFIG.IS_MAINNET) {
@@ -96,7 +101,9 @@ const NetworkBanner = ({ account }) => {
                 <Tooltip translate='networkBanner.desc' modalOnly={true}/>
             </Container>
         );
-    } else if (CONFIG.SHOW_PRERELEASE_WARNING) {
+    } 
+
+    if (CONFIG.SHOW_PRERELEASE_WARNING) {
         return (
             <Container id='top-banner' className='staging-banner'>
                 <AlertTriangleIcon color='#A15600'/>
@@ -104,9 +111,9 @@ const NetworkBanner = ({ account }) => {
                 <Tooltip translate='stagingBanner.desc' modalOnly={true}/>
             </Container>
         );
-    } else {
-        return null;
     }
+
+    return null;
 };
 
 export default NetworkBanner;
