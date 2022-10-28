@@ -690,7 +690,6 @@
         "account": "Account",
         "authorizedApps": "Authorized Apps",
         "buyUSN": "Buy $USN",
-        "donateToUkraine": "Donate to Ukraine",
         "explore": "Explore",
         "fullAccessKeys": "Full Access Keys",
         "help": "Help",
@@ -781,12 +780,6 @@
                 "title": "Connect with NEAR"
             }
         }
-    },
-    "migration": {
-        "message": "NEAR Wallet is being sunsetted, find more info in our <a href='${url}' target='_blank'>blog</a>.<br/>You have until ${startDate} to transfer your accounts, or export your keys from your account settings.",
-        "redirect": "NEAR Wallet is being sunsetted.<br/>Click the button to learn more.",
-        "redirectCaption": "Learn More",
-        "transferCaption": "Transfer My Accounts"
     },
     "minimumBalance": "This is the minimum NEAR balance your account must maintain to remain active. This balance represents the storage space your account is using on the NEAR blockchain (with a small buffer), and will go up or down as you use more or less space.",
     "mobileDeviceAccess": {
@@ -1303,6 +1296,18 @@
         "secondaryCta": "Keep existing keys",
         "two": "Maintaining multiple keys and recovery methods (including passphrases) increases the vulnerability of your account."
     },
+    "setupPasswordProtection": {
+        "average": "Average password",
+        "confirm": "Confirm Password",
+        "enter": "Enter password",
+        "lengthError": "At least 8 characters",
+        "matchError": "Passwords do not match",
+        "pageText": "You will use this to unlock your wallet.",
+        "pageTitle": "Create a Password",
+        "strong": "Strong password",
+        "week": "Week password",
+        "withoutPassword": "Continue without creating a password"
+    },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",
         "advancedSecurityDesc": "Write down a 12 word passphrase, or secure your account with your Ledger device.",
@@ -1797,7 +1802,6 @@
             "title": "Deposit NEAR"
         },
         "status": "Status",
-        "tokenBalance": "Token Balance",
         "tokens": "Tokens",
         "totalBalance": "Total Balance",
         "totalBalanceTitle": "Total Balance",

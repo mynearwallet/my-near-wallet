@@ -2,8 +2,7 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import { CREATE_USN_CONTRACT } from '../../../../../../features';
-import { EXPLORER_URL, NEAR_ID } from '../../../config';
+import CONFIG from '../../../config';
 import Balance from '../balance/Balance';
 import TokenAmount from './TokenAmount';
 import TokenIcon from './TokenIcon';
@@ -42,14 +41,15 @@ const StyledContainer = styled.div`
         }
     }
 
-    .desc {
+    .description {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        min-width: 0px;
         margin-left: 14px;
         display: block;
 
-        .symbol {
+        .title {
             font-weight: 700;
             font-size: 16px;
             color: #24272a;
@@ -67,9 +67,10 @@ const StyledContainer = styled.div`
         .subTitle {
             color: #72727a;
             margin-top: 6px;
-            white-space: nowrap;
             display: block;
-            width: fit-content;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
 
             > span {
                 background-color: #f0f0f1;
@@ -139,10 +140,10 @@ const Title = ({ content, title }) => {
     const stopPropagation = (event) => event.stopPropagation();
 
     return (
-        <span className='symbol' title={title || content}>
-            {title && title !== NEAR_ID ? (
+        <span className='title' title={title || content}>
+            {title && title !== CONFIG.NEAR_ID ? (
                 <a
-                    href={`${EXPLORER_URL}/accounts/${title}`}
+                    href={`${CONFIG.EXPLORER_URL}/accounts/${title}`}
                     onClick={stopPropagation}
                     target='_blank'
                     rel='noopener noreferrer'
@@ -195,13 +196,13 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
         <StyledContainer
             className='token-box'
             onClick={selectToken}
-            data-test-id={`token-selection-${token.contractName || NEAR_ID}`}
+            data-test-id={`token-selection-${token.contractName || CONFIG.NEAR_ID}`}
         >
             <TokenBoxWrapper>
                 <div className='icon'>
                     <TokenIcon symbol={symbol} icon={icon} />
                 </div>
-                <div className='desc'>
+                <div className='description'>
                     <Title title={token.contractName} content={symbol} />
                     <SubTitle
                         showFiatPrice={showFiatPrice}
@@ -210,13 +211,13 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
                         price={token.fiatValueMetadata?.usd}
                     />
                 </div>
-                {!token.contractName || token.contractName === NEAR_ID ? (
+                {!token.contractName || token.contractName === CONFIG.NEAR_ID ? (
                     <div className='balance'>
                         <Balance
                             amount={token.balance}
                             data-test-id='walletHomeNearBalance'
                             symbol={false}
-                            showSymbolNEAR={!CREATE_USN_CONTRACT}
+                            showSymbolNEAR={false}
                         />
                     </div>
                 ) : (
