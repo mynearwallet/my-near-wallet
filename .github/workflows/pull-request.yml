@@ -6,7 +6,7 @@ on:
       - feat/move-static-to-static-folder
 
 concurrency:
-  group: ${{ github.event.pull_request.number }}
+  group: 'testnet'
   cancel-in-progress: true
 
 jobs:
