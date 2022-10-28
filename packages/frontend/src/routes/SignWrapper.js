@@ -8,7 +8,6 @@ import SignTransferMultipleAccounts from '../components/sign/SignTransferMultipl
 import SignTransferRetry from '../components/sign/SignTransferRetry';
 import SignTransactionDetailsWrapper from '../components/sign/v2/SignTransactionDetailsWrapper';
 import SignTransactionSummaryWrapper from '../components/sign/v2/SignTransactionSummaryWrapper';
-import { isWhitelabel } from '../config/whitelabel';
 import { Mixpanel } from '../mixpanel';
 import { switchAccount, redirectTo } from '../redux/actions/account';
 import { selectAccountId } from '../redux/slices/account';
@@ -30,7 +29,7 @@ import {
 import { addQueryParams } from '../utils/addQueryParams';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
-export function SignWrapper({ urlQuery }) {
+const SignWrapper = ({ urlQuery }) => {
     const dispatch = useDispatch();
 
     const DISPLAY = {
@@ -94,7 +93,7 @@ export function SignWrapper({ urlQuery }) {
         if (signStatus === SIGN_STATUS.RETRY_TRANSACTION) {
             setCurrentDisplay(DISPLAY.INSUFFICIENT_NETWORK_FEE);
         }
-        
+
         if (signStatus === SIGN_STATUS.SUCCESS) {
             if (signCallbackUrl && !!transactionHashes.length && isValidCallbackUrl) {
                 window.location.href = addQueryParams(signCallbackUrl, {
@@ -108,7 +107,7 @@ export function SignWrapper({ urlQuery }) {
     }, [signStatus]);
 
     useEffect(() => {
-        if (urlQuery?.meta && isWhitelabel) {
+        if (urlQuery?.meta) {
             try {
                 const metaJson = JSON.parse(decodeURIComponent(urlQuery.meta));
                 if (metaJson.calimeroRPCEndpoint && metaJson.calimeroShardId) {
@@ -144,7 +143,7 @@ export function SignWrapper({ urlQuery }) {
             window.location.href= encounter;
             return;
         }
-        
+
         Mixpanel.track('SIGN Deny the transaction');
         if (signCallbackUrl && isValidCallbackUrl) {
             if (signStatus !== SIGN_STATUS.ERROR) {
@@ -228,4 +227,6 @@ export function SignWrapper({ urlQuery }) {
             privateShardId={customRPCUrl && privateShardId}
         />
     );
-}
+};
+
+export default SignWrapper;

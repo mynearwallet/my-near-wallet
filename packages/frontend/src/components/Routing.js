@@ -10,17 +10,8 @@ import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { SHOW_MIGRATION_BANNER, WEB3AUTH } from '../../../../features';
-import favicon from '../../src/images/mynearwallet-cropped.svg';
 import TwoFactorVerifyModal from '../components/accounts/two_factor/TwoFactorVerifyModal';
-import Swap from '../components/swap/Swap';
-import {
-    IS_MAINNET,
-    PUBLIC_URL,
-    SHOW_PRERELEASE_WARNING,
-    DISABLE_CREATE_ACCOUNT,
-} from '../config';
-import { isWhitelabel } from '../config/whitelabel';
+import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
 import * as accountActions from '../redux/actions/account';
@@ -28,15 +19,15 @@ import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
 import { actions as flowLimitationActions } from '../redux/slices/flowLimitation';
 import { actions as tokenFiatValueActions } from '../redux/slices/tokenFiatValues';
-import { CreateImplicitAccountWrapper } from '../routes/CreateImplicitAccountWrapper';
-import { ImportAccountWithLinkWrapper } from '../routes/ImportAccountWithLinkWrapper';
-import { LoginWrapper } from '../routes/LoginWrapper';
-import { SetupLedgerNewAccountWrapper } from '../routes/SetupLedgerNewAccountWrapper';
-import { SetupPassphraseNewAccountWrapper } from '../routes/SetupPassphraseNewAccountWrapper';
-import { SetupRecoveryImplicitAccountWrapper } from '../routes/SetupRecoveryImplicitAccountWrapper';
-import { SignWrapper } from '../routes/SignWrapper';
-import { VerifyOwnerWrapper } from '../routes/VerifyOwnerWrapper';
-import { WalletWrapper } from '../routes/WalletWrapper';
+import CreateImplicitAccountWrapper from '../routes/CreateImplicitAccountWrapper';
+import ImportAccountWithLinkWrapper from '../routes/ImportAccountWithLinkWrapper';
+import LoginWrapper from '../routes/LoginWrapper';
+import SetupLedgerNewAccountWrapper from '../routes/SetupLedgerNewAccountWrapper';
+import SetupPassphraseNewAccountWrapper from '../routes/SetupPassphraseNewAccountWrapper';
+import SetupRecoveryImplicitAccountWrapper from '../routes/SetupRecoveryImplicitAccountWrapper';
+import SignWrapper from '../routes/SignWrapper';
+import VerifyOwnerWrapper from '../routes/VerifyOwnerWrapper';
+import WalletWrapper from '../routes/WalletWrapper';
 import translations_en from '../translations/en.global.json';
 import translations_it from '../translations/it.global.json';
 import translations_pt from '../translations/pt.global.json';
@@ -57,53 +48,52 @@ import {
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
 import AccessKeysWrapper from './access-keys/v2/AccessKeysWrapper';
-import { AutoImportWrapper } from './accounts/auto_import/AutoImportWrapper';
+import AutoImportWrapper from './accounts/auto_import/AutoImportWrapper';
 import BatchImportAccounts from './accounts/batch_import_accounts';
 import BatchLedgerExport from './accounts/batch_ledger_export';
-import { ExistingAccountWrapper } from './accounts/create/existing_account/ExistingAccountWrapper';
-import { InitialDepositWrapper } from './accounts/create/initial_deposit/InitialDepositWrapper';
-import { CreateAccountLanding } from './accounts/create/landing/CreateAccountLanding';
-import { VerifyAccountWrapper } from './accounts/create/verify_account/VerifyAccountWrapper';
-import { CreateAccountWithRouter } from './accounts/CreateAccount';
+import ExistingAccountWrapper from './accounts/create/existing_account/ExistingAccountWrapper';
+import InitialDepositWrapper from './accounts/create/initial_deposit/InitialDepositWrapper';
+import CreateAccountLanding from './accounts/create/landing/CreateAccountLanding';
+import VerifyAccountWrapper from './accounts/create/verify_account/VerifyAccountWrapper';
+import CreateAccountWithRouter from './accounts/CreateAccount';
 import LedgerConfirmActionModal from './accounts/ledger/LedgerConfirmActionModal';
 import LedgerConnectModal from './accounts/ledger/LedgerConnectModal/LedgerConnectModalWrapper';
-import { SetupLedgerWithRouter } from './accounts/ledger/SetupLedger';
-import { SetupLedgerSuccessWithRouter } from './accounts/ledger/SetupLedgerSuccess';
-import { SignInLedgerWrapper } from './accounts/ledger/SignInLedgerWrapper';
-import { LinkdropLandingWithRouter } from './accounts/LinkdropLanding';
-import { RecoverAccountSeedPhraseWithRouter } from './accounts/RecoverAccountSeedPhrase';
-import { RecoverAccountWrapper } from './accounts/RecoverAccountWrapper';
-import { SetupRecoveryMethodWithRouter } from './accounts/recovery_setup/SetupRecoveryMethod';
-import { SetupImplicitWithRouter } from './accounts/SetupImplicit';
-import { SetupSeedPhraseWithRouter } from './accounts/SetupSeedPhrase';
+import SetupLedgerWithRouter from './accounts/ledger/SetupLedger';
+import SetupLedgerSuccessWithRouter from './accounts/ledger/SetupLedgerSuccess';
+import SignInLedgerWrapper from './accounts/ledger/SignInLedgerWrapper';
+import LinkdropLandingWithRouter from './accounts/LinkdropLanding';
+import RecoverAccountSeedPhraseWithRouter from './accounts/RecoverAccountSeedPhrase';
+import RecoverAccountWrapper from './accounts/RecoverAccountWrapper';
+import SetupRecoveryMethodWithRouter from './accounts/recovery_setup/SetupRecoveryMethod';
+import SetupImplicitWithRouter from './accounts/SetupImplicit';
+import SetupSeedPhraseWithRouter from './accounts/SetupSeedPhrase';
 import { EnableTwoFactor } from './accounts/two_factor/EnableTwoFactor';
 import { BuyNear } from './buy/BuyNear';
 import Bootstrap from './common/Bootstrap';
 import Footer from './common/Footer';
 import GlobalAlert from './common/GlobalAlert';
 import GuestLandingRoute from './common/GuestLandingRoute';
-import MigrationBanner from './common/MigrationBanner';
 import NetworkBanner from './common/NetworkBanner';
 import PrivateRoute from './common/routing/PrivateRoute';
 import PublicRoute from './common/routing/PublicRoute';
 import Route from './common/routing/Route';
-import TwoFactorDisableBanner from './common/TwoFactorDisableBanner';
+import Updater from './common/Updater';
 import { ExploreContainer } from './explore/ExploreContainer';
 import GlobalStyle from './GlobalStyle';
-import { LoginCliLoginSuccess } from './login/LoginCliLoginSuccess';
+import LoginCliLoginSuccess from './login/LoginCliLoginSuccess';
 import NavigationWrapper from './navigation/NavigationWrapper';
-import { NFTDetailWrapper } from './nft/NFTDetailWrapper';
-import { PageNotFound } from './page-not-found/PageNotFound';
+import NFTDetailWrapper from './nft/NFTDetailWrapper';
+import PageNotFound from './page-not-found/PageNotFound';
 import Privacy from './privacy/Privacy';
-import { Profile } from './profile/Profile';
-import { ReceiveContainerWrapper } from './receive-money/ReceiveContainerWrapper';
-import { SendContainerWrapper } from './send/SendContainerWrapper';
-import { StakingContainer } from './staking/StakingContainer';
+import Profile from './profile/Profile';
+import ReceiveContainerWrapper from './receive-money/ReceiveContainerWrapper';
+import SendContainerWrapper from './send/SendContainerWrapper';
+import StakingContainer from './staking/StakingContainer';
 import Terms from './terms/Terms';
 import '../index.css';
 import WalletMigration from './wallet-migration/WalletMigration';
 import EnterPassword from "./encrypted-access/EnterPassword";
-const { fetchTokenFiatValues, getTokenWhiteList } = tokenFiatValueActions;
+const { getTokenWhiteList } = tokenFiatValueActions;
 
 const {
     handleClearUrl,
@@ -118,12 +108,16 @@ const { handleFlowLimitation } = flowLimitationActions;
 
 const theme = {};
 
-const PATH_PREFIX = PUBLIC_URL;
+const PATH_PREFIX = CONFIG.PUBLIC_URL;
+
+// TODO: https://mnw.atlassian.net/browse/MNW-98
+const WEB3AUTH_FEATURE_ENABLED = false;
 
 const Container = styled.div`
     min-height: 100vh;
     padding-bottom: 230px;
     padding-top: 75px;
+
     @media (max-width: 991px) {
         .App {
             .main {
@@ -131,6 +125,7 @@ const Container = styled.div`
             }
         }
     }
+
     &.network-banner {
         @media (max-width: 450px) {
             .alert-banner,
@@ -167,7 +162,9 @@ class Routing extends Component {
             { name: 'Українська', code: 'ua' },
         ];
 
-        const browserLanguage = getBrowserLocale(languages.map((l) => l.code));
+        const browserLanguage = getBrowserLocale(
+            languages.map((l) => l.code)
+        );
         const activeLang =
             localStorage.getItem('languageCode') ||
             browserLanguage ||
@@ -216,11 +213,6 @@ class Routing extends Component {
     }
 
     componentDidMount = async () => {
-        if (isWhitelabel && document) {
-            document.title = 'MyNearWallet';
-            document.querySelector('link[rel~="icon"]').href = favicon;
-        }
-
         const {
             refreshAccount,
             handleRefreshUrl,
@@ -253,15 +245,13 @@ class Routing extends Component {
     };
 
     componentDidUpdate(prevProps) {
-        const { activeLanguage, fetchTokenFiatValues, account } = this.props;
+        const { activeLanguage, account } = this.props;
 
         if (
             prevProps.account.accountId !== account.accountId &&
             account.accountId !== undefined
         ) {
             this.props.getTokenWhiteList(account.accountId);
-            fetchTokenFiatValues({ accountId: account.accountId });
-            this.startPollingTokenFiatValue();
         }
 
         const prevLangCode =
@@ -274,33 +264,6 @@ class Routing extends Component {
             localStorage.setItem('languageCode', curLangCode);
         }
     }
-
-    componentWillUnmount = () => {
-        this.stopPollingTokenFiatValue();
-    };
-
-    startPollingTokenFiatValue = () => {
-        const { fetchTokenFiatValues, account } = this.props;
-
-        const handlePollTokenFiatValue = async () => {
-            await fetchTokenFiatValues({ accountId: account.accountId }).catch(() => {});
-            if (this.pollTokenFiatValue) {
-                this.pollTokenFiatValue = setTimeout(
-                    () => handlePollTokenFiatValue(),
-                    30000
-                );
-            }
-        };
-        this.pollTokenFiatValue = setTimeout(
-            () => handlePollTokenFiatValue(),
-            30000
-        );
-    };
-
-    stopPollingTokenFiatValue = () => {
-        clearTimeout(this.pollTokenFiatValue);
-        this.pollTokenFiatValue = null;
-    };
 
     handleTransferClick = () => {
         this.setState({ openTransferPopup: true });
@@ -347,13 +310,14 @@ class Routing extends Component {
                     'App',
                     {
                         'network-banner':
-                            !IS_MAINNET || SHOW_PRERELEASE_WARNING,
+                            !CONFIG.IS_MAINNET || CONFIG.SHOW_PRERELEASE_WARNING,
                     },
                     { 'hide-footer-mobile': hideFooterOnMobile },
                 ])}
                 id="app-container"
             >
                 <Bootstrap />
+                <Updater />
                 <GlobalStyle />
                 <ConnectedRouter
                     basename={PATH_PREFIX}
@@ -361,25 +325,9 @@ class Routing extends Component {
                 >
                     <ThemeProvider theme={theme}>
                         <ScrollToTop />
-                        {
-                            SHOW_MIGRATION_BANNER && (
-                                <MigrationBanner
-                                    account={account}
-                                    onTransfer={this.handleTransferClick} />
-                            )}
-
                         <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
-                        {
-                            !isWhitelabel && (
-                                <Switch>
-                                    <Route
-                                        path={['/', '/staking', '/profile']} component={TwoFactorDisableBanner}
-                                    />
-                                </Switch>
-                            )
-                        }
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}
@@ -446,7 +394,7 @@ class Routing extends Component {
                                 exact
                                 path="/create"
                                 render={(props) =>
-                                    accountFound || !DISABLE_CREATE_ACCOUNT ? (
+                                    accountFound || !CONFIG.DISABLE_CREATE_ACCOUNT ? (
                                         <CreateAccountWithRouter
                                             {...props}
                                         />
@@ -660,11 +608,6 @@ class Routing extends Component {
                             />
                             <PrivateRoute
                                 exact
-                                path="/swap-legacy"
-                                component={Swap}
-                            />
-                            <PrivateRoute
-                                exact
                                 path="/enter-password"
                                 component={EnterPassword}
                             />
@@ -695,13 +638,11 @@ class Routing extends Component {
                                     />
                                 )}
                             />
-                            {isWhitelabel && (
-                                <PrivateRoute
-                                    exact
-                                    path="/explore"
-                                    component={ExploreContainer}
-                                />
-                            )}
+                            <PrivateRoute
+                                exact
+                                path="/explore"
+                                component={ExploreContainer}
+                            />
                             <Route
                                 exact
                                 path="/cli-login-success"
@@ -719,7 +660,7 @@ class Routing extends Component {
                                 component={Privacy}
                                 indexBySearchEngines={true}
                             />
-                            {WEB3AUTH && (
+                            {WEB3AUTH_FEATURE_ENABLED && (
                                 <PrivateRoute
                                     exact
                                     path="/verify-owner"
@@ -747,7 +688,6 @@ const mapDispatchToProps = {
     handleClearUrl,
     promptTwoFactor,
     redirectTo,
-    fetchTokenFiatValues,
     handleClearAlert,
     handleFlowLimitation,
     getTokenWhiteList,

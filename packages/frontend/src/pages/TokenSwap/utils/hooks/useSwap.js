@@ -2,7 +2,7 @@ import Big from 'big.js';
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { NEAR_TOKEN_ID } from '../../../../config';
+import CONFIG from '../../../../config';
 import { Mixpanel } from '../../../../mixpanel';
 import { showCustomAlert } from '../../../../redux/actions/status';
 import selectNEARAsTokenWithMetadata from '../../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
@@ -28,7 +28,7 @@ const getAmountStats = ({ tokenIn, amountIn, tokenOut, amountOut, nearUsdPrice }
 
     if (
         fungibleTokenExchange.isNearTransformation({ tokenIn, tokenOut }) ||
-        tokenInId === NEAR_TOKEN_ID
+        tokenInId === CONFIG.NEAR_TOKEN_ID
     ) {
         return {
             volumeNear: amountIn,
@@ -36,7 +36,7 @@ const getAmountStats = ({ tokenIn, amountIn, tokenOut, amountOut, nearUsdPrice }
         };
     }
 
-    if (tokenOutId === NEAR_TOKEN_ID) {
+    if (tokenOutId === CONFIG.NEAR_TOKEN_ID) {
         return {
             volumeNear: amountOut,
             volumeUSD: getUsdVolume(amountOut, nearUsdPrice),
@@ -81,7 +81,7 @@ export default function useSwap({
             setSwapPending(true);
 
             try {
-                const { swapTxHash, success } = await fungibleTokenExchange.swap({
+                const { swapTxHash, success, failReason } = await fungibleTokenExchange.swap({
                     account,
                     amountIn,
                     poolId,
@@ -91,6 +91,8 @@ export default function useSwap({
                 });
 
                 Mixpanel.track('Swap:done', {
+                    success,
+                    failReason,
                     tokenFrom: tokenIn.onChainFTMetadata.symbol,
                     tokenFromAddress: tokenIn.contractName,
                     tokenTo: tokenOut.onChainFTMetadata.symbol,
@@ -120,6 +122,7 @@ export default function useSwap({
                 setCompletedSwapState({
                     success,
                     hash: swapTxHash,
+                    failReason,
                     tokenIn: tokenIn.onChainFTMetadata.symbol,
                     tokenOut: tokenOut.onChainFTMetadata.symbol,
                 });

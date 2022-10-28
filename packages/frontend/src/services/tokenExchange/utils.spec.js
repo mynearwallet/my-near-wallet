@@ -1,4 +1,5 @@
 import { parseTokenAmount } from '../../utils/amounts';
+import * as constants from './constants';
 import * as utils from './utils';
 
 const token0 = {
@@ -26,8 +27,8 @@ describe('Ref Finance utils', () => {
         expect(utils.getFeeMultiplier(300.2)).toBe('0.96998');
         expect(utils.getFeeMultiplier(3_000)).toBe('0.7');
         expect(utils.getFeeMultiplier(5_000)).toBe('0.5');
-        expect(utils.getFeeMultiplier(utils.FEE_DIVISOR)).toBe('0');
-        expect(utils.getFeeMultiplier(utils.FEE_DIVISOR + 1)).toBe('0');
+        expect(utils.getFeeMultiplier(constants.FEE_DIVISOR)).toBe('0');
+        expect(utils.getFeeMultiplier(constants.FEE_DIVISOR + 1)).toBe('0');
         expect(utils.getFeeMultiplier(0)).toBe('1');
         expect(utils.getFeeMultiplier(-1)).toBe('1');
     });
@@ -40,13 +41,35 @@ describe('Ref Finance utils', () => {
         expect(utils.formatTotalFeePercent(300)).toBe('3');
         expect(utils.formatTotalFeePercent(300.8)).toBe('3.008');
         expect(utils.formatTotalFeePercent(3_000)).toBe('30');
-        expect(utils.formatTotalFeePercent(utils.FEE_DIVISOR)).toBe('100');
-        expect(utils.formatTotalFeePercent(utils.FEE_DIVISOR + 1)).toBe('100');
+        expect(utils.formatTotalFeePercent(constants.FEE_DIVISOR)).toBe('100');
+        expect(utils.formatTotalFeePercent(constants.FEE_DIVISOR + 1)).toBe('100');
         expect(utils.formatTotalFeePercent(-1)).toBe('0');
         expect(utils.formatTotalFeePercent(0)).toBe('0');
     });
 
     test('should correctly calculate output amount for swap', () => {
+        expect(
+            utils.getAmountOut({
+                pool: pool0,
+                tokenInId: token0.id,
+                tokenInDecimals: token0.decimals,
+                amountIn: 1,
+                tokenOutId: token1.id,
+                tokenOutDecimals: token1.decimals,
+            })
+        ).toBe('1994.009978041914400000');
+
+        expect(
+            utils.getAmountOut({
+                pool: pool0,
+                tokenInId: token0.id,
+                tokenInDecimals: token0.decimals,
+                amountIn: 180,
+                tokenOutId: token1.id,
+                tokenOutDecimals: token1.decimals,
+            })
+        ).toBe('304567.495168017400000000');
+
         expect(
             utils.getAmountOut({
                 pool: pool0,

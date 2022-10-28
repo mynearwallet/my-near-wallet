@@ -2,8 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Wallet } from '../components/wallet/Wallet';
-import { useFungibleTokensIncludingNEAR } from '../hooks/fungibleTokensIncludingNEAR';
-import { useTokenBlacklist } from '../hooks/useTokenBlacklist';
+import useSortedTokens from '../hooks/useSortedTokens';
 import { Mixpanel } from '../mixpanel/index';
 import { selectAccountId, selectBalance, selectAccountExists } from '../redux/slices/account';
 import { selectAvailableAccounts } from '../redux/slices/availableAccounts';
@@ -12,7 +11,7 @@ import { selectZeroBalanceAccountImportMethod, actions as importZeroBalanceAccou
 import { selectLinkdropAmount, actions as linkdropActions } from '../redux/slices/linkdrop';
 import { selectTokensWithMetadataForAccountId, actions as nftActions } from '../redux/slices/nft';
 import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId } from '../redux/slices/recoveryMethods';
-import { selectTokensLoading } from '../redux/slices/tokens';
+import { selectTokensLoading, selectAllowedTokens } from '../redux/slices/tokens';
 
 const { fetchNFTs } = nftActions;
 const { setLinkdropAmount } = linkdropActions;
@@ -21,10 +20,10 @@ const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 
 
-export function WalletWrapper({
+const WalletWrapper = ({
     tab,
     setTab
-}) {
+}) => {
     const accountId = useSelector(selectAccountId);
     const accountExists = useSelector(selectAccountExists);
     const balance = useSelector(selectBalance);
@@ -33,13 +32,12 @@ export function WalletWrapper({
     const createFromImplicitSuccess = useSelector(selectCreateFromImplicitSuccess);
     const createCustomName = useSelector(selectCreateCustomName);
     const zeroBalanceAccountImportMethod = useSelector(selectZeroBalanceAccountImportMethod);
-    const fungibleTokensList = useFungibleTokensIncludingNEAR();
     const tokensLoading = useSelector((state) => selectTokensLoading(state, { accountId }));
     const availableAccounts = useSelector(selectAvailableAccounts);
     const sortedNFTs = useSelector((state) => selectTokensWithMetadataForAccountId(state, { accountId }));
     const userRecoveryMethods = useSelector((state) => selectRecoveryMethodsByAccountId(state, { accountId }));
-
-    const blacklist = useTokenBlacklist({ tokens: fungibleTokensList });
+    const allowedTokens = useSelector(selectAllowedTokens);
+    const sortedTokens = useSortedTokens(allowedTokens);
 
     useEffect(() => {
         if (accountId) {
@@ -65,7 +63,7 @@ export function WalletWrapper({
             createFromImplicitSuccess={createFromImplicitSuccess}
             createCustomName={createCustomName}
             zeroBalanceAccountImportMethod={zeroBalanceAccountImportMethod}
-            fungibleTokensList={blacklist.allowedTokens}
+            fungibleTokensList={sortedTokens}
             tokensLoading={tokensLoading}
             availableAccounts={availableAccounts}
             sortedNFTs={sortedNFTs}
@@ -81,4 +79,7 @@ export function WalletWrapper({
             userRecoveryMethods={userRecoveryMethods}
         />
     );
-}
+};
+
+export default WalletWrapper;
+
