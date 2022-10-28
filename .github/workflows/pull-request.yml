@@ -6,7 +6,7 @@ on:
       - feat/move-static-to-static-folder
 
 concurrency:
-  group: 'testnet'
+  group: 'test'
   cancel-in-progress: true
 
 jobs:
