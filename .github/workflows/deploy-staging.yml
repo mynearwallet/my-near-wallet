@@ -3,7 +3,7 @@ name: Deploy Staging
 on:
   push:
     branches:
-      - master
+      - feat/move-static-to-static-folder
 
 concurrency:
   group: 'testnet'
@@ -17,9 +17,9 @@ jobs:
       near_wallet_env: testnet_STAGING
     secrets: inherit
 
-  mainnet-staging-deploy:
-    uses: ./.github/workflows/bundle-and-deploy.yml
-    with:
-      environment: mainnet-staging
-      near_wallet_env: mainnet_STAGING
-    secrets: inherit
+  # mainnet-staging-deploy:
+  #   uses: ./.github/workflows/bundle-and-deploy.yml
+  #   with:
+  #     environment: mainnet-staging
+  #     near_wallet_env: mainnet_STAGING
+  #   secrets: inherit

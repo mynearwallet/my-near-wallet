@@ -3,7 +3,7 @@ name: Deploy Testnet
 on:
   push:
     branches:
-      - feat/move-static-to-static-folder
+      - testnet
 
 concurrency:
   group: 'testnet'
