@@ -38,6 +38,6 @@ jobs:
           role-skip-session-tagging: true
           role-duration-seconds: 900        
       - if: ${{ github.event_name == 'pull_request' }}
-        run: aws s3 sync dist/${{ inputs.environment }} s3://${{ secrets.S3_BUCKET }}/static --delete
+        run: aws s3 sync dist/${{ inputs.environment }} s3://${{ secrets.S3_BUCKET }} --exclude "*" --include index.html --delete && aws s3 sync dist/${{ inputs.environment }} s3://${{ secrets.S3_BUCKET }}/static --delete  --exclude "index.html"
       - if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/mainnet' || github.ref == 'refs/heads/testnet') }}
         run: aws s3 sync dist/${{ inputs.environment }} s3://${{ secrets.S3_BUCKET }} --delete    
