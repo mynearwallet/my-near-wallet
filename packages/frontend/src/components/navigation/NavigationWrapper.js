@@ -5,7 +5,7 @@ import { switchAccount, getAccountBalance } from '../../redux/actions/account';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { selectAvailableAccounts } from '../../redux/slices/availableAccounts';
 import { selectFlowLimitationMainMenu, selectFlowLimitationSubMenu } from '../../redux/slices/flowLimitation';
-import Navigation from './Navigation';
+import Navigation from './NewNavigation';
 
 export default () => {
     const dispatch = useDispatch();
@@ -15,19 +15,28 @@ export default () => {
     const flowLimitationSubMenu = useSelector(selectFlowLimitationSubMenu);
     const availableAccounts = useSelector(selectAvailableAccounts);
 
+    const selectAccount = useCallback((accountId) => {
+        dispatch(switchAccount({ accountId }));
+    }, []);
+
+    const refreshBalance = useCallback((accountId) => {
+        dispatch(getAccountBalance(accountId));
+    }, []);
+
     return (
         <Navigation
-            selectAccount={useCallback((accountId) => {
-                dispatch(switchAccount({ accountId }));
-            }, [])}
-            showNavLinks={account.localStorage?.accountFound}
-            flowLimitationMainMenu={flowLimitationMainMenu}
-            flowLimitationSubMenu={flowLimitationSubMenu}
-            refreshBalance={useCallback((accountId) => {
-                dispatch(getAccountBalance(accountId));
-            }, [])}
-            availableAccounts={availableAccounts}
-            account={account}
+            selectAccount={selectAccount}
+            accounts={availableAccounts}
+            currentAccount={account}
         />
+        // <Navigation
+        //     selectAccount={selectAccount}
+        //     showNavLinks={account.localStorage?.accountFound}
+        //     flowLimitationMainMenu={flowLimitationMainMenu}
+        //     flowLimitationSubMenu={flowLimitationSubMenu}
+        //     refreshBalance={refreshBalance}
+        //     availableAccounts={availableAccounts}
+        //     account={account}
+        // />
     );
 };

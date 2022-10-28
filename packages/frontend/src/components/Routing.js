@@ -120,10 +120,17 @@ const Container = styled.div`
     min-height: 100vh;
     padding-bottom: 230px;
     padding-top: 75px;
+    padding-left: 240px;
 
     @media (max-width: 991px) {
+        padding-left: 0;
+        padding-top: 0;
+
         .App {
+            padding-top: 0;
+            
             .main {
+                padding-top: 0;
                 padding-bottom: 0px;
             }
         }

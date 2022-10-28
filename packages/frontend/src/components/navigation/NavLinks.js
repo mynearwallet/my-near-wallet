@@ -93,6 +93,7 @@ const Container = styled.div`
 
     @media (min-width: 992px) {
         align-items: center;
+        flex-direction: column;
         margin-left: 10px;
 
         a {

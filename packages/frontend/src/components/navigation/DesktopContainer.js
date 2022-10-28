@@ -10,21 +10,19 @@ import NavLinks from './NavLinks';
 import UserAccount from './UserAccount';
 
 const Container = styled.div`
+    height: 100vh;
+    width: 240px;
     display: none;
-    color: white;
     position: relative;
     font-size: 14px;
-    margin-bottom: 20px;
     padding: 0 15px;
-    border-bottom: 1px solid #F0F0F1;
+    background-color: var(--mnw-component-background-1);
 
     @media (min-width: 992px) {
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
-
-    background-color: white;
-    height: 70px;
-    align-items: center;
 
     img {
         width: 180px;

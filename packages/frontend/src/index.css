@@ -62,6 +62,9 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap");
 
 :root {
+    --mnw-component-background-1: #ffffff;
+    --mnw-background-1: #F0F3F7;
+
     --color-success: #5BB98C;
     --color-warning: #AD5700;
     --color-warning-background: #FFF4D5;

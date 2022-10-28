@@ -9,8 +9,9 @@ const Container = styled.div`
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
         z-index: 1000;
+        border-right: 1px solid #c9d0d9;
+
         @media (max-width: 991px) {
             bottom: ${(props) => props.open ? '0' : 'unset'};
         }
@@ -30,7 +31,7 @@ const Container = styled.div`
     }
 `;
 
-export default ({
+const Navigation = ({
     selectAccount,
     showNavLinks,
     flowLimitationMainMenu,
@@ -110,3 +111,5 @@ export default ({
         </Container>
     );
 };
+
+export default Navigation;
