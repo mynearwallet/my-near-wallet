@@ -1,17 +1,30 @@
 import sha256 from 'js-sha256';
 import nacl from 'tweetnacl';
 import * as nearApiJs from 'near-api-js';
-import { NETWORK_ID } from "../config/configFromEnvironment";
+import CONFIG from "../config"; // todo
 import {KEYSTORE_PREFIX} from "./wallet";
+
+// todo TS
 
 export const createKeyFrom = (value) => Uint8Array.from(sha256.sha256.array(value));
 
-class EncrytedLocalStorage {
+// const randombytes = function (r) {
+//     for (let i = 0; i < r.length; i += 65536) {
+//         crypto.getRandomValues(r.subarray(i, i + 65536));
+//     }
+// };
+
+window.createKeyFrom = createKeyFrom;
+
+export class EncrytedLocalStorage {
     constructor(key) {
+        console.log(key);
         this.key = key;
     }
 
     getNonceForCurrentClient() {
+        // todo
+        return new Uint8Array(24);
         return createKeyFrom(window.navigator.userAgent);
     }
 
@@ -31,7 +44,7 @@ class EncrytedLocalStorage {
         return window.btoa(
             nacl.secretbox(
                 encoder.encode(value),
-                this.getNonceForCurrentClient,
+                this.getNonceForCurrentClient(),
                 this.key
             )
         );
@@ -48,6 +61,7 @@ class EncrytedLocalStorage {
             const decoder = new TextDecoder();
             return decoder.decode(opened);
         } catch (e) {
+            console.error(e);
             return null;
         }
     }
@@ -97,7 +111,7 @@ export const isKeyValid = async (key, accountId) => {
     // console.log(keyStore)
 
     // console.log(NETWORK_ID);
-    const encryptedKeyPair = await keyStore.getKey(NETWORK_ID, accountId);
+    const encryptedKeyPair = await keyStore.getKey(CONFIG.NETWORK_ID, accountId);
     console.log(encryptedKeyPair);
     // if (!encryptedKeyPair) {
     //     // todo sentry

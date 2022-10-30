@@ -414,6 +414,7 @@ const handleFundCreateAccountRedirect = ({
 };
 
 export const fundCreateAccount = (accountId, recoveryKeyPair, recoveryMethod) => async (dispatch) => {
+    // here
     await wallet.keyStore.setKey(wallet.connection.networkId, accountId, recoveryKeyPair);
     const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString('hex');
     await wallet.keyStore.setKey(wallet.connection.networkId, implicitAccountId, recoveryKeyPair);
@@ -438,22 +439,35 @@ export const fundCreateAccountLedger = (accountId, ledgerPublicKey) => async (di
 };
 
 // TODO: Refactor common code with setupRecoveryMessageNewAccount
-export const handleCreateAccountWithSeedPhrase = (accountId, recoveryKeyPair, fundingOptions, recaptchaToken) => async (dispatch) => {
-
+export const handleCreateAccountWithSeedPhrase = (
+    accountId,
+    recoveryKeyPair,
+    fundingOptions,
+    recaptchaToken
+) => async (dispatch) => {
     // Coin-op verify account flow
     if (CONFIG.DISABLE_CREATE_ACCOUNT && ENABLE_IDENTITY_VERIFIED_ACCOUNT && !fundingOptions) {
         await dispatch(fundCreateAccount(accountId, recoveryKeyPair, 'phrase'));
+
         return;
     }
 
     // Implicit account flow
     if (CONFIG.DISABLE_CREATE_ACCOUNT && !fundingOptions && !recaptchaToken) {
         await dispatch(fundCreateAccount(accountId, recoveryKeyPair, 'phrase'));
+
         return;
     }
 
     try {
-        await dispatch(createAccountWithSeedPhrase({ accountId, recoveryKeyPair, fundingOptions, recaptchaToken })).unwrap();
+        await dispatch(
+            createAccountWithSeedPhrase({
+                accountId,
+                recoveryKeyPair,
+                fundingOptions,
+                recaptchaToken
+            })
+        ).unwrap();
     } catch (error) {
         if (await wallet.accountExists(accountId)) {
             // Requests sometimes fail after creating the NEAR account for another reason (transport error?)
@@ -462,8 +476,10 @@ export const handleCreateAccountWithSeedPhrase = (accountId, recoveryKeyPair, fu
                 globalAlertPreventClear: true,
                 defaultAccountId: accountId
             }));
+
             return;
         }
+
         throw error;
     }
 };

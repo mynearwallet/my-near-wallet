@@ -28,6 +28,7 @@ import {
 } from './localStorage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
+import {createKeyFrom, EncrytedLocalStorage} from "./keyEncryption";
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -107,52 +108,13 @@ export async function getKeyMeta(publicKey) {
 
 export default class Wallet {
     constructor() {
+        // todo aggregate
         this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
             window.localStorage,
             KEYSTORE_PREFIX
         );
         this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
-
-        const inMemorySigner = this.inMemorySigner;
-        const wallet = this;
-        this.signer = {
-            async getPublicKey(accountId, networkId) {
-                const ledgerKey = await wallet.getLedgerKey(accountId);
-                if (ledgerKey) {
-                    return  ledgerKey;
-                }
-
-                return await inMemorySigner.getPublicKey(accountId, networkId);
-            },
-            async signMessage(message, accountId, networkId) {
-                if (await wallet.getLedgerKey(accountId)) {
-                    wallet.dispatchShowLedgerModal(true);
-                    const path = getLedgerHDPath(accountId);
-
-                    const { client } = ledgerManager;
-                    if (!client) {
-                        store.dispatch(checkAndHideLedgerModal());
-                        store.dispatch(handleShowConnectModal());
-                        throw new WalletError(
-                            'The Ledger client is unavailable.',
-                            'connectLedger.noClient'
-                        );
-                    }
-                    const signature = await client.sign(message, path);
-                    await store.dispatch(setLedgerTxSigned({
-                        status: true,
-                        accountId
-                    }));
-                    const publicKey = await this.getPublicKey(accountId, networkId);
-                    return {
-                        signature,
-                        publicKey
-                    };
-                }
-
-                return inMemorySigner.signMessage(message, accountId, networkId);
-            }
-        };
+        this.signer = this.spawnSigner(this.inMemorySigner);
         this.connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
             provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
@@ -1404,6 +1366,63 @@ export default class Wallet {
         const account = await this.getAccount(accountId);
         const signer = account.inMemorySigner || account.connection.signer;
         return signer.getPublicKey(accountId, CONFIG.NETWORK_ID);
+    }
+
+    spawnSigner = (inMemorySigner) => ({
+        async getPublicKey(accountId, networkId) {
+            const ledgerKey = await this.getLedgerKey(accountId);
+            if (ledgerKey) {
+                return  ledgerKey;
+            }
+
+            return await inMemorySigner.getPublicKey(accountId, networkId);
+        },
+        async signMessage(message, accountId, networkId) {
+            if (await this.getLedgerKey(accountId)) {
+                this.dispatchShowLedgerModal(true);
+                const path = getLedgerHDPath(accountId);
+
+                const { client } = ledgerManager;
+                if (!client) {
+                    store.dispatch(checkAndHideLedgerModal());
+                    store.dispatch(handleShowConnectModal());
+                    throw new WalletError(
+                        'The Ledger client is unavailable.',
+                        'connectLedger.noClient'
+                    );
+                }
+                const signature = await client.sign(message, path);
+                await store.dispatch(setLedgerTxSigned({
+                    status: true,
+                    accountId
+                }));
+                const publicKey = await this.getPublicKey(accountId, networkId);
+                return {
+                    signature,
+                    publicKey
+                };
+            }
+
+            return inMemorySigner.signMessage(message, accountId, networkId);
+        }
+    })
+
+    injectEncryptedKeyStore(password) {
+        const key = createKeyFrom(password);
+        const encryptedStore = new EncrytedLocalStorage(key);
+
+        this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+            encryptedStore,
+            KEYSTORE_PREFIX
+        );
+
+        this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
+        this.signer = this.spawnSigner(this.inMemorySigner);
+        this.connection = nearApiJs.Connection.fromConfig({
+            networkId: CONFIG.NETWORK_ID,
+            provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
+            signer: this.signer
+        });
     }
 }
 

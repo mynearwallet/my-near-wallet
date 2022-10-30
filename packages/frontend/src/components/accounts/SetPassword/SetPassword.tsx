@@ -9,10 +9,11 @@ import { validatePassword } from '../ComplexityBlock/lib/complexity';
 import Input from './ui/Input';
 
 type SetPasswordProps = {
+    disabled: boolean;
     onChange: (value: string|null) => void;
 }
 
-const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
+const SetPassword: FC<SetPasswordProps> = ({ disabled, onChange }) => {
     const [password, setPassword] = useState('');
     const [confirmPassValue, setConfirmPassValue] = useState('');
     const [lengthError, setLengthError] = useState(false);
@@ -73,6 +74,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
                 <Translate>
                     {({ translate }) => (
                         <Input
+                            disabled={disabled}
                             error={lengthError ? translate('setupPasswordProtection.lengthError') as string : ''}
                             placeholder={translate('setupPasswordProtection.enter') as string}
                             value={password}
@@ -88,6 +90,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
                 <Translate>
                     {({ translate }) => (
                         <Input
+                            disabled={disabled}
                             error={shouldShowConfirmError ? translate('setupPasswordProtection.matchError') as string : ''}
                             placeholder={translate('setupPasswordProtection.confirm') as string}
                             value={confirmPassValue}

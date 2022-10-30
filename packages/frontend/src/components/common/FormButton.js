@@ -63,6 +63,25 @@ const CustomButton = styled.button`
                 color: #A2A2A8;
             }
         }
+
+        &.light-gray-blue {
+            background-color: #ECEDEE;
+            border-color: #ECEDEE;
+            color: #0081F1;
+
+            :active,
+            :hover,
+            :focus {
+                color: #007fe6;
+                background: #e6e6e6
+            }
+            :disabled {
+                background: #e6e6e6;
+                border-color: #e6e6e6;
+                opacity: 1 !important;
+                color: #A2A2A8;
+            }
+        }
         
         &.dark-gray-light-blue {
             background-color: #37383C;
@@ -361,12 +380,14 @@ const CustomButton = styled.button`
             }
 
             &.light-gray {
+                background: aqua;
                 color: #A2A2A8;
 
                 :hover,
                 :focus {
                     color: #A2A2A8;
                 }
+                
             }
 
             &.red {
@@ -493,10 +514,10 @@ const CustomButton = styled.button`
     }
 `;
 
-const FormButton = ({ 
-    children, 
-    type, 
-    color = 'blue', 
+const FormButton = ({
+    children,
+    type,
+    color = 'blue',
     disabled = false,
     onClick,
     sending = false,

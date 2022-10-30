@@ -2,41 +2,88 @@ import React, { FC, useCallback, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 
 import FormButton from '../../common/FormButton';
+import Modal from '../../common/modal/Modal';
 import SetPassword from '../SetPassword';
-import { WithoutPassword, PasswordForm, Submit } from './ui';
+import {
+    WithoutPassword,
+    PasswordForm,
+    Submit,
+    SkipTitle,
+    SkipDescription,
+    SkipForm,
+    SkipControls
+} from './ui';
 
 type SetPasswordFormProps = {
+    loading: boolean;
     onSubmit: (password: string) => void;
 }
 
-const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
+const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
     const [password, setPassword] = useState(null);
+    const [showSkipModal, setShowSkipModal] = useState(false);
+    const toggleModal = useCallback(() =>
+        setShowSkipModal(!showSkipModal), [showSkipModal])
 
     const handlePasswordChange = useCallback((value) => {
         setPassword(value);
     }, []);
 
-    const handleClickNext = useCallback(() => {
-        if (password) {
-            onSubmit(password);
-        }
+    const handleClickNext = useCallback((e) => {
+        e.preventDefault();
+        onSubmit(password);
     }, [password]);
+
+    const handleSkip = useCallback(() => {
+        toggleModal();
+        onSubmit(null);
+    }, [toggleModal]);
 
     return (
         <>
             <PasswordForm>
-                <SetPassword onChange={handlePasswordChange} />
+                <SetPassword
+                    disabled={loading}
+                    onChange={handlePasswordChange} />
             </PasswordForm>
             <Submit>
                 <FormButton
                     onClick={handleClickNext}
-                    disabled={password === null}>
+                    sending={loading}
+                    disabled={password === null || loading}>
                     <Translate id='button.next' />
                 </FormButton>
             </Submit>
-            <WithoutPassword hide={password !== null}>
+            <WithoutPassword
+                hide={password !== null}
+                onClick={toggleModal}>
                 <Translate id='setupPasswordProtection.withoutPassword' />
             </WithoutPassword>
+            {showSkipModal && (
+                <Modal
+                    isOpen={showSkipModal}
+                    onClose={toggleModal}>
+                    <SkipForm>
+                        <SkipTitle>
+                            Skip Password Protection
+                        </SkipTitle>
+                        <SkipDescription>
+                            Are you sure you want to skip setting a password to protect your wallet from unauthorized access? You can set a password later from settings page.
+                        </SkipDescription>
+                        <SkipControls>
+                            <FormButton
+                                color='light-gray-blue'
+                                onClick={toggleModal}>
+                                Use Password
+                            </FormButton>
+                            <FormButton
+                                onClick={handleSkip}>
+                                Skip Password
+                            </FormButton>
+                        </SkipControls>
+                    </SkipForm>
+                </Modal>
+            )}
         </>
     );
 };

@@ -25,3 +25,41 @@ export const Submit = styled.div`
         width: 100%;
     }
 `;
+
+export const SkipForm = styled.div`
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+export const SkipTitle = styled.div`
+    font-weight: 900;
+    font-size: 25px;
+    line-height: 130%;
+    margin-bottom: 40px;
+    color: #000000;
+`;
+
+export const SkipDescription = styled.div`
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 40px;
+    color: #000000;
+`;
+
+export const SkipControls = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    
+    > button {
+        width: 100%;
+
+        &:first-child {
+          margin-right: 16px !important;
+        }
+    }
+    
+`;

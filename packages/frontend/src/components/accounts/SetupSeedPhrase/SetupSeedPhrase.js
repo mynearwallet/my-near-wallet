@@ -5,28 +5,31 @@ import { Translate } from 'react-localize-redux';
 import { connect } from 'react-redux';
 import { withRouter, Route } from 'react-router-dom';
 
-import { Mixpanel } from '../../mixpanel/index';
+import { Mixpanel } from '../../../mixpanel/index';
 import {
     handleAddAccessKeySeedPhrase,
     refreshAccount,
     checkIsNew,
     handleCreateAccountWithSeedPhrase,
     fundCreateAccount
-} from '../../redux/actions/account';
-import { clearGlobalAlert, showCustomAlert } from '../../redux/actions/status';
-import { selectAccountSlice } from '../../redux/slices/account';
-import { actions as linkdropActions } from '../../redux/slices/linkdrop';
-import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId, selectRecoveryMethodsLoading } from '../../redux/slices/recoveryMethods';
-import { selectStatusMainLoader } from '../../redux/slices/status';
-import copyText from '../../utils/copyText';
-import isMobile from '../../utils/isMobile';
-import parseFundingOptions from '../../utils/parseFundingOptions';
-import { Snackbar, snackbarDuration } from '../common/Snackbar';
-import Container from '../common/styled/Container.css';
-import { isRetryableRecaptchaError } from '../Recaptcha';
-import SetPasswordForm from './SetPasswordForm';
-import SetupSeedPhraseForm from './SetupSeedPhraseForm';
-import SetupSeedPhraseVerify from './SetupSeedPhraseVerify';
+} from '../../../redux/actions/account';
+import { clearGlobalAlert, showCustomAlert } from '../../../redux/actions/status';
+import { selectAccountSlice } from '../../../redux/slices/account';
+import { actions as linkdropActions } from '../../../redux/slices/linkdrop';
+import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId, selectRecoveryMethodsLoading } from '../../../redux/slices/recoveryMethods';
+import { selectStatusMainLoader } from '../../../redux/slices/status';
+import copyText from '../../../utils/copyText';
+import isMobile from '../../../utils/isMobile';
+import parseFundingOptions from '../../../utils/parseFundingOptions';
+import { Snackbar, snackbarDuration } from '../../common/Snackbar';
+import Container from '../../common/styled/Container.css';
+import { isRetryableRecaptchaError } from '../../Recaptcha';
+import SetPasswordForm from '../SetPasswordForm';
+import SetupSeedPhraseForm from '../SetupSeedPhraseForm';
+import SetupSeedPhraseVerify from '../SetupSeedPhraseVerify';
+import { Title, Description, Back } from './ui';
+import BackButton from './ui/BackButton';
+import { wallet } from "../../../utils/wallet";
 
 const { setLinkdropAmount } = linkdropActions;
 const { fetchRecoveryMethods } = recoveryMethodsActions;
@@ -47,7 +50,8 @@ class SetupSeedPhrase extends Component {
         successSnackbar: false,
         submitting: false,
         recaptchaToken: null,
-        isNewAccount: false
+        isNewAccount: false,
+        password: null
     }
 
     componentDidMount = async () => {
@@ -101,7 +105,7 @@ class SetupSeedPhrase extends Component {
     }
 
     handleVerifyPhrase = () => {
-        const { seedPhrase, enterWord, wordId, submitting } = this.state;
+        const { seedPhrase, enterWord, wordId } = this.state;
         Mixpanel.track('SR-SP Verify start');
 
         if (enterWord !== seedPhrase.split(' ')[wordId]) {
@@ -116,10 +120,15 @@ class SetupSeedPhrase extends Component {
             return false;
         }
 
-        if (!submitting) {
-            this.setState({ submitting: true }, this.handleSetupSeedPhrase);
-        }
         Mixpanel.track('SR-SP Verify finish');
+        this.props.history.push(`/setup-seed-phrase/${this.props.accountId}/set-encryption`);
+    }
+
+    handleSubmitPasswordStep = (password) => {
+        this.setState({
+            submitting: true,
+            password,
+        }, this.handleSetupSeedPhrase);
     }
 
     handleSetupSeedPhrase = async () => {
@@ -133,14 +142,20 @@ class SetupSeedPhrase extends Component {
             location,
             setLinkdropAmount
         } = this.props;
-        const { recoveryKeyPair, recaptchaToken } = this.state;
+        const { recoveryKeyPair, recaptchaToken, password } = this.state;
+        console.log(accountId, recoveryKeyPair, 'isNew:', this.state.isNewAccount);
 
+        // return;
+
+        // todo
+        // понять как определяется что аккаунт существующий и в чем тут смысл, леджер?
         if (!this.state.isNewAccount) {
             debugLog('handleSetupSeedPhrase()/existing account');
 
             await Mixpanel.withTracking('SR-SP Setup for existing account',
                 async () => await handleAddAccessKeySeedPhrase(accountId, recoveryKeyPair)
             );
+
             return;
         }
 
@@ -148,7 +163,17 @@ class SetupSeedPhrase extends Component {
 
         await Mixpanel.withTracking('SR-SP Setup for new account',
             async () => {
-                await handleCreateAccountWithSeedPhrase(accountId, recoveryKeyPair, fundingOptions, recaptchaToken);
+                if (password !== null) {
+                    wallet.injectEncryptedKeyStore(password);
+                }
+
+                await handleCreateAccountWithSeedPhrase(
+                    accountId,
+                    recoveryKeyPair,
+                    fundingOptions,
+                    recaptchaToken
+                );
+
                 if (fundingOptions?.fundingAmount) {
                     setLinkdropAmount(fundingOptions.fundingAmount);
                 }
@@ -209,12 +234,8 @@ class SetupSeedPhrase extends Component {
     }
 
     handleOnSubmit = (e) => {
-        this.handleVerifyPhrase();
         e.preventDefault();
-    }
-
-    handleSubmitPasswordStep = (password) => {
-        console.log(password);
+        this.handleVerifyPhrase();
     }
 
     render() {
@@ -259,13 +280,21 @@ class SetupSeedPhrase extends Component {
                                         onSubmit={this.handleOnSubmit}
                                         autoComplete='off'
                                     >
-                                        <h1><Translate id='setupSeedPhraseVerify.pageTitle'/></h1>
-                                        <h2><Translate id='setupSeedPhraseVerify.pageText'/></h2>
+                                        <Title>
+                                            <Back>
+                                                <BackButton onBack={this.handleStartOver} />
+                                            </Back>
+                                            <h1>
+                                                <Translate id='setupSeedPhraseVerify.pageTitle'/>
+                                            </h1>
+                                        </Title>
+                                        <Description>
+                                            <Translate id='setupSeedPhraseVerify.pageText'/>
+                                        </Description>
                                         <SetupSeedPhraseVerify
                                             enterWord={enterWord}
                                             wordId={wordId}
                                             handleChangeWord={this.handleChangeWord}
-                                            handleStartOver={this.handleStartOver}
                                             mainLoader={this.props.mainLoader || submitting}
                                             localAlert={localAlert}
                                             globalAlert={this.props.globalAlert}
@@ -284,13 +313,20 @@ class SetupSeedPhrase extends Component {
                             path={'/setup-seed-phrase/:accountId/set-encryption'}
                             render={() => (
                                 <Container className='small-centered border'>
-                                    <form
-                                        onSubmit={this.handleSubmitPasswordStep}
-                                        autoComplete='off'
-                                    >
-                                        <h1><Translate id='setupPasswordProtection.pageTitle'/></h1>
-                                        <h2><Translate id='setupPasswordProtection.pageText'/></h2>
+                                    <form autoComplete='off'>
+                                        <Title>
+                                            <Back>
+                                                <BackButton onBack={this.handleStartOver} />
+                                            </Back>
+                                            <h1>
+                                                <Translate id='setupPasswordProtection.pageTitle'/>
+                                            </h1>
+                                        </Title>
+                                        <Description>
+                                            <Translate id='setupPasswordProtection.pageText'/>
+                                        </Description>
                                         <SetPasswordForm
+                                            loading={this.props.mainLoader || submitting}
                                             onSubmit={this.handleSubmitPasswordStep} />
                                     </form>
                                 </Container>

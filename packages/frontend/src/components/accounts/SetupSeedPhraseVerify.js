@@ -59,8 +59,7 @@ const SetupSeedPhraseVerify = (
         isNewAccount,
         onSubmit,
         isLinkDrop,
-        hasSeedPhraseRecovery,
-        handleStartOver
+        hasSeedPhraseRecovery
     },
     ref
 ) => {
@@ -124,14 +123,6 @@ const SetupSeedPhraseVerify = (
                 data-test-id="seedPhraseVerificationWordSubmit"
             >
                 <Translate id='button.verify'/>
-            </FormButton>
-            <FormButton
-                type='button'
-                color='gray'
-                className='link start-over'
-                onClick={handleStartOver}
-            >
-                <Translate id='button.startOver'/>
             </FormButton>
         </CustomDiv>
     );

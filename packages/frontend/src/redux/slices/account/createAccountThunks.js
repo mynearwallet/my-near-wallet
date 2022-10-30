@@ -122,7 +122,14 @@ export const createNewAccount = createAsyncThunk(
         }
 
         await wallet.saveAndMakeAccountActive(accountId);
-        await dispatch(addLocalKeyAndFinishSetup({ accountId, recoveryMethod, publicKey, previousAccountId })).unwrap();
+        await dispatch(
+            addLocalKeyAndFinishSetup({
+                accountId,
+                recoveryMethod,
+                publicKey,
+                previousAccountId
+            })
+        ).unwrap();
     }
 );
 
@@ -155,7 +162,16 @@ export const createAccountWithSeedPhrase = createAsyncThunk(
         const recoveryMethod = 'phrase';
         const previousAccountId = wallet.accountId;
         await wallet.saveAccount(accountId, recoveryKeyPair);
-        await dispatch(createNewAccount({ accountId, fundingOptions, recoveryMethod, publicKey: recoveryKeyPair.publicKey, previousAccountId, recaptchaToken })).unwrap();
+        await dispatch(
+            createNewAccount({
+                accountId,
+                fundingOptions,
+                recoveryMethod,
+                publicKey: recoveryKeyPair.publicKey,
+                previousAccountId,
+                recaptchaToken
+            })
+        ).unwrap();
     }
     // TODO: showAlert()
 );
