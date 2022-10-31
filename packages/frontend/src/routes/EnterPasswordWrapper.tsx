@@ -29,7 +29,7 @@ const StyledContainer = styled(Container)`
         width: 100% !important;
         margin-top: 30px !important;
     }
-`; 
+`;
 
 const StyledErrorMsg = styled.div`
     min-height: 16px;
@@ -55,7 +55,7 @@ const StyledFooter = styled.div`
     color: #9BA1A6;
 `;
 
-export default function CheckPasswordPage () {
+const EnterPasswordWrapper = () => {
 
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +64,7 @@ export default function CheckPasswordPage () {
         e.preventDefault();
         setIsError(false);
         setIsLoading(true);
-        
+
         // const value = e.target.password.value;
         try {
             // api call to check password
@@ -83,7 +83,7 @@ export default function CheckPasswordPage () {
     const handleRestore = (e) => {
         // some logic
     };
-  
+
     return (
         <StyledContainer className='small-centered border'>
             <h1><Translate id='checkPassword.title' /></h1>
@@ -105,3 +105,5 @@ export default function CheckPasswordPage () {
         </StyledContainer>
     );
 };
+
+export default EnterPasswordWrapper;

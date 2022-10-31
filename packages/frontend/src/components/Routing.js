@@ -19,7 +19,6 @@ import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
 import { actions as flowLimitationActions } from '../redux/slices/flowLimitation';
 import { actions as tokenFiatValueActions } from '../redux/slices/tokenFiatValues';
-import CheckPasswordPage from '../routes/CheckPasswordPage';
 import CreateImplicitAccountWrapper from '../routes/CreateImplicitAccountWrapper';
 import ImportAccountWithLinkWrapper from '../routes/ImportAccountWithLinkWrapper';
 import LoginWrapper from '../routes/LoginWrapper';
@@ -93,7 +92,8 @@ import StakingContainer from './staking/StakingContainer';
 import Terms from './terms/Terms';
 import '../index.css';
 import WalletMigration from './wallet-migration/WalletMigration';
-import EnterPassword from "./encrypted-access/EnterPassword";
+// import EnterPassword from "./encrypted-access/EnterPassword";
+import EnterPasswordWrapper from "../routes/EnterPasswordWrapper";
 const { getTokenWhiteList } = tokenFiatValueActions;
 
 const {
@@ -499,8 +499,8 @@ class Routing extends Component {
                             />
                             <Route
                                 exact
-                                path="/check-password"
-                                component={CheckPasswordPage}
+                                path="/enter-password"
+                                component={EnterPasswordWrapper}
                             />
                             <Route
                                 exact
@@ -612,11 +612,11 @@ class Routing extends Component {
                                 path="/swap"
                                 component={TokenSwap}
                             />
-                            <PrivateRoute
-                                exact
-                                path="/enter-password"
-                                component={EnterPassword}
-                            />
+                            {/*<PrivateRoute*/}
+                            {/*    exact*/}
+                            {/*    path="/enter-password"*/}
+                            {/*    component={EnterPassword}*/}
+                            {/*/>*/}
                             <Route
                                 exact
                                 path="/profile/:accountId"
