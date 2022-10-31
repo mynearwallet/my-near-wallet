@@ -8,11 +8,12 @@ import { LocalizeProvider } from 'react-localize-redux';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
-import Routing from './components/Routing';
+import App from './app';
 import CONFIG from './config';
 import createRootReducer from './redux/createReducers';
 import createMiddleware from './redux/middleware';
 import initSentry from './utils/sentry';
+import './translations';
 
 initSentry();
 
@@ -33,7 +34,7 @@ ReactDOM.render(
     >
         <Provider store={store}>
             <LocalizeProvider store={store}>
-                <Routing history={history}/>
+                <App history={history}/>
             </LocalizeProvider>
         </Provider>
     </GoogleReCaptchaProvider>,
