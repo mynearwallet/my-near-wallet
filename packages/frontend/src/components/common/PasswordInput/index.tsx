@@ -5,7 +5,7 @@ import React, {
     useState
 } from 'react';
 
-import EyeIcon from '../EyeIcon';
+import EyeIcon from './EyeIcon';
 import {
     Wrapper,
     InputContent,
