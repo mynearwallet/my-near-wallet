@@ -660,6 +660,7 @@
             "title": "Word <b>#${wordId}</b>"
         }
     },
+    "language": "Language",
     "landing": {
         "banner": "NEAR Wallet is in Private Beta",
         "desc": "Securely store and stake your NEAR tokens and compatible assets with <span>NEAR Wallet</span>.",

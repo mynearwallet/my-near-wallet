@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
-import { Translate } from 'react-localize-redux';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'
 
 import { Mixpanel } from '../../mixpanel/index';
 import isMobile from '../../utils/isMobile';
@@ -19,38 +19,42 @@ import {
     StyledLinks,
     StyledNavItem,
     StyledFooter,
+    StyledLangSelector,
 } from './ui';
 import UserAccount from './UserAccount';
 
 const track = (msg: string) => Mixpanel.track(msg);
 
-const links = [
+const routes = [
     {
         nameId: 'link.wallet',
-        link: '/',
+        route: '/',
         trackMsg: 'Click Wallet button on nav',
         icon: <WalletIcon />,
     },
     {
         nameId: 'link.staking',
-        link: '/staking',
+        route: '/staking',
         trackMsg: 'Click Staking button on nav',
         icon: <VaultIcon />,
         testId: 'staking_navlink',
     },
     {
         nameId: 'link.explore',
-        link: '/explore',
+        route: '/explore',
         trackMsg: 'Click Explore button on nav',
         icon: <ExploreIcon />,
         testId: 'explore_navlink',
     },
     {
         nameId: 'link.account',
-        link: '/profile',
+        route: '/profile',
         trackMsg: 'Click Account button on nav',
         icon: <UserIcon />,
     },
+];
+
+const links = [
     {
         nameId: 'link.help',
         link: 'https://support.mynearwallet.com/en',
@@ -81,6 +85,7 @@ const Navigation: FC<NavigationProps> = ({
     selectAccount,
     refreshBalance,
 }) => {
+    const { t } = useTranslation()
     const { accountId, accountsBalance, localStorage } = currentAccount;
     const [isNavigationOpen, setIsNavigationOpen] = useState(!isMobileDevice);
     const [isAccountMenuVisible, setIsAccountMenuVisible] = useState(isMobileDevice);
@@ -115,27 +120,46 @@ const Navigation: FC<NavigationProps> = ({
             </StyledTop>
 
             <StyledNavigation hidden={!isContentVisible}>
+                {/* @todo move to a separate component OR update NavLinks.js */}
                 <StyledLinks>
-                    {links.map(({ nameId, link, trackMsg, icon, testId = '' }, index) => (
+                    {routes.map(({ nameId, route, trackMsg, icon, testId = '' }, index) => (
                         <StyledNavItem key={index}>
                             <NavLink
                                 exact
-                                to={link}
+                                to={route}
                                 onClick={() => track(trackMsg)}
                                 data-test-id={testId}
                                 className="link"
                             >
                                 {icon}
                                 <span className="name">
-                                    <Translate id={nameId} />
+                                    {t(nameId)}
                                 </span>
                             </NavLink>
+                        </StyledNavItem>
+                    ))}
+                    {links.map(({ nameId, link, trackMsg, icon }, index) => (
+                        <StyledNavItem key={index}>
+                            <a
+                                href={link}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className="link"
+                                onClick={() => track(trackMsg)}
+                            >
+                                {icon}
+                                <span className="name">
+                                    {t(nameId)}
+                                </span>
+                            </a>
                         </StyledNavItem>
                     ))}
                 </StyledLinks>
 
                 <StyledFooter showDivider={!isMobileDevice}>
-                    <LangSwitcher />
+                    <StyledLangSelector>
+                        <LangSwitcher />
+                    </StyledLangSelector>
                     {/* TODO: rename with smth like "AccountMenu" or "AccountSelector" */}
                     <DesktopMenu
                         show={isAccountMenuVisible}
