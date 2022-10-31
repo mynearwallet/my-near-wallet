@@ -2,6 +2,7 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import { VIEWPORT } from '../../shared/ui/mixins/viewport';
 import AccountSelector from '../accounts/account_selector/AccountSelector';
 import AccessAccountBtn from './AccessAccountBtn';
 import CreateAccountBtn from './CreateAccountBtn';
@@ -24,6 +25,17 @@ const Menu = styled.div`
     button {
         width: 100% !important;
     }
+
+    @media ${VIEWPORT.TABLET} {
+        position: static;
+        box-shadow: none;
+        width: 100%;
+
+        .account-selector {
+            padding: 0.375rem 0 0;
+            box-shadow: none;
+        }
+    }
 `;
 
 const DesktopMenu = ({
@@ -37,7 +49,9 @@ const DesktopMenu = ({
     if (show) {
         return (
             <Menu id='desktop-menu'>
-                <h6><Translate id='link.switchAccount' /></h6>
+                <h5>
+                    <Translate id="link.switchAccount" />
+                </h5>
                 <AccountSelector
                     signedInAccountId={accountIdLocalStorage}
                     availableAccounts={accounts}
@@ -51,6 +65,7 @@ const DesktopMenu = ({
             </Menu>
         );
     }
+
     return null;
 };
 

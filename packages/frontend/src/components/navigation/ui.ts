@@ -43,6 +43,7 @@ export const StyledNavigation = styled.nav`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow-y: auto;
     background-color: var(--mnw-component-background-1);
 
     ${(props) => {
@@ -54,7 +55,8 @@ export const StyledNavigation = styled.nav`
     }}
 
     @media ${VIEWPORT.TABLET} {
-        /* height: 100vh; */
+        height: 100vh;
+        justify-content: unset;
     }
 `;
 
@@ -78,6 +80,7 @@ export const StyledNavItem = styled.li`
         cursor: pointer;
         width: 100%;
         height: 100%;
+        max-height: 58px;
         padding: 0.875rem;
         display: flex;
         align-items: center;
@@ -96,6 +99,7 @@ export const StyledNavItem = styled.li`
         }
 
         &:hover,
+        &:focus,
         &.active {
             background-color: var(--color-1);
             color: var(--mnw-color-active-text);
@@ -112,7 +116,7 @@ export const StyledNavItem = styled.li`
 
     @media ${VIEWPORT.TABLET} {
         margin-bottom: 0;
-        padding: 0.2rem 0;
+        padding: 0.18rem 0;
         border-bottom: 1px solid var(--mnw-color-9);
 
         .link {
@@ -122,9 +126,19 @@ export const StyledNavItem = styled.li`
                 border: 1px solid red;
             }
 
+            &:hover,
+            &:focus,
             &.active {
                 background-color: transparent;
                 color: var(--mnw-color-10);
+
+                svg {
+                    path,
+                    circle,
+                    line {
+                        stroke: var(--mnw-color-1);
+                    }
+                }
             }
         }
     }

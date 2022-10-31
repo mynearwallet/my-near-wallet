@@ -160,7 +160,7 @@ const Navigation: FC<NavigationProps> = ({
                     <StyledLangSelector>
                         <LangSwitcher />
                     </StyledLangSelector>
-                    {/* TODO: rename with smth like "AccountMenu" or "AccountSelector" */}
+                    {/* TODO: rename with smth like "AccountMenu" */}
                     <DesktopMenu
                         show={isAccountMenuVisible}
                         accounts={accounts}
