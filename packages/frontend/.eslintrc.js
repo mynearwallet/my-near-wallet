@@ -6,6 +6,7 @@ module.exports = {
      ],
     plugins: ['es'],
     rules: {
+        'i18next/no-literal-string': 'off',
         'arrow-parens': 'error',
         'brace-style': 'error',
         'curly': ['error'],
