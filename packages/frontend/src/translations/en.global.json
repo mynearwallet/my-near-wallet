@@ -365,6 +365,14 @@
         "title": "Top Up",
         "utorg": "Utorg"
     },
+    "checkPassword": {
+        "error": "Incorrect password",
+        "forgotPas": "Forgot Password?",
+        "pasInput": "Password",
+        "restoreLink": "Restore with Recovery Phrase",
+        "title": "Enter password to unlock your wallet",
+        "unlockBtn": "Unlock"
+    },
     "confirmLedgerModal": {
         "header": {
             "confirm": "Please confirm the operation on your device...",

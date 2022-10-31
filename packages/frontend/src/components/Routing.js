@@ -19,6 +19,7 @@ import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
 import { actions as flowLimitationActions } from '../redux/slices/flowLimitation';
 import { actions as tokenFiatValueActions } from '../redux/slices/tokenFiatValues';
+import CheckPasswordPage from '../routes/CheckPasswordPage';
 import CreateImplicitAccountWrapper from '../routes/CreateImplicitAccountWrapper';
 import ImportAccountWithLinkWrapper from '../routes/ImportAccountWithLinkWrapper';
 import LoginWrapper from '../routes/LoginWrapper';
@@ -495,6 +496,11 @@ class Routing extends Component {
                                 exact
                                 path="/recover-with-link/:accountId/:seedPhrase"
                                 component={ImportAccountWithLinkWrapper}
+                            />
+                            <Route
+                                exact
+                                path="/check-password"
+                                component={CheckPasswordPage}
                             />
                             <Route
                                 exact
