@@ -1,5 +1,9 @@
 module.exports = {
-    extends: ['react-app', 'eslint:recommended'],
+    extends: [
+     'react-app',
+     'eslint:recommended',
+     'plugin:i18next/recommended',
+     ],
     plugins: ['es'],
     rules: {
         'arrow-parens': 'error',
