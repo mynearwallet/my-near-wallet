@@ -6,7 +6,7 @@ import { Mixpanel } from '../../mixpanel/index';
 import isMobile from '../../utils/isMobile';
 import LangSwitcher from '../common/LangSwitcher';
 import ExploreIcon from '../svg/ExploreIcon';
-// import HelpIcon from '../svg/HelpIcon';
+import HelpIcon from '../svg/HelpIcon';
 import UserIcon from '../svg/UserIcon';
 import VaultIcon from '../svg/VaultIcon';
 import WalletIcon from '../svg/WalletIcon';
@@ -51,12 +51,12 @@ const links = [
         trackMsg: 'Click Account button on nav',
         icon: <UserIcon />,
     },
-    // {
-    //     nameId: 'link.help',
-    //     link: 'https://support.mynearwallet.com/en',
-    //     trackMsg: 'Click Help button on nav',
-    //     icon: <HelpIcon/>,
-    // }
+    {
+        nameId: 'link.help',
+        link: 'https://support.mynearwallet.com/en',
+        trackMsg: 'Click Help button on nav',
+        icon: <HelpIcon />,
+    }
 ];
 
 const isMobileDevice = isMobile();

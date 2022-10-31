@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import languagesIcon from '../../images/icon-languages.svg';
 import AccountSelector from '../accounts/account_selector/AccountSelector';
-import LanguageToggle from '../common/LangSwitcher';
+import LangSwitcher from '../common/LangSwitcher';
 import UserIcon from '../svg/UserIcon';
 import AccessAccountBtn from './AccessAccountBtn';
 import CreateAccountBtn from './CreateAccountBtn';
@@ -195,7 +195,7 @@ class MobileContainer extends Component {
                     )}
                     {!showNavLinks && (
                         <Lang>
-                            <LanguageToggle />
+                            <LangSwitcher />
                         </Lang>
                     )}
                 </Collapsed>
@@ -203,7 +203,7 @@ class MobileContainer extends Component {
                     <>
                         <NavLinks />
                         <Lang className="mobile-lang">
-                            <LanguageToggle />
+                            <LangSwitcher />
                         </Lang>
                         <LowerSection>
                             <h6><Translate id='link.switchAccount' /></h6>

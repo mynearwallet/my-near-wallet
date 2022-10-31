@@ -3,7 +3,8 @@ import styled, { css } from 'styled-components';
 import { VIEWPORT } from '../../shared/ui/mixins/viewport';
 
 export const StyledHeader = styled.header`
-    position: absolute;
+    position: fixed;
+    z-index: 5;
     left: 0;
     top: 0;
     padding: 1.2rem;
@@ -16,13 +17,23 @@ export const StyledHeader = styled.header`
     border/* -right */: 1px solid #f0f0f1;
 
     @media ${VIEWPORT.TABLET} {
-        padding-left: 0;
         width: 100%;
-        height: 70px;
-        position: relative;
-        padding: 0 14px;
+        height: auto;
+        padding: 0;
         transition: 300ms;
         border: none;
+    }
+`;
+
+export const StyledTop = styled.div`
+    max-height: 100%;
+
+    @media ${VIEWPORT.TABLET} {
+        height: 70px;
+        padding: 0 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-bottom: 1px solid #f0f0f1;
     }
 `;
@@ -40,15 +51,9 @@ export const StyledNavigation = styled.nav`
             `;
         }
     }}
-`;
-
-export const StyledTop = styled.div`
-    max-height: 100%;
 
     @media ${VIEWPORT.TABLET} {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        height: 100vh;
     }
 `;
 
@@ -56,9 +61,18 @@ export const StyledLinks = styled.ul`
     margin: 0;
     padding: 1rem 0;
     list-style: none;
+
+    @media ${VIEWPORT.TABLET} {
+        padding: 0;
+        background-color: var(--mnw-color-8);
+    }
 `;
 
 export const StyledNavItem = styled.li`
+    &:not(:last-child) {
+        margin-bottom: 0.2rem;
+    }
+
     .link {
         cursor: pointer;
         width: 100%;
@@ -84,11 +98,34 @@ export const StyledNavItem = styled.li`
         &.active {
             background-color: var(--color-1);
             color: var(--mnw-color-active-text);
+
+            svg {
+                fill: var(--mnw-color-active-text);
+            }
         }
     }
 
     .name {
         margin-left: 1rem;
+    }
+
+    @media ${VIEWPORT.TABLET} {
+        margin-bottom: 0;
+        padding: 0.2rem 0;
+        border-bottom: 1px solid var(--mnw-color-9);
+
+        .link {
+            color: var(--mnw-color-6);
+
+            &:not(:last-of-type) {
+                border: 1px solid red;
+            }
+
+            &.active {
+                background-color: transparent;
+                color: var(--mnw-color-10);
+            }
+        }
     }
 `;
 

@@ -28,6 +28,7 @@ import SetupRecoveryImplicitAccountWrapper from '../routes/SetupRecoveryImplicit
 import SignWrapper from '../routes/SignWrapper';
 import VerifyOwnerWrapper from '../routes/VerifyOwnerWrapper';
 import WalletWrapper from '../routes/WalletWrapper';
+import { VIEWPORT } from '../shared/ui/mixins/viewport';
 import translations_en from '../translations/en.global.json';
 import translations_it from '../translations/it.global.json';
 import translations_pt from '../translations/pt.global.json';
@@ -115,12 +116,12 @@ const WEB3AUTH_FEATURE_ENABLED = false;
 const Container = styled.div`
     min-height: 100vh;
     padding-bottom: 230px;
-    padding-top: 75px;
     padding-left: 240px;
 
-    @media (max-width: 991px) {
+    @media ${VIEWPORT.TABLET} {
         padding-left: 0;
-        padding-top: 0;
+        // Padding reserved for header height
+        padding-top: 75px;
 
         .App {
             .main {

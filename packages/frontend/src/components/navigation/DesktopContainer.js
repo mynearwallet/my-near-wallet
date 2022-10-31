@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import languagesIcon from '../../images/icon-languages.svg';
-import LanguageToggle from '../common/LangSwitcher';
+import LangSwitcher from '../common/LangSwitcher';
 import ConnectLedger from './ConnectLedger';
 import DesktopMenu from './DesktopMenu';
 import Logo from './Logo';
@@ -107,7 +107,7 @@ class DesktopContainer extends Component {
                     <NavLinks />
                 }
                 <Lang>
-                    <LanguageToggle />
+                    <LangSwitcher />
                 </Lang>
                 <ConnectLedger />
                 {showNavLinks && (
