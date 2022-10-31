@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useState } from 'react';
-import { Translate } from 'react-localize-redux';
+import { useTranslation } from 'react-i18next';
 
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
-import { inLength, isEqual, MIN_PASS_LEN } from './lib/validation';
-import { Confirm, Enter } from './ui';
+import PasswordInput from '../../common/PasswordInput';
 import ComplexityBlock from '../ComplexityBlock';
 import { validatePassword } from '../ComplexityBlock/lib/complexity';
-import PasswordInput from './ui/PasswordInput';
+import { inLength, isEqual, MIN_PASS_LEN } from './lib/validation';
+import { Confirm, Enter } from './ui';
 
 type SetPasswordProps = {
     disabled: boolean;
@@ -14,6 +14,7 @@ type SetPasswordProps = {
 }
 
 const SetPassword: FC<SetPasswordProps> = ({ disabled, onChange }) => {
+    const { t } = useTranslation();
     const [password, setPassword] = useState('');
     const [confirmPassValue, setConfirmPassValue] = useState('');
     const [lengthError, setLengthError] = useState(false);
@@ -71,34 +72,26 @@ const SetPassword: FC<SetPasswordProps> = ({ disabled, onChange }) => {
     return (
         <>
             <Enter>
-                <Translate>
-                    {({ translate }) => (
-                        <Input
-                            disabled={disabled}
-                            error={lengthError ? translate('setupPasswordProtection.lengthError') as string : ''}
-                            placeholder={translate('setupPasswordProtection.enter') as string}
-                            value={password}
-                            onChange={currentTargetValue(handleChangePassword)}
-                            onFocus={handlePasswordFocus}
-                            onBlur={handlePasswordBlur}
-                        />
-                    )}
-                </Translate>
+                <PasswordInput
+                    disabled={disabled}
+                    error={lengthError ? t('setupPasswordProtection.lengthError'): ''}
+                    placeholder={t('setupPasswordProtection.enter')}
+                    value={password}
+                    onChange={currentTargetValue(handleChangePassword)}
+                    onFocus={handlePasswordFocus}
+                    onBlur={handlePasswordBlur}
+                />
             </Enter>
 
             <Confirm>
-                <Translate>
-                    {({ translate }) => (
-                        <Input
-                            disabled={disabled}
-                            error={shouldShowConfirmError ? translate('setupPasswordProtection.matchError') as string : ''}
-                            placeholder={translate('setupPasswordProtection.confirm') as string}
-                            value={confirmPassValue}
-                            onChange={currentTargetValue(handleChangeConfirmPassword)}
-                            onBlur={handleConfirmBlur}
-                        />
-                    )}
-                </Translate>
+                <PasswordInput
+                    disabled={disabled}
+                    error={shouldShowConfirmError ? t('setupPasswordProtection.matchError'): ''}
+                    placeholder={t('setupPasswordProtection.confirm')}
+                    value={confirmPassValue}
+                    onChange={currentTargetValue(handleChangeConfirmPassword)}
+                    onBlur={handleConfirmBlur}
+                />
             </Confirm>
             <ComplexityBlock
                 complexity={validatePassword(password, MIN_PASS_LEN)} />

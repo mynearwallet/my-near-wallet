@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
-// todo
-import Container from '../components/common/styled/Container.css';
 
-export const StyledContainer = styled(Container)`
+
+export const StyledContainer = styled.div`
     h1 {
         font-family: 'Inter';
         font-style: normal;

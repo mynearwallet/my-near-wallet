@@ -365,7 +365,7 @@
         "title": "Top Up",
         "utorg": "Utorg"
     },
-    "checkPassword": {
+    "enterPassword": {
         "error": "Incorrect password",
         "forgotPas": "Forgot Password?",
         "pasInput": "Password",

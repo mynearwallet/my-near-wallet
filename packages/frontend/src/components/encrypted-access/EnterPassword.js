@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 import {
     createKeyFrom,
-    HAS_ENCRYPTION, isKeyValid,
+    isKeyValid,
 } from '../../utils/keyEncryption';
 import {KEY_ACTIVE_ACCOUNT_ID} from '../../utils/wallet';
 
@@ -24,15 +24,16 @@ const EnterPassword = () => {
         const key = createKeyFrom(value);
     }, [value]);
 
-    if (!HAS_ENCRYPTION) {
-        return (
-            <Redirect
-                to={{
-                    pathname: '/',
-                }}
-            />
-        );
-    }
+    // if (!HAS_ENCRYPTION) {
+    //     return (
+    //         // надо редиректить туда где последний раз был юзер
+    //         <Redirect
+    //             to={{
+    //                 pathname: '/',
+    //             }}
+    //         />
+    //     );
+    // }
 
     return (
         <div>

@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
-import { Translate } from 'react-localize-redux';
+import { useTranslation } from 'react-i18next';
+
 
 import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
@@ -20,6 +21,7 @@ type SetPasswordFormProps = {
 }
 
 const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
+    const { t } = useTranslation();
     const [password, setPassword] = useState(null);
     const [showSkipModal, setShowSkipModal] = useState(false);
     const toggleModal = useCallback(() =>
@@ -51,13 +53,13 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
                     onClick={handleClickNext}
                     sending={loading}
                     disabled={password === null || loading}>
-                    <Translate id='button.next' />
+                    {t('button.next')}
                 </FormButton>
             </Submit>
             <WithoutPassword
                 hide={password !== null}
                 onClick={toggleModal}>
-                <Translate id='setupPasswordProtection.withoutPassword' />
+                {t('setupPasswordProtection.withoutPassword')}
             </WithoutPassword>
             {showSkipModal && (
                 <Modal

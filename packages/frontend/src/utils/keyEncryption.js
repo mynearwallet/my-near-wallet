@@ -2,7 +2,7 @@ import sha256 from 'js-sha256';
 import nacl from 'tweetnacl';
 import * as nearApiJs from 'near-api-js';
 import CONFIG from "../config"; // todo
-import {KEYSTORE_PREFIX} from "./wallet";
+import {KEY_ACTIVE_ACCOUNT_ID, KEYSTORE_PREFIX} from "./wallet";
 
 // todo TS
 
@@ -14,6 +14,7 @@ export const createKeyFrom = (value) => Uint8Array.from(sha256.sha256.array(valu
 //     }
 // };
 
+// todo https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt
 window.createKeyFrom = createKeyFrom;
 
 export class EncrytedLocalStorage {
@@ -22,6 +23,7 @@ export class EncrytedLocalStorage {
         this.key = key;
     }
 
+    // rename
     getNonceForCurrentClient() {
         // todo
         return new Uint8Array(24);
@@ -69,35 +71,17 @@ export class EncrytedLocalStorage {
 
 // получается что если ручками убрать в лс этот ключ, то кошель будет думать что энкрипшна нет,
 // поэтому при создании кейстораджа надо будет чекать является ли приватник шифрованным или нет (проверять по формату)
-export const KEY_ENCRYPTED_ACCOUNTS_WITH_PASS = 'wallet:encrypted';
+// export const KEY_ENCRYPTED_ACCOUNTS_WITH_PASS = 'wallet:encrypted';
 
 let isAuthorized = false;
 
-// const encrypt = (value, nonce, key) => {
-//     const encoder = new TextEncoder();
-//     return window.btoa(nacl.secretbox(encoder.encode(value), nonce, key));
-// };
+// export const isKeyEncrypted = async () => {
+//     const activeAccountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID);
+//     const accountSecretKey = `${KEYSTORE_PREFIX}${activeAccountId}:${CONFIG.NETWORK_ID}`;
+//     const key = localStorage.getItem(accountSecretKey);
 //
-// const decrypt = (value, nonce, key) => {
-//     try {
-//         const box = Uint8Array.from(window.atob(value).split(','));
-//         const opened = nacl.secretbox.open(box, nonce, key);
-//         if (opened === null) {
-//             return opened;
-//         }
-//
-//         const decoder = new TextDecoder();
-//         return decoder.decode(opened);
-//     } catch (e) {
-//         return null;
-//     }
+//     return !key.startsWith('ed25519') && !isAuthorized;
 // };
-
-export const HAS_ENCRYPTION = Boolean(localStorage.getItem(KEY_ENCRYPTED_ACCOUNTS_WITH_PASS));
-
-export const isKeyEncrypted = () => HAS_ENCRYPTION && !isAuthorized;
-
-// export const isKeyDecrypted = () => HAS_ENCRYPTION && isAuthorized;
 
 /**
  * Takes nonce from current UserAgent

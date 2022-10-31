@@ -1,57 +1,70 @@
-import React, {FC, useState} from 'react';
-import { Translate } from 'react-localize-redux';
-// import { useDispatch } from 'react-redux';
+import React, {FC, useCallback, useState} from 'react';
 import { Link } from 'react-router-dom';
 
-import FormButton from '../components/common/FormButton';
 import { StyledContainer, StyledFooter } from './ui';
 import PasswordInput from "../../components/common/PasswordInput";
+import {currentTargetValue} from "../../shared/lib/forms/selectors";
+import FormButton from '../../components/common/FormButton';
+import {useTranslation} from "react-i18next";
+import styled from "styled-components";
+import {KEY_ACTIVE_ACCOUNT_ID, KEYSTORE_PREFIX} from "../../utils/wallet";
+// import CONFIG from "../../config";
+// import * as nearApiJs from "near-api-js";
+// import {createKeyFrom, EncrytedLocalStorage} from "../../utils/keyEncryption";
 // import { redirectTo } from '../redux/actions/account';
 
 
+const Title = styled.h1`
+    
+`;
 
 const EnterPassword: FC = () => {
+    const { t } = useTranslation();
 
-    const [isError, setIsError] = useState(false);
+    // const [isError, setIsError] = useState(false);
+    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsError(false);
-        setIsLoading(true);
+    const handleSubmit = useCallback(() => {
+        const activeAccountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID);
+        // const accountSecretKey = `${KEYSTORE_PREFIX}${activeAccountId}:${CONFIG.NETWORK_ID}`;
+        // const key = localStorage.getItem(accountSecretKey);
 
-        // const value = e.target.password.value;
-        try {
-            // api call to check password
-            // useDispatch(redirectTo('/'));
-            // setIsError(false);
+        // const keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+        //     new EncrytedLocalStorage(createKeyFrom(password)),
+        //     KEYSTORE_PREFIX
+        // );
+        //
+        // const keyPair = keyStore.getKey(CONFIG.NETWORK_ID, activeAccountId);
+        // console.log(keyPair);
 
-            setIsError(true);
-            setIsLoading(false);
-        } catch (err) {
-            console.error(err);
-            setIsError(true);
-            setIsLoading(false);
-        }
-    };
 
-    const handleRestore = (e) => {
-        // some logic
-    };
+
+
+
+    }, [password]);
 
     return (
         <StyledContainer className='small-centered border'>
-            <h1><Translate id='checkPassword.title' /></h1>
-            <form onSubmit={handleSubmit}>
-                <PasswordInput />
-                <FormButton type="submit" disabled={isLoading}>
-                    <Translate id="checkPassword.unlockBtn" />
-                </FormButton>
-            </form>
+
+            <Title>{t('enterPassword.title')}</Title>
+
+            <PasswordInput
+                // disabled={disabled}
+                // error={shouldShowConfirmError ? t('setupPasswordProtection.matchError'): ''}
+                // placeholder={t('setupPasswordProtection.confirm')}
+                value={password}
+                onChange={currentTargetValue(setPassword)}
+                // onBlur={handleConfirmBlur}
+            />
+            <FormButton type="submit" disabled={isLoading} onClick={handleSubmit}>
+                {t('enterPassword.unlockBtn')}
+            </FormButton>
+
             <StyledFooter>
-                <Translate id="checkPassword.forgotPas" />
-                <Link onClick={handleRestore} to="/recover-seed-phrase">
-                    <Translate id="checkPassword.restoreLink" />
+                {t('enterPassword.forgotPas')}
+                <Link onClick={console.log} to="/recover-seed-phrase">
+                    {t('enterPassword.restoreLink')}
                 </Link>
             </StyledFooter>
         </StyledContainer>

@@ -4,7 +4,7 @@ import { Route, withRouter, Redirect } from 'react-router-dom';
 
 import { selectAccountSlice } from '../../../redux/slices/account';
 import { selectStatusLocalAlert } from '../../../redux/slices/status';
-import { isKeyEncrypted } from '../../../utils/keyEncryption';
+// import { isKeyEncrypted } from '../../../utils/keyEncryption';
 import { KEY_ACTIVE_ACCOUNT_ID } from '../../../utils/wallet';
 import NoIndexMetaTag from '../NoIndexMetaTag';
 
@@ -33,20 +33,20 @@ const PrivateRoute = ({
                     );
                 }
 
-                if (isKeyEncrypted()) {
-                    // Avoid infinite loop of redirect
-                    const skipRedirect = rest.path === '/enter-password';
-
-                    if (!skipRedirect) {
-                        return (
-                            <Redirect
-                                to={{
-                                    pathname: '/enter-password',
-                                }}
-                            />
-                        );
-                    }
-                }
+                // if (isKeyEncrypted()) {
+                //     // Avoid infinite loop of redirect
+                //     const skipRedirect = rest.path === '/enter-password';
+                //
+                //     if (!skipRedirect) {
+                //         return (
+                //             <Redirect
+                //                 to={{
+                //                     pathname: '/enter-password',
+                //                 }}
+                //             />
+                //         );
+                //     }
+                // }
 
                 // <Route component> takes precedence over <Route render></Route>
                 if (Component) {

@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
+import EnterPassword from "../pages/EnterPassword";
 import AccessKeysWrapper from '../components/access-keys/v2/AccessKeysWrapper';
 import AutoImportWrapper from '../components/accounts/auto_import/AutoImportWrapper';
 import BatchImportAccounts from '../components/accounts/batch_import_accounts';
@@ -73,15 +74,15 @@ import SetupRecoveryImplicitAccountWrapper from '../routes/SetupRecoveryImplicit
 import SignWrapper from '../routes/SignWrapper';
 import VerifyOwnerWrapper from '../routes/VerifyOwnerWrapper';
 import WalletWrapper from '../routes/WalletWrapper';
-import translations_en from '../translations/en.global.json';
-import translations_it from '../translations/it.global.json';
-import translations_pt from '../translations/pt.global.json';
-import translations_ru from '../translations/ru.global.json';
-import translations_tr from '../translations/tr.global.json';
-import translations_ua from '../translations/ua.global.json';
-import translations_vi from '../translations/vi.global.json';
-import translations_zh_hans from '../translations/zh-hans.global.json';
-import translations_zh_hant from '../translations/zh-hant.global.json';
+import translations_en from '../translations/locales/en/translation.json';
+import translations_it from '../translations/locales/it/translation.json';
+import translations_pt from '../translations/locales/pt/translation.json';
+import translations_ru from '../translations/locales/ru/translation.json';
+import translations_tr from '../translations/locales/tr/translation.json';
+import translations_ua from '../translations/locales/ua/translation.json';
+import translations_vi from '../translations/locales/vi/translation.json';
+import translations_zh_hans from '../translations/locales/zh-hans/translation.json';
+import translations_zh_hant from '../translations/locales/zh-hant/translation.json';
 import classNames from '../utils/classNames';
 import getBrowserLocale from '../utils/getBrowserLocale';
 import { reportUiActiveMixpanelThrottled } from '../utils/reportUiActiveMixpanelThrottled';
@@ -498,7 +499,7 @@ class Routing extends Component {
                             <Route
                                 exact
                                 path="/enter-password"
-                                component={EnterPasswordWrapper}
+                                component={EnterPassword}
                             />
                             <Route
                                 exact
@@ -610,11 +611,6 @@ class Routing extends Component {
                                 path="/swap"
                                 component={TokenSwap}
                             />
-                            {/*<PrivateRoute*/}
-                            {/*    exact*/}
-                            {/*    path="/enter-password"*/}
-                            {/*    component={EnterPassword}*/}
-                            {/*/>*/}
                             <Route
                                 exact
                                 path="/profile/:accountId"
