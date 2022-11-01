@@ -14,14 +14,6 @@ const StyledUserAccount = styled.div`
     cursor: pointer;
     user-select: none;
 
-    .user-icon {
-        min-width: 36px;
-        min-height: 36px;
-        .background {
-            fill: transparent;
-        }
-    }
-
     .account-wrapper {
         font-weight: 600;
         font-size: 14px;

@@ -1136,6 +1136,7 @@
         "checkbox": "I accept responsibility for sending funds to this address.",
         "scamWarning": "This address has a high level of risk and marked as scam. Make sure that this address is safe before sending funds."
     },
+    "support": "Support",
     "selectAccountDropdown": {
         "account": "Account",
         "createAccount": "Create New Account",

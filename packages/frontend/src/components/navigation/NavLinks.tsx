@@ -4,7 +4,6 @@ import { NavLink } from 'react-router-dom';
 
 import { Mixpanel } from '../../mixpanel/index';
 import ExploreIcon from '../svg/ExploreIcon';
-import HelpIcon from '../svg/HelpIcon';
 import StakingIcon from '../svg/StakingIcon';
 import UserIcon from '../svg/UserIcon';
 import WalletIcon from '../svg/WalletIcon';
@@ -18,6 +17,7 @@ const routes = [
         route: '/',
         trackMsg: 'Click Wallet button on nav',
         icon: <WalletIcon color="var(--navigation-icon-color)" />,
+        exact: true,
     },
     {
         nameId: 'link.staking',
@@ -38,15 +38,9 @@ const routes = [
         route: '/profile',
         trackMsg: 'Click Account button on nav',
         icon: <UserIcon color="var(--navigation-icon-color)" />,
-    },
-];
-
-const links = [
-    {
-        nameId: 'link.help',
-        link: 'https://support.mynearwallet.com/en',
-        trackMsg: 'Click Help button on nav',
-        icon: <HelpIcon color="var(--navigation-icon-color)" />,
+        // @todo: need to fix display in UserIcon. It has to be different here,
+        // but other components are perfectly fine with what we have now.
+        brokenDisplay: true,
     },
 ];
 
@@ -55,34 +49,33 @@ const NavLinks: FC = () => {
 
     return (
         <StyledLinks>
-            {routes.map(({ nameId, route, trackMsg, icon, testId = '' }, index) => (
-                <StyledNavItem key={index}>
-                    <NavLink
-                        exact
-                        to={route}
-                        onClick={() => track(trackMsg)}
-                        data-test-id={testId}
-                        className="link"
-                    >
-                        {icon}
-                        <span className="name">{t(nameId)}</span>
-                    </NavLink>
-                </StyledNavItem>
-            ))}
-            {links.map(({ nameId, link, trackMsg, icon }, index) => (
-                <StyledNavItem key={index}>
-                    <a
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={() => track(trackMsg)}
-                    >
-                        {icon}
-                        <span className="name">{t(nameId)}</span>
-                    </a>
-                </StyledNavItem>
-            ))}
+            {routes.map(
+                (
+                    {
+                        nameId,
+                        route,
+                        trackMsg,
+                        icon,
+                        testId = '',
+                        exact = false,
+                        brokenDisplay = false,
+                    },
+                    index
+                ) => (
+                    <StyledNavItem key={index}>
+                        <NavLink
+                            to={route}
+                            onClick={() => track(trackMsg)}
+                            data-test-id={testId}
+                            className={`link ${brokenDisplay ? 'brokenDisplay' : ''}`}
+                            exact={exact}
+                        >
+                            {icon}
+                            <span className="name">{t(nameId)}</span>
+                        </NavLink>
+                    </StyledNavItem>
+                )
+            )}
         </StyledLinks>
     );
 };

@@ -14,10 +14,7 @@ export const StyledHeader = styled.header`
     display: flex;
     flex-direction: column;
     background-color: var(--mnw-component-background-1);
-    /* TODO: ask about design. This border is for splitting between desktop navigation and main zone.
-        Keep just a border for the first iteration?
-    */
-    border/* -right */: 1px solid #f0f0f1;
+    border-right: 1px solid #f0f0f1;
 
     @media ${VIEWPORT.TABLET} {
         width: 100%;
@@ -112,19 +109,23 @@ export const StyledNavItem = styled.li`
         transition: 80ms;
         text-decoration: none;
 
-        // TODO: fix user-icon size
-        // TODO: find a better way to change icon styles
-        svg.user-icon {
-            width: 24px;
-            height: 24px;
-        }
-
         &:hover,
         &:focus,
         &.active {
             --navigation-icon-color: var(--mnw-color-active-text);
             background-color: var(--mnw-color-1);
             color: var(--mnw-color-active-text);
+        }
+
+        &.brokenDisplay {
+            svg {
+                position: relative;
+                left: -5px;
+            }
+
+            .name {
+                margin-left: 0.2rem;
+            }
         }
     }
 
@@ -220,4 +221,12 @@ export const StyledLangSelector = styled.div`
         border-bottom: 1px solid var(--mnw-color-9);
         background-color: var(--mnw-color-8);
     }
+`;
+
+export const StyledLink = styled.a`
+    width: 100%;
+    font-weight: 500;
+    font-size: 1rem;
+    text-decoration: none;
+    color: var(--mnw-color-6);
 `;

@@ -1,11 +1,14 @@
 import React, { FC, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import isMobile from '../../utils/isMobile';
 import LangSwitcher from '../common/LangSwitcher';
+import HelpIcon from '../svg/HelpIcon';
 import UserIcon from '../svg/UserIcon';
 import AccountMenu from './AccountMenu';
 import Logo from './Logo';
 import NavLinks from './NavLinks';
+import SettingsItem from './SettingsItem/SettingsItem';
 import {
     StyledHeader,
     StyledTop,
@@ -13,6 +16,7 @@ import {
     StyledNavigation,
     StyledFooter,
     StyledLangSelector,
+    StyledLink,
 } from './ui';
 import UserAccount from './UserAccount';
 
@@ -38,6 +42,7 @@ const Navigation: FC<NavigationProps> = ({
     flowLimitationMainMenu,
     flowLimitationSubMenu,
 }) => {
+    const { t } = useTranslation();
     const { accountId, accountsBalance, localStorage } = currentAccount;
     const [isNavigationOpen, setIsNavigationOpen] = useState(!isMobileDevice);
     const [isAccountMenuVisible, setIsAccountMenuVisible] = useState(isMobileDevice);
@@ -90,6 +95,18 @@ const Navigation: FC<NavigationProps> = ({
             <StyledNavigation hidden={!isContentVisible}>
                 <NavLinks />
                 <StyledFooter showDivider={!isMobileDevice}>
+                    <SettingsItem
+                        icon={<HelpIcon />}
+                        trackMsg="Click Help button on nav"
+                    >
+                        <StyledLink
+                            href="https://support.mynearwallet.com/en"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {t('support')}
+                        </StyledLink>
+                    </SettingsItem>
                     <StyledLangSelector>
                         <LangSwitcher />
                     </StyledLangSelector>
