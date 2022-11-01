@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
 import isMobile from '../../utils/isMobile';
 import LangSwitcher from '../common/LangSwitcher';
@@ -52,52 +52,14 @@ const Navigation: FC<NavigationProps> = ({
         if (isMobileDevice) {
             setIsNavigationOpen(!isNavigationOpen);
         } else {
-            // TODO: add outside click hook
             setIsAccountMenuVisible(!isAccountMenuVisible);
         }
     };
 
-    // useEffect(() => {
-    //     if (menuOpen) {
-    //         document.addEventListener('keydown', handleKeyDown);
-    //         document.addEventListener('click', handleClick);
-    //     } else {
-    //         document.removeEventListener('keydown', handleKeyDown);
-    //         document.removeEventListener('click', handleClick);
-    //     }
-    // }, [menuOpen]);
-
-    // const handleKeyDown = useCallback((e) => {
-    //     if (e.keyCode === 27) {
-    //         setMenuOpen(false);
-    //     }
-    // }, []);
-
-    // const handleClick = useCallback((e) => {
-    //     const desktopMenu = document.getElementById('desktop-menu');
-    //     const mobileMenu = document.getElementById('mobile-menu');
-
-    //     if (e.target.tagName === 'SPAN') {
-    //         return false;
-    //     }
-
-    //     if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || (!desktopMenu?.contains(e.target) && !mobileMenu?.contains(e.target))) {
-    //         setMenuOpen(false);
-    //     }
-    // }, []);
-
-    // const toggleMenu = useCallback(() => {
-    //     if (menuOpen) {
-    //         setMenuOpen(false);
-    //     } else {
-    //         setMenuOpen(true);
-    //     }
-    // }, [menuOpen]);
-
-    // const handleSelectAccount = useCallback((accountId) => {
-    //     selectAccount(accountId);
-    //     setMenuOpen(false);
-    // }, []);
+    const handleSelectAccount = useCallback((accountId) => {
+        selectAccount(accountId);
+        setIsAccountMenuVisible(false);
+    }, []);
 
     const isContentVisible = !isMobileDevice || isNavigationOpen;
 
@@ -133,9 +95,10 @@ const Navigation: FC<NavigationProps> = ({
                     </StyledLangSelector>
                     <AccountMenu
                         show={localStorage?.accountFound && isAccountMenuVisible}
-                        handleSelectAccount={selectAccount}
+                        handleSelectAccount={handleSelectAccount}
                         accountIdLocalStorage={localStorage?.accountId}
                         accountsBalance={accountsBalance}
+                        setIsAccountMenuVisible={setIsAccountMenuVisible}
                     />
                 </StyledFooter>
             </StyledNavigation>

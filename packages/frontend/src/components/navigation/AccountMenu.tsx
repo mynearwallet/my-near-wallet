@@ -1,16 +1,20 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useRef } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import useOnClickOutside from '../../hooks/useOnClickOutside';
 import { getAccountBalance } from '../../redux/actions/account';
 import { selectAvailableAccounts } from '../../redux/slices/availableAccounts';
 import { VIEWPORT } from '../../shared/ui/mixins/viewport';
+import isMobile from '../../utils/isMobile';
 import AccountSelector from '../accounts/account_selector/AccountSelector';
 import AccessAccountBtn from './AccessAccountBtn';
 import CreateAccountBtn from './CreateAccountBtn';
 
-const Menu = styled.div`
+const isMobileDevice = isMobile();
+
+const StyledMenu = styled.div`
     position: fixed;
     top: 70px;
     right: 2.7%;
@@ -48,6 +52,7 @@ type AccountMenuProps = {
     handleSelectAccount: (accoundId: string) => void;
     accountIdLocalStorage: string;
     accountsBalance: string[];
+    setIsAccountMenuVisible: (state: boolean) => void;
 };
 
 const AccountMenu: FC<AccountMenuProps> = ({
@@ -55,6 +60,7 @@ const AccountMenu: FC<AccountMenuProps> = ({
     handleSelectAccount,
     accountIdLocalStorage,
     accountsBalance,
+    setIsAccountMenuVisible,
 }) => {
     const dispatch = useDispatch();
     const availableAccounts = useSelector(selectAvailableAccounts);
@@ -63,9 +69,15 @@ const AccountMenu: FC<AccountMenuProps> = ({
         dispatch(getAccountBalance(accountId));
     }, []);
 
+    const menuRef = useRef(null);
+
+    const handleClickOutside = useCallback(() => setIsAccountMenuVisible(false), []);
+
+    useOnClickOutside(menuRef, handleClickOutside);
+
     if (show) {
         return (
-            <Menu id="desktop-menu">
+            <StyledMenu id="accountMenu" ref={isMobileDevice ? null : menuRef}>
                 <h5>
                     <Translate id="link.switchAccount" />
                 </h5>
@@ -79,7 +91,7 @@ const AccountMenu: FC<AccountMenuProps> = ({
                 />
                 <AccessAccountBtn />
                 <CreateAccountBtn />
-            </Menu>
+            </StyledMenu>
         );
     }
 
