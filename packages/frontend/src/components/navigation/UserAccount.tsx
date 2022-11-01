@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 
 import classNames from '../../utils/classNames';
 import ChevronIcon from '../svg/ChevronIcon';
 import UserIcon from '../svg/UserIcon';
 
-const Container = styled.div`
-    background-color: #F0F0F1;
+const StyledUserAccount = styled.div`
+    background-color: #f0f0f1;
     display: flex;
     align-items: center;
     border-radius: 40px;
@@ -30,7 +30,7 @@ const Container = styled.div`
         max-width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: #72727A;
+        color: #72727a;
 
         @media (max-width: 991px) {
             margin: 0 14px 0 12px;
@@ -38,7 +38,7 @@ const Container = styled.div`
     }
 
     .icon-wrapper {
-        background-color: #E5E5E6;
+        background-color: #e5e5e6;
         min-width: 28px;
         min-height: 28px;
         width: 28px;
@@ -63,16 +63,31 @@ const Container = styled.div`
     }
 `;
 
-const UserAccount = ({ accountId = '', onClick, withIcon = true, flowLimitationSubMenu = false }) => (
-    <Container className={classNames(['user-account', {'no-click' : flowLimitationSubMenu }])} onClick={onClick}>
+type UserAccountProps = {
+    onClick: VoidFunction;
+    accountId?: string;
+    withIcon?: boolean;
+    flowLimitationSubMenu?: boolean;
+};
+
+const UserAccount: FC<UserAccountProps> = ({
+    onClick,
+    accountId = '',
+    withIcon = true,
+    flowLimitationSubMenu = false,
+}) => (
+    <StyledUserAccount
+        className={classNames(['user-account', { 'no-click': flowLimitationSubMenu }])}
+        onClick={onClick}
+    >
         {withIcon && <UserIcon />}
         <div className="account-wrapper" data-test-id="currentUser">
             {accountId}
         </div>
-        <div className='icon-wrapper'>
-            <ChevronIcon/>
+        <div className="icon-wrapper">
+            <ChevronIcon />
         </div>
-    </Container>
+    </StyledUserAccount>
 );
 
 export default UserAccount;

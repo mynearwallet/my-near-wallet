@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -24,7 +24,12 @@ const StyledLogo = styled.div`
     }
 `;
 
-const Logo = ({ link, mode }) => (
+type LogoProps = {
+    link: boolean;
+    mode?: 'mobile';
+};
+
+const Logo: FC<LogoProps> = ({ link, mode }) => (
     <StyledLogo>
         {link ? (
             <Link to="/">

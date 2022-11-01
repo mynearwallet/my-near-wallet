@@ -17,27 +17,27 @@ const routes = [
         nameId: 'link.wallet',
         route: '/',
         trackMsg: 'Click Wallet button on nav',
-        icon: <WalletIcon />,
+        icon: <WalletIcon color="var(--navigation-icon-color)" />,
     },
     {
         nameId: 'link.staking',
         route: '/staking',
         trackMsg: 'Click Staking button on nav',
-        icon: <StakingIcon />,
+        icon: <StakingIcon color="var(--navigation-icon-color)" />,
         testId: 'staking_navlink',
     },
     {
         nameId: 'link.explore',
         route: '/explore',
         trackMsg: 'Click Explore button on nav',
-        icon: <ExploreIcon />,
+        icon: <ExploreIcon color="var(--navigation-icon-color)" />,
         testId: 'explore_navlink',
     },
     {
         nameId: 'link.account',
         route: '/profile',
         trackMsg: 'Click Account button on nav',
-        icon: <UserIcon />,
+        icon: <UserIcon color="var(--navigation-icon-color)" />,
     },
 ];
 
@@ -46,7 +46,7 @@ const links = [
         nameId: 'link.help',
         link: 'https://support.mynearwallet.com/en',
         trackMsg: 'Click Help button on nav',
-        icon: <HelpIcon />,
+        icon: <HelpIcon color="var(--navigation-icon-color)" />,
     },
 ];
 

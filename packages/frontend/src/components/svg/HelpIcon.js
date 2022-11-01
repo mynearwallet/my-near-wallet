@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HelpIcon = ({ color = '#A2A2A8' }) => {
+const HelpIcon = ({ color = 'var(--mnw-color-6)' }) => {
     return (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip324230)">

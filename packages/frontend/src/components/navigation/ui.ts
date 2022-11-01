@@ -90,6 +90,8 @@ export const StyledLinks = styled.ul`
 `;
 
 export const StyledNavItem = styled.li`
+    --navigation-icon-color: var(--mnw-color-6);
+
     &:not(:last-child) {
         margin-bottom: 0.2rem;
     }
@@ -120,17 +122,9 @@ export const StyledNavItem = styled.li`
         &:hover,
         &:focus,
         &.active {
+            --navigation-icon-color: var(--mnw-color-active-text);
             background-color: var(--mnw-color-1);
             color: var(--mnw-color-active-text);
-
-            // @todo find a better way to change svg styles
-            svg {
-                path,
-                circle,
-                line {
-                    stroke: var(--mnw-color-active-text);
-                }
-            }
         }
     }
 
@@ -153,17 +147,9 @@ export const StyledNavItem = styled.li`
             &:hover,
             &:focus,
             &.active {
+                --navigation-icon-color: var(--mnw-color-1);
                 background-color: transparent;
                 color: var(--mnw-color-10);
-
-                // @todo find a better way to change svg styles
-                svg {
-                    path,
-                    circle,
-                    line {
-                        stroke: var(--mnw-color-1);
-                    }
-                }
             }
         }
     }
