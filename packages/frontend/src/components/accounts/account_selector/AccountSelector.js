@@ -53,13 +53,15 @@ const StyledContainer = styled.div`
     }
 `;
 
+const noop = () => {};
+
 export default ({
     signedInAccountId,
     availableAccounts,
     accountsBalances,
     getAccountBalance,
     onSelectAccount,
-    onSignInToDifferentAccount,
+    onSignInToDifferentAccount = noop,
     showBalanceInUSD
 }) => {
 

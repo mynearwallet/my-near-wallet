@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { FC, useCallback } from 'react';
 import { Translate } from 'react-localize-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { getAccountBalance } from '../../redux/actions/account';
+import { selectAvailableAccounts } from '../../redux/slices/availableAccounts';
 import { VIEWPORT } from '../../shared/ui/mixins/viewport';
 import AccountSelector from '../accounts/account_selector/AccountSelector';
 import AccessAccountBtn from './AccessAccountBtn';
@@ -12,10 +15,12 @@ const Menu = styled.div`
     top: 70px;
     right: 2.7%;
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--mnw-component-background-1);
     color: #4a4f54;
     width: 320px;
-    box-shadow: 0px 45px 56px rgba(0, 0, 0, 0.07), 0px 10.0513px 12.5083px rgba(0, 0, 0, 0.0417275), 0px 2.99255px 3.72406px rgba(0, 0, 0, 0.0282725);
+    box-shadow: 0px 45px 56px rgba(0, 0, 0, 0.07),
+        0px 10.0513px 12.5083px rgba(0, 0, 0, 0.0417275),
+        0px 2.99255px 3.72406px rgba(0, 0, 0, 0.0282725);
     padding: 16px;
 
     .user-links {
@@ -38,27 +43,39 @@ const Menu = styled.div`
     }
 `;
 
-const DesktopMenu = ({
+type AccountMenuProps = {
+    show: boolean;
+    handleSelectAccount: (accoundId: string) => void;
+    accountIdLocalStorage: string;
+    accountsBalance: string[];
+};
+
+const AccountMenu: FC<AccountMenuProps> = ({
     show,
-    accounts,
     handleSelectAccount,
     accountIdLocalStorage,
     accountsBalance,
-    refreshBalance
 }) => {
+    const dispatch = useDispatch();
+    const availableAccounts = useSelector(selectAvailableAccounts);
+
+    const refreshBalance = useCallback((accountId) => {
+        dispatch(getAccountBalance(accountId));
+    }, []);
+
     if (show) {
         return (
-            <Menu id='desktop-menu'>
+            <Menu id="desktop-menu">
                 <h5>
                     <Translate id="link.switchAccount" />
                 </h5>
                 <AccountSelector
                     signedInAccountId={accountIdLocalStorage}
-                    availableAccounts={accounts}
+                    availableAccounts={availableAccounts}
                     accountsBalances={accountsBalance}
                     getAccountBalance={refreshBalance}
                     onSelectAccount={handleSelectAccount}
-                    showBalanceInUSD={true}
+                    showBalanceInUSD
                 />
                 <AccessAccountBtn />
                 <CreateAccountBtn />
@@ -69,4 +86,4 @@ const DesktopMenu = ({
     return null;
 };
 
-export default DesktopMenu;
+export default AccountMenu;
