@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import { HAPI_RISK_SCORING } from '../../../../../../features';
 import iconWarning from '../../../images/icon-warning.svg';
 import { Mixpanel } from '../../../mixpanel/index';
 import { checkAddress } from '../../../services/RiscScoring';
@@ -14,14 +13,14 @@ const RSContainer = styled.div`
 `;
 
 const RSWarning = styled.div`
-    background: #FFEFEF;
+    background: var(--mnw-color-error-background);
     border-radius: 4px;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     padding: 16px 12px;
     gap: 10px;
-    color: #CD2B31;
+    color: var(--mnw-color-error);
     font-size: 12px;
     line-height: 16px;
 `;
@@ -88,7 +87,7 @@ export function useRiskScoringCheck(accountId) {
             }
         }
 
-        if (HAPI_RISK_SCORING && accountId) {
+        if (accountId) {
             checkAccountWithHapi();
         } else {
             setIsRSWarned(false);

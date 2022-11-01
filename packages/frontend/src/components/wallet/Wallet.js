@@ -3,16 +3,11 @@ import { Translate } from 'react-localize-redux';
 import { Textfit } from 'react-textfit';
 import styled from 'styled-components';
 
-import {
-    CREATE_USN_CONTRACT,
-} from '../../../../../features';
-import { isWhitelabel } from '../../config/whitelabel';
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
 import classNames from '../../utils/classNames';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
 import { getTotalBalanceInFiat } from '../common/balance/helpers';
 import FormButton from '../common/FormButton';
-import RemoveLinkRecoveryBanner from '../common/RemoveLinkRecoveryBanner';
 import Container from '../common/styled/Container.css';
 import Tooltip from '../common/Tooltip';
 import DownArrowIcon from '../svg/DownArrowIcon';
@@ -24,10 +19,8 @@ import AllTokensTotalBalanceUSD from './AllTokensTotalBalanceUSD';
 import CreateCustomNameModal from './CreateCustomNameModal';
 import CreateFromImplicitSuccessModal from './CreateFromImplicitSuccessModal';
 import DepositNearBanner from './DepositNearBanner';
-import ExploreApps from './ExploreApps';
 import LinkDropSuccessModal from './LinkDropSuccessModal';
 import NFTs from './NFTs';
-import Sidebar from './Sidebar';
 import SidebarLight from './SidebarLight';
 import Tokens from './Tokens';
 import { ZeroBalanceAccountImportedModal } from './ZeroBalanceAccountImportedModal';
@@ -323,16 +316,10 @@ export function Wallet({
         currentLanguage
     );
 
-    const shouldShowRemoveLinkRecoveryBanner = !isWhitelabel && (userRecoveryMethods.some(({ kind }) => kind === 'email')
-        || userRecoveryMethods.some(({ kind }) => kind === 'phone'));
-
     return (
         <StyledContainer
             className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}
         >
-            {shouldShowRemoveLinkRecoveryBanner &&
-                <RemoveLinkRecoveryBanner />
-            }
             <div className="split">
                 <div className="left">
                     <div className="tab-selector">
@@ -370,12 +357,7 @@ export function Wallet({
                     )}
                 </div>
                 <div className="right">
-                    {isWhitelabel
-                        ? <SidebarLight availableAccounts={accountExists && availableAccounts} />
-                        : accountExists
-                            ? <Sidebar availableAccounts={availableAccounts} />
-                            : <ExploreApps />
-                    }
+                    <SidebarLight availableAccounts={accountExists && availableAccounts} />
                     <ActivitiesWrapper />
                 </div>
             </div>
@@ -462,7 +444,7 @@ const FungibleTokens = ({
                 <FormButton
                     color="dark-gray"
                     linkTo="/buy"
-                    trackingId="Click Receive on Wallet page"
+                    trackingId="Click Top Up on Wallet page"
                     data-test-id="balancesTab.buy"
                 >
                     <div>
@@ -493,15 +475,11 @@ const FungibleTokens = ({
                         <span className={classNames({ dots: tokensLoading })}>
                             <Translate id="wallet.yourPortfolio" />
                         </span>
-                        {!CREATE_USN_CONTRACT && (
-                            <span>
-                                <Translate id="wallet.tokenBalance" />
-                            </span>
-                        )}
                     </div>
                     <Tokens
                         tokens={fungibleTokens}
                         currentLanguage={currentLanguage}
+                        showFiatPrice
                     />
                     <div className='coingecko'><Translate id='poweredByCoinGecko' /></div>
                 </>
