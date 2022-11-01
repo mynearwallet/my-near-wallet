@@ -31,7 +31,7 @@ const LanguageSwitcher: FC<LanguageSwitcherProps> = ({ languages, activeLanguage
         <select
             className="lang-selector"
             name="lang"
-            value={activeLanguage && activeLanguage.code}
+            value={activeLanguage?.code}
             onChange={targetValue(handleChange)}
         >
             {languages.map(({ name, code }) => (

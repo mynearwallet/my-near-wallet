@@ -3,14 +3,17 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import { Mixpanel } from '../../mixpanel/index';
+import { VIEWPORT } from '../../shared/ui/mixins/viewport';
 import MyNearWalletLogo from '../svg/MyNearWalletLogo';
 
-const StyledContainer = styled.div`
+const StyledFooter = styled.footer`
     position: absolute;
     right: 0;
     left: 0;
     bottom: 0;
     padding: 35px;
+    // Reserved for header
+    padding-left: 275px;
     background-color: #f8f8f8;
     font-size: 12px;
     color: #999999;
@@ -20,6 +23,10 @@ const StyledContainer = styled.div`
 
     @media (min-width: 768px) {
         justify-content: space-between;
+    }
+
+    @media ${VIEWPORT.TABLET} {
+        padding-left: 35px;
     }
 
     .left {
@@ -86,7 +93,7 @@ const StyledLogo = styled.div`
 
 const Footer = () => {
     return (
-        <StyledContainer className='wallet-footer'>
+        <StyledFooter className='wallet-footer'>
             <div className='left'>
                 <StyledLogo>
                     <MyNearWalletLogo mode='footer' />
@@ -135,7 +142,7 @@ const Footer = () => {
                     <Translate id='footer.contactSupport' />
                 </a>
             </div>
-        </StyledContainer>
+        </StyledFooter>
     );
 };
 

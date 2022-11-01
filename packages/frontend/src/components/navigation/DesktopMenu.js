@@ -8,9 +8,9 @@ import AccessAccountBtn from './AccessAccountBtn';
 import CreateAccountBtn from './CreateAccountBtn';
 
 const Menu = styled.div`
-    position: absolute;
+    position: fixed;
     top: 70px;
-    right: 16px;
+    right: 2.7%;
     border-radius: 8px;
     background-color: white;
     color: #4a4f54;
@@ -22,6 +22,11 @@ const Menu = styled.div`
         padding: 20px;
     }
 
+    .account-selector {
+        padding: 0.375rem 0 0;
+        box-shadow: none;
+    }
+
     button {
         width: 100% !important;
     }
@@ -30,11 +35,6 @@ const Menu = styled.div`
         position: static;
         box-shadow: none;
         width: 100%;
-
-        .account-selector {
-            padding: 0.375rem 0 0;
-            box-shadow: none;
-        }
     }
 `;
 

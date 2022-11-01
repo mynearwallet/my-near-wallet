@@ -5,19 +5,13 @@ type SettingsItemProps = {
     icon: React.ReactElement;
     control?: React.ReactElement;
     children: string;
-}
+};
 
-const SettingsItem: FC<SettingsItemProps> = ({
-    icon,
-    control,
-    children,
-}) => {
+const SettingsItem: FC<SettingsItemProps> = ({ icon, control, children }) => {
     return (
         <StyledSettingsItem>
             <StyledTitle>
-                <StyledIcon>
-                    {icon}
-                </StyledIcon>
+                <StyledIcon>{icon}</StyledIcon>
                 {children}
             </StyledTitle>
             {control}

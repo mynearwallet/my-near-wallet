@@ -1,20 +1,21 @@
 import React, { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'
 
 import { Mixpanel } from '../../mixpanel/index';
 import isMobile from '../../utils/isMobile';
 import LangSwitcher from '../common/LangSwitcher';
 import ExploreIcon from '../svg/ExploreIcon';
 import HelpIcon from '../svg/HelpIcon';
+import StakingIcon from '../svg/StakingIcon';
 import UserIcon from '../svg/UserIcon';
-import VaultIcon from '../svg/VaultIcon';
 import WalletIcon from '../svg/WalletIcon';
 import DesktopMenu from './DesktopMenu';
 import Logo from './Logo';
 import {
     StyledHeader,
     StyledTop,
+    StyledUserAccount,
     StyledNavigation,
     StyledLinks,
     StyledNavItem,
@@ -36,7 +37,7 @@ const routes = [
         nameId: 'link.staking',
         route: '/staking',
         trackMsg: 'Click Staking button on nav',
-        icon: <VaultIcon />,
+        icon: <StakingIcon />,
         testId: 'staking_navlink',
     },
     {
@@ -60,7 +61,7 @@ const links = [
         link: 'https://support.mynearwallet.com/en',
         trackMsg: 'Click Help button on nav',
         icon: <HelpIcon />,
-    }
+    },
 ];
 
 const isMobileDevice = isMobile();
@@ -85,7 +86,7 @@ const Navigation: FC<NavigationProps> = ({
     selectAccount,
     refreshBalance,
 }) => {
-    const { t } = useTranslation()
+    const { t } = useTranslation();
     const { accountId, accountsBalance, localStorage } = currentAccount;
     const [isNavigationOpen, setIsNavigationOpen] = useState(!isMobileDevice);
     const [isAccountMenuVisible, setIsAccountMenuVisible] = useState(isMobileDevice);
@@ -111,46 +112,46 @@ const Navigation: FC<NavigationProps> = ({
         <StyledHeader id="nav-container">
             <StyledTop>
                 <Logo mode={isMobileDevice ? 'mobile' : undefined} link />
-                <UserAccount
-                    accountId={accountId || localStorage?.accountId}
-                    onClick={handleAccountClick}
-                    withIcon={!isMobileDevice}
-                />
+                <StyledUserAccount>
+                    <UserAccount
+                        accountId={accountId || localStorage?.accountId}
+                        onClick={handleAccountClick}
+                        withIcon={!isMobileDevice}
+                    />
+                </StyledUserAccount>
                 {isMobileDevice && <UserIcon onClick={toggleNavigation} background />}
             </StyledTop>
 
             <StyledNavigation hidden={!isContentVisible}>
                 {/* @todo move to a separate component OR update NavLinks.js */}
                 <StyledLinks>
-                    {routes.map(({ nameId, route, trackMsg, icon, testId = '' }, index) => (
-                        <StyledNavItem key={index}>
-                            <NavLink
-                                exact
-                                to={route}
-                                onClick={() => track(trackMsg)}
-                                data-test-id={testId}
-                                className="link"
-                            >
-                                {icon}
-                                <span className="name">
-                                    {t(nameId)}
-                                </span>
-                            </NavLink>
-                        </StyledNavItem>
-                    ))}
+                    {routes.map(
+                        ({ nameId, route, trackMsg, icon, testId = '' }, index) => (
+                            <StyledNavItem key={index}>
+                                <NavLink
+                                    exact
+                                    to={route}
+                                    onClick={() => track(trackMsg)}
+                                    data-test-id={testId}
+                                    className="link"
+                                >
+                                    {icon}
+                                    <span className="name">{t(nameId)}</span>
+                                </NavLink>
+                            </StyledNavItem>
+                        )
+                    )}
                     {links.map(({ nameId, link, trackMsg, icon }, index) => (
                         <StyledNavItem key={index}>
                             <a
                                 href={link}
-                                target='_blank'
-                                rel='noopener noreferrer'
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="link"
                                 onClick={() => track(trackMsg)}
                             >
                                 {icon}
-                                <span className="name">
-                                    {t(nameId)}
-                                </span>
+                                <span className="name">{t(nameId)}</span>
                             </a>
                         </StyledNavItem>
                     ))}
