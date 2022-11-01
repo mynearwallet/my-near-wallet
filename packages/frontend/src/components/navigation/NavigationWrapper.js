@@ -26,18 +26,11 @@ export default () => {
     return (
         <Navigation
             selectAccount={selectAccount}
+            // flowLimitationMainMenu={flowLimitationMainMenu}
+            // flowLimitationSubMenu={flowLimitationSubMenu}
             accounts={availableAccounts}
             currentAccount={account}
             refreshBalance={refreshBalance}
         />
-        // <Navigation
-        //     selectAccount={selectAccount}
-        //     showNavLinks={account.localStorage?.accountFound}
-        //     flowLimitationMainMenu={flowLimitationMainMenu}
-        //     flowLimitationSubMenu={flowLimitationSubMenu}
-        //     refreshBalance={refreshBalance}
-        //     availableAccounts={availableAccounts}
-        //     account={account}
-        // />
     );
 };

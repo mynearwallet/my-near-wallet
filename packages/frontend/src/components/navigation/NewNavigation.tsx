@@ -112,14 +112,18 @@ const Navigation: FC<NavigationProps> = ({
         <StyledHeader id="nav-container">
             <StyledTop>
                 <Logo mode={isMobileDevice ? 'mobile' : undefined} link />
-                <StyledUserAccount>
-                    <UserAccount
-                        accountId={accountId || localStorage?.accountId}
-                        onClick={handleAccountClick}
-                        withIcon={!isMobileDevice}
-                    />
-                </StyledUserAccount>
-                {isMobileDevice && <UserIcon onClick={toggleNavigation} background />}
+                {localStorage?.accountFound && (
+                    <>
+                        <StyledUserAccount>
+                            <UserAccount
+                                accountId={accountId || localStorage?.accountId}
+                                onClick={handleAccountClick}
+                                withIcon={!isMobileDevice}
+                            />
+                        </StyledUserAccount>
+                        {isMobileDevice && <UserIcon onClick={toggleNavigation} background />}
+                    </>
+                )}
             </StyledTop>
 
             <StyledNavigation hidden={!isContentVisible}>
@@ -163,7 +167,7 @@ const Navigation: FC<NavigationProps> = ({
                     </StyledLangSelector>
                     {/* TODO: rename with smth like "AccountMenu" */}
                     <DesktopMenu
-                        show={isAccountMenuVisible}
+                        show={localStorage?.accountFound && isAccountMenuVisible}
                         accounts={accounts}
                         handleSelectAccount={selectAccount}
                         accountIdLocalStorage={localStorage?.accountId}
