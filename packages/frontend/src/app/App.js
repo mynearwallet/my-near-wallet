@@ -34,7 +34,6 @@ import { EnableTwoFactor } from '../components/accounts/two_factor/EnableTwoFact
 import TwoFactorVerifyModal from '../components/accounts/two_factor/TwoFactorVerifyModal';
 import { BuyNear } from '../components/buy/BuyNear';
 import Bootstrap from '../components/common/Bootstrap';
-import Footer from '../components/common/Footer';
 import GlobalAlert from '../components/common/GlobalAlert';
 import GuestLandingRoute from '../components/common/GuestLandingRoute';
 import NetworkBanner from '../components/common/NetworkBanner';
@@ -93,7 +92,7 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
-import Main from './ui/Main';
+import Layout from './ui/Layout';
 const { getTokenWhiteList } = tokenFiatValueActions;
 
 const {
@@ -365,7 +364,7 @@ class Routing extends Component {
                             />
                         )}
 
-                        <Main history={this.props.history}>
+                        <Layout>
                             <Switch>
                                 <Redirect
                                     from="//*"
@@ -671,8 +670,7 @@ class Routing extends Component {
                                 )}
                                 <PrivateRoute component={PageNotFound} />
                             </Switch>
-                        </Main>
-                        <Footer />
+                        </Layout>
                     </ThemeProvider>
                 </ConnectedRouter>
             </Container>

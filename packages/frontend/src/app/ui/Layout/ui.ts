@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { VIEWPORT } from '../../../shared/ui/mixins/viewport';
 
-export const StyledMain = styled.main``;
+export const StyledLayout = styled.div``;
 
 export const StyledTop = styled.div`
     max-width: 1000px;
@@ -15,12 +15,6 @@ export const StyledTop = styled.div`
     }
 `;
 
-export const StyledAccount = styled.div`
-    position: relative;
+export const StyledUserWrapper = styled.div`
     margin-left: auto;
-
-    .accountMenu {
-        position: absolute;
-        top: 50px;
-    }
 `;
