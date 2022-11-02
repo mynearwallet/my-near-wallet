@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
-import languagesIcon from '../../images/icon-languages.svg';
-import { VIEWPORT } from '../../shared/ui/mixins/viewport';
+import languagesIcon from '../../../images/icon-languages.svg';
+import { VIEWPORT } from '../../../shared/ui/mixins/viewport';
 
 export const StyledHeader = styled.header`
     position: fixed;

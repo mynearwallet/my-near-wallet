@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { VIEWPORT } from '../../../shared/ui/mixins/viewport';
+import { VIEWPORT } from '../../../../shared/ui/mixins/viewport';
 
 export const StyledSettingsItem = styled.div`
     display: flex;

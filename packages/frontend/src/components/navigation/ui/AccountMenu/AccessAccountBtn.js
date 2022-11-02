@@ -2,8 +2,8 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import FormButton from '../common/FormButton';
-import ImportIcon from '../svg/ImportIcon';
+import FormButton from '../../../common/FormButton';
+import ImportIcon from '../../../svg/ImportIcon';
 
 const Button = styled(FormButton)`
     display: flex;

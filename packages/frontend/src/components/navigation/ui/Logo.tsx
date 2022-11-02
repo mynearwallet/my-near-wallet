@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { VIEWPORT } from '../../shared/ui/mixins/viewport';
-import MyNearWalletLogo from '../svg/MyNearWalletLogo';
+import { VIEWPORT } from '../../../shared/ui/mixins/viewport';
+import MyNearWalletLogo from '../../svg/MyNearWalletLogo';
 
 const StyledLogo = styled.div`
     padding: 0 0.8rem;

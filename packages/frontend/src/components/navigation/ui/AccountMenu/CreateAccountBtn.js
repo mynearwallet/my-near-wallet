@@ -2,8 +2,8 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import FormButton from '../common/FormButton';
-import PlusSignIcon from '../svg/PlusSignIcon';
+import FormButton from '../../../common/FormButton';
+import PlusSignIcon from '../../../svg/PlusSignIcon';
 
 const Button = styled(FormButton)`
     padding: 0;
@@ -22,7 +22,7 @@ const CreateAccountBtn = () => (
         trackingId="CA Click create new account button"
         color="gray-blue"
     >
-        <PlusSignIcon color="#0072CE" />
+        <PlusSignIcon color="var(--mnw-color-1)" />
         <Translate id="button.createNewAccount" />
     </Button>
 );

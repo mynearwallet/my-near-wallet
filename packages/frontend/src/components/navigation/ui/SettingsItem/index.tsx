@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { Mixpanel } from '../../../mixpanel';
+import { Mixpanel } from '../../../../mixpanel';
 import { StyledSettingsItem, StyledTitle, StyledIcon } from './ui';
 
 const track = (msg: string) => Mixpanel.track(msg);

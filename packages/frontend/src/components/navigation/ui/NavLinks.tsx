@@ -2,12 +2,12 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
-import { Mixpanel } from '../../mixpanel/index';
-import ExploreIcon from '../svg/ExploreIcon';
-import StakingIcon from '../svg/StakingIcon';
-import UserIcon from '../svg/UserIcon';
-import WalletIcon from '../svg/WalletIcon';
-import { StyledLinks, StyledNavItem } from './ui';
+import { Mixpanel } from '../../../mixpanel/index';
+import ExploreIcon from '../../svg/ExploreIcon';
+import StakingIcon from '../../svg/StakingIcon';
+import UserIcon from '../../svg/UserIcon';
+import WalletIcon from '../../svg/WalletIcon';
+import { StyledLinks, StyledNavItem } from './index';
 
 const track = (msg: string) => Mixpanel.track(msg);
 

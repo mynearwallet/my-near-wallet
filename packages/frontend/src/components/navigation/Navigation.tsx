@@ -5,10 +5,6 @@ import isMobile from '../../utils/isMobile';
 import LangSwitcher from '../common/LangSwitcher';
 import HelpIcon from '../svg/HelpIcon';
 import UserIcon from '../svg/UserIcon';
-import AccountMenu from './AccountMenu';
-import Logo from './Logo';
-import NavLinks from './NavLinks';
-import SettingsItem from './SettingsItem/SettingsItem';
 import {
     StyledHeader,
     StyledTop,
@@ -18,7 +14,11 @@ import {
     StyledLangSelector,
     StyledLink,
 } from './ui';
-import UserAccount from './UserAccount';
+import AccountMenu from './ui/AccountMenu';
+import Logo from './ui/Logo';
+import NavLinks from './ui/NavLinks';
+import SettingsItem from './ui/SettingsItem';
+import UserAccount from './ui/UserAccount';
 
 const isMobileDevice = isMobile();
 
@@ -36,6 +36,7 @@ type NavigationProps = {
     flowLimitationSubMenu: boolean;
 };
 
+// @todo: rename to Header
 const Navigation: FC<NavigationProps> = ({
     currentAccount,
     selectAccount,
