@@ -2,8 +2,8 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import FormButton from '../../../common/FormButton';
-import PlusSignIcon from '../../../svg/PlusSignIcon';
+import FormButton from '../../../../components/common/FormButton';
+import PlusSignIcon from '../../../../components/svg/PlusSignIcon';
 
 const Button = styled(FormButton)`
     padding: 0;

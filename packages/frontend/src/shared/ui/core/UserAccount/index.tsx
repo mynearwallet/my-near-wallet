@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
 
-import classNames from '../../../utils/classNames';
-import ChevronIcon from '../../svg/ChevronIcon';
-import UserIcon from '../../svg/UserIcon';
+import ChevronIcon from '../../../../components/svg/ChevronIcon';
+import UserIcon from '../../../../components/svg/UserIcon';
+import classNames from '../../../../utils/classNames';
 
 const StyledUserAccount = styled.div`
     background-color: #f0f0f1;

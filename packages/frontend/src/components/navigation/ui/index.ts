@@ -40,14 +40,12 @@ export const StyledTop = styled.div`
 
 export const StyledUserAccount = styled.div`
     .user-account {
-        position: fixed;
-        top: 24px;
-        right: 2.7%;
+        display: none;
     }
 
     @media ${VIEWPORT.TABLET} {
         .user-account {
-            position: static;
+            display: flex;
         }
     }
 `;

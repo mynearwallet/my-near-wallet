@@ -1793,6 +1793,7 @@
         "title": "Please make sure you are visiting"
     },
     "wallet": {
+        "title": "Wallet",
         "availableBalance": "Available Balance",
         "balance": "Balance",
         "balances": "Balances",

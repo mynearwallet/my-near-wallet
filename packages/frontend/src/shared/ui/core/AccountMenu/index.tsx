@@ -3,12 +3,12 @@ import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import AccountSelector from '../../../../components/accounts/account_selector/AccountSelector';
 import useOnClickOutside from '../../../../hooks/useOnClickOutside';
 import { getAccountBalance } from '../../../../redux/actions/account';
 import { selectAvailableAccounts } from '../../../../redux/slices/availableAccounts';
 import { VIEWPORT } from '../../../../shared/ui/mixins/viewport';
 import isMobile from '../../../../utils/isMobile';
-import AccountSelector from '../../../accounts/account_selector/AccountSelector';
 import AccessAccountBtn from './AccessAccountBtn';
 import CreateAccountBtn from './CreateAccountBtn';
 
@@ -77,7 +77,7 @@ const AccountMenu: FC<AccountMenuProps> = ({
 
     if (show) {
         return (
-            <StyledMenu id="accountMenu" ref={isMobileDevice ? null : menuRef}>
+            <StyledMenu id="accountMenu" ref={isMobileDevice ? null : menuRef} className="accountMenu">
                 <h5>
                     <Translate id="link.switchAccount" />
                 </h5>
