@@ -298,6 +298,7 @@ class Routing extends Component {
             }
         };
 
+        // @todo move it to the Layout component. Check and hide from there.
         const hideFooterOnMobile = [
             WALLET_LOGIN_URL,
             WALLET_SEND_MONEY_URL,

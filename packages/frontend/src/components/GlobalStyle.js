@@ -323,17 +323,8 @@ export default createGlobalStyle`
         font-weight: 600 !important;
     }
 
-    .color-seafoam-blue {
-        color: #6ad1e3 !important;
-    }
     .color-blue {
         color: #0072ce !important;
-    }
-    .color-brown-grey {
-        color: #999;
-    }
-    .color-charcoal-grey {
-        color: #4a4f54 !important;
     }
     .color-black {
         color: #24272a !important;

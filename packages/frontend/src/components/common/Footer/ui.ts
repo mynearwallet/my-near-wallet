@@ -10,79 +10,56 @@ export const StyledFooter = styled.footer`
     padding: 35px;
     // Reserved for header
     padding-left: 275px;
-    background-color: #f8f8f8;
-    font-size: 12px;
-    color: #999999;
     display: flex;
     align-items: center;
-    justify-content: center;
-
-    @media (min-width: 768px) {
-        justify-content: space-between;
-    }
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--mnw-color-6);
 
     @media ${VIEWPORT.TABLET} {
         padding-left: 35px;
     }
+`;
 
-    .left {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+export const StyledWalletInfo = styled.p`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
 
-        @media (min-width: 768px) {
-            flex-direction: row;
-        }
-
-        > div {
-            text-align: center;
-            margin: 20px 0 0 0;
-
-            @media (min-width: 768px) {
-                text-align: left;
-                margin: 0 0 0 20px;
-            }
-
-            .color-brown-grey {
-                margin: 0 5px;
-            }
-        }
-
-        img {
-            opacity: 0.3;
-            width: 125px;
-        }
-
-        a {
-            color: #999999;
-            text-decoration: underline;
-        }
+    @media (min-width: 768px) {
+        flex-direction: row;
     }
+`;
 
-    .center {
-        display: none;
-        color: #24272a;
-        width: 30%;
+export const StyledInfoLink = styled.a`
+    color: inherit;
+    text-decoration: underline;
 
-        @media (min-width: 992px) {
-            display: block;
-        }
-    }
+    &:not(:last-child) {
+        position: relative;
+        margin-right: 12px;
 
-    .right {
-        display: none;
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 130%;
-
-        @media (min-width: 768px) {
-            display: block;
+        &::after {
+            position: absolute;
+            right: -6px;
+            content: '';
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--mnw-color-6);
+            width: 1px;
+            height: 100%;
         }
     }
 `;
 
-export const StyledLogo = styled.div`
-    svg {
-        width: 218px;
+export const StyledSocialLinks = styled.div`
+    display: none;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 130%;
+
+    @media (min-width: 768px) {
+        display: block;
     }
 `;
