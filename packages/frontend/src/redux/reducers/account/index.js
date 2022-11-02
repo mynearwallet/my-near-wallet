@@ -3,7 +3,6 @@ import { handleActions } from 'redux-actions';
 
 import {
     getAccessKeys,
-    clearCode,
     promptTwoFactor,
     refreshUrl,
     checkCanEnableTwoFactor,
@@ -32,13 +31,8 @@ const initialState = {
     ledgerKey: null,
     accountsBalance: undefined,
     multisigRequest: null,
+    isAuthorizedByPassword: false,
 };
-
-const recoverCodeReducer = handleActions({
-    [clearCode]: (state, { error, ready }) => {
-        return { ...state, sentMessage: false };
-    }
-}, initialState);
 
 const accessKeys = handleActions({
     [getAccessKeys]: (state, { error, payload }) => ({
@@ -94,7 +88,7 @@ const account = handleActions({
     [refreshAccountOwner.fulfilled]: (state, { payload }) => {
         const resetAccountState = {
             globalAlertPreventClear: payload && payload.globalAlertPreventClear,
-            resetAccount: (state.resetAccount && state.resetAccount.preventClear) 
+            resetAccount: (state.resetAccount && state.resetAccount.preventClear)
                 ? {
                     ...state.resetAccount,
                     preventClear: false
@@ -212,7 +206,6 @@ const account = handleActions({
 
 export default reduceReducers(
     initialState,
-    recoverCodeReducer,
     accessKeys,
     account,
     url,

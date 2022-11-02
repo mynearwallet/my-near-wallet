@@ -7,7 +7,10 @@ import CONFIG from '../../config';
 import { fungibleTokensService } from '../../services/FungibleTokens';
 import { listStakingPools } from '../../services/indexer';
 import StakingFarmContracts from '../../services/StakingFarmContracts';
-import { getLockupAccountId, getLockupMinBalanceForStorage } from '../../utils/account-with-lockup';
+import {
+    getLockupAccountId,
+    getLockupMinBalanceForStorage
+} from '../../utils/account-with-lockup';
 import { showAlert } from '../../utils/alerts';
 import {
     MAINNET,
@@ -81,7 +84,11 @@ export const { staking } = createActions({
                             await signAndSendTransaction({
                                 receiverId: lockupId,
                                 actions: [
-                                    functionCall('unselect_staking_pool', {}, CONFIG.STAKING_GAS_BASE, '0')
+                                    functionCall('unselect_staking_pool',
+                                        {},
+                                        CONFIG.STAKING_GAS_BASE,
+                                        '0'
+                                    )
                                 ],
                             });
                         }
@@ -116,7 +123,12 @@ export const { staking } = createActions({
                     const result = await signAndSendTransaction({
                         receiverId: validatorId,
                         actions: [
-                            functionCall('deposit_and_stake', {}, CONFIG.STAKING_GAS_BASE * 5, amount)
+                            functionCall(
+                                'deposit_and_stake',
+                                {},
+                                CONFIG.STAKING_GAS_BASE * 5,
+                                amount
+                            )
                         ],
                     });
                     // wait for chain/explorer to index results
@@ -134,14 +146,24 @@ export const { staking } = createActions({
                         return await signAndSendTransaction({
                             receiverId: lockupId,
                             actions: [
-                                functionCall('unstake', { amount }, CONFIG.STAKING_GAS_BASE * 5, '0')
+                                functionCall(
+                                    'unstake',
+                                    { amount },
+                                    CONFIG.STAKING_GAS_BASE * 5,
+                                    '0'
+                                )
                             ],
                         });
                     }
                     return await signAndSendTransaction({
                         receiverId: lockupId,
                         actions: [
-                            functionCall('unstake_all', {}, CONFIG.STAKING_GAS_BASE * 5, '0')
+                            functionCall(
+                                'unstake_all',
+                                {},
+                                CONFIG.STAKING_GAS_BASE * 5,
+                                '0'
+                            )
                         ],
                     });
                 },
@@ -154,14 +176,24 @@ export const { staking } = createActions({
                         result = await signAndSendTransaction({
                             receiverId: validatorId,
                             actions: [
-                                functionCall('unstake', { amount }, CONFIG.STAKING_GAS_BASE * 5, '0')
+                                functionCall(
+                                    'unstake',
+                                    { amount },
+                                    CONFIG.STAKING_GAS_BASE * 5,
+                                    '0'
+                                )
                             ],
                         });
                     } else {
                         result = await signAndSendTransaction({
                             receiverId: validatorId,
                             actions: [
-                                functionCall('unstake_all', {}, CONFIG.STAKING_GAS_BASE * 5, '0')
+                                functionCall(
+                                    'unstake_all',
+                                    {},
+                                    CONFIG.STAKING_GAS_BASE * 5,
+                                    '0'
+                                )
                             ],
                         });
                     }
@@ -181,19 +213,32 @@ export const { staking } = createActions({
                         result = await signAndSendTransaction({
                             receiverId: lockupId,
                             actions: [
-                                functionCall('withdraw_from_staking_pool', { amount }, CONFIG.STAKING_GAS_BASE * 5, '0')
+                                functionCall(
+                                    'withdraw_from_staking_pool',
+                                    { amount },
+                                    CONFIG.STAKING_GAS_BASE * 5,
+                                    '0'
+                                )
                             ],
                         });
                     } else {
                         result = await signAndSendTransaction({
                             receiverId: lockupId,
                             actions: [
-                                functionCall('withdraw_all_from_staking_pool', {}, CONFIG.STAKING_GAS_BASE * 7, '0')
+                                functionCall(
+                                    'withdraw_all_from_staking_pool',
+                                    {},
+                                    CONFIG.STAKING_GAS_BASE * 7,
+                                    '0'
+                                )
                             ],
                         });
                     }
                     if (result === false) {
-                        throw new WalletError('Unable to withdraw pending balance from validator', 'staking.noWithdraw');
+                        throw new WalletError(
+                            'Unable to withdraw pending balance from validator',
+                            'staking.noWithdraw'
+                        );
                     }
                     return result;
                 },
@@ -206,19 +251,32 @@ export const { staking } = createActions({
                         result = await signAndSendTransaction({
                             receiverId: validatorId,
                             actions: [
-                                functionCall('withdraw', { amount }, CONFIG.STAKING_GAS_BASE * 5, '0')
+                                functionCall(
+                                    'withdraw',
+                                    { amount },
+                                    CONFIG.STAKING_GAS_BASE * 5,
+                                    '0'
+                                )
                             ],
                         });
                     } else {
                         result = await signAndSendTransaction({
                             receiverId: validatorId,
                             actions: [
-                                functionCall('withdraw_all', {}, CONFIG.STAKING_GAS_BASE * 7, '0')
+                                functionCall(
+                                    'withdraw_all',
+                                    {},
+                                    CONFIG.STAKING_GAS_BASE * 7,
+                                    '0'
+                                )
                             ],
                         });
                     }
                     if (result === false) {
-                        throw new WalletError('Unable to withdraw pending balance from validator', 'staking.noWithdraw');
+                        throw new WalletError(
+                            'Unable to withdraw pending balance from validator',
+                            'staking.noWithdraw'
+                        );
                     }
                     // wait for explorer to index results
                     await new Promise((r) => setTimeout(r, EXPLORER_DELAY));
@@ -239,7 +297,11 @@ export const { staking } = createActions({
 
             await Promise.all(validators.map(async (validator, i) => {
                 try {
-                    const total = new BN(await validator.contract.get_account_total_balance({ account_id: accountId }));
+                    const total = new BN(
+                        await validator.contract.get_account_total_balance({
+                            account_id: accountId
+                        })
+                    );
                     if (total.lte(ZERO)) {
                         validator.remove = true;
                         return;
@@ -247,7 +309,9 @@ export const { staking } = createActions({
 
                     // try to get deposits from explorer
                     const deposit = new BN(validatorDepositMap[validator.accountId] || '0');
-                    validator.staked = await validator.contract.get_account_staked_balance({ account_id: accountId });
+                    validator.staked = await validator.contract.get_account_staked_balance({
+                        account_id: accountId
+                    });
 
                     // rewards (lifetime) = total - deposits
                     validator.unclaimed = total.sub(deposit).toString();
@@ -255,9 +319,15 @@ export const { staking } = createActions({
                         validator.unclaimed = ZERO.clone().toString();
                     }
 
-                    validator.unstaked = new BN(await validator.contract.get_account_unstaked_balance({ account_id: accountId }));
+                    validator.unstaked = new BN(
+                        await validator.contract.get_account_unstaked_balance({
+                            account_id: accountId
+                        })
+                    );
                     if (validator.unstaked.gt(MIN_DISPLAY_YOCTO)) {
-                        const isAvailable = await validator.contract.is_account_unstaked_balance_available({ account_id: accountId });
+                        const isAvailable = await validator.contract.is_account_unstaked_balance_available({
+                            account_id: accountId
+                        });
                         if (isAvailable) {
                             validator.available = validator.unstaked.toString();
                             totalAvailable = totalAvailable.add(validator.unstaked);
@@ -269,12 +339,16 @@ export const { staking } = createActions({
 
                     totalStaked = totalStaked.add(new BN(validator.staked));
                     totalUnclaimed = totalUnclaimed.add(new BN(validator.unclaimed));
-                    const networkId = wallet.connection.provider.connection.url.indexOf(MAINNET) > -1 ? MAINNET : TESTNET;
+                    const networkId = wallet.connection.provider.connection.url
+                        .indexOf(MAINNET) > -1 ? MAINNET : TESTNET;
 
                     validator.version = getValidationVersion(networkId, validator.accountId);
                 } catch (e) {
                     if (e.message.indexOf('cannot find contract code') === -1) {
-                        console.warn('Error getting data for validator', validator.accountId, e);
+                        console.warn(
+                            'Error getting data for validator',
+                            validator.accountId, e
+                        );
                     }
                 }
             }));
@@ -328,13 +402,25 @@ export const { staking } = createActions({
             const minimumUnstaked = new BN('100'); // 100 yocto
 
             try {
-                total = new BN(await validator.contract.get_account_total_balance({ account_id }));
+                total = new BN(await validator.contract.get_account_total_balance({
+                    account_id
+                }));
+
                 if (total.gt(ZERO)) {
-                    validator.staked = await validator.contract.get_account_staked_balance({ account_id });
+                    validator.staked = await validator.contract.get_account_staked_balance({
+                        account_id
+                    });
+
                     validator.unclaimed = total.sub(deposited).toString();
-                    validator.unstaked = new BN(await validator.contract.get_account_unstaked_balance({ account_id }));
+                    validator.unstaked = new BN(await validator.contract.get_account_unstaked_balance({
+                        account_id
+                    }));
+
                     if (validator.unstaked.gt(minimumUnstaked)) {
-                        const isAvailable = await validator.contract.is_account_unstaked_balance_available({ account_id });
+                        const isAvailable = await validator.contract.is_account_unstaked_balance_available({
+                            account_id
+                        });
+
                         if (isAvailable) {
                             validator.available = validator.unstaked.toString();
                             totalAvailable = totalAvailable.add(validator.unstaked);
@@ -347,10 +433,16 @@ export const { staking } = createActions({
                     validator.remove = true;
                 }
                 totalStaked = totalStaked.add(new BN(validator.staked || ZERO.clone()));
-                totalUnclaimed = totalUnclaimed.add(new BN(validator.unclaimed || ZERO.clone()));
+                totalUnclaimed = totalUnclaimed.add(
+                    new BN(validator.unclaimed || ZERO.clone())
+                );
             } catch (e) {
                 if (e.message.indexOf('cannot find contract code') === -1) {
-                    console.warn('Error getting data for validator', validator.accountId, e);
+                    console.warn(
+                        'Error getting data for validator',
+                        validator.accountId,
+                        e
+                    );
                 }
             }
 
@@ -380,7 +472,11 @@ export const { staking } = createActions({
                 let contract;
                 try {
                     await (await new Account(wallet.connection, lockupId)).state();
-                    contract = await new Contract(await wallet.getAccount(accountId), lockupId, { ...lockupMethods });
+                    contract = await new Contract(
+                        await wallet.getAccount(accountId), lockupId, {
+                            ...lockupMethods
+                        }
+                    );
                 } catch (e) {
                     return;
                 }

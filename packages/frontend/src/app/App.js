@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import EnterPassword from "../pages/EnterPassword";
 import AccessKeysWrapper from '../components/access-keys/v2/AccessKeysWrapper';
 import AutoImportWrapper from '../components/accounts/auto_import/AutoImportWrapper';
 import BatchImportAccounts from '../components/accounts/batch_import_accounts';
@@ -59,6 +58,7 @@ import './index.css';
 import WalletMigration from '../components/wallet-migration/WalletMigration';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
+import EnterPassword from '../pages/EnterPassword';
 import TokenSwap from '../pages/TokenSwap';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';

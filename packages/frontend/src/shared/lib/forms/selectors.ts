@@ -37,3 +37,9 @@ export function currentTargetValue(handler: Handler<any>, radix?: number): Evt<a
 
 export const currentTargetChecked = (handler: Handler<boolean>) =>
     (evt: Target<CheckedEvent>) => handler(evt.currentTarget.checked);
+
+export const forkEvent = (...handlers: Handler<any>[]): Evt<any> => {
+    return (evt) => {
+        return handlers.map(handler => handler(evt));
+    };
+};

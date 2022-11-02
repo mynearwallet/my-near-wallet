@@ -82,7 +82,9 @@ export const getProfileStakingDetails = (externalAccountId) => async (dispatch, 
 
 export const handleRedirectUrl = (previousLocation) => (dispatch, getState) => {
     const { pathname } = getLocation(getState());
-    const isValidRedirectUrl = previousLocation.pathname.includes(WALLET_LOGIN_URL) || previousLocation.pathname.includes(WALLET_SIGN_URL);
+    const isValidRedirectUrl = previousLocation.pathname.includes(
+        WALLET_LOGIN_URL) || previousLocation.pathname.includes(WALLET_SIGN_URL
+    );
     const page = pathname.split('/')[1];
     const guestLandingPage = !page && !wallet.accountId;
     const createAccountPage = page === WALLET_CREATE_NEW_ACCOUNT_URL;
@@ -102,7 +104,12 @@ export const handleClearUrl = () => (dispatch, getState) => {
     const { pathname } = getLocation(getState());
     const page = pathname.split('/')[1];
     const guestLandingPage = !page && !wallet.accountId;
-    const saveUrlPages = [...WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS, WALLET_LOGIN_URL, WALLET_SIGN_URL, WALLET_LINKDROP_URL].includes(page);
+    const saveUrlPages = [
+        ...WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS,
+        WALLET_LOGIN_URL,
+        WALLET_SIGN_URL,
+        WALLET_LINKDROP_URL
+    ].includes(page);
     const initialDepositPage = WALLET_INITIAL_DEPOSIT_URL.includes(page);
 
     if (!guestLandingPage && !saveUrlPages) {
@@ -120,16 +127,42 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
     const { pathname, search, hash } = prevRouter?.location || getLocation(getState());
     const currentPage = pathname.split('/')[pathname[1] === '/' ? 2 : 1];
 
-    if ([...WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS, WALLET_LOGIN_URL, WALLET_SIGN_URL, WALLET_LINKDROP_URL, WALLET_BATCH_IMPORT_URL, WALLET_VERIFY_OWNER_URL].includes(currentPage)) {
+
+    // TODO: can't understand what's going on here
+    const t = [
+        ...WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS,
+        WALLET_LOGIN_URL,
+        WALLET_SIGN_URL,
+        WALLET_LINKDROP_URL,
+        WALLET_BATCH_IMPORT_URL,
+        WALLET_VERIFY_OWNER_URL
+    ].includes(currentPage);
+
+    if (t) {
         const parsedUrl = {
             ...parse(search),
             referrer: document.referrer ? new URL(document.referrer).hostname : undefined,
             redirect_url: prevRouter ? prevRouter.location.pathname : undefined
         };
-        if ([WALLET_CREATE_NEW_ACCOUNT_URL, WALLET_LINKDROP_URL, WALLET_VERIFY_OWNER_URL].includes(currentPage) && search !== '') {
+
+        // TODO: and here
+        const k = [
+            WALLET_CREATE_NEW_ACCOUNT_URL,
+            WALLET_LINKDROP_URL,
+            WALLET_VERIFY_OWNER_URL
+        ].includes(currentPage) && search !== '';
+
+        // TODO: someone's unstructured mindflow
+        const k2 = [
+            WALLET_LOGIN_URL,
+            WALLET_SIGN_URL,
+            WALLET_BATCH_IMPORT_URL
+        ].includes(currentPage) && (search !== '' || hash !== '');
+
+        if (k) {
             saveState(parsedUrl);
             dispatch(refreshUrl(parsedUrl));
-        } else if ([WALLET_LOGIN_URL, WALLET_SIGN_URL, WALLET_BATCH_IMPORT_URL].includes(currentPage) && (search !== '' || hash !== '')) {
+        } else if (k2) {
             saveState(parsedUrl);
             dispatch(refreshUrl(parsedUrl));
             dispatch(checkContractId());
@@ -155,7 +188,12 @@ const checkContractId = () => async (dispatch, getState) => {
     if (contractId) {
         const redirectIncorrectContractId = () => {
             console.error('Invalid contractId:', contractId);
-            dispatch(redirectTo(`/${WALLET_LOGIN_URL}/?invalidContractId=true&failure_url=${failureUrl}`, { globalAlertPreventClear: true }));
+            dispatch(redirectTo(
+                `/${WALLET_LOGIN_URL}/?invalidContractId=true&failure_url=${failureUrl}`,
+                {
+                    globalAlertPreventClear: true
+                }
+            ));
         };
 
         if (!wallet.isLegitAccountId(contractId)) {
@@ -203,7 +241,15 @@ export const allowLogin = () => async (dispatch, getState) => {
 
     if (successUrl) {
         if (publicKey) {
-            await dispatch(withAlert(addAccessKey(wallet.accountId, contractId, publicKey, false, methodNames), { onlyError: true }));
+            await dispatch(withAlert(
+                addAccessKey(
+                    wallet.accountId,
+                    contractId,
+                    publicKey,
+                    false,
+                    methodNames
+                ), { onlyError: true }
+            ));
         }
         const availableKeys = await wallet.getAvailableKeys();
 
@@ -218,8 +264,16 @@ export const allowLogin = () => async (dispatch, getState) => {
             window.location = parsedUrl.href;
         }
     } else {
-        await dispatch(withAlert(addAccessKey(wallet.accountId, contractId, publicKey, false, methodNames), { data: { title } }));
-        dispatch(redirectTo('/authorized-apps', { globalAlertPreventClear: true }));
+        await dispatch(withAlert(addAccessKey(
+            wallet.accountId,
+            contractId,
+            publicKey,
+            false,
+            methodNames
+        ), { data: { title } }));
+        dispatch(redirectTo('/authorized-apps', {
+            globalAlertPreventClear: true
+        }));
     }
 };
 
@@ -253,7 +307,6 @@ export const {
     checkNewAccount,
     saveAccount,
     checkAccountAvailable,
-    clearCode,
     getMultisigRequest,
 } = createActions({
     INITIALIZE_RECOVERY_METHOD: [
@@ -354,8 +407,7 @@ export const {
     CHECK_ACCOUNT_AVAILABLE: [
         wallet.checkAccountAvailable.bind(wallet),
         () => showAlert({ localAlert: true })
-    ],
-    CLEAR_CODE: null
+    ]
 });
 
 export const {
@@ -414,7 +466,6 @@ const handleFundCreateAccountRedirect = ({
 };
 
 export const fundCreateAccount = (accountId, recoveryKeyPair, recoveryMethod) => async (dispatch) => {
-    // here
     await wallet.keyStore.setKey(wallet.connection.networkId, accountId, recoveryKeyPair);
     const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString('hex');
     await wallet.keyStore.setKey(wallet.connection.networkId, implicitAccountId, recoveryKeyPair);
@@ -600,7 +651,18 @@ export const getAvailableAccountsBalance = () => async (dispatch, getState) => {
     }
 };
 
-export const { makeAccountActive, refreshAccountExternal, refreshUrl, updateStakingAccount, updateStakingLockup, getBalance, setLocalStorage, getAccountBalance, setAccountBalance, clearAccountState } = createActions({
+export const {
+    makeAccountActive,
+    refreshAccountExternal,
+    refreshUrl,
+    updateStakingAccount,
+    updateStakingLockup,
+    getBalance,
+    setLocalStorage,
+    getAccountBalance,
+    setAccountBalance,
+    clearAccountState
+} = createActions({
     MAKE_ACCOUNT_ACTIVE: wallet.makeAccountActive.bind(wallet),
     REFRESH_ACCOUNT_EXTERNAL: [
         async (accountId) => ({

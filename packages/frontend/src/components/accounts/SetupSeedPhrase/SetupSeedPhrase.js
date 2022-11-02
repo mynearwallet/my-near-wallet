@@ -1,7 +1,7 @@
+import i18next from 'i18next';
 import { KeyPair } from 'near-api-js';
 import { generateSeedPhrase } from 'near-seed-phrase';
 import React, { Component, Fragment } from 'react';
-import { Translate } from 'react-localize-redux';
 import { connect } from 'react-redux';
 import { withRouter, Route } from 'react-router-dom';
 
@@ -14,9 +14,14 @@ import {
     fundCreateAccount
 } from '../../../redux/actions/account';
 import { clearGlobalAlert, showCustomAlert } from '../../../redux/actions/status';
+import { setAuthorizedByPassword } from '../../../redux/reducers/security';
 import { selectAccountSlice } from '../../../redux/slices/account';
 import { actions as linkdropActions } from '../../../redux/slices/linkdrop';
-import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId, selectRecoveryMethodsLoading } from '../../../redux/slices/recoveryMethods';
+import {
+    actions as recoveryMethodsActions,
+    selectRecoveryMethodsByAccountId,
+    selectRecoveryMethodsLoading
+} from '../../../redux/slices/recoveryMethods';
 import { selectStatusMainLoader } from '../../../redux/slices/status';
 import copyText from '../../../utils/copyText';
 import isMobile from '../../../utils/isMobile';
@@ -27,9 +32,9 @@ import { isRetryableRecaptchaError } from '../../Recaptcha';
 import SetPasswordForm from '../SetPasswordForm';
 import SetupSeedPhraseForm from '../SetupSeedPhraseForm';
 import SetupSeedPhraseVerify from '../SetupSeedPhraseVerify';
+import { encryptWallet } from './lib/encryption';
 import { Title, Description, Back } from './ui';
 import BackButton from './ui/BackButton';
-import { wallet } from "../../../utils/wallet";
 
 const { setLinkdropAmount } = linkdropActions;
 const { fetchRecoveryMethods } = recoveryMethodsActions;
@@ -80,6 +85,22 @@ class SetupSeedPhrase extends Component {
             recoveryKeyPair,
             isNewAccount
         }));
+    }
+
+    handlePhraseContinue = () => {
+        const { history, accountId, location } = this.props;
+        history.push(`/setup-seed-phrase/${accountId}/verify${location.search}`);
+    }
+
+    handlePhraseCancel = () => {
+        const { history, accountId, location } = this.props;
+        const { isNewAccount} = this.state;
+
+        if (isNewAccount) {
+            history.push(`/set-recovery/${accountId}${location.search}`);
+        } else {
+            history.push('/profile');
+        }
     }
 
     handleChangeWord = (value) => {
@@ -143,12 +164,7 @@ class SetupSeedPhrase extends Component {
             setLinkdropAmount
         } = this.props;
         const { recoveryKeyPair, recaptchaToken, password } = this.state;
-        console.log(accountId, recoveryKeyPair, 'isNew:', this.state.isNewAccount);
 
-        // return;
-
-        // todo
-        // понять как определяется что аккаунт существующий и в чем тут смысл, леджер?
         if (!this.state.isNewAccount) {
             debugLog('handleSetupSeedPhrase()/existing account');
 
@@ -164,7 +180,8 @@ class SetupSeedPhrase extends Component {
         await Mixpanel.withTracking('SR-SP Setup for new account',
             async () => {
                 if (password !== null) {
-                    wallet.injectEncryptedKeyStore(password);
+                    encryptWallet(password);
+                    this.props.setAuthorizedByPassword(true);
                 }
 
                 await handleCreateAccountWithSeedPhrase(
@@ -239,108 +256,101 @@ class SetupSeedPhrase extends Component {
     }
 
     render() {
-        const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } = this.props;
-        const hasSeedPhraseRecovery = recoveryMethodsLoader || recoveryMethods.filter((m) => m.kind === 'phrase').length > 0;
-        const { seedPhrase, enterWord, wordId, submitting, localAlert, isNewAccount, successSnackbar } = this.state;
+        const { recoveryMethods, recoveryMethodsLoader } = this.props;
+        const hasSeedPhraseRecovery = recoveryMethodsLoader || recoveryMethods.filter((m) =>
+            m.kind === 'phrase').length > 0;
+        const {
+            seedPhrase,
+            enterWord,
+            wordId,
+            submitting,
+            localAlert,
+            isNewAccount,
+            successSnackbar
+        } = this.state;
 
         return (
-            <Translate>
-                {({ translate }) => (
-                    <Fragment>
-                        <Route
-                            exact
-                            path={'/setup-seed-phrase/:accountId/phrase'}
-                            render={() => (
-                                <Container className='small-centered border'>
-                                    <h1><Translate id='setupSeedPhrase.pageTitle'/></h1>
-                                    <h2><Translate id='setupSeedPhrase.pageText'/></h2>
-                                    <SetupSeedPhraseForm
-                                        seedPhrase={seedPhrase}
-                                        handleCopyPhrase={this.handleCopyPhrase}
-                                        hasSeedPhraseRecovery={hasSeedPhraseRecovery}
-                                        refreshData={this.refreshData}
-                                        onClickContinue={() => history.push(`/setup-seed-phrase/${accountId}/verify${location.search}`)}
-                                        onClickCancel={() => {
-                                            if (isNewAccount) {
-                                                history.push(`/set-recovery/${accountId}${location.search}`);
-                                            } else {
-                                                history.push('/profile');
-                                            }
-                                        }}
-                                    />
-                                </Container>
-                            )}
-                        />
-                        <Route
-                            exact
-                            path={'/setup-seed-phrase/:accountId/verify'}
-                            render={() => (
-                                <Container className='small-centered border'>
-                                    <form
-                                        onSubmit={this.handleOnSubmit}
-                                        autoComplete='off'
-                                    >
-                                        <Title>
-                                            <Back>
-                                                <BackButton onBack={this.handleStartOver} />
-                                            </Back>
-                                            <h1>
-                                                <Translate id='setupSeedPhraseVerify.pageTitle'/>
-                                            </h1>
-                                        </Title>
-                                        <Description>
-                                            <Translate id='setupSeedPhraseVerify.pageText'/>
-                                        </Description>
-                                        <SetupSeedPhraseVerify
-                                            enterWord={enterWord}
-                                            wordId={wordId}
-                                            handleChangeWord={this.handleChangeWord}
-                                            mainLoader={this.props.mainLoader || submitting}
-                                            localAlert={localAlert}
-                                            globalAlert={this.props.globalAlert}
-                                            onRecaptchaChange={this.handleRecaptchaChange}
-                                            ref={(ref) => this.recaptchaRef = ref}
-                                            isNewAccount={isNewAccount}
-                                            onSubmit={this.handleOnSubmit}
-                                            isLinkDrop={parseFundingOptions(this.props.location.search) !== null}
-                                            hasSeedPhraseRecovery={hasSeedPhraseRecovery}
-                                        />
-                                    </form>
-                                </Container>
-                            )}
-                        />
-                        <Route
-                            path={'/setup-seed-phrase/:accountId/set-encryption'}
-                            render={() => (
-                                <Container className='small-centered border'>
-                                    <form autoComplete='off'>
-                                        <Title>
-                                            <Back>
-                                                <BackButton onBack={this.handleStartOver} />
-                                            </Back>
-                                            <h1>
-                                                <Translate id='setupPasswordProtection.pageTitle'/>
-                                            </h1>
-                                        </Title>
-                                        <Description>
-                                            <Translate id='setupPasswordProtection.pageText'/>
-                                        </Description>
-                                        <SetPasswordForm
-                                            loading={this.props.mainLoader || submitting}
-                                            onSubmit={this.handleSubmitPasswordStep} />
-                                    </form>
-                                </Container>
-                            )}
-                        />
-                        <Snackbar
-                            theme='success'
-                            message={translate('setupSeedPhrase.snackbarCopySuccess')}
-                            show={successSnackbar}
-                            onHide={() => this.setState({ successSnackbar: false })}
-                        />
-                    </Fragment>
-                )}
-            </Translate>
+            <Fragment>
+                <Route
+                    exact
+                    path={'/setup-seed-phrase/:accountId/phrase'}
+                    render={() => (
+                        <Container className='small-centered border'>
+                            <h1>{i18next.t('setupSeedPhrase.pageTitle')}</h1>
+                            <h2>{i18next.t('setupSeedPhrase.pageText')}</h2>
+                            <SetupSeedPhraseForm
+                                seedPhrase={seedPhrase}
+                                handleCopyPhrase={this.handleCopyPhrase}
+                                hasSeedPhraseRecovery={hasSeedPhraseRecovery}
+                                refreshData={this.refreshData}
+                                onClickContinue={this.handlePhraseContinue}
+                                onClickCancel={this.handlePhraseCancel}
+                            />
+                        </Container>
+                    )}
+                />
+                <Route
+                    exact
+                    path={'/setup-seed-phrase/:accountId/verify'}
+                    render={() => (
+                        <Container className='small-centered border'>
+                            <form
+                                onSubmit={this.handleOnSubmit}
+                                autoComplete='off'
+                            >
+                                <Title>
+                                    <Back>
+                                        <BackButton onBack={this.handleStartOver} />
+                                    </Back>
+                                    <h1>{i18next.t('setupSeedPhraseVerify.pageTitle')}</h1>
+                                </Title>
+                                <Description>{i18next.t('setupSeedPhraseVerify.pageText')}</Description>
+                                <SetupSeedPhraseVerify
+                                    enterWord={enterWord}
+                                    wordId={wordId}
+                                    handleChangeWord={this.handleChangeWord}
+                                    mainLoader={this.props.mainLoader || submitting}
+                                    localAlert={localAlert}
+                                    globalAlert={this.props.globalAlert}
+                                    onRecaptchaChange={this.handleRecaptchaChange}
+                                    ref={(ref) => this.recaptchaRef = ref}
+                                    isNewAccount={isNewAccount}
+                                    onSubmit={this.handleOnSubmit}
+                                    isLinkDrop={parseFundingOptions(this.props.location.search) !== null}
+                                    hasSeedPhraseRecovery={hasSeedPhraseRecovery}
+                                />
+                            </form>
+                        </Container>
+                    )}
+                />
+                <Route
+                    path={'/setup-seed-phrase/:accountId/set-encryption'}
+                    render={() => (
+                        <Container className='small-centered border'>
+                            <form autoComplete='off'>
+                                <Title>
+                                    <Back>
+                                        <BackButton onBack={this.handleStartOver} />
+                                    </Back>
+                                    <h1>{i18next.t('setupPasswordProtection.pageTitle')}</h1>
+                                </Title>
+                                <Description>
+                                    {i18next.t('setupPasswordProtection.pageText')}
+                                </Description>
+                                <SetPasswordForm
+                                    loading={this.props.mainLoader || submitting}
+                                    onSubmit={this.handleSubmitPasswordStep} />
+                            </form>
+                        </Container>
+                    )}
+                />
+                <Snackbar
+                    theme='success'
+                    message={i18next.t('setupSeedPhrase.snackbarCopySuccess')}
+                    show={successSnackbar}
+                    onHide={() => this.setState({ successSnackbar: false })}
+                />
+            </Fragment>
         );
     }
 }
@@ -354,7 +364,8 @@ const mapDispatchToProps = {
     fundCreateAccount,
     fetchRecoveryMethods,
     showCustomAlert,
-    setLinkdropAmount
+    setLinkdropAmount,
+    setAuthorizedByPassword,
 };
 
 const mapStateToProps = (state, { match }) => {

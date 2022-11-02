@@ -140,13 +140,25 @@ export const createAccountFromImplicit = createAsyncThunk(
         implicitAccountId,
         recoveryMethod
     }, { dispatch }) => {
-        const recoveryKeyPair = await wallet.keyStore.getKey(wallet.connection.networkId, implicitAccountId);
+        const recoveryKeyPair = await wallet.keyStore.getKey(
+            wallet.connection.networkId,
+            implicitAccountId
+        );
+
         if (recoveryKeyPair) {
             await wallet.saveAccount(accountId, recoveryKeyPair);
         }
-        const publicKey = new PublicKey({ keyType: KeyType.ED25519, data: Buffer.from(implicitAccountId, 'hex') });
+        const publicKey = new PublicKey({
+            keyType: KeyType.ED25519,
+            data: Buffer.from(implicitAccountId, 'hex')
+        });
         const fundingOptions = { fundingAccountId: implicitAccountId };
-        await dispatch(createNewAccount({ accountId, fundingOptions, recoveryMethod, publicKey })).unwrap();
+        await dispatch(createNewAccount({
+            accountId,
+            fundingOptions,
+            recoveryMethod,
+            publicKey
+        })).unwrap();
     }
     // TODO: showAlert({ onlyError: true })
 );
@@ -234,7 +246,6 @@ export const finishLocalSetupForZeroBalanceAccount = createAsyncThunk(
         } catch (e) {
             throw new WalletError(e, 'addAccessKeyZeroBalanceAccountSetup.error');
         }
-
     }
 );
 
@@ -266,7 +277,6 @@ export const initiateSetupForZeroBalanceAccountPhrase = createAsyncThunk(
                 errorMessage: e.message
             }));
         }
-
     }
 );
 

@@ -366,12 +366,11 @@
         "utorg": "Utorg"
     },
     "enterPassword": {
-        "error": "Incorrect password",
-        "forgotPas": "Forgot Password?",
-        "pasInput": "Password",
-        "restoreLink": "Restore with Recovery Phrase",
         "title": "Enter password to unlock your wallet",
-        "unlockBtn": "Unlock"
+        "error": "Incorrect password",
+        "forgotPassword": "Forgot Password?",
+        "restoreLink": "Restore with Recovery Phrase",
+        "unlockCaption": "Unlock"
     },
     "confirmLedgerModal": {
         "header": {
@@ -1315,7 +1314,11 @@
         "pageTitle": "Create a Password",
         "strong": "Strong password",
         "week": "Week password",
-        "withoutPassword": "Continue without creating a password"
+        "withoutPassword": "Continue without creating a password",
+        "skipTitle": "Skip Password Protection",
+        "skipDescription": "Are you sure you want to skip setting a password to protect your wallet from unauthorized access? You can set a password later from settings page.",
+        "useCaption": "Use Password",
+        "skipCaption": "Skip Password"
     },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",

@@ -25,7 +25,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
     const [password, setPassword] = useState(null);
     const [showSkipModal, setShowSkipModal] = useState(false);
     const toggleModal = useCallback(() =>
-        setShowSkipModal(!showSkipModal), [showSkipModal])
+        setShowSkipModal(!showSkipModal), [showSkipModal]);
 
     const handlePasswordChange = useCallback((value) => {
         setPassword(value);
@@ -67,20 +67,20 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
                     onClose={toggleModal}>
                     <SkipForm>
                         <SkipTitle>
-                            Skip Password Protection
+                            {t('setupPasswordProtection.skipTitle')}
                         </SkipTitle>
                         <SkipDescription>
-                            Are you sure you want to skip setting a password to protect your wallet from unauthorized access? You can set a password later from settings page.
+                            {t('setupPasswordProtection.skipDescription')}
                         </SkipDescription>
                         <SkipControls>
                             <FormButton
                                 color='light-gray-blue'
                                 onClick={toggleModal}>
-                                Use Password
+                                {t('setupPasswordProtection.useCaption')}
                             </FormButton>
                             <FormButton
                                 onClick={handleSkip}>
-                                Skip Password
+                                {t('setupPasswordProtection.skipCaption')}
                             </FormButton>
                         </SkipControls>
                     </SkipForm>

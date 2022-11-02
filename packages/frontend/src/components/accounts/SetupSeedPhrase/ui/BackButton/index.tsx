@@ -2,7 +2,6 @@ import React, {FC} from 'react';
 
 import { ArrowTapArea } from './ui';
 
-
 type BackButtonProps = {
     onBack: VoidFunction;
 }

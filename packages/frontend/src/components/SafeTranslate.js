@@ -1,5 +1,4 @@
 import escapeHtml from 'escape-html';
-import isArray from 'lodash.isarray';
 import isPlainObject from 'lodash.isplainobject';
 import isString from 'lodash.isstring';
 import mapValues from 'lodash.mapvalues';
@@ -18,7 +17,7 @@ function processDataValue(value) {
     }
 
     // Sometimes we may be provided an array of unknown values
-    if (isArray(value)) {
+    if (Array.isArray(value)) {
         return value.map((val) => processDataValue(val));
     }
 

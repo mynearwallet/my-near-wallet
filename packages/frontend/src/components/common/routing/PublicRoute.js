@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-import { KEY_ACTIVE_ACCOUNT_ID } from '../../../utils/wallet';
+import { getActiveAccountId } from '../../../utils/account';
 import NoIndexMetaTag from '../NoIndexMetaTag';
 
 // PublicRoute is for guest users only and will redirect to dashboard if there is an active account
@@ -14,7 +14,7 @@ const PublicRoute = ({
 }) => (
     <>
         {!indexBySearchEngines && <NoIndexMetaTag />}
-        {localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) ? (
+        {getActiveAccountId() ? (
             <Redirect
                 to='/'
             />

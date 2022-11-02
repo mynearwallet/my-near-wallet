@@ -1588,16 +1588,6 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.50.0.tgz#e3a6834cb8c19346efca214c1af84ed28e69dad9"
   integrity sha512-gu6aJ/BHuRlpU7kgVpy2vcYk6atjB4iauP2ymF7Gk0ez0Y/6VSMVSJvubeEQN+IV60+OBK0JgeIZG7OiHaw8ow==
 
-"@ledgerhq/hw-transport-u2f@^5.34.0":
-  version "5.34.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-5.34.0.tgz#53466e4f07e177ec29b1ea061b6c56a57439a0cd"
-  integrity sha512-EM6LcbdD6Xo/msedbAWalBZlv89XAZrAZwL5zN9eKlUcWPjjG8c9+t5NedR/jmIaGuzIUVseUCIRxczqd5byOw==
-  dependencies:
-    "@ledgerhq/errors" "^5.34.0"
-    "@ledgerhq/hw-transport" "^5.34.0"
-    "@ledgerhq/logs" "^5.30.0"
-    u2f-api "0.2.7"
-
 "@ledgerhq/hw-transport-u2f@^5.36.0-deprecated":
   version "5.36.0-deprecated"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-5.36.0-deprecated.tgz#66e3ed399a117a1c0110871a055dd54f5fe707fd"
@@ -2905,11 +2895,6 @@
   integrity sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==
   dependencies:
     "@types/node" "*"
-
-"@yarnpkg/lockfile@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
-  integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
 JSONStream@^1.0.4:
   version "1.3.5"
@@ -4308,13 +4293,6 @@ command-exists@^1.2.6:
   version "1.2.9"
   resolved "https://registry.yarnpkg.com/command-exists/-/command-exists-1.2.9.tgz#c50725af3808c8ab0260fd60b01fbfa25b954f69"
   integrity sha512-LTQ/SGc+s0Xc0Fu5WaKnR0YiygZkm9eKFvyS+fRsU7/ZWFF8ykFM6Pc9aCVf1+xasOOZpO3BAVgVrKvsqKHV7w==
-
-commander-plus@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/commander-plus/-/commander-plus-0.0.6.tgz#280e9d3e30a392d8cda0f3d2721b856c832f602b"
-  integrity sha1-KA6dPjCjktjNoPPSchuFbIMvYCs=
-  dependencies:
-    keypress "0.1.x"
 
 commander@^2.11.0, commander@^2.19.0, commander@^2.20.0:
   version "2.20.3"
@@ -6481,15 +6459,6 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-generate-lockfile@^0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/generate-lockfile/-/generate-lockfile-0.0.11.tgz#dd23a31fe167a0986a4cf3ab93e05859f45d16cb"
-  integrity sha512-6e3Mpm/TLrr/g+/WE4f3mxnHxhYGlLZtCwuhYzjkPyCXaqZwp/1QlDgADOt7l8+iIQ9yZZ4sKqu1PqPmpIIfzg==
-  dependencies:
-    "@yarnpkg/lockfile" "^1.1.0"
-    chalk "^4.1.0"
-    commander-plus "^0.0.6"
-
 gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
@@ -8399,11 +8368,6 @@ just-curry-it@^3.1.0:
   resolved "https://registry.yarnpkg.com/just-curry-it/-/just-curry-it-3.2.1.tgz#7bb18284c8678ed816bfc5c19e44400605fbe461"
   integrity sha512-Q8206k8pTY7krW32cdmPsP+DqqLgWx/hYPSj9/+7SYqSqz7UuwPbfSe07lQtvuuaVyiSJveXk0E5RydOuWwsEg==
 
-keypress@0.1.x:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/keypress/-/keypress-0.1.0.tgz#4a3188d4291b66b4f65edb99f806aa9ae293592a"
-  integrity sha1-SjGI1CkbZrT2XtuZ+AaqmuKTWSo=
-
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
@@ -8598,11 +8562,6 @@ lodash.flattendeep@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
   integrity sha1-+wMJF/hqMTTlvJvsDWngAT3f7bI=
-
-lodash.isarray@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-4.0.0.tgz#2aca496b28c4ca6d726715313590c02e6ea34403"
-  integrity sha1-KspJayjEym1yZxUxNZDALm6jRAM=
 
 lodash.isequal@^4.5.0:
   version "4.5.0"
@@ -11088,11 +11047,6 @@ react-async-script@^1.1.1:
   dependencies:
     hoist-non-react-statics "^3.3.0"
     prop-types "^15.5.0"
-
-react-countdown-circle-timer@^3.0.9:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/react-countdown-circle-timer/-/react-countdown-circle-timer-3.0.9.tgz#9bdf127c63f9c67dc12bc83cb8029765512b1f5f"
-  integrity sha512-2rE2NklqgtArbvM9RVR3NctiKQ8+lY8PEjUZ2S1pKowD8CmaXUGqIaCbFBcygYH2aZQs9qPIQA49Z+9Jc2TOiQ==
 
 react-create-ref@^1.0.1:
   version "1.0.1"

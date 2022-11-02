@@ -14,7 +14,10 @@ import {
 } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import sendJson from '../tmp_fetch_send_json';
+import { getActiveAccountId } from './account';
 import { decorateWithLockup } from './account-with-lockup';
+import EncrytedLocalStorage from './encryption/EncryptedLocalStorage';
+import { createKeyFrom } from './encryption/keys';
 import { getAccountIds } from './helper-api';
 import { ledgerManager } from './ledgerManager';
 import {
@@ -28,7 +31,6 @@ import {
 } from './localStorage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
-import {createKeyFrom, EncrytedLocalStorage} from "./keyEncryption";
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -108,7 +110,6 @@ export async function getKeyMeta(publicKey) {
 
 export default class Wallet {
     constructor() {
-        // todo aggregate
         this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
             window.localStorage,
             KEYSTORE_PREFIX
@@ -121,7 +122,7 @@ export default class Wallet {
             signer: this.signer
         });
         this.getAccountsLocalStorage();
-        this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
+        this.accountId = getActiveAccountId() || '';
     }
 
     static KEY_TYPES = {
@@ -1233,7 +1234,7 @@ export default class Wallet {
                 account.error.type === 'LackBalanceForState');
 
             if (lastAccount) {
-                this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
+                this.accountId = getActiveAccountId() || '';
                 store.dispatch(redirectTo(
                     `/profile/${lastAccount.accountId}`,
                     { globalAlertPreventClear: true })
@@ -1369,7 +1370,7 @@ export default class Wallet {
     }
 
     spawnSigner = (inMemorySigner) => ({
-        async getPublicKey(accountId, networkId) {
+        getPublicKey: async (accountId, networkId) => {
             const ledgerKey = await this.getLedgerKey(accountId);
             if (ledgerKey) {
                 return  ledgerKey;
@@ -1377,7 +1378,7 @@ export default class Wallet {
 
             return await inMemorySigner.getPublicKey(accountId, networkId);
         },
-        async signMessage(message, accountId, networkId) {
+        signMessage: async (message, accountId, networkId) => {
             if (await this.getLedgerKey(accountId)) {
                 this.dispatchShowLedgerModal(true);
                 const path = getLedgerHDPath(accountId);

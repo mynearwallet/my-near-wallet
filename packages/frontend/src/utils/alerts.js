@@ -1,4 +1,12 @@
-export const showAlert = ({ data, onlyError, onlySuccess, console = true, localAlert, messageCodeHeader, success } = {}) => ({
+export const showAlert = ({
+    data,
+    onlyError,
+    onlySuccess,
+    console = true,
+    localAlert,
+    messageCodeHeader,
+    success
+} = {}) => ({
     alert: {
         showAlert: localAlert ? false : true,
         onlyError: onlySuccess ? false : true,

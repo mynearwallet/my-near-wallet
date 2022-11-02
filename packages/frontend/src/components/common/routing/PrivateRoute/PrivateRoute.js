@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, withRouter, Redirect } from 'react-router-dom';
 
-import { selectAccountSlice } from '../../../redux/slices/account';
-import { selectStatusLocalAlert } from '../../../redux/slices/status';
-// import { isKeyEncrypted } from '../../../utils/keyEncryption';
-import { KEY_ACTIVE_ACCOUNT_ID } from '../../../utils/wallet';
-import NoIndexMetaTag from '../NoIndexMetaTag';
+import { selectAccountSlice } from '../../../../redux/slices/account';
+import { selectStatusLocalAlert } from '../../../../redux/slices/status';
+import { getActiveAccountId } from '../../../../utils/account';
+import NoIndexMetaTag from '../../NoIndexMetaTag';
+import { isEncrypted } from './lib/encryption';
+
 
 /**
  * PrivateRoute is for logged in users only and will redirect to the guest landing page
@@ -17,13 +18,14 @@ const PrivateRoute = ({
     render,
     account,
     indexBySearchEngines,
+    isAuthorizedByPassword,
     ...rest
 }) => (
     <>
         {!indexBySearchEngines && <NoIndexMetaTag />}
         <Route
             render={(props) => {
-                if (!localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID)) {
+                if (!getActiveAccountId()) {
                     return (
                         <Redirect
                             to={{
@@ -33,20 +35,22 @@ const PrivateRoute = ({
                     );
                 }
 
-                // if (isKeyEncrypted()) {
-                //     // Avoid infinite loop of redirect
-                //     const skipRedirect = rest.path === '/enter-password';
-                //
-                //     if (!skipRedirect) {
-                //         return (
-                //             <Redirect
-                //                 to={{
-                //                     pathname: '/enter-password',
-                //                 }}
-                //             />
-                //         );
-                //     }
-                // }
+                const isBlockedByPassword = isEncrypted() && !isAuthorizedByPassword;
+                if (isBlockedByPassword) {
+                    // Avoid infinite loop of redirect
+                    const skipRedirect = location.pathname === '/enter-password';
+
+                    if (!skipRedirect) {
+                        return (
+                            <Redirect
+                                to={{
+                                    pathname: '/enter-password',
+                                    search: window.btoa(location.pathname)
+                                }}
+                            />
+                        );
+                    }
+                }
 
                 // <Route component> takes precedence over <Route render></Route>
                 if (Component) {
@@ -64,6 +68,7 @@ const PrivateRoute = ({
 );
 
 const mapStateToProps = (state) => ({
+    isAuthorizedByPassword: state.security.isAuthorizedByPassword,
     account: selectAccountSlice(state),
     localAlert: selectStatusLocalAlert(state)
 });

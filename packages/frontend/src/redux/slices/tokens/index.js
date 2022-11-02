@@ -6,11 +6,11 @@ import { createSelector } from 'reselect';
 
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
+import { selectSetOfBlacklistedTokenNames } from '../../reducers/security';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 import { createParameterSelector, selectSliceByAccountId } from '../../selectors/topLevel';
-import { selectSetOfBlacklistedTokenNames } from '../security';
 import { selectUSDNTokenFiatValueUSD, selectTokensFiatValueUSD } from '../tokenFiatValues';
 import tokensMetadataSlice, { getCachedContractMetadataOrFetch, selectContractsMetadata, selectOneContractMetadata } from '../tokensMetadata';
 
@@ -225,7 +225,12 @@ export const selectTokensWithMetadataForAccountId = createSelector(
     });
 
 export const selectAllowedTokens = createSelector(
-    [selectTokensFiatValueUSD, selectTokensWithBalance, selectSetOfBlacklistedTokenNames, selectNEARAsTokenWithMetadata],
+    [
+        selectTokensFiatValueUSD,
+        selectTokensWithBalance,
+        selectSetOfBlacklistedTokenNames,
+        selectNEARAsTokenWithMetadata
+    ],
     (tokensFiatData, tokensWithBalance, setOfBlacklistedNames, nearConfig) => {
         const nearConfigWithName = {
             ...nearConfig,

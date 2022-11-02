@@ -270,6 +270,13 @@
         "viewAll": "Весь список",
         "withdrawing": "Вывод"
     },
+    "enterPassword": {
+        "title": "Введите пароль для разблокировки кошелька",
+        "error": "Неверный пароль",
+        "forgotPassword": "Забыли пароль?",
+        "restoreLink": "Восстановить с помощью фразы",
+        "unlockCaption": "Разблокировать"
+    },
     "confirmLedgerModal": {
         "header": {
             "confirm": "Пожалуйста, подтвердите операцию на вашем устройстве...",
@@ -1040,14 +1047,19 @@
     "setupPasswordProtection": {
         "pageTitle": "Создайте пароль",
         "pageText": "Вы сможете использовать его для того чтобы разблокировать ваш кошелёк.",
-        "withoutPassword": "Продолжить без создания пароля",
         "lengthError": "Минимум 8 символов",
         "matchError": "Пароли не совпадают",
         "enter": "Введите пароль",
         "confirm": "Подвердите пароль",
         "week": "Слабый пароль",
         "average": "Средний пароль",
-        "strong": "Сильный пароль"
+        "strong": "Сильный пароль",
+        "withoutPassword": "Продолжить без создания пароля",
+        "skipTitle": "Не использовать защиту паролем",
+        "skipDescription": "Вы уверены что хотите пропустить установку пароля для защиты Вашего кошелька от неустановленного доступа? Вы можете настроить пароль позже на странице настроек.",
+        "skipDescription": "Are you sure you want to skip setting a password to protect your wallet from unauthorized access? You can set a password later from settings page.",
+        "useCaption": "Использовать пароль",
+        "skipCaption": "Пропустить шаг"
     },
     "sign": {
         "accountNotFound": {
