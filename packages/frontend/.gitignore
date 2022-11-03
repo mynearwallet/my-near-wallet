@@ -26,3 +26,6 @@ yarn-error.log*
 
 # parcel
 /.cache
+
+# @todo Remove when wigration from yarn to npm will be completed
+package-lock.json
