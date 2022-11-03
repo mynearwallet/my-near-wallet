@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Mixpanel } from '../../../mixpanel/index';
-// import {  } from '../../../components/svg/';
+import DiscordIcon from '../../components/svg/DiscordIcon';
+import { Mixpanel } from '../../mixpanel/index';
 import { StyledFooter, StyledWalletInfo, StyledSocialLinks, StyledInfoLink } from './ui';
 
 const track = (msg: string) => Mixpanel.track(msg);
@@ -27,8 +27,7 @@ const socialLinks = [
         nameId: 'discord',
         link: 'https://discord.com/invite/Vj74PpQYsh',
         trackMsg: 'Footer Click Join Community',
-        icon: 'Discord icon',
-        // icon: <Icon color="var(--navigation-icon-color)" />,
+        icon: <DiscordIcon color="var(--icon-color)" />,
     },
 ];
 
@@ -38,21 +37,21 @@ const Footer: FC = () => {
     return (
         <StyledFooter className="wallet-footer">
             <StyledWalletInfo>
-                <div>
+                <p className="copyright">
                     &copy; {currentYear} {t('footer.copyrights')}
-                    <div>
-                        {walletInfoLinks.map(({ nameId, link, trackMsg }, index) => (
-                            <StyledInfoLink
-                                key={index}
-                                href={link}
-                                rel="noopener noreferrer"
-                                target="_blank"
-                                onClick={() => track(trackMsg)}
-                            >
-                                {t(nameId)}
-                            </StyledInfoLink>
-                        ))}
-                    </div>
+                </p>
+                <div>
+                    {walletInfoLinks.map(({ nameId, link, trackMsg }, index) => (
+                        <StyledInfoLink
+                            key={index}
+                            href={link}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            onClick={() => track(trackMsg)}
+                        >
+                            {t(nameId)}
+                        </StyledInfoLink>
+                    ))}
                 </div>
             </StyledWalletInfo>
             <StyledSocialLinks>

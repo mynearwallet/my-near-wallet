@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import Footer from '../../../components/common/Footer';
+import Footer from '../../../widgets/Footer';
 import User from '../../../widgets/User';
 import { StyledLayout, StyledTop, StyledUserWrapper } from './ui';
 

@@ -115,7 +115,6 @@ const WEB3AUTH_FEATURE_ENABLED = false;
 
 const Container = styled.div`
     min-height: 100vh;
-    padding-bottom: 230px;
     padding-left: 280px;
 
     @media ${VIEWPORT.TABLET} {
