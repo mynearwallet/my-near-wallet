@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useRef } from 'react';
-import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import AccountSelector from '../../../../components/accounts/account_selector/AccountSelector';
 import useOnClickOutside from '../../../../hooks/useOnClickOutside';
@@ -14,20 +14,21 @@ import { StyledMenu } from './ui';
 const isMobileDevice = isMobile();
 
 type AccountMenuProps = {
-    show: boolean;
-    handleSelectAccount: (accoundId: string) => void;
-    accountIdLocalStorage?: string;
-    accountsBalance: string[];
+    isVisible: boolean;
     setIsAccountMenuVisible: (state: boolean) => void;
+    activeAccountId?: string;
+    handleSelectAccount: (accoundId: string) => void;
+    accountsBalance: string[];
 };
 
 const AccountMenu: FC<AccountMenuProps> = ({
-    show,
+    isVisible,
     handleSelectAccount,
-    accountIdLocalStorage,
+    activeAccountId,
     accountsBalance,
     setIsAccountMenuVisible,
 }) => {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const availableAccounts = useSelector(selectAvailableAccounts);
 
@@ -41,14 +42,16 @@ const AccountMenu: FC<AccountMenuProps> = ({
 
     useOnClickOutside(menuRef, handleClickOutside);
 
-    if (show) {
+    if (isVisible) {
         return (
-            <StyledMenu id="accountMenu" ref={isMobileDevice ? null : menuRef} className="accountMenu">
-                <h5>
-                    <Translate id="link.switchAccount" />
-                </h5>
+            <StyledMenu
+                id="accountMenu"
+                ref={isMobileDevice ? null : menuRef}
+                className="accountMenu"
+            >
+                <h5>{t('link.switchAccount')}</h5>
                 <AccountSelector
-                    signedInAccountId={accountIdLocalStorage}
+                    signedInAccountId={activeAccountId}
                     availableAccounts={availableAccounts}
                     accountsBalances={accountsBalance}
                     getAccountBalance={refreshBalance}

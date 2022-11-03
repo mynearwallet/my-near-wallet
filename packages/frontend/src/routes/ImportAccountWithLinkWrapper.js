@@ -88,7 +88,7 @@ const ImportAccountWithLinkWrapper = () => {
                         );
                     } else if (action === 'select') {
                         if (accountId !== activeAccountId) {
-                            await dispatch(switchAccount({ accountId }));
+                            dispatch(switchAccount(accountId));
                         }
                         dispatch(redirectTo('/'));
                     }

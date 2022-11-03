@@ -19,7 +19,7 @@ const User: FC = () => {
     const toggleMenu = () => setIsMenuVisible(!isMenuVisible);
 
     const selectAccount = useCallback((accountId) => {
-        dispatch(switchAccount({ accountId }));
+        dispatch(switchAccount(accountId));
     }, []);
 
     const handleSelectAccount = useCallback((accountId) => {
@@ -36,9 +36,9 @@ const User: FC = () => {
                 withIcon
             />
             <AccountMenu
-                show={localStorage?.accountFound && isMenuVisible}
+                isVisible={localStorage?.accountFound && isMenuVisible}
                 handleSelectAccount={handleSelectAccount}
-                accountIdLocalStorage={localStorage?.accountId}
+                activeAccountId={localStorage?.accountId}
                 accountsBalance={accountsBalance}
                 setIsAccountMenuVisible={setIsMenuVisible}
             />

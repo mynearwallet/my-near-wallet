@@ -63,7 +63,7 @@ export default () => {
                         if (Object.keys(walletAccounts).length === 0) {
                             location.reload();
                         } else {
-                            dispatch(switchAccount({ accountId: Object.keys(walletAccounts)[0] }));
+                            dispatch(switchAccount(Object.keys(walletAccounts)[0]));
                         }
                         setShowRemoveAccountModal(false);
                     }}

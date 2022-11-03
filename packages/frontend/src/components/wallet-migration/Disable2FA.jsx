@@ -110,7 +110,7 @@ const Disable2FAModal = ({ handleSetActiveView, onClose }) => {
 
         const disable2faForCurrentAccount = async () => {
             try {
-                await dispatch(switchAccount({accountId: currentAccount.accountId}));
+                await dispatch(switchAccount(currentAccount.accountId));
                 const account = await wallet.getAccount(currentAccount.accountId);
                 const isBrickedAccount = await isAccountBricked(account);
                 if (isBrickedAccount) {
@@ -129,7 +129,7 @@ const Disable2FAModal = ({ handleSetActiveView, onClose }) => {
                 await new Promise((r) => setTimeout(r, 3000));
                 localDispatch({ type: ACTIONS.SET_CURRENT_FAILED_AND_END_PROCESS });
             } finally {
-                await dispatch(switchAccount({accountId: initialAccountId.current}));
+                dispatch(switchAccount(initialAccountId.current));
             }
         };
         if (currentAccount) {

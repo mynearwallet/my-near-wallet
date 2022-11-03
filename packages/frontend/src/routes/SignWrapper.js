@@ -84,7 +84,7 @@ const SignWrapper = ({ urlQuery }) => {
                 )
         ) {
             dispatch(
-                switchAccount({ accountId: signerId })
+                switchAccount(signerId)
             );
         }
     }, [signerId, availableAccounts, accountId]);

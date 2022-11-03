@@ -749,9 +749,7 @@ export default class Wallet {
             const has2fa = await TwoFactor.has2faEnabled(account);
 
             if (has2fa) {
-                await store.dispatch(switchAccount({
-                    accountId: account.accountId
-                }));
+                store.dispatch(switchAccount(account.accountId));
             }
             await account.addKey(ledgerPublicKey);
         }

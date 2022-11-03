@@ -41,7 +41,7 @@ export default ({
             signedInAccountId={accountLocalStorageAccountId}
             availableAccounts={availableAccounts}
             accountsBalances={accountAccountsBalances}
-            onSelectAccount={(accountId) => dispatch(switchAccount({ accountId }))}
+            onSelectAccount={(accountId) => dispatch(switchAccount(accountId))}
             getAccountBalance={(accountId) => dispatch(getAccountBalance(accountId))}
             onSignInToDifferentAccount={() => {
                 Mixpanel.track('LOGIN Click recover different account button');

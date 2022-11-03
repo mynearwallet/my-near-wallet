@@ -77,14 +77,14 @@ export default function AccountDropdown({ disabled, 'data-test-id': testId }) {
                 disabled={singleAccount || disabled}
                 name='account-dropdown'
                 title={shortAccountId}
-                content={accountsWithoutCurrent.map((account, i) => (
+                content={accountsWithoutCurrent.map((accountId, i) => (
                     <div
                         key={i}
-                        title={account}
-                        onClick={() => dispatch(switchAccount({ accountId: account }))}
+                        title={accountId}
+                        onClick={() => dispatch(switchAccount(accountId))}
                         className='account-dropdown-toggle'
                     >
-                        {shortenAccountId(account)}
+                        {shortenAccountId(accountId)}
                     </div>
                 ))}
             />

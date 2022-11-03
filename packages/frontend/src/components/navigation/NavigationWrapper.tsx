@@ -16,7 +16,7 @@ const NavigationWrapper: FC = () => {
     const flowLimitationSubMenu = useSelector(selectFlowLimitationSubMenu);
 
     const selectAccount = useCallback((accountId) => {
-        dispatch(switchAccount({ accountId }));
+        dispatch(switchAccount(accountId));
     }, []);
 
     return (

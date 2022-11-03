@@ -47,7 +47,7 @@ const BatchImportAccountsSuccessScreen = ({ accounts = [], customTitleId }) => {
                     {accounts.length} <Translate id="signInLedger.modal.accountsApproved" />
                 </div>
                 <AccountListImport accounts={accounts} onClickAccount={async ({accountId}) => {
-                    await dispatch(switchAccount({accountId}));
+                    await dispatch(switchAccount(accountId));
                     dispatch(redirectTo('/'));
                 }}
                 />

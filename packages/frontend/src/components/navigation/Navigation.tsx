@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { FC, useState, useCallback, KeyboardEvent, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useListener } from '../../hooks/eventListeners';
@@ -23,8 +23,7 @@ import SettingsItem from './ui/SettingsItem';
 
 const isMobileVersion = isMobile();
 const isDesktopVersion = !isMobileVersion;
-
-const ESC_CODE = 27;
+const ESC_BUTTON_KEY = 'Escape'
 
 type NavigationProps = {
     currentAccount: {
@@ -52,8 +51,8 @@ const Navigation: FC<NavigationProps> = ({
     const [isNavigationOpen, setIsNavigationOpen] = useState(isDesktopVersion);
     const [isAccountMenuVisible, setIsAccountMenuVisible] = useState(isMobileVersion);
 
-    useListener('keydown', (event) => {
-        if (event.keyCode === ESC_CODE) {
+    useListener('keydown', (event: KeyboardEvent) => {
+        if (event.key === ESC_BUTTON_KEY) {
             if (isMobileVersion) {
                 setIsNavigationOpen(false);
             } else {
@@ -62,15 +61,16 @@ const Navigation: FC<NavigationProps> = ({
         }
     });
 
-    useListener('click', (event) => {
+    useListener('click', (event: MouseEvent) => {
         if (isMobileVersion) {
             // @todo find a better way how to close mobile menu
             const navigation = document.getElementById('nav-container');
+            const element = event.target as HTMLElement;
 
             if (
-                event.target.tagName === 'BUTTON' ||
-                event.target.tagName === 'A' ||
-                !navigation?.contains(event.target)
+                element.tagName === 'BUTTON' ||
+                element.tagName === 'A' ||
+                !navigation?.contains(element)
             ) {
                 setIsNavigationOpen(false);
             }
@@ -144,9 +144,9 @@ const Navigation: FC<NavigationProps> = ({
                         <LangSwitcher />
                     </StyledLangSelector>
                     <AccountMenu
-                        show={localStorage?.accountFound && isAccountMenuVisible}
+                        isVisible={localStorage?.accountFound && isAccountMenuVisible}
                         handleSelectAccount={handleSelectAccount}
-                        accountIdLocalStorage={localStorage?.accountId}
+                        activeAccountId={localStorage?.accountId}
                         accountsBalance={accountsBalance}
                         setIsAccountMenuVisible={setIsAccountMenuVisible}
                     />
