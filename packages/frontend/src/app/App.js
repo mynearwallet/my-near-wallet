@@ -36,7 +36,6 @@ import { BuyNear } from '../components/buy/BuyNear';
 import Bootstrap from '../components/common/Bootstrap';
 import GlobalAlert from '../components/common/GlobalAlert';
 import GuestLandingRoute from '../components/common/GuestLandingRoute';
-import NetworkBanner from '../components/common/NetworkBanner';
 import PrivateRoute from '../components/common/routing/PrivateRoute';
 import PublicRoute from '../components/common/routing/PublicRoute';
 import Route from '../components/common/routing/Route';
@@ -85,7 +84,6 @@ import translations_zh_hant from '../translations/locales/zh-hant/translation.js
 import classNames from '../utils/classNames';
 import getBrowserLocale from '../utils/getBrowserLocale';
 import { reportUiActiveMixpanelThrottled } from '../utils/reportUiActiveMixpanelThrottled';
-import ScrollToTop from '../utils/ScrollToTop';
 import {
     WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS,
     WALLET_LOGIN_URL,
@@ -320,16 +318,14 @@ class Routing extends Component {
                 ])}
                 id="app-container"
             >
-                <Bootstrap />
-                <Updater />
                 <GlobalStyle />
                 <ConnectedRouter
                     basename={PATH_PREFIX}
                     history={this.props.history}
                 >
+                    <Bootstrap />
+                    <Updater />
                     <ThemeProvider theme={theme}>
-                        <ScrollToTop />
-                        <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
                         <WalletMigration

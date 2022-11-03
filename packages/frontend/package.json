@@ -94,6 +94,7 @@
     "@babel/preset-react": "^7.13.13",
     "@sentry/cli": "^1.65.0",
     "@types/react-router": "^5.1.19",
+    "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/parser": "^5.42.0",
     "babel-eslint": "^10.1.0",
