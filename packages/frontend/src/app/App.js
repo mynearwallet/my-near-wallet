@@ -43,7 +43,6 @@ import Updater from '../components/common/Updater';
 import { ExploreContainer } from '../components/explore/ExploreContainer';
 import GlobalStyle from '../components/GlobalStyle';
 import LoginCliLoginSuccess from '../components/login/LoginCliLoginSuccess';
-import NavigationWrapper from '../components/navigation/NavigationWrapper';
 import NFTDetailWrapper from '../components/nft/NFTDetailWrapper';
 import PageNotFound from '../components/page-not-found/PageNotFound';
 import Privacy from '../components/privacy/Privacy';
@@ -53,7 +52,7 @@ import SendContainerWrapper from '../components/send/SendContainerWrapper';
 import StakingContainer from '../components/staking/StakingContainer';
 import Terms from '../components/terms/Terms';
 import './index.css';
-import WalletMigration from '../components/wallet-migration/WalletMigration';
+// import WalletMigration from '../components/wallet-migration/WalletMigration';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
@@ -326,12 +325,14 @@ class Routing extends Component {
                     <Bootstrap />
                     <Updater />
                     <ThemeProvider theme={theme}>
-                        <NavigationWrapper />
+                        {/* @todo make Alert as a widget */}
                         <GlobalAlert />
+                        {/* @note temporarily commented, because unused
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}
                             onClose={this.closeTransferPopup} />
+                        */}
                         <LedgerConfirmActionModal />
                         <LedgerConnectModal />
                         {account.requestPending !== null && (

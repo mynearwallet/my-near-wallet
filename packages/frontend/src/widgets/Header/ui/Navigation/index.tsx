@@ -1,15 +1,13 @@
-import React, { FC, useState, useCallback, KeyboardEvent, MouseEvent } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useListener } from '../../hooks/eventListeners';
-import AccountMenu from '../../shared/ui/core/AccountMenu';
-import UserAccount from '../../shared/ui/core/UserAccount';
-import isMobile from '../../utils/isMobile';
-import LangSwitcher from '../common/LangSwitcher';
-import HelpIcon from '../svg/HelpIcon';
-import UserIcon from '../svg/UserIcon';
+import AccountMenu from '../../../../shared/ui/core/AccountMenu';
+import UserAccount from '../../../../shared/ui/core/UserAccount';
+import isMobile from '../../../../utils/isMobile';
+import LangSwitcher from '../../../../components/common/LangSwitcher';
+import HelpIcon from '../../../../components/svg/HelpIcon';
+import UserIcon from '../../../../components/svg/UserIcon';
 import {
-    StyledHeader,
     StyledTop,
     StyledUserAccount,
     StyledNavigation,
@@ -17,13 +15,12 @@ import {
     StyledLangSelector,
     StyledLink,
 } from './ui';
-import Logo from './ui/Logo';
-import NavLinks from './ui/NavLinks';
-import SettingsItem from './ui/SettingsItem';
+import Logo from '../Logo';
+import NavLinks from '../NavLinks';
+import SettingsItem from '../SettingsItem';
 
 const isMobileVersion = isMobile();
 const isDesktopVersion = !isMobileVersion;
-const ESC_BUTTON_KEY = 'Escape'
 
 type NavigationProps = {
     currentAccount: {
@@ -34,78 +31,32 @@ type NavigationProps = {
             accountId?: string;
         };
     };
-    selectAccount: (accountId: string) => void;
     flowLimitationMainMenu: boolean;
     flowLimitationSubMenu: boolean;
+    isContentVisible: boolean;
+    isAccountMenuVisible: boolean;
+    setIsAccountMenuVisible: (state: boolean) => void;
+    toggleNavigation: VoidFunction;
+    handleAccountClick: VoidFunction;
+    handleSelectAccount: (accountId: string) => void;
 };
 
-// @todo: rename to Header
 const Navigation: FC<NavigationProps> = ({
     currentAccount,
-    selectAccount,
     flowLimitationMainMenu,
     flowLimitationSubMenu,
+    isContentVisible,
+    isAccountMenuVisible,
+    setIsAccountMenuVisible,
+    toggleNavigation,
+    handleAccountClick,
+    handleSelectAccount,
 }) => {
     const { t } = useTranslation();
     const { accountId, accountsBalance, localStorage } = currentAccount;
-    const [isNavigationOpen, setIsNavigationOpen] = useState(isDesktopVersion);
-    const [isAccountMenuVisible, setIsAccountMenuVisible] = useState(isMobileVersion);
-
-    useListener('keydown', (event: KeyboardEvent) => {
-        if (event.key === ESC_BUTTON_KEY) {
-            if (isMobileVersion) {
-                setIsNavigationOpen(false);
-            } else {
-                setIsAccountMenuVisible(false);
-            }
-        }
-    });
-
-    useListener('click', (event: MouseEvent) => {
-        if (isMobileVersion) {
-            // @todo find a better way how to close mobile menu
-            const navigation = document.getElementById('nav-container');
-            const element = event.target as HTMLElement;
-
-            if (
-                element.tagName === 'BUTTON' ||
-                element.tagName === 'A' ||
-                !navigation?.contains(element)
-            ) {
-                setIsNavigationOpen(false);
-            }
-        }
-    });
-
-    const toggleNavigation = () => {
-        if (!flowLimitationSubMenu && isMobileVersion) {
-            setIsNavigationOpen(!isNavigationOpen);
-        }
-    };
-
-    const handleAccountClick = () => {
-        if (isMobileVersion) {
-            setIsNavigationOpen(!isNavigationOpen);
-        } else {
-            setIsAccountMenuVisible(!isAccountMenuVisible);
-        }
-    };
-
-    const handleSelectAccount = useCallback(
-        (accountId) => {
-            selectAccount(accountId);
-
-            if (isDesktopVersion) {
-                setIsAccountMenuVisible(false);
-            }
-        },
-        [isDesktopVersion]
-    );
-
-    const isContentVisible = isDesktopVersion || isNavigationOpen;
 
     return (
-        <StyledHeader id="nav-container">
+        <>
             <StyledTop>
                 <Logo
                     mode={isMobileVersion ? 'mobile' : undefined}
@@ -141,6 +92,7 @@ const Navigation: FC<NavigationProps> = ({
                         </StyledLink>
                     </SettingsItem>
                     <StyledLangSelector>
+                        {/* @ts-ignore */}
                         <LangSwitcher />
                     </StyledLangSelector>
                     <AccountMenu
@@ -152,7 +104,7 @@ const Navigation: FC<NavigationProps> = ({
                     />
                 </StyledFooter>
             </StyledNavigation>
-        </StyledHeader>
+        </>
     );
 };
 

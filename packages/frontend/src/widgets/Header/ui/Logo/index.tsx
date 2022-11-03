@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-import MyNearWalletLogo from '../../../svg/MyNearWalletLogo';
+import MyNearWalletLogo from '../../../../components/svg/MyNearWalletLogo';
 import { StyledLogo } from './ui';
 
 type LogoProps = {

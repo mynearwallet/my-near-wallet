@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 import { Mixpanel } from '../../../../mixpanel';
-import ExploreIcon from '../../../svg/ExploreIcon';
-import StakingIcon from '../../../svg/StakingIcon';
-import UserIcon from '../../../svg/UserIcon';
-import WalletIcon from '../../../svg/WalletIcon';
+import ExploreIcon from '../../../../components/svg/ExploreIcon';
+import StakingIcon from '../../../../components/svg/StakingIcon';
+import UserIcon from '../../../../components/svg/UserIcon';
+import WalletIcon from '../../../../components/svg/WalletIcon';
 import { StyledLinks, StyledNavItem } from './ui';
 
 const routes = [

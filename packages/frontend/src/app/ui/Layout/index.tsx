@@ -2,6 +2,7 @@ import React, { FC, ReactNode } from 'react';
 
 import Footer from '../../../components/common/Footer';
 import User from '../../../widgets/User';
+import Header from '../../../widgets/Header';
 import NetworkBanner from '../../../widgets/NetworkBanner';
 import { StyledLayout, StyledTop, StyledUserWrapper } from './ui';
 
@@ -13,6 +14,7 @@ const Layout: FC<MainProps> = ({ children }) => {
     return (
         <StyledLayout>
             <NetworkBanner />
+            <Header />
 
             <StyledTop>
                 <StyledUserWrapper>
