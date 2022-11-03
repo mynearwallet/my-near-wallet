@@ -1,7 +1,7 @@
-import i18next from 'i18next';
 import { KeyPair } from 'near-api-js';
 import { generateSeedPhrase } from 'near-seed-phrase';
 import React, { Component, Fragment } from 'react';
+import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
 import { withRouter, Route } from 'react-router-dom';
 
@@ -24,6 +24,7 @@ import {
 } from '../../../redux/slices/recoveryMethods';
 import { selectStatusMainLoader } from '../../../redux/slices/status';
 import copyText from '../../../utils/copyText';
+import { isEncrypted } from '../../../utils/encryption/keys';
 import isMobile from '../../../utils/isMobile';
 import parseFundingOptions from '../../../utils/parseFundingOptions';
 import { Snackbar, snackbarDuration } from '../../common/Snackbar';
@@ -142,6 +143,17 @@ class SetupSeedPhrase extends Component {
         }
 
         Mixpanel.track('SR-SP Verify finish');
+
+        const shouldSkipPasswordStep = isEncrypted();
+        // Cause password already set
+        if (shouldSkipPasswordStep) {
+            this.setState({
+                submitting: true,
+            }, this.handleSetupSeedPhrase);
+
+            return ;
+        }
+
         this.props.history.push(`/setup-seed-phrase/${this.props.accountId}/set-encryption`);
     }
 
@@ -180,7 +192,7 @@ class SetupSeedPhrase extends Component {
         await Mixpanel.withTracking('SR-SP Setup for new account',
             async () => {
                 if (password !== null) {
-                    encryptWallet(password);
+                    await encryptWallet(password);
                     this.props.setAuthorizedByPassword(true);
                 }
 
@@ -276,8 +288,14 @@ class SetupSeedPhrase extends Component {
                     path={'/setup-seed-phrase/:accountId/phrase'}
                     render={() => (
                         <Container className='small-centered border'>
-                            <h1>{i18next.t('setupSeedPhrase.pageTitle')}</h1>
-                            <h2>{i18next.t('setupSeedPhrase.pageText')}</h2>
+                            <h1><Trans i18nKey='setupSeedPhrase.pageTitle'/></h1>
+                            <h2>
+                                <Trans i18nKey='setupSeedPhrase.pageText'>
+                                    <b>
+                                        Anyone with access to it will also have access to your account!
+                                    </b>
+                                </Trans>
+                            </h2>
                             <SetupSeedPhraseForm
                                 seedPhrase={seedPhrase}
                                 handleCopyPhrase={this.handleCopyPhrase}
@@ -302,9 +320,9 @@ class SetupSeedPhrase extends Component {
                                     <Back>
                                         <BackButton onBack={this.handleStartOver} />
                                     </Back>
-                                    <h1>{i18next.t('setupSeedPhraseVerify.pageTitle')}</h1>
+                                    <h1><Trans i18nKey='setupSeedPhraseVerify.pageTitle' /></h1>
                                 </Title>
-                                <Description>{i18next.t('setupSeedPhraseVerify.pageText')}</Description>
+                                <Description><Trans i18nKey='setupSeedPhraseVerify.pageText' /></Description>
                                 <SetupSeedPhraseVerify
                                     enterWord={enterWord}
                                     wordId={wordId}
@@ -332,10 +350,10 @@ class SetupSeedPhrase extends Component {
                                     <Back>
                                         <BackButton onBack={this.handleStartOver} />
                                     </Back>
-                                    <h1>{i18next.t('setupPasswordProtection.pageTitle')}</h1>
+                                    <h1><Trans i18nKey='setupPasswordProtection.pageTitle' /></h1>
                                 </Title>
                                 <Description>
-                                    {i18next.t('setupPasswordProtection.pageText')}
+                                    <Trans i18nKey='setupPasswordProtection.pageText' />
                                 </Description>
                                 <SetPasswordForm
                                     loading={this.props.mainLoader || submitting}
@@ -346,7 +364,7 @@ class SetupSeedPhrase extends Component {
                 />
                 <Snackbar
                     theme='success'
-                    message={i18next.t('setupSeedPhrase.snackbarCopySuccess')}
+                    message={<Trans i18nKey='setupSeedPhrase.snackbarCopySuccess' />}
                     show={successSnackbar}
                     onHide={() => this.setState({ successSnackbar: false })}
                 />

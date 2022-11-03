@@ -5,8 +5,8 @@ import { Route, withRouter, Redirect } from 'react-router-dom';
 import { selectAccountSlice } from '../../../../redux/slices/account';
 import { selectStatusLocalAlert } from '../../../../redux/slices/status';
 import { getActiveAccountId } from '../../../../utils/account';
+import { isEncrypted } from '../../../../utils/encryption/keys';
 import NoIndexMetaTag from '../../NoIndexMetaTag';
-import { isEncrypted } from './lib/encryption';
 
 
 /**

@@ -1294,7 +1294,7 @@
         "subHeader": "請設置一種賬戶恢復方式："
     },
     "setupSeedPhrase": {
-        "pageText": "請在安全的位置按順序記錄以下單詞。<b>任何獲得助記詞的人都將可以完全訪問該賬戶！</b>接下來將驗證你記錄的助記詞。",
+        "pageText": "請在安全的位置按順序記錄以下單詞。<0>任何獲得助記詞的人都將可以完全訪問該賬戶！</0>接下來將驗證你記錄的助記詞。",
         "pageTitle": "設置你的安全助記詞",
         "snackbarCopyImplicitAddress": "賬戶 ID 已複製！",
         "snackbarCopySuccess": "助記詞已複製！"

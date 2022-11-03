@@ -1040,7 +1040,7 @@
         "subHeader": "Chọn một phương thức để bảo mật và khôi phục tài khoản của bạn. Sẽ được sử dụng để xác minh các hoạt động quan trọng, khôi phục tài khoản của bạn và truy cập tài khoản của bạn từ các thiết bị khác."
     },
     "setupSeedPhrase": {
-        "pageText": "Viết ra những từ sau theo thứ tự và cất chúng ở nơi an toàn. <b>Bất kỳ ai có quyền truy cập vào nó cũng sẽ có quyền truy cập vào tài khoản của bạn!</b> Tiếp theo, bạn sẽ được yêu cầu xác minh cụm mật khẩu của mình.",
+        "pageText": "Viết ra những từ sau theo thứ tự và cất chúng ở nơi an toàn. <0>Bất kỳ ai có quyền truy cập vào nó cũng sẽ có quyền truy cập vào tài khoản của bạn!</0> Tiếp theo, bạn sẽ được yêu cầu xác minh cụm mật khẩu của mình.",
         "pageTitle": "Thiết lập cụm mật khẩu bảo mật của bạn",
         "snackbarCopyImplicitAddress": "Đã sao chép địa chỉ gửi tiền!",
         "snackbarCopySuccess": "Đã sao chép cụm từ khôi phục!"

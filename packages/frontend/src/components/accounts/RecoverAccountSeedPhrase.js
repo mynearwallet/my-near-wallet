@@ -54,7 +54,6 @@ class RecoverAccountSeedPhrase extends Component {
         showCouldNotFindAccountModal: false
     }
 
-    // TODO: Use some validation framework?
     validators = {
         seedPhrase: (value) => !!value.length
     }
@@ -181,7 +180,9 @@ const mapStateToProps = (state, { match }) => ({
     seedPhrase: match.params.seedPhrase || '',
     localAlert: selectStatusLocalAlert(state),
     mainLoader: selectStatusMainLoader(state),
-    findMyAccountSending: selectActionsPending(state, { types: ['RECOVER_ACCOUNT_SEED_PHRASE', 'REFRESH_ACCOUNT_OWNER'] })
+    findMyAccountSending: selectActionsPending(state, {
+        types: ['RECOVER_ACCOUNT_SEED_PHRASE', 'REFRESH_ACCOUNT_OWNER']
+    })
 });
 
 const RecoverAccountSeedPhraseWithRouter = connect(

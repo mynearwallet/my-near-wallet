@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translate } from 'react-localize-redux';
+import { useTranslation } from 'react-i18next';
 
 import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
@@ -11,24 +11,23 @@ const RecoverAccountSeedPhraseForm = ({
     localAlert,
     recoveringAccount,
     findMyAccountSending
-}) => (
+}) => {
+    const { t } = useTranslation();
+
+    return (
         <>
-            <h4><Translate id='recoverSeedPhrase.seedPhraseInput.title' /></h4>
-            <Translate>
-                {({ translate }) => (
-                    <input
-                        value={seedPhrase}
-                        onChange={(e) => handleChange(e.target.value)}
-                        className={classNames([{'success': localAlert && localAlert.success}, {'problem': localAlert && localAlert.success === false}])}
-                        placeholder={translate('recoverSeedPhrase.seedPhraseInput.placeholder')}
-                        disabled={recoveringAccount}
-                        data-test-id="seedPhraseRecoveryInput"
-                        required
-                        tabIndex='2'
-                        autoCapitalize='off'
-                    />
-                )}
-            </Translate>
+            <h4>{t('recoverSeedPhrase.seedPhraseInput.title')}</h4>
+            <input
+                value={seedPhrase}
+                onChange={(e) => handleChange(e.target.value)}
+                className={classNames([{'success': localAlert && localAlert.success}, {'problem': localAlert && localAlert.success === false}])}
+                placeholder={t('recoverSeedPhrase.seedPhraseInput.placeholder')}
+                disabled={recoveringAccount}
+                data-test-id="seedPhraseRecoveryInput"
+                required
+                tabIndex='2'
+                autoCapitalize='off'
+            />
             <FormButton
                 type='submit'
                 color='blue'
@@ -37,9 +36,10 @@ const RecoverAccountSeedPhraseForm = ({
                 sendingString='button.recovering'
                 data-test-id="seedPhraseRecoverySubmitButton"
             >
-                <Translate id='button.findMyAccount' />
+                {t('button.findMyAccount')}
             </FormButton>
         </>
-);
+    );
+};
 
 export default RecoverAccountSeedPhraseForm;

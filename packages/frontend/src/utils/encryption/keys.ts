@@ -1,6 +1,10 @@
 import sha256 from 'js-sha256';
 
-const ED25516_TAG = 'ed25519';
+import CONFIG from '../../config';
+import { getActiveAccountId } from '../account';
+import { KEYSTORE_PREFIX } from '../wallet';
+
+export const ED25516_TAG = 'ed25519';
 
 export const createKeyFrom = (value: string): Uint8Array =>
     Uint8Array.from(sha256.sha256.array(value));
@@ -15,3 +19,9 @@ export const isKeyEncrypted = (
 
     return !key.startsWith(ED25516_TAG);
 };
+
+export const isEncrypted = () => isKeyEncrypted(
+    KEYSTORE_PREFIX,
+    getActiveAccountId(),
+    CONFIG.NETWORK_ID
+);

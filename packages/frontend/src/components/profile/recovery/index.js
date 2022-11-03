@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import { Translate } from 'react-localize-redux';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Mixpanel } from '../../../mixpanel';
 import { deleteRecoveryMethod, redirectTo } from '../../../redux/actions/account';
@@ -9,7 +9,10 @@ import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsStatus
 } from '../../../redux/slices/recoveryMethods';
+import { isEncrypted } from '../../../utils/encryption/keys';
+import EnterPassword from '../../accounts/EnterPasswordForm/EnterPassword';
 import Modal from '../../common/modal/Modal';
+import Container from '../../common/styled/Container.css';
 import Tooltip from '../../common/Tooltip';
 import ShieldIcon from '../../svg/ShieldIcon';
 import ConfirmDisableMethod from '../ConfirmDisableMethod';
@@ -26,14 +29,13 @@ const RECOVERY_METHOD = {
     PHRASE: 'phrase',
 };
 
-// TODO https://mnw.atlassian.net/browse/MNW-213
-const SHOULD_SHOW_PASSWORD_PROTECTION = false;
-
 export const Recovery = ({
     account,
     userRecoveryMethods,
     twoFactor
 }) => {
+    const { t } = useTranslation();
+
     const [recoveryMethodsMap, setMethodsMap] = useState(
         createUserRecoveryMethodsMap(userRecoveryMethods)
     );
@@ -41,6 +43,7 @@ export const Recovery = ({
     const [showPhraseDisabling, setPhraseDisabling] = useState(false);
     const [isPhraseProcessing, setPhraseProcessing] = useState(false);
     const [showDisabledModal, setShowDisabledModal] = useState(false);
+    const [showDisablePasswordModal, setShowDisablePasswordModal] = useState(false);
 
     useEffect(() => {
         /** Cache list for easy access */
@@ -98,18 +101,23 @@ export const Recovery = ({
         //  TODO https://mnw.atlassian.net/browse/MNW-213
     }, []);
 
-    const handleDisablePassword = useCallback(() => {
-        // TODO https://mnw.atlassian.net/browse/MNW-213
-    }, []);
+    const togglePasswordConfirmModal = useCallback(() =>
+        setShowDisablePasswordModal(!showDisablePasswordModal),
+    [showDisablePasswordModal]
+    );
+
+    const handleConfirmDeletePassword = useCallback((password) => {
+        togglePasswordConfirmModal();
+    }, [togglePasswordConfirmModal]);
 
     return (
         <>
             <h2>
                 <ShieldIcon />
-                <Translate id='profile.security.title' />
+                {t('profile.security.title')}
             </h2>
             <h4>
-                <Translate id='profile.security.mostSecure' />
+                {t('profile.security.mostSecure')}
                 <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
             </h4>
 
@@ -121,36 +129,38 @@ export const Recovery = ({
                     hasLedgerButNotConnected={hasLedgerButNotConnected}
                 />
             )}
-            {SHOULD_SHOW_PASSWORD_PROTECTION && (
-                <RecoveryOption>
-                    <Translate>
-                        {({ translate }) => (
-                            <RecoveryMethod
-                                title={translate('passwordProtection.title')}
-                                description={translate('passwordProtection.description')}
-                                methodEnabled={false}
-                                onEnable={handleEnablePassword}
-                                onDisable={handleDisablePassword}
-                            />
-                        )}
-                    </Translate>
-                </RecoveryOption>
+            <RecoveryOption>
+                <RecoveryMethod
+                    title={t('passwordProtection.title')}
+                    description={t('passwordProtection.description')}
+                    methodEnabled={isEncrypted()}
+                    onEnable={handleEnablePassword}
+                    onDisable={togglePasswordConfirmModal}
+                />
+            </RecoveryOption>
+            {showDisablePasswordModal && (
+                <Modal
+                    isOpen={showDisablePasswordModal}
+                    onClose={togglePasswordConfirmModal}>
+                    <Container className='small-centered'>
+                        <EnterPassword
+                            onValidPassword={handleConfirmDeletePassword} />
+                    </Container>
+                </Modal>
             )}
             <h4>
-                <Translate id='profile.security.lessSecure' />
+                {t('profile.security.lessSecure')}
                 <Tooltip
                     translate='profile.security.lessSecureDesc'
                     icon='icon-lg' />
             </h4>
             <RecoveryOption>
                 <RecoveryMethod
-                    title={
-                        <Translate id='recoveryMgmt.methodTitle.phrase' />
-                    }
+                    title={t('recoveryMgmt.methodTitle.phrase')}
                     description={phraseMethod?.confirmed ?
                         (
                             <>
-                                <Translate id='recoveryMgmt.enabled'/>&nbsp;
+                                {t('recoveryMgmt.enabled')}&nbsp;
                                 {formatCreatedAt(phraseMethod?.createdAt)}
                             </>
                         ) : null
@@ -162,8 +172,8 @@ export const Recovery = ({
                 />
                 { showPhraseDisabling && (
                     <ConfirmDisableMethod
-                        title={<Translate id='recoveryMgmt.disableTitle' />}
-                        description={<Translate id='recoveryMgmt.disableTextPhrase' />}
+                        title={t('recoveryMgmt.disableTitle')}
+                        description={t('recoveryMgmt.disableTextPhrase')}
                         isProcessing={isPhraseProcessing}
                         isOpen={showPhraseDisabling}
                         onClose={() => setPhraseDisabling(false)}
@@ -175,9 +185,27 @@ export const Recovery = ({
                 <Modal
                     isOpen={showDisabledModal}
                     onClose={handleModalClose}>
-                    <Translate id='recoveryMgmt.disableNotAllowed' />
+                    {t('recoveryMgmt.disableNotAllowed')}
                 </Modal>
             )}
         </>
     );
 };
+
+
+// todo
+// - сверстать попап с предупреждением который нужно показать при клике на restore
+// - написать процедуру которая выпилит все перешифрованные аккаунты при клике на restore
+
+// - доверстать предупреждение при создании пароля (оранжевый текст) о том что все пароли будут перешифрованы
+// - сверстать вариант формы установки пароля с create и cancel и показать его при клике на включение пароля из настроек
+// - написать процедуру включения пароля из настроек
+
+// - сверстать вариант плашки в настройках, при которой пароль включен и его можно либо поменять, либо выключить
+// - написать процедуру которая отключит шифрование на всех аккаунтах
+// - сверстать форму с изменением существующего пароля
+// - написать процедуру которая поменяет существующий пароль
+
+// - включить шаг с установкой пароля во флоу восстановления по сид фразе
+
+// - написать процедуру которая при попытке удаления аккаунта запросит пароль

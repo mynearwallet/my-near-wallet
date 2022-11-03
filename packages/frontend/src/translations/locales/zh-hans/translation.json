@@ -1294,7 +1294,7 @@
         "subHeader": "请设置一种账户恢复方式："
     },
     "setupSeedPhrase": {
-        "pageText": "请在安全的位置按顺序记录以下单词。<b>任何获得助记词的人都将可以完全访问该账户！</b>接下来将验证你记录的助记词。",
+        "pageText": "请在安全的位置按顺序记录以下单词。<0>任何获得助记词的人都将可以完全访问该账户！</0>接下来将验证你记录的助记词。",
         "pageTitle": "设置你的安全助记词",
         "snackbarCopyImplicitAddress": "账户 ID 已复制！",
         "snackbarCopySuccess": "助记词已复制！"
