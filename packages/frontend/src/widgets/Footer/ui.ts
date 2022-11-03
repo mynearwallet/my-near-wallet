@@ -12,7 +12,7 @@ export const StyledFooter = styled.footer`
     color: var(--mnw-color-6);
 
     @media ${VIEWPORT.TABLET} {
-        // @todo change for Mobile view 
+        flex-direction: column;
     }
 `;
 
@@ -23,6 +23,14 @@ export const StyledWalletInfo = styled.div`
 
     .copyright {
         margin: 0;
+    }
+
+    @media ${VIEWPORT.TABLET} {
+        margin-bottom: 1rem;
+
+        .infoLinks {
+            text-align: center;
+        }
     }
 `;
 

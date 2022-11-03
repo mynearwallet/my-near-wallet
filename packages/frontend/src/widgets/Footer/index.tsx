@@ -11,12 +11,12 @@ const currentYear = new Date().getFullYear();
 
 const walletInfoLinks = [
     {
-        nameId: 'footer.termsOfService',
+        translationKey: 'terms',
         link: '/terms',
         trackMsg: 'Footer Click terms of service',
     },
     {
-        nameId: 'footer.privacyPolicy',
+        translationKey: 'privacy',
         link: '/privacy',
         trackMsg: 'Footer Click privacy policy',
     },
@@ -24,7 +24,7 @@ const walletInfoLinks = [
 
 const socialLinks = [
     {
-        nameId: 'discord',
+        translationKey: 'discord',
         link: 'https://discord.com/invite/Vj74PpQYsh',
         trackMsg: 'Footer Click Join Community',
         icon: <DiscordIcon color="var(--icon-color)" />,
@@ -34,14 +34,20 @@ const socialLinks = [
 const Footer: FC = () => {
     const { t } = useTranslation();
 
+    const translationsMap = {
+        terms: t('footer.termsOfService'),
+        privacy: t('footer.privacyPolicy'),
+        discord: t('footer.links.discord'),
+    };
+
     return (
         <StyledFooter className="wallet-footer">
             <StyledWalletInfo>
                 <p className="copyright">
                     &copy; {currentYear} {t('footer.copyrights')}
                 </p>
-                <div>
-                    {walletInfoLinks.map(({ nameId, link, trackMsg }, index) => (
+                <div className='infoLinks'>
+                    {walletInfoLinks.map(({ translationKey, link, trackMsg }, index) => (
                         <StyledInfoLink
                             key={index}
                             href={link}
@@ -49,15 +55,15 @@ const Footer: FC = () => {
                             target="_blank"
                             onClick={() => track(trackMsg)}
                         >
-                            {t(nameId)}
+                            {translationsMap[translationKey]}
                         </StyledInfoLink>
                     ))}
                 </div>
             </StyledWalletInfo>
             <StyledSocialLinks>
-                {socialLinks.map(({ nameId, link, trackMsg, icon }, index) => (
+                {socialLinks.map(({ translationKey, link, trackMsg, icon }, index) => (
                     <a
-                        title={t(nameId)}
+                        title={translationsMap[translationKey]}
                         key={index}
                         href={link}
                         rel="noopener noreferrer"

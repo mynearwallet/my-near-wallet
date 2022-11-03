@@ -196,7 +196,7 @@ class Routing extends Component {
             },
         });
 
-        // TODO: Figure out how to load only necessary translations dynamically
+        // @todo remove lang addition after full migration from 'react-localize-redux' to 'react-i18next'
         this.props.addTranslationForLanguage(translations_en, 'en');
         this.props.addTranslationForLanguage(translations_it, 'it');
         this.props.addTranslationForLanguage(translations_pt, 'pt');
@@ -208,7 +208,6 @@ class Routing extends Component {
         this.props.addTranslationForLanguage(translations_ua, 'ua');
 
         this.props.setActiveLanguage(activeLang);
-        // this.addTranslationsForActiveLanguage(defaultLanguage)
 
         this.state = {
             openTransferPopup: false,
@@ -263,7 +262,6 @@ class Routing extends Component {
         const hasLanguageChanged = prevLangCode !== curLangCode;
 
         if (hasLanguageChanged) {
-            // this.addTranslationsForActiveLanguage(curLangCode)
             localStorage.setItem('languageCode', curLangCode);
         }
     }
