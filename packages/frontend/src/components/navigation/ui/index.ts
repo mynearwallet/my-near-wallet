@@ -50,7 +50,7 @@ export const StyledUserAccount = styled.div`
     }
 `;
 
-export const StyledNavigation = styled.nav`
+export const StyledNavigation = styled.nav<{ hidden: boolean }>`
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -58,13 +58,11 @@ export const StyledNavigation = styled.nav`
     overflow-y: auto;
     background-color: var(--mnw-component-background-1);
 
-    ${(props) => {
-        if (props.hidden) {
-            return css`
-                display: none;
-            `;
-        }
-    }}
+    ${(props) =>
+        props.hidden &&
+        css`
+            display: none;
+        `}
 
     @media ${VIEWPORT.TABLET} {
         flex: unset;
@@ -73,108 +71,25 @@ export const StyledNavigation = styled.nav`
     }
 `;
 
-export const StyledLinks = styled.ul`
-    margin: 0;
-    padding: 1rem 0;
-    list-style: none;
-
-    @media ${VIEWPORT.TABLET} {
-        padding: 0;
-        background-color: var(--mnw-color-8);
-    }
-`;
-
-export const StyledNavItem = styled.li`
-    --navigation-icon-color: var(--mnw-color-6);
-
-    &:not(:last-child) {
-        margin-bottom: 0.2rem;
-    }
-
-    .link {
-        cursor: pointer;
-        width: 100%;
-        height: 100%;
-        max-height: 58px;
-        padding: 0.875rem;
-        display: flex;
-        align-items: center;
-        border-radius: 0.5rem;
-        white-space: nowrap;
-        font-weight: 500;
-        font-size: 1rem;
-        color: var(--mnw-color-6);
-        transition: 80ms;
-        text-decoration: none;
-
-        &:hover,
-        &:focus,
-        &.active {
-            --navigation-icon-color: var(--mnw-color-active-text);
-            background-color: var(--mnw-color-1);
-            color: var(--mnw-color-active-text);
-        }
-
-        &.brokenDisplay {
-            svg {
-                position: relative;
-                left: -5px;
-            }
-
-            .name {
-                margin-left: 0.2rem;
-            }
-        }
-    }
-
-    .name {
-        margin-left: 1rem;
-    }
-
-    @media ${VIEWPORT.TABLET} {
-        margin-bottom: 0;
-        padding: 0.18rem 0;
-        border-bottom: 1px solid var(--mnw-color-9);
-
-        .link {
-            color: var(--mnw-color-6);
-
-            &:not(:last-of-type) {
-                border: 1px solid red;
-            }
-
-            &:hover,
-            &:focus,
-            &.active {
-                --navigation-icon-color: var(--mnw-color-1);
-                background-color: transparent;
-                color: var(--mnw-color-10);
-            }
-        }
-    }
-`;
-
-export const StyledFooter = styled.div`
+export const StyledFooter = styled.div<{ showDivider: boolean }>`
     padding-top: 1rem;
     position: relative;
 
-    ${(props: { showDivider: boolean }) => {
-        if (props.showDivider) {
-            return css`
-                &:before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 50%;
-                    width: 90%;
-                    transform: translateX(-50%);
-                    height: 1px;
-                    opacity: 0.5;
-                    background-color: var(--mnw-color-12);
-                }
-            `;
-        }
-    }}
+    ${(props) =>
+        props.showDivider &&
+        css`
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                width: 90%;
+                transform: translateX(-50%);
+                height: 1px;
+                opacity: 0.5;
+                background-color: var(--mnw-color-12);
+            }
+        `}
 
     @media ${VIEWPORT.TABLET} {
         padding-top: 0;

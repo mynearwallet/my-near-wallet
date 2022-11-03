@@ -1,11 +1,9 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, RefObject } from 'react';
 
 import { useListener } from './eventListeners';
 
-export default function useOnClickOutside(
-    ref: {
-        current: HTMLElement;
-    },
+export default function useOnClickOutside<T extends HTMLElement>(
+    ref: RefObject<T | undefined>,
     handler: (event: MouseEvent) => void,
     eventName: 'mousedown' | 'mouseup' = 'mousedown'
 ): void {

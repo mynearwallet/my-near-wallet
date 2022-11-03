@@ -24,21 +24,21 @@ import SettingsItem from './ui/SettingsItem';
 const isMobileVersion = isMobile();
 const isDesktopVersion = !isMobileVersion;
 
+const ESC_CODE = 27;
+
 type NavigationProps = {
     currentAccount: {
         accountId: string;
         accountsBalance: any;
         localStorage: {
             accountFound: boolean;
-            accountId: string;
+            accountId?: string;
         };
     };
     selectAccount: (accountId: string) => void;
     flowLimitationMainMenu: boolean;
     flowLimitationSubMenu: boolean;
 };
-
-const ESC_CODE = 27;
 
 // @todo: rename to Header
 const Navigation: FC<NavigationProps> = ({
@@ -109,7 +109,7 @@ const Navigation: FC<NavigationProps> = ({
             <StyledTop>
                 <Logo
                     mode={isMobileVersion ? 'mobile' : undefined}
-                    link={!flowLimitationMainMenu}
+                    isLink={!flowLimitationMainMenu}
                 />
                 {localStorage?.accountFound && (
                     <>
@@ -137,7 +137,7 @@ const Navigation: FC<NavigationProps> = ({
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {t('support')}
+                            {t('support.link')}
                         </StyledLink>
                     </SettingsItem>
                     <StyledLangSelector>

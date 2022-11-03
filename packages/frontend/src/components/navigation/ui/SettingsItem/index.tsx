@@ -3,8 +3,6 @@ import React, { FC } from 'react';
 import { Mixpanel } from '../../../../mixpanel';
 import { StyledSettingsItem, StyledTitle, StyledIcon } from './ui';
 
-const track = (msg: string) => Mixpanel.track(msg);
-
 type SettingsItemProps = {
     icon: React.ReactElement;
     control?: React.ReactElement;
@@ -15,7 +13,7 @@ type SettingsItemProps = {
 const SettingsItem: FC<SettingsItemProps> = ({ icon, control, trackMsg, children }) => {
     const handleClick = () => {
         if (trackMsg) {
-            track(trackMsg);
+            Mixpanel.track(trackMsg);
         }
     };
 

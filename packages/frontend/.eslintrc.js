@@ -3,9 +3,10 @@ module.exports = {
      'react-app',
      'eslint:recommended',
      'plugin:i18next/recommended',
-     ],
+    ],
     plugins: ['es'],
     rules: {
+        'no-undef': 'off',
         'i18next/no-literal-string': 'off',
         'arrow-parens': 'error',
         'brace-style': 'error',
