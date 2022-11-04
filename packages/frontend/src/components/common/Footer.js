@@ -7,13 +7,7 @@ import { VIEWPORT } from '../../shared/ui/mixins/viewport';
 import MyNearWalletLogo from '../svg/MyNearWalletLogo';
 
 const StyledFooter = styled.footer`
-    position: absolute;
-    right: 0;
-    left: 0;
-    bottom: 0;
     padding: 35px;
-    // Reserved for header
-    padding-left: 275px;
     background-color: #f8f8f8;
     font-size: 12px;
     color: #999999;

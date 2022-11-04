@@ -46,7 +46,7 @@ const NetworkBanner: FC<NetworkBannerProps> = ({ account }) => {
                 header.style.top = `${bannerHeight}px`;
             }
 
-            if (app) {
+            if (app && account?.localStorage?.accountFound) {
                 const mainContentPadding = bannerParams.width <= RESOLUTION.TABLET ? 85 : 0;
 
                 app.style.paddingTop = `${bannerHeight + mainContentPadding}px`;

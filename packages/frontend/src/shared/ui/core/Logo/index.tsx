@@ -5,11 +5,11 @@ import MyNearWalletLogo from '../../../../components/svg/MyNearWalletLogo';
 import { StyledLogo } from './ui';
 
 type LogoProps = {
-    isLink: boolean;
+    isLink?: boolean;
     mode?: 'mobile';
 };
 
-const Logo: FC<LogoProps> = ({ isLink, mode }) => (
+const Logo: FC<LogoProps> = ({ isLink = false, mode }) => (
     <StyledLogo>
         {isLink ? (
             <Link to="/">

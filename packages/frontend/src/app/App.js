@@ -8,7 +8,7 @@ import ReactDOMServer from 'react-dom/server';
 import { withLocalize } from 'react-localize-redux';
 import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 
 import AccessKeysWrapper from '../components/access-keys/v2/AccessKeysWrapper';
 import AutoImportWrapper from '../components/accounts/auto_import/AutoImportWrapper';
@@ -70,7 +70,6 @@ import SetupRecoveryImplicitAccountWrapper from '../routes/SetupRecoveryImplicit
 import SignWrapper from '../routes/SignWrapper';
 import VerifyOwnerWrapper from '../routes/VerifyOwnerWrapper';
 import WalletWrapper from '../routes/WalletWrapper';
-import { VIEWPORT } from '../shared/ui/mixins/viewport';
 import translations_en from '../translations/locales/en/translation.json';
 import translations_it from '../translations/locales/it/translation.json';
 import translations_pt from '../translations/locales/pt/translation.json';
@@ -89,6 +88,7 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
+import { StyledContainer } from './ui';
 import Layout from './ui/Layout';
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -109,41 +109,6 @@ const PATH_PREFIX = CONFIG.PUBLIC_URL;
 
 // TODO: https://mnw.atlassian.net/browse/MNW-98
 const WEB3AUTH_FEATURE_ENABLED = false;
-
-const Container = styled.div`
-    min-height: 100vh;
-    padding-bottom: 230px;
-    padding-left: 280px;
-
-    @media ${VIEWPORT.TABLET} {
-        padding-left: 0;
-        // Padding reserved for header height
-        padding-top: 75px;
-
-        .App {
-            .main {
-                padding-bottom: 0px;
-            }
-        }
-    }
-
-    &.network-banner {
-        @media (max-width: 450px) {
-            .alert-banner,
-            .lockup-avail-transfer {
-                margin-top: -45px;
-            }
-        }
-    }
-
-    @media (max-width: 767px) {
-        &.hide-footer-mobile {
-            .wallet-footer {
-                display: none;
-            }
-        }
-    }
-`;
 
 class Routing extends Component {
     constructor(props) {
@@ -306,7 +271,7 @@ class Routing extends Component {
         reportUiActiveMixpanelThrottled();
 
         return (
-            <Container
+            <StyledContainer
                 className={classNames([
                     'App',
                     {
@@ -670,7 +635,7 @@ class Routing extends Component {
                         </Layout>
                     </ThemeProvider>
                 </ConnectedRouter>
-            </Container>
+            </StyledContainer>
         );
     }
 }

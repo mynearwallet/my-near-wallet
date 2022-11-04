@@ -5,9 +5,9 @@ import LangSwitcher from '../../../../components/common/LangSwitcher';
 import HelpIcon from '../../../../components/svg/HelpIcon';
 import UserIcon from '../../../../components/svg/UserIcon';
 import AccountMenu from '../../../../shared/ui/core/AccountMenu';
+import Logo from '../../../../shared/ui/core/Logo';
 import UserAccount from '../../../../shared/ui/core/UserAccount';
 import isMobile from '../../../../utils/isMobile';
-import Logo from '../Logo';
 import NavLinks from '../NavLinks';
 import SettingsItem from '../SettingsItem';
 import {

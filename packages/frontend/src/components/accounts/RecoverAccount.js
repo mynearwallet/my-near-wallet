@@ -10,7 +10,6 @@ import PhraseIcon from '../../images/icon-recover-seedphrase.svg';
 import { Mixpanel } from '../../mixpanel/index';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
-import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 import SmartPhoneIcon from '../svg/SmartPhoneIcon';
 
 
@@ -110,7 +109,6 @@ const RecoverAccount = ({
 }) => {
     return (
         <>
-            <VerifyWalletDomainBanner />
             <StyledContainer>
                 <h1><Translate id='recoverAccount.pageTitle' /></h1>
                 <h2><Translate id='recoverAccount.pageText' /></h2>
