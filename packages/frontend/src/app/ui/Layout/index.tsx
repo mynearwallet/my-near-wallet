@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import Footer from '../../../components/common/Footer';
 import LangSwitcher from '../../../components/common/LangSwitcher';
+import CONFIG from '../../../config';
 import Logo from '../../../shared/ui/core/Logo';
 import Header from '../../../widgets/Header';
 import NetworkBanner from '../../../widgets/NetworkBanner';
@@ -18,13 +19,15 @@ type MainProps = {
     };
 };
 
+const isBannerVisible = !CONFIG.IS_MAINNET || CONFIG.SHOW_PRERELEASE_WARNING;
+
 const Layout: FC<MainProps> = ({ children, account }) => {
     const isRegistered = account?.localStorage?.accountFound;
 
     // @todo Maybe make new Layout components for a "unregistered-user" flow
     // instead of passing a bunch of the same props
     return (
-        <StyledLayout isRegistered={isRegistered}>
+        <StyledLayout isRegistered={isRegistered} isBannerVisible={isBannerVisible}>
             <NetworkBanner />
 
             {isRegistered && <Header />}
@@ -36,8 +39,8 @@ const Layout: FC<MainProps> = ({ children, account }) => {
                     </StyledUserWrapper>
                 ) : (
                     <>
-                        <Logo isLink mode="mobile" />
-                        <LangSwitcher />
+                        <Logo mode="mobile" isLink />
+                        <LangSwitcher isCompact />
                     </>
                 )}
             </StyledTop>

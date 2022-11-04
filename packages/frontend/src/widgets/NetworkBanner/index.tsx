@@ -36,12 +36,12 @@ const NetworkBanner: FC<NetworkBannerProps> = ({ account }) => {
     // @todo Find a better way to display banner. Do positioning of this element in a different place
     const setAppPaddingForBanner = () => {
         const banner = document.getElementById('top-banner');
-        const bannerParams = banner.getBoundingClientRect();
-        const bannerHeight = banner ? bannerParams.top + banner.offsetHeight : 0;
+        const bannerParams = banner?.getBoundingClientRect();
+        const bannerHeight = bannerParams ? bannerParams.top + banner.offsetHeight : 0;
         const app = document.getElementById('app-container');
         const header = document.getElementById('header');
 
-        if (isBannerVisible && bannerHeight) {
+        if (isBannerVisible && bannerParams && bannerHeight) {
             if (header) {
                 header.style.top = `${bannerHeight}px`;
             }

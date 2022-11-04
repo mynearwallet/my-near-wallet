@@ -5,21 +5,33 @@ import { VIEWPORT } from '../../../shared/ui/mixins/viewport';
 const SIDEBAR_WIDTH = 240;
 
 // @todo Review other component styles and remake this layout with grid
-export const StyledLayout = styled.div<{ isRegistered: boolean }>`
+export const StyledLayout = styled.div<{
+    isRegistered: boolean;
+    isBannerVisible: boolean;
+}>`
     // Padding reserved for footer height
     padding-bottom: 230px;
-    padding-top: 35px;
 
     @media ${VIEWPORT.TABLET} {
         padding-left: 0;
     }
 
-    ${({ isRegistered }) =>
+    ${({ isBannerVisible }) =>
+        isBannerVisible &&
+        css`
+            padding-top: 35px;
+        `}
+
+    ${({ isRegistered, isBannerVisible }) =>
         isRegistered &&
         css`
             // Padding reserved for sidebar
             padding-left: ${SIDEBAR_WIDTH + 24}px;
             padding-top: 0;
+
+            @media ${VIEWPORT.TABLET} {
+                padding-top: ${isBannerVisible ? '0' : '75px'};
+            }
         `}
 `;
 
