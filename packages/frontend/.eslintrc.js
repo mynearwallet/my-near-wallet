@@ -4,7 +4,6 @@ module.exports = {
      'eslint:recommended',
      'plugin:i18next/recommended',
     ],
-    parser: '@typescript-eslint/parser',
     plugins: ['es'],
     rules: {
         'no-undef': 'off',

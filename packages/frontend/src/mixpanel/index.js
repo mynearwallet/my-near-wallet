@@ -38,7 +38,7 @@ let Mixpanel = {
             }
         }
     },
-    register: () => {}
+    register: (params) => {}
 };
 
 if (CONFIG.BROWSER_MIXPANEL_TOKEN) {

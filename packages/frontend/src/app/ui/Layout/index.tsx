@@ -1,9 +1,9 @@
 import React, { FC, ReactNode } from 'react';
 
 import Footer from '../../../components/common/Footer';
-import User from '../../../widgets/User';
 import Header from '../../../widgets/Header';
 import NetworkBanner from '../../../widgets/NetworkBanner';
+import User from '../../../widgets/User';
 import { StyledLayout, StyledTop, StyledUserWrapper } from './ui';
 
 type MainProps = {

@@ -1,7 +1,6 @@
 import React, { FC, useState, useCallback, KeyboardEvent, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import isMobile from '../../utils/isMobile';
 import { useListener } from '../../hooks/eventListeners';
 import { switchAccount } from '../../redux/actions/account';
 import { selectAccountSlice } from '../../redux/slices/account';
@@ -9,6 +8,7 @@ import {
     selectFlowLimitationMainMenu,
     selectFlowLimitationSubMenu,
 } from '../../redux/slices/flowLimitation';
+import isMobile from '../../utils/isMobile';
 import { StyledHeader } from './ui';
 import Navigation from './ui/Navigation';
 
@@ -42,7 +42,7 @@ const Header: FC = () => {
     useListener('click', (event: MouseEvent) => {
         if (isMobileVersion) {
             // @todo find a better way how to close mobile menu
-            const navigation = document.getElementById('nav-container');
+            const navigation = document.getElementById('header');
             const element = event.target as HTMLElement;
 
             if (
@@ -83,7 +83,7 @@ const Header: FC = () => {
     const isContentVisible = isDesktopVersion || isNavigationOpen;
 
     return (
-        <StyledHeader id="nav-container">
+        <StyledHeader id="header">
             <Navigation
                 flowLimitationMainMenu={flowLimitationMainMenu}
                 flowLimitationSubMenu={flowLimitationSubMenu}

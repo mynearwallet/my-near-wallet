@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
-import { Mixpanel } from '../../../../mixpanel';
 import ExploreIcon from '../../../../components/svg/ExploreIcon';
 import StakingIcon from '../../../../components/svg/StakingIcon';
 import UserIcon from '../../../../components/svg/UserIcon';
 import WalletIcon from '../../../../components/svg/WalletIcon';
+import { Mixpanel } from '../../../../mixpanel';
 import { StyledLinks, StyledNavItem } from './ui';
 
 const routes = [

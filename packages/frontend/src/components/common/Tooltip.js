@@ -88,7 +88,14 @@ const Container = styled.div`
     }
 `;
 
-const Tooltip = ({ className, children, translate, data, position, icon, modalOnly = false }) => {
+const Tooltip = ({
+    children = undefined,
+    translate,
+    data = undefined,
+    position = '',
+    icon = '',
+    modalOnly = false,
+}) => {
     const [show, setShow] = useState(false);
     const [mobile, setMobile] = useState(null);
     const [mouseDisabled, setMouseDisabled] = useState(false);
@@ -138,7 +145,7 @@ const Tooltip = ({ className, children, translate, data, position, icon, modalOn
             {children ? children : <InfoIconRounded/>}
             {shouldShowContent && (
                 <div className={classNames(['hover-content', show ? 'show' : ''])}>
-                    <SafeTranslate id={translate} data={{ data: data }}/>
+                    <SafeTranslate id={translate} data={{ data }}/>
                 </div>
             )}
             {show && (mobile || modalOnly) && (
@@ -150,7 +157,7 @@ const Tooltip = ({ className, children, translate, data, position, icon, modalOn
                     mobileActionSheet={false}
                     modalClass='tooltip'
                 >
-                    <SafeTranslate id={translate} data={{ data: data }}/>
+                    <SafeTranslate id={translate} data={{ data }}/>
                 </Modal>
             )}
         </Container>

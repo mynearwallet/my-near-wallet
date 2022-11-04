@@ -1,12 +1,15 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AccountMenu from '../../../../shared/ui/core/AccountMenu';
-import UserAccount from '../../../../shared/ui/core/UserAccount';
-import isMobile from '../../../../utils/isMobile';
 import LangSwitcher from '../../../../components/common/LangSwitcher';
 import HelpIcon from '../../../../components/svg/HelpIcon';
 import UserIcon from '../../../../components/svg/UserIcon';
+import AccountMenu from '../../../../shared/ui/core/AccountMenu';
+import UserAccount from '../../../../shared/ui/core/UserAccount';
+import isMobile from '../../../../utils/isMobile';
+import Logo from '../Logo';
+import NavLinks from '../NavLinks';
+import SettingsItem from '../SettingsItem';
 import {
     StyledTop,
     StyledUserAccount,
@@ -15,9 +18,6 @@ import {
     StyledLangSelector,
     StyledLink,
 } from './ui';
-import Logo from '../Logo';
-import NavLinks from '../NavLinks';
-import SettingsItem from '../SettingsItem';
 
 const isMobileVersion = isMobile();
 const isDesktopVersion = !isMobileVersion;
@@ -92,7 +92,6 @@ const Navigation: FC<NavigationProps> = ({
                         </StyledLink>
                     </SettingsItem>
                     <StyledLangSelector>
-                        {/* @ts-ignore */}
                         <LangSwitcher />
                     </StyledLangSelector>
                     <AccountMenu

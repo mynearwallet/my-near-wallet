@@ -19,7 +19,7 @@ type LanguageSwitcherProps = {
 const LanguageSwitcher: FC<LanguageSwitcherProps> = ({ languages, activeLanguage, setActiveLanguage }) => {
     const { i18n } = useTranslation();
 
-    const handleChange = useCallback((code) => {
+    const handleChange = useCallback((code: string) => {
         // @migration to i18next
         i18n.changeLanguage(code);
 
