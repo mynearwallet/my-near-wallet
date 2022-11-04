@@ -20,8 +20,8 @@ const NetworkBanner: FC<NetworkBannerProps> = ({ account }) => {
         const networkId = CONFIG.IS_MAINNET
             ? 'mainnet'
             : CONFIG.NETWORK_ID === 'default'
-            ? 'testnet'
-            : CONFIG.NETWORK_ID;
+                ? 'testnet'
+                : CONFIG.NETWORK_ID;
 
         Mixpanel.register({ network_id: networkId });
 
@@ -42,10 +42,15 @@ const NetworkBanner: FC<NetworkBannerProps> = ({ account }) => {
         const header = document.getElementById('header');
 
         if (isBannerVisible && bannerHeight) {
-            const mainContentPadding = bannerParams.width <= RESOLUTION.TABLET ? 85 : 0;
+            if (header) {
+                header.style.top = `${bannerHeight}px`;
+            }
 
-            header.style.top = `${bannerHeight}px`;
-            app.style.paddingTop = `${bannerHeight + mainContentPadding}px`;
+            if (app) {
+                const mainContentPadding = bannerParams.width <= RESOLUTION.TABLET ? 85 : 0;
+
+                app.style.paddingTop = `${bannerHeight + mainContentPadding}px`;
+            }
         }
     };
 
@@ -87,12 +92,8 @@ const NetworkBanner: FC<NetworkBannerProps> = ({ account }) => {
     return null;
 };
 
-// @todo Remove when a global state interface will be ready
-type TempState = {
-    account: { [k: string]: any };
-};
-
-const mapStateToProps = (state: TempState) => ({
+// @todo Replace this state type when a global state interface will be ready
+const mapStateToProps = (state: { account: any }) => ({
     account: state.account,
 });
 
