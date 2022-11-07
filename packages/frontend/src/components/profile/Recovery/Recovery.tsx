@@ -16,7 +16,10 @@ import ConfirmDisableMethod from '../ConfirmDisableMethod';
 import HardwareDevices from '../HardwareDevices';
 import { RecoveryOption } from '../ui';
 import { formatCreatedAt } from './lib/format';
-import { createUserRecoveryMethodsMap } from './lib/recovery-methods';
+import {
+    createUserRecoveryMethodsMap,
+    RecoveryMethod as RecoveryMethodType
+} from './lib/recovery-methods';
 import PasswordProtection from './PasswordProtection';
 import RecoveryMethod from './RecoveryMethod';
 
@@ -32,7 +35,7 @@ type RecoveryProps = {
         accountId: string,
         ledgerKey: string,
     };
-    userRecoveryMethods: string[];
+    userRecoveryMethods: RecoveryMethodType[];
     hasTwoFactor: boolean;
     onWalletEncrypt: (password: string) => void;
 }
