@@ -1,43 +1,42 @@
 import React, { FC } from 'react';
 
-import { formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
+import {
+    formatTokenAmount,
+    removeTrailingZeros,
+    integerPartWithCommaSeparators,
+} from '../../../utils/amounts';
 import FiatBalance from '../balance/FiatBalance';
 
-const FRAC_DIGITS = 5;
+const DECIMALS_TO_SAFE = 5;
 
-const amountWithCommas = (amount) => {
-    var parts = amount.split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return parts.join('.');
-};
-
-const formatToken = (amount, decimals) => {
+const formatAmount = (amount: string, decimals: number): string => {
     if (amount === '0') {
         return amount;
     }
 
-    let formattedAmount = formatTokenAmount(amount, decimals, FRAC_DIGITS);
+    const formattedAmount = formatTokenAmount(amount, decimals, DECIMALS_TO_SAFE);
 
-    if (formattedAmount === `0.${'0'.repeat(FRAC_DIGITS)}`) {
-        return `< ${!FRAC_DIGITS ? '0' : `0.${'0'.repeat((FRAC_DIGITS || 1) - 1)}1`
-            }`;
+    if (formattedAmount === `0.${'0'.repeat(DECIMALS_TO_SAFE)}`) {
+        return `< ${!DECIMALS_TO_SAFE ? '0' : `0.${'0'.repeat(DECIMALS_TO_SAFE - 1)}1`}`;
     }
-    return amountWithCommas(removeTrailingZeros(formattedAmount));
+
+    return integerPartWithCommaSeparators(removeTrailingZeros(formattedAmount));
 };
 
-const showFullAmount = (amount, decimals, symbol) =>
-    amount !== '0' && !!amount
+const showFullAmount = (amount: string, decimals: number, symbol: string): string => {
+    return amount !== '0' && !!amount
         ? `${formatTokenAmount(amount, decimals, decimals)} ${symbol}`
         : '';
+};
 
 type TokenAmountProps = {
-    token: Wallet.Token,
-    withSymbol?: boolean,
-    className: string,
-    showFiatAmount?: boolean,
-    'data-test-id': string,
-    balancePrefix?: string
-}
+    token: Wallet.Token;
+    withSymbol?: boolean;
+    className: string;
+    showFiatAmount?: boolean;
+    'data-test-id': string;
+    balancePrefix?: string;
+};
 
 const TokenAmount: FC<TokenAmountProps> = ({
     token,
@@ -45,23 +44,20 @@ const TokenAmount: FC<TokenAmountProps> = ({
     className,
     showFiatAmount = true,
     'data-test-id': testId,
-    balancePrefix = ''
+    balancePrefix = '',
 }) => {
     const { balance, onChainFTMetadata, fiatValueMetadata } = token;
+    const title = showFullAmount(
+        balance,
+        onChainFTMetadata?.decimals,
+        onChainFTMetadata?.symbol
+    );
 
     return (
-        <div
-            className={className}
-            title={showFullAmount(
-                balance,
-                onChainFTMetadata?.decimals,
-                onChainFTMetadata?.symbol
-            )}
-            data-test-id={testId}
-        >
+        <div className={className} title={title} data-test-id={testId}>
             <div>
                 {balance ? (
-                    balancePrefix + formatToken(balance, onChainFTMetadata?.decimals)
+                    balancePrefix + formatAmount(balance, onChainFTMetadata?.decimals)
                 ) : (
                     <span className="dots" />
                 )}
