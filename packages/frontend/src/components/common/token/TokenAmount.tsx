@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import { formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
-import BalanceDisplayUSD from '../balance/BalanceDisplayUSD';
+import FiatBalance from '../balance/FiatBalance';
 
 const FRAC_DIGITS = 5;
 
@@ -72,7 +72,7 @@ const TokenAmount: FC<TokenAmountProps> = ({
 
             {showFiatAmount ? (
                 <div className="fiat-amount">
-                    <BalanceDisplayUSD
+                    <FiatBalance
                         amount={balance}
                         nearTokenFiatValueUSD={fiatValueMetadata?.usd}
                         decimals={onChainFTMetadata?.decimals}

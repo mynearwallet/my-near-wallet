@@ -6,11 +6,11 @@ const USDSymbol = 'USD';
 
 type FiatBalanceProps = {
     amount: string,
-    showAlmostEqualSignUSD: boolean,
-    showSymbolUSD: boolean,
-    showSignUSD: boolean,
+    showAlmostEqualSignUSD?: boolean,
+    showSymbolUSD?: boolean,
+    showSignUSD?: boolean,
     nearTokenFiatValueUSD?: number,
-    isNear: boolean,
+    isNear?: boolean,
     decimals: number,
     totalAmount?: string
 }
