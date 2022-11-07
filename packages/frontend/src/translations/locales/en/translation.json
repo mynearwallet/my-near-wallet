@@ -371,7 +371,8 @@
         "forgotPassword": "Forgot Password?",
         "restoreLink": "Restore with Recovery Phrase",
         "unlockCaption": "Unlock",
-        "passwordPlaceholder": "Password"
+        "passwordPlaceholder": "Password",
+        "removeAccountTitle": "Enter password to remove account"
     },
     "confirmLedgerModal": {
         "header": {

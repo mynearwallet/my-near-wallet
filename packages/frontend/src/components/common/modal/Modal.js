@@ -13,13 +13,13 @@ function Modal({
     onClose,
     id,
     modalSize,
-    modalClass,
+    modalClass = '',
     children,
-    closeButton,
-    disableClose,
+    closeButton = false,
+    disableClose = false,
     mobileActionSheet = true,
-    'data-test-id': testId,
-    style
+    'data-test-id': testId = '',
+    style = undefined,
 }) {
     const background = React.createRef();
     const [fadeType, setFadeType] = useState(null);

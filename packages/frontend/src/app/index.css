@@ -62,10 +62,12 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap");
 
 :root {
+    /* @todo Add numeric endings */
     --mnw-color-success: #5BB98C;
     --mnw-color-warning: #AD5700;
     --mnw-color-warning-background: #FFF4D5;
     --mnw-color-error: #CD2B31;
+    --mnw-color-error-2: #e5484d;
     --mnw-color-error-background: #FFEFEF;
     /* @todo Need to decide what these colors for and rename it */
     --mnw-color-1: #0072ce;
@@ -73,4 +75,7 @@
     --mnw-color-3: #f8f9fa;
     --mnw-color-4: #24272a;
     --mnw-color-5: #dfe3e6;
+
+    /* @todo Remove collisions */
+    --mwn-color-50: #0081f1;
 }
