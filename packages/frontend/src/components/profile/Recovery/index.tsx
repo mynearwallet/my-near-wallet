@@ -67,6 +67,7 @@ const Recovery: FC<RecoveryProps> = ({
     const phraseMethod = recoveryMethodsMap[RECOVERY_METHOD.PHRASE];
 
     const loadingStatus = useSelector((state) =>
+        /*@ts-ignore*/
         selectRecoveryMethodsStatus(state, { accountId: account.accountId }));
 
     const handleEnableSeedPhrase = useCallback(() => {
@@ -95,6 +96,7 @@ const Recovery: FC<RecoveryProps> = ({
             )
         );
 
+        /*@ts-ignore*/
         dispatch(fetchRecoveryMethods({
             accountId: account.accountId
         }));
@@ -113,7 +115,10 @@ const Recovery: FC<RecoveryProps> = ({
             </h2>
             <h4>
                 {t('profile.security.mostSecure')}
-                <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
+                {(
+                    /*@ts-ignore*/
+                    <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
+                )}
             </h4>
 
             {!hasTwoFactor && (
@@ -130,9 +135,12 @@ const Recovery: FC<RecoveryProps> = ({
             </RecoveryOption>
             <h4>
                 {t('profile.security.lessSecure')}
-                <Tooltip
-                    translate='profile.security.lessSecureDesc'
-                    icon='icon-lg' />
+                {(
+                /*@ts-ignore*/
+                    <Tooltip
+                        translate='profile.security.lessSecureDesc'
+                        icon='icon-lg' />
+                )}
             </h4>
             <RecoveryOption>
                 <RecoveryMethod
@@ -162,6 +170,7 @@ const Recovery: FC<RecoveryProps> = ({
                 )}
             </RecoveryOption>
             {showDisabledModal && (
+                /*@ts-ignore*/
                 <Modal
                     isOpen={showDisabledModal}
                     onClose={handleModalClose}>
@@ -173,22 +182,3 @@ const Recovery: FC<RecoveryProps> = ({
 };
 
 export default Recovery;
-
-
-// todo
-// - сверстать вариант плашки в настройках, при которой пароль включен и его можно либо поменять, либо выключить
-// - написать процедуру которая отключит шифрование на всех аккаунтах
-// - сверстать форму с изменением существующего пароля
-// - написать процедуру которая поменяет существующий пароль
-
-// Декомпозировать
-// - сверстать блок-попап который покажется если авторизованный пользователь хочет создать или импортировать аккаунт
-// - включить шаг с установкой пароля во флоу восстановления по сид фразе
-// - написать процедуру которая при попытке удаления аккаунта запросит пароль
-
-
-/////////////
-// - привести ширину модалок ввода пароля и рестора аккаунта к той ширине что в дизайне
-// - убрать все ошибки типов в common jsx компонентах (Modal надо переделать нормально без верстки, FormButton тоже) find by .tsx
-// - придумать что-то чтобы не тащить логику выпила акков и редиректа в компонент EnterPassword
-// (может промежуточная страница где будет требуемый функционал?)

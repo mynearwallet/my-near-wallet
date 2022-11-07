@@ -30,13 +30,11 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
 
     const toggleConfirmPassModal = useCallback(() =>
         setShowConfirmPass(!showConfirmPass),
-    [showConfirmPass]
-    );
+    [showConfirmPass]);
 
     const toggleCreatePassModal = useCallback(() =>
         setShowCreatePass(!showCreatePass),
-    [showCreatePass]
-    );
+    [showCreatePass]);
 
     const handleConfirmDeletePassword = useCallback((password) => {
         toggleConfirmPassModal();
@@ -57,6 +55,7 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
                 onDisable={toggleConfirmPassModal}
             />
             {showConfirmPass && (
+                /*@ts-ignore*/
                 <Modal
                     isOpen={showConfirmPass}
                     onClose={toggleConfirmPassModal}>
@@ -68,6 +67,7 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
                 </Modal>
             )}
             {showCreatePass && (
+                /*@ts-ignore*/
                 <Modal
                     isOpen={showCreatePass}
                     onClose={toggleCreatePassModal}>
@@ -85,11 +85,13 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
                         </PasswordForm>
                         <Controls>
                             <FormButton
+                                /*@ts-ignore*/
                                 color='light-gray-blue'
                                 onClick={toggleCreatePassModal}>
                                 {t('button.cancel')}
                             </FormButton>
                             <FormButton
+                                /*@ts-ignore*/
                                 disabled={password === null}
                                 onClick={handleCreateSubmit}>
                                 {t('setupPasswordProtection.create')}

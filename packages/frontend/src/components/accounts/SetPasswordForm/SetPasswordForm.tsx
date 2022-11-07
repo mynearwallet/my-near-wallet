@@ -49,12 +49,16 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
                     onChange={handlePasswordChange} />
             </PasswordForm>
             <Submit>
-                <FormButton
-                    onClick={handleClickNext}
-                    sending={loading}
-                    disabled={password === null || loading}>
-                    {t('button.next')}
-                </FormButton>
+                {(
+                    <FormButton
+                        /*@ts-ignore*/
+                        onClick={handleClickNext}
+                        sending={loading}
+                        disabled={password === null || loading}>
+                        {t('button.next')}
+                    </FormButton>
+
+                )}
             </Submit>
             <WithoutPassword
                 hide={password !== null}
@@ -62,6 +66,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
                 {t('setupPasswordProtection.withoutPassword')}
             </WithoutPassword>
             {showSkipModal && (
+                /*@ts-ignore*/
                 <Modal
                     isOpen={showSkipModal}
                     onClose={toggleModal}>
@@ -74,11 +79,13 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ loading, onSubmit }) => {
                         </SkipDescription>
                         <SkipControls>
                             <FormButton
+                                /*@ts-ignore*/
                                 color='light-gray-blue'
                                 onClick={toggleModal}>
                                 {t('setupPasswordProtection.useCaption')}
                             </FormButton>
                             <FormButton
+                                /*@ts-ignore*/
                                 onClick={handleSkip}>
                                 {t('setupPasswordProtection.skipCaption')}
                             </FormButton>

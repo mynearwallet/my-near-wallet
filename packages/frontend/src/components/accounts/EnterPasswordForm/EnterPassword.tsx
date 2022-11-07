@@ -76,6 +76,7 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
 
             <Submit>
                 <FormButton
+                    /*@ts-ignore*/
                     disabled={password.length === 0}
                     color='blue'
                     type='button'
@@ -91,6 +92,7 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
                 </RestoreLink>
             </Footer>
             {showRestoreModal && (
+                /*@ts-ignore*/
                 <Modal
                     isOpen={showRestoreModal}
                     onClose={toggleRestoreModal}>

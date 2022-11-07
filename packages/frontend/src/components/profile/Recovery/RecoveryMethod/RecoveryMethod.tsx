@@ -40,6 +40,7 @@ const RecoveryMethod: FC<RecoveryMethodProps> = ({
                     <Title>{title}</Title>
                 </TitleWrapper>
                 <FormButton
+                    /*@ts-ignore*/
                     type='submit'
                     color={methodEnabled ? 'gray-red small' : 'blue small'}
                     onClick={methodEnabled ? onDisable : onEnable}

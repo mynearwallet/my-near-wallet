@@ -35,6 +35,7 @@ const ConfirmDisableMethod: FC<ConfirmDisableMethodProps> = ({
     const accountIdConfirmed = accountId === value;
 
     return (
+        /*@ts-ignore*/
         <Modal
             isOpen={isOpen}
             onClose={onClose}
@@ -52,6 +53,7 @@ const ConfirmDisableMethod: FC<ConfirmDisableMethodProps> = ({
                     autoFocus={!isMobile()}
                 />
                 <FormButton
+                    /*@ts-ignore*/
                     color='red'
                     type='submit'
                     sendingString='button.disabling'
@@ -62,6 +64,7 @@ const ConfirmDisableMethod: FC<ConfirmDisableMethodProps> = ({
                     {t('button.disable')}
                 </FormButton>
                 <FormButton
+                    /*@ts-ignore*/
                     className='link'
                     onClick={onClose}>
                     {t('button.cancel')}

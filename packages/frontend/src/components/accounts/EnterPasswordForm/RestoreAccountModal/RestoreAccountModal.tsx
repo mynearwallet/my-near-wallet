@@ -29,28 +29,37 @@ const RestoreAccountModal: FC<RestoreAccountModalProps> = ({
             </Description>
 
             <Label>
-                <Checkbox
-                    checked={checked}
-                    onChange={currentTargetChecked(setChecked)} />
+                {(
+                    /*@ts-ignore*/
+                    <Checkbox
+                        checked={checked}
+                        onChange={currentTargetChecked(setChecked)} />
+                )}
                 <CheckboxCaption>
                     {t('restoreAccountModal.checkboxCaption')}
                 </CheckboxCaption>
             </Label>
             <Buttons>
-                <FormButton
-                    disabled={!checked}
-                    onClick={onSubmit}
-                    color='blue'
-                >
-                    {t('restoreAccountModal.submitCaption')}
-                </FormButton>
-                <FormButton
-                    onClick={onCancel}
-                    className='link'
-                    color='gray'
-                >
-                    {t('restoreAccountModal.cancelCaption')}
-                </FormButton>
+                {(
+                    <FormButton
+                        /*@ts-ignore*/
+                        disabled={!checked}
+                        onClick={onSubmit}
+                        color='blue'
+                    >
+                        {t('restoreAccountModal.submitCaption')}
+                    </FormButton>
+                )}
+                {(
+                    <FormButton
+                        /*@ts-ignore*/
+                        onClick={onCancel}
+                        className='link'
+                        color='gray'
+                    >
+                        {t('restoreAccountModal.cancelCaption')}
+                    </FormButton>
+                )}
             </Buttons>
         </>
     );

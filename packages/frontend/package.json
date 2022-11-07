@@ -72,7 +72,6 @@
     "lint": "eslint --ext .js --ext .jsx .",
     "fix": "eslint --ext .js --ext .jsx . --fix",
     "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
-    "precommit": ".githooks/format-json",
     "preinstall": "npx only-allow yarn"
   },
   "browserslist": [
