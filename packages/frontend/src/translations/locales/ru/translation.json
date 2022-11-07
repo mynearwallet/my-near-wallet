@@ -858,12 +858,14 @@
         }
     },
     "reservedForFeesInfo": "Вплоть до ${data} NEAR зарезервировано для покрытия расходов на транзакции.",
-    "restoreAccountModal": {
+    "restoreAccount": {
         "title": "Восстановить аккаунт",
-        "description": "Restoring your account using recovery phrase you will be automatically logged out of all wallets. You will be able to add them again after going through the authorization process using the selected recovery method.",
+        "wallets_one": "Мы нашли {{count}} кошелёк подключённый к Вашему аккаунту",
+        "wallets_few": "Мы нашли {{count}} кошелька подключённых к Вашему аккаунту",
+        "wallets_many": "Мы нашли {{count}} кошельков подключённых к Вашему аккаунту",
         "description": "При восстановлении Вашего аккаунта с использованием фразы восстановления, Вы автоматически выйдете из всех аккаунтов на данном устройстве. Вы сможете включить их снова после того как пройдете процесс авторизации с выбранным для них способом восстановления.",
         "checkboxCaption": "Я согласен выйти из всех моих аккаунтов",
-        "submitCaption": "Выйти и восстановить аккаунт",
+        "submitCaption": "Восстановить аккаунт",
         "cancelCaption": "Отмена"
     },
     "selectAccountDropdown": {

@@ -59,6 +59,7 @@ import WalletMigration from '../components/wallet-migration/WalletMigration';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import EnterPassword from '../pages/EnterPassword';
+import RestoreAccount from '../pages/RestoreAccount';
 import TokenSwap from '../pages/TokenSwap';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
@@ -500,6 +501,11 @@ class Routing extends Component {
                                 exact
                                 path="/enter-password"
                                 component={EnterPassword}
+                            />
+                            <Route
+                                exact
+                                path="/restore-account"
+                                component={RestoreAccount}
                             />
                             <Route
                                 exact

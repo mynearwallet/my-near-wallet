@@ -1,37 +1,29 @@
 import React, { FC, useCallback, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import {
     currentTargetValue,
     forkEvent
 } from '../../../shared/lib/forms/selectors';
 import FormButton from '../../common/FormButton';
-import Modal from '../../common/modal/Modal';
 import PasswordInput from '../../common/PasswordInput';
 import { isPasswordValid } from './lib/validate';
-import RestoreAccountModal from './RestoreAccountModal';
 import { Wrapper, Title, Password, Submit, RestoreLink, Footer } from './ui';
 
 const ENTER_KEY = 'Enter';
 
 type EnterPasswordFormProps = {
     onValidPassword: (password: string) => void;
-    onRestore: VoidFunction;
 }
 
 const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
     onValidPassword,
-    onRestore,
 }) => {
     const { t } = useTranslation();
 
     const [isError, setIsError] = useState(false);
     const [password, setPassword] = useState('');
-    const [showRestoreModal, setShowResoreModal] = useState(false);
-
-    const toggleRestoreModal = useCallback(() =>
-        setShowResoreModal(!showRestoreModal),
-    [showRestoreModal]);
 
     const disableError = useCallback(() => setIsError(false), []);
 
@@ -85,23 +77,14 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
                 </FormButton>
             </Submit>
 
-            <Footer onClick={toggleRestoreModal}>
+            <Footer>
                 {t('enterPassword.forgotPassword')}
                 <RestoreLink>
-                    {t('enterPassword.restoreLink')}
+                    <Link to='/restore-account'>
+                        {t('enterPassword.restoreLink')}
+                    </Link>
                 </RestoreLink>
             </Footer>
-            {showRestoreModal && (
-                /*@ts-ignore*/
-                <Modal
-                    isOpen={showRestoreModal}
-                    onClose={toggleRestoreModal}>
-                    <RestoreAccountModal
-                        onSubmit={onRestore}
-                        onCancel={toggleRestoreModal}
-                    />
-                </Modal>
-            )}
         </Wrapper>
     );
 };

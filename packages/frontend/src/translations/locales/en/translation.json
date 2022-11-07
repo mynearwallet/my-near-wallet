@@ -1140,11 +1140,13 @@
         "title": "Important Security Update"
     },
     "reservedForFeesInfo": "Up to ${data} NEAR is reserved to cover the cost of transactions.",
-    "restoreAccountModal": {
+    "restoreAccount": {
         "title": "Restore Account",
+        "wallets_one": "We found {{count}} wallet connected to your account.",
+        "wallets_other": "We found {{count}} wallets connected to your account.",
         "description": "Restoring your account using recovery phrase you will be automatically logged out of all wallets. You will be able to add them again after going through the authorization process using the selected recovery method.",
         "checkboxCaption": "I agree to log out of all accounts",
-        "submitCaption": "Logout & Restore Account",
+        "submitCaption": "Restore Account",
         "cancelCaption": "Cancel"
     },
     "riscScoring": {

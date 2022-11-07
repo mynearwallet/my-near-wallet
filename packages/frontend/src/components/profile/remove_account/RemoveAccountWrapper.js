@@ -41,13 +41,13 @@ const StyledContainer = styled(Container)`
     }   
 `;
 
-export default () => {
+const RemoveAccountWrapper = () => {
     const dispatch = useDispatch();
     const [showRemoveAccountModal, setShowRemoveAccountModal] = useState(false);
     const accountId = useSelector(selectAccountId);
     return (
         <StyledContainer>
-            <FormButton 
+            <FormButton
                 color='red'
                 onClick={() => setShowRemoveAccountModal(true)}
                 style={{marginTop: 0}}
@@ -74,3 +74,5 @@ export default () => {
         </StyledContainer>
     );
 };
+
+export default RemoveAccountWrapper;
