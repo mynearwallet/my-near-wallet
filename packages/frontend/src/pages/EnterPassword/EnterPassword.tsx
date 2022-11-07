@@ -5,6 +5,7 @@ import { Redirect } from 'react-router';
 import EnterPasswordForm from '../../components/accounts/EnterPasswordForm';
 import Container from '../../components/common/styled/Container.css';
 import { setAuthorizedByPassword } from '../../redux/reducers/security';
+import { removeAllAccounts } from './lib/accounts';
 import { decryptWallet } from './lib/encryption';
 import { getBackUrl } from './lib/redirect';
 
@@ -16,19 +17,24 @@ type EnterPasswordActions = {
 const EnterPassword: FC<EnterPasswordActions> = ({
     setAuthorized,
 }) => {
-    const [shouldRedirect, setRedirect] = useState(false);
+    const [redirectUrl, setRedirectUrl] = useState('');
 
     const handleValidPassword = useCallback((password: string) => {
         decryptWallet(password);
         setAuthorized(true);
-        setRedirect(true);
+        setRedirectUrl(getBackUrl(location.search));
     }, []);
 
-    if (shouldRedirect) {
+    const handleRestore = useCallback(async () => {
+        await removeAllAccounts();
+        setRedirectUrl('/recover-seed-phrase');
+    }, []);
+
+    if (redirectUrl.length > 0) {
         return (
             <Redirect
                 to={{
-                    pathname: getBackUrl(location.search),
+                    pathname: redirectUrl,
                 }}
             />
         );
@@ -36,7 +42,9 @@ const EnterPassword: FC<EnterPasswordActions> = ({
 
     return (
         <Container className='small-centered border'>
-            <EnterPasswordForm onValidPassword={handleValidPassword} />
+            <EnterPasswordForm
+                onValidPassword={handleValidPassword}
+                onRestore={handleRestore} />
         </Container>
     );
 };

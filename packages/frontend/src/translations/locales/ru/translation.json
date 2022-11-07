@@ -858,6 +858,14 @@
         }
     },
     "reservedForFeesInfo": "Вплоть до ${data} NEAR зарезервировано для покрытия расходов на транзакции.",
+    "restoreAccountModal": {
+        "title": "Восстановить аккаунт",
+        "description": "Restoring your account using recovery phrase you will be automatically logged out of all wallets. You will be able to add them again after going through the authorization process using the selected recovery method.",
+        "description": "При восстановлении Вашего аккаунта с использованием фразы восстановления, Вы автоматически выйдете из всех аккаунтов на данном устройстве. Вы сможете включить их снова после того как пройдете процесс авторизации с выбранным для них способом восстановления.",
+        "checkboxCaption": "Я согласен выйти из всех моих аккаунтов",
+        "submitCaption": "Выйти и восстановить аккаунт",
+        "cancelCaption": "Отмена"
+    },
     "selectAccountDropdown": {
         "createAccount": "Создать новую учетную запись",
         "noOtherAccounts": "У вас нет других учетных записей",
@@ -1058,9 +1066,10 @@
         "withoutPassword": "Продолжить без создания пароля",
         "skipTitle": "Не использовать защиту паролем",
         "skipDescription": "Вы уверены что хотите пропустить установку пароля для защиты Вашего кошелька от неустановленного доступа? Вы можете настроить пароль позже на странице настроек.",
-        "skipDescription": "Are you sure you want to skip setting a password to protect your wallet from unauthorized access? You can set a password later from settings page.",
         "useCaption": "Использовать пароль",
-        "skipCaption": "Пропустить шаг"
+        "skipCaption": "Пропустить шаг",
+        "create": "Создать",
+        "alert": "Если вы забудете пароль, вы утратите текущую авторизацию к своим кошелькам. Вы сможете восстановить её снова после того как пройдете процесс авторизации с выбранным для них способом восстановления.",
     },
     "sign": {
         "accountNotFound": {

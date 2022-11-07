@@ -143,6 +143,7 @@ export default class Wallet {
     }
 
     getAccountsLocalStorage() {
+        // TODO: Side effect! Getter can't set data anywhere
         return this.accounts = JSON.parse(
             localStorage.getItem(KEY_WALLET_ACCOUNTS) || '{}'
         );

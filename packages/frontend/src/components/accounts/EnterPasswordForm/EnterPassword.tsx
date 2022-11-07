@@ -1,29 +1,37 @@
 import React, { FC, useCallback, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 import {
     currentTargetValue,
     forkEvent
 } from '../../../shared/lib/forms/selectors';
 import FormButton from '../../common/FormButton';
+import Modal from '../../common/modal/Modal';
 import PasswordInput from '../../common/PasswordInput';
 import { isPasswordValid } from './lib/validate';
-import { Wrapper, Title, Password, Submit, Footer } from './ui';
+import RestoreAccountModal from './RestoreAccountModal';
+import { Wrapper, Title, Password, Submit, RestoreLink, Footer } from './ui';
 
 const ENTER_KEY = 'Enter';
 
 type EnterPasswordFormProps = {
     onValidPassword: (password: string) => void;
+    onRestore: VoidFunction;
 }
 
 const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
     onValidPassword,
+    onRestore,
 }) => {
     const { t } = useTranslation();
 
     const [isError, setIsError] = useState(false);
     const [password, setPassword] = useState('');
+    const [showRestoreModal, setShowResoreModal] = useState(false);
+
+    const toggleRestoreModal = useCallback(() =>
+        setShowResoreModal(!showRestoreModal),
+    [showRestoreModal]);
 
     const disableError = useCallback(() => setIsError(false), []);
 
@@ -68,19 +76,30 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
 
             <Submit>
                 <FormButton
-                    color='light-gray-gray'
+                    disabled={password.length === 0}
+                    color='blue'
                     type='button'
                     onClick={handleSubmit}>
                     {t('enterPassword.unlockCaption')}
                 </FormButton>
             </Submit>
 
-            <Footer>
+            <Footer onClick={toggleRestoreModal}>
                 {t('enterPassword.forgotPassword')}
-                <Link to='/recover-seed-phrase'>
+                <RestoreLink>
                     {t('enterPassword.restoreLink')}
-                </Link>
+                </RestoreLink>
             </Footer>
+            {showRestoreModal && (
+                <Modal
+                    isOpen={showRestoreModal}
+                    onClose={toggleRestoreModal}>
+                    <RestoreAccountModal
+                        onSubmit={onRestore}
+                        onCancel={toggleRestoreModal}
+                    />
+                </Modal>
+            )}
         </Wrapper>
     );
 };

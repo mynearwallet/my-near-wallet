@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Translate } from 'react-localize-redux';
+import React, {FC, useCallback, useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import { selectAccountId } from '../../../redux/slices/account';
@@ -8,15 +8,24 @@ import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
 import { Container, Description, Title } from './ui';
 
-const ConfirmDisableMethod = ({
+type ConfirmDisableMethodProps = {
+    title: string;
+    description: string;
+    isOpen: boolean;
+    isProcessing: boolean;
+    onClose: VoidFunction;
+    onSubmit: VoidFunction;
+}
+
+const ConfirmDisableMethod: FC<ConfirmDisableMethodProps> = ({
     title,
     description,
-    acccountId,
     isOpen,
     isProcessing,
     onClose,
     onSubmit
 }) => {
+    const { t } = useTranslation();
     const [value, setValue] = useState('');
     const onChangeHandler = useCallback((e) => {
         setValue(e.target.value);
@@ -34,18 +43,14 @@ const ConfirmDisableMethod = ({
             <Container>
                 <Title>{title}</Title>
                 <Description>{description}</Description>
-                <Translate>
-                    {({ translate }) => (
-                        <input
-                            placeholder={translate('recoveryMgmt.disableInputPlaceholder')}
-                            onChange={onChangeHandler}
-                            value={value}
-                            autoCapitalize='off'
-                            spellCheck='false'
-                            autoFocus={!isMobile()}
-                        />
-                    )}
-                </Translate>
+                <input
+                    placeholder={t('recoveryMgmt.disableInputPlaceholder')}
+                    onChange={onChangeHandler}
+                    value={value}
+                    autoCapitalize='off'
+                    spellCheck='false'
+                    autoFocus={!isMobile()}
+                />
                 <FormButton
                     color='red'
                     type='submit'
@@ -54,12 +59,12 @@ const ConfirmDisableMethod = ({
                     disabled={!accountIdConfirmed}
                     onClick={onSubmit}
                 >
-                    <Translate id='button.disable' />
+                    {t('button.disable')}
                 </FormButton>
                 <FormButton
                     className='link'
                     onClick={onClose}>
-                    <Translate id='button.cancel' />
+                    {t('button.cancel')}
                 </FormButton>
             </Container>
         </Modal>

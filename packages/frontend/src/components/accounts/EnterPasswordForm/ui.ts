@@ -26,6 +26,7 @@ export const Submit = styled.div`
 `;
 
 export const Footer = styled.div`
+    cursor: pointer;
     margin-top: 16px;
     text-align: center;
     display: flex;
@@ -35,6 +36,15 @@ export const Footer = styled.div`
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
-    color: #9BA1A6;
+    color: #9ba1a6;
     margin-bottom: 65px;
+`;
+
+export const RestoreLink = styled.div`
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #2f72c7;
 `;

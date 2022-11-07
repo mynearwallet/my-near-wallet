@@ -1,11 +1,21 @@
-import React from 'react';
+import React, {FC} from 'react';
 import { Translate } from 'react-localize-redux';
 
 import FormButton from '../../../common/FormButton';
 import SkeletonLoading from '../../../common/SkeletonLoading';
 import { Container, Description, Main, Title, TitleWrapper } from './ui';
 
-const RecoveryMethod = ({
+type RecoveryMethodProps = {
+    title: string;
+    description: React.ReactElement | string;
+    skeleton?: string;
+    methodEnabled: boolean;
+    canDisable?: boolean;
+    onEnable: VoidFunction;
+    onDisable: VoidFunction;
+}
+
+const RecoveryMethod: FC<RecoveryMethodProps> = ({
     title,
     description,
     skeleton,

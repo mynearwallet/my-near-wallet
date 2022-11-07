@@ -14,6 +14,10 @@ export const isKeyEncrypted = (
     accountId: string,
     networkId: string
 ): boolean => {
+    if (!accountId) {
+        return false;
+    }
+
     const accountSecretKey = `${prefix}${accountId}:${networkId}`;
     const key = localStorage.getItem(accountSecretKey);
 

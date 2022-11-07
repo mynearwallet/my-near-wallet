@@ -48,17 +48,6 @@ const CustomButton = styled.button`
             }
         }
 
-        &.light-gray-gray {
-            background-color: #ECEDEE;
-            border-color: #ECEDEE;
-            color: #9BA1A6;
-
-            :hover,
-            :focus {
-                color: #9BA1A6;
-            }
-        }
-
         &.dark-gray {
             background-color: #272729;
             border-color: #272729;

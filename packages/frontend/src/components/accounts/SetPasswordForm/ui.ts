@@ -61,5 +61,4 @@ export const SkipControls = styled.div`
           margin-right: 16px !important;
         }
     }
-    
 `;

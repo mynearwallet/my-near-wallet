@@ -1,13 +1,12 @@
-import React from 'react';
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
     position: relative;
     min-width: 100%;
     min-height: 10px;
 `;
 
-const Animation = styled.div`
+export const Animation = styled.div`
     animation-duration: 1s;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
@@ -31,20 +30,3 @@ const Animation = styled.div`
         }
     }
 `;
-
-const SkeletonLoading = ({ height, padding, number = 1, show, className }) => {
-    if (show) {
-        return (
-            Array(number).fill().map((_, i) => (
-                <div className={className} style={{ padding }} key={i}>
-                    <Wrapper className='animation-wrapper' style={{ height }}>
-                        <Animation className='animation'/>
-                    </Wrapper>
-                </div>
-            ))
-        );
-    }
-    return null;
-};
-
-export default SkeletonLoading;

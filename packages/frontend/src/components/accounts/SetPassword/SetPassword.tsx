@@ -6,7 +6,7 @@ import PasswordInput from '../../common/PasswordInput';
 import ComplexityBlock from '../ComplexityBlock';
 import { validatePassword } from '../ComplexityBlock/lib/complexity';
 import { inLength, isEqual, MIN_PASS_LEN } from './lib/validation';
-import { Confirm, Enter } from './ui';
+import { Confirm, Enter, Warning } from './ui';
 
 type SetPasswordProps = {
     disabled: boolean;
@@ -95,6 +95,7 @@ const SetPassword: FC<SetPasswordProps> = ({ disabled, onChange }) => {
             </Confirm>
             <ComplexityBlock
                 complexity={validatePassword(password, MIN_PASS_LEN)} />
+            <Warning>{t('setupPasswordProtection.alert')}</Warning>
         </>
     );
 };

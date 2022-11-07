@@ -1,8 +1,9 @@
-import { KEYSTORE_PREFIX, wallet } from '../../../../utils/wallet';
 import * as nearApiJs from 'near-api-js';
-import CONFIG from '../../../../config';
-import { ED25516_TAG } from '../../../../utils/encryption/keys';
+
 import { KeyPairEd25519 } from 'near-api-js/lib/utils/key_pair';
+import CONFIG from '../../config';
+import { KEYSTORE_PREFIX, wallet } from '../wallet';
+import { ED25516_TAG } from './keys';
 
 export const encryptWallet = async (password: string): Promise<void> => {
     const keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(

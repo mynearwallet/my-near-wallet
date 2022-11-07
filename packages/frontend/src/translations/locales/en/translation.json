@@ -1140,6 +1140,13 @@
         "title": "Important Security Update"
     },
     "reservedForFeesInfo": "Up to ${data} NEAR is reserved to cover the cost of transactions.",
+    "restoreAccountModal": {
+        "title": "Restore Account",
+        "description": "Restoring your account using recovery phrase you will be automatically logged out of all wallets. You will be able to add them again after going through the authorization process using the selected recovery method.",
+        "checkboxCaption": "I agree to log out of all accounts",
+        "submitCaption": "Logout & Restore Account",
+        "cancelCaption": "Cancel"
+    },
     "riscScoring": {
         "checkbox": "I accept responsibility for sending funds to this address.",
         "scamWarning": "This address has a high level of risk and marked as scam. Make sure that this address is safe before sending funds."
@@ -1319,7 +1326,9 @@
         "skipTitle": "Skip Password Protection",
         "skipDescription": "Are you sure you want to skip setting a password to protect your wallet from unauthorized access? You can set a password later from settings page.",
         "useCaption": "Use Password",
-        "skipCaption": "Skip Password"
+        "skipCaption": "Skip Password",
+        "create": "Create",
+        "alert": "If you forget your password, you will be automatically logged out of all wallets. You will be able to add them again after going through the authorization process using the selected recovery method."
     },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",

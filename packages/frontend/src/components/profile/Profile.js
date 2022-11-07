@@ -1,8 +1,8 @@
 import BN from 'bn.js';
 import { formatNearAmount } from 'near-api-js/lib/utils/format';
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { Translate } from 'react-localize-redux';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 
 import CONFIG from '../../config';
 import { useAccount } from '../../hooks/allAccounts';
@@ -16,6 +16,7 @@ import {
     getProfileStakingDetails,
     getBalance
 } from '../../redux/actions/account';
+import { setAuthorizedByPassword } from '../../redux/reducers/security';
 import { selectProfileBalance } from '../../redux/reducers/selectors/balance';
 import {
     selectAccountAuthorizedApps,
@@ -28,6 +29,7 @@ import {
 import { selectAllAccountsHasLockup } from '../../redux/slices/allAccounts';
 import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId } from '../../redux/slices/recoveryMethods';
 import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { encryptWallet } from '../../utils/encryption';
 import isMobile from '../../utils/isMobile';
 import WalletClass, { wallet } from '../../utils/wallet';
 import AlertBanner from '../common/AlertBanner';
@@ -42,7 +44,7 @@ import BalanceContainer from './balances/BalanceContainer';
 import LockupAvailTransfer from './balances/LockupAvailTransfer';
 import ExportKeyWrapper from './export_private_key/ExportKeyWrapper';
 import MobileSharingWrapper from './mobile_sharing/MobileSharingWrapper';
-import { Recovery } from './recovery';
+import Recovery from './recovery';
 import RemoveAccountWrapper from './remove_account/RemoveAccountWrapper';
 import TwoFactorAuth from './two_factor/TwoFactorAuth';
 import { StyledContainer } from './ui';
@@ -50,7 +52,7 @@ import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrap
 
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 
-const Profile = ({ match }) => {
+const Profile = ({ match, setAuthorized }) => {
     const [transferring, setTransferring] = useState(false);
     const accountExists = useSelector(selectAccountExists);
     const has2fa = useSelector(selectAccountHas2fa);
@@ -75,6 +77,11 @@ const Profile = ({ match }) => {
 
     const twoFactor = has2fa && userRecoveryMethods &&
         userRecoveryMethods.filter((m) => m.kind.includes('2fa'))[0];
+
+    const handleWalletEncrypt = useCallback(async (password) => {
+        await encryptWallet(password);
+        setAuthorized(true);
+    }, [setAuthorized]);
 
     useEffect(() => {
         if (!loginAccountId) {
@@ -229,7 +236,8 @@ const Profile = ({ match }) => {
                         <Recovery
                             account={account}
                             userRecoveryMethods={userRecoveryMethods}
-                            twoFactor={twoFactor}
+                            twoFactor={Boolean(twoFactor)}
+                            onWalletEncrypt={handleWalletEncrypt}
                         />
                         {twoFactor && (
                             <>
@@ -278,4 +286,8 @@ const Profile = ({ match }) => {
     );
 };
 
-export default Profile;
+const mapDispatchToProps = ({
+    setAuthorized: setAuthorizedByPassword,
+});
+
+export default connect(null, mapDispatchToProps)(Profile);

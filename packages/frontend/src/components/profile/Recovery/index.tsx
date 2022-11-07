@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,10 +9,7 @@ import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsStatus
 } from '../../../redux/slices/recoveryMethods';
-import { isEncrypted } from '../../../utils/encryption/keys';
-import EnterPassword from '../../accounts/EnterPasswordForm/EnterPassword';
 import Modal from '../../common/modal/Modal';
-import Container from '../../common/styled/Container.css';
 import Tooltip from '../../common/Tooltip';
 import ShieldIcon from '../../svg/ShieldIcon';
 import ConfirmDisableMethod from '../ConfirmDisableMethod';
@@ -20,19 +17,31 @@ import HardwareDevices from '../HardwareDevices';
 import { RecoveryOption } from '../ui';
 import { formatCreatedAt } from './lib/format';
 import { createUserRecoveryMethodsMap } from './lib/recovery-methods';
+import PasswordProtection from './PasswordProtection';
 import RecoveryMethod from './RecoveryMethod';
 
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 
-const RECOVERY_METHOD = {
-    LEDGER: 'ledger',
-    PHRASE: 'phrase',
+enum RECOVERY_METHOD {
+    LEDGER ='ledger',
+    PHRASE ='phrase',
 };
 
-export const Recovery = ({
+type RecoveryProps = {
+    account: {
+        accountId: string,
+        ledgerKey: string,
+    };
+    userRecoveryMethods: string[];
+    hasTwoFactor: boolean;
+    onWalletEncrypt: (password: string) => void;
+}
+
+const Recovery: FC<RecoveryProps> = ({
     account,
     userRecoveryMethods,
-    twoFactor
+    hasTwoFactor,
+    onWalletEncrypt,
 }) => {
     const { t } = useTranslation();
 
@@ -43,7 +52,6 @@ export const Recovery = ({
     const [showPhraseDisabling, setPhraseDisabling] = useState(false);
     const [isPhraseProcessing, setPhraseProcessing] = useState(false);
     const [showDisabledModal, setShowDisabledModal] = useState(false);
-    const [showDisablePasswordModal, setShowDisablePasswordModal] = useState(false);
 
     useEffect(() => {
         /** Cache list for easy access */
@@ -97,19 +105,6 @@ export const Recovery = ({
         setShowDisabledModal(false);
     }, []);
 
-    const handleEnablePassword = useCallback(() => {
-        //  TODO https://mnw.atlassian.net/browse/MNW-213
-    }, []);
-
-    const togglePasswordConfirmModal = useCallback(() =>
-        setShowDisablePasswordModal(!showDisablePasswordModal),
-    [showDisablePasswordModal]
-    );
-
-    const handleConfirmDeletePassword = useCallback((password) => {
-        togglePasswordConfirmModal();
-    }, [togglePasswordConfirmModal]);
-
     return (
         <>
             <h2>
@@ -121,7 +116,7 @@ export const Recovery = ({
                 <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
             </h4>
 
-            {!twoFactor && (
+            {!hasTwoFactor && (
                 <HardwareDevices
                     recoveryMethods={userRecoveryMethods}
                     hasLedger={hasLedger}
@@ -130,24 +125,9 @@ export const Recovery = ({
                 />
             )}
             <RecoveryOption>
-                <RecoveryMethod
-                    title={t('passwordProtection.title')}
-                    description={t('passwordProtection.description')}
-                    methodEnabled={isEncrypted()}
-                    onEnable={handleEnablePassword}
-                    onDisable={togglePasswordConfirmModal}
-                />
+                <PasswordProtection
+                    onWalletEncrypt={onWalletEncrypt} />
             </RecoveryOption>
-            {showDisablePasswordModal && (
-                <Modal
-                    isOpen={showDisablePasswordModal}
-                    onClose={togglePasswordConfirmModal}>
-                    <Container className='small-centered'>
-                        <EnterPassword
-                            onValidPassword={handleConfirmDeletePassword} />
-                    </Container>
-                </Modal>
-            )}
             <h4>
                 {t('profile.security.lessSecure')}
                 <Tooltip
@@ -192,20 +172,23 @@ export const Recovery = ({
     );
 };
 
+export default Recovery;
+
 
 // todo
-// - сверстать попап с предупреждением который нужно показать при клике на restore
-// - написать процедуру которая выпилит все перешифрованные аккаунты при клике на restore
-
-// - доверстать предупреждение при создании пароля (оранжевый текст) о том что все пароли будут перешифрованы
-// - сверстать вариант формы установки пароля с create и cancel и показать его при клике на включение пароля из настроек
-// - написать процедуру включения пароля из настроек
-
 // - сверстать вариант плашки в настройках, при которой пароль включен и его можно либо поменять, либо выключить
 // - написать процедуру которая отключит шифрование на всех аккаунтах
 // - сверстать форму с изменением существующего пароля
 // - написать процедуру которая поменяет существующий пароль
 
+// Декомпозировать
+// - сверстать блок-попап который покажется если авторизованный пользователь хочет создать или импортировать аккаунт
 // - включить шаг с установкой пароля во флоу восстановления по сид фразе
-
 // - написать процедуру которая при попытке удаления аккаунта запросит пароль
+
+
+/////////////
+// - привести ширину модалок ввода пароля и рестора аккаунта к той ширине что в дизайне
+// - убрать все ошибки типов в common jsx компонентах (Modal надо переделать нормально без верстки, FormButton тоже) find by .tsx
+// - придумать что-то чтобы не тащить логику выпила акков и редиректа в компонент EnterPassword
+// (может промежуточная страница где будет требуемый функционал?)

@@ -24,6 +24,7 @@ import {
 } from '../../../redux/slices/recoveryMethods';
 import { selectStatusMainLoader } from '../../../redux/slices/status';
 import copyText from '../../../utils/copyText';
+import { encryptWallet } from '../../../utils/encryption';
 import { isEncrypted } from '../../../utils/encryption/keys';
 import isMobile from '../../../utils/isMobile';
 import parseFundingOptions from '../../../utils/parseFundingOptions';
@@ -33,7 +34,6 @@ import { isRetryableRecaptchaError } from '../../Recaptcha';
 import SetPasswordForm from '../SetPasswordForm';
 import SetupSeedPhraseForm from '../SetupSeedPhraseForm';
 import SetupSeedPhraseVerify from '../SetupSeedPhraseVerify';
-import { encryptWallet } from './lib/encryption';
 import { Title, Description, Back } from './ui';
 import BackButton from './ui/BackButton';
 
