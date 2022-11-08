@@ -1,12 +1,11 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Title, Description } from '../';
 import Checkbox from '../../../../common/Checkbox';
 import FormButton from '../../../../common/FormButton';
 import Modal from '../../../../common/modal/Modal';
 import SafeTranslate from '../../../../SafeTranslate';
-import { StyledRemoveAccountModal } from './ui';
+import { StyledRemoveAccountModal, StyledTitle, StyledDescription } from './ui';
 
 type RemoveAccountModalProps = {
     accountId: string;
@@ -32,8 +31,8 @@ const RemoveAccountModal: FC<RemoveAccountModalProps & RemoveAccountModalActions
     return (
         <Modal id="remove-account-modal" isOpen={isOpen} onClose={onClose} modalSize="sm">
             <StyledRemoveAccountModal>
-                <Title>{t('removeAccount.title')}</Title>
-                <Description>{t('removeAccount.desc')}</Description>
+                <StyledTitle>{t('removeAccount.title')}</StyledTitle>
+                <StyledDescription>{t('removeAccount.desc')}</StyledDescription>
                 <label>
                     <Checkbox
                         checked={removeAccountDisclaimerApproved}
@@ -42,6 +41,7 @@ const RemoveAccountModal: FC<RemoveAccountModalProps & RemoveAccountModalActions
                         }
                     />
                     <span>
+                        {/* @ts-ignore */}
                         <SafeTranslate
                             id="removeAccount.disclaimer"
                             data={{ accountId }}

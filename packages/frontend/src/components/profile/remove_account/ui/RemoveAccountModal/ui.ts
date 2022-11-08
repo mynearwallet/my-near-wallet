@@ -39,3 +39,13 @@ export const StyledRemoveAccountModal = styled.div`
         }
     }
 `;
+
+export const StyledTitle = styled.h3`
+    margin: 15px 0;
+    font-size: 18px;
+    font-weight: 700;
+`;
+
+export const StyledDescription = styled.p`
+    line-height: 1.5;
+`;

@@ -22,7 +22,10 @@ const RemoveAccountWrapper = () => {
     const closePasswordConfirmation = () => setShowPasswordConfirmation(false);
 
     const openDeletionConfirmation = () => setShowRemoveAccountModal(true);
-    const closeDeletionConfirmation = () => setShowRemoveAccountModal(false);
+    const closeDeletionConfirmation = () => {
+        closePasswordConfirmation();
+        setShowRemoveAccountModal(false);
+    };
 
     const startConfirmation = () => {
         if (isEncrypted()) {
@@ -32,10 +35,7 @@ const RemoveAccountWrapper = () => {
         }
     };
 
-    const onPasswordConfirmation = () => {
-        closePasswordConfirmation();
-        openDeletionConfirmation();
-    };
+    const onPasswordConfirmation = () => openDeletionConfirmation();
 
     const processAccountDeletion = async () => {
         const walletAccounts = await wallet.removeWalletAccount(accountId);
