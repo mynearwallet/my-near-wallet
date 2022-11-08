@@ -6,9 +6,11 @@ import { Redirect } from 'react-router';
 import Checkbox from '../../components/common/Checkbox';
 import FormButton from '../../components/common/FormButton';
 import Container from '../../components/common/styled/Container.css';
+import CheckIcon from '../../components/svg/CheckIcon';
 import UserIcon from '../../components/svg/UserIcon';
 import UserIconGrey from '../../images/UserIconGrey';
-import {currentTargetChecked} from '../../shared/lib/forms/selectors';
+import { currentTargetChecked } from '../../shared/lib/forms/selectors';
+import { getBackUrl } from '../../utils/url';
 import { removeAllAccounts } from './lib/accounts';
 import {
     Title,
@@ -22,7 +24,6 @@ import {
     CheckboxWrapper,
     Buttons
 } from './ui';
-import CheckIcon from './ui/CheckIcon';
 
 type RestoreAccountProps = {
     availableAccounts: string[];
@@ -39,6 +40,10 @@ const RestoreAccount: FC<RestoreAccountProps> = ({
         await removeAllAccounts(availableAccounts);
         setRedirectUrl('/recover-seed-phrase');
     }, [availableAccounts]);
+
+    const handleCancelClick = useCallback(() => {
+        setRedirectUrl(getBackUrl(location.search));
+    }, []);
 
     if (redirectUrl.length > 0) {
         return (
@@ -103,7 +108,7 @@ const RestoreAccount: FC<RestoreAccountProps> = ({
                 {(
                     <FormButton
                         /*@ts-ignore*/
-                        onClick={console.log}
+                        onClick={handleCancelClick}
                         color='light-gray-blue'
                     >
                         {t('restoreAccount.cancelCaption')}

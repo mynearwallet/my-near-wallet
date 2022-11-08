@@ -5,8 +5,8 @@ import { Redirect } from 'react-router';
 import EnterPasswordForm from '../../components/accounts/EnterPasswordForm';
 import Container from '../../components/common/styled/Container.css';
 import { setAuthorizedByPassword } from '../../redux/reducers/security';
+import { getBackUrl } from '../../utils/url';
 import { decryptWallet } from './lib/encryption';
-import { getBackUrl } from './lib/redirect';
 
 
 type EnterPasswordActions = {

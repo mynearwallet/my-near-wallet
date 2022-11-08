@@ -80,7 +80,7 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
             <Footer>
                 {t('enterPassword.forgotPassword')}
                 <RestoreLink>
-                    <Link to='/restore-account'>
+                    <Link to={`/restore-account?${encodeURIComponent(location.pathname)}`}>
                         {t('enterPassword.restoreLink')}
                     </Link>
                 </RestoreLink>

@@ -45,7 +45,7 @@ const PrivateRoute = ({
                             <Redirect
                                 to={{
                                     pathname: '/enter-password',
-                                    search: window.btoa(location.pathname)
+                                    search: encodeURIComponent(location.pathname)
                                 }}
                             />
                         );
