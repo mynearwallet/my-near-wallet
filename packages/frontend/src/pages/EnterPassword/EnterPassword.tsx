@@ -6,9 +6,8 @@ import { Redirect } from 'react-router';
 import EnterPasswordForm from '../../components/accounts/EnterPasswordForm';
 import Container from '../../components/common/styled/Container.css';
 import { setAuthorizedByPassword } from '../../redux/reducers/security';
-import { removeAllAccounts } from './lib/accounts';
+import { getBackUrl } from '../../utils/url';
 import { decryptWallet } from './lib/encryption';
-import { getBackUrl } from './lib/redirect';
 
 
 type EnterPasswordActions = {
@@ -27,11 +26,6 @@ const EnterPassword: FC<EnterPasswordActions> = ({
         setRedirectUrl(getBackUrl(location.search));
     }, []);
 
-    const handleRestore = useCallback(async () => {
-        await removeAllAccounts();
-        setRedirectUrl('/recover-seed-phrase');
-    }, []);
-
     if (redirectUrl.length > 0) {
         return (
             <Redirect
@@ -47,7 +41,7 @@ const EnterPassword: FC<EnterPasswordActions> = ({
             <EnterPasswordForm
                 title={t('enterPassword.title')}
                 onValidPassword={handleValidPassword}
-                onRestore={handleRestore} />
+            />
         </Container>
     );
 };

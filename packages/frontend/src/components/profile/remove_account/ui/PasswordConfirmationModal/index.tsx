@@ -23,6 +23,7 @@ const PasswordConfirmationModal: FC<PasswordConfirmationModalActions> = ({
         >
             <EnterPasswordForm
                 title={t('enterPassword.removeAccountTitle')}
+                isRestoreVisible={false}
                 onCancel={onClose}
                 onValidPassword={onConfirm}
             />

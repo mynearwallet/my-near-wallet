@@ -30,7 +30,7 @@ const Container = styled.div`
     }
 `;
 
-export default ({
+const Navigation = ({
     selectAccount,
     showNavLinks,
     flowLimitationMainMenu,
@@ -91,7 +91,7 @@ export default ({
                 handleSelectAccount={handleSelectAccount}
                 showNavLinks={showNavLinks}
                 flowLimitationMainMenu={flowLimitationMainMenu}
-                flowLimitationSubMenu={flowLimitationSubMenu}   
+                flowLimitationSubMenu={flowLimitationSubMenu}
                 refreshBalance={refreshBalance}
                 availableAccounts={availableAccounts}
                 account={account}
@@ -102,7 +102,7 @@ export default ({
                 handleSelectAccount={handleSelectAccount}
                 showNavLinks={showNavLinks}
                 flowLimitationMainMenu={flowLimitationMainMenu}
-                flowLimitationSubMenu={flowLimitationSubMenu}   
+                flowLimitationSubMenu={flowLimitationSubMenu}
                 refreshBalance={refreshBalance}
                 availableAccounts={availableAccounts}
                 account={account}
@@ -110,3 +110,5 @@ export default ({
         </Container>
     );
 };
+
+export default Navigation;

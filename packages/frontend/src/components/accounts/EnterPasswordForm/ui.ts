@@ -10,7 +10,6 @@ export const Title = styled.h1`
     font-size: 25px;
     line-height: 130%;
     text-align: center;
-    
     margin-bottom: 48px;
 `;
 
@@ -19,6 +18,8 @@ export const Password = styled.div`
 `;
 
 export const Submit = styled.div`
+    display: flex;
+
     button {
         width: 100%;
         margin-top: 0 !important;
