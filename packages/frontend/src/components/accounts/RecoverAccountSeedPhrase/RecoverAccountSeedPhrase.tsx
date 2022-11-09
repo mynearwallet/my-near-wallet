@@ -1,15 +1,13 @@
-import { getRouter } from 'connected-react-router';
-import { parse as parseQuery, stringify } from 'query-string';
 import React, { Component } from 'react';
-import { Translate } from 'react-localize-redux';
+import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Route } from 'react-router-dom';
+
 
 import { Mixpanel } from '../../../mixpanel';
 import {
     recoverAccountSeedPhrase,
     redirectToApp,
-    redirectTo,
     refreshAccount,
     clearAccountState
 } from '../../../redux/actions/account';
@@ -18,23 +16,26 @@ import {
     showCustomAlert,
     clearGlobalAlert
 } from '../../../redux/actions/status';
+import { setAuthorizedByPassword } from '../../../redux/reducers/security';
 import {
     actions as importZeroBalanceAccountActions
 } from '../../../redux/slices/importZeroBalanceAccount';
 import {
     importZeroBalanceAccountPhrase
 } from '../../../redux/slices/importZeroBalanceAccount/importAccountThunks';
-import {selectActionsPending, selectStatusLocalAlert } from '../../../redux/slices/status';
-import isValidSeedPhrase from '../../../utils/isValidSeedPhrase';
-import parseFundingOptions from '../../../utils/parseFundingOptions';
+import { selectActionsPending, selectStatusLocalAlert } from '../../../redux/slices/status';
+import { encryptWallet } from '../../../utils/encryption';
+import { isValidSeedPhrase } from '../../../utils/seed-phrase';
 import RecoverAccountSeedPhraseForm from '../RecoverAccountSeedPhraseForm';
+import SetPasswordForm from '../SetPasswordForm';
+import { Back, Description, Title } from '../SetupSeedPhrase/ui';
+import BackButton from '../SetupSeedPhrase/ui/BackButton';
 import { StyledContainer } from './ui';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
 
 type RecoverAccountSeedPhraseProps = {
-    location: ReturnType<typeof getRouter>['location'];
     seedPhrase: string;
     localAlert: ReturnType<typeof selectStatusLocalAlert>,
     findMyAccountSending: boolean;
@@ -42,7 +43,6 @@ type RecoverAccountSeedPhraseProps = {
 
 type RecoverAccountSeedPhraseActions = {
     recoverAccountSeedPhrase: typeof recoverAccountSeedPhrase;
-    redirectTo: typeof redirectTo;
     redirectToApp: typeof redirectToApp;
     refreshAccount: typeof refreshAccount;
     clearLocalAlert: typeof clearLocalAlert;
@@ -50,11 +50,13 @@ type RecoverAccountSeedPhraseActions = {
     showCustomAlert: typeof showCustomAlert;
     importZeroBalanceAccountPhrase: typeof importZeroBalanceAccountPhrase;
     setZeroBalanceAccountImportMethod: typeof setZeroBalanceAccountImportMethod;
+    setAuthorizedByPassword: typeof setAuthorizedByPassword;
 }
 
 type RecoverAccountSeedPhraseState = {
     seedPhrase: string;
     recoveringAccount: boolean;
+    password: string|null;
 }
 
 class RecoverAccountSeedPhrase extends Component<
@@ -65,6 +67,7 @@ class RecoverAccountSeedPhrase extends Component<
     state = {
         seedPhrase: this.props.seedPhrase,
         recoveringAccount: false,
+        password: null,
     }
 
     validators = {
@@ -77,32 +80,20 @@ class RecoverAccountSeedPhrase extends Component<
     }
 
     handleChange = (value: string): void => {
-        this.setState(() => ({
-            seedPhrase: value
-        }));
+        this.setState({ seedPhrase: value });
 
         this.props.clearLocalAlert();
     }
 
-    handleSubmit = async (): Promise<boolean> => {
+    handleSubmitSeedPhrase = (): void => {
         if (!this.isLegit) {
             Mixpanel.track('IE-SP Recover seed phrase link not valid');
 
-            return false;
+            return;
         }
 
         const { seedPhrase } = this.state;
-        const {
-            location,
-            redirectTo,
-            redirectToApp,
-            clearAccountState,
-            recoverAccountSeedPhrase,
-            refreshAccount,
-            showCustomAlert,
-            importZeroBalanceAccountPhrase,
-            setZeroBalanceAccountImportMethod
-        } = this.props;
+        const { showCustomAlert } = this.props;
 
         try {
             isValidSeedPhrase(seedPhrase);
@@ -113,14 +104,46 @@ class RecoverAccountSeedPhrase extends Component<
                 messageCode: 'walletErrorCodes.recoverAccountSeedPhrase.errorSeedPhraseNotValid',
                 errorMessage: e.message
             });
+
             return;
         }
 
+        // @ts-ignore RouteComponentProps doesnt work
+        this.props.history.push('/recover-seed-phrase/set-encryption');
+    }
+
+    handleStartOver = (): void => {
+        // @ts-ignore RouteComponentProps doesnt work
+        this.props.history.push('/recover-seed-phrase');
+    }
+
+    handleSubmitPasswordStep = (password: string): void => {
+        this.setState({ password }, this.handleSetup);
+    }
+
+    handleSetup = async (): Promise<void> => {
+        const { seedPhrase } = this.state;
+
+        const {
+            redirectToApp,
+            clearAccountState,
+            recoverAccountSeedPhrase,
+            refreshAccount,
+            importZeroBalanceAccountPhrase,
+            setZeroBalanceAccountImportMethod
+        } = this.props;
+
         await Mixpanel.withTracking('IE-SP Recovery with seed phrase',
             async () => {
+                if (this.state.password !== null) {
+                    await encryptWallet(this.state.password);
+                    this.props.setAuthorizedByPassword(true);
+                }
+
                 this.setState({ recoveringAccount: true });
                 await recoverAccountSeedPhrase(seedPhrase);
                 await refreshAccount();
+                redirectToApp();
             }, async (e) => {
                 if (e.message.includes('Cannot find matching public key')) {
                     // @ts-ignore createAsyncThunk isn't typed
@@ -136,28 +159,6 @@ class RecoverAccountSeedPhrase extends Component<
             }
         );
 
-        const fundWithExistingAccount = parseQuery(
-            location.search, { parseBooleans: true }
-        ).fundWithExistingAccount;
-
-        if (fundWithExistingAccount) {
-            const createNewAccountParams = stringify(
-                JSON.parse(fundWithExistingAccount.toString())
-            );
-
-            redirectTo(`/fund-with-existing-account?${createNewAccountParams}`);
-        } else {
-            const options = parseFundingOptions(location.search);
-            if (options) {
-                const query = parseQuery(location.search);
-                const redirectUrl = query.redirectUrl ?
-                    `?redirectUrl=${encodeURIComponent(query.redirectUrl.toString())}` : '';
-
-                redirectTo(`/linkdrop/${options.fundingContract}/${options.fundingKey}${redirectUrl}`);
-            } else {
-                redirectToApp('/');
-            }
-        }
         clearAccountState();
     }
 
@@ -167,21 +168,52 @@ class RecoverAccountSeedPhrase extends Component<
 
         return (
             <StyledContainer className='small-centered border'>
-                <h1><Translate id='recoverSeedPhrase.pageTitle' /></h1>
-                <h2><Translate id='recoverSeedPhrase.pageText' /></h2>
-                <form onSubmit={(e) => {
-                    this.handleSubmit();
-                    e.preventDefault();
-                }} autoComplete='off'>
-                    <RecoverAccountSeedPhraseForm
-                        seedPhrase={this.state.seedPhrase}
-                        localAlert={this.props.localAlert}
-                        recoveringAccount={this.state.recoveringAccount}
-                        findMyAccountSending={this.props.findMyAccountSending}
-                        isLegit={isLegit}
-                        handleChange={this.handleChange}
-                    />
-                </form>
+                <Route
+                    exact
+                    path={'/recover-seed-phrase'}
+                    render={() => (
+                        <>
+                            <h1><Trans i18nKey='recoverSeedPhrase.pageTitle' /></h1>
+                            <h2><Trans i18nKey='recoverSeedPhrase.pageText' /></h2>
+                            <form onSubmit={(e) => {
+                                this.handleSubmitSeedPhrase();
+                                e.preventDefault();
+                            }} autoComplete='off'>
+                                <RecoverAccountSeedPhraseForm
+                                    seedPhrase={this.state.seedPhrase}
+                                    localAlert={this.props.localAlert}
+                                    recoveringAccount={this.state.recoveringAccount}
+                                    findMyAccountSending={this.props.findMyAccountSending}
+                                    isLegit={isLegit}
+                                    handleChange={this.handleChange}
+                                />
+                            </form>
+                        </>
+                    )}
+                />
+
+                <Route
+                    exact
+                    path={'/recover-seed-phrase/set-encryption'}
+                    render={() => (
+                        <>
+                            <form autoComplete='off'>
+                                <Title>
+                                    <Back>
+                                        <BackButton onBack={this.handleStartOver} />
+                                    </Back>
+                                    <h1><Trans i18nKey='setupPasswordProtection.pageTitle' /></h1>
+                                </Title>
+                                <Description>
+                                    <Trans i18nKey='setupPasswordProtection.pageText' />
+                                </Description>
+                                <SetPasswordForm
+                                    loading={this.state.recoveringAccount}
+                                    onSubmit={this.handleSubmitPasswordStep} />
+                            </form>
+                        </>
+                    )}
+                />
             </StyledContainer>
         );
     }
@@ -189,18 +221,17 @@ class RecoverAccountSeedPhrase extends Component<
 
 const mapDispatchToProps = {
     recoverAccountSeedPhrase,
-    redirectTo,
     redirectToApp,
     refreshAccount,
     clearLocalAlert,
     clearAccountState,
     showCustomAlert,
     importZeroBalanceAccountPhrase,
-    setZeroBalanceAccountImportMethod
+    setZeroBalanceAccountImportMethod,
+    setAuthorizedByPassword
 };
 
 const mapStateToProps = (state, { match }) => ({
-    router: getRouter(state),
     seedPhrase: match.params.seedPhrase || '',
     localAlert: selectStatusLocalAlert(state),
     // @ts-ignore

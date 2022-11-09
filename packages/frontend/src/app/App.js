@@ -449,6 +449,11 @@ class Routing extends Component {
                             />
                             <Route
                                 exact
+                                path="/recover-seed-phrase/:step?"
+                                component={RecoverAccountSeedPhrase}
+                            />
+                            <Route
+                                exact
                                 path="/verify-account"
                                 component={VerifyAccountWrapper}
                             />
@@ -486,11 +491,6 @@ class Routing extends Component {
                                 path="/recover-account"
                                 component={RecoverAccountWrapper}
                                 indexBySearchEngines={true}
-                            />
-                            <Route
-                                exact
-                                path="/recover-seed-phrase/:accountId?/:seedPhrase?"
-                                component={RecoverAccountSeedPhrase}
                             />
                             <Route
                                 exact
