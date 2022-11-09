@@ -1,0 +1,51 @@
+name: Test swaps
+
+on:
+  pull_request:
+    branches:
+      - master
+      - testnet
+    types: [labeled]
+
+env:
+  WALLET_URL: https://localhost:1234
+  BANK_ACCOUNT: base_testing_wallet.testnet
+  BANK_SEED_PHRASE: bachelor wise clerk admit basket knee couch wheat jaguar motor spike evidence
+  # BANK_ACCOUNT: ${{ secrets.BASE_TEST_WALLET_ID }}
+  # BANK_SEED_PHRASE: ${{ secrets.BASE_TEST_WALLET_SEED }}
+
+concurrency:
+  group: ${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  tests_e2e:
+    if: ${{ github.event.label.name == 'test swaps' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/e2e-tests
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+          npx playwright install --with-deps
+
+      - name: Run swap tests
+        continue-on-error: false
+        # run: yarn run e2e:swap
+        run: yarn run e2e:workflow-test
+
+      # - name: Upload failure screenshots
+      #   uses: actions/upload-artifact@v2
+      #   if: failure()
+      #   with:
+      #     name: swap-failure-screenshots
+      #     path: ./packages/e2e-tests/screenshots
+      #     if-no-files-found: ignore
