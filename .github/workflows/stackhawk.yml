@@ -70,4 +70,4 @@ jobs:
           codeScanningAlerts: true
           githubToken: ${{ github.token }}
           configurationFiles: |
-            /home/runner/work/near-wallet/near-wallet/packages/frontend/stackhawk.yml
+            /packages/frontend/stackhawk.yml
