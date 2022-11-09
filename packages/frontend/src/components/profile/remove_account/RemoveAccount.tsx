@@ -85,6 +85,7 @@ const RemoveAccount: FC = () => {
                     onClose={closeDeletionConfirmation}
                     style={modalStyles}
                     isOpen={isModalOpen}
+                    closeButton
                 >
                     {showPasswordConfirmation && (
                         <EnterPasswordForm
