@@ -28,7 +28,7 @@ const RecoveryMethod: FC<RecoveryMethodProps> = ({
 }) => {
     const { t } = useTranslation();
 
-    const areManyButtons = Boolean((onDisable || onEnable) && onChange);
+    const areManyButtons = Boolean(methodEnabled && onDisable && onChange);
 
     if (skeleton) {
         return (
