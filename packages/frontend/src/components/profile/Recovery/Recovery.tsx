@@ -134,7 +134,8 @@ const Recovery: FC<RecoveryProps> = ({
             )}
             <RecoveryOption>
                 <PasswordProtection
-                    onWalletEncrypt={onWalletEncrypt} />
+                    onWalletEncrypt={onWalletEncrypt}
+                />
             </RecoveryOption>
             <h4>
                 {t('profile.security.lessSecure')}

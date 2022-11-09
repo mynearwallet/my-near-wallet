@@ -26,6 +26,7 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
 
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const [showCreatePass, setShowCreatePass] = useState(false);
+    const [showChangePass, setShowChangePass] = useState(false);
     const [password, setPassword] = useState<string|null>(null);
 
     const toggleConfirmPassModal = useCallback(() =>
@@ -35,6 +36,10 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
     const toggleCreatePassModal = useCallback(() =>
         setShowCreatePass(!showCreatePass),
     [showCreatePass]);
+
+    const toggleChangePassModal = useCallback(() =>
+        setShowChangePass(!showChangePass),
+    [showChangePass]);
 
     const handleConfirmDeletePassword = useCallback((password) => {
         toggleConfirmPassModal();
@@ -53,6 +58,7 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
                 methodEnabled={isEncrypted()}
                 onEnable={toggleCreatePassModal}
                 onDisable={toggleConfirmPassModal}
+                onChange={toggleChangePassModal}
             />
             {showConfirmPass && (
                 /*@ts-ignore*/
@@ -97,6 +103,10 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
                         </Controls>
                     </Container>
                 </Modal>
+            )}
+
+            {showChangePass && (
+                <h3>Change pass component</h3>
             )}
         </>
     );

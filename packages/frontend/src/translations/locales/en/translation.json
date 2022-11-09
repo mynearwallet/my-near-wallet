@@ -251,6 +251,7 @@
         "browseApps": "Browse Apps",
         "buy": "Buy",
         "cancel": "Cancel",
+        "change": "Change",
         "cancelOperation": "Cancel Operation",
         "cancelTransfer": "Cancel Transfer",
         "claimAccount": "Claim Account",
@@ -875,7 +876,8 @@
     },
     "passwordProtection": {
         "description": "You will use this to protect your wallet.",
-        "title": "Password Protection"
+        "title": "Password Protection",
+        "changePassword": "Change Password"
     },
     "poweredByCoinGecko": "Prices powered by <a href='https://www.coingecko.com/en/api' target='_blank' rel='noopener noreferrer'>CoinGecko</a>",
     "profile": {
