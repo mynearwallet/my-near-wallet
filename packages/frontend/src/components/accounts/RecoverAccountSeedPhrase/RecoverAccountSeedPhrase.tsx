@@ -4,65 +4,79 @@ import React, { Component } from 'react';
 import { Translate } from 'react-localize-redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
 
-import { Mixpanel } from '../../mixpanel/index';
+import { Mixpanel } from '../../../mixpanel';
 import {
     recoverAccountSeedPhrase,
     redirectToApp,
     redirectTo,
     refreshAccount,
     clearAccountState
-} from '../../redux/actions/account';
-import { clearLocalAlert, showCustomAlert, clearGlobalAlert } from '../../redux/actions/status';
-import { selectAccountSlice } from '../../redux/slices/account';
-import { actions as importZeroBalanceAccountActions } from '../../redux/slices/importZeroBalanceAccount';
-import { importZeroBalanceAccountPhrase } from '../../redux/slices/importZeroBalanceAccount/importAccountThunks';
-import { selectActionsPending, selectStatusLocalAlert, selectStatusMainLoader } from '../../redux/slices/status';
-import isValidSeedPhrase from '../../utils/isValidSeedPhrase';
-import parseFundingOptions from '../../utils/parseFundingOptions';
-import Container from '../common/styled/Container.css';
-import RecoverAccountSeedPhraseForm from './RecoverAccountSeedPhraseForm';
+} from '../../../redux/actions/account';
+import {
+    clearLocalAlert,
+    showCustomAlert,
+    clearGlobalAlert
+} from '../../../redux/actions/status';
+import {
+    actions as importZeroBalanceAccountActions
+} from '../../../redux/slices/importZeroBalanceAccount';
+import {
+    importZeroBalanceAccountPhrase
+} from '../../../redux/slices/importZeroBalanceAccount/importAccountThunks';
+import {selectActionsPending, selectStatusLocalAlert } from '../../../redux/slices/status';
+import isValidSeedPhrase from '../../../utils/isValidSeedPhrase';
+import parseFundingOptions from '../../../utils/parseFundingOptions';
+import RecoverAccountSeedPhraseForm from '../RecoverAccountSeedPhraseForm';
+import { StyledContainer } from './ui';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
-const StyledContainer = styled(Container)`
-    .input {
-        width: 100%;
-    }
 
-    .input-sub-label {
-        margin-bottom: 30px;
-    }
+type RecoverAccountSeedPhraseProps = {
+    location: ReturnType<typeof getRouter>['location'];
+    seedPhrase: string;
+    localAlert: ReturnType<typeof selectStatusLocalAlert>,
+    findMyAccountSending: boolean;
+}
 
-    h4 {
-        :first-of-type {
-            margin: 30px 0 0 0 !important;
-        }
-    }
+type RecoverAccountSeedPhraseActions = {
+    recoverAccountSeedPhrase: typeof recoverAccountSeedPhrase;
+    redirectTo: typeof redirectTo;
+    redirectToApp: typeof redirectToApp;
+    refreshAccount: typeof refreshAccount;
+    clearLocalAlert: typeof clearLocalAlert;
+    clearAccountState: typeof clearAccountState;
+    showCustomAlert: typeof showCustomAlert;
+    importZeroBalanceAccountPhrase: typeof importZeroBalanceAccountPhrase;
+    setZeroBalanceAccountImportMethod: typeof setZeroBalanceAccountImportMethod;
+}
 
-    button {
-        width: 100% !important;
-        margin-top: 30px !important;
-    }
-`;
+type RecoverAccountSeedPhraseState = {
+    seedPhrase: string;
+    recoveringAccount: boolean;
+}
 
-class RecoverAccountSeedPhrase extends Component {
+class RecoverAccountSeedPhrase extends Component<
+    RecoverAccountSeedPhraseProps &
+    RecoverAccountSeedPhraseActions,
+    RecoverAccountSeedPhraseState
+> {
     state = {
         seedPhrase: this.props.seedPhrase,
         recoveringAccount: false,
-        showCouldNotFindAccountModal: false
     }
 
     validators = {
-        seedPhrase: (value) => !!value.length
+        seedPhrase: (value: string): boolean => !!value.length
     }
 
-    get isLegit() {
-        return Object.keys(this.validators).every((field) => this.validators[field](this.state[field]));
+    get isLegit(): boolean {
+        return Object.keys(this.validators).every((field) =>
+            this.validators[field](this.state[field]));
     }
 
-    handleChange = (value) => {
+    handleChange = (value: string): void => {
         this.setState(() => ({
             seedPhrase: value
         }));
@@ -70,9 +84,10 @@ class RecoverAccountSeedPhrase extends Component {
         this.props.clearLocalAlert();
     }
 
-    handleSubmit = async () => {
+    handleSubmit = async (): Promise<boolean> => {
         if (!this.isLegit) {
             Mixpanel.track('IE-SP Recover seed phrase link not valid');
+
             return false;
         }
 
@@ -108,6 +123,7 @@ class RecoverAccountSeedPhrase extends Component {
                 await refreshAccount();
             }, async (e) => {
                 if (e.message.includes('Cannot find matching public key')) {
+                    // @ts-ignore createAsyncThunk isn't typed
                     await importZeroBalanceAccountPhrase(seedPhrase);
                     setZeroBalanceAccountImportMethod('phrase');
                     clearGlobalAlert();
@@ -120,15 +136,23 @@ class RecoverAccountSeedPhrase extends Component {
             }
         );
 
-        const fundWithExistingAccount = parseQuery(location.search, { parseBooleans: true }).fundWithExistingAccount;
+        const fundWithExistingAccount = parseQuery(
+            location.search, { parseBooleans: true }
+        ).fundWithExistingAccount;
+
         if (fundWithExistingAccount) {
-            const createNewAccountParams = stringify(JSON.parse(fundWithExistingAccount));
+            const createNewAccountParams = stringify(
+                JSON.parse(fundWithExistingAccount.toString())
+            );
+
             redirectTo(`/fund-with-existing-account?${createNewAccountParams}`);
         } else {
             const options = parseFundingOptions(location.search);
             if (options) {
                 const query = parseQuery(location.search);
-                const redirectUrl = query.redirectUrl ? `?redirectUrl=${encodeURIComponent(query.redirectUrl)}` : '';
+                const redirectUrl = query.redirectUrl ?
+                    `?redirectUrl=${encodeURIComponent(query.redirectUrl.toString())}` : '';
+
                 redirectTo(`/linkdrop/${options.fundingContract}/${options.fundingKey}${redirectUrl}`);
             } else {
                 redirectToApp('/');
@@ -138,11 +162,8 @@ class RecoverAccountSeedPhrase extends Component {
     }
 
     render() {
-        const combinedState = {
-            ...this.props,
-            ...this.state,
-            isLegit: this.isLegit && !(this.props.localAlert && this.props.localAlert.success === false)
-        };
+        const isLegit = this.isLegit &&
+            !(this.props.localAlert && this.props.localAlert.success === false);
 
         return (
             <StyledContainer className='small-centered border'>
@@ -153,7 +174,11 @@ class RecoverAccountSeedPhrase extends Component {
                     e.preventDefault();
                 }} autoComplete='off'>
                     <RecoverAccountSeedPhraseForm
-                        {...combinedState}
+                        seedPhrase={this.state.seedPhrase}
+                        localAlert={this.props.localAlert}
+                        recoveringAccount={this.state.recoveringAccount}
+                        findMyAccountSending={this.props.findMyAccountSending}
+                        isLegit={isLegit}
                         handleChange={this.handleChange}
                     />
                 </form>
@@ -175,19 +200,16 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = (state, { match }) => ({
-    ...selectAccountSlice(state),
     router: getRouter(state),
     seedPhrase: match.params.seedPhrase || '',
     localAlert: selectStatusLocalAlert(state),
-    mainLoader: selectStatusMainLoader(state),
+    // @ts-ignore
     findMyAccountSending: selectActionsPending(state, {
         types: ['RECOVER_ACCOUNT_SEED_PHRASE', 'REFRESH_ACCOUNT_OWNER']
     })
 });
 
-const RecoverAccountSeedPhraseWithRouter = connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(withRouter(RecoverAccountSeedPhrase));
-
-export default RecoverAccountSeedPhraseWithRouter;
