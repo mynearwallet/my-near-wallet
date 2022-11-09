@@ -68,5 +68,5 @@ jobs:
         with:
           apiKey: ${{ secrets.HAWK_API_KEY }}
           codeScanningAlerts: true
-          configurationFiles: stackhawk.yml           
+          configurationFiles: packages/frontend/stackhawk.yml           
           githubToken: ${{ github.token }}
