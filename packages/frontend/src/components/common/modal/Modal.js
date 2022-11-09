@@ -12,7 +12,7 @@ function Modal({
     isOpen,
     onClose,
     id,
-    modalSize,
+    modalSize = '',
     modalClass = '',
     children,
     closeButton = false,

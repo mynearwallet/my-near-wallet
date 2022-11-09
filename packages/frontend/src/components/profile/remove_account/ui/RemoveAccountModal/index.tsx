@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { currentTargetChecked } from '../../../../../shared/lib/forms/selectors';
 import Checkbox from '../../../../common/Checkbox';
 import FormButton from '../../../../common/FormButton';
 import Modal from '../../../../common/modal/Modal';
@@ -36,9 +37,7 @@ const RemoveAccountModal: FC<RemoveAccountModalProps & RemoveAccountModalActions
                 <label>
                     <Checkbox
                         checked={removeAccountDisclaimerApproved}
-                        onChange={(e) =>
-                            setRemoveAccountDisclaimerApproved(e.target.checked)
-                        }
+                        onChange={currentTargetChecked(setRemoveAccountDisclaimerApproved)}
                     />
                     <span>
                         {/* @ts-ignore */}

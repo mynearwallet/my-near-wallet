@@ -15,13 +15,20 @@ import { Wrapper, Title, Password, Submit, RestoreLink, Footer } from './ui';
 const ENTER_KEY = 'Enter';
 
 type EnterPasswordFormProps = {
-    onValidPassword: (password: string) => void;
-    onRestore: VoidFunction;
+    title: string;
 }
 
-const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
+type EnterPasswordFormActions = {
+    onValidPassword: (password: string) => void;
+    onRestore?: VoidFunction;
+    onCancel?: VoidFunction;
+}
+
+const EnterPasswordForm: FC<EnterPasswordFormProps & EnterPasswordFormActions> = ({
+    title,
     onValidPassword,
     onRestore,
+    onCancel,
 }) => {
     const { t } = useTranslation();
 
@@ -60,7 +67,7 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
 
     return (
         <Wrapper>
-            <Title>{t('enterPassword.title')}</Title>
+            <Title>{title}</Title>
 
             <Password>
                 <PasswordInput
@@ -75,6 +82,16 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
             </Password>
 
             <Submit>
+                {onCancel && (
+                    <FormButton
+                        /*@ts-ignore*/
+                        disabled={password.length === 0}
+                        color='blue'
+                        type='button'
+                        onClick={handleSubmit}>
+                        {t('enterPassword.cancel')}
+                    </FormButton>
+                )}
                 <FormButton
                     /*@ts-ignore*/
                     disabled={password.length === 0}
@@ -85,12 +102,15 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
                 </FormButton>
             </Submit>
 
-            <Footer onClick={toggleRestoreModal}>
-                {t('enterPassword.forgotPassword')}
-                <RestoreLink>
-                    {t('enterPassword.restoreLink')}
-                </RestoreLink>
-            </Footer>
+            {onRestore && (
+                <Footer onClick={toggleRestoreModal}>
+                    {t('enterPassword.forgotPassword')}
+                    <RestoreLink>
+                        {t('enterPassword.restoreLink')}
+                    </RestoreLink>
+                </Footer>
+            )}
+
             {showRestoreModal && (
                 /*@ts-ignore*/
                 <Modal

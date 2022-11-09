@@ -9,6 +9,7 @@ export const StyledRemoveAccountModal = styled.div`
         text-align: center;
 
         label {
+            cursor: pointer;
             text-align: left;
             display: flex;
             background-color: #f5faff;
