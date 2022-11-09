@@ -60,9 +60,7 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
                     isOpen={showConfirmPass}
                     onClose={toggleConfirmPassModal}>
                     <Container className='small-centered'>
-                        <EnterPasswordForm
-                            onRestore={console.log}
-                            onValidPassword={handleConfirmDeletePassword} />
+                        <EnterPasswordForm onValidPassword={handleConfirmDeletePassword} />
                     </Container>
                 </Modal>
             )}
