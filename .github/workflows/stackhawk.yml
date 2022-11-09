@@ -70,4 +70,4 @@ jobs:
           codeScanningAlerts: true
           githubToken: ${{ github.token }}
           configurationFiles: |
-            /packages/frontend/stackhawk.yml
+            packages/frontend/stackhawk.yml
