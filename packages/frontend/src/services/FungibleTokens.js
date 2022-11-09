@@ -226,7 +226,10 @@ export default class FungibleTokens {
             actions.push(
                 functionCall(
                     'storage_deposit',
-                    {},
+                    {
+                        account_id: accountId,
+                        registration_only: true,
+                    },
                     CONFIG.FT_STORAGE_DEPOSIT_GAS,
                     CONFIG.FT_MINIMUM_STORAGE_BALANCE,
                 )
