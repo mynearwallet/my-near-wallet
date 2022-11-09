@@ -57,12 +57,16 @@ jobs:
         with:
           node-version: 12.x
           cache: 'yarn'
-      - run: yarn install --frozen-lockfile
+      - run: pwd && yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test
       - run: yarn bundle --outDir=dist/${{ inputs.environment }}
         
       - name: Run HawkScan
+        env:
+          APP_HOST: 'http://localhost:3000'
+          APP_ID: d38e20dc-297e-45a9-9da5-681ac2a6bb61
+          APP_ENV: Production
         uses: stackhawk/hawkscan-action@v2.0.0
         continue-on-error: true                   # ✏️ Set to false to break your build on scan errors
         with:
