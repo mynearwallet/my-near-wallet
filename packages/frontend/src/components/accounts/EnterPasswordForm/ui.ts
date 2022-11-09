@@ -23,6 +23,10 @@ export const Submit = styled.div`
     button {
         width: 100%;
         margin-top: 0 !important;
+
+        &:not(:last-child) {
+            margin-right: 1rem !important;
+        }
     }
 `;
 

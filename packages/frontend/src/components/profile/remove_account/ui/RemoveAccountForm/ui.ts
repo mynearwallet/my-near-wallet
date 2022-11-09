@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledRemoveAccountModal = styled.div`
+export const StyledRemoveAccountForm = styled.div`
     &&&&& {
         padding: 15px 0 10px 0;
         display: flex;
