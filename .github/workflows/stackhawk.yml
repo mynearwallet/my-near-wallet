@@ -69,5 +69,5 @@ jobs:
           apiKey: ${{ secrets.HAWK_API_KEY }}
           codeScanningAlerts: true
           githubToken: ${{ github.token }}
-        configurationFiles: |
-          /home/runner/work/near-wallet/near-wallet/packages/frontend/stackhawk.yml
+          configurationFiles: |
+            /home/runner/work/near-wallet/near-wallet/packages/frontend/stackhawk.yml
