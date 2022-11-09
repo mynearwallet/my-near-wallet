@@ -61,6 +61,7 @@ jobs:
       - run: yarn lint
       - run: yarn test
       - run: yarn bundle --outDir=dist/${{ inputs.environment }}
+      - run: yarn start
         
       - name: Run HawkScan
         uses: stackhawk/hawkscan-action@v2.0.0
