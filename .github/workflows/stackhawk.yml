@@ -45,19 +45,22 @@ jobs:
       security-events: write # for stackhawk/hawkscan-action to upload code scanning alert info
     name: StackHawk
     runs-on: ubuntu-20.04
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: packages/frontend
+    env:
+      NEAR_WALLET_ENV: ${{ inputs.near_wallet_env }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 12.x
           cache: 'yarn'
-
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test
-      - run: yarn bundle --outDir=dist/dast 
+      - run: yarn bundle --outDir=dist/${{ inputs.environment }}
         
       - name: Run HawkScan
         uses: stackhawk/hawkscan-action@4c3258cd62248dac6d9fe91dd8d45928c697dee0
