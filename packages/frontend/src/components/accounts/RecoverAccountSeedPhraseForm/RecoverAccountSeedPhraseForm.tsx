@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { targetValue } from '../../../shared/lib/forms/selectors';

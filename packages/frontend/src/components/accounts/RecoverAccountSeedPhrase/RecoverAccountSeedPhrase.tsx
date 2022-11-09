@@ -3,7 +3,6 @@ import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
 import { withRouter, Route } from 'react-router-dom';
 
-
 import { Mixpanel } from '../../../mixpanel';
 import {
     recoverAccountSeedPhrase,
@@ -28,12 +27,10 @@ import { encryptWallet } from '../../../utils/encryption';
 import { isValidSeedPhrase } from '../../../utils/seed-phrase';
 import RecoverAccountSeedPhraseForm from '../RecoverAccountSeedPhraseForm';
 import SetPasswordForm from '../SetPasswordForm';
-import { Back, Description, Title } from '../SetupSeedPhrase/ui';
 import BackButton from '../SetupSeedPhrase/ui/BackButton';
-import { StyledContainer } from './ui';
+import { StyledContainer, Back, Description, Title } from './ui';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
-
 
 type RecoverAccountSeedPhraseProps = {
     seedPhrase: string;
@@ -170,7 +167,7 @@ class RecoverAccountSeedPhrase extends Component<
             <StyledContainer className='small-centered border'>
                 <Route
                     exact
-                    path={'/recover-seed-phrase'}
+                    path='/recover-seed-phrase'
                     render={() => (
                         <>
                             <h1><Trans i18nKey='recoverSeedPhrase.pageTitle' /></h1>
@@ -194,7 +191,7 @@ class RecoverAccountSeedPhrase extends Component<
 
                 <Route
                     exact
-                    path={'/recover-seed-phrase/set-encryption'}
+                    path='/recover-seed-phrase/set-encryption'
                     render={() => (
                         <>
                             <form autoComplete='off'>

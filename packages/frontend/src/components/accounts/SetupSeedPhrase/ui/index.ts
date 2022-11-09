@@ -10,7 +10,7 @@ export const Title = styled.div`
 
 export const Description = styled.h2`
   text-align: center;
-`
+`;
 
 export const Back = styled.div`
     position: absolute;
