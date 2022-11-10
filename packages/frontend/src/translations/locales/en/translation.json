@@ -366,6 +366,7 @@
         "utorg": "Utorg"
     },
     "enterPassword": {
+        "cancelCaption": "Cancel",
         "title": "Enter password to unlock your wallet",
         "error": "Incorrect password",
         "forgotPassword": "Forgot Password?",
@@ -1132,7 +1133,8 @@
         "button": "Remove Account from Wallet",
         "desc": "You will need your recovery method to re-import this account in the future. Make sure you still have access to it.",
         "disclaimer": "I have access to the recovery method for <b>${accountId}</b>",
-        "title": "Remove Account?"
+        "title": "Remove Account?",
+        "passwordConfirmationTitle": "Enter password to remove account"
     },
     "removeLinkRecovery": {
         "button": "Go to Account",

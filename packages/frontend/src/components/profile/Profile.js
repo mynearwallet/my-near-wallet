@@ -45,7 +45,7 @@ import LockupAvailTransfer from './balances/LockupAvailTransfer';
 import ExportKeyWrapper from './export_private_key/ExportKeyWrapper';
 import MobileSharingWrapper from './mobile_sharing/MobileSharingWrapper';
 import Recovery from './Recovery';
-import RemoveAccountWrapper from './remove_account/RemoveAccountWrapper';
+import RemoveAccount from './remove_account';
 import TwoFactorAuth from './two_factor/TwoFactorAuth';
 import { StyledContainer } from './ui';
 import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrapper';
@@ -268,7 +268,7 @@ const Profile = ({ match, setAuthorized }) => {
                         <>
                             <hr />
                             {secretKey ? <ExportKeyWrapper secretKey={secretKey} /> : null}
-                            <RemoveAccountWrapper />
+                            <RemoveAccount />
                         </>
                         {!CONFIG.IS_MAINNET && !account.ledgerKey && !isMobile() &&
                             <MobileSharingWrapper />
@@ -277,7 +277,7 @@ const Profile = ({ match, setAuthorized }) => {
                 )}
                 {accountExists === false && !accountIdFromUrl && (
                     <div className='right'>
-                        <RemoveAccountWrapper />
+                        <RemoveAccount />
                     </div>
                 )}
             </div>
