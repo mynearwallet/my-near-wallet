@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { isEncrypted } from '../../../../utils/encryption/keys';
 import EnterPasswordForm from '../../../accounts/EnterPasswordForm';
 import SetPassword from '../../../accounts/SetPassword';
 import FormButton from '../../../common/FormButton';
@@ -16,11 +15,15 @@ import {
 } from './ui';
 
 type PasswordProtectionProps = {
+    isAuthorizedByPassword: boolean;
     onWalletEncrypt: (password: string) => void;
+    onWalletDecrypt: (password: string) => void;
 }
 
 const PasswordProtection: FC<PasswordProtectionProps> = ({
-    onWalletEncrypt
+    isAuthorizedByPassword,
+    onWalletEncrypt,
+    onWalletDecrypt,
 }) => {
     const { t } = useTranslation();
 
@@ -38,6 +41,7 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
 
     const handleConfirmDeletePassword = useCallback((password) => {
         toggleConfirmPassModal();
+        onWalletDecrypt(password);
     }, [toggleConfirmPassModal]);
 
     const handleCreateSubmit = useCallback(() => {
@@ -50,7 +54,7 @@ const PasswordProtection: FC<PasswordProtectionProps> = ({
             <RecoveryMethod
                 title={t('passwordProtection.title')}
                 description={t('passwordProtection.description')}
-                methodEnabled={isEncrypted()}
+                methodEnabled={isAuthorizedByPassword}
                 onEnable={toggleCreatePassModal}
                 onDisable={toggleConfirmPassModal}
             />

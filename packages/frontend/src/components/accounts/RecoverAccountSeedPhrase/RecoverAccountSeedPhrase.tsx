@@ -23,7 +23,7 @@ import {
     importZeroBalanceAccountPhrase
 } from '../../../redux/slices/importZeroBalanceAccount/importAccountThunks';
 import { selectActionsPending, selectStatusLocalAlert } from '../../../redux/slices/status';
-import { encryptWallet } from '../../../utils/encryption';
+import { encryptWalletKeys } from '../../../utils/encryption';
 import { isValidSeedPhrase } from '../../../utils/seedPhrase';
 import RecoverAccountSeedPhraseForm from '../RecoverAccountSeedPhraseForm';
 import SetPasswordForm from '../SetPasswordForm';
@@ -133,7 +133,7 @@ class RecoverAccountSeedPhrase extends Component<
         await Mixpanel.withTracking('IE-SP Recovery with seed phrase',
             async () => {
                 if (this.state.password !== null) {
-                    await encryptWallet(this.state.password);
+                    await encryptWalletKeys(this.state.password);
                     this.props.setAuthorizedByPassword(true);
                 }
 

@@ -29,7 +29,7 @@ import {
 import { selectAllAccountsHasLockup } from '../../redux/slices/allAccounts';
 import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId } from '../../redux/slices/recoveryMethods';
 import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
-import { encryptWallet } from '../../utils/encryption';
+import { encryptWalletKeys, decryptWalletKeys } from '../../utils/encryption';
 import isMobile from '../../utils/isMobile';
 import WalletClass, { wallet } from '../../utils/wallet';
 import AlertBanner from '../common/AlertBanner';
@@ -52,7 +52,7 @@ import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrap
 
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 
-const Profile = ({ match, setAuthorized }) => {
+const Profile = ({ match, setAuthorized, isAuthorizedByPassword }) => {
     const [transferring, setTransferring] = useState(false);
     const accountExists = useSelector(selectAccountExists);
     const has2fa = useSelector(selectAccountHas2fa);
@@ -79,8 +79,13 @@ const Profile = ({ match, setAuthorized }) => {
         userRecoveryMethods.filter((m) => m.kind.includes('2fa'))[0];
 
     const handleWalletEncrypt = useCallback(async (password) => {
-        await encryptWallet(password);
+        await encryptWalletKeys(password);
         setAuthorized(true);
+    }, [setAuthorized]);
+
+    const handleWalletDecrypt = useCallback(async (password) => {
+        await decryptWalletKeys(password);
+        setAuthorized(false);
     }, [setAuthorized]);
 
     useEffect(() => {
@@ -237,7 +242,9 @@ const Profile = ({ match, setAuthorized }) => {
                             account={account}
                             userRecoveryMethods={userRecoveryMethods}
                             twoFactor={Boolean(twoFactor)}
+                            isAuthorizedByPassword={isAuthorizedByPassword}
                             onWalletEncrypt={handleWalletEncrypt}
+                            onWalletDecrypt={handleWalletDecrypt}
                         />
                         {twoFactor && (
                             <>
@@ -286,8 +293,13 @@ const Profile = ({ match, setAuthorized }) => {
     );
 };
 
+const mapStateToProps = (state) => ({
+    isAuthorizedByPassword: state.security.isAuthorizedByPassword,
+});
+
 const mapDispatchToProps = ({
     setAuthorized: setAuthorizedByPassword,
 });
 
-export default connect(null, mapDispatchToProps)(Profile);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
