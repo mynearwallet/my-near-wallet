@@ -18,7 +18,7 @@ export class EncrytedLocalStorage {
         window.localStorage.setItem(key, encrypted);
     }
 
-    getItem(key: string): string {
+    getItem(key: string): string|null {
         const encrypted = window.localStorage.getItem(key);
 
         return this.decrypt(encrypted);
@@ -49,7 +49,7 @@ export class EncrytedLocalStorage {
             const opened = nacl.secretbox.open(box, this.getNonce(), this.key);
 
             if (opened === null) {
-                return opened.toString();
+                return null;
             }
 
             const decoder = new TextDecoder();

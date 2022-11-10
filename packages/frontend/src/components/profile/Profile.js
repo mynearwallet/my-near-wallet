@@ -24,7 +24,8 @@ import {
     selectAccountHasLockup,
     selectAccountId,
     selectAccountLedgerKey,
-    selectAccountExists, selectAccountSlice,
+    selectAccountExists,
+    selectAccountSlice,
 } from '../../redux/slices/account';
 import { selectAllAccountsHasLockup } from '../../redux/slices/allAccounts';
 import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId } from '../../redux/slices/recoveryMethods';
