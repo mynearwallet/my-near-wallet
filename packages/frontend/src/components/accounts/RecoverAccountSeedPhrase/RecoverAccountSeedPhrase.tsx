@@ -24,7 +24,7 @@ import {
 } from '../../../redux/slices/importZeroBalanceAccount/importAccountThunks';
 import { selectActionsPending, selectStatusLocalAlert } from '../../../redux/slices/status';
 import { encryptWallet } from '../../../utils/encryption';
-import { isValidSeedPhrase } from '../../../utils/seed-phrase';
+import { isValidSeedPhrase } from '../../../utils/seedPhrase';
 import RecoverAccountSeedPhraseForm from '../RecoverAccountSeedPhraseForm';
 import SetPasswordForm from '../SetPasswordForm';
 import BackButton from '../SetupSeedPhrase/ui/BackButton';
