@@ -25,7 +25,7 @@ export class EncrytedLocalStorage {
     }
 
     removeItem(key: string): void {
-        window.localStorage.removeItem(key);;
+        window.localStorage.removeItem(key);
     }
 
     encrypt(value: string): string {
