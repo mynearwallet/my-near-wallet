@@ -14,11 +14,20 @@ import { Wrapper, Title, Password, Submit, RestoreLink, Footer } from './ui';
 const ENTER_KEY = 'Enter';
 
 type EnterPasswordFormProps = {
-    onValidPassword: (password: string) => void;
+    title: string;
+    isRestoreVisible?: boolean;
 }
 
-const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
+type EnterPasswordFormActions = {
+    onValidPassword: (password: string) => void;
+    onCancel?: VoidFunction;
+}
+
+const EnterPasswordForm: FC<EnterPasswordFormProps & EnterPasswordFormActions> = ({
+    title,
+    isRestoreVisible = true,
     onValidPassword,
+    onCancel,
 }) => {
     const { t } = useTranslation();
 
@@ -52,7 +61,7 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
 
     return (
         <Wrapper>
-            <Title>{t('enterPassword.title')}</Title>
+            <Title>{title}</Title>
 
             <Password>
                 <PasswordInput
@@ -67,6 +76,15 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
             </Password>
 
             <Submit>
+                {onCancel && (
+                    <FormButton
+                        /*@ts-ignore*/
+                        color='light-gray-blue'
+                        onClick={onCancel}
+                    >
+                        {t('enterPassword.cancelCaption')}
+                    </FormButton>
+                )}
                 <FormButton
                     /*@ts-ignore*/
                     disabled={password.length === 0}
@@ -77,14 +95,16 @@ const EnterPasswordForm: FC<EnterPasswordFormProps> = ({
                 </FormButton>
             </Submit>
 
-            <Footer>
-                {t('enterPassword.forgotPassword')}
-                <RestoreLink>
-                    <Link to={`/restore-account?${encodeURIComponent(location.pathname)}`}>
-                        {t('enterPassword.restoreLink')}
-                    </Link>
-                </RestoreLink>
-            </Footer>
+            {isRestoreVisible && (
+                <Footer>
+                    {t('enterPassword.forgotPassword')}
+                    <RestoreLink>
+                        <Link to={`/restore-account?${encodeURIComponent(location.pathname)}`}>
+                            {t('enterPassword.restoreLink')}
+                        </Link>
+                    </RestoreLink>
+                </Footer>
+            )}
         </Wrapper>
     );
 };

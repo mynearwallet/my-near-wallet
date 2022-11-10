@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 
@@ -16,6 +17,7 @@ type EnterPasswordActions = {
 const EnterPassword: FC<EnterPasswordActions> = ({
     setAuthorized,
 }) => {
+    const { t } = useTranslation();
     const [redirectUrl, setRedirectUrl] = useState('');
 
     const handleValidPassword = useCallback((password: string) => {
@@ -36,7 +38,10 @@ const EnterPassword: FC<EnterPasswordActions> = ({
 
     return (
         <Container className='small-centered border'>
-            <EnterPasswordForm onValidPassword={handleValidPassword} />
+            <EnterPasswordForm
+                title={t('enterPassword.title')}
+                onValidPassword={handleValidPassword}
+            />
         </Container>
     );
 };

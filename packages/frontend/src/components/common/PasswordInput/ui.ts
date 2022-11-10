@@ -10,7 +10,8 @@ export const InputContent = styled.div`
 export const InputElement = styled.input<{error: boolean}>`
     margin-top: 0 !important;
     padding-right: 50px;
-    
+    background-color: var(--mnw-color-background-1);
+
     ${props => props.error && css`
         box-shadow: 0px 0px 0px 2px rgba(242, 0, 0, 0.2);
         border: 1px solid #DC3D43;
