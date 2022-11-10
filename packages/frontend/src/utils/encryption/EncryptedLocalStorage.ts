@@ -24,6 +24,10 @@ export class EncrytedLocalStorage {
         return this.decrypt(encrypted);
     }
 
+    removeItem(key: string): void {
+        window.localStorage.removeItem(key);
+    }
+
     encrypt(value) {
         const encoder = new TextEncoder();
         return window.btoa(

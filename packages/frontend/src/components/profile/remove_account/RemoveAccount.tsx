@@ -1,16 +1,15 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Translate } from 'react-localize-redux';
 import { useSelector, useDispatch } from 'react-redux';
 
 import TrashIcon from '../../../images/icon-trash';
 import { switchAccount } from '../../../redux/actions/account';
 import { selectAccountId } from '../../../redux/slices/account';
 import { isEncrypted } from '../../../utils/encryption/keys';
-import { wallet } from '../../../utils/wallet';
 import EnterPasswordForm from '../../accounts/EnterPasswordForm';
 import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
+import { deleteAccount } from './lib/account';
 import { StyledRemoveAccount } from './ui';
 import RemoveAccountForm from './ui/RemoveAccountForm';
 
@@ -61,13 +60,13 @@ const RemoveAccount: FC = () => {
     };
 
     const processAccountDeletion = async () => {
-        const walletAccounts = await wallet.removeWalletAccount(accountId);
+        const nextAccountId = await deleteAccount(accountId);
 
-        if (!Object.keys(walletAccounts).length) {
-            location.reload();
-        } else {
-            dispatch(switchAccount({ accountId: Object.keys(walletAccounts)[0] }));
+        if (nextAccountId) {
+            dispatch(switchAccount({ accountId: nextAccountId }));
             closeDeletionConfirmation();
+        } else {
+            location.reload();
         }
     };
 
@@ -76,7 +75,7 @@ const RemoveAccount: FC = () => {
             {/* @ts-ignore */}
             <FormButton color="red" onClick={startConfirmation} style={buttonStyle}>
                 <TrashIcon />
-                <Translate id="removeAccount.button" />
+                {t('removeAccount.button')}
             </FormButton>
 
             {isModalOpen && (
@@ -89,7 +88,7 @@ const RemoveAccount: FC = () => {
                 >
                     {showPasswordConfirmation && (
                         <EnterPasswordForm
-                            title={t('enterPassword.removeAccountTitle')}
+                            title={t('removeAccount.passwordConfirmationTitle')}
                             isRestoreVisible={false}
                             onCancel={closePasswordConfirmation}
                             onValidPassword={onPasswordConfirmation}

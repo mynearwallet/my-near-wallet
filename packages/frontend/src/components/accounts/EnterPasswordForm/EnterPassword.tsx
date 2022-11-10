@@ -82,7 +82,7 @@ const EnterPasswordForm: FC<EnterPasswordFormProps & EnterPasswordFormActions> =
                         color='light-gray-blue'
                         onClick={onCancel}
                     >
-                        {t('restoreAccount.cancelCaption')}
+                        {t('enterPassword.cancelCaption')}
                     </FormButton>
                 )}
                 <FormButton
