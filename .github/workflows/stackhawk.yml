@@ -62,7 +62,6 @@ jobs:
       - run: yarn test
       - run: yarn bundle --outDir=dist/${{ inputs.environment }}
       - run: yarn start &
-      - run: ss -tulpn && curl --insecure https://localhost:1234
         
       - name: Run HawkScan
         uses: stackhawk/hawkscan-action@v2.0.0
