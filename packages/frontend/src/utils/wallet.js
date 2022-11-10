@@ -1409,14 +1409,20 @@ export default class Wallet {
         }
     })
 
-    injectEncryptedKeyStore(password) {
+    injectEncryptedKeyStore = (password) => {
         const key = createKeyFrom(password);
         const encryptedStore = new EncrytedLocalStorage(key);
 
-        this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+        const encryptedKeyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
             encryptedStore,
             KEYSTORE_PREFIX
         );
+
+        this.injectKeyStore(encryptedKeyStore);
+    }
+
+    injectKeyStore = (keyStore) => {
+        this.keyStore = keyStore;
 
         this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
         this.signer = this.spawnSigner(this.inMemorySigner);

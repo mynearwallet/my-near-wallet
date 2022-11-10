@@ -9,22 +9,26 @@ export class EncrytedLocalStorage {
         this.key = key;
     }
 
-    getNonce() {
+    getNonce(): Uint8Array {
         return new Uint8Array(24);
     }
 
-    setItem(key, value) {
+    setItem(key: string, value: string): void {
         const encrypted = this.encrypt(value);
         window.localStorage.setItem(key, encrypted);
     }
 
-    getItem(key) {
+    getItem(key: string): string {
         const encrypted = window.localStorage.getItem(key);
 
         return this.decrypt(encrypted);
     }
 
-    encrypt(value) {
+    removeItem(key: string): void {
+        window.localStorage.removeItem(key);;
+    }
+
+    encrypt(value: string): string {
         const encoder = new TextEncoder();
         return window.btoa(
             nacl.secretbox(
@@ -35,7 +39,7 @@ export class EncrytedLocalStorage {
         );
     }
 
-    decrypt(value) {
+    decrypt(value: string): string|null {
         try {
             const serialized = window.atob(value)
                 .split(',')
@@ -43,8 +47,9 @@ export class EncrytedLocalStorage {
 
             const box = Uint8Array.from(serialized);
             const opened = nacl.secretbox.open(box, this.getNonce(), this.key);
+
             if (opened === null) {
-                return opened;
+                return opened.toString();
             }
 
             const decoder = new TextDecoder();

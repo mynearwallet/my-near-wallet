@@ -35,16 +35,20 @@ type RecoveryProps = {
         accountId: string,
         ledgerKey: string,
     };
+    isAuthorizedByPassword: boolean;
     userRecoveryMethods: RecoveryMethodType[];
     hasTwoFactor: boolean;
     onWalletEncrypt: (password: string) => void;
+    onWalletDecrypt: (password: string) => void;
 }
 
 const Recovery: FC<RecoveryProps> = ({
     account,
+    isAuthorizedByPassword,
     userRecoveryMethods,
     hasTwoFactor,
     onWalletEncrypt,
+    onWalletDecrypt,
 }) => {
     const { t } = useTranslation();
 
@@ -134,7 +138,9 @@ const Recovery: FC<RecoveryProps> = ({
             )}
             <RecoveryOption>
                 <PasswordProtection
-                    onWalletEncrypt={onWalletEncrypt} />
+                    isAuthorizedByPassword={isAuthorizedByPassword}
+                    onWalletEncrypt={onWalletEncrypt}
+                    onWalletDecrypt={onWalletDecrypt} />
             </RecoveryOption>
             <h4>
                 {t('profile.security.lessSecure')}

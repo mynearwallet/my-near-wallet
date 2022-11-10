@@ -24,7 +24,7 @@ import {
 } from '../../../redux/slices/recoveryMethods';
 import { selectStatusMainLoader } from '../../../redux/slices/status';
 import copyText from '../../../utils/copyText';
-import { encryptWallet } from '../../../utils/encryption';
+import { encryptWalletKeys } from '../../../utils/encryption';
 import { isEncrypted } from '../../../utils/encryption/keys';
 import isMobile from '../../../utils/isMobile';
 import parseFundingOptions from '../../../utils/parseFundingOptions';
@@ -192,7 +192,7 @@ class SetupSeedPhrase extends Component {
         await Mixpanel.withTracking('SR-SP Setup for new account',
             async () => {
                 if (password !== null) {
-                    await encryptWallet(password);
+                    await encryptWalletKeys(password);
                     this.props.setAuthorizedByPassword(true);
                 }
 
