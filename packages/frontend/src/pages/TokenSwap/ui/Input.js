@@ -5,12 +5,8 @@ import SafeTranslate from '../../../components/SafeTranslate';
 // @todo common component: move to .../common
 import Token from '../../../components/send/components/entry_types/Token';
 import ChevronIcon from '../../../components/svg/ChevronIcon';
-import {
-    isValidAmount,
-    toSignificantDecimals,
-    formatTokenAmount,
-    removeTrailingZeros,
-} from '../../../utils/amounts';
+import { isValidAmount, toSignificantDecimals } from '../../../utils/amounts';
+import { getFormatBalance } from '../../../utils/wrap-unwrap';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 
 const InputWrapper = styled.div`
@@ -75,7 +71,7 @@ const Footer = styled.div`
 
         input:not(:placeholder-shown) {
             // fix opacity effect on iOS
-            -webkit-text-fill-color: #24272A;
+            -webkit-text-fill-color: #24272a;
             opacity: 1;
         }
     }
@@ -138,10 +134,11 @@ export default memo(function Input({
         }
     };
 
-    const formattedMaxBalance =
-        maxBalance && typeof tokenDecimals === 'number'
-            ? removeTrailingZeros(formatTokenAmount(maxBalance, tokenDecimals, tokenDecimals))
-            : undefined;
+    const balance = maxBalance && typeof tokenDecimals === 'number'
+        ? getFormatBalance(maxBalance, tokenDecimals)
+        : undefined;
+
+    const { fullNum: formattedMaxBalance } = balance || {};
 
     const [isWrongAmount, setIsWrongAmount] = useState(false);
 
@@ -169,9 +166,7 @@ export default memo(function Input({
     };
 
     const valueToShow =
-        disabled && value
-            ? toSignificantDecimals(value, DECIMALS_TO_SAFE)
-            : value;
+        disabled && value ? toSignificantDecimals(value, DECIMALS_TO_SAFE) : value;
 
     return (
         <InputWrapper>
@@ -182,7 +177,10 @@ export default memo(function Input({
                     </Label>
                 )}
                 {formattedMaxBalance && (
-                    <Balance onClick={setMaxBalance} className={`${disabled ? 'disabled' : ''}`}>
+                    <Balance
+                        onClick={setMaxBalance}
+                        className={`${disabled ? 'disabled' : ''}`}
+                    >
                         <SafeTranslate
                             id={disabled ? 'swap.available' : 'swap.max'}
                             data={balanceData}
