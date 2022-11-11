@@ -8,7 +8,7 @@ import ChevronIcon from '../../../components/svg/ChevronIcon';
 import {
     isValidAmount,
     toSignificantDecimals,
-    getFormatBalance,
+    formatBalance,
 } from '../../../utils/amounts';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 
@@ -138,7 +138,7 @@ const Input = ({
     };
 
     const formattedMaxBalance = maxBalance && typeof tokenDecimals === 'number'
-        ? getFormatBalance(maxBalance, tokenDecimals)
+        ? formatBalance(maxBalance, tokenDecimals)
         : undefined;
 
     const [isWrongAmount, setIsWrongAmount] = useState(false);

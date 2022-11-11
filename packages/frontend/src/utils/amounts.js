@@ -97,7 +97,7 @@ export const integerPartWithCommaSeparators = (amount) => {
     return parts.join('.');
 };
 
-export const getFormatBalance = (num, decimals) => {
+export const formatBalance = (num, decimals) => {
     if (!num || num === '0') {
         return '0';
     }

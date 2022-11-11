@@ -116,8 +116,18 @@ describe('amounts', () => {
         expect(amounts.integerPartWithCommaSeparators('123123123.12')).toBe('123,123,123.12');
     });
 
-    test('should correctly separate integer part with commas', () => {
-        expect(amounts.getFormatBalance('')).toBe('');
+    test('should correctly format balance', () => {
+        expect(amounts.formatBalance('0')).toBe('0');
+        expect(amounts.formatBalance('1')).toBe('0.1');
+        expect(amounts.formatBalance('1', 2)).toBe('0.01');
+        expect(amounts.formatBalance('1', 4)).toBe('0.0001');
+        expect(amounts.formatBalance('1', 24)).toBe('0.000000000000000000000001');
+        expect(amounts.formatBalance('1000000000000000000000000', 24)).toBe('1');
+        expect(amounts.formatBalance('10000000000000000000000000000000000', 24)).toBe('10000000000');
+        expect(amounts.formatBalance('123456', 4)).toBe('12.3456');
+        expect(amounts.formatBalance('123456', 3)).toBe('123.456');
+        expect(amounts.formatBalance('329607', 6)).toBe('0.329607');
+        expect(amounts.formatBalance('1441951941493024720139950', 24)).toBe('1.44195194149302472013995');
     });
 });
 
