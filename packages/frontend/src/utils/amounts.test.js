@@ -115,5 +115,9 @@ describe('amounts', () => {
         expect(amounts.integerPartWithCommaSeparators('123123.12')).toBe('123,123.12');
         expect(amounts.integerPartWithCommaSeparators('123123123.12')).toBe('123,123,123.12');
     });
+
+    test('should correctly separate integer part with commas', () => {
+        expect(amounts.getFormatBalance('')).toBe('');
+    });
 });
 

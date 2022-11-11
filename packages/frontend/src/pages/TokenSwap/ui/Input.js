@@ -5,8 +5,11 @@ import SafeTranslate from '../../../components/SafeTranslate';
 // @todo common component: move to .../common
 import Token from '../../../components/send/components/entry_types/Token';
 import ChevronIcon from '../../../components/svg/ChevronIcon';
-import { isValidAmount, toSignificantDecimals } from '../../../utils/amounts';
-import { getFormatBalance } from '../../../utils/wrap-unwrap';
+import {
+    isValidAmount,
+    toSignificantDecimals,
+    getFormatBalance,
+} from '../../../utils/amounts';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 
 const InputWrapper = styled.div`
@@ -108,7 +111,7 @@ const TokenWrapper = styled.div`
     }
 `;
 
-export default memo(function Input({
+const Input = ({
     value = '',
     loading = false,
     onChange,
@@ -123,7 +126,7 @@ export default memo(function Input({
     tokenSelectTestId,
     disabled,
     autoFocus,
-}) {
+}) => {
     const handleChange = (event) => {
         event.preventDefault();
 
@@ -134,11 +137,9 @@ export default memo(function Input({
         }
     };
 
-    const balance = maxBalance && typeof tokenDecimals === 'number'
+    const formattedMaxBalance = maxBalance && typeof tokenDecimals === 'number'
         ? getFormatBalance(maxBalance, tokenDecimals)
         : undefined;
-
-    const { fullNum: formattedMaxBalance } = balance || {};
 
     const [isWrongAmount, setIsWrongAmount] = useState(false);
 
@@ -212,4 +213,6 @@ export default memo(function Input({
             </Footer>
         </InputWrapper>
     );
-});
+};
+
+export default memo(Input);
