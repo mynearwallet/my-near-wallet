@@ -111,6 +111,7 @@ export default class Wallet {
             'nearlib:keystore:'
         );
         this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
+        this.inMemorySignerBasic = new nearApiJs.InMemorySigner(this.keyStore);
 
         const inMemorySigner = this.inMemorySigner;
         const wallet = this;
@@ -160,7 +161,7 @@ export default class Wallet {
         this.connectionBasic = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
             provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
-            signer: this.inMemorySigner
+            signer: this.inMemorySignerBasic
         });
         this.getAccountsLocalStorage();
         this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
