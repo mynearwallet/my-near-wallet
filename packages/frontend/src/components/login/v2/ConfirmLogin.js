@@ -6,7 +6,6 @@ import AlertBanner from '../../common/AlertBanner';
 import FormButton from '../../common/FormButton';
 import FormButtonGroup from '../../common/FormButtonGroup';
 import Container from '../../common/styled/Container.css';
-import Tooltip from '../../common/Tooltip';
 import SafeTranslate from '../../SafeTranslate';
 import SwapGraphic from '../../svg/SwapGraphic';
 import ConnectWithPrivateShard from './ConnectWithPrivateShard';

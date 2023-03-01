@@ -1,5 +1,6 @@
-import CONFIG from '../config';
 import createError from 'http-errors';
+
+import CONFIG from '../config';
 
 export async function syncPrivateShardAccount({ accountId, publicKey, signature, shardInfo }) {
     const postData = {
