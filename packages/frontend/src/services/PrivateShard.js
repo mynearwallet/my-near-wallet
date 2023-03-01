@@ -1,10 +1,8 @@
-const createError = require('http-errors');
-
-const CALIMERO_BASE_URL = 'http://localhost:3000';
-const CALIMERO_SYNC_ACCOUNT_URL = `${CALIMERO_BASE_URL}/api/public/sync`;
+import CONFIG from '../config';
+import createError from 'http-errors';
 
 export async function syncPrivateShardAccount(json) {
-    const response = await fetch(CALIMERO_SYNC_ACCOUNT_URL, {
+    const response = await fetch(`${CONFIG.CALIMERO_URL}/api/public/sync`, {
         method: 'POST',
         body: JSON.stringify(json),
         headers: {
