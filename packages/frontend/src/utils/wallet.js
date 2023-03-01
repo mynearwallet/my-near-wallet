@@ -1,6 +1,7 @@
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
+import { JsonRpcProvider } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
@@ -105,7 +106,7 @@ export async function getKeyMeta(publicKey) {
 }
 
 export default class Wallet {
-    constructor() {
+    constructor(rpcInfo = null) {
         this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
             window.localStorage,
             'nearlib:keystore:'
@@ -153,16 +154,35 @@ export default class Wallet {
                 return inMemorySigner.signMessage(message, accountId, networkId);
             }
         };
-        this.connection = nearApiJs.Connection.fromConfig({
-            networkId: CONFIG.NETWORK_ID,
-            provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
-            signer: this.signer
-        });
-        this.connectionBasic = nearApiJs.Connection.fromConfig({
-            networkId: CONFIG.NETWORK_ID,
-            provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
-            signer: this.inMemorySignerBasic
-        });
+        if (rpcInfo) {
+            const args = { url: rpcInfo.shardRpc + '/' };
+            if (rpcInfo.shardApiToken) {
+                args.headers = {
+                    'x-api-key' : rpcInfo.shardApiToken
+                };
+            };
+            this.connection = nearApiJs.Connection.fromConfig({
+                networkId: CONFIG.NETWORK_ID,
+                provider: new JsonRpcProvider({ type: 'JsonRpcProvider', ...args }),
+                signer: this.signer
+            });
+            this.connectionBasic = nearApiJs.Connection.fromConfig({
+                networkId: CONFIG.NETWORK_ID,
+                provider: new JsonRpcProvider({ type: 'JsonRpcProvider', ...args }),
+                signer: this.inMemorySignerBasic
+            });            
+        } else {
+            this.connection = nearApiJs.Connection.fromConfig({
+                networkId: CONFIG.NETWORK_ID,
+                provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
+                signer: this.signer
+            });
+            this.connectionBasic = nearApiJs.Connection.fromConfig({
+                networkId: CONFIG.NETWORK_ID,
+                provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
+                signer: this.inMemorySignerBasic
+            });
+        }
         this.getAccountsLocalStorage();
         this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
     }
@@ -1349,53 +1369,6 @@ export default class Wallet {
                 throw new Error(
                     `Transaction failure for transaction hash: ${transaction.hash}, receiver_id: ${transaction.receiver_id} .`
                 );
-            }
-            transactionHashes.push({
-                hash: transaction.hash,
-                nonceString: nonce.toString()
-            });
-        }
-
-        return transactionHashes;
-    }
-
-    async signAndSendCalimeroTransaction(
-        transactions,
-        accountId = this.accountId,
-        customRPCUrl,
-        xApiToken
-    ) {
-        const transactionHashes = [];
-        const args = { url: customRPCUrl + '/' };
-        if (xApiToken) {
-            args.headers = {
-                'x-api-key' : xApiToken
-            };
-        };
-        const calimeroConnection = nearApiJs.Connection.fromConfig({
-            networkId: CONFIG.NETWORK_ID,
-            provider: { type: 'JsonRpcProvider', args },
-            signer: this.signer
-        });
-        for (let { receiverId, nonce, blockHash, actions } of transactions) {
-            let status, transaction;
-
-            const [, signedTransaction] = await nearApiJs.transactions.signTransaction(
-                receiverId,
-                nonce,
-                actions,
-                blockHash,
-                calimeroConnection.signer,
-                accountId,
-                CONFIG.NETWORK_ID
-            );
-            ({ status, transaction } = await calimeroConnection.provider.sendTransaction(signedTransaction));
-
-            // TODO: Shouldn't throw more specific errors on failure?
-            if (status.Failure !== undefined) {
-                throw new Error(
-                    `Transaction failure for transaction hash: ${transaction.hash}, receiver_id: ${transaction.receiver_id} .
-                    `);
             }
             transactionHashes.push({
                 hash: transaction.hash,
