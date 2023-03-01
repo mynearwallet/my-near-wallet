@@ -1,10 +1,16 @@
 import CONFIG from '../config';
 import createError from 'http-errors';
 
-export async function syncPrivateShardAccount(json) {
+export async function syncPrivateShardAccount({ accountId, publicKey, signature, shardInfo }) {
+    const postData = {
+        accountId,
+        publicKey,
+        signature,
+        shardId: shardInfo.shardId,
+    };
     const response = await fetch(`${CONFIG.CALIMERO_URL}/api/public/sync`, {
         method: 'POST',
-        body: JSON.stringify(json),
+        body: JSON.stringify(postData),
         headers: {
             'Content-type': 'application/json; charset=utf-8',
         }

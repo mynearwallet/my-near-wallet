@@ -543,7 +543,7 @@ export const {
             try {
                 const account = await wallet.getAccount(accountId);
                 const signature = await wallet.signatureFor(account);
-                await syncPrivateShardAccount({ accountId, publicKey, signature });
+                await syncPrivateShardAccount({ accountId, publicKey, signature, shardInfo });
                 await new Wallet(shardInfo).addAccessKey(accountId, contractId, publicKey, fullAccess, methodNames);
             } catch (error) {
                 throw new WalletError(error, 'addAccessKeyToPrivateShard.errorPrivateShard');
