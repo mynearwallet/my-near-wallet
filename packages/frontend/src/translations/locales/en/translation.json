@@ -784,7 +784,7 @@
                 "limitedAccess": "limited access",
                 "title": "Connect with NEAR",
                 "privateShardTitle": "Connect with Calimero Shard",
-                "privateShardDesc": "An application is requesting to sync your near account in the privateShard <b>${shardId}</b> and add an access key with <b>${accessType}</b> to your shard account. Private shard transactions are executed inside private shard environment and they will not affect you main account. Select the account you wish to connect."
+                "privateShardDesc": "An application is requesting your permission to sync your NEAR account with the Calimero private shard <b>${shardId}</b>. This will create a matching account and add an <b>${accessType}</b> access key. Transactions on private shard will not affect your NEAR account. Choose the account to connect."
             }
         }
     },
