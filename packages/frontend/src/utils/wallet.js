@@ -154,6 +154,7 @@ export default class Wallet {
                 return inMemorySigner.signMessage(message, accountId, networkId);
             }
         };
+        let provider;
         if (rpcInfo) {
             const args = { url: rpcInfo.shardRpc + '/' };
             if (rpcInfo.shardApiToken) {
@@ -161,28 +162,20 @@ export default class Wallet {
                     'x-api-key' : rpcInfo.shardApiToken
                 };
             };
-            this.connection = nearApiJs.Connection.fromConfig({
-                networkId: CONFIG.NETWORK_ID,
-                provider: new JsonRpcProvider({ type: 'JsonRpcProvider', ...args }),
-                signer: this.signer
-            });
-            this.connectionBasic = nearApiJs.Connection.fromConfig({
-                networkId: CONFIG.NETWORK_ID,
-                provider: new JsonRpcProvider({ type: 'JsonRpcProvider', ...args }),
-                signer: this.inMemorySignerBasic
-            });            
+            provider = new JsonRpcProvider({ type: 'JsonRpcProvider', ...args });
         } else {
-            this.connection = nearApiJs.Connection.fromConfig({
-                networkId: CONFIG.NETWORK_ID,
-                provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
-                signer: this.signer
-            });
-            this.connectionBasic = nearApiJs.Connection.fromConfig({
-                networkId: CONFIG.NETWORK_ID,
-                provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
-                signer: this.inMemorySignerBasic
-            });
+            provider = { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } };
         }
+        this.connection = nearApiJs.Connection.fromConfig({
+            networkId: CONFIG.NETWORK_ID,
+            provider,
+            signer: this.signer
+        });
+        this.connectionBasic = nearApiJs.Connection.fromConfig({
+            networkId: CONFIG.NETWORK_ID,
+            provider,
+            signer: this.inMemorySignerBasic
+        });
         this.getAccountsLocalStorage();
         this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
     }

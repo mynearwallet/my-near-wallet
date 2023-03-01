@@ -25,7 +25,7 @@ export default ({
     contractIdUrl,
     onClickNext,
     failureUrl,
-    successUrl,
+    successUrl
 }) => {
 
     const dispatch = useDispatch();

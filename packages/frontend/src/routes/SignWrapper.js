@@ -28,7 +28,7 @@ import {
 import { addQueryParams } from '../utils/addQueryParams';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
-const SignWrapper = () => {    
+const SignWrapper = () => {
     const dispatch = useDispatch();
 
     const DISPLAY = {
