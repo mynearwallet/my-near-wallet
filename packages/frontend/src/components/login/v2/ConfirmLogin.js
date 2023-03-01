@@ -6,8 +6,10 @@ import AlertBanner from '../../common/AlertBanner';
 import FormButton from '../../common/FormButton';
 import FormButtonGroup from '../../common/FormButtonGroup';
 import Container from '../../common/styled/Container.css';
+import Tooltip from '../../common/Tooltip';
 import SafeTranslate from '../../SafeTranslate';
 import SwapGraphic from '../../svg/SwapGraphic';
+import ConnectWithPrivateShard from './ConnectWithPrivateShard';
 import GrantFullAccessModal from './GrantFullAccessModal';
 import NetworkFeeAllowance from './NetworkFeeAllowance';
 import PermissionItem from './PermissionItem';
@@ -22,7 +24,8 @@ export default ({
     contractId,
     publicKey,
     contractIdUrl,
-    successUrlIsValid
+    successUrlIsValid,
+    privateShardInfo
 }) => {
     const [loggingIn, setLoggingIn] = useState(false);
     const [showGrantFullAccessModal, setShowGrantFullAccessModal] = useState(false);
@@ -59,12 +62,17 @@ export default ({
                             )}
                         </Translate>
                     </div>
+                    {   privateShardInfo &&  (
+                        <div className='desc'>
+                            <ConnectWithPrivateShard privateShardInfo={privateShardInfo} />
+                        </div>
+                    )}
                     {loginAccessType === LOGIN_ACCESS_TYPES.LIMITED_ACCESS
                         ? <LimitedAccessUI />
                         : <FullAccessUI />
                     }
-                    {publicKey && loginAccessType === LOGIN_ACCESS_TYPES.LIMITED_ACCESS &&
-                        <NetworkFeeAllowance contractId={contractId} contractIdUrl={contractIdUrl}/>
+                    {publicKey && loginAccessType === LOGIN_ACCESS_TYPES.LIMITED_ACCESS && !privateShardInfo &&
+                        <NetworkFeeAllowance contractId={contractId} contractIdUrl={contractIdUrl} />
                     }
                     <FormButtonGroup>
                         <FormButton
