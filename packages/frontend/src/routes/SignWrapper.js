@@ -10,11 +10,10 @@ import SignTransactionDetailsWrapper from '../components/sign/v2/SignTransaction
 import SignTransactionSummaryWrapper from '../components/sign/v2/SignTransactionSummaryWrapper';
 import { Mixpanel } from '../mixpanel';
 import { switchAccount, redirectTo } from '../redux/actions/account';
-import { selectAccountId } from '../redux/slices/account';
+import { selectAccountId, selectAccountUrlPrivateShard } from '../redux/slices/account';
 import { selectAvailableAccounts, selectAvailableAccountsIsLoading } from '../redux/slices/availableAccounts';
 import {
     handleSignTransactions,
-    handleSignPrivateShardTransactions,
     selectSignFeesGasLimitIncludingGasChanges,
     SIGN_STATUS,
     selectSignStatus,
@@ -29,7 +28,7 @@ import {
 import { addQueryParams } from '../utils/addQueryParams';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
-const SignWrapper = ({ urlQuery }) => {
+const SignWrapper = () => {    
     const dispatch = useDispatch();
 
     const DISPLAY = {
@@ -41,9 +40,6 @@ const SignWrapper = ({ urlQuery }) => {
     };
 
     const [currentDisplay, setCurrentDisplay] = useState(DISPLAY.TRANSACTION_SUMMARY);
-    const [customRPCUrl, setCustomRPCUrl] = useState();
-    const [privateShardId, setPrivateShardId] = useState();
-    const [xApiToken, setXApiToken] = useState();
 
     const signFeesGasLimitIncludingGasChanges = useSelector(selectSignFeesGasLimitIncludingGasChanges);
     const signStatus = useSelector(selectSignStatus);
@@ -57,6 +53,7 @@ const SignWrapper = ({ urlQuery }) => {
     const transactions = useSelector(selectSignTransactions);
     const accountId = useSelector(selectAccountId);
     const transactionBatchisValid = useSelector(selectSignTransactionsBatchIsValid);
+    const privateShardInfo = useSelector(selectAccountUrlPrivateShard);
 
     const isValidCallbackUrl = isUrlNotJavascriptProtocol(signCallbackUrl);
     const signerId = transactions.length && transactions[0].signerId;
@@ -106,35 +103,13 @@ const SignWrapper = ({ urlQuery }) => {
         }
     }, [signStatus]);
 
-    useEffect(() => {
-        if (urlQuery?.meta) {
-            try {
-                const metaJson = JSON.parse(decodeURIComponent(urlQuery.meta));
-                if (metaJson.calimeroRPCEndpoint && metaJson.calimeroShardId) {
-                    // if (accountId.endsWith(metaJson.calimeroShardId)) {}
-                    setCustomRPCUrl(metaJson.calimeroRPCEndpoint);
-                    setPrivateShardId(metaJson.calimeroShardId);
-                    setXApiToken(metaJson.calimeroAuthToken);
-                }
-                // TODO: handle situation when shardId doesn't exist in accountId
-                // probably will need to change view
-            } catch (e) {
-                //
-            }
-        }
-    }, [urlQuery?.meta]);
-
     const handleApproveTransaction = async () => {
-        if (customRPCUrl && privateShardId) {
-            await dispatch(handleSignPrivateShardTransactions({ customRPCUrl, xApiToken }));
-            return;
-        }
         Mixpanel.track('SIGN approve the transaction');
         await dispatch(handleSignTransactions());
     };
 
     const handleCancelTransaction = async () => {
-        if (customRPCUrl && privateShardId) {
+        if (privateShardInfo) {
             const encounter = addQueryParams(signCallbackUrl, {
                 signMeta,
                 errorCode: encodeURIComponent('userRejected'),
@@ -223,8 +198,7 @@ const SignWrapper = ({ urlQuery }) => {
             onClickEditAccount={() => setCurrentDisplay(DISPLAY.ACCOUNT_SELECTION)}
             isSignerValid={isSignerValid}
             isValidCallbackUrl={isValidCallbackUrl}
-            customRPCUrl={privateShardId && customRPCUrl}
-            privateShardId={customRPCUrl && privateShardId}
+            privateShardInfo={privateShardInfo}
         />
     );
 };
