@@ -109,7 +109,7 @@ export default ({
             </div>
             <div className='network-fees'>
                 <div className='title'><Translate id='sign.networkFees' /></div>
-                {!privateShardInfo ? (
+                {privateShardInfo ? (
                     <div className='entry'>No fees</div>
                 ) : (
                     <>

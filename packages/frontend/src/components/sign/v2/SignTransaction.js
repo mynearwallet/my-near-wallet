@@ -121,6 +121,7 @@ export default ({
                 <Balance
                     amount={transferAmount}
                     showGenericSymbol={!!privateShardInfo}
+                    showBalanceInUSD={!privateShardInfo}
                 />
             )}
             <div className={`account from ${!isTransferTransaction ? 'no-border' : ''}`}>
@@ -143,6 +144,7 @@ export default ({
                 <div className='right'>
                     <Balance
                         amount={privateShardInfo ? 0 : estimatedFees}
+                        showBalanceInNEAR={!privateShardInfo}
                     />
                 </div>
             </div>
