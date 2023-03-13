@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit'
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
+import blacklisted from './temp_blacklisted_tokens.json';
+
 const SLICE_NAME = 'security';
 
 const initialState = {
@@ -18,9 +20,7 @@ const initializeBlacklistedTokens = createAsyncThunk(
         } = securitySlice;
 
         try {
-            // Temp fix- just import from a static JSON file for now
-            const blacklisted = await import('./temp_blacklisted_tokens.json');
-
+            // Temp fix- just use the import from a static JSON file for now
             if (blacklisted.length) {
                 batch(() => {
                     dispatch(setBlacklistedTokens(blacklisted));
