@@ -3,7 +3,5 @@ import sortJson from "sort-json";
 
 const jsonFiles = await glob("src/translations/**/*.json");
 
-console.log(jsonFiles);
-
 const options = {ignoreCase: true};
 sortJson.overwrite(jsonFiles, options);
