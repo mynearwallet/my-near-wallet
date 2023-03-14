@@ -38,7 +38,8 @@ export default {
     REACT_APP_USE_TESTINGLOCKUP: false,
     RECAPTCHA_CHALLENGE_API_KEY: '6LeRzswaAAAAAGeS7mSasZ1wDcGnMcH3D7W1gy1b',
     RECAPTCHA_ENTERPRISE_SITE_KEY: '6LcpJ3EcAAAAAFgA-nixKFNGWMo9IG9FQhH4XjSY',
-    SENTRY_DSN: 'https://15d0d1b94e8548dd9663b8c93bf4550a@o398573.ingest.sentry.io/5396205',
+    SENTRY_DSN:
+        'https://15d0d1b94e8548dd9663b8c93bf4550a@o398573.ingest.sentry.io/5396205',
     SHOW_PRERELEASE_WARNING: false,
     SMS_BLACKLIST: ['CN', 'VN', 'TH'],
     STAKING_GAS_BASE: '25000000000000', // 25 Tgas
@@ -51,9 +52,8 @@ export default {
     FARMING_CLAIM_GAS: parseNearAmount('0.00000000015'),
     FARMING_CLAIM_YOCTO: '1',
     REF_FINANCE_API_ENDPOINT: 'https://indexer.ref.finance',
-    TOKEN_BLACKLIST_ENDPOINT: 'https://mainnet-api.mynearwallet.com/contract-helper/tokens/blacklist',
     REF_FINANCE_CONTRACT: 'v2.ref-finance.near',
     USN_CONTRACT: 'usn',
     USDT_CONTRACT: 'dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near',
-    HAPI_PROTOCOL_ADDRESS: 'proxy.hapiprotocol.near'
+    HAPI_PROTOCOL_ADDRESS: 'proxy.hapiprotocol.near',
 };

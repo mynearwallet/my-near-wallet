@@ -1,12 +1,8 @@
-import {
-    createAsyncThunk,
-    createSlice,
-    createSelector,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
-import { fetchBlacklistedTokens } from '../../../services/security/tokens';
+import blacklisted from './temp_blacklisted_tokens.json';
 
 const SLICE_NAME = 'security';
 
@@ -24,12 +20,15 @@ const initializeBlacklistedTokens = createAsyncThunk(
         } = securitySlice;
 
         try {
-            const blacklisted = await fetchBlacklistedTokens();
-
+            // Temp fix- just use the import from a static JSON file for now
             if (blacklisted.length) {
                 batch(() => {
                     dispatch(setBlacklistedTokens(blacklisted));
-                    dispatch(setBlacklistedTokenNames(new Set(blacklisted.map(({ address }) => address))));
+                    dispatch(
+                        setBlacklistedTokenNames(
+                            new Set(blacklisted.map(({ address }) => address))
+                        )
+                    );
                 });
             }
         } catch (error) {
