@@ -67,19 +67,19 @@
   },
   "scripts": {
     "predeploy": "yarn build",
-    "update:static": "cp src/wasm/multisig.wasm dist/multisig.wasm && cp src/wasm/main.wasm dist/main.wasm && cp src/wasm/state_cleanup.wasm dist/state_cleanup.wasm",
-    "start": "yarn update:static; parcel src/index.html --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
-    "prebuild": "rm -rf dist/",
+    "update:static": "cpy 'src/wasm/*.wasm' 'dist'",
+    "start": "yarn update:static && parcel src/index.html --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
+    "prebuild": "rimraf dist/ && rimraf .cache/",
     "build": "yarn run bundle && yarn run sentry",
-    "bundle": "NODE_ENV=production node ci/runBundler.js",
+    "bundle": "cross-env NODE_ENV=production node ci/runBundler.js",
     "check": "tsc --noEmit",
-    "dev": "yarn && NEAR_WALLET_ENV=testnet yarn start",
+    "dev": "yarn && cross-env NEAR_WALLET_ENV=mainnet yarn start",
     "sentry": "node ci/sentry-send-release.js",
     "test": "jest",
     "lint": "eslint --ext .js --ext .jsx .",
     "fix": "eslint --ext .js --ext .jsx . --fix",
     "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
-    "precommit": ".githooks/format-json",
+    "precommit": "node .githooks/format-json-script.mjs",
     "preinstall": "npx only-allow yarn"
   },
   "browserslist": [
@@ -100,6 +100,8 @@
     "babel-jest": "^27.0.1",
     "babel-loader": "^8.1.0",
     "concurrently": "^7.0.0",
+    "cpy-cli": "^4.2.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^11.0.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.6",
@@ -111,10 +113,14 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.2",
+    "glob": "^9.2.1",
     "jest": "^27.0.1",
     "jest-svg-transformer": "^1.0.0",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
-    "prettier": "2.7.1"
+    "prettier": "2.8.4",
+    "prettier-plugin-sort-json": "^1.0.0",
+    "rimraf": "^4.4.0",
+    "sort-json": "^2.0.1"
   }
 }
