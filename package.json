@@ -17,9 +17,13 @@
     "husky": "^7.0.0",
     "lerna": "^4.0.0"
   },
+  "resolutions": {
+    "node-gyp": "9.3.1"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "dependencies": {}
 }
