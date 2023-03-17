@@ -1,0 +1,47 @@
+name: Cloudflare Pages Build and Publish
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      near_wallet_env:
+        required: true
+        type: string
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: packages/frontend
+    env:
+      NEAR_WALLET_ENV: ${{ inputs.near_wallet_env }}
+    name: Build and Publish to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn bundle --outDir=dist/${{ inputs.environment }}
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          workingDirectory: packages/frontend
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: app-page-${{ inputs.environment }}
+          directory: dist/${{ inputs.environment }}
+          branch: main
+          # Optional: Enable this if you want to have GitHub Deployments triggered
+#          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

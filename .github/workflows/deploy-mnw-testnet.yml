@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   testnet-live-deploy:
-    uses: ./.github/workflows/bundle-and-deploy.yml
+    uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: testnet
       near_wallet_env: testnet

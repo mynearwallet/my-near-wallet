@@ -27,14 +27,14 @@ jobs:
       - run: yarn test
 
   testnet-bundle-preview:
-    uses: ./.github/workflows/bundle-and-deploy.yml
+    uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: testnet-preview
       near_wallet_env: testnet_STAGING
     secrets: inherit
 
   mainnet-bundle-preview:
-    uses: ./.github/workflows/bundle-and-deploy.yml
+    uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: mainnet-preview
       near_wallet_env: mainnet_STAGING
