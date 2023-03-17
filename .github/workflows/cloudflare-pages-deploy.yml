@@ -42,6 +42,6 @@ jobs:
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           projectName: app-page-${{ inputs.environment }}
           directory: dist/${{ inputs.environment }}
-          branch: master
+          branch: main
           # Optional: Enable this if you want to have GitHub Deployments triggered
 #          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
