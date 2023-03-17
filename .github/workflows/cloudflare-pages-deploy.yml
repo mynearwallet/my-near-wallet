@@ -13,9 +13,6 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
     environment: ${{ inputs.environment }}
     defaults:
       run:
@@ -45,4 +42,4 @@ jobs:
           projectName: app-page-${{ inputs.environment }}
           directory: dist/${{ inputs.environment }}
           # Optional: Enable this if you want to have GitHub Deployments triggered
-#          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
