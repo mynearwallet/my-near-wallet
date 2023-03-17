@@ -37,7 +37,7 @@ jobs:
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }}
           accountId: CLOUDFLARE_ACCOUNT_ID
           projectName: app-page-${{ inputs.environment }}
           directory: dist/${{ inputs.environment }}
