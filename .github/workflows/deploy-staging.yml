@@ -11,14 +11,14 @@ concurrency:
 
 jobs:
   testnet-staging-deploy:
-    uses: ./.github/workflows/bundle-and-deploy.yml
+    uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: testnet-staging
       near_wallet_env: testnet_STAGING
     secrets: inherit
 
   mainnet-staging-deploy:
-    uses: ./.github/workflows/bundle-and-deploy.yml
+    uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: mainnet-staging
       near_wallet_env: mainnet_STAGING
