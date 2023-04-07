@@ -54,7 +54,7 @@ const Container = styled.div`
     .nav-links {
         margin: 0 -14px;
         background-color: #FAFAFA;
-        a {
+        a, .nav-button {
             padding: 17px 14px;
             border-top: 1px solid #efefef;
             width: 100%;
