@@ -6848,6 +6848,11 @@ gitconfiglocal@^1.0.0:
   dependencies:
     ini "^1.3.2"
 
+gleap@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/gleap/-/gleap-10.0.0.tgz#903a7fbc22cf15b74514c75432f0ed132930507c"
+  integrity sha512-6bUL11UOarAGj3z83sGSDL+2/VQtB6f55Ds1yzFOfxLrHP8y1CJ812gIaNScxMUdbzpZVh3IM5IzvEtA+8ZkoQ==
+
 glob-parent@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-3.1.0.tgz#9e6af6299d8d3bd2bd40430832bd113df906c5ae"
