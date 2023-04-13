@@ -5,6 +5,29 @@
     "publishConfig": {
         "access": "public"
     },
+    "scripts": {
+        "pre-deploy": "yarn build",
+        "update:static": "npx copyfiles 'src/wasm/*.wasm' 'dist'",
+        "start": "yarn update:static && parcel src/index.html --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
+        "pre-build": "npx rimraf dist/ && npx rimraf .cache/",
+        "build": "yarn run bundle && yarn run sentry",
+        "bundle": "cross-env NODE_ENV=production node ci/runBundler.js",
+        "check": "tsc --noEmit",
+        "dev": "yarn && cross-env NEAR_WALLET_ENV=mainnet yarn start",
+        "sentry": "node ci/sentry-send-release.js",
+        "test": "jest",
+        "lint": "eslint --ext .js --ext .jsx .",
+        "fix": "eslint --ext .js --ext .jsx . --fix",
+        "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
+        "precommit": "node .githooks/format-json-script.mjs",
+        "preinstall": "npx only-allow yarn"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ],
     "dependencies": {
         "@ledgerhq/hw-transport-u2f": "^5.34.0",
         "@near-wallet-selector/account-export": "^7.6.1",
@@ -15,12 +38,10 @@
         "dataloader": "^2.1.0",
         "escape-html": "^1.0.3",
         "fetch-send-json": "0.0.2",
-        "generate-lockfile": "^0.0.11",
         "i18next": "^22.0.4",
         "js-sha256": "^0.9.0",
         "lodash.assign": "^4.2.0",
         "lodash.clonedeep": "^4.5.0",
-        "lodash.flattendeep": "^4.4.0",
         "lodash.isarray": "^4.0.0",
         "lodash.isequal": "^4.5.0",
         "lodash.isplainobject": "^4.0.6",
@@ -32,7 +53,6 @@
         "lodash.once": "^4.1.1",
         "lodash.set": "^4.3.2",
         "lodash.throttle": "^4.1.1",
-        "lodash.uniq": "^4.5.0",
         "lodash.unset": "^4.5.2",
         "lodash.update": "^4.10.2",
         "mixpanel-browser": "^2.41.0",
@@ -56,7 +76,6 @@
         "react-router-dom": "^5.2.0",
         "react-textfit": "^1.1.1",
         "reduce-reducers": "^1.0.4",
-        "redux": "^4.1.0",
         "redux-actions": "^2.6.5",
         "redux-thunk": "^2.3.0",
         "regenerator-runtime": "^0.13.5",
@@ -65,29 +84,6 @@
         "timeago.js": "^4.0.2",
         "use-immer": "^0.7.0"
     },
-    "scripts": {
-        "predeploy": "yarn build",
-        "update:static": "cpy 'src/wasm/*.wasm' 'dist'",
-        "start": "yarn update:static && parcel src/index.html --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
-        "prebuild": "rimraf dist/ && rimraf .cache/",
-        "build": "yarn run bundle && yarn run sentry",
-        "bundle": "cross-env NODE_ENV=production node ci/runBundler.js",
-        "check": "tsc --noEmit",
-        "dev": "yarn && cross-env NEAR_WALLET_ENV=mainnet yarn start",
-        "sentry": "node ci/sentry-send-release.js",
-        "test": "jest",
-        "lint": "eslint --ext .js --ext .jsx .",
-        "fix": "eslint --ext .js --ext .jsx . --fix",
-        "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
-        "precommit": "node .githooks/format-json-script.mjs",
-        "preinstall": "npx only-allow yarn"
-    },
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ],
     "devDependencies": {
         "@babel/core": "^7.19.6",
         "@babel/plugin-transform-react-jsx": "^7.19.0",
@@ -100,11 +96,8 @@
         "babel-jest": "^27.0.1",
         "babel-loader": "^8.1.0",
         "concurrently": "^7.0.0",
-        "cpy-cli": "^4.2.0",
         "cross-env": "^7.0.3",
         "dotenv": "^11.0.0",
-        "enzyme": "^3.10.0",
-        "enzyme-adapter-react-16": "^1.15.6",
         "eslint": "5.16.0",
         "eslint-config-react-app": "^3.0.8",
         "eslint-plugin-es": "^4.1.0",
@@ -121,7 +114,6 @@
         "parcel-plugin-bundle-visualiser": "^1.2.0",
         "prettier": "2.8.4",
         "prettier-plugin-sort-json": "^1.0.0",
-        "rimraf": "^4.4.0",
         "sort-json": "^2.0.1"
     }
 }
