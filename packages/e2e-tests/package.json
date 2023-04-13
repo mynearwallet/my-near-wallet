@@ -7,6 +7,8 @@
     "access": "public"
   },
   "dependencies": {
+    "@commitlint/cli": "^17.6.0",
+    "@commitlint/config-conventional": "^17.6.0",
     "@pagerduty/pdjs": "^2.2.0",
     "@playwright/test": "^1.14.0",
     "bip39-light": "^1.0.7",
@@ -24,7 +26,7 @@
   },
   "scripts": {
     "test": "node -r dotenv/config index.js",
-    "e2e": "npx playwright test",
+    "e2e": "cross-env NEAR_WALLET_ENV=testnet npx playwright test",
     "e2e:swap": "npx playwright test ./swap/ --project=Desktop_Chromium",
     "e2e:swap-near-wnear": "npx playwright test ./swap/near-with-wnear.spec.js --project=Desktop_Chromium",
     "e2e:swap-near-nep141": "npx playwright test ./swap/near-with-nep141.spec.js --project=Desktop_Chromium",

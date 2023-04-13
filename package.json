@@ -12,21 +12,14 @@
     "dev": "cd packages/frontend && yarn install --frozen-lockfile && yarn dev",
     "test:e2e": "cd packages/e2e-tests && yarn e2e",
     "prepare": "husky install",
-    "release": "lerna version --conventional-commits",
-    "commit": "cz"
+    "release": "lerna version --conventional-commits"
   },
   "devDependencies": {
-    "cz-conventional-changelog": "^3.3.0",
-    "husky": "^7.0.0",
-    "lerna": "^4.0.0"
+    "husky": "^8.0.3",
+    "lerna": "^6.6.1"
   },
   "resolutions": {
     "node-gyp": "9.3.1"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   },
   "dependencies": {}
 }
