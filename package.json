@@ -16,10 +16,13 @@
   },
   "devDependencies": {
     "husky": "^8.0.3",
-    "lerna": "^6.6.1"
+    "lerna": "^6.5.1"
   },
   "resolutions": {
     "node-gyp": "9.3.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@commitlint/cli": "^17.6.0",
+    "@commitlint/config-conventional": "^17.6.0"
+  }
 }

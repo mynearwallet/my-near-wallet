@@ -7,8 +7,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@commitlint/cli": "^17.6.0",
-    "@commitlint/config-conventional": "^17.6.0",
     "@pagerduty/pdjs": "^2.2.0",
     "@playwright/test": "^1.14.0",
     "bip39-light": "^1.0.7",
