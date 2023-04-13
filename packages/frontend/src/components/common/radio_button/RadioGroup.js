@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import styled from "styled-components";
 
 const Container = styled.div`
 
@@ -15,32 +15,32 @@ const Container = styled.div`
 `;
 
 export default class RadioGroup extends Component {
-    getChildContext() {
-        const { name, selectedValue, onChange } = this.props;
-        return {
-            radioGroup: {
-                name,
-                selectedValue,
-                onChange
-            }
-        };
-    }
+  getChildContext() {
+    const { name, selectedValue, onChange } = this.props;
+    return {
+      radioGroup: {
+        name,
+        selectedValue,
+        onChange,
+      },
+    };
+  }
 
-    render() {
-        const { name, selectedValue, children, ...rest } = this.props;
-        return (
-            <Container role='radiogroup' {...rest}>
-                {children}
-            </Container>
-        );
-    }
+  render() {
+    const { name, selectedValue, children, ...rest } = this.props;
+    return (
+      <Container role='radiogroup' {...rest}>
+        {children}
+      </Container>
+    );
+  }
 }
 
 RadioGroup.childContextTypes = {
-    radioGroup: PropTypes.object
+  radioGroup: PropTypes.object,
 };
 
 RadioGroup.defaultProps = {
-    name: '',
-    selectedValue: ''
+  name: "",
+  selectedValue: "",
 };

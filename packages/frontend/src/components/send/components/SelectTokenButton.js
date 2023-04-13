@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import ChevronIcon from '../../svg/ChevronIcon';
-import Token from './entry_types/Token';
+import ChevronIcon from "../../svg/ChevronIcon";
+import Token from "./entry_types/Token";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -30,20 +30,20 @@ const StyledContainer = styled.div`
 `;
 
 const SelectTokenButton = ({ token, onClick }) => {
-    return (
-        <StyledContainer
-            onClick={onClick}
-            className="select-token-btn"
-            data-test-id="sendMoneyPageSelectTokenButton"
-        >
-            <Token
-                translateIdTitle='sendV2.selectTokenButtonTitle'
-                symbol={token.onChainFTMetadata?.symbol}
-                icon={token.onChainFTMetadata?.icon}
-            />
-            <ChevronIcon color='#0072ce' />
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer
+      onClick={onClick}
+      className="select-token-btn"
+      data-test-id="sendMoneyPageSelectTokenButton"
+    >
+      <Token
+        translateIdTitle='sendV2.selectTokenButtonTitle'
+        symbol={token.onChainFTMetadata?.symbol}
+        icon={token.onChainFTMetadata?.icon}
+      />
+      <ChevronIcon color='#0072ce' />
+    </StyledContainer>
+  );
 };
 
 export default SelectTokenButton;

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import PhoneInput from 'react-phone-number-input';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import PhoneInput from "react-phone-number-input";
+import styled from "styled-components";
 
-import IntFlagIcon from '../../../../images/int-flag-small.svg';
+import IntFlagIcon from "../../../../images/int-flag-small.svg";
 
 const StyledContainer = styled.div`
     .react-phone-number-input {
@@ -53,28 +53,21 @@ const StyledContainer = styled.div`
     }
 `;
 
-export default ({
-    translateIdPlaceholder,
-    onChange,
-    onBlur,
-    value,
-    disabled
-}) => {
-
-    return (
-        <StyledContainer>
-            <Translate>
-                {({ translate }) => (
-                    <PhoneInput
-                        placeholder={translate(translateIdPlaceholder)}
-                        type='phone'
-                        value={value}
-                        disabled={disabled}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                    />
-                )}
-            </Translate>
-        </StyledContainer>
-    );
+export default ({ translateIdPlaceholder, onChange, onBlur, value, disabled }) => {
+  return (
+    <StyledContainer>
+      <Translate>
+        {({ translate }) => (
+          <PhoneInput
+            placeholder={translate(translateIdPlaceholder)}
+            type='phone'
+            value={value}
+            disabled={disabled}
+            onChange={onChange}
+            onBlur={onBlur}
+          />
+        )}
+      </Translate>
+    </StyledContainer>
+  );
 };

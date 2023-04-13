@@ -1,6 +1,6 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
 const Container = styled.div`
     position: relative;
@@ -33,11 +33,9 @@ const Wrapper = styled.div`
 `;
 
 const Divider = (props) => (
-    <Container className='divider-container'>
-        <Wrapper className='divider-wrapper'>
-            {props.title || <Translate id='or' />}
-        </Wrapper>
-    </Container>
+  <Container className='divider-container'>
+    <Wrapper className='divider-wrapper'>{props.title || <Translate id='or' />}</Wrapper>
+  </Container>
 );
 
 export default Divider;

@@ -1,24 +1,24 @@
-import Big from 'big.js';
-import React, { useState, memo, useMemo, useEffect } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
+import Big from "big.js";
+import React, { useState, memo, useMemo, useEffect } from "react";
+import { Translate } from "react-localize-redux";
+import { useSelector } from "react-redux";
+import styled from "styled-components";
 
-import BackArrowButton from '../../../components/common/BackArrowButton';
-import FlipButton from '../../../components/common/FlipButton';
-import FormButton from '../../../components/common/FormButton';
-import Notification from '../../../components/common/Notification';
-import SelectToken from '../../../components/send/components/views/SelectToken';
-import CONFIG from '../../../config';
-import { selectAvailableBalance } from '../../../redux/slices/account';
-import { formatTokenAmount } from '../../../utils/amounts';
-import { NEAR_DECIMALS } from '../../../utils/constants';
-import isMobile from '../../../utils/isMobile';
-import { useSwapData, VIEW_STATE } from '../model/Swap';
-import { DEFAULT_OUTPUT_TOKEN_ID, NOTIFICATION_TYPE } from '../utils/constants';
-import useSwapInfo from '../utils/hooks/useSwapInfo';
-import Input from './Input';
-import SwapDetails from './SwapDetails/SwapDetails';
+import BackArrowButton from "../../../components/common/BackArrowButton";
+import FlipButton from "../../../components/common/FlipButton";
+import FormButton from "../../../components/common/FormButton";
+import Notification from "../../../components/common/Notification";
+import SelectToken from "../../../components/send/components/views/SelectToken";
+import CONFIG from "../../../config";
+import { selectAvailableBalance } from "../../../redux/slices/account";
+import { formatTokenAmount } from "../../../utils/amounts";
+import { NEAR_DECIMALS } from "../../../utils/constants";
+import isMobile from "../../../utils/isMobile";
+import { useSwapData, VIEW_STATE } from "../model/Swap";
+import { DEFAULT_OUTPUT_TOKEN_ID, NOTIFICATION_TYPE } from "../utils/constants";
+import useSwapInfo from "../utils/hooks/useSwapInfo";
+import Input from "./Input";
+import SwapDetails from "./SwapDetails/SwapDetails";
 
 const mobile = isMobile();
 
@@ -83,257 +83,237 @@ const Footer = styled.div`
 `;
 
 const tokenSelectState = {
-    noSelect: 0,
-    selectIn: 1,
-    selectOut: 2,
+  noSelect: 0,
+  selectIn: 1,
+  selectOut: 2,
 };
 
-const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
-    const availableBalance = useSelector(selectAvailableBalance);
-    const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
-    const {
-        swapState: {
-            tokenIn,
-            tokenOut,
-            amountIn,
-            isNearTransformation,
-            amountOut,
-            swapPoolId,
-            estimatedFee,
-        },
-        events: {
-            setViewState,
-            setTokenIn,
-            setTokenOut,
-            setAmountIn,
-            setAmountOut,
-        },
-    } = useSwapData();
+const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
+  const availableBalance = useSelector(selectAvailableBalance);
+  const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
+  const {
+    swapState: {
+      tokenIn,
+      tokenOut,
+      amountIn,
+      isNearTransformation,
+      amountOut,
+      swapPoolId,
+      estimatedFee,
+    },
+    events: { setViewState, setTokenIn, setTokenOut, setAmountIn, setAmountOut },
+  } = useSwapData();
 
-    useEffect(() => {
-        if (!tokenIn && listOfTokensIn[0]) {
-            setTokenIn(listOfTokensIn[0]);
-        } else {
-            const newTokenIn = tokensIn[tokenIn?.contractName] || tokensOut[tokenIn?.contractName];
+  useEffect(() => {
+    if (!tokenIn && listOfTokensIn[0]) {
+      setTokenIn(listOfTokensIn[0]);
+    } else {
+      const newTokenIn = tokensIn[tokenIn?.contractName] || tokensOut[tokenIn?.contractName];
 
-            setTokenIn(newTokenIn);
+      setTokenIn(newTokenIn);
+    }
+  }, [listOfTokensIn]);
+
+  useEffect(() => {
+    if (!tokenOut) {
+      setTokenOut(tokensOut[DEFAULT_OUTPUT_TOKEN_ID] || listOfTokensOut[1]);
+    } else {
+      setTokenOut(tokensOut[tokenOut?.contractName]);
+    }
+  }, [listOfTokensOut]);
+
+  const onClickReview = () => setViewState(VIEW_STATE.preview);
+
+  const [displayTokenSelect, setDisplayTokenSelect] = useState(tokenSelectState.noSelect);
+  const tokensToSelect = useMemo(() => {
+    if (!displayTokenSelect) {
+      return [];
+    }
+
+    return displayTokenSelect === tokenSelectState.selectIn ? listOfTokensIn : listOfTokensOut;
+  }, [displayTokenSelect, listOfTokensIn, listOfTokensOut]);
+
+  const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
+  const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
+  const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
+
+  const handleTokenSelect = (token) => {
+    switch (displayTokenSelect) {
+      case tokenSelectState.selectIn:
+        if (token.contractName === tokenOut.contractName) {
+          setTokenOut(tokenIn);
         }
-    }, [listOfTokensIn]);
-
-    useEffect(() => {
-        if (!tokenOut) {
-            setTokenOut(tokensOut[DEFAULT_OUTPUT_TOKEN_ID] || listOfTokensOut[1]);
-        } else {
-            setTokenOut(tokensOut[tokenOut?.contractName]);
+        setTokenIn(token);
+        break;
+      case tokenSelectState.selectOut:
+        if (token.contractName === tokenIn.contractName) {
+          setTokenIn(tokenOut);
         }
-    }, [listOfTokensOut]);
+        setTokenOut(token);
+        break;
+    }
 
-    const onClickReview = () => setViewState(VIEW_STATE.preview);
+    setDisplayTokenSelect(tokenSelectState.noSelect);
+  };
 
-    const [displayTokenSelect, setDisplayTokenSelect] = useState(
-        tokenSelectState.noSelect
+  const handleInputAmountChange = (value) => {
+    setAmountIn(value);
+    setAmountOut("");
+  };
+
+  const { swapNotification, loading } = useSwapInfo({
+    account,
+    tokenIn,
+    amountIn,
+    tokenOut,
+  });
+
+  const [notification, setNotification] = useState(null);
+
+  useEffect(() => {
+    if (notification) {
+      setNotification(null);
+    }
+
+    if (swapNotification) {
+      setNotification(swapNotification);
+    } else if (estimatedFee && availableBalance) {
+      const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
+
+      // If we have NEAR in the input field check is available balance >= amount + swap fee
+      if (
+        tokenIn?.contractName === CONFIG.NEAR_ID &&
+        amountIn &&
+        Big(estimatedFee).plus(amountIn).gt(formattedBalance)
+      ) {
+        setNotification({
+          id: "swap.insufficientBalanceForAmountAndFee",
+          type: NOTIFICATION_TYPE.warning,
+        });
+      } else if (Big(estimatedFee).gt(formattedBalance)) {
+        setNotification({
+          id: "swap.insufficientBalanceForFee",
+          type: NOTIFICATION_TYPE.warning,
+        });
+      }
+    }
+  }, [tokenIn, amountIn, availableBalance, estimatedFee, swapNotification]);
+
+  const flipInputsData = () => {
+    setTokenIn(tokenOut);
+    setTokenOut(tokenIn);
+
+    if (amountOut) {
+      setAmountIn(amountOut);
+    }
+  };
+
+  const [isValidInput, setIsValidInput] = useState(false);
+
+  const canSwap = useMemo(() => {
+    const formIsFilled = Boolean(
+      tokenIn && tokenOut && (swapPoolId || isNearTransformation) && amountIn && amountOut,
     );
-    const tokensToSelect = useMemo(() => {
-        if (!displayTokenSelect) {
-            return [];
-        }
 
-        return displayTokenSelect === tokenSelectState.selectIn
-            ? listOfTokensIn
-            : listOfTokensOut;
-    }, [displayTokenSelect, listOfTokensIn, listOfTokensOut]);
+    if (formIsFilled && availableBalance) {
+      const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
+      const isInsufficientBalance = Big(estimatedFee)
+        .plus(tokenIn?.contractName === CONFIG.NEAR_ID ? amountIn : 0)
+        .gt(formattedBalance);
 
-    const selectTokenIn = () => setDisplayTokenSelect(tokenSelectState.selectIn);
-    const selectTokenOut = () => setDisplayTokenSelect(tokenSelectState.selectOut);
-    const hideTokenSelection = () => setDisplayTokenSelect(tokenSelectState.noSelect);
+      if (isValidInput && !isInsufficientBalance) {
+        return true;
+      }
+    }
 
-    const handleTokenSelect = (token) => {
-        switch (displayTokenSelect) {
-            case tokenSelectState.selectIn:
-                if (token.contractName === tokenOut.contractName) {
-                    setTokenOut(tokenIn);
-                }
-                setTokenIn(token);
-                break;
-            case tokenSelectState.selectOut:
-                if (token.contractName === tokenIn.contractName) {
-                    setTokenIn(tokenOut);
-                }
-                setTokenOut(token);
-                break;
-        }
+    return false;
+  }, [
+    tokenIn,
+    tokenOut,
+    swapPoolId,
+    amountIn,
+    amountOut,
+    isNearTransformation,
+    isValidInput,
+    estimatedFee,
+    availableBalance,
+  ]);
 
-        setDisplayTokenSelect(tokenSelectState.noSelect);
-    };
+  return (
+    <SwapFormWrapper>
+      {displayTokenSelect ? (
+        <SelectToken
+          isMobile={mobile}
+          onClickGoBack={hideTokenSelection}
+          fungibleTokens={tokensToSelect}
+          onSelectToken={handleTokenSelect}
+          balanceLabelId="available"
+        />
+      ) : (
+        <>
+          <Header>
+            <BackArrowButton onClick={onGoBack} />
+            <h4 className="title">
+              <Translate id="swap.title" />
+            </h4>
+          </Header>
+          <Input
+            value={amountIn}
+            onChange={handleInputAmountChange}
+            onSelectToken={selectTokenIn}
+            labelId="swap.from"
+            tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
+            tokenIcon={tokenIn?.onChainFTMetadata?.icon}
+            tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
+            maxBalance={tokenIn?.balance}
+            setIsValidInput={setIsValidInput}
+            inputTestId="swapPageInputAmountField"
+            tokenSelectTestId="swapPageInputTokenSelector"
+            autoFocus
+          />
+          <SwapButtonWrapper>
+            <FlipButton onClick={flipInputsData} />
+          </SwapButtonWrapper>
+          <Input
+            value={amountOut}
+            onSelectToken={selectTokenOut}
+            labelId="swap.to"
+            tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
+            tokenIcon={tokenOut?.onChainFTMetadata?.icon}
+            tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
+            maxBalance={tokenOut?.balance}
+            loading={loading}
+            inputTestId="swapPageOutputAmountField"
+            tokenSelectTestId="swapPageOutputTokenSelector"
+            disabled
+          />
+          <Footer>
+            <SwapDetails />
 
-    const handleInputAmountChange = (value) => {
-        setAmountIn(value);
-        setAmountOut('');
-    };
-
-    const {
-        swapNotification,
-        loading,
-    } = useSwapInfo({
-        account,
-        tokenIn,
-        amountIn,
-        tokenOut,
-    });
-
-    const [notification, setNotification] = useState(null);
-
-    useEffect(() => {
-        if (notification) {
-            setNotification(null);
-        };
-
-        if (swapNotification) {
-            setNotification(swapNotification);
-        } else if (estimatedFee && availableBalance) {
-            const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
-
-            // If we have NEAR in the input field check is available balance >= amount + swap fee
-            if (
-                tokenIn?.contractName === CONFIG.NEAR_ID &&
-                amountIn &&
-                Big(estimatedFee).plus(amountIn).gt(formattedBalance)
-            ) {
-                setNotification({
-                    id: 'swap.insufficientBalanceForAmountAndFee',
-                    type: NOTIFICATION_TYPE.warning,
-                });
-            } else if (Big(estimatedFee).gt(formattedBalance)) {
-                setNotification({
-                    id: 'swap.insufficientBalanceForFee',
-                    type: NOTIFICATION_TYPE.warning,
-                });
-            }
-        }
-    }, [tokenIn, amountIn, availableBalance, estimatedFee, swapNotification]);
-
-    const flipInputsData = () => {
-        setTokenIn(tokenOut);
-        setTokenOut(tokenIn);
-
-        if (amountOut) {
-            setAmountIn(amountOut);
-        }
-    };
-
-    const [isValidInput, setIsValidInput] = useState(false);
-
-    const canSwap = useMemo(() => {
-        const formIsFilled = Boolean(
-            tokenIn &&
-                tokenOut &&
-                (swapPoolId || isNearTransformation) &&
-                amountIn &&
-                amountOut
-        );
-
-        if (formIsFilled && availableBalance) {
-            const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
-            const isInsufficientBalance = Big(estimatedFee)
-                .plus(tokenIn?.contractName === CONFIG.NEAR_ID ? amountIn : 0)
-                .gt(formattedBalance);
-
-            if (isValidInput && !isInsufficientBalance) {
-                return true;
-            }
-        }
-
-        return false;
-    }, [
-        tokenIn,
-        tokenOut,
-        swapPoolId,
-        amountIn,
-        amountOut,
-        isNearTransformation,
-        isValidInput,
-        estimatedFee,
-        availableBalance,
-    ]);
-
-    return (
-        <SwapFormWrapper>
-            {displayTokenSelect ? (
-                <SelectToken
-                    isMobile={mobile}
-                    onClickGoBack={hideTokenSelection}
-                    fungibleTokens={tokensToSelect}
-                    onSelectToken={handleTokenSelect}
-                    balanceLabelId="available"
-                />
-            ) : (
-                <>
-                    <Header>
-                        <BackArrowButton onClick={onGoBack} />
-                        <h4 className="title">
-                            <Translate id="swap.title" />
-                        </h4>
-                    </Header>
-                    <Input
-                        value={amountIn}
-                        onChange={handleInputAmountChange}
-                        onSelectToken={selectTokenIn}
-                        labelId="swap.from"
-                        tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
-                        tokenIcon={tokenIn?.onChainFTMetadata?.icon}
-                        tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
-                        maxBalance={tokenIn?.balance}
-                        setIsValidInput={setIsValidInput}
-                        inputTestId="swapPageInputAmountField"
-                        tokenSelectTestId="swapPageInputTokenSelector"
-                        autoFocus
-                    />
-                    <SwapButtonWrapper>
-                        <FlipButton onClick={flipInputsData} />
-                    </SwapButtonWrapper>
-                    <Input
-                        value={amountOut}
-                        onSelectToken={selectTokenOut}
-                        labelId="swap.to"
-                        tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
-                        tokenIcon={tokenOut?.onChainFTMetadata?.icon}
-                        tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
-                        maxBalance={tokenOut?.balance}
-                        loading={loading}
-                        inputTestId="swapPageOutputAmountField"
-                        tokenSelectTestId="swapPageOutputTokenSelector"
-                        disabled
-                    />
-                    <Footer>
-                        <SwapDetails />
-
-                        {notification && (
-                            <Notification type={notification.type}>
-                                <Translate
-                                    id={notification.id}
-                                    data={notification.data}
-                                />
-                            </Notification>
-                        )}
-
-                        <FormButton
-                            disabled={!canSwap}
-                            onClick={onClickReview}
-                            trackingId="Click Preview swap on Swap page"
-                            data-test-id="swapPageSwapPreviewStateButton"
-                        >
-                            <Translate id="swap.review" />
-                        </FormButton>
-                        <div className="cancel-button-wrapper">
-                            <FormButton color="link gray" onClick={onGoBack}>
-                                <Translate id="button.cancel" />
-                            </FormButton>
-                        </div>
-                    </Footer>
-                </>
+            {notification && (
+              <Notification type={notification.type}>
+                <Translate id={notification.id} data={notification.data} />
+              </Notification>
             )}
-        </SwapFormWrapper>
-    );
+
+            <FormButton
+              disabled={!canSwap}
+              onClick={onClickReview}
+              trackingId="Click Preview swap on Swap page"
+              data-test-id="swapPageSwapPreviewStateButton"
+            >
+              <Translate id="swap.review" />
+            </FormButton>
+            <div className="cancel-button-wrapper">
+              <FormButton color="link gray" onClick={onGoBack}>
+                <Translate id="button.cancel" />
+              </FormButton>
+            </div>
+          </Footer>
+        </>
+      )}
+    </SwapFormWrapper>
+  );
 });
 
 export default SwapForm;

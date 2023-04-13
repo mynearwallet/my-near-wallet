@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import ArrowUpImage from '../../images/icon-arrow-up-green.svg';
-import RetryImage from '../../images/icon-retry-tx.svg';
-import FormButton from '../common/FormButton';
-import Container from '../common/styled/Container.css';
+import ArrowUpImage from "../../images/icon-arrow-up-green.svg";
+import RetryImage from "../../images/icon-retry-tx.svg";
+import FormButton from "../common/FormButton";
+import Container from "../common/styled/Container.css";
 
 const CustomContainer = styled(Container)`
     display: flex;
@@ -84,52 +84,51 @@ const CustomContainer = styled(Container)`
 `;
 
 const SignTransferRetry = ({ handleRetry, handleCancel, gasLimit, submittingTransaction }) => (
-    <CustomContainer className='small-centered border'>
-        <div className='icon'>
-            <img src={RetryImage} alt='Retry' />
-        </div>
-        <div className='title'>
-            <h2><Translate id='sign.retry.title' /></h2>
-        </div>
-        <div className='text'>
-            <Translate id='sign.retry.text' />
-            <br/><br/>
-            <a href='https://docs.near.org/docs/concepts/gas' target='_blank' rel='noreferrer'>
-                <Translate id='sign.retry.link' />
-            </a>
-        </div>
-        <div className='fees'>
-            <div className='fees-line'>
-                <b><Translate id='sign.networkFees' /></b>
-            </div>
-            <div className='fees-line'>
-                <Translate id='sign.estimatedFees' />
-                <div>NEAR</div>
-            </div>
-            <div className='fees-line'>
-                <Translate id='sign.feeLimit' />
-                <div className='tgas'>
-                    {gasLimit} Tgas
-                </div>
-            </div>
-        </div>
-        <div className='buttons'>
-            <FormButton
-                onClick={handleCancel}
-                disabled={submittingTransaction}
-                color='gray-blue'
-            >
-                <Translate id='button.cancel' />
-            </FormButton>
-            <FormButton
-                onClick={handleRetry}
-                disabled={submittingTransaction}
-                sending={submittingTransaction}
-            >
-                <Translate id='button.resubmit' />
-            </FormButton>
-        </div>
-    </CustomContainer>
+  <CustomContainer className='small-centered border'>
+    <div className='icon'>
+      <img src={RetryImage} alt='Retry' />
+    </div>
+    <div className='title'>
+      <h2>
+        <Translate id='sign.retry.title' />
+      </h2>
+    </div>
+    <div className='text'>
+      <Translate id='sign.retry.text' />
+      <br />
+      <br />
+      <a href='https://docs.near.org/docs/concepts/gas' target='_blank' rel='noreferrer'>
+        <Translate id='sign.retry.link' />
+      </a>
+    </div>
+    <div className='fees'>
+      <div className='fees-line'>
+        <b>
+          <Translate id='sign.networkFees' />
+        </b>
+      </div>
+      <div className='fees-line'>
+        <Translate id='sign.estimatedFees' />
+        <div>NEAR</div>
+      </div>
+      <div className='fees-line'>
+        <Translate id='sign.feeLimit' />
+        <div className='tgas'>{gasLimit} Tgas</div>
+      </div>
+    </div>
+    <div className='buttons'>
+      <FormButton onClick={handleCancel} disabled={submittingTransaction} color='gray-blue'>
+        <Translate id='button.cancel' />
+      </FormButton>
+      <FormButton
+        onClick={handleRetry}
+        disabled={submittingTransaction}
+        sending={submittingTransaction}
+      >
+        <Translate id='button.resubmit' />
+      </FormButton>
+    </div>
+  </CustomContainer>
 );
 
 export default SignTransferRetry;

@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import { checkAccountAvailable } from '../../redux/actions/account';
-import { clearLocalAlert, showCustomAlert } from '../../redux/actions/status';
-import { selectBalance } from '../../redux/slices/account';
-import { actions as ledgerActions } from '../../redux/slices/ledger';
-import { actions as nftActions } from '../../redux/slices/nft';
-import { selectStatusLocalAlert } from '../../redux/slices/status';
-import NonFungibleTokens from '../../services/NonFungibleTokens';
-import { shortenAccountId } from '../../utils/account';
-import isMobile from '../../utils/isMobile';
-import Balance from '../common/balance/Balance';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
-import ModalFooter from '../common/modal/ModalFooter';
-import SafeTranslate from '../SafeTranslate';
-import ReceiverInputWithLabel from '../send/components/ReceiverInputWithLabel';
-import AvatarSuccessIcon from '../svg/AvatarSuccessIcon';
-import EstimatedFees from '../transfer/EstimatedFees';
+import CONFIG from "../../config";
+import { checkAccountAvailable } from "../../redux/actions/account";
+import { clearLocalAlert, showCustomAlert } from "../../redux/actions/status";
+import { selectBalance } from "../../redux/slices/account";
+import { actions as ledgerActions } from "../../redux/slices/ledger";
+import { actions as nftActions } from "../../redux/slices/nft";
+import { selectStatusLocalAlert } from "../../redux/slices/status";
+import NonFungibleTokens from "../../services/NonFungibleTokens";
+import { shortenAccountId } from "../../utils/account";
+import isMobile from "../../utils/isMobile";
+import Balance from "../common/balance/Balance";
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
+import ModalFooter from "../common/modal/ModalFooter";
+import SafeTranslate from "../SafeTranslate";
+import ReceiverInputWithLabel from "../send/components/ReceiverInputWithLabel";
+import AvatarSuccessIcon from "../svg/AvatarSuccessIcon";
+import EstimatedFees from "../transfer/EstimatedFees";
 
 const StyledContainer = styled.div`
     &&& {
@@ -195,211 +195,209 @@ const StyledContainer = styled.div`
 `;
 
 export default function NFTTransferModal({ onClose, nft, accountId }) {
-    const [receiverId, setReceiverId] = useState('');
-    const shortReceiverId = shortenAccountId(receiverId);
-    const transferData = {
-        title: nft?.metadata?.title || '',
-        receiverId: shortReceiverId,
-    };
+  const [receiverId, setReceiverId] = useState("");
+  const shortReceiverId = shortenAccountId(receiverId);
+  const transferData = {
+    title: nft?.metadata?.title || "",
+    receiverId: shortReceiverId,
+  };
 
-    const [result, setResult] = useState();
-    const [sending, setSending] = useState(false);
-    const [viewType, setViewType] = useState('selectReceiver');
-    const [isImplicitAccount, setIsImplicitAccount] = useState(false);
-    const { balanceAvailable: nearBalance } = useSelector(selectBalance);
-    const dispatch = useDispatch();
-    const { checkAndHideLedgerModal } = ledgerActions;
-    const { transferToken } = nftActions;
+  const [result, setResult] = useState();
+  const [sending, setSending] = useState(false);
+  const [viewType, setViewType] = useState("selectReceiver");
+  const [isImplicitAccount, setIsImplicitAccount] = useState(false);
+  const { balanceAvailable: nearBalance } = useSelector(selectBalance);
+  const dispatch = useDispatch();
+  const { checkAndHideLedgerModal } = ledgerActions;
+  const { transferToken } = nftActions;
 
-    const localAlert = useSelector(selectStatusLocalAlert);
-    const isEmptyAlert = isImplicitAccount ? false : !localAlert || localAlert.show === undefined || localAlert.show === false;
-    const hasAccountValidationError = localAlert && localAlert.show && !localAlert.success;
+  const localAlert = useSelector(selectStatusLocalAlert);
+  const isEmptyAlert = isImplicitAccount
+    ? false
+    : !localAlert || localAlert.show === undefined || localAlert.show === false;
+  const hasAccountValidationError = localAlert && localAlert.show && !localAlert.success;
 
-    // TODO: Add RiskScoring validation
-    const isLoading = isEmptyAlert;
-    const isSuccess = !isLoading && localAlert?.success && !isImplicitAccount;
-    const isProblem = !isLoading && hasAccountValidationError;
+  // TODO: Add RiskScoring validation
+  const isLoading = isEmptyAlert;
+  const isSuccess = !isLoading && localAlert?.success && !isImplicitAccount;
+  const isProblem = !isLoading && hasAccountValidationError;
 
-    async function sendNFT() {
-        setSending(true);
-        try {
-            const { contract_id, token_id, owner_id } = nft;
-            const res = await NonFungibleTokens.transfer({
-                accountId: owner_id,
-                contractId: contract_id,
-                tokenId: token_id,
-                receiverId
-            });
+  async function sendNFT() {
+    setSending(true);
+    try {
+      const { contract_id, token_id, owner_id } = nft;
+      const res = await NonFungibleTokens.transfer({
+        accountId: owner_id,
+        contractId: contract_id,
+        tokenId: token_id,
+        receiverId,
+      });
 
-            setResult(res);
-            dispatch(transferToken({
-                accountId,
-                contractName: contract_id,
-                nft: { ...nft, owner_id: receiverId },
-            }));
-            setViewType('success');
-        } catch (err) {
-            dispatch(showCustomAlert({
-                success: false,
-                messageCodeHeader: 'error',
-                messageCode: 'walletErrorCodes.sendNonFungibleToken.error',
-                errorMessage: err.message,
-            }));
-        } finally {
-            setSending(false);
-            dispatch(checkAndHideLedgerModal());
-        }
+      setResult(res);
+      dispatch(
+        transferToken({
+          accountId,
+          contractName: contract_id,
+          nft: { ...nft, owner_id: receiverId },
+        }),
+      );
+      setViewType("success");
+    } catch (err) {
+      dispatch(
+        showCustomAlert({
+          success: false,
+          messageCodeHeader: "error",
+          messageCode: "walletErrorCodes.sendNonFungibleToken.error",
+          errorMessage: err.message,
+        }),
+      );
+    } finally {
+      setSending(false);
+      dispatch(checkAndHideLedgerModal());
     }
+  }
 
-    return (
-        <Modal
-            id='nft-transfer-modal'
-            isOpen={nft}
-            onClose={onClose}
-            closeButton={false}
-            modalSize='md'
-        >
-            {viewType === 'selectReceiver' && (
-                <StyledContainer>
-                    <img className='transfer-img' src={nft.metadata.mediaUrl} alt='NFT' />
+  return (
+    <Modal
+      id='nft-transfer-modal'
+      isOpen={nft}
+      onClose={onClose}
+      closeButton={false}
+      modalSize='md'
+    >
+      {viewType === "selectReceiver" && (
+        <StyledContainer>
+          <img className='transfer-img' src={nft.metadata.mediaUrl} alt='NFT' />
 
-                    <h3><Translate id='NFTTransfer.transferNft' /></h3>
-                    <p className='transfer-txt'><Translate id='NFTTransfer.enterReceiver' /></p>
+          <h3>
+            <Translate id='NFTTransfer.transferNft' />
+          </h3>
+          <p className='transfer-txt'>
+            <Translate id='NFTTransfer.enterReceiver' />
+          </p>
 
-                    <form>
-                        <div className='receiver-input'>
-                            <ReceiverInputWithLabel
-                                receiverId={receiverId}
-                                handleChangeReceiverId={setReceiverId}
-                                checkAccountAvailable={(accountId) => dispatch(checkAccountAvailable(accountId))}
-                                localAlert={localAlert}
-                                autoFocus={!isMobile()}
-                                clearLocalAlert={() => dispatch(clearLocalAlert())}
-                                setIsImplicitAccount={setIsImplicitAccount}
-                                isSuccess={isSuccess}
-                                isProblem={isProblem}
-                            />
-                        </div>
+          <form>
+            <div className='receiver-input'>
+              <ReceiverInputWithLabel
+                receiverId={receiverId}
+                handleChangeReceiverId={setReceiverId}
+                checkAccountAvailable={(accountId) => dispatch(checkAccountAvailable(accountId))}
+                localAlert={localAlert}
+                autoFocus={!isMobile()}
+                clearLocalAlert={() => dispatch(clearLocalAlert())}
+                setIsImplicitAccount={setIsImplicitAccount}
+                isSuccess={isSuccess}
+                isProblem={isProblem}
+              />
+            </div>
 
-                        <ModalFooter>
-                            <div className='buttons'>
-                                <FormButton
-                                    className='link'
-                                    type='button'
-                                    onClick={onClose}
-                                    color='gray'
-                                >
-                                    <Translate id='NFTTransfer.cancel' />
-                                </FormButton>
-                                <FormButton
-                                    className='next-btn'
-                                    type='submit'
-                                    disabled={isLoading || isProblem}
-                                    onClick={() => setViewType('confirm')}
-                                >
-                                    <Translate id='NFTTransfer.next' />
-                                </FormButton>
-                            </div>
-                        </ModalFooter>
-                    </form>
-                </StyledContainer>
-            )}
+            <ModalFooter>
+              <div className='buttons'>
+                <FormButton className='link' type='button' onClick={onClose} color='gray'>
+                  <Translate id='NFTTransfer.cancel' />
+                </FormButton>
+                <FormButton
+                  className='next-btn'
+                  type='submit'
+                  disabled={isLoading || isProblem}
+                  onClick={() => setViewType("confirm")}
+                >
+                  <Translate id='NFTTransfer.next' />
+                </FormButton>
+              </div>
+            </ModalFooter>
+          </form>
+        </StyledContainer>
+      )}
 
-            {viewType === 'confirm' && (
-                <StyledContainer>
-                    <h3><Translate id='NFTTransfer.transferNft' /></h3>
+      {viewType === "confirm" && (
+        <StyledContainer>
+          <h3>
+            <Translate id='NFTTransfer.transferNft' />
+          </h3>
 
-                    <div className='confirm-nft-card'>
-                        <div className='confirm-img'>
-                            <img src={nft.metadata.mediaUrl} alt='NFT' />
-                        </div>
+          <div className='confirm-nft-card'>
+            <div className='confirm-img'>
+              <img src={nft.metadata.mediaUrl} alt='NFT' />
+            </div>
 
-                        <div className='line'></div>
-                        <div className='from-box'>
-                            <span className='confirm-txt v-center'><Translate id='transfer.from' /></span>
-                            <span className='h-right v-center'>
-                                <span className="account-id" title={accountId}>
-                                    {shortenAccountId(accountId)}
-                                </span>
-                                <Balance amount={nearBalance} showBalanceInUSD={false} />
-                            </span>
-                        </div>
-                        <div className='line'></div>
-                        <div className='to-box'>
-                            <span className='confirm-txt v-center'><Translate id='transfer.to' /></span>
-                            <span
-                                className="h-right v-center account-id"
-                                title={receiverId}
-                            >
-                                {shortReceiverId}
-                            </span>
-                        </div>
-                    </div>
+            <div className='line'></div>
+            <div className='from-box'>
+              <span className='confirm-txt v-center'>
+                <Translate id='transfer.from' />
+              </span>
+              <span className='h-right v-center'>
+                <span className="account-id" title={accountId}>
+                  {shortenAccountId(accountId)}
+                </span>
+                <Balance amount={nearBalance} showBalanceInUSD={false} />
+              </span>
+            </div>
+            <div className='line'></div>
+            <div className='to-box'>
+              <span className='confirm-txt v-center'>
+                <Translate id='transfer.to' />
+              </span>
+              <span className="h-right v-center account-id" title={receiverId}>
+                {shortReceiverId}
+              </span>
+            </div>
+          </div>
 
-                    <EstimatedFees gasFeeAmount={CONFIG.NFT_TRANSFER_GAS} />
+          <EstimatedFees gasFeeAmount={CONFIG.NFT_TRANSFER_GAS} />
 
-                    <div className='full-width'>
-                        <ModalFooter>
-                            <div className='buttons'>
-                                <FormButton
-                                    className='link'
-                                    type='button'
-                                    onClick={onClose}
-                                    color='gray'
-                                >
-                                    <Translate id='NFTTransfer.cancel' />
-                                </FormButton>
-                                <FormButton
-                                    className='next-btn'
-                                    type='submit'
-                                    sending={sending}
-                                    onClick={() => sendNFT(nft, receiverId)}
-                                >
-                                    <Translate id='NFTTransfer.confirm' />
-                                </FormButton>
-                            </div>
-                        </ModalFooter>
-                    </div>
-                </StyledContainer>
-            )}
+          <div className='full-width'>
+            <ModalFooter>
+              <div className='buttons'>
+                <FormButton className='link' type='button' onClick={onClose} color='gray'>
+                  <Translate id='NFTTransfer.cancel' />
+                </FormButton>
+                <FormButton
+                  className='next-btn'
+                  type='submit'
+                  sending={sending}
+                  onClick={() => sendNFT(nft, receiverId)}
+                >
+                  <Translate id='NFTTransfer.confirm' />
+                </FormButton>
+              </div>
+            </ModalFooter>
+          </div>
+        </StyledContainer>
+      )}
 
-            {viewType === 'success' && (
-                <StyledContainer className='small-centered'>
-                    <div className='icon'>
-                        <AvatarSuccessIcon />
-                    </div>
-                    <div className='success'>
-                        <p><Translate id='NFTTransfer.transactionComplete' /></p>
-                        <p title={receiverId}>
-                            <SafeTranslate
-                                id='NFTTransfer.youSent'
-                                data={transferData}
-                            />
-                        </p>
-                    </div>
+      {viewType === "success" && (
+        <StyledContainer className='small-centered'>
+          <div className='icon'>
+            <AvatarSuccessIcon />
+          </div>
+          <div className='success'>
+            <p>
+              <Translate id='NFTTransfer.transactionComplete' />
+            </p>
+            <p title={receiverId}>
+              <SafeTranslate id='NFTTransfer.youSent' data={transferData} />
+            </p>
+          </div>
 
-                    <div className='full-width'>
-                        <ModalFooter>
-                            <div className='success-bottons'>
-                                <FormButton
-                                    type='button'
-                                    linkTo={`${CONFIG.EXPLORER_URL}/transactions/${result.transaction.hash}`}
-                                    color='gray-gray'
-                                >
-                                    <Translate id='NFTTransfer.viewTransaction' />
-                                </FormButton>
-                                <FormButton
-                                    className='next-btn'
-                                    type='submit'
-                                    linkTo='/?tab=collectibles'
-                                >
-                                    <Translate id='NFTTransfer.continue' />
-                                </FormButton>
-                            </div>
-                        </ModalFooter>
-                    </div>
-                </StyledContainer>
-            )}
-        </Modal>
-    );
+          <div className='full-width'>
+            <ModalFooter>
+              <div className='success-bottons'>
+                <FormButton
+                  type='button'
+                  linkTo={`${CONFIG.EXPLORER_URL}/transactions/${result.transaction.hash}`}
+                  color='gray-gray'
+                >
+                  <Translate id='NFTTransfer.viewTransaction' />
+                </FormButton>
+                <FormButton className='next-btn' type='submit' linkTo='/?tab=collectibles'>
+                  <Translate id='NFTTransfer.continue' />
+                </FormButton>
+              </div>
+            </ModalFooter>
+          </div>
+        </StyledContainer>
+      )}
+    </Modal>
+  );
 }

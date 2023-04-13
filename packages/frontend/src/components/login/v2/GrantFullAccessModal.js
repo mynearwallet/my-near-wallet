@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import isMobile from '../../../utils/isMobile';
-import FormButton from '../../common/FormButton';
-import Modal from '../../common/modal/Modal';
-import ModalFooter from '../../common/modal/ModalFooter';
-import AlertTriangleIcon from '../../svg/AlertTriangleIcon';
-import ConnectWithApplication from './ConnectWithApplication';
+import isMobile from "../../../utils/isMobile";
+import FormButton from "../../common/FormButton";
+import Modal from "../../common/modal/Modal";
+import ModalFooter from "../../common/modal/ModalFooter";
+import AlertTriangleIcon from "../../svg/AlertTriangleIcon";
+import ConnectWithApplication from "./ConnectWithApplication";
 
 const StyledContainer = styled.div`
     &&& {
@@ -67,78 +67,77 @@ const StyledContainer = styled.div`
 `;
 
 export default ({
-    open,
-    onClose,
-    onConfirm,
-    appReferrer,
-    contractId,
-    contractIdUrl,
-    signedInAccountId,
-    loggingIn
+  open,
+  onClose,
+  onConfirm,
+  appReferrer,
+  contractId,
+  contractIdUrl,
+  signedInAccountId,
+  loggingIn,
 }) => {
-    const [userInputValue, setUserInputValue] = useState('');
-    return (
-        <Modal
-            id='grant-full-access-modal'
-            isOpen={open}
-            onClose={onClose}
-            modalSize='md'
-        >
-            <form onSubmit={(e) => {
-                if (signedInAccountId === userInputValue && !loggingIn) {
-                    onConfirm();
-                }
-                e.preventDefault();
-            }}>
-                <StyledContainer>
-                    <div className='upper-body'>
-                        <div className='alert-triangle'><AlertTriangleIcon color='#DC1F25' /></div>
-                        <h3><Translate id='login.v2.connectConfirm.fullAccessModal.title' /></h3>
-                        <ConnectWithApplication
-                            appReferrer={appReferrer}
-                            contractIdUrl={contractIdUrl}
-                        />
-                        <div className='desc'>
-                            <Translate id='login.v2.connectConfirm.fullAccessModal.desc' />
-                        </div>
-                    </div>
-                    <div className='input-label'><Translate id='input.accountId.title' /></div>
-                    <Translate>
-                        {({ translate }) => (
-                            <input
-                                placeholder={translate('input.accountId.placeholder')}
-                                onChange={(e) => setUserInputValue(e.target.value)}
-                                value={userInputValue}
-                                autoCapitalize='off'
-                                spellCheck='false'
-                                disabled={loggingIn}
-                                autoFocus={!isMobile()}
-                            />
-                        )}
-                    </Translate>
-                    <ModalFooter>
-                        <FormButton
-                            onClick={onClose}
-                            color='light-gray'
-                            className='link'
-                            type='button'
-                            disabled={loggingIn}
-                        >
-                            <Translate id='button.cancel' />
-                        </FormButton>
-                        <FormButton
-                            disabled={signedInAccountId !== userInputValue || loggingIn}
-                            onClick={onConfirm}
-                            sending={loggingIn}
-                            sendingString='button.connecting'
-                            type='submit'
-                        >
-                            <Translate id='button.confirm' />
-                        </FormButton>
-                    </ModalFooter>
-                </StyledContainer>
-            </form>
-        </Modal>
-    );
-
+  const [userInputValue, setUserInputValue] = useState("");
+  return (
+    <Modal id='grant-full-access-modal' isOpen={open} onClose={onClose} modalSize='md'>
+      <form
+        onSubmit={(e) => {
+          if (signedInAccountId === userInputValue && !loggingIn) {
+            onConfirm();
+          }
+          e.preventDefault();
+        }}
+      >
+        <StyledContainer>
+          <div className='upper-body'>
+            <div className='alert-triangle'>
+              <AlertTriangleIcon color='#DC1F25' />
+            </div>
+            <h3>
+              <Translate id='login.v2.connectConfirm.fullAccessModal.title' />
+            </h3>
+            <ConnectWithApplication appReferrer={appReferrer} contractIdUrl={contractIdUrl} />
+            <div className='desc'>
+              <Translate id='login.v2.connectConfirm.fullAccessModal.desc' />
+            </div>
+          </div>
+          <div className='input-label'>
+            <Translate id='input.accountId.title' />
+          </div>
+          <Translate>
+            {({ translate }) => (
+              <input
+                placeholder={translate("input.accountId.placeholder")}
+                onChange={(e) => setUserInputValue(e.target.value)}
+                value={userInputValue}
+                autoCapitalize='off'
+                spellCheck='false'
+                disabled={loggingIn}
+                autoFocus={!isMobile()}
+              />
+            )}
+          </Translate>
+          <ModalFooter>
+            <FormButton
+              onClick={onClose}
+              color='light-gray'
+              className='link'
+              type='button'
+              disabled={loggingIn}
+            >
+              <Translate id='button.cancel' />
+            </FormButton>
+            <FormButton
+              disabled={signedInAccountId !== userInputValue || loggingIn}
+              onClick={onConfirm}
+              sending={loggingIn}
+              sendingString='button.connecting'
+              type='submit'
+            >
+              <Translate id='button.confirm' />
+            </FormButton>
+          </ModalFooter>
+        </StyledContainer>
+      </form>
+    </Modal>
+  );
 };

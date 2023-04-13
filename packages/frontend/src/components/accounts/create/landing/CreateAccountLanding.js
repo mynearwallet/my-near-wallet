@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../../../common/FormButton';
-import Container from '../../../common/styled/Container.css';
-import ArrowIcon from '../../../svg/ArrowIcon';
-import CreateAccountTerms from '../CreateAccountTerms';
+import FormButton from "../../../common/FormButton";
+import Container from "../../../common/styled/Container.css";
+import ArrowIcon from "../../../svg/ArrowIcon";
+import CreateAccountTerms from "../CreateAccountTerms";
 
 const StyledContainer = styled(Container)`
     &&& {
@@ -53,37 +53,37 @@ const StyledContainer = styled(Container)`
 `;
 
 const CreateAccountLanding = () => {
-    return (
-        <StyledContainer className='small-centered border'>
-            <h1><Translate id='createAccount.landing.title' /></h1>
-            <h2><Translate id='createAccount.landing.descOne' /></h2>
-            <h2><Translate id='createAccount.landing.descTwo' /></h2>
-            <FormButton
-                linkTo='https://near.org'
-                className='link normal'
-            >
-                <Translate id='button.learnMoreAboutNear' />
-                <ArrowIcon />
-            </FormButton>
-            <FormButton
-                linkTo='/set-recovery-implicit-account'
-                trackingId='get started setup-recovery-implicit'
-                className='primary'
-            >
-                <Translate id='button.getStarted' />
-            </FormButton>
-            <CreateAccountTerms />
-            <div className='existing-account'>
-                <Translate id='createAccount.alreadyHaveAnAccount' />
-                <FormButton
-                    linkTo='/recover-account'
-                    className='link normal underline'
-                >
-                    <Translate id='createAccount.recoverItHere' />
-                </FormButton>
-            </div>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer className='small-centered border'>
+      <h1>
+        <Translate id='createAccount.landing.title' />
+      </h1>
+      <h2>
+        <Translate id='createAccount.landing.descOne' />
+      </h2>
+      <h2>
+        <Translate id='createAccount.landing.descTwo' />
+      </h2>
+      <FormButton linkTo='https://near.org' className='link normal'>
+        <Translate id='button.learnMoreAboutNear' />
+        <ArrowIcon />
+      </FormButton>
+      <FormButton
+        linkTo='/set-recovery-implicit-account'
+        trackingId='get started setup-recovery-implicit'
+        className='primary'
+      >
+        <Translate id='button.getStarted' />
+      </FormButton>
+      <CreateAccountTerms />
+      <div className='existing-account'>
+        <Translate id='createAccount.alreadyHaveAnAccount' />
+        <FormButton linkTo='/recover-account' className='link normal underline'>
+          <Translate id='createAccount.recoverItHere' />
+        </FormButton>
+      </div>
+    </StyledContainer>
+  );
 };
 
 export default CreateAccountLanding;

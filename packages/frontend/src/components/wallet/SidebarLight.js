@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
 
-import CreateCustomNameLightBanner from './CreateCustomNameLightBanner';
-import ExploreNativeBanner from './ExploreNativeBanner';
+import CreateCustomNameLightBanner from "./CreateCustomNameLightBanner";
+import ExploreNativeBanner from "./ExploreNativeBanner";
 
 const StyledContainer = styled.div`
     background-color: transparent;
@@ -42,19 +42,29 @@ const StyledBanner = styled.div`
 `;
 
 export default ({ availableAccounts }) => {
-    const [activeComponent, setActiveComponent] = useState('ExploreApps');
+  const [activeComponent, setActiveComponent] = useState("ExploreApps");
 
-    return (
-        <StyledContainer>
-            <StyledBanner>
-                {activeComponent === 'ExploreApps' ? <ExploreNativeBanner /> : <CreateCustomNameLightBanner/>}
-            </StyledBanner>
-            {availableAccounts && (
-                <div className='dots'>
-                    <div className={`dot ${activeComponent === 'ExploreApps' ? 'active' : ''}`} onClick={() => setActiveComponent('ExploreApps')}></div>
-                    <div className={`dot ${activeComponent === 'CreateCustomName' ? 'active' : ''}`} onClick={() => setActiveComponent('CreateCustomName')}></div>
-                </div>
-            )}
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer>
+      <StyledBanner>
+        {activeComponent === "ExploreApps" ? (
+          <ExploreNativeBanner />
+        ) : (
+          <CreateCustomNameLightBanner />
+        )}
+      </StyledBanner>
+      {availableAccounts && (
+        <div className='dots'>
+          <div
+            className={`dot ${activeComponent === "ExploreApps" ? "active" : ""}`}
+            onClick={() => setActiveComponent("ExploreApps")}
+          ></div>
+          <div
+            className={`dot ${activeComponent === "CreateCustomName" ? "active" : ""}`}
+            onClick={() => setActiveComponent("CreateCustomName")}
+          ></div>
+        </div>
+      )}
+    </StyledContainer>
+  );
 };

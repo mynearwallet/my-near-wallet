@@ -1,10 +1,10 @@
-import { push } from 'connected-react-router';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import { push } from "connected-react-router";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
 
-import NearLogoAndPlusIcon from '../svg/NearLogoAndPlusIcon';
+import NearLogoAndPlusIcon from "../svg/NearLogoAndPlusIcon";
 
 const StyledContainer = styled.div`
     @media (max-width: 991px) {
@@ -48,19 +48,23 @@ const StyledContainer = styled.div`
 `;
 
 export default () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    return (
-        <StyledContainer className='deposit-near-banner'>
-            <div>
-                <div onClick={() => dispatch(push({ pathname: '/buy' }))} >
-                    <NearLogoAndPlusIcon />
-                    <div>
-                        <div className='banner-title'><Translate id='wallet.depositNear.title' /></div>
-                        <div className='banner-desc'><Translate id='wallet.depositNear.desc' /></div>
-                    </div>
-                </div>
+  return (
+    <StyledContainer className='deposit-near-banner'>
+      <div>
+        <div onClick={() => dispatch(push({ pathname: "/buy" }))}>
+          <NearLogoAndPlusIcon />
+          <div>
+            <div className='banner-title'>
+              <Translate id='wallet.depositNear.title' />
             </div>
-        </StyledContainer>
-    );
+            <div className='banner-desc'>
+              <Translate id='wallet.depositNear.desc' />
+            </div>
+          </div>
+        </div>
+      </div>
+    </StyledContainer>
+  );
 };

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
     color: #72727A;
@@ -16,7 +16,7 @@ const StyledContainer = styled.div`
 `;
 
 export default () => (
-    <StyledContainer className='create-account-terms'>
-        <Translate id='createAccount.termsPage.disclaimer' />
-    </StyledContainer>
+  <StyledContainer className='create-account-terms'>
+    <Translate id='createAccount.termsPage.disclaimer' />
+  </StyledContainer>
 );

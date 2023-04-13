@@ -1,1 +1,1 @@
-export { default } from './FungibleTokenExchange';
+export { default } from "./FungibleTokenExchange";

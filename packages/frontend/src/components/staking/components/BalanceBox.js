@@ -1,17 +1,19 @@
-import BN from 'bn.js';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled, { css } from 'styled-components';
+import BN from "bn.js";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled, { css } from "styled-components";
 
-import classNames from '../../../utils/classNames';
-import Balance from '../../common/balance/Balance';
-import FormButton from '../../common/FormButton';
-import TokenAmount from '../../common/token/TokenAmount';
-import TokenIcon from '../../common/token/TokenIcon';
-import Tooltip from '../../common/Tooltip';
+import classNames from "../../../utils/classNames";
+import Balance from "../../common/balance/Balance";
+import FormButton from "../../common/FormButton";
+import TokenAmount from "../../common/token/TokenAmount";
+import TokenIcon from "../../common/token/TokenIcon";
+import Tooltip from "../../common/Tooltip";
 
 const Container = styled.div`
-    ${(props) => !props.hideBorder && css`
+    ${(props) =>
+      !props.hideBorder &&
+      css`
         border-bottom: 2px solid #F2F2F2;
     `}
     padding: 15px 0;
@@ -103,67 +105,65 @@ const Container = styled.div`
 `;
 
 export default function BalanceBox({
-    title,
-    token,
-    info,
-    onClick,
-    button,
-    buttonColor,
-    loading,
-    disclaimer,
-    linkTo,
-    buttonTestId,
-    balanceTestId,
-    hideBorder = false
+  title,
+  token,
+  info,
+  onClick,
+  button,
+  buttonColor,
+  loading,
+  disclaimer,
+  linkTo,
+  buttonTestId,
+  balanceTestId,
+  hideBorder = false,
 }) {
-    return (
-        <Container className='balance-box' hideBorder={hideBorder}>
-            <div className='left'>
-                {(title || info) && (
-                    <div className='title'>
-                        {title && <Translate id={title}/>}
-                        {info && <Tooltip translate={info}/>}
-                        {loading && <span className="animated-dots" />}
-                    </div>
-                )}
-                <div className='token-balance'>
-                    <div className='icon'>
-                        <TokenIcon symbol={token.onChainFTMetadata?.symbol} icon={token.onChainFTMetadata?.icon}/>
-                    </div>
-                    {token.onChainFTMetadata?.symbol === 'NEAR' &&
-                    !token.contractName ? (
-                            <Balance
-                                amount={token.balance}
-                                data-test-id={balanceTestId}
-                                symbol={false}
-                            />
-                        ) : (
-                            <TokenAmount
-                                token={token}
-                                className="balance"
-                                withSymbol={true}
-                                data-test-id={balanceTestId}
-                            />
-                        )}
-                </div>
+  return (
+    <Container className='balance-box' hideBorder={hideBorder}>
+      <div className='left'>
+        {(title || info) && (
+          <div className='title'>
+            {title && <Translate id={title} />}
+            {info && <Tooltip translate={info} />}
+            {loading && <span className="animated-dots" />}
+          </div>
+        )}
+        <div className='token-balance'>
+          <div className='icon'>
+            <TokenIcon
+              symbol={token.onChainFTMetadata?.symbol}
+              icon={token.onChainFTMetadata?.icon}
+            />
+          </div>
+          {token.onChainFTMetadata?.symbol === "NEAR" && !token.contractName ? (
+            <Balance amount={token.balance} data-test-id={balanceTestId} symbol={false} />
+          ) : (
+            <TokenAmount
+              token={token}
+              className="balance"
+              withSymbol={true}
+              data-test-id={balanceTestId}
+            />
+          )}
+        </div>
 
-                {disclaimer && (
-                    <div className='withdrawal-disclaimer'>
-                        <Translate id={disclaimer}/>
-                    </div>
-                )}
-            </div>
-            {button && (onClick || linkTo) && (
-                <FormButton
-                    data-test-id={buttonTestId}
-                    disabled={new BN(token.balance).isZero() || loading}
-                    onClick={onClick}
-                    linkTo={linkTo}
-                    className={classNames(['small', buttonColor])}
-                >
-                    <Translate id={button}/>
-                </FormButton>
-            )}
-        </Container>
-    );
+        {disclaimer && (
+          <div className='withdrawal-disclaimer'>
+            <Translate id={disclaimer} />
+          </div>
+        )}
+      </div>
+      {button && (onClick || linkTo) && (
+        <FormButton
+          data-test-id={buttonTestId}
+          disabled={new BN(token.balance).isZero() || loading}
+          onClick={onClick}
+          linkTo={linkTo}
+          className={classNames(["small", buttonColor])}
+        >
+          <Translate id={button} />
+        </FormButton>
+      )}
+    </Container>
+  );
 }

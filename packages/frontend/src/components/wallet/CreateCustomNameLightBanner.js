@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import { Mixpanel } from '../../mixpanel';
-import NewAccountIdGraphic from '../common/graphics/NewAccountIdGraphic';
+import { Mixpanel } from "../../mixpanel";
+import NewAccountIdGraphic from "../common/graphics/NewAccountIdGraphic";
 
 const Container = styled.div`
     &&& {
@@ -52,23 +52,23 @@ const StyledBannerLink = styled(Link)`
     justify-content: center;
 `;
 
-const track = () => Mixpanel.track('Click Add Custom Address on Banner Wallet Page');
+const track = () => Mixpanel.track("Click Add Custom Address on Banner Wallet Page");
 
 const CreateCustomNameLightBanner = () => {
-    return (
-        <Container>
-            <NewAccountIdGraphic accountId='satoshi.near'/>
-            <h2>
-                <Translate id='account.createImplicitAccount.createCustomNameModal.title' />
-            </h2>
-            <div className='desc'>
-                <Translate id='account.createImplicitAccount.createCustomNameModal.desc' />
-            </div>
-            <StyledBannerLink to="/create" onClick={track}>
-                <Translate id='button.addACustomAddress'/>
-            </StyledBannerLink>
-        </Container>
-    );
+  return (
+    <Container>
+      <NewAccountIdGraphic accountId='satoshi.near' />
+      <h2>
+        <Translate id='account.createImplicitAccount.createCustomNameModal.title' />
+      </h2>
+      <div className='desc'>
+        <Translate id='account.createImplicitAccount.createCustomNameModal.desc' />
+      </div>
+      <StyledBannerLink to="/create" onClick={track}>
+        <Translate id='button.addACustomAddress' />
+      </StyledBannerLink>
+    </Container>
+  );
 };
 
 export default CreateCustomNameLightBanner;

@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import IntFlagIcon from '../../../images/int-flag-small.svg';
-import classNames from '../../../utils/classNames';
-import EmailIconOne from '../../svg/EmailIconOne';
-import HardwareWalletIcon from '../../svg/HardwareWalletIcon';
-import PassPhraseIcon from '../../svg/PassPhraseIcon';
-import PhoneIconOne from '../../svg/PhoneIconOne';
+import IntFlagIcon from "../../../images/int-flag-small.svg";
+import classNames from "../../../utils/classNames";
+import EmailIconOne from "../../svg/EmailIconOne";
+import HardwareWalletIcon from "../../svg/HardwareWalletIcon";
+import PassPhraseIcon from "../../svg/PassPhraseIcon";
+import PhoneIconOne from "../../svg/PhoneIconOne";
 
 const Container = styled.div`
     background-color: #FAFAFA;
@@ -182,64 +182,53 @@ const Header = styled.div`
     }
 `;
 
-const Icon = ({option, color}) => {
-    switch (option) {
-        case 'email':
-            return <EmailIconOne color={color}/>;
-        case 'phone':
-            return <PhoneIconOne color={color}/>;
-        case 'phrase':
-            return <PassPhraseIcon color={color}/>;
-        case 'ledger':
-            return <HardwareWalletIcon color={color}/>;
-        default:
-            return '';
-    }
+const Icon = ({ option, color }) => {
+  switch (option) {
+    case "email":
+      return <EmailIconOne color={color} />;
+    case "phone":
+      return <PhoneIconOne color={color} />;
+    case "phrase":
+      return <PassPhraseIcon color={color} />;
+    case "ledger":
+      return <HardwareWalletIcon color={color} />;
+    default:
+      return "";
+  }
 };
 
-const RecoveryOption = ({
-    children,
-    option,
-    onClick,
-    active,
-    disabled,
-    problem
-}) => {
+const RecoveryOption = ({ children, option, onClick, active, disabled, problem }) => {
+  active = active === option;
 
-    active = active === option;
-
-    return (
-        <Container 
-            onClick={!disabled ? onClick : undefined} 
-            className={classNames([{active: active && !disabled, disabled, inputProblem: problem}])}
-            data-test-id={`recoveryOption.${option}`}
-        >
-            <Header>
-                <div>
-                    <div className='title'>
-                        <Translate id={`setupRecovery.${option}Title`}/>
-                    </div>
-                    <div className='desc'>
-                        <Translate id={`setupRecovery.${option}Desc`}/>
-                    </div>
-                </div>
-                <Icon option={option} color={active}/>
-            </Header>
-            {active && option !== 'phrase' && option !== 'ledger' && <hr/>}
-            {!disabled && active && children}
-        </Container>
-    );
+  return (
+    <Container
+      onClick={!disabled ? onClick : undefined}
+      className={classNames([{ active: active && !disabled, disabled, inputProblem: problem }])}
+      data-test-id={`recoveryOption.${option}`}
+    >
+      <Header>
+        <div>
+          <div className='title'>
+            <Translate id={`setupRecovery.${option}Title`} />
+          </div>
+          <div className='desc'>
+            <Translate id={`setupRecovery.${option}Desc`} />
+          </div>
+        </div>
+        <Icon option={option} color={active} />
+      </Header>
+      {active && option !== "phrase" && option !== "ledger" && <hr />}
+      {!disabled && active && children}
+    </Container>
+  );
 };
 
 RecoveryOption.propTypes = {
-    children: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object
-    ]),
-    option: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
-    active: PropTypes.string.isRequired,
-    problem: PropTypes.bool
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  option: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  active: PropTypes.string.isRequired,
+  problem: PropTypes.bool,
 };
 
 export default RecoveryOption;

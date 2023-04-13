@@ -1,8 +1,8 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import trandingProjectsIcon from '../media/trandingProjects.svg';
+import trandingProjectsIcon from "../media/trandingProjects.svg";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -64,20 +64,27 @@ const StyledImg = styled.img`
 `;
 
 export default function ({ projects }) {
-    return (
-        <StyledContainer>
-            <StyledHeader>
-                <img src={trandingProjectsIcon} alt="Tranding projects"/>
-                <StyledHeaderH2><Translate id='explore.trendingProjects'/></StyledHeaderH2>
-            </StyledHeader>
-            <StyledArea>
-                {projects.map((el) => (
-                    <StyledLink key={el.name} href={`https://awesomenear.com/${el.linkName}`} target='_blank' rel='noopener noreferrer'>
-                        <StyledImg src={el.icon} alt={el.name} width='80' height='80'/>
-                        <div>{el.name}</div>
-                    </StyledLink>
-                ))}
-            </StyledArea>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer>
+      <StyledHeader>
+        <img src={trandingProjectsIcon} alt="Tranding projects" />
+        <StyledHeaderH2>
+          <Translate id='explore.trendingProjects' />
+        </StyledHeaderH2>
+      </StyledHeader>
+      <StyledArea>
+        {projects.map((el) => (
+          <StyledLink
+            key={el.name}
+            href={`https://awesomenear.com/${el.linkName}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <StyledImg src={el.icon} alt={el.name} width='80' height='80' />
+            <div>{el.name}</div>
+          </StyledLink>
+        ))}
+      </StyledArea>
+    </StyledContainer>
+  );
 }

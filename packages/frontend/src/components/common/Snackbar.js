@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import styled from "styled-components";
 
-import successIcon from '../../images/icon-check-white.svg';
-import closeIcon from '../../images/icon-close-white.svg';
+import successIcon from "../../images/icon-check-white.svg";
+import closeIcon from "../../images/icon-close-white.svg";
 
 // Add additional theme icons
 
@@ -75,63 +75,52 @@ const HideButton = styled.div`
 `;
 
 class Snackbar extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            animate: false
-        };
+    this.state = {
+      animate: false,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.show !== this.props.show && this.props.show) {
+      setTimeout(() => {
+        this.setState({ animate: true }, () => {
+          setTimeout(() => {
+            this.setState({ animate: false });
+          }, 5000);
+        });
+      }, 0);
     }
+  }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.show !== this.props.show && this.props.show) {
-            setTimeout(() => {
-                this.setState({ animate: true }, () => {
-                    setTimeout(() => {
-                        this.setState({ animate: false });
-                    }, 5000);
-                });
-            }, 0);
-        }
+  render() {
+    const { theme, message, show, onHide } = this.props;
+
+    if (show) {
+      return (
+        <Container className={this.state.animate ? "show" : ""}>
+          <Wrapper className={`${theme}-theme`}>
+            <Icon className='theme-icon' />
+            {message}
+            {onHide && <HideButton onClick={onHide} />}
+          </Wrapper>
+        </Container>
+      );
+    } else {
+      return null;
     }
-
-    render() {
-
-        const {
-            theme,
-            message,
-            show,
-            onHide
-        } = this.props;
-
-        if (show) {
-            return (
-                <Container className={this.state.animate ? 'show' : ''}>
-                    <Wrapper className={`${theme}-theme`}>
-                        <Icon className='theme-icon'/>
-                        {message}
-                        {onHide &&
-                            <HideButton onClick={onHide}/>
-                        }
-                    </Wrapper>
-                </Container>
-            );
-        } else {
-            return null;
-        }
-    }
+  }
 }
 
 const snackbarDuration = 5500;
 
 Snackbar.propTypes = {
-    theme: PropTypes.string.isRequired,
-    message: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object
-    ]).isRequired,
-    show: PropTypes.bool.isRequired,
-    onHide: PropTypes.func,
+  theme: PropTypes.string.isRequired,
+  message: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func,
 };
 
 export { Snackbar, snackbarDuration };

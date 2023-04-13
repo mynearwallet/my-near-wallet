@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { Translate } from 'react-localize-redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { Component } from "react";
+import { Translate } from "react-localize-redux";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import styled from "styled-components";
 
-import iconShare from '../../images/icon-share-blue.svg';
-import { Mixpanel } from '../../mixpanel/index';
-import { selectAccountSlice } from '../../redux/slices/account';
-import copyText from '../../utils/copyText';
-import isMobile from '../../utils/isMobile';
-import Divider from '../common/Divider';
-import {Snackbar, snackbarDuration } from '../common/Snackbar';
-import ProfileQRCode from '../profile/ProfileQRCode';
+import iconShare from "../../images/icon-share-blue.svg";
+import { Mixpanel } from "../../mixpanel/index";
+import { selectAccountSlice } from "../../redux/slices/account";
+import copyText from "../../utils/copyText";
+import isMobile from "../../utils/isMobile";
+import Divider from "../common/Divider";
+import { Snackbar, snackbarDuration } from "../common/Snackbar";
+import ProfileQRCode from "../profile/ProfileQRCode";
 
 const Container = styled.div`
     display: flex;
@@ -110,91 +110,82 @@ const MobileShare = styled.div`
 `;
 
 class ReceiveMoney extends Component {
-    constructor(props) {
-        super(props);
-        this.urlRef = React.createRef();
+  constructor(props) {
+    super(props);
+    this.urlRef = React.createRef();
 
-        this.state = {
-            successSnackbar: false,
-        };
-    }
+    this.state = {
+      successSnackbar: false,
+    };
+  }
 
-    handleCopyAddress = () => {
-        Mixpanel.track('RECEIVE Copy account address');
-        if (navigator.share && this.props.isMobile) {
-            navigator.share({
-                url: this.props.account.accountId
-            }).catch((err) => {
-                console.log(err.message);
-            });
-        } else {
-            this.handleCopyDesktop();
-        }
-    }
-
-    handleCopyDesktop = () => {
-        copyText(this.urlRef.current);
-        this.setState({ successSnackbar: true }, () => {
-            setTimeout(() => {
-                this.setState({ successSnackbar: false });
-            }, snackbarDuration);
+  handleCopyAddress = () => {
+    Mixpanel.track("RECEIVE Copy account address");
+    if (navigator.share && this.props.isMobile) {
+      navigator
+        .share({
+          url: this.props.account.accountId,
+        })
+        .catch((err) => {
+          console.log(err.message);
         });
+    } else {
+      this.handleCopyDesktop();
     }
+  };
 
-    render() {
+  handleCopyDesktop = () => {
+    copyText(this.urlRef.current);
+    this.setState({ successSnackbar: true }, () => {
+      setTimeout(() => {
+        this.setState({ successSnackbar: false });
+      }, snackbarDuration);
+    });
+  };
 
-        const {
-            successSnackbar
-        } = this.state;
+  render() {
+    const { successSnackbar } = this.state;
 
-        const {
-            account
-        } = this.props;
+    const { account } = this.props;
 
-        const accountId = account?.accountId || account.localStorage?.accountId;
+    const accountId = account?.accountId || account.localStorage?.accountId;
 
-        return (
-            <Translate>
-                {({ translate }) => (
-                    <div className='ui container'>
-                        <Container>
-                            <h1>{translate('receivePage.addressTitle')}</h1>
-                            <Address onClick={this.handleCopyAddress}>
-                                {accountId}
-                                <UrlAddress ref={this.urlRef}>
-                                    {accountId}
-                                </UrlAddress>
-                                {navigator.share && isMobile() ? (
-                                    <MobileShare/>
-                                ) : (
-                                    <CopyAddress title={translate('receivePage.copyAddressLinkLong')}>
-                                        {translate('receivePage.copyAddressLinkShort')}
-                                    </CopyAddress>
-                                )}
-                            </Address>
-                            <Divider/>
-                            <h1>
-                                {translate('receivePage.qrCodeTitle')}
-                            </h1>
-                            <ProfileQRCode accountId={accountId}/>
-                        </Container>
-                        <Snackbar
-                            theme='success'
-                            message={translate('receivePage.snackbarCopySuccess')}
-                            show={successSnackbar}
-                            onHide={() => this.setState({ successSnackbar: false })}
-                        />
-                    </div>
+    return (
+      <Translate>
+        {({ translate }) => (
+          <div className='ui container'>
+            <Container>
+              <h1>{translate("receivePage.addressTitle")}</h1>
+              <Address onClick={this.handleCopyAddress}>
+                {accountId}
+                <UrlAddress ref={this.urlRef}>{accountId}</UrlAddress>
+                {navigator.share && isMobile() ? (
+                  <MobileShare />
+                ) : (
+                  <CopyAddress title={translate("receivePage.copyAddressLinkLong")}>
+                    {translate("receivePage.copyAddressLinkShort")}
+                  </CopyAddress>
                 )}
-            </Translate>
-        );
-    }
+              </Address>
+              <Divider />
+              <h1>{translate("receivePage.qrCodeTitle")}</h1>
+              <ProfileQRCode accountId={accountId} />
+            </Container>
+            <Snackbar
+              theme='success'
+              message={translate("receivePage.snackbarCopySuccess")}
+              show={successSnackbar}
+              onHide={() => this.setState({ successSnackbar: false })}
+            />
+          </div>
+        )}
+      </Translate>
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({
-    account: selectAccountSlice(state)
+  account: selectAccountSlice(state),
 });
 
-export const ReceiveMoneyWithRouter = connect(
-    mapStateToProps
-)(withRouter(ReceiveMoney));
+export const ReceiveMoneyWithRouter = connect(mapStateToProps)(withRouter(ReceiveMoney));

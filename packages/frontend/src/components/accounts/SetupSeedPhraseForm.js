@@ -1,15 +1,14 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { withRouter } from "react-router-dom";
+import styled from "styled-components";
 
-import ClickToCopy from '../common/ClickToCopy';
-import FormButton from '../common/FormButton';
-import CopyIcon from '../svg/CopyIcon';
-import GenerateNewIcon from '../svg/GenerateNewIcon';
+import ClickToCopy from "../common/ClickToCopy";
+import FormButton from "../common/FormButton";
+import CopyIcon from "../svg/CopyIcon";
+import GenerateNewIcon from "../svg/GenerateNewIcon";
 
-
-const CustomDiv = styled('div')`
+const CustomDiv = styled("div")`
     .seed-phrase-wrapper {
         box-shadow: 0px 45px 56px rgba(0, 0, 0, 0.07), 0px 10.0513px 12.5083px rgba(0, 0, 0, 0.0417275), 0px 2.99255px 3.72406px rgba(0, 0, 0, 0.0282725);
         border-radius: 8px;
@@ -75,7 +74,7 @@ const CustomDiv = styled('div')`
     }
 `;
 
-const Number = styled('span')`
+const Number = styled("span")`
     ::before {
         content: '${(props) => props.number || 1}';
         color: #2B9AF4;
@@ -85,62 +84,52 @@ const Number = styled('span')`
 `;
 
 const SetupSeedPhraseForm = ({
-    seedPhrase,
-    refreshData,
-    onClickContinue,
-    onClickCancel,
-    hasSeedPhraseRecovery = false
+  seedPhrase,
+  refreshData,
+  onClickContinue,
+  onClickCancel,
+  hasSeedPhraseRecovery = false,
 }) => {
-
-    return (
-        <CustomDiv translate='no' className='notranslate skiptranslate'>
-            <div className='seed-phrase-wrapper'>
-                <div id='seed-phrase'>
-                    {seedPhrase.split(' ').map((word, i) => (
-                        <span className='single-phrase' key={`phrase-${i}`}>
-                            <Number number={i + 1} className='h4'>{word} </Number>
-                        </span>
-                    ))}
-                </div>
-                <div className='buttons-wrapper'>
-                    <div>
-                        <ClickToCopy copy={seedPhrase} className='copy'>
-                            <FormButton
-                                color='gray-blue'
-                                className='small'
-                            >
-                                <CopyIcon color='#A2A2A8' />
-                                <Translate id='button.copy' />
-                            </FormButton>
-                        </ClickToCopy>
-                        <FormButton
-                            color='gray-blue'
-                            className='small generate'
-                            onClick={refreshData}
-                        >
-                            <GenerateNewIcon />
-                            <Translate id='button.generateNew' />
-                        </FormButton>
-                    </div>
-                </div>
-            </div>
-            <FormButton
-                disabled={hasSeedPhraseRecovery}
-                onClick={onClickContinue}
-                color='blue'
-                data-test-id="continueToSeedPhraseVerificationButton"
-            >
-                <Translate id='button.continue' />
+  return (
+    <CustomDiv translate='no' className='notranslate skiptranslate'>
+      <div className='seed-phrase-wrapper'>
+        <div id='seed-phrase'>
+          {seedPhrase.split(" ").map((word, i) => (
+            <span className='single-phrase' key={`phrase-${i}`}>
+              <Number number={i + 1} className='h4'>
+                {word}{" "}
+              </Number>
+            </span>
+          ))}
+        </div>
+        <div className='buttons-wrapper'>
+          <div>
+            <ClickToCopy copy={seedPhrase} className='copy'>
+              <FormButton color='gray-blue' className='small'>
+                <CopyIcon color='#A2A2A8' />
+                <Translate id='button.copy' />
+              </FormButton>
+            </ClickToCopy>
+            <FormButton color='gray-blue' className='small generate' onClick={refreshData}>
+              <GenerateNewIcon />
+              <Translate id='button.generateNew' />
             </FormButton>
-            <FormButton
-                onClick={onClickCancel}
-                className='link'
-                color='gray'
-            >
-                <Translate id='button.cancel' />
-            </FormButton>
-        </CustomDiv>
-    );
+          </div>
+        </div>
+      </div>
+      <FormButton
+        disabled={hasSeedPhraseRecovery}
+        onClick={onClickContinue}
+        color='blue'
+        data-test-id="continueToSeedPhraseVerificationButton"
+      >
+        <Translate id='button.continue' />
+      </FormButton>
+      <FormButton onClick={onClickCancel} className='link' color='gray'>
+        <Translate id='button.cancel' />
+      </FormButton>
+    </CustomDiv>
+  );
 };
 
 export default withRouter(SetupSeedPhraseForm);

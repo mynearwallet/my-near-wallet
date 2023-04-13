@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import classNames from '../../utils/classNames';
-import SafeTranslate from '../SafeTranslate';
+import classNames from "../../utils/classNames";
+import SafeTranslate from "../SafeTranslate";
 
 const LocalAlertBoxContainer = styled.div`
     font-weight: 500;
@@ -63,12 +63,18 @@ const LocalAlertBoxContainer = styled.div`
  * @param localAlert.success {boolean} true if request was succesful
  * @param localAlert.messageCode {string} localization code of status message to display
  */
-const LocalAlertBox = ({ localAlert, accountId, dots }) => (
-    localAlert?.show ? (
-        <LocalAlertBoxContainer className={classNames(['alert-info', {'success': localAlert.success}, {'problem': !localAlert.success}, {'dots': dots}])}>
-            <SafeTranslate id={localAlert.messageCode} data={{ accountId: accountId }}/>
-        </LocalAlertBoxContainer>
-    ) : null
-);
+const LocalAlertBox = ({ localAlert, accountId, dots }) =>
+  localAlert?.show ? (
+    <LocalAlertBoxContainer
+      className={classNames([
+        "alert-info",
+        { success: localAlert.success },
+        { problem: !localAlert.success },
+        { dots: dots },
+      ])}
+    >
+      <SafeTranslate id={localAlert.messageCode} data={{ accountId: accountId }} />
+    </LocalAlertBoxContainer>
+  ) : null;
 
 export default LocalAlertBox;

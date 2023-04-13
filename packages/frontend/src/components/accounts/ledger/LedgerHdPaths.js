@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import { onKeyDown } from '../../../hooks/eventListeners';
-import DropDown from '../../common/DropDown';
-import FormButton from '../../common/FormButton';
-import ChevronIcon from '../../svg/ChevronIcon';
-import SettingsIcon from '../../svg/SettingsIcon';
+import { onKeyDown } from "../../../hooks/eventListeners";
+import DropDown from "../../common/DropDown";
+import FormButton from "../../common/FormButton";
+import ChevronIcon from "../../svg/ChevronIcon";
+import SettingsIcon from "../../svg/SettingsIcon";
 
 const Container = styled.div`
     width: 100%;
@@ -112,80 +112,84 @@ const Container = styled.div`
  * @param {Object} props
  * @param {"import" | "export"} props.type - curently only affects copy
  */
-export const HDPathSelect = ({ handleConfirmHdPath, path, setPath, type = 'import' }) => {
+export const HDPathSelect = ({ handleConfirmHdPath, path, setPath, type = "import" }) => {
+  onKeyDown((e) => {
+    const dropdownElement = document.getElementById("hd-paths-dropdown");
+    const dropdownOpenIfRendered =
+      dropdownElement === null ||
+      document.getElementById("hd-paths-dropdown").classList.contains("open");
+    if (dropdownOpenIfRendered) {
+      if (e.keyCode === 38) {
+        increment();
+        e.preventDefault();
+      } else if (e.keyCode === 40) {
+        decrement();
+        e.preventDefault();
+      }
+    }
+  });
 
-    onKeyDown((e) => {
-        const dropdownElement = document.getElementById('hd-paths-dropdown');
-        const dropdownOpenIfRendered = dropdownElement === null || document.getElementById('hd-paths-dropdown').classList.contains('open');
-        if (dropdownOpenIfRendered) {
-            if (e.keyCode === 38) {
-                increment();
-                e.preventDefault();
-            } else if (e.keyCode === 40) {
-                decrement();
-                e.preventDefault();
-            }
-        }
-    });
+  const increment = () => {
+    setPath(path + 1);
+  };
 
-    const increment = () => {
-        setPath(path + 1);
-    };
+  const decrement = () => {
+    if (path > 0) {
+      setPath(path - 1);
+    }
+  };
 
-    const decrement = () => {
-        if (path > 0) {
-            setPath(path - 1);
-        }
-    };
-
-    return (
-        <Container>
-            <div className='ledger-dropdown-content'>
-                <div className='title'><Translate id='signInLedger.advanced.subTitle'/></div>
-                <div className='desc'><Translate id={`signInLedger.advanced.${type === 'export' ? 'exportDesc' : 'desc'}`}/></div>
-                <div className='path-wrapper'>
-                    <div className='default-paths'>44 / 397 / 0 / 0</div>
-                    <span>&ndash;</span>
-                    <div className='custom-path'>
-                        {path}
-                        <div className='buttons-wrapper'>
-                            <div className='arrow-btn increment' role='button' onClick={increment}>
-                                <ChevronIcon/>
-                            </div>
-                            <div className='arrow-btn decrement' role='button' onClick={decrement}>
-                                <ChevronIcon/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {handleConfirmHdPath ? (
-                    <FormButton
-                        className='hd-paths-dropdown-toggle'
-                        onClick={() => handleConfirmHdPath(path)}
-                    >
-                        <Translate id='signInLedger.advanced.setPath' />
-                    </FormButton>
-                ) : null}
+  return (
+    <Container>
+      <div className='ledger-dropdown-content'>
+        <div className='title'>
+          <Translate id='signInLedger.advanced.subTitle' />
+        </div>
+        <div className='desc'>
+          <Translate id={`signInLedger.advanced.${type === "export" ? "exportDesc" : "desc"}`} />
+        </div>
+        <div className='path-wrapper'>
+          <div className='default-paths'>44 / 397 / 0 / 0</div>
+          <span>&ndash;</span>
+          <div className='custom-path'>
+            {path}
+            <div className='buttons-wrapper'>
+              <div className='arrow-btn increment' role='button' onClick={increment}>
+                <ChevronIcon />
+              </div>
+              <div className='arrow-btn decrement' role='button' onClick={decrement}>
+                <ChevronIcon />
+              </div>
             </div>
-        </Container>
-    );
+          </div>
+        </div>
+        {handleConfirmHdPath ? (
+          <FormButton
+            className='hd-paths-dropdown-toggle'
+            onClick={() => handleConfirmHdPath(path)}
+          >
+            <Translate id='signInLedger.advanced.setPath' />
+          </FormButton>
+        ) : null}
+      </div>
+    </Container>
+  );
 };
 
-export default function LedgerHdPaths({ 
-    confirmedPath,
-    setConfirmedPath
-}) {
-    const [path, setPath] = useState(confirmedPath || 1);
+export default function LedgerHdPaths({ confirmedPath, setConfirmedPath }) {
+  const [path, setPath] = useState(confirmedPath || 1);
 
-    return (
-        <Container>
-            <DropDown
-                name='hd-paths-dropdown'
-                icon={<SettingsIcon/>}
-                title={<Translate id='signInLedger.advanced.title'/>}
-                content={<HDPathSelect handleConfirmHdPath={setConfirmedPath} path={path} setPath={setPath} />}
-                maxHeight={false}
-            />
-        </Container>
-    );
+  return (
+    <Container>
+      <DropDown
+        name='hd-paths-dropdown'
+        icon={<SettingsIcon />}
+        title={<Translate id='signInLedger.advanced.title' />}
+        content={
+          <HDPathSelect handleConfirmHdPath={setConfirmedPath} path={path} setPath={setPath} />
+        }
+        maxHeight={false}
+      />
+    </Container>
+  );
 }

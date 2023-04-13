@@ -1,108 +1,106 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect } from "react";
 
-import CONFIG from '../../../config';
-import useIsMounted from '../../../hooks/useIsMounted';
-import { Mixpanel } from '../../../mixpanel';
+import CONFIG from "../../../config";
+import useIsMounted from "../../../hooks/useIsMounted";
+import { Mixpanel } from "../../../mixpanel";
 import {
-    toSignificantDecimals,
-    formatTokenAmount,
-    removeTrailingZeros,
-} from '../../../utils/amounts';
-import { openTransactionInExplorer } from '../../../utils/window';
-import { useSwapData, VIEW_STATE } from '../model/Swap';
-import { getMinAmountOut, getSwapCost } from '../utils/calculations';
-import { DECIMALS_TO_SAFE } from '../utils/constants';
-import useSwap from '../utils/hooks/useSwap';
-import Preview from './Preview';
-import Success from './Success';
-import SwapForm from './SwapForm';
+  toSignificantDecimals,
+  formatTokenAmount,
+  removeTrailingZeros,
+} from "../../../utils/amounts";
+import { openTransactionInExplorer } from "../../../utils/window";
+import { useSwapData, VIEW_STATE } from "../model/Swap";
+import { getMinAmountOut, getSwapCost } from "../utils/calculations";
+import { DECIMALS_TO_SAFE } from "../utils/constants";
+import useSwap from "../utils/hooks/useSwap";
+import Preview from "./Preview";
+import Success from "./Success";
+import SwapForm from "./SwapForm";
 
 export default memo(function SwapWrapper({ history, account, tokensConfig }) {
-    const isMounted = useIsMounted();
-    const {
-        swapState: {
-            viewState,
-            tokenIn,
-            amountIn,
-            tokenOut,
-            amountOut,
-            swapPoolId,
-            slippage,
-            isNearTransformation,
-            lastSwapState,
-            swapPending,
-        },
-        events: { setViewState, setAmountIn, setEstimatedFee },
-    } = useSwapData();
+  const isMounted = useIsMounted();
+  const {
+    swapState: {
+      viewState,
+      tokenIn,
+      amountIn,
+      tokenOut,
+      amountOut,
+      swapPoolId,
+      slippage,
+      isNearTransformation,
+      lastSwapState,
+      swapPending,
+    },
+    events: { setViewState, setAmountIn, setEstimatedFee },
+  } = useSwapData();
 
-    useEffect(() => {
-        const fetch = async () => {
-            const fee = await getSwapCost({ account, tokenIn, tokenOut });
+  useEffect(() => {
+    const fetch = async () => {
+      const fee = await getSwapCost({ account, tokenIn, tokenOut });
 
-            if (isMounted) {
-                setEstimatedFee(
-                    removeTrailingZeros(
-                        formatTokenAmount(fee, CONFIG.NEAR_DECIMALS, CONFIG.NEAR_DECIMALS)
-                    )
-                );
-            }
-        };
-
-        fetch();
-    }, [tokenIn, tokenOut, isMounted]);
-
-    const goHome = () => history.push('/');
-    const showForm = () => setViewState(VIEW_STATE.inputForm);
-    const updateForm = () => {
-        setAmountIn('');
-        setViewState(VIEW_STATE.inputForm);
+      if (isMounted) {
+        setEstimatedFee(
+          removeTrailingZeros(formatTokenAmount(fee, CONFIG.NEAR_DECIMALS, CONFIG.NEAR_DECIMALS)),
+        );
+      }
     };
 
-    const minAmountOut = getMinAmountOut({
-        tokenOut,
-        amountOut,
-        slippage,
-    });
+    fetch();
+  }, [tokenIn, tokenOut, isMounted]);
 
-    const swap = useSwap({
-        account,
-        amountIn,
-        poolId: swapPoolId,
-        tokenIn,
-        tokenOut,
-        minAmountOut,
-        isNearTransformation,
-    });
+  const goHome = () => history.push("/");
+  const showForm = () => setViewState(VIEW_STATE.inputForm);
+  const updateForm = () => {
+    setAmountIn("");
+    setViewState(VIEW_STATE.inputForm);
+  };
 
-    const handleSwap = () => {
-        if (swap) {
-            Mixpanel.track('Click Confirm & Swap on Swap page');
-            swap();
-        }
-    };
+  const minAmountOut = getMinAmountOut({
+    tokenOut,
+    amountOut,
+    slippage,
+  });
 
-    const openTransaction = () => {
-        if (lastSwapState?.hash) {
-            openTransactionInExplorer(lastSwapState.hash);
-        }
-    };
+  const swap = useSwap({
+    account,
+    amountIn,
+    poolId: swapPoolId,
+    tokenIn,
+    tokenOut,
+    minAmountOut,
+    isNearTransformation,
+  });
 
-    const amountInToShow = toSignificantDecimals(amountIn, DECIMALS_TO_SAFE);
-    const amountOutToShow = toSignificantDecimals(amountOut, DECIMALS_TO_SAFE);
+  const handleSwap = () => {
+    if (swap) {
+      Mixpanel.track("Click Confirm & Swap on Swap page");
+      swap();
+    }
+  };
 
-    return viewState === VIEW_STATE.inputForm ? (
-        <SwapForm onGoBack={goHome} account={account} tokensConfig={tokensConfig} />
-    ) : viewState === VIEW_STATE.preview ? (
-        <Preview
-            onClickGoBack={showForm}
-            activeTokenFrom={tokenIn}
-            amountTokenFrom={amountInToShow}
-            activeTokenTo={tokenOut}
-            amountTokenTo={amountOutToShow}
-            startSwap={handleSwap}
-            swappingToken={swapPending}
-        />
-    ) : viewState === VIEW_STATE.result ? (
-        <Success onClickContinue={updateForm} onClickGoToExplorer={openTransaction} />
-    ) : null;
+  const openTransaction = () => {
+    if (lastSwapState?.hash) {
+      openTransactionInExplorer(lastSwapState.hash);
+    }
+  };
+
+  const amountInToShow = toSignificantDecimals(amountIn, DECIMALS_TO_SAFE);
+  const amountOutToShow = toSignificantDecimals(amountOut, DECIMALS_TO_SAFE);
+
+  return viewState === VIEW_STATE.inputForm ? (
+    <SwapForm onGoBack={goHome} account={account} tokensConfig={tokensConfig} />
+  ) : viewState === VIEW_STATE.preview ? (
+    <Preview
+      onClickGoBack={showForm}
+      activeTokenFrom={tokenIn}
+      amountTokenFrom={amountInToShow}
+      activeTokenTo={tokenOut}
+      amountTokenTo={amountOutToShow}
+      startSwap={handleSwap}
+      swappingToken={swapPending}
+    />
+  ) : viewState === VIEW_STATE.result ? (
+    <Success onClickContinue={updateForm} onClickGoToExplorer={openTransaction} />
+  ) : null;
 });

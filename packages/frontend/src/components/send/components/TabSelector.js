@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import styled from "styled-components";
 
-import { redirectTo } from '../../../redux/actions/account';
-import { SHOW_NETWORK_BANNER } from '../../../utils/wallet';
+import { redirectTo } from "../../../redux/actions/account";
+import { SHOW_NETWORK_BANNER } from "../../../utils/wallet";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -54,32 +54,38 @@ const StyledContainer = styled.div`
 `;
 
 const TabSelector = () => {
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const pathname = location.pathname;
-    const sendMoneyRoute = '/send-money';
-    const receiveMoneyRoute = '/receive-money';
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const pathname = location.pathname;
+  const sendMoneyRoute = "/send-money";
+  const receiveMoneyRoute = "/receive-money";
 
-    //TODO: Replace tab selector in Wallet.js with this component
+  //TODO: Replace tab selector in Wallet.js with this component
 
-    return (
-        <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
-            <div 
-                role='button'
-                className={pathname.includes(sendMoneyRoute) ? 'active' : ''}
-                onClick={!pathname.includes(sendMoneyRoute) ? () => dispatch(redirectTo(sendMoneyRoute)) : null}
-            >
-                <Translate id='button.send'/>
-            </div>
-            <div
-                role='button'
-                className={pathname.includes(receiveMoneyRoute) ? 'active' : ''}
-                onClick={!pathname.includes(receiveMoneyRoute) ? () => dispatch(redirectTo(receiveMoneyRoute)) : null}
-            >
-                <Translate id='button.receive'/>
-            </div>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer className={SHOW_NETWORK_BANNER ? "showing-banner" : ""}>
+      <div
+        role='button'
+        className={pathname.includes(sendMoneyRoute) ? "active" : ""}
+        onClick={
+          !pathname.includes(sendMoneyRoute) ? () => dispatch(redirectTo(sendMoneyRoute)) : null
+        }
+      >
+        <Translate id='button.send' />
+      </div>
+      <div
+        role='button'
+        className={pathname.includes(receiveMoneyRoute) ? "active" : ""}
+        onClick={
+          !pathname.includes(receiveMoneyRoute)
+            ? () => dispatch(redirectTo(receiveMoneyRoute))
+            : null
+        }
+      >
+        <Translate id='button.receive' />
+      </div>
+    </StyledContainer>
+  );
 };
 
 export default TabSelector;

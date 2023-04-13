@@ -1,7 +1,7 @@
-import React, { FC, ReactNode } from 'react';
-import styled from 'styled-components';
+import React, { FC, ReactNode } from "react";
+import styled from "styled-components";
 
-import AlertTriangleIcon from '../svg/AlertTriangleIcon';
+import AlertTriangleIcon from "../svg/AlertTriangleIcon";
 
 const NotificationWrapper = styled.p`
     width: 100%;
@@ -31,19 +31,19 @@ const IconWrapper = styled.span`
 `;
 
 const Notification: FC<{
-    type?: string,
-    children: ReactNode,
+  type?: string;
+  children: ReactNode;
 }> = ({ type, children }) => {
-    const triangleColor = type === 'error' ? 'var(--mnw-color-error)' : '';
+  const triangleColor = type === "error" ? "var(--mnw-color-error)" : "";
 
-    return (
-        <NotificationWrapper className={`${type}`}>
-            <IconWrapper>
-                <AlertTriangleIcon color={triangleColor} />
-            </IconWrapper>
-            <span>{children}</span>
-        </NotificationWrapper>
-    );
+  return (
+    <NotificationWrapper className={`${type}`}>
+      <IconWrapper>
+        <AlertTriangleIcon color={triangleColor} />
+      </IconWrapper>
+      <span>{children}</span>
+    </NotificationWrapper>
+  );
 };
 
 export default Notification;

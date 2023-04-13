@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useSelector, useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { withRouter } from "react-router-dom";
+import styled from "styled-components";
 
-import { disableMultisig } from '../../../redux/actions/account';
-import { selectAccountSlice } from '../../../redux/slices/account';
-import { actions as recoveryMethodsActions } from '../../../redux/slices/recoveryMethods';
-import { selectActionsPending } from '../../../redux/slices/status';
-import FormButton from '../../common/FormButton';
-import Card from '../../common/styled/Card.css';
-import AccountLockModal from '../../wallet-migration/AccountLock';
-import ConfirmDisable from '../ConfirmDisable';
+import { disableMultisig } from "../../../redux/actions/account";
+import { selectAccountSlice } from "../../../redux/slices/account";
+import { actions as recoveryMethodsActions } from "../../../redux/slices/recoveryMethods";
+import { selectActionsPending } from "../../../redux/slices/status";
+import FormButton from "../../common/FormButton";
+import Card from "../../common/styled/Card.css";
+import AccountLockModal from "../../wallet-migration/AccountLock";
+import ConfirmDisable from "../ConfirmDisable";
 const { fetchRecoveryMethods } = recoveryMethodsActions;
-
 
 const Container = styled(Card)`
     margin-top: 30px;
@@ -56,71 +55,87 @@ const Container = styled(Card)`
     }
 `;
 
-const TwoFactorAuth = ({ twoFactor, history, isBrickedAccount, onDisableBrickedAccountComplete }) => {
-    const [confirmDisable, setConfirmDisable] = useState(false);
-    const [showBrickedAccountModal, setShowBrickedAccountModal] = useState(false);
-    const account = useSelector(selectAccountSlice);
-    const dispatch = useDispatch();
-    const confirmDisabling = useSelector((state) => selectActionsPending(state, { types: ['DISABLE_MULTISIG'] }));
+const TwoFactorAuth = ({
+  twoFactor,
+  history,
+  isBrickedAccount,
+  onDisableBrickedAccountComplete,
+}) => {
+  const [confirmDisable, setConfirmDisable] = useState(false);
+  const [showBrickedAccountModal, setShowBrickedAccountModal] = useState(false);
+  const account = useSelector(selectAccountSlice);
+  const dispatch = useDispatch();
+  const confirmDisabling = useSelector((state) =>
+    selectActionsPending(state, { types: ["DISABLE_MULTISIG"] }),
+  );
 
-    const handleConfirmDisable = async () => {
-        if (isBrickedAccount) {
-            setShowBrickedAccountModal(true);
-        } else {
-            await dispatch(disableMultisig());
-        }
-        await dispatch(fetchRecoveryMethods({ accountId: account.accountId }));
-        setConfirmDisable(false);
-    };
+  const handleConfirmDisable = async () => {
+    if (isBrickedAccount) {
+      setShowBrickedAccountModal(true);
+    } else {
+      await dispatch(disableMultisig());
+    }
+    await dispatch(fetchRecoveryMethods({ accountId: account.accountId }));
+    setConfirmDisable(false);
+  };
 
-    const onAccountLockClose = () => {
-        setShowBrickedAccountModal(false);
-    };
+  const onAccountLockClose = () => {
+    setShowBrickedAccountModal(false);
+  };
 
-    const onAccountLockComplete = () => {
-        setShowBrickedAccountModal(false);
-        onDisableBrickedAccountComplete();
-    };
+  const onAccountLockComplete = () => {
+    setShowBrickedAccountModal(false);
+    onDisableBrickedAccountComplete();
+  };
 
-    const onAccountLockCancel = () => {
-        setShowBrickedAccountModal(false);
-    };
+  const onAccountLockCancel = () => {
+    setShowBrickedAccountModal(false);
+  };
 
-    return (
-        <Container>
-            {twoFactor && !confirmDisable && (
-                <div className='method'>
-                    <div className='top'>
-                        <div>
-                            <div className='title'>
-                                <Translate id={`twoFactor.${twoFactor.kind === '2fa-email' ? 'email' : 'phone'}`} />
-                            </div>
-                            <div className='detail'>{twoFactor.detail}</div>
-                        </div>
-                        <FormButton onClick={() => setConfirmDisable(true)} className='gray-red'><Translate id='button.disable' /></FormButton>
-                    </div>
-                    <div className='bottom'>
-                        <span className='color-green'>
-                            <Translate id='twoFactor.active' />
-                        </span> <Translate id='twoFactor.since' /> {new Date(twoFactor.createdAt).toDateString().replace(/^\S+\s/, '')}
-                    </div>
-                </div>
-            )}
-            {twoFactor && confirmDisable && (
-                <ConfirmDisable
-                    onConfirmDisable={handleConfirmDisable}
-                    onKeepEnabled={() => setConfirmDisable(false)}
-                    accountId={account.accountId}
-                    isDisable={confirmDisabling}
-                    component='twoFactor'
-                    twoFactorKind={twoFactor.kind}
-                />
-            )}
-            {twoFactor && isBrickedAccount && showBrickedAccountModal && (
-                <AccountLockModal accountId={account.accountId} onClose={onAccountLockClose} onComplete={onAccountLockComplete} onCancel={onAccountLockCancel} />
-            )}
-        </Container>
-    );
+  return (
+    <Container>
+      {twoFactor && !confirmDisable && (
+        <div className='method'>
+          <div className='top'>
+            <div>
+              <div className='title'>
+                <Translate id={`twoFactor.${twoFactor.kind === "2fa-email" ? "email" : "phone"}`} />
+              </div>
+              <div className='detail'>{twoFactor.detail}</div>
+            </div>
+            <FormButton onClick={() => setConfirmDisable(true)} className='gray-red'>
+              <Translate id='button.disable' />
+            </FormButton>
+          </div>
+          <div className='bottom'>
+            <span className='color-green'>
+              <Translate id='twoFactor.active' />
+            </span>{" "}
+            <Translate id='twoFactor.since' />{" "}
+            {new Date(twoFactor.createdAt).toDateString().replace(/^\S+\s/, "")}
+          </div>
+        </div>
+      )}
+      {twoFactor && confirmDisable && (
+        <ConfirmDisable
+          onConfirmDisable={handleConfirmDisable}
+          onKeepEnabled={() => setConfirmDisable(false)}
+          accountId={account.accountId}
+          isDisable={confirmDisabling}
+          component='twoFactor'
+          twoFactorKind={twoFactor.kind}
+        />
+      )}
+      {twoFactor && isBrickedAccount && showBrickedAccountModal && (
+        <AccountLockModal
+          accountId={account.accountId}
+          onClose={onAccountLockClose}
+          onComplete={onAccountLockComplete}
+          onCancel={onAccountLockCancel}
+        />
+      )}
+    </Container>
+  );
 };
 
 export default withRouter(TwoFactorAuth);

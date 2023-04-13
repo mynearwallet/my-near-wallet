@@ -1,15 +1,15 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { NavLink } from "react-router-dom";
+import styled from "styled-components";
 
-import { Mixpanel } from '../../mixpanel/index';
-import { GleapService } from '../../services/gleap/gleap.service';
-import ExploreIcon from '../svg/ExploreIcon';
-import HelpIcon from '../svg/HelpIcon';
-import UserIcon from '../svg/UserIcon';
-import VaultIcon from '../svg/VaultIcon';
-import WalletIcon from '../svg/WalletIcon';
+import { Mixpanel } from "../../mixpanel/index";
+import { GleapService } from "../../services/gleap/gleap.service";
+import ExploreIcon from "../svg/ExploreIcon";
+import HelpIcon from "../svg/HelpIcon";
+import UserIcon from "../svg/UserIcon";
+import VaultIcon from "../svg/VaultIcon";
+import WalletIcon from "../svg/WalletIcon";
 
 const Container = styled.div`
     display: flex;
@@ -109,34 +109,55 @@ const Container = styled.div`
 `;
 
 const NavLinks = () => (
-    <Container className='nav-links'>
-        <NavLink exact to='/' activeClassName='selected' onClick={() => Mixpanel.track('Click Wallet button on nav')}>
-            <WalletIcon />
-            <Translate id='link.wallet' />
-        </NavLink>
-        <NavLink data-test-id='staking_navlink' to='/staking' activeClassName='selected'
-            onClick={() => Mixpanel.track('Click Staking button on nav')}>
-            <VaultIcon />
-            <Translate id='link.staking' />
-        </NavLink>
-        <NavLink data-test-id='explore_navlink' to='/explore' activeClassName='selected'
-            onClick={() => Mixpanel.track('Click Explore button on nav')}>
-            <ExploreIcon />
-            <Translate id='link.explore' />
-        </NavLink>
-        <NavLink to='/profile' className='account-details-link' activeClassName='selected'
-            onClick={() => Mixpanel.track('Click Account button on nav')}>
-            <UserIcon />
-            <Translate id='link.account' />
-        </NavLink>
-        <button className={'nav-button'} rel='noopener noreferrer' onClick={() => {
-            GleapService.open();
-            Mixpanel.track('Click Support button on nav');
-        }}>
-            <HelpIcon />
-            <Translate id='link.support' />
-        </button>
-    </Container>
+  <Container className='nav-links'>
+    <NavLink
+      exact
+      to='/'
+      activeClassName='selected'
+      onClick={() => Mixpanel.track("Click Wallet button on nav")}
+    >
+      <WalletIcon />
+      <Translate id='link.wallet' />
+    </NavLink>
+    <NavLink
+      data-test-id='staking_navlink'
+      to='/staking'
+      activeClassName='selected'
+      onClick={() => Mixpanel.track("Click Staking button on nav")}
+    >
+      <VaultIcon />
+      <Translate id='link.staking' />
+    </NavLink>
+    <NavLink
+      data-test-id='explore_navlink'
+      to='/explore'
+      activeClassName='selected'
+      onClick={() => Mixpanel.track("Click Explore button on nav")}
+    >
+      <ExploreIcon />
+      <Translate id='link.explore' />
+    </NavLink>
+    <NavLink
+      to='/profile'
+      className='account-details-link'
+      activeClassName='selected'
+      onClick={() => Mixpanel.track("Click Account button on nav")}
+    >
+      <UserIcon />
+      <Translate id='link.account' />
+    </NavLink>
+    <button
+      className={"nav-button"}
+      rel='noopener noreferrer'
+      onClick={() => {
+        GleapService.open();
+        Mixpanel.track("Click Support button on nav");
+      }}
+    >
+      <HelpIcon />
+      <Translate id='link.support' />
+    </button>
+  </Container>
 );
 
 export default NavLinks;

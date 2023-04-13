@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
 
 const Container = styled.div`
     &&&&& {
@@ -26,25 +26,29 @@ const Container = styled.div`
     }
 `;
 
-export function ZeroBalanceAccountImportedModal ({
-    importMethod,
-    onClose,
-    accountId
-}) {
-    return (
-        <Modal
-            id='zero-balance-account-imported-modal'
-            isOpen={importMethod}
-            onClose={onClose}
-            modalSize='sm'
-        >
-            <Container>
-                <h3><Translate id='account.recoverAccount.zeroBalance.success.title'/></h3>
-                <p><Translate id={`account.recoverAccount.zeroBalance.success.${importMethod}`}/></p>
-                {accountId}
-                <p><Translate id='account.recoverAccount.zeroBalance.success.desc'/></p>
-                <FormButton onClick={onClose}><Translate id='button.dismiss'/></FormButton>
-            </Container>
-        </Modal>
-    );
-};
+export function ZeroBalanceAccountImportedModal({ importMethod, onClose, accountId }) {
+  return (
+    <Modal
+      id='zero-balance-account-imported-modal'
+      isOpen={importMethod}
+      onClose={onClose}
+      modalSize='sm'
+    >
+      <Container>
+        <h3>
+          <Translate id='account.recoverAccount.zeroBalance.success.title' />
+        </h3>
+        <p>
+          <Translate id={`account.recoverAccount.zeroBalance.success.${importMethod}`} />
+        </p>
+        {accountId}
+        <p>
+          <Translate id='account.recoverAccount.zeroBalance.success.desc' />
+        </p>
+        <FormButton onClick={onClose}>
+          <Translate id='button.dismiss' />
+        </FormButton>
+      </Container>
+    </Modal>
+  );
+}

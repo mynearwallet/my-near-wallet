@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import ClickToCopy from '../../../common/ClickToCopy';
-import FormButton from '../../../common/FormButton';
-import CopyIcon from '../../../svg/CopyIcon';
+import ClickToCopy from "../../../common/ClickToCopy";
+import FormButton from "../../../common/FormButton";
+import CopyIcon from "../../../svg/CopyIcon";
 
 const StyledContainer = styled.div`
     background-color: #272729;
@@ -47,13 +47,13 @@ const StyledContainer = styled.div`
 `;
 
 export default ({ address }) => (
-    <StyledContainer>
-        <div className='address'>{address}</div>
-        <ClickToCopy copy={address} className='copy'>
-            <FormButton className='flex-center-center'>
-                <CopyIcon color='#8FCDFF' />
-                <Translate id='button.copy' />
-            </FormButton>
-        </ClickToCopy>
-    </StyledContainer>
+  <StyledContainer>
+    <div className='address'>{address}</div>
+    <ClickToCopy copy={address} className='copy'>
+      <FormButton className='flex-center-center'>
+        <CopyIcon color='#8FCDFF' />
+        <Translate id='button.copy' />
+      </FormButton>
+    </ClickToCopy>
+  </StyledContainer>
 );

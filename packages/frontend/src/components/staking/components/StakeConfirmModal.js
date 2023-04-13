@@ -1,12 +1,12 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { Textfit } from 'react-textfit';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { Textfit } from "react-textfit";
+import styled from "styled-components";
 
-import Balance from '../../common/balance/Balance';
-import FormButton from '../../common/FormButton';
-import Modal from '../../common/modal/Modal';
-import ValidatorBox from './ValidatorBox';
+import Balance from "../../common/balance/Balance";
+import FormButton from "../../common/FormButton";
+import Modal from "../../common/modal/Modal";
+import ValidatorBox from "./ValidatorBox";
 
 const Container = styled.div`
     display: flex;
@@ -90,42 +90,56 @@ const Container = styled.div`
 
 `;
 
-const StakeConfirmModal = ({ open, onClose, onConfirm, validator, amount, loading, title, disclaimer, label, sendingString }) => {
-    return (
-        <Modal
-            id='stake-confirm-modal'
-            isOpen={open}
-            onClose={onClose}
-            closeButton='desktop'
+const StakeConfirmModal = ({
+  open,
+  onClose,
+  onConfirm,
+  validator,
+  amount,
+  loading,
+  title,
+  disclaimer,
+  label,
+  sendingString,
+}) => {
+  return (
+    <Modal id='stake-confirm-modal' isOpen={open} onClose={onClose} closeButton='desktop'>
+      <Container>
+        <h2>
+          <Translate id={title} />
+        </h2>
+        <Textfit mode='single' max={40} className='amount'>
+          <Balance amount={amount} className='stake-amount' />
+        </Textfit>
+        {label && (
+          <div className='divider'>
+            <div>
+              <Translate id={label} />
+            </div>
+          </div>
+        )}
+        <ValidatorBox validator={validator} clickable={false} amount={validator.staked} />
+        {disclaimer && (
+          <div className='ledger-disclaimer'>
+            <Translate id={disclaimer} />
+          </div>
+        )}
+        <FormButton
+          disabled={loading}
+          sending={loading}
+          color='green'
+          onClick={onConfirm}
+          sendingString={`button.${sendingString}`}
+          data-test-id="confirmStakeOnModalButton"
         >
-            <Container>
-                <h2><Translate id={title}/></h2>
-                <Textfit mode='single' max={40} className='amount'>
-                    <Balance amount={amount} className='stake-amount'/>
-                </Textfit>
-                {label && <div className='divider'><div><Translate id={label}/></div></div>}
-                <ValidatorBox 
-                    validator={validator}
-                    clickable={false}
-                    amount={validator.staked}
-                />
-                {disclaimer && <div className='ledger-disclaimer'><Translate id={disclaimer}/></div>}
-                <FormButton 
-                    disabled={loading}
-                    sending={loading}
-                    color='green'
-                    onClick={onConfirm}
-                    sendingString={`button.${sendingString}`}
-                    data-test-id="confirmStakeOnModalButton"
-                >
-                    <Translate id='button.confirm'/>
-                </FormButton>
-                <FormButton disabled={loading} color='link red' id='close-button'>
-                    <Translate id='button.cancel'/>
-                </FormButton>
-            </Container>
-        </Modal>
-    );
+          <Translate id='button.confirm' />
+        </FormButton>
+        <FormButton disabled={loading} color='link red' id='close-button'>
+          <Translate id='button.cancel' />
+        </FormButton>
+      </Container>
+    </Modal>
+  );
 };
 
 export default StakeConfirmModal;

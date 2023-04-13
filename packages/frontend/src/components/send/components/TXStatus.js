@@ -1,6 +1,6 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -16,25 +16,25 @@ const Indicator = styled.span`
 `;
 
 const getStatusColor = (status) => {
-    switch (status) {
-        case 'SuccessValue':
-            return '#4DD5A6';
-        case 'Failure':
-            return '#ff585d';
-        case 'notAvailable':
-            return '#ff585d';
-        default:
-            return;
-    }
+  switch (status) {
+    case "SuccessValue":
+      return "#4DD5A6";
+    case "Failure":
+      return "#ff585d";
+    case "notAvailable":
+      return "#ff585d";
+    default:
+      return;
+  }
 };
 
 const TXStatus = ({ status }) => {
-    return (
-        <StyledContainer className='status'>
-            <Indicator color={getStatusColor(status)}/>
-            <Translate id={`sendV2.TXEntry.status.${status}`} />
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer className='status'>
+      <Indicator color={getStatusColor(status)} />
+      <Translate id={`sendV2.TXEntry.status.${status}`} />
+    </StyledContainer>
+  );
 };
 
 export default TXStatus;

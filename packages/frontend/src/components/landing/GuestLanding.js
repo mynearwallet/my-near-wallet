@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import iPhoneMockup from '../../images/iphone-mockup.png';
-import FormButton from '../common/FormButton';
-import Container from '../common/styled/Container.css';
-import LandingBackground from './LandingBackground';
+import iPhoneMockup from "../../images/iphone-mockup.png";
+import FormButton from "../common/FormButton";
+import Container from "../common/styled/Container.css";
+import LandingBackground from "./LandingBackground";
 
 const StyledContainer = styled.div`
 
@@ -140,32 +140,40 @@ const StyledContainer = styled.div`
 `;
 
 export function GuestLanding() {
-    return (
-        <StyledContainer>
-            <LandingBackground/>
-            <Container className='small-centered'>
-                <h1><Translate id='landing.title' /></h1>
-                <h3><Translate id='landing.desc' /></h3>
-                <div className='buttons'>
-                    <FormButton
-                        linkTo="/create"
-                        trackingId="Click create account button"
-                        data-test-id="landingPageCreateAccount"
-                    >
-                        <Translate id="button.createAccount" />
-                    </FormButton>
-                    <span><Translate id='landing.or' /></span>
-                    <FormButton
-                        data-test-id="homePageImportAccountButton"
-                        linkTo="/recover-account"
-                        className="link"
-                        trackingId="Click import existing link"
-                    >
-                        <Translate id="button.importExistingAccount" />
-                    </FormButton>
-                </div>
-                <div className='img-wrapper'><img src={iPhoneMockup} alt='Sign up'/></div>
-            </Container>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer>
+      <LandingBackground />
+      <Container className='small-centered'>
+        <h1>
+          <Translate id='landing.title' />
+        </h1>
+        <h3>
+          <Translate id='landing.desc' />
+        </h3>
+        <div className='buttons'>
+          <FormButton
+            linkTo="/create"
+            trackingId="Click create account button"
+            data-test-id="landingPageCreateAccount"
+          >
+            <Translate id="button.createAccount" />
+          </FormButton>
+          <span>
+            <Translate id='landing.or' />
+          </span>
+          <FormButton
+            data-test-id="homePageImportAccountButton"
+            linkTo="/recover-account"
+            className="link"
+            trackingId="Click import existing link"
+          >
+            <Translate id="button.importExistingAccount" />
+          </FormButton>
+        </div>
+        <div className='img-wrapper'>
+          <img src={iPhoneMockup} alt='Sign up' />
+        </div>
+      </Container>
+    </StyledContainer>
+  );
 }

@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../common/FormButton';
-import NearCircleIcon from '../svg/NearCircleIcon.js';
-import NFTBox from './NFTBox';
+import FormButton from "../common/FormButton";
+import NearCircleIcon from "../svg/NearCircleIcon.js";
+import NFTBox from "./NFTBox";
 
 const StyledContainer = styled.div`
     &&& {
@@ -58,31 +58,32 @@ const StyledContainer = styled.div`
 `;
 
 const NFTs = ({ tokens }) => {
-    const ownedTokens = tokens.filter((tokenDetails) => tokenDetails.ownedTokensMetadata && tokenDetails.ownedTokensMetadata.length);
-    if (ownedTokens.length) {
-        return (
-            <StyledContainer>
-                {ownedTokens.map((tokenDetails) => (
-                    <NFTBox
-                        key={tokenDetails.contractName}
-                        tokenDetails={tokenDetails}
-                    />
-                ))}
-            </StyledContainer>
-        );
-    }
-    
+  const ownedTokens = tokens.filter(
+    (tokenDetails) => tokenDetails.ownedTokensMetadata && tokenDetails.ownedTokensMetadata.length,
+  );
+  if (ownedTokens.length) {
     return (
-        <StyledContainer>
-            <div className='empty-state'>
-                <NearCircleIcon/>
-                <div><Translate id='NFTs.emptyState' /></div>
-                <FormButton color='gray-blue' linkTo='https://awesomenear.com/categories/nft/'>
-                    <Translate id='exploreApps.exploreApps' />
-                </FormButton>
-            </div>
-        </StyledContainer>
+      <StyledContainer>
+        {ownedTokens.map((tokenDetails) => (
+          <NFTBox key={tokenDetails.contractName} tokenDetails={tokenDetails} />
+        ))}
+      </StyledContainer>
     );
+  }
+
+  return (
+    <StyledContainer>
+      <div className='empty-state'>
+        <NearCircleIcon />
+        <div>
+          <Translate id='NFTs.emptyState' />
+        </div>
+        <FormButton color='gray-blue' linkTo='https://awesomenear.com/categories/nft/'>
+          <Translate id='exploreApps.exploreApps' />
+        </FormButton>
+      </div>
+    </StyledContainer>
+  );
 };
 
 export default NFTs;

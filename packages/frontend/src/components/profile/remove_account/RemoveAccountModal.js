@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Checkbox from '../../common/Checkbox';
-import FormButton from '../../common/FormButton';
-import Modal from '../../common/modal/Modal';
-import SafeTranslate from '../../SafeTranslate';
+import Checkbox from "../../common/Checkbox";
+import FormButton from "../../common/FormButton";
+import Modal from "../../common/modal/Modal";
+import SafeTranslate from "../../SafeTranslate";
 
 const Container = styled.div`
     &&&&& {
@@ -57,48 +57,33 @@ const Container = styled.div`
     }
 `;
 
-export default ({
-    accountId,
-    isOpen,
-    onRemoveAccount,
-    onClose
-}) => {
-    const [removeAccountDisclaimerApproved, setRemoveAccountDisclaimerApproved] = useState(false);
-    return (
-        <Modal
-            id='remove-account-modal'
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='sm'
-        >
-            <Container>
-                <h3><Translate id='removeAccount.title' /></h3>
-                <p><Translate id='removeAccount.desc' /></p>
-                <label>
-                    <Checkbox
-                        checked={removeAccountDisclaimerApproved}
-                        onChange={(e) => setRemoveAccountDisclaimerApproved(e.target.checked)}
-                    />
-                    <span>
-                        <SafeTranslate
-                            id='removeAccount.disclaimer'
-                            data={{ accountId: accountId }}
-                        />
-                    </span>
-                </label>
-                <FormButton
-                    disabled={!removeAccountDisclaimerApproved}
-                    onClick={onRemoveAccount}
-                >
-                    <Translate id='button.removeAccount' />
-                </FormButton>
-                <FormButton
-                    className='link'
-                    onClick={onClose}
-                >
-                    <Translate id='button.cancel' />
-                </FormButton>
-            </Container>
-        </Modal>
-    );
+export default ({ accountId, isOpen, onRemoveAccount, onClose }) => {
+  const [removeAccountDisclaimerApproved, setRemoveAccountDisclaimerApproved] = useState(false);
+  return (
+    <Modal id='remove-account-modal' isOpen={isOpen} onClose={onClose} modalSize='sm'>
+      <Container>
+        <h3>
+          <Translate id='removeAccount.title' />
+        </h3>
+        <p>
+          <Translate id='removeAccount.desc' />
+        </p>
+        <label>
+          <Checkbox
+            checked={removeAccountDisclaimerApproved}
+            onChange={(e) => setRemoveAccountDisclaimerApproved(e.target.checked)}
+          />
+          <span>
+            <SafeTranslate id='removeAccount.disclaimer' data={{ accountId: accountId }} />
+          </span>
+        </label>
+        <FormButton disabled={!removeAccountDisclaimerApproved} onClick={onRemoveAccount}>
+          <Translate id='button.removeAccount' />
+        </FormButton>
+        <FormButton className='link' onClick={onClose}>
+          <Translate id='button.cancel' />
+        </FormButton>
+      </Container>
+    </Modal>
+  );
 };

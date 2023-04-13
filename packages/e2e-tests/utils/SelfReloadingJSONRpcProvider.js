@@ -10,39 +10,43 @@ const { getTestAccountSeedPhrase } = require("./helpers");
 const { TEST_WORKER_INDEX } = process.env;
 
 class SelfReloadingJSONRpcProvider extends JsonRpcProvider {
-    constructor(...args) {
-        super(...args);
-        this.reloadingPromise = null;
-    }
-    sendTransaction(signedTransaction) {
-        return super.sendTransaction.call(this, signedTransaction).catch(async (e) => {
-            if (e.type === "NotEnoughBalance") {
-                if (!this.reloadingPromise) {
-                    this.reloadingPromise = SelfReloadingJSONRpcProvider.reloadAccount(signedTransaction.transaction.signerId).finally(() => {
-                        this.reloadingPromise = null;
-                    });
-                } 
-                return this.reloadingPromise.then(() => {
-                    if (getWorkerAccountRegex(TEST_WORKER_INDEX).test(signedTransaction.transaction.signerId)) {
-                        process.env.workerBankStartBalance = new BN(process.env.workerBankStartBalance)
-                            .add(new BN(parseNearAmount("200")))
-                            .toString();
-                    }
-                    return super.sendTransaction.call(this, signedTransaction);
-                });
-            }
-            throw e;
+  constructor(...args) {
+    super(...args);
+    this.reloadingPromise = null;
+  }
+  sendTransaction(signedTransaction) {
+    return super.sendTransaction.call(this, signedTransaction).catch(async (e) => {
+      if (e.type === "NotEnoughBalance") {
+        if (!this.reloadingPromise) {
+          this.reloadingPromise = SelfReloadingJSONRpcProvider.reloadAccount(
+            signedTransaction.transaction.signerId,
+          ).finally(() => {
+            this.reloadingPromise = null;
+          });
+        }
+        return this.reloadingPromise.then(() => {
+          if (
+            getWorkerAccountRegex(TEST_WORKER_INDEX).test(signedTransaction.transaction.signerId)
+          ) {
+            process.env.workerBankStartBalance = new BN(process.env.workerBankStartBalance)
+              .add(new BN(parseNearAmount("200")))
+              .toString();
+          }
+          return super.sendTransaction.call(this, signedTransaction);
         });
-    }
-    static async reloadAccount(accountId) {
-        const randomSubaccountId = `${generateTestAccountId()}.${nearApiJsConnection.config.networkId}`;
-        const randomSubaccountSeedphrase = getTestAccountSeedPhrase(randomSubaccountId);
-        await createAccountWithHelper(randomSubaccountId, randomSubaccountSeedphrase);
-        const randomAccount = await new E2eTestAccount(randomSubaccountId, randomSubaccountSeedphrase, {
-            accountId: nearApiJsConnection.config.networkId,
-        }).initialize();
-        return randomAccount.nearApiJsAccount.deleteAccount(accountId);
-    }
+      }
+      throw e;
+    });
+  }
+  static async reloadAccount(accountId) {
+    const randomSubaccountId = `${generateTestAccountId()}.${nearApiJsConnection.config.networkId}`;
+    const randomSubaccountSeedphrase = getTestAccountSeedPhrase(randomSubaccountId);
+    await createAccountWithHelper(randomSubaccountId, randomSubaccountSeedphrase);
+    const randomAccount = await new E2eTestAccount(randomSubaccountId, randomSubaccountSeedphrase, {
+      accountId: nearApiJsConnection.config.networkId,
+    }).initialize();
+    return randomAccount.nearApiJsAccount.deleteAccount(accountId);
+  }
 }
 
 module.exports = SelfReloadingJSONRpcProvider;

@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import ChevronIcon from '../../svg/ChevronIcon';
+import ChevronIcon from "../../svg/ChevronIcon";
 
 const StyledButton = styled.button`
     display: flex;
@@ -57,10 +57,10 @@ const StyledButton = styled.button`
 `;
 
 export default ({ children, id, className }) => (
-    <StyledButton id={id} className={className}>
-        <div className='children'>{children}</div>
-        <div className='chevron-wrapper'>
-            <ChevronIcon color='#72727A'/>
-        </div>
-    </StyledButton>
+  <StyledButton id={id} className={className}>
+    <div className='children'>{children}</div>
+    <div className='chevron-wrapper'>
+      <ChevronIcon color='#72727A' />
+    </div>
+  </StyledButton>
 );

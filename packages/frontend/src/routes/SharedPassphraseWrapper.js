@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import SharedPassphrase from '../components/accounts/create/passphrase/SharedPassphrase';
+import SharedPassphrase from "../components/accounts/create/passphrase/SharedPassphrase";
 
 export function SharedPassphraseWrapper() {
-    return <SharedPassphrase/>;
+  return <SharedPassphrase />;
 }

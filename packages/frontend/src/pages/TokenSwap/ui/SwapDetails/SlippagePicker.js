@@ -1,8 +1,8 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Tooltip from '../../../../components/common/Tooltip';
+import Tooltip from "../../../../components/common/Tooltip";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -39,23 +39,23 @@ const MarksWrapper = styled.div`
     }
 `;
 
-export default function SlippagePicker({ value, setSlippage, marks, className = '' }) {
-    return (
-        <StyledContainer className={className}>
-            <Translate id='swap.slippage' />
-            <Tooltip translate='swap.translateIdInfoTooltip.slippage' />
+export default function SlippagePicker({ value, setSlippage, marks, className = "" }) {
+  return (
+    <StyledContainer className={className}>
+      <Translate id='swap.slippage' />
+      <Tooltip translate='swap.translateIdInfoTooltip.slippage' />
 
-            <MarksWrapper>
-                {marks.map((mark) => (
-                    <button
-                        key={mark}
-                        className={value === mark ? 'active' : ''}
-                        onClick={() => setSlippage(mark)}
-                    >
-                        {mark}%
-                    </button>
-                ))}
-            </MarksWrapper>
-        </StyledContainer>
-    );
+      <MarksWrapper>
+        {marks.map((mark) => (
+          <button
+            key={mark}
+            className={value === mark ? "active" : ""}
+            onClick={() => setSlippage(mark)}
+          >
+            {mark}%
+          </button>
+        ))}
+      </MarksWrapper>
+    </StyledContainer>
+  );
 }

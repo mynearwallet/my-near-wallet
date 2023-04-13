@@ -1,14 +1,14 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../../config';
-import Accordion from '../../common/Accordion';
-import BackArrowButton from '../../common/BackArrowButton';
-import Balance from '../../common/balance/Balance';
-import DropdownButton from '../../common/buttons/DropdownButton';
-import Container from '../../common/styled/Container.css';
-import ArrowUpRight from '../../svg/ArrowUpRight';
+import CONFIG from "../../../config";
+import Accordion from "../../common/Accordion";
+import BackArrowButton from "../../common/BackArrowButton";
+import Balance from "../../common/balance/Balance";
+import DropdownButton from "../../common/buttons/DropdownButton";
+import Container from "../../common/styled/Container.css";
+import ArrowUpRight from "../../svg/ArrowUpRight";
 
 const StyledContainer = styled(Container)`
     &&& {
@@ -95,109 +95,109 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    onClickGoBack,
-    transactions,
-    signGasFee
-}) => {
-    return (
-        <StyledContainer className='small-centered border'>
-            <div className='header'>
-                <BackArrowButton onClick={onClickGoBack} color='#0072CE' />
-                <Translate id='sign.transactionDetails' />
-            </div>
-            <div className='network-fees'>
-                <div className='title'><Translate id='sign.networkFees' /></div>
-                <div className='entry'>
-                    <Translate id='sign.estimatedFees' />
-                    <Balance
-                        amount={signGasFee}
-                        showBalanceInUSD={false}
-                    />
-                </div>
-                <div className='entry'>
-                    <Translate id='sign.feeLimit' />
-                    <div>{signGasFee} Tgas</div>
-                </div>
-            </div>
+export default ({ onClickGoBack, transactions, signGasFee }) => {
+  return (
+    <StyledContainer className='small-centered border'>
+      <div className='header'>
+        <BackArrowButton onClick={onClickGoBack} color='#0072CE' />
+        <Translate id='sign.transactionDetails' />
+      </div>
+      <div className='network-fees'>
+        <div className='title'>
+          <Translate id='sign.networkFees' />
+        </div>
+        <div className='entry'>
+          <Translate id='sign.estimatedFees' />
+          <Balance amount={signGasFee} showBalanceInUSD={false} />
+        </div>
+        <div className='entry'>
+          <Translate id='sign.feeLimit' />
+          <div>{signGasFee} Tgas</div>
+        </div>
+      </div>
 
-            <div className='contract-details'>
-                <div className='title'><Translate id='sign.contractDetails' /></div>
-                {transactions.map(({ receiverId, actions }, i) => {
-                    const sortedActions = [
-                        ...actions.filter((a) => Object.keys(a)[0] === 'functionCall'),
-                        ...actions.filter((a) => Object.keys(a)[0] !== 'functionCall')
-                    ];
+      <div className='contract-details'>
+        <div className='title'>
+          <Translate id='sign.contractDetails' />
+        </div>
+        {transactions.map(({ receiverId, actions }, i) => {
+          const sortedActions = [
+            ...actions.filter((a) => Object.keys(a)[0] === "functionCall"),
+            ...actions.filter((a) => Object.keys(a)[0] !== "functionCall"),
+          ];
 
-                    return (
-                        <div key={receiverId}>
-                            <div className='entry'>
-                                <Translate id='sign.details.forContract' />
-                                <a href={`${CONFIG.EXPLORER_URL}/accounts/${receiverId}`} rel='noopener noreferrer' target='_blank'>{receiverId} <ArrowUpRight /></a>
-                            </div>
-                            {sortedActions.map((action, i) => {
-                                const methodName = action.functionCall?.methodName || '';
-                                const uniqueMethodId = `${methodName}-${receiverId}`;
-                                return (
-                                    <div key={methodName}>
-                                        <div className='entry function'>
-                                            <Translate id='sign.function' />
-                                            <DropdownButton id={uniqueMethodId} className='font-monospace'>
-                                                {methodName}
-                                            </DropdownButton>
-                                        </div>
-                                        <Accordion
-                                            trigger={uniqueMethodId}
-                                            className='arguments-wrapper font-monospace'
-                                        >
-                                            <ActionArguments
-                                                actionKind={Object.keys(action)[0]}
-                                                action={action[Object.keys(action)[0]]}
-                                            />
-                                        </Accordion>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    );
-                })}
+          return (
+            <div key={receiverId}>
+              <div className='entry'>
+                <Translate id='sign.details.forContract' />
+                <a
+                  href={`${CONFIG.EXPLORER_URL}/accounts/${receiverId}`}
+                  rel='noopener noreferrer'
+                  target='_blank'
+                >
+                  {receiverId} <ArrowUpRight />
+                </a>
+              </div>
+              {sortedActions.map((action, i) => {
+                const methodName = action.functionCall?.methodName || "";
+                const uniqueMethodId = `${methodName}-${receiverId}`;
+                return (
+                  <div key={methodName}>
+                    <div className='entry function'>
+                      <Translate id='sign.function' />
+                      <DropdownButton id={uniqueMethodId} className='font-monospace'>
+                        {methodName}
+                      </DropdownButton>
+                    </div>
+                    <Accordion
+                      trigger={uniqueMethodId}
+                      className='arguments-wrapper font-monospace'
+                    >
+                      <ActionArguments
+                        actionKind={Object.keys(action)[0]}
+                        action={action[Object.keys(action)[0]]}
+                      />
+                    </Accordion>
+                  </div>
+                );
+              })}
             </div>
-        </StyledContainer>
-    );
+          );
+        })}
+      </div>
+    </StyledContainer>
+  );
 };
 
 const ActionArguments = ({ actionKind, action }) => {
-    if (actionKind === 'functionCall' && Array.isArray(action.args)) {
-        try {
-            return (
-                <pre>
-                    <Translate id='arguments' />:&nbsp;
-                    {JSON.stringify(JSON.parse(Buffer.from(action.args).toString()), null, 2)}
-                </pre>
-            );
-        } catch {
-            return (
-                <Translate id='sign.ActionWarrning.binaryData' />
-            );
-        }
-    } else {
-        return (
-            <Translate id={`sign.ActionKind.${getActionKindTranslateId(actionKind)}`} />
-        );
+  if (actionKind === "functionCall" && Array.isArray(action.args)) {
+    try {
+      return (
+        <pre>
+          <Translate id='arguments' />
+          :&nbsp;
+          {JSON.stringify(JSON.parse(Buffer.from(action.args).toString()), null, 2)}
+        </pre>
+      );
+    } catch {
+      return <Translate id='sign.ActionWarrning.binaryData' />;
     }
+  } else {
+    return <Translate id={`sign.ActionKind.${getActionKindTranslateId(actionKind)}`} />;
+  }
 };
 
 const getActionKindTranslateId = (actionKind) => {
-    switch (actionKind) {
-        case 'functionCall':
-            return 'functionCall';
-        case 'deployContract':
-            return 'deployContract';
-        case 'stake':
-            return 'stake';
-        case 'deleteAccount':
-            return 'deleteAccount';
-        default:
-            return 'unknown';
-    }
+  switch (actionKind) {
+    case "functionCall":
+      return "functionCall";
+    case "deployContract":
+      return "deployContract";
+    case "stake":
+      return "stake";
+    case "deleteAccount":
+      return "deleteAccount";
+    default:
+      return "unknown";
+  }
 };

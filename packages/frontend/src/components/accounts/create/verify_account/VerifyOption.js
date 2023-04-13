@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import classNames from '../../../../utils/classNames';
-import CoinDepositIcon from '../../../svg/CoinDepositIcon';
-import CreditCardIcon from '../../../svg/CreditCardIcon';
-import EmailIconOne from '../../../svg/EmailIconOne';
-import PhoneIconOne from '../../../svg/PhoneIconOne';
-import UserIconColor from '../../../svg/UserIconColor';
+import classNames from "../../../../utils/classNames";
+import CoinDepositIcon from "../../../svg/CoinDepositIcon";
+import CreditCardIcon from "../../../svg/CreditCardIcon";
+import EmailIconOne from "../../../svg/EmailIconOne";
+import PhoneIconOne from "../../../svg/PhoneIconOne";
+import UserIconColor from "../../../svg/UserIconColor";
 
 const Container = styled.div`
     background-color: #FAFAFA;
@@ -137,64 +137,60 @@ const Header = styled.div`
 `;
 
 const Icon = ({ option, color }) => {
-    switch (option) {
-        case 'email':
-            return <EmailIconOne color={color} />;
-        case 'phone':
-            return <PhoneIconOne color={color} />;
-        case 'creditCard':
-            return <CreditCardIcon color={color} />;
-        case 'manualDeposit':
-            return <CoinDepositIcon color={color} />;
-        case 'existingAccount':
-            return <UserIconColor color={color}/>;
-        default:
-            return;
-    }
+  switch (option) {
+    case "email":
+      return <EmailIconOne color={color} />;
+    case "phone":
+      return <PhoneIconOne color={color} />;
+    case "creditCard":
+      return <CreditCardIcon color={color} />;
+    case "manualDeposit":
+      return <CoinDepositIcon color={color} />;
+    case "existingAccount":
+      return <UserIconColor color={color} />;
+    default:
+      return;
+  }
 };
 
 const VerifyOption = ({
-    children,
-    option,
-    onClick,
-    isActive,
-    disabled,
-    error,
-    translateIdTitle,
-    translateIdDesc
+  children,
+  option,
+  onClick,
+  isActive,
+  disabled,
+  error,
+  translateIdTitle,
+  translateIdDesc,
 }) => {
-
-    return (
-        <Container
-            onClick={!disabled && onClick}
-            className={classNames([{ active: isActive && !disabled, disabled, error: error }])}
-        >
-            <Header>
-                <div>
-                    <div className='title'>
-                        <Translate id={translateIdTitle} />
-                    </div>
-                    <div className='desc'>
-                        <Translate id={translateIdDesc} />
-                    </div>
-                </div>
-                <Icon option={option} color={isActive} />
-            </Header>
-            {isActive && children && <hr />}
-            {!disabled && isActive && children}
-        </Container>
-    );
+  return (
+    <Container
+      onClick={!disabled && onClick}
+      className={classNames([{ active: isActive && !disabled, disabled, error: error }])}
+    >
+      <Header>
+        <div>
+          <div className='title'>
+            <Translate id={translateIdTitle} />
+          </div>
+          <div className='desc'>
+            <Translate id={translateIdDesc} />
+          </div>
+        </div>
+        <Icon option={option} color={isActive} />
+      </Header>
+      {isActive && children && <hr />}
+      {!disabled && isActive && children}
+    </Container>
+  );
 };
 
 VerifyOption.propTypes = {
-    children: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object
-    ]),
-    option: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
-    isActive: PropTypes.bool.isRequired,
-    problem: PropTypes.bool
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  option: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  problem: PropTypes.bool,
 };
 
 export default VerifyOption;

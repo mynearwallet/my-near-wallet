@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import { Mixpanel } from '../../mixpanel/index';
-import classNames from '../../utils/classNames';
+import { Mixpanel } from "../../mixpanel/index";
+import classNames from "../../utils/classNames";
 
 const Container = styled.div`
     position: relative;
@@ -43,45 +43,48 @@ const Container = styled.div`
     }
 `;
 
-const ClickToCopy = ({ className, children, compact, copy, onClick, successTranslation = 'default' }) => {
-    const [show, setShow] = useState(false);
+const ClickToCopy = ({
+  className,
+  children,
+  compact,
+  copy,
+  onClick,
+  successTranslation = "default",
+}) => {
+  const [show, setShow] = useState(false);
 
-    const handleCopy = (e) => {
-        Mixpanel.track('Click to copy text');
-        setShow(true);
-        setTimeout (() => setShow(false), 2000);
-        const input = document.createElement('textarea');
-        input.innerHTML = copy;
-        document.body.appendChild(input);
-        input.select();
-        const result = document.execCommand('copy');
-        document.body.removeChild(input);
-        if (onClick) {
-            onClick(e);
-        }
-        return result;
-    };
+  const handleCopy = (e) => {
+    Mixpanel.track("Click to copy text");
+    setShow(true);
+    setTimeout(() => setShow(false), 2000);
+    const input = document.createElement("textarea");
+    input.innerHTML = copy;
+    document.body.appendChild(input);
+    input.select();
+    const result = document.execCommand("copy");
+    document.body.removeChild(input);
+    if (onClick) {
+      onClick(e);
+    }
+    return result;
+  };
 
-    return (
-        <Translate>
-            {({ translate }) => (
-                <Container
-                    title={translate('copy.title')}
-                    className={classNames([
-                        className,
-                        show ? 'show' : '',
-                        compact ? 'compact': ''
-                    ])}
-                    onClick={handleCopy}
-                >
-                    {children}
-                    <div className='copy-success'>
-                        <Translate id={`copy.${successTranslation}`}/>
-                    </div>
-                </Container>
-            )}
-        </Translate>
-    );
+  return (
+    <Translate>
+      {({ translate }) => (
+        <Container
+          title={translate("copy.title")}
+          className={classNames([className, show ? "show" : "", compact ? "compact" : ""])}
+          onClick={handleCopy}
+        >
+          {children}
+          <div className='copy-success'>
+            <Translate id={`copy.${successTranslation}`} />
+          </div>
+        </Container>
+      )}
+    </Translate>
+  );
 };
 
 export default ClickToCopy;

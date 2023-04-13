@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import classNames from '../../utils/classNames';
-import ChevronIcon from '../svg/ChevronIcon';
-import UserIcon from '../svg/UserIcon';
+import classNames from "../../utils/classNames";
+import ChevronIcon from "../svg/ChevronIcon";
+import UserIcon from "../svg/UserIcon";
 
 const Container = styled.div`
     background-color: #F0F0F1;
@@ -63,16 +63,19 @@ const Container = styled.div`
     }
 `;
 
-const UserAccount = ({ accountId = '', onClick, withIcon = true, flowLimitationSubMenu }) => (
-    <Container className={classNames(['user-account', {'no-click' : flowLimitationSubMenu }])} onClick={onClick}>
-        {withIcon && <UserIcon color='#A2A2A8'/>}
-        <div className="account-wrapper" data-test-id="currentUser">
-            {accountId}
-        </div>
-        <div className='icon-wrapper'>
-            <ChevronIcon/>
-        </div>
-    </Container>
+const UserAccount = ({ accountId = "", onClick, withIcon = true, flowLimitationSubMenu }) => (
+  <Container
+    className={classNames(["user-account", { "no-click": flowLimitationSubMenu }])}
+    onClick={onClick}
+  >
+    {withIcon && <UserIcon color='#A2A2A8' />}
+    <div className="account-wrapper" data-test-id="currentUser">
+      {accountId}
+    </div>
+    <div className='icon-wrapper'>
+      <ChevronIcon />
+    </div>
+  </Container>
 );
 
 export default UserAccount;

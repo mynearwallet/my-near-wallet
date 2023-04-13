@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../../config';
-import FormButton from '../../common/FormButton';
-import Container from '../../common/styled/Container.css';
-import AuthorizedApp from '../../profile/authorized_apps/AuthorizedApp';
+import CONFIG from "../../../config";
+import FormButton from "../../common/FormButton";
+import Container from "../../common/styled/Container.css";
+import AuthorizedApp from "../../profile/authorized_apps/AuthorizedApp";
 
 const StyledContainer = styled(Container)`
     .authorized-app-box {
@@ -28,33 +28,31 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    authorizedAppsKeys,
-    onClickDeAuthorizeKey,
-    deAuthorizingKey
-}) => {
-    return (
-        <StyledContainer className='medium centered'>
-            <h1><Translate id='profile.authorizedApps.title' /> ({authorizedAppsKeys?.length})</h1>
-            <div className='access-keys'>
-                {authorizedAppsKeys?.map((appKeyData, i) => (
-                    <AuthorizedApp
-                        key={appKeyData.public_key}
-                        app={appKeyData}
-                        onClick={() => onClickDeAuthorizeKey(appKeyData.public_key)}
-                        deAuthorizing={deAuthorizingKey === appKeyData.public_key}
-                    />
-                ))}
-            </div>
-            {authorizedAppsKeys?.length === 0 && (
-                <>
-                    <Translate id='fullAccessKeys.noKeys' />
-                    <br/>
-                    <FormButton linkTo={CONFIG.EXPLORE_APPS_URL}>
-                        <Translate id='exploreApps.exploreApps' />
-                    </FormButton>
-                </>
-            )}
-        </StyledContainer>
-    );
+export default ({ authorizedAppsKeys, onClickDeAuthorizeKey, deAuthorizingKey }) => {
+  return (
+    <StyledContainer className='medium centered'>
+      <h1>
+        <Translate id='profile.authorizedApps.title' /> ({authorizedAppsKeys?.length})
+      </h1>
+      <div className='access-keys'>
+        {authorizedAppsKeys?.map((appKeyData, i) => (
+          <AuthorizedApp
+            key={appKeyData.public_key}
+            app={appKeyData}
+            onClick={() => onClickDeAuthorizeKey(appKeyData.public_key)}
+            deAuthorizing={deAuthorizingKey === appKeyData.public_key}
+          />
+        ))}
+      </div>
+      {authorizedAppsKeys?.length === 0 && (
+        <>
+          <Translate id='fullAccessKeys.noKeys' />
+          <br />
+          <FormButton linkTo={CONFIG.EXPLORE_APPS_URL}>
+            <Translate id='exploreApps.exploreApps' />
+          </FormButton>
+        </>
+      )}
+    </StyledContainer>
+  );
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
     text-align: center;
@@ -38,12 +38,12 @@ const StyledContainer = styled.div`
 `;
 
 export default () => (
-    <StyledContainer className='loading-dots'>
-        <div>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </StyledContainer>
+  <StyledContainer className='loading-dots'>
+    <div>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </StyledContainer>
 );

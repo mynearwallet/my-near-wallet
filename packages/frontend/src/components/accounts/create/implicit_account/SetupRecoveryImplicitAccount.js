@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import RecoveryOption from '../../../accounts/recovery_setup/RecoveryOption';
-import FormButton from '../../../common/FormButton';
-import Container from '../../../common/styled/Container.css';
-import Tooltip from '../../../common/Tooltip';
+import RecoveryOption from "../../../accounts/recovery_setup/RecoveryOption";
+import FormButton from "../../../common/FormButton";
+import Container from "../../../common/styled/Container.css";
+import Tooltip from "../../../common/Tooltip";
 
 const StyledContainer = styled(Container)`
     &&& {
@@ -24,50 +24,51 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    onClickSecureMyAccount,
-    email,
-    isInitializingRecoveryLink,
-    setEmail
-}) => {
-    const [recoveryOption, setRecoveryOption] = useState('phrase');
+export default ({ onClickSecureMyAccount, email, isInitializingRecoveryLink, setEmail }) => {
+  const [recoveryOption, setRecoveryOption] = useState("phrase");
 
-    return (
-        <StyledContainer className='small-centered border'>
-            <form onSubmit={(e) => {
-                onClickSecureMyAccount({
-                    recoveryOption,
-                    email
-                });
-                e.preventDefault();
-            }}>
-                <h1><Translate id='setupRecovery.header' /></h1>
-                <h2><Translate id='setupRecovery.subHeader' /></h2>
-                <h4>
-                    <Translate id='setupRecovery.advancedSecurity' />
-                    <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
-                </h4>
-                <RecoveryOption
-                    onClick={() => setRecoveryOption('phrase')}
-                    option='phrase'
-                    active={recoveryOption}
-                />
-                <RecoveryOption
-                    onClick={() => setRecoveryOption('ledger')}
-                    option='ledger'
-                    active={recoveryOption}
-                />
-                <FormButton
-                    color='blue'
-                    type='submit'
-                    disabled={isInitializingRecoveryLink}
-                    sending={isInitializingRecoveryLink}
-                    trackingId='SR Click submit button'
-                    data-test-id="submitSelectedRecoveryOption"
-                >
-                    <Translate id='button.secureMyAccount' />
-                </FormButton>
-            </form>
-        </StyledContainer >
-    );
+  return (
+    <StyledContainer className='small-centered border'>
+      <form
+        onSubmit={(e) => {
+          onClickSecureMyAccount({
+            recoveryOption,
+            email,
+          });
+          e.preventDefault();
+        }}
+      >
+        <h1>
+          <Translate id='setupRecovery.header' />
+        </h1>
+        <h2>
+          <Translate id='setupRecovery.subHeader' />
+        </h2>
+        <h4>
+          <Translate id='setupRecovery.advancedSecurity' />
+          <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
+        </h4>
+        <RecoveryOption
+          onClick={() => setRecoveryOption("phrase")}
+          option='phrase'
+          active={recoveryOption}
+        />
+        <RecoveryOption
+          onClick={() => setRecoveryOption("ledger")}
+          option='ledger'
+          active={recoveryOption}
+        />
+        <FormButton
+          color='blue'
+          type='submit'
+          disabled={isInitializingRecoveryLink}
+          sending={isInitializingRecoveryLink}
+          trackingId='SR Click submit button'
+          data-test-id="submitSelectedRecoveryOption"
+        >
+          <Translate id='button.secureMyAccount' />
+        </FormButton>
+      </form>
+    </StyledContainer>
+  );
 };

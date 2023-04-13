@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import React, { Component } from "react";
+import styled from "styled-components";
 
-import languagesIcon from '../../images/icon-languages.svg';
-import LanguageToggle from '../common/LangSwitcher';
-import ConnectLedger from './ConnectLedger';
-import DesktopMenu from './DesktopMenu';
-import Logo from './Logo';
-import NavLinks from './NavLinks';
-import UserAccount from './UserAccount';
+import languagesIcon from "../../images/icon-languages.svg";
+import LanguageToggle from "../common/LangSwitcher";
+import ConnectLedger from "./ConnectLedger";
+import DesktopMenu from "./DesktopMenu";
+import Logo from "./Logo";
+import NavLinks from "./NavLinks";
+import UserAccount from "./UserAccount";
 
 const Container = styled.div`
     display: none;
@@ -41,7 +41,6 @@ const Container = styled.div`
         margin: 0 20px;
     }
 `;
-
 
 const Lang = styled.div`
     margin-left: auto;
@@ -87,55 +86,53 @@ const Lang = styled.div`
 `;
 
 class DesktopContainer extends Component {
-    render() {
-        const {
-            account,
-            menuOpen,
-            toggleMenu,
-            availableAccounts,
-            handleSelectAccount,
-            showNavLinks,
-            flowLimitationMainMenu,
-            flowLimitationSubMenu,
-            refreshBalance,
-        } = this.props;
+  render() {
+    const {
+      account,
+      menuOpen,
+      toggleMenu,
+      availableAccounts,
+      handleSelectAccount,
+      showNavLinks,
+      flowLimitationMainMenu,
+      flowLimitationSubMenu,
+      refreshBalance,
+    } = this.props;
 
-        const showAllNavigationLinks = showNavLinks && !flowLimitationMainMenu;
+    const showAllNavigationLinks = showNavLinks && !flowLimitationMainMenu;
 
-        return (
-            <Container>
-                <Logo link={!flowLimitationMainMenu}/>
-                {showAllNavigationLinks &&
-                    <NavLinks />
-                }
-                <Lang>
-                    <LanguageToggle />
-                </Lang>
-                <ConnectLedger />
-                {showNavLinks && (
-                    <>
-                        <div className='divider'/>
-                        <UserAccount
-                            accountId={account.accountId || account.localStorage?.accountId}
-                            onClick={toggleMenu}
-                            flowLimitationSubMenu={flowLimitationSubMenu}
-                        />
-                        <DesktopMenu
-                            show={menuOpen}
-                            toggleMenu={toggleMenu}
-                            accountId={account.accountId}
-                            accountIdLocalStorage={account.localStorage?.accountId}
-                            accounts={availableAccounts}
-                            handleSelectAccount={handleSelectAccount}
-                            accountsBalance={account.accountsBalance}
-                            balance={account.balance}
-                            refreshBalance={refreshBalance}
-                        />
-                    </>
-                )}
-            </Container>
-        );
-    }
+    return (
+      <Container>
+        <Logo link={!flowLimitationMainMenu} />
+        {showAllNavigationLinks && <NavLinks />}
+        <Lang>
+          <LanguageToggle />
+        </Lang>
+        <ConnectLedger />
+        {showNavLinks && (
+          <>
+            <div className='divider' />
+            <UserAccount
+              accountId={account.accountId || account.localStorage?.accountId}
+              onClick={toggleMenu}
+              flowLimitationSubMenu={flowLimitationSubMenu}
+            />
+            <DesktopMenu
+              show={menuOpen}
+              toggleMenu={toggleMenu}
+              accountId={account.accountId}
+              accountIdLocalStorage={account.localStorage?.accountId}
+              accounts={availableAccounts}
+              handleSelectAccount={handleSelectAccount}
+              accountsBalance={account.accountsBalance}
+              balance={account.balance}
+              refreshBalance={refreshBalance}
+            />
+          </>
+        )}
+      </Container>
+    );
+  }
 }
 
 export default DesktopContainer;

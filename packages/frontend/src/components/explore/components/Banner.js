@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import creditcard from '../media/creditcard.svg';
+import creditcard from "../media/creditcard.svg";
 
 const StyledBannerLink = styled(Link)`
     width: 100%;
@@ -65,11 +65,15 @@ const StyledBannerBtn = styled.span`
 `;
 
 export default function () {
-    return (
-        <StyledBannerLink to='/buy'>
-            <StyledBannerH2><Translate id='explore.banner.text'/></StyledBannerH2>
-            <StyledBannerImg src={creditcard} alt='Buy NEAR'/>
-            <StyledBannerBtn><Translate id='explore.banner.button'/></StyledBannerBtn>
-        </StyledBannerLink>
-    );
+  return (
+    <StyledBannerLink to='/buy'>
+      <StyledBannerH2>
+        <Translate id='explore.banner.text' />
+      </StyledBannerH2>
+      <StyledBannerImg src={creditcard} alt='Buy NEAR' />
+      <StyledBannerBtn>
+        <Translate id='explore.banner.button' />
+      </StyledBannerBtn>
+    </StyledBannerLink>
+  );
 }

@@ -1,8 +1,8 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
-import { createParameterSelector } from '../../selectors/topLevel';
+import { createParameterSelector } from "../../selectors/topLevel";
 
-const SLICE_NAME = 'allAccounts';
+const SLICE_NAME = "allAccounts";
 
 const getAccountIdParam = createParameterSelector((params) => params.accountId);
 
@@ -10,21 +10,21 @@ const getAccountIdParam = createParameterSelector((params) => params.accountId);
 export const selectAllAccountsSlice = (state) => state[SLICE_NAME];
 
 export const selectAllAccountsByAccountId = createSelector(
-    [selectAllAccountsSlice, getAccountIdParam],
-    (allAccounts, accountId) => allAccounts[accountId] || {}
+  [selectAllAccountsSlice, getAccountIdParam],
+  (allAccounts, accountId) => allAccounts[accountId] || {},
 );
 
 export const selectAllAccountsBalance = createSelector(
-    [selectAllAccountsByAccountId],
-    (account) => account.balance || {}
+  [selectAllAccountsByAccountId],
+  (account) => account.balance || {},
 );
 
 export const selectAllAccountsBalanceLockedAmount = createSelector(
-    [selectAllAccountsBalance],
-    (balance) => balance.lockedAmount || ''
+  [selectAllAccountsBalance],
+  (balance) => balance.lockedAmount || "",
 );
 
 export const selectAllAccountsHasLockup = createSelector(
-    [selectAllAccountsByAccountId],
-    (account) => account.hasLockup
+  [selectAllAccountsByAccountId],
+  (account) => account.hasLockup,
 );

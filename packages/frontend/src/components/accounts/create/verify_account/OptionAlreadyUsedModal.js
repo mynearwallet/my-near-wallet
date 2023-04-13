@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../../../common/FormButton';
-import Modal from '../../../common/modal/Modal';
-import AlertTriangleIcon from '../../../svg/AlertTriangleIcon';
+import FormButton from "../../../common/FormButton";
+import Modal from "../../../common/modal/Modal";
+import AlertTriangleIcon from "../../../svg/AlertTriangleIcon";
 
 const Container = styled.div`
     display: flex;
@@ -46,23 +46,22 @@ const Container = styled.div`
 `;
 
 export default ({ isOpen, onClose, kind }) => {
-    return (
-        <Modal
-            id='method-already-used-modal'
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='md'
-        >
-            <Container>
-                <div className='alert-triangle'><AlertTriangleIcon color='#DC1F25' /></div>
-                <h2><Translate id={`verifyAccount.modal.${kind}.title`} /></h2>
-                <div className='desc'><Translate id={`verifyAccount.modal.${kind}.desc`} /></div>
-                <FormButton
-                    onClick={onClose}
-                >
-                    <Translate id='button.gotIt' />
-                </FormButton>
-            </Container>
-        </Modal>
-    );
+  return (
+    <Modal id='method-already-used-modal' isOpen={isOpen} onClose={onClose} modalSize='md'>
+      <Container>
+        <div className='alert-triangle'>
+          <AlertTriangleIcon color='#DC1F25' />
+        </div>
+        <h2>
+          <Translate id={`verifyAccount.modal.${kind}.title`} />
+        </h2>
+        <div className='desc'>
+          <Translate id={`verifyAccount.modal.${kind}.desc`} />
+        </div>
+        <FormButton onClick={onClose}>
+          <Translate id='button.gotIt' />
+        </FormButton>
+      </Container>
+    </Modal>
+  );
 };

@@ -1,10 +1,10 @@
-import React, { Component, createRef } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { Component, createRef } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import classNames from '../../../utils/classNames';
-import { ACCOUNT_CHECK_TIMEOUT } from '../../../utils/wallet';
-import CheckCircleIcon from '../../svg/CheckCircleIcon';
+import classNames from "../../../utils/classNames";
+import { ACCOUNT_CHECK_TIMEOUT } from "../../../utils/wallet";
+import CheckCircleIcon from "../../svg/CheckCircleIcon";
 
 const InputWrapper = styled.div`
     position: relative;
@@ -88,139 +88,142 @@ const InputWrapper = styled.div`
     }
 `;
 class InputAccountId extends Component {
-    state = {
-        wrongChar: false
+  state = {
+    wrongChar: false,
+  };
+
+  checkAccountAvailabilityTimer = null;
+  canvas = null;
+  prefix = createRef();
+
+  componentDidMount = () => {
+    const { accountId } = this.props;
+
+    if (accountId) {
+      this.handleChangeAccountId({ userValue: accountId });
+      this.updatePrefix(accountId);
+    }
+  };
+
+  updatePrefix = (userValue) => {
+    // FIX: Handle prefix placement for overflowing input (implicit accounts, etc.)
+    const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+    const width = this.getTextWidth(userValue, "16px Inter");
+    const extraSpace = isSafari ? 22 : 23;
+    this.prefix.current.style.right = width + extraSpace + "px";
+    this.prefix.current.style.visibility = "visible";
+    if (userValue.length === 0) {
+      this.prefix.current.style.visibility = "hidden";
+    }
+  };
+
+  getTextWidth = (text, font) => {
+    if (!this.canvas) {
+      this.canvas = document.createElement("canvas");
+    }
+    let context = this.canvas.getContext("2d");
+    context.font = font;
+    let metrics = context.measureText(text);
+    return metrics.width;
+  };
+
+  handleChangeAccountId = ({ userValue, el }) => {
+    const { handleChange, localAlert, clearLocalAlert, setIsImplicitAccount } = this.props;
+    const { wrongChar } = this.state;
+    const pattern = /[^a-zA-Z0-9._-]/;
+
+    const accountId = userValue.trim().toLowerCase();
+
+    if (accountId.match(pattern)) {
+      if (wrongChar) {
+        el.style.animation = "none";
+        void el.offsetHeight;
+        el.style.animation = null;
+      } else {
+        this.setState({ wrongChar: true });
+      }
+      return;
+    } else {
+      this.setState({ wrongChar: false });
     }
 
-    checkAccountAvailabilityTimer = null;
-    canvas = null;
-    prefix = createRef();
+    setIsImplicitAccount(false);
+    handleChange(accountId);
 
-    componentDidMount = () => {
-        const { accountId } = this.props;
+    localAlert && clearLocalAlert();
 
-        if (accountId) {
-            this.handleChangeAccountId({ userValue: accountId });
-            this.updatePrefix(accountId);
-        }
+    this.checkAccountAvailabilityTimer && clearTimeout(this.checkAccountAvailabilityTimer);
+    this.checkAccountAvailabilityTimer = setTimeout(() => {
+      this.handleCheckAvailability(accountId);
+    }, ACCOUNT_CHECK_TIMEOUT);
+  };
+
+  isImplicitAccount = (accountId) => accountId.length === 64 && !accountId.includes(".");
+
+  handleCheckAvailability = async (accountId) => {
+    const { checkAvailability, clearLocalAlert, setIsImplicitAccount } = this.props;
+
+    if (!accountId) {
+      return false;
     }
 
-    updatePrefix = (userValue) => {
-        // FIX: Handle prefix placement for overflowing input (implicit accounts, etc.)
-        const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
-        const width = this.getTextWidth(userValue, '16px Inter');
-        const extraSpace = isSafari ? 22 : 23;
-        this.prefix.current.style.right = width + extraSpace + 'px';
-        this.prefix.current.style.visibility = 'visible';
-        if (userValue.length === 0) {
-            this.prefix.current.style.visibility = 'hidden';
-        }
+    try {
+      await checkAvailability(accountId);
+    } catch (e) {
+      if (
+        this.isImplicitAccount(accountId) &&
+        e.toString().includes("does not exist while viewing")
+      ) {
+        console.warn(`${accountId} does not exist. Assuming this is an implicit Account ID.`);
+        clearLocalAlert();
+        setIsImplicitAccount(true);
+        return;
+      }
     }
+  };
 
-    getTextWidth = (text, font) => {
-        if (!this.canvas) {
-            this.canvas = document.createElement('canvas');
-        }
-        let context = this.canvas.getContext('2d');
-        context.font = font;
-        let metrics = context.measureText(text);
-        return metrics.width;
-    }
+  render() {
+    const { disabled, accountId, onFocus, onBlur, autoFocus, isSuccess, isProblem } = this.props;
 
-    handleChangeAccountId = ({ userValue, el }) => {
-        const { handleChange, localAlert, clearLocalAlert, setIsImplicitAccount } = this.props;
-        const { wrongChar } = this.state;
-        const pattern = /[^a-zA-Z0-9._-]/;
+    const { wrongChar } = this.state;
 
-        const accountId = userValue.trim().toLowerCase();
-
-        if (accountId.match(pattern)) {
-            if (wrongChar) {
-                el.style.animation = 'none';
-                void el.offsetHeight;
-                el.style.animation = null;
-            } else {
-                this.setState({ wrongChar: true });
-            }
-            return;
-        } else {
-            this.setState({ wrongChar: false });
-        }
-
-        setIsImplicitAccount(false);
-        handleChange(accountId);
-
-        localAlert && clearLocalAlert();
-
-        this.checkAccountAvailabilityTimer && clearTimeout(this.checkAccountAvailabilityTimer);
-        this.checkAccountAvailabilityTimer = setTimeout(() => {
-            this.handleCheckAvailability(accountId);
-        }, ACCOUNT_CHECK_TIMEOUT);
-    }
-
-    isImplicitAccount = (accountId) => accountId.length === 64 && !accountId.includes('.')
-
-    handleCheckAvailability = async (accountId) => {
-        const { checkAvailability, clearLocalAlert, setIsImplicitAccount } = this.props;
-
-        if (!accountId) {
-            return false;
-        }
-
-        try {
-            await checkAvailability(accountId);
-        } catch (e) {
-            if (this.isImplicitAccount(accountId) && e.toString().includes('does not exist while viewing')) {
-                console.warn(`${accountId} does not exist. Assuming this is an implicit Account ID.`);
-                clearLocalAlert();
-                setIsImplicitAccount(true);
-                return;
-            }
-        }
-    }
-
-    render() {
-        const {
-            disabled,
-            accountId,
-            onFocus,
-            onBlur,
-            autoFocus,
-            isSuccess,
-            isProblem,
-        } = this.props;
-
-        const { wrongChar } = this.state;
-
-        return (
-            <Translate>
-                {({ translate }) => (
-                    <InputWrapper className={classNames([{ 'success': isSuccess }, { 'problem': isProblem }, { 'wrong-char': wrongChar }])}>
-                        <input
-                            value={accountId}
-                            onInput={(e) => this.updatePrefix(e.target.value)}
-                            onChange={(e) => this.handleChangeAccountId({ userValue: e.target.value, el: e.target })}
-                            placeholder={translate('input.accountId.placeHolderAlt')}
-                            required
-                            autoComplete='off'
-                            autoCorrect='off'
-                            autoCapitalize='off'
-                            spellCheck='false'
-                            tabIndex='1'
-                            disabled={disabled}
-                            autoFocus={autoFocus}
-                            onBlur={onBlur}
-                            onFocus={onFocus}
-                            data-test-id="sendMoneyPageAccountIdInput"
-                        />
-                        <span className='success-prefix' ref={this.prefix}>
-                            <CheckCircleIcon color='#00C08B' />
-                        </span>
-                    </InputWrapper>
-                )}
-            </Translate>
-        );
-    }
+    return (
+      <Translate>
+        {({ translate }) => (
+          <InputWrapper
+            className={classNames([
+              { success: isSuccess },
+              { problem: isProblem },
+              { "wrong-char": wrongChar },
+            ])}
+          >
+            <input
+              value={accountId}
+              onInput={(e) => this.updatePrefix(e.target.value)}
+              onChange={(e) =>
+                this.handleChangeAccountId({ userValue: e.target.value, el: e.target })
+              }
+              placeholder={translate("input.accountId.placeHolderAlt")}
+              required
+              autoComplete='off'
+              autoCorrect='off'
+              autoCapitalize='off'
+              spellCheck='false'
+              tabIndex='1'
+              disabled={disabled}
+              autoFocus={autoFocus}
+              onBlur={onBlur}
+              onFocus={onFocus}
+              data-test-id="sendMoneyPageAccountIdInput"
+            />
+            <span className='success-prefix' ref={this.prefix}>
+              <CheckCircleIcon color='#00C08B' />
+            </span>
+          </InputWrapper>
+        )}
+      </Translate>
+    );
+  }
 }
 
 export default InputAccountId;

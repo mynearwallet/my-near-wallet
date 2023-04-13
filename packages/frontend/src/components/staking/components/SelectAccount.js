@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Balance from '../../common/balance/Balance';
-import RadioButton from '../../common/radio_button/RadioButton';
-import RadioGroup from '../../common/radio_button/RadioGroup';
+import Balance from "../../common/balance/Balance";
+import RadioButton from "../../common/radio_button/RadioButton";
+import RadioGroup from "../../common/radio_button/RadioGroup";
 
 const Container = styled.div`
     > div {
@@ -47,35 +47,40 @@ const Container = styled.div`
 `;
 
 export default function SelectAccount({ accounts, onChange, selectedAccount }) {
-    return (
-        <RadioGroup onChange={accounts.length > 1 && accounts.every((account) => !!account.totalUnstaked) ? (e) => onChange(e) : null} selectedValue={selectedAccount}>
-            {accounts.map((account, i) => (
-                <RadioButton value={account.accountId} key={i}>
-                    <Container>
-                        <div>
-                            {account.accountId}
-                        </div>
-                        <div>
-                            <div>
-                                <Translate id='staking.staking.available' />
-                                <Balance
-                                    data-test-id="accountSelectAvailableBalance"
-                                    amount={account.totalUnstaked}
-                                    showBalanceInUSD={false}
-                                />
-                            </div>
-                            <div>
-                                <Translate id='staking.staking.totalStaked' />
-                                <Balance
-                                    data-test-id="accountSelectStakedBalance"
-                                    amount={account.totalStaked}
-                                    showBalanceInUSD={false}
-                                />
-                            </div>
-                        </div>
-                    </Container>
-                </RadioButton>
-            ))}
-        </RadioGroup>
-    );
+  return (
+    <RadioGroup
+      onChange={
+        accounts.length > 1 && accounts.every((account) => !!account.totalUnstaked)
+          ? (e) => onChange(e)
+          : null
+      }
+      selectedValue={selectedAccount}
+    >
+      {accounts.map((account, i) => (
+        <RadioButton value={account.accountId} key={i}>
+          <Container>
+            <div>{account.accountId}</div>
+            <div>
+              <div>
+                <Translate id='staking.staking.available' />
+                <Balance
+                  data-test-id="accountSelectAvailableBalance"
+                  amount={account.totalUnstaked}
+                  showBalanceInUSD={false}
+                />
+              </div>
+              <div>
+                <Translate id='staking.staking.totalStaked' />
+                <Balance
+                  data-test-id="accountSelectStakedBalance"
+                  amount={account.totalStaked}
+                  showBalanceInUSD={false}
+                />
+              </div>
+            </div>
+          </Container>
+        </RadioButton>
+      ))}
+    </RadioGroup>
+  );
 }

@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import WrapIcon from '../svg/WrapIcon';
+import WrapIcon from "../svg/WrapIcon";
 
 const FlipButtonWrapper = styled.button`
     height: 2.5rem;
@@ -25,9 +25,9 @@ const FlipButtonWrapper = styled.button`
 `;
 
 export default function FlipButton({ onClick }) {
-    return (
-        <FlipButtonWrapper onClick={onClick}>
-            <WrapIcon color="var(--color-icon)" />
-        </FlipButtonWrapper>
-    );
+  return (
+    <FlipButtonWrapper onClick={onClick}>
+      <WrapIcon color="var(--color-icon)" />
+    </FlipButtonWrapper>
+  );
 }

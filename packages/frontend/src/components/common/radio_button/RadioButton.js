@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import styled from "styled-components";
 
-import classNames from '../../../utils/classNames';
+import classNames from "../../../utils/classNames";
 
 const Root = styled.div`
   
@@ -97,44 +97,42 @@ const Input = styled.input`
 `;
 
 export default class RadioButton extends Component {
-    render() {
-        const { name, selectedValue } = this.context.radioGroup;
-        const { onChange, value, children } = this.props;
-        let checked = false;
+  render() {
+    const { name, selectedValue } = this.context.radioGroup;
+    const { onChange, value, children } = this.props;
+    let checked = false;
 
-        if (selectedValue !== undefined) {
-            checked = value === selectedValue;
-        }
-
-        return (
-            <Root className={classNames(['radio-wrapper', checked ? 'checked' : ''])}>
-                <label className='radio-label'>
-                    <div className='input-wrapper'>
-                        <Input
-                            type='radio'
-                            name={name}
-                            value={value}
-                            checked={checked}
-                            aria-checked={checked}
-                            onChange={onChange}
-                            className='radio-input'
-                        />
-                        <Fill className='radio-fill'/>
-                    </div>
-                    <div className='radio-content'>
-                        {children}
-                    </div>
-                </label>
-            </Root>
-        );
+    if (selectedValue !== undefined) {
+      checked = value === selectedValue;
     }
+
+    return (
+      <Root className={classNames(["radio-wrapper", checked ? "checked" : ""])}>
+        <label className='radio-label'>
+          <div className='input-wrapper'>
+            <Input
+              type='radio'
+              name={name}
+              value={value}
+              checked={checked}
+              aria-checked={checked}
+              onChange={onChange}
+              className='radio-input'
+            />
+            <Fill className='radio-fill' />
+          </div>
+          <div className='radio-content'>{children}</div>
+        </label>
+      </Root>
+    );
+  }
 }
 
 RadioButton.contextTypes = {
-    radioGroup: PropTypes.object
+  radioGroup: PropTypes.object,
 };
 
 RadioButton.defaultProps = {
-    onChange: () => {},
-    value: ''
+  onChange: () => {},
+  value: "",
 };

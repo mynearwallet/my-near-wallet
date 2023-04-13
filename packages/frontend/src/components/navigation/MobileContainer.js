@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { Component } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import languagesIcon from '../../images/icon-languages.svg';
-import AccountSelector from '../accounts/account_selector/AccountSelector';
-import LanguageToggle from '../common/LangSwitcher';
-import UserIcon from '../svg/UserIcon';
-import AccessAccountBtn from './AccessAccountBtn';
-import CreateAccountBtn from './CreateAccountBtn';
-import Logo from './Logo';
-import NavLinks from './NavLinks';
-import UserAccount from './UserAccount';
+import languagesIcon from "../../images/icon-languages.svg";
+import AccountSelector from "../accounts/account_selector/AccountSelector";
+import LanguageToggle from "../common/LangSwitcher";
+import UserIcon from "../svg/UserIcon";
+import AccessAccountBtn from "./AccessAccountBtn";
+import CreateAccountBtn from "./CreateAccountBtn";
+import Logo from "./Logo";
+import NavLinks from "./NavLinks";
+import UserAccount from "./UserAccount";
 
 const Container = styled.div`
     display: none;
@@ -164,65 +164,70 @@ const Lang = styled.div`
 `;
 
 class MobileContainer extends Component {
-    render() {
+  render() {
+    const {
+      account,
+      handleSelectAccount,
+      availableAccounts,
+      menuOpen,
+      toggleMenu,
+      showNavLinks,
+      flowLimitationMainMenu,
+      flowLimitationSubMenu,
+      refreshBalance,
+    } = this.props;
 
-        const {
-            account,
-            handleSelectAccount,
-            availableAccounts,
-            menuOpen,
-            toggleMenu,
-            showNavLinks,
-            flowLimitationMainMenu,
-            flowLimitationSubMenu,
-            refreshBalance
-        } = this.props;
-
-        return (
-            <Container className={menuOpen ? 'show' : ''} id='mobile-menu'>
-                <Collapsed>
-                    <Logo link={!flowLimitationMainMenu} mode='mobile' />
-                    {showNavLinks && (
-                        <>
-                            <UserAccount
-                                accountId={account.accountId || account.localStorage?.accountId}
-                                onClick={toggleMenu}
-                                withIcon={false}
-                                flowLimitationSubMenu={flowLimitationSubMenu}
-                            />
-                            <UserIcon background={true} color='#A2A2A8' onClick={!flowLimitationSubMenu ? toggleMenu : null}/>
-                        </>
-                    )}
-                    {!showNavLinks && (
-                        <Lang>
-                            <LanguageToggle />
-                        </Lang>
-                    )}
-                </Collapsed>
-                {menuOpen && (
-                    <>
-                        <NavLinks />
-                        <Lang className="mobile-lang">
-                            <LanguageToggle />
-                        </Lang>
-                        <LowerSection>
-                            <h6><Translate id='link.switchAccount' /></h6>
-                            <AccountSelector
-                                signedInAccountId={account.localStorage?.accountId}
-                                availableAccounts={availableAccounts}
-                                accountsBalances={account.accountsBalance}
-                                getAccountBalance={refreshBalance}
-                                onSelectAccount={handleSelectAccount}
-                                showBalanceInUSD={true}
-                            />
-                            <AccessAccountBtn />
-                            <CreateAccountBtn />
-                        </LowerSection>
-                    </>
-                )}
-            </Container>
-        );
-    }
+    return (
+      <Container className={menuOpen ? "show" : ""} id='mobile-menu'>
+        <Collapsed>
+          <Logo link={!flowLimitationMainMenu} mode='mobile' />
+          {showNavLinks && (
+            <>
+              <UserAccount
+                accountId={account.accountId || account.localStorage?.accountId}
+                onClick={toggleMenu}
+                withIcon={false}
+                flowLimitationSubMenu={flowLimitationSubMenu}
+              />
+              <UserIcon
+                background={true}
+                color='#A2A2A8'
+                onClick={!flowLimitationSubMenu ? toggleMenu : null}
+              />
+            </>
+          )}
+          {!showNavLinks && (
+            <Lang>
+              <LanguageToggle />
+            </Lang>
+          )}
+        </Collapsed>
+        {menuOpen && (
+          <>
+            <NavLinks />
+            <Lang className="mobile-lang">
+              <LanguageToggle />
+            </Lang>
+            <LowerSection>
+              <h6>
+                <Translate id='link.switchAccount' />
+              </h6>
+              <AccountSelector
+                signedInAccountId={account.localStorage?.accountId}
+                availableAccounts={availableAccounts}
+                accountsBalances={account.accountsBalance}
+                getAccountBalance={refreshBalance}
+                onSelectAccount={handleSelectAccount}
+                showBalanceInUSD={true}
+              />
+              <AccessAccountBtn />
+              <CreateAccountBtn />
+            </LowerSection>
+          </>
+        )}
+      </Container>
+    );
+  }
 }
 
 export default MobileContainer;

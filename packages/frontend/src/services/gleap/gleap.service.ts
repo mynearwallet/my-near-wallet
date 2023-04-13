@@ -1,6 +1,6 @@
-import Gleap from 'gleap';
+import Gleap from "gleap";
 
-import CONFIG from '../../config';
+import CONFIG from "../../config";
 
 Gleap.disableConsoleLogOverwrite();
 Gleap.showFeedbackButton(false);

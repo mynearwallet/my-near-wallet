@@ -1,21 +1,21 @@
-const ParcelBundler = require('./ParcelBundler');
+const ParcelBundler = require("./ParcelBundler");
 
 async function runBundler() {
-    const args = process.argv
-        .slice(2)
-        .map((arg) => arg.replace('--', ''))
-        .reduce((argMap, param) => {
-            const [key, value] = param.split('=');
-            argMap[key] = value;
+  const args = process.argv
+    .slice(2)
+    .map((arg) => arg.replace("--", ""))
+    .reduce((argMap, param) => {
+      const [key, value] = param.split("=");
+      argMap[key] = value;
 
-            return argMap;
-        }, {});
+      return argMap;
+    }, {});
 
-    const bundler = new ParcelBundler(args);
+  const bundler = new ParcelBundler(args);
 
-    bundler.initializeBundlerInstance();
+  bundler.initializeBundlerInstance();
 
-    await bundler.bundle();
+  await bundler.bundle();
 }
 
 runBundler();

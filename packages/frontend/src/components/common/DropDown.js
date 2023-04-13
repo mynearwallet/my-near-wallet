@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React from "react";
+import styled from "styled-components";
 
-import classNames from '../../utils/classNames';
-import Accordion from '../common/Accordion';
-import ChevronIcon from '../svg/ChevronIcon';
+import classNames from "../../utils/classNames";
+import Accordion from "../common/Accordion";
+import ChevronIcon from "../svg/ChevronIcon";
 
 const Container = styled.div`
     position: relative;
@@ -92,40 +92,29 @@ const Container = styled.div`
 `;
 
 export default function DropDown({ name, title, icon, content, disabled, maxHeight = true }) {
-    return (
-        <Container className={classNames(['dropdown-container', disabled ? 'disabled' : '', maxHeight ? 'max-height' : ''])}>
-            <div id={name} className='dropdown-title-wrapper'>
-                {icon ? (
-                    <div className='icon-wrapper'>
-                        {icon}
-                    </div>
-                ) : null}
-                <div className='dropdown-title'>
-                    {title}
-                </div>
-                <ChevronIcon color='#0072ce'/>
-            </div>
-            <Accordion
-                trigger={name}
-                className='dropdown-content'
-                transition='0'
-                disabled={disabled}
-            >
-                {content}
-            </Accordion>
-        </Container>
-    );
+  return (
+    <Container
+      className={classNames([
+        "dropdown-container",
+        disabled ? "disabled" : "",
+        maxHeight ? "max-height" : "",
+      ])}
+    >
+      <div id={name} className='dropdown-title-wrapper'>
+        {icon ? <div className='icon-wrapper'>{icon}</div> : null}
+        <div className='dropdown-title'>{title}</div>
+        <ChevronIcon color='#0072ce' />
+      </div>
+      <Accordion trigger={name} className='dropdown-content' transition='0' disabled={disabled}>
+        {content}
+      </Accordion>
+    </Container>
+  );
 }
 
 DropDown.propTypes = {
-    name: PropTypes.string.isRequired,
-    icon: PropTypes.object,
-    title: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object
-    ]),
-    content: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object
-    ])
+  name: PropTypes.string.isRequired,
+  icon: PropTypes.object,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  content: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };

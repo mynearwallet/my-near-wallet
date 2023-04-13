@@ -1,11 +1,11 @@
-import { utils } from 'near-api-js';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import { utils } from "near-api-js";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Balance from '../common/balance/Balance';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
+import Balance from "../common/balance/Balance";
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
 
 const Container = styled.div`
     display: flex;
@@ -60,34 +60,31 @@ const Container = styled.div`
 `;
 
 const SendConfirmModal = ({ open, onClose, onConfirm, amount, receiver, loading }) => {
-    return (
-        <Modal
-            id='stake-confirm-modal'
-            isOpen={open}
-            onClose={onClose}
-            closeButton='desktop'
-        >
-            <Container>
-                <h2><Translate id='sendMoney.confirmModal.title'/></h2>
-                <div className='breakdown'>
-                    <div>
-                        Amount to send
-                        <Balance amount={utils.format.parseNearAmount(amount)}/>
-                    </div>
-                    <div>
-                        Recipient
-                        <div>{receiver}</div>
-                    </div>
-                </div>
-                <FormButton disabled={loading} sending={loading} color='green' onClick={onConfirm}>
-                    <Translate id='button.confirm'/>
-                </FormButton>
-                <FormButton disabled={loading} color='link red' id='close-button'>
-                    <Translate id='button.cancel'/>
-                </FormButton>
-            </Container>
-        </Modal>
-    );
+  return (
+    <Modal id='stake-confirm-modal' isOpen={open} onClose={onClose} closeButton='desktop'>
+      <Container>
+        <h2>
+          <Translate id='sendMoney.confirmModal.title' />
+        </h2>
+        <div className='breakdown'>
+          <div>
+            Amount to send
+            <Balance amount={utils.format.parseNearAmount(amount)} />
+          </div>
+          <div>
+            Recipient
+            <div>{receiver}</div>
+          </div>
+        </div>
+        <FormButton disabled={loading} sending={loading} color='green' onClick={onConfirm}>
+          <Translate id='button.confirm' />
+        </FormButton>
+        <FormButton disabled={loading} color='link red' id='close-button'>
+          <Translate id='button.cancel' />
+        </FormButton>
+      </Container>
+    </Modal>
+  );
 };
 
 export default SendConfirmModal;

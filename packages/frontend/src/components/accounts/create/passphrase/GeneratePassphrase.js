@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import RecoveryOption from '../../../accounts/recovery_setup/RecoveryOption';
-import FormButton from '../../../common/FormButton';
-import Container from '../../../common/styled/Container.css';
+import RecoveryOption from "../../../accounts/recovery_setup/RecoveryOption";
+import FormButton from "../../../common/FormButton";
+import Container from "../../../common/styled/Container.css";
 
 const StyledContainer = styled(Container)`
     .active {
@@ -26,27 +26,31 @@ const StyledContainer = styled(Container)`
 `;
 
 export default () => {
-    const [recoveryOption, setRecoveryOption] = useState('newPhrase');
-    return (
-        <StyledContainer className='small-centered border'>
-            <h1><Translate id='createAccount.setupPassphrase.generatePassphrase.tite' /></h1>
-            <h2><Translate id='createAccount.setupPassphrase.generatePassphrase.desc' /></h2>
-            <h2><Translate id='createAccount.setupPassphrase.generatePassphrase.descTwo' /></h2>
-            <RecoveryOption
-                onClick={() => setRecoveryOption('newPhrase')}
-                option='newPhrase'
-                active={recoveryOption}
-            />
-            <RecoveryOption
-                onClick={() => setRecoveryOption('existingPhrase')}
-                option='existingPhrase'
-                active={recoveryOption}
-            />
-            <FormButton
-                onClick={() => {}}
-            >
-                <Translate id='button.continue' />
-            </FormButton>
-        </StyledContainer>
-    );
+  const [recoveryOption, setRecoveryOption] = useState("newPhrase");
+  return (
+    <StyledContainer className='small-centered border'>
+      <h1>
+        <Translate id='createAccount.setupPassphrase.generatePassphrase.tite' />
+      </h1>
+      <h2>
+        <Translate id='createAccount.setupPassphrase.generatePassphrase.desc' />
+      </h2>
+      <h2>
+        <Translate id='createAccount.setupPassphrase.generatePassphrase.descTwo' />
+      </h2>
+      <RecoveryOption
+        onClick={() => setRecoveryOption("newPhrase")}
+        option='newPhrase'
+        active={recoveryOption}
+      />
+      <RecoveryOption
+        onClick={() => setRecoveryOption("existingPhrase")}
+        option='existingPhrase'
+        active={recoveryOption}
+      />
+      <FormButton onClick={() => {}}>
+        <Translate id='button.continue' />
+      </FormButton>
+    </StyledContainer>
+  );
 };

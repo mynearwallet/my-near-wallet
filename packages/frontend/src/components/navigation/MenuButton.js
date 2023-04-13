@@ -1,8 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import classNames from '../../utils/classNames';
-
+import classNames from "../../utils/classNames";
 
 const MenuBtn = styled.div`
     min-width: 22px;
@@ -65,13 +64,13 @@ const MenuBtn = styled.div`
 `;
 
 const MenuButton = ({ onClick, open }) => (
-    <div className='menu-btn-wrapper' onClick={onClick}>
-        <MenuBtn className={classNames(['menu-btn', {'open' : open}])}>
-            <div/>
-            <div/>
-            <div/>
-        </MenuBtn>
-    </div>
+  <div className='menu-btn-wrapper' onClick={onClick}>
+    <MenuBtn className={classNames(["menu-btn", { open: open }])}>
+      <div />
+      <div />
+      <div />
+    </MenuBtn>
+  </div>
 );
 
 export default MenuButton;

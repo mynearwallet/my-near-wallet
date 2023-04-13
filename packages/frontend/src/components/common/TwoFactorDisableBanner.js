@@ -1,16 +1,15 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
+import React, { useEffect, useState, useMemo } from "react";
+import { Translate } from "react-localize-redux";
+import { useSelector } from "react-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import { selectAccountSlice } from '../../redux/slices/account';
-import WalletClass, { wallet } from '../../utils/wallet';
-import AlertTriangleIcon from '../svg/AlertTriangleIcon';
-import LockIcon from '../svg/LockIcon';
-import Disable2FAModal from '../wallet-migration/Disable2FA';
-import FormButton from './FormButton';
-
+import CONFIG from "../../config";
+import { selectAccountSlice } from "../../redux/slices/account";
+import WalletClass, { wallet } from "../../utils/wallet";
+import AlertTriangleIcon from "../svg/AlertTriangleIcon";
+import LockIcon from "../svg/LockIcon";
+import Disable2FAModal from "../wallet-migration/Disable2FA";
+import FormButton from "./FormButton";
 
 const Container = styled.div`
     border: 2px solid #DC1F26;
@@ -105,72 +104,67 @@ const Container = styled.div`
 `;
 
 export default function TwoFactorDisableBanner() {
-    const [accounts, setAccounts] = useState([]);
-    const [showDisable2FAModal, setShowDisable2FAModal] = useState(false);
+  const [accounts, setAccounts] = useState([]);
+  const [showDisable2FAModal, setShowDisable2FAModal] = useState(false);
 
-    const account = useSelector(selectAccountSlice);
-    const loadedAccounts = useMemo(() => Object.keys(account.accounts ?? {}), [account.accounts]);
+  const account = useSelector(selectAccountSlice);
+  const loadedAccounts = useMemo(() => Object.keys(account.accounts ?? {}), [account.accounts]);
 
-    const showModal = () => setShowDisable2FAModal(true);
-    const hideModal = () => setShowDisable2FAModal(false);
+  const showModal = () => setShowDisable2FAModal(true);
+  const hideModal = () => setShowDisable2FAModal(false);
 
-    useEffect(() => {
-        const update2faAccounts = async () => {
-            const accounts = await wallet.keyStore.getAccounts(CONFIG.NETWORK_ID);
-            const getAccountWithAccessKeysAndType = async (accountId) => {
-                const keyType = await wallet.getAccountKeyType(accountId);
-                return { accountId, keyType };
-            };
-            const accountsKeyTypes = await Promise.all(
-                accounts.map(getAccountWithAccessKeysAndType)
-            );
+  useEffect(() => {
+    const update2faAccounts = async () => {
+      const accounts = await wallet.keyStore.getAccounts(CONFIG.NETWORK_ID);
+      const getAccountWithAccessKeysAndType = async (accountId) => {
+        const keyType = await wallet.getAccountKeyType(accountId);
+        return { accountId, keyType };
+      };
+      const accountsKeyTypes = await Promise.all(accounts.map(getAccountWithAccessKeysAndType));
 
-            setAccounts(accountsKeyTypes.reduce(((acc, { accountId, keyType }) => keyType === WalletClass.KEY_TYPES.MULTISIG ? [...acc, accountId] : acc), []));
-        };
-        if (loadedAccounts.length > 0 && accounts.sort() !== loadedAccounts.sort()) {
-            update2faAccounts();
-        }
-    }, [showDisable2FAModal, loadedAccounts.length]);
-
-    const accountsCount = accounts.length;
-    if (accounts.length === 0) {
-        return null;
+      setAccounts(
+        accountsKeyTypes.reduce(
+          (acc, { accountId, keyType }) =>
+            keyType === WalletClass.KEY_TYPES.MULTISIG ? [...acc, accountId] : acc,
+          [],
+        ),
+      );
+    };
+    if (loadedAccounts.length > 0 && accounts.sort() !== loadedAccounts.sort()) {
+      update2faAccounts();
     }
+  }, [showDisable2FAModal, loadedAccounts.length]);
 
-    return (
-        <Container className='banner-container'>
-            <div className='alert-container'>
-                <AlertTriangleIcon color={'#DC1F25'} />
-            </div>
-            <div className='content'>
-                <h4 className='title'>
-                    { accountsCount }
-                    {' '}
-                    {
-                        accountsCount > 1
-                            ? <Translate id='twoFactorDisbleBanner.titlePlural' />
-                            : <Translate id='twoFactorDisbleBanner.titleSingular' />
-                    }
-                </h4>
-                <div className='desc'>
-                    <Translate id='twoFactorDisbleBanner.desc' />
-                </div>
-            </div>
-            <FormButton
-                onClick={showModal}
-                color='red'
-            >
-                <LockIcon color='#FEF2F2' />
-                <Translate id='twoFactorDisbleBanner.button' />
-            </FormButton>
-            {
-                showDisable2FAModal && (
-                    <Disable2FAModal
-                        onClose={hideModal}
-                        handleSetActiveView={hideModal}
-                    />
-                )
-            }
-        </Container>
-    );
-};
+  const accountsCount = accounts.length;
+  if (accounts.length === 0) {
+    return null;
+  }
+
+  return (
+    <Container className='banner-container'>
+      <div className='alert-container'>
+        <AlertTriangleIcon color={"#DC1F25"} />
+      </div>
+      <div className='content'>
+        <h4 className='title'>
+          {accountsCount}{" "}
+          {accountsCount > 1 ? (
+            <Translate id='twoFactorDisbleBanner.titlePlural' />
+          ) : (
+            <Translate id='twoFactorDisbleBanner.titleSingular' />
+          )}
+        </h4>
+        <div className='desc'>
+          <Translate id='twoFactorDisbleBanner.desc' />
+        </div>
+      </div>
+      <FormButton onClick={showModal} color='red'>
+        <LockIcon color='#FEF2F2' />
+        <Translate id='twoFactorDisbleBanner.button' />
+      </FormButton>
+      {showDisable2FAModal && (
+        <Disable2FAModal onClose={hideModal} handleSetActiveView={hideModal} />
+      )}
+    </Container>
+  );
+}

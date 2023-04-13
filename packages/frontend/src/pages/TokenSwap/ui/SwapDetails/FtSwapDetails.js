@@ -1,14 +1,14 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Tooltip from '../../../../components/common/Tooltip';
-import Amount from '../../../../components/send/components/entry_types/Amount';
-import StyledContainer from '../../../../components/send/components/entry_types/css/Style.css';
-import CONFIG from '../../../../config';
-import { useSwapData } from '../../model/Swap';
-import PriceImpact from '../PriceImpact';
-import SlippagePicker from './SlippagePicker';
+import Tooltip from "../../../../components/common/Tooltip";
+import Amount from "../../../../components/send/components/entry_types/Amount";
+import StyledContainer from "../../../../components/send/components/entry_types/css/Style.css";
+import CONFIG from "../../../../config";
+import { useSwapData } from "../../model/Swap";
+import PriceImpact from "../PriceImpact";
+import SlippagePicker from "./SlippagePicker";
 
 const RowWrapper = styled.div`
     display: flex;
@@ -37,72 +37,67 @@ const SwapFeeDetails = styled.div`
 
 const slippageMarks = [0.5, 1, 3];
 
-export default function FtSwapDetails({
-    minAmountOut,
-    swapFeeAmount,
-    estimatedFee,
-}) {
-    const {
-        swapState: { tokenIn, tokenOut, swapFee, priceImpactPercent, slippage },
-        events: { setSlippage },
-    } = useSwapData();
+export default function FtSwapDetails({ minAmountOut, swapFeeAmount, estimatedFee }) {
+  const {
+    swapState: { tokenIn, tokenOut, swapFee, priceImpactPercent, slippage },
+    events: { setSlippage },
+  } = useSwapData();
 
-    return (
-        <>
-            <SlippagePicker
-                className='detailsRow'
-                value={slippage}
-                setSlippage={setSlippage}
-                marks={slippageMarks}
-            />
-            <RowWrapper className='detailsRow'>
-                <span>
-                    <Translate id='swap.priceImpact' />
-                    <Tooltip translate='swap.translateIdInfoTooltip.priceImpact' />
-                </span>
-                <PriceImpact percent={priceImpactPercent || 0} />
-            </RowWrapper>
+  return (
+    <>
+      <SlippagePicker
+        className='detailsRow'
+        value={slippage}
+        setSlippage={setSlippage}
+        marks={slippageMarks}
+      />
+      <RowWrapper className='detailsRow'>
+        <span>
+          <Translate id='swap.priceImpact' />
+          <Tooltip translate='swap.translateIdInfoTooltip.priceImpact' />
+        </span>
+        <PriceImpact percent={priceImpactPercent || 0} />
+      </RowWrapper>
 
-            {swapFee ? (
-                <RowWrapper className='detailsRow'>
-                    <span>
-                        <Translate id='swap.swapFee' />
-                        <Tooltip translate='swap.translateIdInfoTooltip.swapFee' />
-                    </span>
-                    <SwapFeeDetails>
-                        <span>{swapFee} %</span>
-                        {swapFeeAmount ? (
-                            <span>
-                                / {swapFeeAmount}{' '}
-                                {tokenIn.onChainFTMetadata?.symbol}
-                            </span>
-                        ) : (
-                            ''
-                        )}
-                    </SwapFeeDetails>
-                </RowWrapper>
-            ) : null}
+      {swapFee ? (
+        <RowWrapper className='detailsRow'>
+          <span>
+            <Translate id='swap.swapFee' />
+            <Tooltip translate='swap.translateIdInfoTooltip.swapFee' />
+          </span>
+          <SwapFeeDetails>
+            <span>{swapFee} %</span>
+            {swapFeeAmount ? (
+              <span>
+                / {swapFeeAmount} {tokenIn.onChainFTMetadata?.symbol}
+              </span>
+            ) : (
+              ""
+            )}
+          </SwapFeeDetails>
+        </RowWrapper>
+      ) : null}
 
-            {estimatedFee ? (
-                <Amount
-                    className='detailsRow'
-                    translateIdTitle='swap.fee'
-                    amount={estimatedFee}
-                    symbol={CONFIG.NEAR_ID}
-                    decimals={0}
-                    translateIdInfoTooltip='swap.translateIdInfoTooltip.fee'
-                    isApproximate
-                />
-            ) : null}
+      {estimatedFee ? (
+        <Amount
+          className='detailsRow'
+          translateIdTitle='swap.fee'
+          amount={estimatedFee}
+          symbol={CONFIG.NEAR_ID}
+          decimals={0}
+          translateIdInfoTooltip='swap.translateIdInfoTooltip.fee'
+          isApproximate
+        />
+      ) : null}
 
-            <StyledContainer className="detailsRow">
-                <Translate id="swap.minReceived" />
-                <Tooltip translate="swap.translateIdInfoTooltip.minimumReceived" />
+      <StyledContainer className="detailsRow">
+        <Translate id="swap.minReceived" />
+        <Tooltip translate="swap.translateIdInfoTooltip.minimumReceived" />
 
-                <div className='amount'>
-                    {minAmountOut || '-'} {tokenOut?.onChainFTMetadata?.symbol}
-                </div>
-            </StyledContainer>
-        </>
-    );
+        <div className='amount'>
+          {minAmountOut || "-"} {tokenOut?.onChainFTMetadata?.symbol}
+        </div>
+      </StyledContainer>
+    </>
+  );
 }

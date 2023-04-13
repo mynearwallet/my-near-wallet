@@ -1,29 +1,29 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { Textfit } from 'react-textfit';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { Textfit } from "react-textfit";
+import styled from "styled-components";
 
-import getCurrentLanguage from '../../hooks/getCurrentLanguage';
-import classNames from '../../utils/classNames';
-import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
-import { getTotalBalanceInFiat } from '../common/balance/helpers';
-import FormButton from '../common/FormButton';
-import Container from '../common/styled/Container.css';
-import Tooltip from '../common/Tooltip';
-import DownArrowIcon from '../svg/DownArrowIcon';
-import SendIcon from '../svg/SendIcon';
-import TopUpIcon from '../svg/TopUpIcon';
-import WrapIcon from '../svg/WrapIcon';
-import ActivitiesWrapper from './ActivitiesWrapper';
-import AllTokensTotalBalanceUSD from './AllTokensTotalBalanceUSD';
-import CreateCustomNameModal from './CreateCustomNameModal';
-import CreateFromImplicitSuccessModal from './CreateFromImplicitSuccessModal';
-import DepositNearBanner from './DepositNearBanner';
-import LinkDropSuccessModal from './LinkDropSuccessModal';
-import NFTs from './NFTs';
-import SidebarLight from './SidebarLight';
-import Tokens from './Tokens';
-import { ZeroBalanceAccountImportedModal } from './ZeroBalanceAccountImportedModal';
+import getCurrentLanguage from "../../hooks/getCurrentLanguage";
+import classNames from "../../utils/classNames";
+import { SHOW_NETWORK_BANNER } from "../../utils/wallet";
+import { getTotalBalanceInFiat } from "../common/balance/helpers";
+import FormButton from "../common/FormButton";
+import Container from "../common/styled/Container.css";
+import Tooltip from "../common/Tooltip";
+import DownArrowIcon from "../svg/DownArrowIcon";
+import SendIcon from "../svg/SendIcon";
+import TopUpIcon from "../svg/TopUpIcon";
+import WrapIcon from "../svg/WrapIcon";
+import ActivitiesWrapper from "./ActivitiesWrapper";
+import AllTokensTotalBalanceUSD from "./AllTokensTotalBalanceUSD";
+import CreateCustomNameModal from "./CreateCustomNameModal";
+import CreateFromImplicitSuccessModal from "./CreateFromImplicitSuccessModal";
+import DepositNearBanner from "./DepositNearBanner";
+import LinkDropSuccessModal from "./LinkDropSuccessModal";
+import NFTs from "./NFTs";
+import SidebarLight from "./SidebarLight";
+import Tokens from "./Tokens";
+import { ZeroBalanceAccountImportedModal } from "./ZeroBalanceAccountImportedModal";
 
 const StyledContainer = styled(Container)`
     @media (max-width: 991px) {
@@ -291,199 +291,182 @@ const StyledContainer = styled(Container)`
 `;
 
 export function Wallet({
-    tab,
-    setTab,
-    accountId,
-    accountExists,
-    balance,
-    linkdropAmount,
-    createFromImplicitSuccess,
-    createCustomName,
-    zeroBalanceAccountImportMethod,
-    fungibleTokensList,
-    tokensLoading,
-    availableAccounts,
-    sortedNFTs,
-    handleCloseLinkdropModal,
-    handleSetCreateFromImplicitSuccess,
-    handleSetCreateCustomName,
-    handleSetZeroBalanceAccountImportMethod,
-    userRecoveryMethods
+  tab,
+  setTab,
+  accountId,
+  accountExists,
+  balance,
+  linkdropAmount,
+  createFromImplicitSuccess,
+  createCustomName,
+  zeroBalanceAccountImportMethod,
+  fungibleTokensList,
+  tokensLoading,
+  availableAccounts,
+  sortedNFTs,
+  handleCloseLinkdropModal,
+  handleSetCreateFromImplicitSuccess,
+  handleSetCreateCustomName,
+  handleSetZeroBalanceAccountImportMethod,
+  userRecoveryMethods,
 }) {
-    const currentLanguage = getCurrentLanguage();
-    const totalAmount = getTotalBalanceInFiat(
-        fungibleTokensList,
-        currentLanguage
-    );
+  const currentLanguage = getCurrentLanguage();
+  const totalAmount = getTotalBalanceInFiat(fungibleTokensList, currentLanguage);
 
-    return (
-        <StyledContainer
-            className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}
-        >
-            <div className="split">
-                <div className="left">
-                    <div className="tab-selector">
-                        <div
-                            className={classNames([
-                                'tab-balances',
-                                tab === 'collectibles' ? 'inactive' : '',
-                            ])}
-                            onClick={() => setTab('')}
-                        >
-                            <Translate id="wallet.balances" />
-                        </div>
-                        <div
-                            className={classNames([
-                                'tab-collectibles',
-                                tab !== 'collectibles' ? 'inactive' : '',
-                            ])}
-                            onClick={() => setTab('collectibles')}
-                        >
-                            <Translate id="wallet.collectibles" />
-                        </div>
-                    </div>
-                    {tab === 'collectibles' ? (
-                        <NFTs tokens={sortedNFTs} />
-                    ) : (
-                        <FungibleTokens
-                            currentLanguage={currentLanguage}
-                            totalAmount={totalAmount}
-                            balance={balance}
-                            tokensLoading={tokensLoading}
-                            fungibleTokens={fungibleTokensList}
-                            accountExists={accountExists}
-                            fungibleTokensList={fungibleTokensList}
-                        />
-                    )}
-                </div>
-                <div className="right">
-                    <SidebarLight availableAccounts={accountExists && availableAccounts} />
-                    <ActivitiesWrapper />
-                </div>
+  return (
+    <StyledContainer className={SHOW_NETWORK_BANNER ? "showing-banner" : ""}>
+      <div className="split">
+        <div className="left">
+          <div className="tab-selector">
+            <div
+              className={classNames(["tab-balances", tab === "collectibles" ? "inactive" : ""])}
+              onClick={() => setTab("")}
+            >
+              <Translate id="wallet.balances" />
             </div>
-            {linkdropAmount !== '0' && (
-                <LinkDropSuccessModal
-                    onClose={handleCloseLinkdropModal}
-                    linkdropAmount={linkdropAmount}
-                />
-            )}
-            {createFromImplicitSuccess && (
-                <CreateFromImplicitSuccessModal
-                    onClose={handleSetCreateFromImplicitSuccess}
-                    isOpen={createFromImplicitSuccess}
-                    accountId={accountId}
-                />
-            )}
-            {createCustomName && (
-                <CreateCustomNameModal
-                    onClose={handleSetCreateCustomName}
-                    isOpen={createCustomName}
-                    accountId="satoshi.near"
-                />
-            )}
-            {zeroBalanceAccountImportMethod && (
-                <ZeroBalanceAccountImportedModal
-                    onClose={handleSetZeroBalanceAccountImportMethod}
-                    importMethod={zeroBalanceAccountImportMethod}
-                    accountId={accountId}
-                />
-            )}
-        </StyledContainer>
-    );
+            <div
+              className={classNames(["tab-collectibles", tab !== "collectibles" ? "inactive" : ""])}
+              onClick={() => setTab("collectibles")}
+            >
+              <Translate id="wallet.collectibles" />
+            </div>
+          </div>
+          {tab === "collectibles" ? (
+            <NFTs tokens={sortedNFTs} />
+          ) : (
+            <FungibleTokens
+              currentLanguage={currentLanguage}
+              totalAmount={totalAmount}
+              balance={balance}
+              tokensLoading={tokensLoading}
+              fungibleTokens={fungibleTokensList}
+              accountExists={accountExists}
+              fungibleTokensList={fungibleTokensList}
+            />
+          )}
+        </div>
+        <div className="right">
+          <SidebarLight availableAccounts={accountExists && availableAccounts} />
+          <ActivitiesWrapper />
+        </div>
+      </div>
+      {linkdropAmount !== "0" && (
+        <LinkDropSuccessModal onClose={handleCloseLinkdropModal} linkdropAmount={linkdropAmount} />
+      )}
+      {createFromImplicitSuccess && (
+        <CreateFromImplicitSuccessModal
+          onClose={handleSetCreateFromImplicitSuccess}
+          isOpen={createFromImplicitSuccess}
+          accountId={accountId}
+        />
+      )}
+      {createCustomName && (
+        <CreateCustomNameModal
+          onClose={handleSetCreateCustomName}
+          isOpen={createCustomName}
+          accountId="satoshi.near"
+        />
+      )}
+      {zeroBalanceAccountImportMethod && (
+        <ZeroBalanceAccountImportedModal
+          onClose={handleSetZeroBalanceAccountImportMethod}
+          importMethod={zeroBalanceAccountImportMethod}
+          accountId={accountId}
+        />
+      )}
+    </StyledContainer>
+  );
 }
 
 const FungibleTokens = ({
-    balance,
-    tokensLoading,
-    fungibleTokens,
-    accountExists,
-    totalAmount,
-    currentLanguage,
-    fungibleTokensList
+  balance,
+  tokensLoading,
+  fungibleTokens,
+  accountExists,
+  totalAmount,
+  currentLanguage,
+  fungibleTokensList,
 }) => {
-    const zeroBalanceAccount = accountExists === false;
-    const currentFungibleTokens = fungibleTokens[0];
-    const hideFungibleTokenSection =
-        zeroBalanceAccount &&
-        fungibleTokens?.length === 1 &&
-        currentFungibleTokens?.onChainFTMetadata?.symbol === 'NEAR';
-    return (
+  const zeroBalanceAccount = accountExists === false;
+  const currentFungibleTokens = fungibleTokens[0];
+  const hideFungibleTokenSection =
+    zeroBalanceAccount &&
+    fungibleTokens?.length === 1 &&
+    currentFungibleTokens?.onChainFTMetadata?.symbol === "NEAR";
+  return (
+    <>
+      <div className='total-balance'>
+        <Textfit mode='single' max={48}>
+          <AllTokensTotalBalanceUSD allFungibleTokens={fungibleTokensList} />
+        </Textfit>
+      </div>
+      <div className="sub-title balance">
+        <Translate id="wallet.availableBalance" /> <Tooltip translate="availableBalanceInfo" />
+      </div>
+      <div className="buttons">
+        <FormButton
+          color="dark-gray"
+          linkTo="/send-money"
+          trackingId="Click Send on Wallet page"
+          data-test-id="balancesTab.send"
+        >
+          <div>
+            <SendIcon />
+          </div>
+          <Translate id="button.send" />
+        </FormButton>
+        <FormButton
+          color="dark-gray"
+          linkTo="/receive-money"
+          trackingId="Click Receive on Wallet page"
+          data-test-id="balancesTab.receive"
+        >
+          <div>
+            <DownArrowIcon />
+          </div>
+          <Translate id="button.receive" />
+        </FormButton>
+        <FormButton
+          color="dark-gray"
+          linkTo="/buy"
+          trackingId="Click Top Up on Wallet page"
+          data-test-id="balancesTab.buy"
+        >
+          <div>
+            <TopUpIcon />
+          </div>
+          <Translate id="button.topUp" />
+        </FormButton>
+        <FormButton
+          color="dark-gray"
+          linkTo="/swap"
+          trackingId="Click Swap on Wallet page"
+          data-test-id="balancesTab.swap"
+        >
+          <div>
+            <WrapIcon color="white" />
+          </div>
+          <Translate id="button.swap" />
+        </FormButton>
+      </div>
+      {zeroBalanceAccount && (
+        <div className='deposit-banner-wrapper'>
+          <DepositNearBanner />
+        </div>
+      )}
+      {!hideFungibleTokenSection && (
         <>
-            <div className='total-balance'>
-                <Textfit mode='single' max={48}>
-                    <AllTokensTotalBalanceUSD allFungibleTokens={fungibleTokensList} />
-                </Textfit>
-            </div>
-            <div className="sub-title balance">
-                <Translate id="wallet.availableBalance" />{' '}
-                <Tooltip translate="availableBalanceInfo" />
-            </div>
-            <div className="buttons">
-                <FormButton
-                    color="dark-gray"
-                    linkTo="/send-money"
-                    trackingId="Click Send on Wallet page"
-                    data-test-id="balancesTab.send"
-                >
-                    <div>
-                        <SendIcon />
-                    </div>
-                    <Translate id="button.send" />
-                </FormButton>
-                <FormButton
-                    color="dark-gray"
-                    linkTo="/receive-money"
-                    trackingId="Click Receive on Wallet page"
-                    data-test-id="balancesTab.receive"
-                >
-                    <div>
-                        <DownArrowIcon />
-                    </div>
-                    <Translate id="button.receive" />
-                </FormButton>
-                <FormButton
-                    color="dark-gray"
-                    linkTo="/buy"
-                    trackingId="Click Top Up on Wallet page"
-                    data-test-id="balancesTab.buy"
-                >
-                    <div>
-                        <TopUpIcon />
-                    </div>
-                    <Translate id="button.topUp" />
-                </FormButton>
-                <FormButton
-                    color="dark-gray"
-                    linkTo="/swap"
-                    trackingId="Click Swap on Wallet page"
-                    data-test-id="balancesTab.swap"
-                >
-                    <div>
-                        <WrapIcon color="white" />
-                    </div>
-                    <Translate id="button.swap" />
-                </FormButton>
-            </div>
-            {zeroBalanceAccount && (
-                <div className='deposit-banner-wrapper'>
-                    <DepositNearBanner />
-                </div>
-            )}
-            {!hideFungibleTokenSection && (
-                <>
-                    <div className="sub-title tokens">
-                        <span className={classNames({ dots: tokensLoading })}>
-                            <Translate id="wallet.yourPortfolio" />
-                        </span>
-                    </div>
-                    <Tokens
-                        tokens={fungibleTokens}
-                        currentLanguage={currentLanguage}
-                        showFiatPrice
-                    />
-                    <div className='coingecko'><Translate id='poweredByCoinGecko' /></div>
-                </>
-            )}
+          <div className="sub-title tokens">
+            <span className={classNames({ dots: tokensLoading })}>
+              <Translate id="wallet.yourPortfolio" />
+            </span>
+          </div>
+          <Tokens tokens={fungibleTokens} currentLanguage={currentLanguage} showFiatPrice />
+          <div className='coingecko'>
+            <Translate id='poweredByCoinGecko' />
+          </div>
         </>
-    );
+      )}
+    </>
+  );
 };

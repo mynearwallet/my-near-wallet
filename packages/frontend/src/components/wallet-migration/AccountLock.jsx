@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
 
-import IconSecurityLock from '../../images/wallet-migration/IconSecurityLock';
-import { showCustomAlert } from '../../redux/actions/status';
-import { TwoFactor } from '../../utils/twoFactor';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
+import IconSecurityLock from "../../images/wallet-migration/IconSecurityLock";
+import { showCustomAlert } from "../../redux/actions/status";
+import { TwoFactor } from "../../utils/twoFactor";
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
 
 const Container = styled.div`
     padding: 15px 0;
@@ -40,15 +40,15 @@ const ButtonsContainer = styled.div`
     text-align: center;
     width: 100% !important;
     display: flex;
-    ${(props) => (props.vertical && 'flex-direction: column;')}
+    ${(props) => props.vertical && "flex-direction: column;"}
 `;
 
 const StyledButton = styled(FormButton)`
-    width: ${(props) => (props.fullWidth ? '100%': 'calc((100% - 16px) / 2);' )}
+    width: ${(props) => (props.fullWidth ? "100%" : "calc((100% - 16px) / 2);")}
     margin: 48px 0 0 !important;
 
     &:last-child {
-        ${(props) => (!props.fullWidth && 'margin-left: 16px !important;')}
+        ${(props) => !props.fullWidth && "margin-left: 16px !important;"}
     }
 `;
 
@@ -58,102 +58,118 @@ const Textarea = styled.textarea`
     height: 130px;
 `;
 
-
 const AccountLockModal = ({ accountId, onClose, onComplete, onCancel }) => {
-    const [isContinue, setIsContinue] = useState(false);
-    const [passphrase, setPassphrase] = useState('');
-    const [isLoading, setLoading] = useState(false);
-    const dispatch = useDispatch();
+  const [isContinue, setIsContinue] = useState(false);
+  const [passphrase, setPassphrase] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
-    const onContinue = () => setIsContinue(true);
-    const onBack = () => setIsContinue(false);
+  const onContinue = () => setIsContinue(true);
+  const onBack = () => setIsContinue(false);
 
-    const onModalCancel = () => {
-        onCancel();
+  const onModalCancel = () => {
+    onCancel();
+    onClose();
+  };
+
+  const onSetPassphrase = (e) => setPassphrase(e.target.value);
+
+  const onButtonClick = () => {
+    setLoading(true);
+    TwoFactor.disableMultisigWithFAK({
+      accountId,
+      seedPhrase: passphrase.trim(),
+      cleanupState: false,
+    })
+      .then(() => {
+        setLoading(false);
+        onComplete();
         onClose();
-    };
-    
-    const onSetPassphrase = (e) => setPassphrase(e.target.value);
+      })
+      .catch((e) => {
+        setLoading(false);
+        let err;
+        if (e.message.includes("did not match a signature of")) {
+          err =
+            "The passphrase you entered does not match this account. Please try again with another key.";
+        }
 
-    const onButtonClick = () => {
-        setLoading(true);
-        TwoFactor.disableMultisigWithFAK({ accountId, seedPhrase: passphrase.trim(), cleanupState: false })
-            .then(() => {
-                setLoading(false);
-                onComplete();
-                onClose();
-            }).catch((e) => {
-                setLoading(false);
-                let err;
-                if (e.message.includes('did not match a signature of')) {
-                    err = 'The passphrase you entered does not match this account. Please try again with another key.';
-                }
+        if (err) {
+          dispatch(
+            showCustomAlert({
+              errorMessage: err,
+              success: false,
+              messageCodeHeader: "error",
+            }),
+          );
+        }
 
-                if (err) {
-                    dispatch(showCustomAlert({
-                        errorMessage: err,
-                        success: false,
-                        messageCodeHeader: 'error'
-                    }));
-                }
-                
-                throw new Error(e.message);
-            });
-    };
+        throw new Error(e.message);
+      });
+  };
 
-    return (
-        <Modal
-            modalClass="slim"
-            id='migration-modal'
-            isOpen={true}
-            disableClose={true}
-            modalSize='md'
-            style={{ maxWidth: '435px' }}
-        >
-            <Container>
-                {
-                    !isContinue ? (
-                    <>
-                            <IconSecurityLock />
-                            <h4 className='title'><Translate id='twoFactorDisableLocked.title' /></h4>
-                            <p><Translate id='twoFactorDisableLocked.descOne' /><b>{accountId}</b></p>
-                            <p><Translate id='twoFactorDisableLocked.descTwo' /></p>
-                            <ButtonsContainer>
-                                <StyledButton className="gray-blue" onClick={onModalCancel}>
-                                    <Translate id='button.cancel' />
-                                </StyledButton>
-                                <StyledButton onClick={onContinue}>
-                                    <Translate id={'button.continue'} />
-                                </StyledButton>
-                            </ButtonsContainer>
-                        </>
-                    ) : (
-                        <>
-                            <h4 className='title'><Translate id='twoFactorRemoveAuth.title' /></h4>
-                            <p><Translate id='twoFactorRemoveAuth.desc' /></p>
-                            <h4>{accountId}</h4>
-                            <Textarea value={passphrase} onChange={onSetPassphrase} disabled={isLoading} />
-                            <ButtonsContainer vertical>
-                                <StyledButton
-                                    className="blue"
-                                    onClick={onButtonClick}
-                                    disabled={!passphrase}
-                                    sending={isLoading}
-                                    sendingString='twoFactorRemoveAuth.button'
-                                    fullWidth
-                                >
-                                    <Translate id='twoFactorRemoveAuth.button' />
-                                </StyledButton>
-                                <StyledButton className="white-blue" onClick={onBack} fullWidth>
-                                    <Translate id='button.cancel' />
-                                </StyledButton>
-                            </ButtonsContainer>
-                        </>
-                    )
-                }
-            </Container>
-        </Modal>
-    );
+  return (
+    <Modal
+      modalClass="slim"
+      id='migration-modal'
+      isOpen={true}
+      disableClose={true}
+      modalSize='md'
+      style={{ maxWidth: "435px" }}
+    >
+      <Container>
+        {!isContinue ? (
+          <>
+            <IconSecurityLock />
+            <h4 className='title'>
+              <Translate id='twoFactorDisableLocked.title' />
+            </h4>
+            <p>
+              <Translate id='twoFactorDisableLocked.descOne' />
+              <b>{accountId}</b>
+            </p>
+            <p>
+              <Translate id='twoFactorDisableLocked.descTwo' />
+            </p>
+            <ButtonsContainer>
+              <StyledButton className="gray-blue" onClick={onModalCancel}>
+                <Translate id='button.cancel' />
+              </StyledButton>
+              <StyledButton onClick={onContinue}>
+                <Translate id={"button.continue"} />
+              </StyledButton>
+            </ButtonsContainer>
+          </>
+        ) : (
+          <>
+            <h4 className='title'>
+              <Translate id='twoFactorRemoveAuth.title' />
+            </h4>
+            <p>
+              <Translate id='twoFactorRemoveAuth.desc' />
+            </p>
+            <h4>{accountId}</h4>
+            <Textarea value={passphrase} onChange={onSetPassphrase} disabled={isLoading} />
+            <ButtonsContainer vertical>
+              <StyledButton
+                className="blue"
+                onClick={onButtonClick}
+                disabled={!passphrase}
+                sending={isLoading}
+                sendingString='twoFactorRemoveAuth.button'
+                fullWidth
+              >
+                <Translate id='twoFactorRemoveAuth.button' />
+              </StyledButton>
+              <StyledButton className="white-blue" onClick={onBack} fullWidth>
+                <Translate id='button.cancel' />
+              </StyledButton>
+            </ButtonsContainer>
+          </>
+        )}
+      </Container>
+    </Modal>
+  );
 };
 
 export default AccountLockModal;

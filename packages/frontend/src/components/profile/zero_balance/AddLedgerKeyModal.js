@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../../common/FormButton';
-import Modal from '../../common/modal/Modal';
+import FormButton from "../../common/FormButton";
+import Modal from "../../common/modal/Modal";
 
 const Container = styled.div`
     &&&&& {
@@ -25,33 +25,34 @@ const Container = styled.div`
 `;
 
 export function AddLedgerKeyModal({
-    isOpen,
-    onClickAddLedgerKey,
-    onClose,
-    finishingLedgerKeySetup
+  isOpen,
+  onClickAddLedgerKey,
+  onClose,
+  finishingLedgerKeySetup,
 }) {
-    return (
-        <Modal
-            id='add-ledger-key-modal'
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='sm'
+  return (
+    <Modal id='add-ledger-key-modal' isOpen={isOpen} onClose={onClose} modalSize='sm'>
+      <Container>
+        <h3>
+          <Translate id='zeroBalance.ledgerModal.title' />
+        </h3>
+        {finishingLedgerKeySetup ? (
+          <p>
+            <Translate id='zeroBalance.ledgerModal.confirmOnLedger' />
+          </p>
+        ) : (
+          <p>
+            <Translate id='zeroBalance.ledgerModal.desc' />
+          </p>
+        )}
+        <FormButton
+          onClick={onClickAddLedgerKey}
+          sending={finishingLedgerKeySetup}
+          disabled={finishingLedgerKeySetup}
         >
-            <Container>
-                <h3><Translate id='zeroBalance.ledgerModal.title' /></h3>
-                {
-                    finishingLedgerKeySetup
-                        ? <p><Translate id='zeroBalance.ledgerModal.confirmOnLedger' /></p>
-                        : <p><Translate id='zeroBalance.ledgerModal.desc' /></p>
-                }
-                <FormButton
-                    onClick={onClickAddLedgerKey}
-                    sending={finishingLedgerKeySetup}
-                    disabled={finishingLedgerKeySetup}
-                >
-                    <Translate id='zeroBalance.ledgerModal.addLedgerKey' />
-                </FormButton>
-            </Container>
-        </Modal>
-    );
-};
+          <Translate id='zeroBalance.ledgerModal.addLedgerKey' />
+        </FormButton>
+      </Container>
+    </Modal>
+  );
+}

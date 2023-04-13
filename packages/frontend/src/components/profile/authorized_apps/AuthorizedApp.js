@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Balance from '../../common/balance/Balance';
-import FormButton from '../../common/FormButton';
+import Balance from "../../common/balance/Balance";
+import FormButton from "../../common/FormButton";
 
 const Container = styled.div`
     &&& {
@@ -59,29 +59,38 @@ const Container = styled.div`
 `;
 
 const AuthorizedApp = ({ app, onClick, deAuthorizing }) => {
-    return (
-        <Container className='authorized-app-box'>
-            <div className='title'>
-                {app.access_key.permission.FunctionCall.receiver_id}
-                {onClick && (
-                    <FormButton color='gray-red' className='small'
-                        onClick={onClick}
-                        disabled={deAuthorizing}
-                        sending={deAuthorizing}
-                        sendingString='button.deAuthorizing'
-                    >
-                        <Translate id='button.deauthorize' />
-                    </FormButton>
-                )}
-            </div>
-            <div className='key font-monospace'>{app.public_key}</div>
-            <hr/>
-            <div className='fee'>
-                <span><Translate id='authorizedApps.feeAllowance' /></span>
-                <span><Balance amount={app.access_key.permission.FunctionCall.allowance} showBalanceInUSD={false}/></span>
-            </div>
-        </Container>
-    );
+  return (
+    <Container className='authorized-app-box'>
+      <div className='title'>
+        {app.access_key.permission.FunctionCall.receiver_id}
+        {onClick && (
+          <FormButton
+            color='gray-red'
+            className='small'
+            onClick={onClick}
+            disabled={deAuthorizing}
+            sending={deAuthorizing}
+            sendingString='button.deAuthorizing'
+          >
+            <Translate id='button.deauthorize' />
+          </FormButton>
+        )}
+      </div>
+      <div className='key font-monospace'>{app.public_key}</div>
+      <hr />
+      <div className='fee'>
+        <span>
+          <Translate id='authorizedApps.feeAllowance' />
+        </span>
+        <span>
+          <Balance
+            amount={app.access_key.permission.FunctionCall.allowance}
+            showBalanceInUSD={false}
+          />
+        </span>
+      </div>
+    </Container>
+  );
 };
 
 export default AuthorizedApp;

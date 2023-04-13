@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import SafeTranslate from '../SafeTranslate';
+import CONFIG from "../../config";
+import SafeTranslate from "../SafeTranslate";
 
 const Container = styled.div`
     font-style: italic;
@@ -22,21 +22,39 @@ const Container = styled.div`
 `;
 
 const AccountNote = () => (
-
-    <Container>
-        <p><Translate id='createAccount.note.canContain'/></p>
-        <ul>
-            <li><Translate id='createAccount.note.lowercase'/></li>
-            <li><Translate id='createAccount.note.digits'/></li>
-            <li><Translate id='createAccount.note.separators'/></li>
-        </ul>
-        <p><Translate id='createAccount.note.cannotContain'/></p>
-        <ul>
-            <li><Translate id='createAccount.note.characters'/></li>
-            <li><Translate id='createAccount.note.minCharacters'/></li>
-            <li><SafeTranslate id='createAccount.note.maxCharacters' data={{ accountSuffix: CONFIG.ACCOUNT_ID_SUFFIX }}/></li>
-        </ul>
-    </Container>
+  <Container>
+    <p>
+      <Translate id='createAccount.note.canContain' />
+    </p>
+    <ul>
+      <li>
+        <Translate id='createAccount.note.lowercase' />
+      </li>
+      <li>
+        <Translate id='createAccount.note.digits' />
+      </li>
+      <li>
+        <Translate id='createAccount.note.separators' />
+      </li>
+    </ul>
+    <p>
+      <Translate id='createAccount.note.cannotContain' />
+    </p>
+    <ul>
+      <li>
+        <Translate id='createAccount.note.characters' />
+      </li>
+      <li>
+        <Translate id='createAccount.note.minCharacters' />
+      </li>
+      <li>
+        <SafeTranslate
+          id='createAccount.note.maxCharacters'
+          data={{ accountSuffix: CONFIG.ACCOUNT_ID_SUFFIX }}
+        />
+      </li>
+    </ul>
+  </Container>
 );
 
 export default AccountNote;

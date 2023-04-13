@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
     &&& {
@@ -14,7 +14,5 @@ const StyledContainer = styled.div`
 `;
 
 export default ({ children }) => (
-    <StyledContainer className='modal-footer'>
-        {children}
-    </StyledContainer>
+  <StyledContainer className='modal-footer'>{children}</StyledContainer>
 );

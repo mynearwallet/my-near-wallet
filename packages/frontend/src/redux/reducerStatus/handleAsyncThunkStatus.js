@@ -1,10 +1,10 @@
-import { isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
+import { isFulfilled, isPending, isRejected } from "@reduxjs/toolkit";
 
-import clearError from './manageStatus/clearError';
-import clearLoading from './manageStatus/clearLoading';
-import setError from './manageStatus/setError';
-import setInitialized from './manageStatus/setInitialized';
-import setLoading from './manageStatus/setLoading';
+import clearError from "./manageStatus/clearError";
+import clearLoading from "./manageStatus/clearLoading";
+import setError from "./manageStatus/setError";
+import setInitialized from "./manageStatus/setInitialized";
+import setLoading from "./manageStatus/setLoading";
 /**
  * Automatically handle status part of reducer based on initialErrorState
  *
@@ -14,11 +14,8 @@ import setLoading from './manageStatus/setLoading';
  */
 
 // TODO: consider to keying `status` by thunk typePrefix, this could be useful if we would need to track status of several thunks independently in one slice
-export default ({
-    asyncThunk,
-    buildStatusPath,
-    builder
-}) => builder
+export default ({ asyncThunk, buildStatusPath, builder }) =>
+  builder
     .addMatcher(isPending(asyncThunk), setLoading(buildStatusPath))
     .addMatcher(isPending(asyncThunk), clearError(buildStatusPath))
     .addMatcher(isFulfilled(asyncThunk), clearLoading(buildStatusPath))

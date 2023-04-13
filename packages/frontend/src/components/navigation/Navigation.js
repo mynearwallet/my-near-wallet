@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useCallback } from "react";
+import styled from "styled-components";
 
-import DesktopContainer from './DesktopContainer';
-import MobileContainer from './MobileContainer';
+import DesktopContainer from "./DesktopContainer";
+import MobileContainer from "./MobileContainer";
 
 const Container = styled.div`
     &&& {
@@ -12,7 +12,7 @@ const Container = styled.div`
         right: 0;
         z-index: 1000;
         @media (max-width: 991px) {
-            bottom: ${(props) => props.open ? '0' : 'unset'};
+            bottom: ${(props) => (props.open ? "0" : "unset")};
         }
 
         h6 {
@@ -31,82 +31,86 @@ const Container = styled.div`
 `;
 
 export default ({
-    selectAccount,
-    showNavLinks,
-    flowLimitationMainMenu,
-    flowLimitationSubMenu,
-    refreshBalance,
-    availableAccounts,
-    account
+  selectAccount,
+  showNavLinks,
+  flowLimitationMainMenu,
+  flowLimitationSubMenu,
+  refreshBalance,
+  availableAccounts,
+  account,
 }) => {
-    const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-    useEffect(() => {
-        if (menuOpen) {
-            document.addEventListener('keydown', handleKeyDown);
-            document.addEventListener('click', handleClick);
-        } else {
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('click', handleClick);
-        }
-    }, [menuOpen]);
+  useEffect(() => {
+    if (menuOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener("click", handleClick);
+    } else {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("click", handleClick);
+    }
+  }, [menuOpen]);
 
-    const handleKeyDown = useCallback((e) => {
-        if (e.keyCode === 27) {
-            setMenuOpen(false);
-        }
-    }, []);
+  const handleKeyDown = useCallback((e) => {
+    if (e.keyCode === 27) {
+      setMenuOpen(false);
+    }
+  }, []);
 
-    const handleClick = useCallback((e) => {
-        const desktopMenu = document.getElementById('desktop-menu');
-        const mobileMenu = document.getElementById('mobile-menu');
+  const handleClick = useCallback((e) => {
+    const desktopMenu = document.getElementById("desktop-menu");
+    const mobileMenu = document.getElementById("mobile-menu");
 
-        if (e.target.tagName === 'SPAN') {
-            return false;
-        }
+    if (e.target.tagName === "SPAN") {
+      return false;
+    }
 
-        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || (!desktopMenu?.contains(e.target) && !mobileMenu?.contains(e.target))) {
-            setMenuOpen(false);
-        }
-    }, []);
+    if (
+      e.target.tagName === "BUTTON" ||
+      e.target.tagName === "A" ||
+      (!desktopMenu?.contains(e.target) && !mobileMenu?.contains(e.target))
+    ) {
+      setMenuOpen(false);
+    }
+  }, []);
 
-    const toggleMenu = useCallback(() => {
-        if (menuOpen) {
-            setMenuOpen(false);
-        } else {
-            setMenuOpen(true);
-        }
-    }, [menuOpen]);
+  const toggleMenu = useCallback(() => {
+    if (menuOpen) {
+      setMenuOpen(false);
+    } else {
+      setMenuOpen(true);
+    }
+  }, [menuOpen]);
 
-    const handleSelectAccount = useCallback((accountId) => {
-        selectAccount(accountId);
-        setMenuOpen(false);
-    }, []);
+  const handleSelectAccount = useCallback((accountId) => {
+    selectAccount(accountId);
+    setMenuOpen(false);
+  }, []);
 
-    return (
-        <Container id='nav-container' open={menuOpen}>
-            <DesktopContainer
-                menuOpen={menuOpen}
-                toggleMenu={toggleMenu}
-                handleSelectAccount={handleSelectAccount}
-                showNavLinks={showNavLinks}
-                flowLimitationMainMenu={flowLimitationMainMenu}
-                flowLimitationSubMenu={flowLimitationSubMenu}   
-                refreshBalance={refreshBalance}
-                availableAccounts={availableAccounts}
-                account={account}
-            />
-            <MobileContainer
-                menuOpen={menuOpen}
-                toggleMenu={toggleMenu}
-                handleSelectAccount={handleSelectAccount}
-                showNavLinks={showNavLinks}
-                flowLimitationMainMenu={flowLimitationMainMenu}
-                flowLimitationSubMenu={flowLimitationSubMenu}   
-                refreshBalance={refreshBalance}
-                availableAccounts={availableAccounts}
-                account={account}
-            />
-        </Container>
-    );
+  return (
+    <Container id='nav-container' open={menuOpen}>
+      <DesktopContainer
+        menuOpen={menuOpen}
+        toggleMenu={toggleMenu}
+        handleSelectAccount={handleSelectAccount}
+        showNavLinks={showNavLinks}
+        flowLimitationMainMenu={flowLimitationMainMenu}
+        flowLimitationSubMenu={flowLimitationSubMenu}
+        refreshBalance={refreshBalance}
+        availableAccounts={availableAccounts}
+        account={account}
+      />
+      <MobileContainer
+        menuOpen={menuOpen}
+        toggleMenu={toggleMenu}
+        handleSelectAccount={handleSelectAccount}
+        showNavLinks={showNavLinks}
+        flowLimitationMainMenu={flowLimitationMainMenu}
+        flowLimitationSubMenu={flowLimitationSubMenu}
+        refreshBalance={refreshBalance}
+        availableAccounts={availableAccounts}
+        account={account}
+      />
+    </Container>
+  );
 };

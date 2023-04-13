@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { withRouter } from 'react-router';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { withRouter } from "react-router";
+import styled from "styled-components";
 
-import ArrowGrnImage from '../../images/icon-arrow-grn.svg';
-import ArrowWhiteImage from '../../images/icon-arrow-white.svg';
-import { Mixpanel } from '../../mixpanel/index';
-import classNames from '../../utils/classNames';
+import ArrowGrnImage from "../../images/icon-arrow-grn.svg";
+import ArrowWhiteImage from "../../images/icon-arrow-white.svg";
+import { Mixpanel } from "../../mixpanel/index";
+import classNames from "../../utils/classNames";
 
 const CustomButton = styled.button`
     &&& {
@@ -493,55 +493,55 @@ const CustomButton = styled.button`
     }
 `;
 
-const FormButton = ({ 
-    children, 
-    type, 
-    color = 'blue', 
-    disabled = false,
-    onClick,
-    sending = false,
-    sendingString,
-    size,
-    linkTo,
-    history,
-    className,
-    id,
-    trackingId,
-    'data-test-id': testId,
-    style,
+const FormButton = ({
+  children,
+  type,
+  color = "blue",
+  disabled = false,
+  onClick,
+  sending = false,
+  sendingString,
+  size,
+  linkTo,
+  history,
+  className,
+  id,
+  trackingId,
+  "data-test-id": testId,
+  style,
 }) => (
-    <CustomButton
-        type={type}
-        id={id}
-        className={classNames([color, size, className, {'dots': sending}])}
-        disabled={disabled}
-        onClick={(e) => {
-            onClick && onClick(e);
-            linkTo && (linkTo.toLowerCase().startsWith('http') ? window.open(linkTo, '_blank') : history.push(linkTo));
-            trackingId && Mixpanel.track(trackingId);
-        }}
-        tabIndex='3'
-        data-test-id={testId}
-        style={style}
-    >
-        {sending
-            ? <Translate id={sendingString ? sendingString : 'sending'} />
-            : children
-        }
-    </CustomButton>
+  <CustomButton
+    type={type}
+    id={id}
+    className={classNames([color, size, className, { dots: sending }])}
+    disabled={disabled}
+    onClick={(e) => {
+      onClick && onClick(e);
+      linkTo &&
+        (linkTo.toLowerCase().startsWith("http")
+          ? window.open(linkTo, "_blank")
+          : history.push(linkTo));
+      trackingId && Mixpanel.track(trackingId);
+    }}
+    tabIndex='3'
+    data-test-id={testId}
+    style={style}
+  >
+    {sending ? <Translate id={sendingString ? sendingString : "sending"} /> : children}
+  </CustomButton>
 );
 
 FormButton.propTypes = {
-    children: PropTypes.node.isRequired,
-    type: PropTypes.string,
-    color: PropTypes.string,
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    sending: PropTypes.bool,
-    size: PropTypes.string,
-    linkTo: PropTypes.string,
-    className: PropTypes.string,
-    trackingId: PropTypes.string
+  children: PropTypes.node.isRequired,
+  type: PropTypes.string,
+  color: PropTypes.string,
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func,
+  sending: PropTypes.bool,
+  size: PropTypes.string,
+  linkTo: PropTypes.string,
+  className: PropTypes.string,
+  trackingId: PropTypes.string,
 };
 
 export default withRouter(FormButton);

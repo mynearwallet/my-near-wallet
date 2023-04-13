@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Amount from '../../send/components/entry_types/Amount';
+import Amount from "../../send/components/entry_types/Amount";
 
 const StyledContainer = styled.div`
     background-color: #FAFAFA;
@@ -9,14 +9,11 @@ const StyledContainer = styled.div`
 `;
 
 const AvailableBalance = ({ availableBalance }) => {
-    return (
-        <StyledContainer>
-            <Amount
-                amount={availableBalance}
-                translateIdTitle='sendV2.TXEntry.title.availableBalance'
-            />
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer>
+      <Amount amount={availableBalance} translateIdTitle='sendV2.TXEntry.title.availableBalance' />
+    </StyledContainer>
+  );
 };
 
 export default AvailableBalance;

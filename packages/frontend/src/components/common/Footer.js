@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import { Mixpanel } from '../../mixpanel/index';
-import MyNearWalletLogo from '../svg/MyNearWalletLogo';
+import { Mixpanel } from "../../mixpanel/index";
+import MyNearWalletLogo from "../svg/MyNearWalletLogo";
 
 const StyledContainer = styled.div`
     position: absolute;
@@ -85,58 +85,61 @@ const StyledLogo = styled.div`
 `;
 
 const Footer = () => {
-    return (
-        <StyledContainer className='wallet-footer'>
-            <div className='left'>
-                <StyledLogo>
-                    <MyNearWalletLogo mode='footer' />
-                </StyledLogo>
-                <div>
-                    &copy; {new Date().getFullYear()} <Translate id='footer.copyrights' />
-                    <div>
-                        <a
-                            href='/terms'
-                            rel='noopener noreferrer'
-                            target='_blank'
-                            onClick={() => Mixpanel.track('Footer Click terms of service')}
-                        >
-                            <Translate id='footer.termsOfService' />
-                        </a>
-                        <span className='color-brown-grey'>|</span>
-                        <a href='/privacy'
-                            rel='noopener noreferrer'
-                            target='_blank'
-                            onClick={() => Mixpanel.track('Footer Click privacy policy')}
-                        >
-                            <Translate id='footer.privacyPolicy' />
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div className='center'>
-                <Translate id='footer.desc' />&nbsp;
-                <a
-                    href='https://near.org'
-                    rel='noopener noreferrer'
-                    target='_blank'
-                    onClick={() => Mixpanel.track('Footer Click Learn More')}
-                >
-                    <Translate id='footer.learnMore' />
-                </a>
-            </div>
-            <div className='right'>
-                <Translate id='footer.needHelp' /><br />
-                <a
-                    href='https://discord.com/invite/Vj74PpQYsh'
-                    rel='noopener noreferrer'
-                    target='_blank'
-                    onClick={() => Mixpanel.track('Footer Click Join Community')}
-                >
-                    <Translate id='footer.contactSupport' />
-                </a>
-            </div>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer className='wallet-footer'>
+      <div className='left'>
+        <StyledLogo>
+          <MyNearWalletLogo mode='footer' />
+        </StyledLogo>
+        <div>
+          &copy; {new Date().getFullYear()} <Translate id='footer.copyrights' />
+          <div>
+            <a
+              href='/terms'
+              rel='noopener noreferrer'
+              target='_blank'
+              onClick={() => Mixpanel.track("Footer Click terms of service")}
+            >
+              <Translate id='footer.termsOfService' />
+            </a>
+            <span className='color-brown-grey'>|</span>
+            <a
+              href='/privacy'
+              rel='noopener noreferrer'
+              target='_blank'
+              onClick={() => Mixpanel.track("Footer Click privacy policy")}
+            >
+              <Translate id='footer.privacyPolicy' />
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className='center'>
+        <Translate id='footer.desc' />
+        &nbsp;
+        <a
+          href='https://near.org'
+          rel='noopener noreferrer'
+          target='_blank'
+          onClick={() => Mixpanel.track("Footer Click Learn More")}
+        >
+          <Translate id='footer.learnMore' />
+        </a>
+      </div>
+      <div className='right'>
+        <Translate id='footer.needHelp' />
+        <br />
+        <a
+          href='https://discord.com/invite/Vj74PpQYsh'
+          rel='noopener noreferrer'
+          target='_blank'
+          onClick={() => Mixpanel.track("Footer Click Join Community")}
+        >
+          <Translate id='footer.contactSupport' />
+        </a>
+      </div>
+    </StyledContainer>
+  );
 };
 
 export default Footer;

@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const CheckboxContainer = styled.div`
     display: inline-block;
@@ -12,7 +12,7 @@ const Icon = styled.svg`
     stroke-width: 3px;
 `;
 
-const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
+const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
     border: 0 !important;
     clip: rect(0 0 0 0) !important;
     clippath: inset(50%) !important;
@@ -29,8 +29,8 @@ const StyledCheckbox = styled.div`
     display: inline-block !important;
     width: 20px !important;
     height: 20px !important;
-    background: ${(props) => (props.checked ? '#0072CE' : 'white')};
-    border: 2px solid ${(props) => (props.checked ? '#0072CE' : '#E6E5E3')};
+    background: ${(props) => (props.checked ? "#0072CE" : "white")};
+    border: 2px solid ${(props) => (props.checked ? "#0072CE" : "#E6E5E3")};
     border-radius: 4px !important;
     transition: all 150ms !important;
 
@@ -39,19 +39,19 @@ const StyledCheckbox = styled.div`
     }
 
     ${Icon} {
-        visibility: ${(props) => (props.checked ? 'visible' : 'hidden')};
+        visibility: ${(props) => (props.checked ? "visible" : "hidden")};
     }
 `;
 
 const Checkbox = ({ className, checked, ...props }) => (
-    <CheckboxContainer className={className}>
-        <HiddenCheckbox checked={checked} {...props} />
-        <StyledCheckbox checked={checked}>
-            <Icon viewBox="0 0 24 24">
-                <polyline points="20 6 9 17 4 12" />
-            </Icon>
-        </StyledCheckbox>
-    </CheckboxContainer>
+  <CheckboxContainer className={className}>
+    <HiddenCheckbox checked={checked} {...props} />
+    <StyledCheckbox checked={checked}>
+      <Icon viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12" />
+      </Icon>
+    </StyledCheckbox>
+  </CheckboxContainer>
 );
 
 export default Checkbox;

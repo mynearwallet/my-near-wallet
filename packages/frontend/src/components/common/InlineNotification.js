@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
 // Add additional theme icons
-import errorIcon from '../../images/icon-problems.svg';
+import errorIcon from "../../images/icon-problems.svg";
 
 const Container = styled.div`
     width: 100%;
@@ -45,39 +45,33 @@ const Button = styled.div`
 `;
 
 class InlineNotification extends Component {
-    render() {
-        const {
-            messageId,
-            buttonMsgId,
-            theme,
-            onClick,
-            show
-        } = this.props;
+  render() {
+    const { messageId, buttonMsgId, theme, onClick, show } = this.props;
 
-        if (show) {
-            return (
-                <Container className={`${theme}-theme`} onClick={onClick}>
-                    <Icon className='theme-icon'/>
-                    <Translate id={messageId} />
-                    {onClick && buttonMsgId && (
-                        <Button role='button'>
-                            <Translate id={buttonMsgId} />
-                        </Button>
-                    )}
-                </Container>
-            );
-        } else {
-            return null;
-        }
+    if (show) {
+      return (
+        <Container className={`${theme}-theme`} onClick={onClick}>
+          <Icon className='theme-icon' />
+          <Translate id={messageId} />
+          {onClick && buttonMsgId && (
+            <Button role='button'>
+              <Translate id={buttonMsgId} />
+            </Button>
+          )}
+        </Container>
+      );
+    } else {
+      return null;
     }
+  }
 }
 
 InlineNotification.propTypes = {
-    messageId: PropTypes.string.isRequired,
-    theme: PropTypes.string.isRequired,
-    show: PropTypes.bool.isRequired,
-    onClick: PropTypes.func,
-    buttonMsgId: PropTypes.string,
+  messageId: PropTypes.string.isRequired,
+  theme: PropTypes.string.isRequired,
+  show: PropTypes.bool.isRequired,
+  onClick: PropTypes.func,
+  buttonMsgId: PropTypes.string,
 };
 
 export default InlineNotification;
