@@ -16,6 +16,7 @@
         "dev": "yarn && cross-env NEAR_WALLET_ENV=mainnet yarn start",
         "sentry": "node ci/sentry-send-release.js",
         "test": "jest",
+        "lint": "yarn rome check .",
         "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
         "precommit": "node .githooks/format-json-script.mjs",
         "preinstall": "npx only-allow yarn"
