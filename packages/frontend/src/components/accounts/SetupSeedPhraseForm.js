@@ -90,6 +90,7 @@ const SetupSeedPhraseForm = ({
   onClickCancel,
   hasSeedPhraseRecovery = false,
 }) => {
+  console.log("setup seedphrase form", seedPhrase, refreshData, onClickContinue, onClickCancel, hasSeedPhraseRecovery)
   return (
     <CustomDiv translate='no' className='notranslate skiptranslate'>
       <div className='seed-phrase-wrapper'>

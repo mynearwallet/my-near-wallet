@@ -7,6 +7,7 @@ const fetch =
 const createError = require("http-errors");
 
 module.exports = async function sendJson(method, url, json) {
+  console.log("sendJson", method, url, json);
   const response = await fetch(url, {
     method: method,
     body: method !== "GET" ? JSON.stringify(json) : undefined,
@@ -14,6 +15,7 @@ module.exports = async function sendJson(method, url, json) {
       "Content-type": "application/json; charset=utf-8",
     },
   });
+  console.log('response: ', response)
   if (!response.ok) {
     const body = await response.text();
     let parsedBody;

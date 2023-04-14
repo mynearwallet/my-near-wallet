@@ -23,6 +23,7 @@ import Container from "../common/styled/Container.css";
 import BrokenLinkIcon from "../svg/BrokenLinkIcon";
 import NearGiftIcons from "../svg/NearGiftIcons";
 import NearDropLanding from "./linkdrops/NearDropLanding";
+import TrialDropLanding from "./linkdrops/TrialDropLanding";
 
 const { setLinkdropAmount } = linkdropActions;
 
@@ -129,10 +130,21 @@ class LinkdropLanding extends Component {
       this.props;
     const { keyInfo, invalidNearDrop } = this.state;
     const fundingAmount = keyInfo?.yoctoNEAR || '0';
-    const isTrialDrop = keyInfo && Object.hasOwn(keyInfo, 'trial_data');
+    const isTrialDrop = keyInfo?.trial_data?.exit || false
     console.log('isTrialDrop: ', isTrialDrop)
 
     if (!invalidNearDrop) {
+      if (isTrialDrop) {
+        return (
+            <TrialDropLanding 
+                fundingContract={fundingContract} 
+                fundingKey={fundingKey}
+                claimingDrop={claimingDrop}
+                history={history}
+            />
+          );
+      }
+
       return (
         <NearDropLanding 
             fundingContract={fundingContract} 

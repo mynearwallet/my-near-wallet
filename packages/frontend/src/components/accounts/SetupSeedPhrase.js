@@ -102,6 +102,10 @@ class SetupSeedPhrase extends Component {
 
   handleVerifyPhrase = () => {
     const { seedPhrase, enterWord, wordId, submitting } = this.state;
+    console.log('submitting: ', submitting)
+    console.log('wordId: ', wordId)
+    console.log('enterWord: ', enterWord)
+    console.log('seedPhrase: ', seedPhrase)
     Mixpanel.track("SR-SP Verify start");
 
     if (enterWord !== seedPhrase.split(" ")[wordId]) {
@@ -134,8 +138,13 @@ class SetupSeedPhrase extends Component {
       setLinkdropAmount,
     } = this.props;
     const { recoveryKeyPair, recaptchaToken } = this.state;
+    
+    const fundingOptions = parseFundingOptions(location.search);
+    const isTrial = fundingOptions?.trialDrop || false;
 
-    if (!this.state.isNewAccount) {
+    console.log('fundingOptions: ', fundingOptions)
+
+    if (!this.state.isNewAccount && !isTrial) {
       debugLog("handleSetupSeedPhrase()/existing account");
 
       await Mixpanel.withTracking(
@@ -145,7 +154,6 @@ class SetupSeedPhrase extends Component {
       return;
     }
 
-    const fundingOptions = parseFundingOptions(location.search);
 
     await Mixpanel.withTracking(
       "SR-SP Setup for new account",
@@ -230,6 +238,8 @@ class SetupSeedPhrase extends Component {
 
   render() {
     const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } = this.props;
+    console.log('recoveryMethods: ', recoveryMethods)
+    console.log('recoveryMethodsLoader: ', recoveryMethodsLoader)
     const hasSeedPhraseRecovery =
       recoveryMethodsLoader || recoveryMethods.filter((m) => m.kind === "phrase").length > 0;
     const { seedPhrase, enterWord, wordId, submitting, localAlert, isNewAccount, successSnackbar } =
