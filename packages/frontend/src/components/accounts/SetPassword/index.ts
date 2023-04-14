@@ -1,3 +1,3 @@
-import SetPassword from './SetPassword';
+import SetPassword from "./SetPassword";
 
 export default SetPassword;

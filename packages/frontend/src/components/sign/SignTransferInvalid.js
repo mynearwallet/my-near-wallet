@@ -1,8 +1,8 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Container from '../common/styled/Container.css';
+import Container from "../common/styled/Container.css";
 
 const CustomContainer = styled(Container)`
     display: flex;
@@ -28,16 +28,16 @@ const CustomContainer = styled(Container)`
 `;
 
 const SignTransferInvalid = () => (
-    <CustomContainer className="small-centered">
-        <div className="title">
-            <h2>
-                <Translate id="sign.invalidTransaction.title" />
-            </h2>
-        </div>
-        <div className="text">
-            <Translate id="sign.invalidTransaction.body" />
-        </div>
-    </CustomContainer>
+  <CustomContainer className="small-centered">
+    <div className="title">
+      <h2>
+        <Translate id="sign.invalidTransaction.title" />
+      </h2>
+    </div>
+    <div className="text">
+      <Translate id="sign.invalidTransaction.body" />
+    </div>
+  </CustomContainer>
 );
 
 export default SignTransferInvalid;

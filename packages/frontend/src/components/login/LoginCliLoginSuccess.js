@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import IconCheckImage from '../../images/icon-check.svg';
-import Image from '../common/image';
+import IconCheckImage from "../../images/icon-check.svg";
+import Image from "../common/image";
 
-const LoginCliLoginSuccessWrapper = styled('section')`
+const LoginCliLoginSuccessWrapper = styled("section")`
     width: 100%;
     padding: 32px;
     display: flex;
@@ -24,7 +24,6 @@ const LoginCliLoginSuccessWrapper = styled('section')`
     }
 `;
 
-
 const CustomImage = styled(Image)`
     width: 48px;
     height: 48px;
@@ -32,15 +31,15 @@ const CustomImage = styled(Image)`
 `;
 
 const LoginCliLoginSuccess = () => (
-    <LoginCliLoginSuccessWrapper>
-        <CustomImage src={IconCheckImage} />
-        <h2 className='title'>
-            <Translate id='login.cliLoginSuccess.pageTitle' />
-        </h2>
-        <p className='color-black'>
-            <Translate id='login.cliLoginSuccess.pageText' />
-        </p>
-    </LoginCliLoginSuccessWrapper>
+  <LoginCliLoginSuccessWrapper>
+    <CustomImage src={IconCheckImage} />
+    <h2 className='title'>
+      <Translate id='login.cliLoginSuccess.pageTitle' />
+    </h2>
+    <p className='color-black'>
+      <Translate id='login.cliLoginSuccess.pageText' />
+    </p>
+  </LoginCliLoginSuccessWrapper>
 );
 
 export default LoginCliLoginSuccess;

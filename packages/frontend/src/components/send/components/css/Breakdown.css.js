@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Breakdown = styled.div`
     background-color: #FAFAFA;

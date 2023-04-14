@@ -1,39 +1,39 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
+import React from "react";
+import { Translate } from "react-localize-redux";
 
-import VerifyOption from './VerifyOption';
+import VerifyOption from "./VerifyOption";
 
 export default ({
-    translateIdTitle,
-    translateIdDesc,
-    onClick,
-    activeVerificationOption,
-    verificationEmail,
-    disabled,
-    onChangeVerificationEmail,
-    onBlur
+  translateIdTitle,
+  translateIdDesc,
+  onClick,
+  activeVerificationOption,
+  verificationEmail,
+  disabled,
+  onChangeVerificationEmail,
+  onBlur,
 }) => {
-    return (
-        <VerifyOption
-            onClick={onClick}
-            option='email'
-            isActive={activeVerificationOption === 'email'}
+  return (
+    <VerifyOption
+      onClick={onClick}
+      option='email'
+      isActive={activeVerificationOption === "email"}
+      disabled={disabled}
+      translateIdTitle={translateIdTitle}
+      translateIdDesc={translateIdDesc}
+    >
+      <Translate>
+        {({ translate }) => (
+          <input
+            type='email'
+            placeholder={translate("setupRecovery.emailPlaceholder")}
+            value={verificationEmail}
             disabled={disabled}
-            translateIdTitle={translateIdTitle}
-            translateIdDesc={translateIdDesc}
-        >
-            <Translate>
-                {({ translate }) => (
-                    <input
-                        type='email'
-                        placeholder={translate('setupRecovery.emailPlaceholder')}
-                        value={verificationEmail}
-                        disabled={disabled}
-                        onChange={onChangeVerificationEmail}
-                        onBlur={onBlur}
-                    />
-                )}
-            </Translate>
-        </VerifyOption>
-    );
+            onChange={onChangeVerificationEmail}
+            onBlur={onBlur}
+          />
+        )}
+      </Translate>
+    </VerifyOption>
+  );
 };

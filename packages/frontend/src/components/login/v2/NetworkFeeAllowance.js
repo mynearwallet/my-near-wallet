@@ -1,11 +1,11 @@
-import { formatNearAmount } from 'near-api-js/lib/utils/format';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import { formatNearAmount } from "near-api-js/lib/utils/format";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../../config';
-import ArrowUpRight from '../..//svg/ArrowUpRight';
-import Balance from '../../common/balance/Balance';
+import CONFIG from "../../../config";
+import ArrowUpRight from "../..//svg/ArrowUpRight";
+import Balance from "../../common/balance/Balance";
 
 const StyledContainer = styled.div`
     background-color: #FAFAFA;
@@ -41,23 +41,25 @@ const StyledContainer = styled.div`
 `;
 
 export default ({ contractId, contractIdUrl }) => (
-    <StyledContainer>
-        {contractId && (
-            <div className='contract-wrapper'>
-                <div className='title'>Contract</div>
-                <a href={contractIdUrl} target='_blank' rel='noreferrer'>{contractId}<ArrowUpRight /></a>
-            </div>
-        )}
-        <div>
-            <div className='title'><Translate id='login.v2.connectConfirm.feeAllowance.title' /></div>
-            <Balance
-                amount={CONFIG.ACCESS_KEY_FUNDING_AMOUNT}
-                showBalanceInUSD={false}
-            />
-        </div>
-        <Translate
-            id='login.v2.connectConfirm.feeAllowance.desc'
-            data={{ amount: formatNearAmount(CONFIG.ACCESS_KEY_FUNDING_AMOUNT) }}
-        />
-    </StyledContainer>
+  <StyledContainer>
+    {contractId && (
+      <div className='contract-wrapper'>
+        <div className='title'>Contract</div>
+        <a href={contractIdUrl} target='_blank' rel='noreferrer'>
+          {contractId}
+          <ArrowUpRight />
+        </a>
+      </div>
+    )}
+    <div>
+      <div className='title'>
+        <Translate id='login.v2.connectConfirm.feeAllowance.title' />
+      </div>
+      <Balance amount={CONFIG.ACCESS_KEY_FUNDING_AMOUNT} showBalanceInUSD={false} />
+    </div>
+    <Translate
+      id='login.v2.connectConfirm.feeAllowance.desc'
+      data={{ amount: formatNearAmount(CONFIG.ACCESS_KEY_FUNDING_AMOUNT) }}
+    />
+  </StyledContainer>
 );

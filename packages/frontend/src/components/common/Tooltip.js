@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 
-import classNames from '../../utils/classNames';
-import isMobile from '../../utils/isMobile';
-import Modal from '../common/modal/Modal';
-import SafeTranslate from '../SafeTranslate';
-import InfoIconRounded from '../svg/InfoIconRounded';
+import classNames from "../../utils/classNames";
+import isMobile from "../../utils/isMobile";
+import Modal from "../common/modal/Modal";
+import SafeTranslate from "../SafeTranslate";
+import InfoIconRounded from "../svg/InfoIconRounded";
 
 const Container = styled.div`
     position: relative;
@@ -89,72 +89,72 @@ const Container = styled.div`
 `;
 
 const Tooltip = ({ className, children, translate, data, position, icon, modalOnly = false }) => {
-    const [show, setShow] = useState(false);
-    const [mobile, setMobile] = useState(null);
-    const [mouseDisabled, setMouseDisabled] = useState(false);
+  const [show, setShow] = useState(false);
+  const [mobile, setMobile] = useState(null);
+  const [mouseDisabled, setMouseDisabled] = useState(false);
 
-    useEffect(() => {
-        handleCheckDevice();
-        window.addEventListener('resize', handleCheckDevice);
+  useEffect(() => {
+    handleCheckDevice();
+    window.addEventListener("resize", handleCheckDevice);
 
-        return () => {
-            window.removeEventListener('resize', handleCheckDevice);
-        };
-    }, []);
-
-    const handleCheckDevice = () => {
-        if (window.innerWidth < 992 || isMobile()) {
-            setMobile(true);
-        } else {
-            setMobile(false);
-        }
+    return () => {
+      window.removeEventListener("resize", handleCheckDevice);
     };
+  }, []);
 
-    const mouseEventDisabled = () => {
-        return (mouseDisabled || modalOnly || window.innerWidth < 992 || isMobile());
-    };
+  const handleCheckDevice = () => {
+    if (window.innerWidth < 992 || isMobile()) {
+      setMobile(true);
+    } else {
+      setMobile(false);
+    }
+  };
 
-    const handleClick = () => {
-        setShow(true);
-        if (!mobile && !modalOnly) {
-            setMouseDisabled(true);
-            setTimeout(() => {
-                setMouseDisabled(false);
-                setShow(false);
-            }, 3000);
-        }
-    };
+  const mouseEventDisabled = () => {
+    return mouseDisabled || modalOnly || window.innerWidth < 992 || isMobile();
+  };
 
-    const shouldShowContent = show && !mobile && !modalOnly;
+  const handleClick = () => {
+    setShow(true);
+    if (!mobile && !modalOnly) {
+      setMouseDisabled(true);
+      setTimeout(() => {
+        setMouseDisabled(false);
+        setShow(false);
+      }, 3000);
+    }
+  };
 
-    return (
-        <Container
-            className={classNames(['tooltip', position, icon])}
-            onMouseOver={() => !mouseEventDisabled() ? setShow(true) : null}
-            onMouseOut={() => !mouseEventDisabled() ? setShow(false) : null}
-            onClick={handleClick}
-            style={{ cursor: modalOnly ? 'pointer' : 'default' }}
+  const shouldShowContent = show && !mobile && !modalOnly;
+
+  return (
+    <Container
+      className={classNames(["tooltip", position, icon])}
+      onMouseOver={() => (!mouseEventDisabled() ? setShow(true) : null)}
+      onMouseOut={() => (!mouseEventDisabled() ? setShow(false) : null)}
+      onClick={handleClick}
+      style={{ cursor: modalOnly ? "pointer" : "default" }}
+    >
+      {children ? children : <InfoIconRounded />}
+      {shouldShowContent && (
+        <div className={classNames(["hover-content", show ? "show" : ""])}>
+          <SafeTranslate id={translate} data={{ data: data }} />
+        </div>
+      )}
+      {show && (mobile || modalOnly) && (
+        <Modal
+          isOpen={show}
+          onClose={() => setShow(false)}
+          closeButton='true'
+          modalSize='sm'
+          mobileActionSheet={false}
+          modalClass='tooltip'
         >
-            {children ? children : <InfoIconRounded/>}
-            {shouldShowContent && (
-                <div className={classNames(['hover-content', show ? 'show' : ''])}>
-                    <SafeTranslate id={translate} data={{ data: data }}/>
-                </div>
-            )}
-            {show && (mobile || modalOnly) && (
-                <Modal
-                    isOpen={show}
-                    onClose={() => setShow(false)}
-                    closeButton='true'
-                    modalSize='sm'
-                    mobileActionSheet={false}
-                    modalClass='tooltip'
-                >
-                    <SafeTranslate id={translate} data={{ data: data }}/>
-                </Modal>
-            )}
-        </Container>
-    );
+          <SafeTranslate id={translate} data={{ data: data }} />
+        </Modal>
+      )}
+    </Container>
+  );
 };
 
 export default Tooltip;

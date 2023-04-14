@@ -1,16 +1,16 @@
-import BN from 'bn.js';
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import BN from "bn.js";
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import UserIconGrey from '../../images/UserIconGrey';
-import BackArrowButton from '../common/BackArrowButton';
-import FormButton from '../common/FormButton';
-import Container from '../common/styled/Container.css';
-import SendIcon from '../svg/SendIcon';
-import { NFTMedia } from './NFTMedia';
-import NFTTransferModal from './NFTTransferModal';
+import CONFIG from "../../config";
+import UserIconGrey from "../../images/UserIconGrey";
+import BackArrowButton from "../common/BackArrowButton";
+import FormButton from "../common/FormButton";
+import Container from "../common/styled/Container.css";
+import SendIcon from "../svg/SendIcon";
+import { NFTMedia } from "./NFTMedia";
+import NFTTransferModal from "./NFTTransferModal";
 
 const StyledContainer = styled(Container)`
     .container {
@@ -22,11 +22,11 @@ const StyledContainer = styled(Container)`
             max-width: 429px;
             margin-bottom: 83px;
 
-            filter: drop-shadow(0px 100px 80px rgba(0, 0, 0, 0.07)) 
-            drop-shadow(0px 41.7776px 33.4221px rgba(0, 0, 0, 0.0503198)) 
-            drop-shadow(0px 22.3363px 17.869px rgba(0, 0, 0, 0.0417275)) 
-            drop-shadow(0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035)) 
-            drop-shadow(0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725)) 
+            filter: drop-shadow(0px 100px 80px rgba(0, 0, 0, 0.07))
+            drop-shadow(0px 41.7776px 33.4221px rgba(0, 0, 0, 0.0503198))
+            drop-shadow(0px 22.3363px 17.869px rgba(0, 0, 0, 0.0417275))
+            drop-shadow(0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035))
+            drop-shadow(0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725))
             drop-shadow(0px 2.76726px 2.21381px rgba(0, 0, 0, 0.0196802));
         }
 
@@ -55,8 +55,8 @@ const StyledContainer = styled(Container)`
         }
 
         .inner {
-            
-            display: flex;         
+
+            display: flex;
             align-items: center;
             word-break: break-all;
             span {
@@ -97,7 +97,7 @@ const UserIcon = styled.div`
     background-color: #f8f8f8;
     text-align: center;
     margin: 0 12px 0 0;
-    
+
     svg {
         width: 26px;
         height: 26px;
@@ -110,60 +110,58 @@ const UserIcon = styled.div`
 `;
 
 export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
-    const [transferNftDetail, setTransferNftDetail] = useState();
+  const [transferNftDetail, setTransferNftDetail] = useState();
 
-    const transferMax = new BN((parseInt(CONFIG.NFT_TRANSFER_GAS, 10) + CONFIG.TOKEN_TRANSFER_DEPOSIT).toString());
-    const hasSufficientBalance = (new BN(nearBalance)).gte(transferMax);
+  const transferMax = new BN(
+    (parseInt(CONFIG.NFT_TRANSFER_GAS, 10) + CONFIG.TOKEN_TRANSFER_DEPOSIT).toString(),
+  );
+  const hasSufficientBalance = new BN(nearBalance).gte(transferMax);
 
-    return (
-        <StyledContainer className='medium centered'>
-            {nft && (
-                <div className='container'>
-                    <BackArrowButton
-                        onClick={() => history.goBack()}
-                        className='back-btn'
-                    >
-                    </BackArrowButton>
+  return (
+    <StyledContainer className='medium centered'>
+      {nft && (
+        <div className='container'>
+          <BackArrowButton onClick={() => history.goBack()} className='back-btn' />
 
-                    <NFTMedia mediaUrl={nft.metadata.mediaUrl}/>
+          <NFTMedia mediaUrl={nft.metadata.mediaUrl} />
 
-                    <h1 className="title">{nft.metadata.title}</h1>
-                    <p className="desc">{nft.metadata.description}</p>
+          <h1 className="title">{nft.metadata.title}</h1>
+          <p className="desc">{nft.metadata.description}</p>
 
-                    <div className='owner'>
-                        <p><Translate id='NFTDetail.owner'/></p>
+          <div className='owner'>
+            <p>
+              <Translate id='NFTDetail.owner' />
+            </p>
 
-                        <div className='inner'>
-                            <UserIcon>
-                                <UserIconGrey color='#9a9a9a' />
-                            </UserIcon>
-                            <span>
-                                { ownerId }
-                            </span>
-                        </div>
-                    </div>
+            <div className='inner'>
+              <UserIcon>
+                <UserIconGrey color='#9a9a9a' />
+              </UserIcon>
+              <span>{ownerId}</span>
+            </div>
+          </div>
 
-                    {(ownerId === accountId) && (
-                        <FormButton
-                            className='transfer-btn'
-                            color='gray-gray'
-                            disabled={!hasSufficientBalance}
-                            onClick={() => setTransferNftDetail(nft)}
-                        >
-                            <SendIcon/>
-                            <Translate id='NFTDetail.transfer'/>
-                        </FormButton>
-                    )}
-                    {transferNftDetail && (
-                        <NFTTransferModal
-                            onClose={() => setTransferNftDetail()}
-                            nft={transferNftDetail}
-                            accountId={accountId}
-                            nearBalance={nearBalance}
-                        />
-                    )}
-                </div>
-            )}
-        </StyledContainer>
-    );
+          {ownerId === accountId && (
+            <FormButton
+              className='transfer-btn'
+              color='gray-gray'
+              disabled={!hasSufficientBalance}
+              onClick={() => setTransferNftDetail(nft)}
+            >
+              <SendIcon />
+              <Translate id='NFTDetail.transfer' />
+            </FormButton>
+          )}
+          {transferNftDetail && (
+            <NFTTransferModal
+              onClose={() => setTransferNftDetail()}
+              nft={transferNftDetail}
+              accountId={accountId}
+              nearBalance={nearBalance}
+            />
+          )}
+        </div>
+      )}
+    </StyledContainer>
+  );
 }

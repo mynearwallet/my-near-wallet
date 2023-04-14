@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
     position: relative;
@@ -33,18 +33,18 @@ const Animation = styled.div`
 `;
 
 const SkeletonLoading = ({ height, padding, number = 1, show, className }) => {
-    if (show) {
-        return (
-            Array(number).fill().map((_, i) => (
-                <div className={className} style={{ padding }} key={i}>
-                    <Wrapper className='animation-wrapper' style={{ height }}>
-                        <Animation className='animation'/>
-                    </Wrapper>
-                </div>
-            ))
-        );
-    }
-    return null;
+  if (show) {
+    return Array(number)
+      .fill()
+      .map((_, i) => (
+        <div className={className} style={{ padding }} key={`skeleton-${i}`}>
+          <Wrapper className='animation-wrapper' style={{ height }}>
+            <Animation className='animation' />
+          </Wrapper>
+        </div>
+      ));
+  }
+  return null;
 };
 
 export default SkeletonLoading;

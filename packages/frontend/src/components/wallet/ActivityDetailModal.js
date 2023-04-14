@@ -1,15 +1,21 @@
-import React, { useEffect } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import React, { useEffect } from "react";
+import { Translate } from "react-localize-redux";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import { actions as transactionsActions } from '../../redux/slices/transactions';
-import { TRANSACTIONS_REFRESH_INTERVAL } from '../../utils/wallet';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
-import SafeTranslate from '../SafeTranslate';
-import { ActionTitle, ActionValue, ActionMessage, ActionStatus, translateData } from './ActivityBox';
+import CONFIG from "../../config";
+import { actions as transactionsActions } from "../../redux/slices/transactions";
+import { TRANSACTIONS_REFRESH_INTERVAL } from "../../utils/wallet";
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
+import SafeTranslate from "../SafeTranslate";
+import {
+  ActionTitle,
+  ActionValue,
+  ActionMessage,
+  ActionStatus,
+  translateData,
+} from "./ActivityBox";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -120,117 +126,114 @@ const StyledContainer = styled.div`
     }
 `;
 
-const ActivityDetailModal = ({
-    open,
-    onClose,
-    accountId,
-    transaction
-}) => {
-    const {
-        args: actionArgs,
-        kind: actionKind,
-        status,
-        checkStatus,
-        hash,
-        signer_id,
-        block_timestamp,
-        hash_with_index
-    } = transaction;
+const ActivityDetailModal = ({ open, onClose, accountId, transaction }) => {
+  const {
+    args: actionArgs,
+    kind: actionKind,
+    status,
+    checkStatus,
+    hash,
+    signer_id,
+    block_timestamp,
+    hash_with_index,
+  } = transaction;
 
-    const dispatch = useDispatch();
-    const getTransactionStatusConditions = () => checkStatus && !document.hidden && dispatch(transactionsActions.fetchTransactionStatus({ hash, signer_id, accountId, hash_with_index }));
-
-    useEffect(() => {
-        getTransactionStatusConditions();
-        const interval = setInterval(() => {
-            getTransactionStatusConditions();
-        }, TRANSACTIONS_REFRESH_INTERVAL);
-
-        return () => clearInterval(interval);
-    }, [hash, checkStatus]);
-
-    return (
-        <Modal
-            id='instructions-modal'
-            isOpen={open}
-            onClose={onClose}
-            closeButton
-        >
-            <StyledContainer>
-                <h2 className='title'>
-                    <ActionTitle
-                        transaction={transaction}
-                        actionArgs={actionArgs}
-                        actionKind={actionKind}
-                        accountId={accountId}
-                    />
-                </h2>
-                <div className='row'>
-                    {['Transfer', 'Stake'].includes(actionKind) && (
-                        <div className='item'>
-                            <span>
-                                Amount
-                            </span>
-                            <span className='amount'>
-                                <ActionValue
-                                    transaction={transaction}
-                                    actionArgs={actionArgs}
-                                    actionKind={actionKind}
-                                    accountId={accountId}
-                                />
-                            </span>
-                        </div>
-                    )}
-                    {actionKind !== 'DeleteKey' &&  (
-                        actionKind === 'FunctionCall'
-                            ? (
-                                <>
-                                    <div className='item sent-to'>
-                                        <SafeTranslate
-                                            id={'dashboardActivity.message.FunctionCallDetails.first'}
-                                            data={translateData(transaction, actionArgs, actionKind)}
-                                        />
-                                    </div>
-                                    <div className='item sent-to'>
-                                        <SafeTranslate
-                                            id={'dashboardActivity.message.FunctionCallDetails.second'}
-                                            data={translateData(transaction, actionArgs, actionKind)}
-                                        />
-                                    </div>
-                                </>
-                            ) : (
-                                <div className='item sent-to'>
-                                    <ActionMessage
-                                        transaction={transaction}
-                                        actionArgs={actionArgs}
-                                        actionKind={actionKind}
-                                        accountId={accountId}
-                                    />
-                                </div>
-                            )
-                    )
-                    }
-                    <div className='item'>
-                        <span><Translate id='wallet.dateAndTime' /></span>
-                        <span>{new Date(block_timestamp).toLocaleString('en-US', {dateStyle: 'short', timeStyle: 'short'})}</span>
-                    </div>
-                    <div className='item'>
-                        <span><Translate id='wallet.status' /></span>
-                        <ActionStatus
-                            status={status}
-                        />
-                    </div>
-                </div>
-                <FormButton
-                    color='gray-blue'
-                    linkTo={`${CONFIG.EXPLORER_URL}/transactions/${hash}`}
-                    trackingId='Click access key added view on explorer button'
-                >
-                    <Translate id='button.viewOnExplorer'/>
-                </FormButton>
-            </StyledContainer>
-        </Modal>
+  const dispatch = useDispatch();
+  const getTransactionStatusConditions = () =>
+    checkStatus &&
+    !document.hidden &&
+    dispatch(
+      transactionsActions.fetchTransactionStatus({ hash, signer_id, accountId, hash_with_index }),
     );
+
+  useEffect(() => {
+    getTransactionStatusConditions();
+    const interval = setInterval(() => {
+      getTransactionStatusConditions();
+    }, TRANSACTIONS_REFRESH_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [hash, checkStatus]);
+
+  return (
+    <Modal id='instructions-modal' isOpen={open} onClose={onClose} closeButton>
+      <StyledContainer>
+        <h2 className='title'>
+          <ActionTitle
+            transaction={transaction}
+            actionArgs={actionArgs}
+            actionKind={actionKind}
+            accountId={accountId}
+          />
+        </h2>
+        <div className='row'>
+          {["Transfer", "Stake"].includes(actionKind) && (
+            <div className='item'>
+              <span>Amount</span>
+              <span className='amount'>
+                <ActionValue
+                  transaction={transaction}
+                  actionArgs={actionArgs}
+                  actionKind={actionKind}
+                  accountId={accountId}
+                />
+              </span>
+            </div>
+          )}
+          {actionKind !== "DeleteKey" &&
+            (actionKind === "FunctionCall" ? (
+              <>
+                <div className='item sent-to'>
+                  <SafeTranslate
+                    id={"dashboardActivity.message.FunctionCallDetails.first"}
+                    data={translateData(transaction, actionArgs, actionKind)}
+                  />
+                </div>
+                <div className='item sent-to'>
+                  <SafeTranslate
+                    id={"dashboardActivity.message.FunctionCallDetails.second"}
+                    data={translateData(transaction, actionArgs, actionKind)}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className='item sent-to'>
+                <ActionMessage
+                  transaction={transaction}
+                  actionArgs={actionArgs}
+                  actionKind={actionKind}
+                  accountId={accountId}
+                />
+              </div>
+            ))}
+          <div className='item'>
+            <span>
+              <Translate id='wallet.dateAndTime' />
+            </span>
+            <span>
+              {new Date(block_timestamp).toLocaleString("en-US", {
+                dateStyle: "short",
+                timeStyle: "short",
+              })}
+            </span>
+          </div>
+          <div className='item'>
+            <span>
+              <Translate id='wallet.status' />
+            </span>
+            <ActionStatus status={status} />
+          </div>
+        </div>
+        <FormButton
+          color='gray-blue'
+          linkTo={`${CONFIG.EXPLORER_URL}/transactions/${hash}`}
+          trackingId='Click access key added view on explorer button'
+        >
+          <Translate id='button.viewOnExplorer' />
+        </FormButton>
+      </StyledContainer>
+    </Modal>
+  );
 };
 
 export default ActivityDetailModal;

@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Balance from '../common/balance/Balance';
-import Modal from '../common/modal/Modal';
-import NearGiftIcons from '../svg/NearGiftIcons';
+import Balance from "../common/balance/Balance";
+import Modal from "../common/modal/Modal";
+import NearGiftIcons from "../svg/NearGiftIcons";
 
 const Container = styled.div`
     display: flex;
@@ -34,28 +34,30 @@ const Container = styled.div`
 `;
 
 const LinkDropSuccessModal = ({ onClose, linkdropAmount }) => {
-    const isOpen = linkdropAmount !== '0';
-    return (
-        <Modal
-            id='near-drop-success-modal'
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='sm'
-            closeButton={true}
-            data-test-id="linkDropSuccessModal"
-        >
-            <Container>
-                <NearGiftIcons/>
-                <h3><Translate id='linkdropLanding.modal.title'/></h3>
-                <div className='near-balance'>
-                    <Balance amount={linkdropAmount}/>
-                </div>
-                <div className='desc'>
-                    <Translate id='linkdropLanding.modal.desc'/>
-                </div>
-            </Container>
-        </Modal>
-    );
+  const isOpen = linkdropAmount !== "0";
+  return (
+    <Modal
+      id='near-drop-success-modal'
+      isOpen={isOpen}
+      onClose={onClose}
+      modalSize='sm'
+      closeButton={true}
+      data-test-id="linkDropSuccessModal"
+    >
+      <Container>
+        <NearGiftIcons />
+        <h3>
+          <Translate id='linkdropLanding.modal.title' />
+        </h3>
+        <div className='near-balance'>
+          <Balance amount={linkdropAmount} />
+        </div>
+        <div className='desc'>
+          <Translate id='linkdropLanding.modal.desc' />
+        </div>
+      </Container>
+    </Modal>
+  );
 };
 
 export default LinkDropSuccessModal;

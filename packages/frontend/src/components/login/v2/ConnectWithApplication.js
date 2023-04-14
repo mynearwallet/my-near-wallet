@@ -1,8 +1,8 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import GlobeIcon from '../../svg/GlobeIcon';
+import GlobeIcon from "../../svg/GlobeIcon";
 
 const StyledContainer = styled.a`
     border: 1px solid #D6EDFF;
@@ -22,8 +22,13 @@ const StyledContainer = styled.a`
 `;
 
 export default ({ appReferrer, contractIdUrl }) => (
-    <StyledContainer className='connect-with-application' href={contractIdUrl} target='_blank' rel='noreferrer'>
-        <GlobeIcon/>
-        {appReferrer || <Translate id='sign.unknownApp' />}
-    </StyledContainer>
+  <StyledContainer
+    className='connect-with-application'
+    href={contractIdUrl}
+    target='_blank'
+    rel='noreferrer'
+  >
+    <GlobeIcon />
+    {appReferrer || <Translate id='sign.unknownApp' />}
+  </StyledContainer>
 );

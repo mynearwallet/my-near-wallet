@@ -1,25 +1,21 @@
-import React, { useCallback } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import React, { useCallback } from "react";
+import { Translate } from "react-localize-redux";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
 
-import ImgFinerWallet from '../../../src/images/finer-logo.svg';
-import ImgMeteorWallet from '../../../src/images/meteor-wallet-logo.svg';
-import ImgMyNearWallet from '../../../src/images/mynearwallet-cropped.svg';
-import SenderLogo from '../../../src/images/sender-logo.png';
-import isMobile from '../../../src/utils/isMobile';
-import IconLedger from '../../images/wallet-migration/IconLedger';
-import IconWallet from '../../images/wallet-migration/IconWallet';
-import { redirectTo } from '../../redux/actions/account';
-import classNames from '../../utils/classNames';
-import {
-    getMeteorWalletUrl,
-    getMyNearWalletUrlFromNEARORG
-} from '../../utils/getWalletURL';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
-import { WALLET_MIGRATION_VIEWS } from './WalletMigration';
-
+import ImgFinerWallet from "../../../src/images/finer-logo.svg";
+import ImgMeteorWallet from "../../../src/images/meteor-wallet-logo.svg";
+import ImgMyNearWallet from "../../../src/images/mynearwallet-cropped.svg";
+import SenderLogo from "../../../src/images/sender-logo.png";
+import isMobile from "../../../src/utils/isMobile";
+import IconLedger from "../../images/wallet-migration/IconLedger";
+import IconWallet from "../../images/wallet-migration/IconWallet";
+import { redirectTo } from "../../redux/actions/account";
+import classNames from "../../utils/classNames";
+import { getMeteorWalletUrl, getMyNearWalletUrlFromNEARORG } from "../../utils/getWalletURL";
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
+import { WALLET_MIGRATION_VIEWS } from "./WalletMigration";
 
 const Container = styled.div`
     padding: 15px 0;
@@ -42,40 +38,42 @@ const Container = styled.div`
 `;
 
 const WALLET_OPTIONS = [
-    {
-        id: 'my-near-wallet',
-        name: 'My NEAR Wallet',
-        icon: <img src={ImgMyNearWallet} alt="MyNearWallet Logo" />,
-        getUrl: ({ hash }) => `${getMyNearWalletUrlFromNEARORG()}/batch-import#${hash}`,
-        checkAvailability: () => true,
-    },
-    {
-        id: 'ledger',
-        name: 'Ledger',
-        icon: <IconLedger />,
-        checkAvailability: () => true,
-    },
-    {
-        id: 'sender',
-        name: 'Sender',
-        icon: <img src={SenderLogo} alt="Sender Wallet Logo"/>,
-        getUrl: ({ hash, networkId }) => `https://sender.org/transfer?keystore=${hash}&network=${networkId}`,
-        checkAvailability: () => true,
-    },
-    {
-        id: 'meteor-wallet',
-        name: 'Meteor Wallet',
-        icon: <img src={ImgMeteorWallet} alt={'Meteor Wallet Logo'}/>,
-        getUrl: ({ hash, networkId }) => `${getMeteorWalletUrl()}/batch-import?hash=${hash}&network=${networkId}`,
-        checkAvailability: () => true,
-    },
-    {
-        id: 'finer-wallet',
-        name: 'FiNER Wallet',
-        icon: <img src={ImgFinerWallet} alt="Finer Wallet Logo" />,
-        getUrl: ({ hash }) => `finer://wallet.near.org/batch-import#${hash}`,
-        checkAvailability: () => isMobile(),
-    },
+  {
+    id: "my-near-wallet",
+    name: "My NEAR Wallet",
+    icon: <img src={ImgMyNearWallet} alt="MyNearWallet Logo" />,
+    getUrl: ({ hash }) => `${getMyNearWalletUrlFromNEARORG()}/batch-import#${hash}`,
+    checkAvailability: () => true,
+  },
+  {
+    id: "ledger",
+    name: "Ledger",
+    icon: <IconLedger />,
+    checkAvailability: () => true,
+  },
+  {
+    id: "sender",
+    name: "Sender",
+    icon: <img src={SenderLogo} alt="Sender Wallet Logo" />,
+    getUrl: ({ hash, networkId }) =>
+      `https://sender.org/transfer?keystore=${hash}&network=${networkId}`,
+    checkAvailability: () => true,
+  },
+  {
+    id: "meteor-wallet",
+    name: "Meteor Wallet",
+    icon: <img src={ImgMeteorWallet} alt={"Meteor Wallet Logo"} />,
+    getUrl: ({ hash, networkId }) =>
+      `${getMeteorWalletUrl()}/batch-import?hash=${hash}&network=${networkId}`,
+    checkAvailability: () => true,
+  },
+  {
+    id: "finer-wallet",
+    name: "FiNER Wallet",
+    icon: <img src={ImgFinerWallet} alt="Finer Wallet Logo" />,
+    getUrl: ({ hash }) => `finer://wallet.near.org/batch-import#${hash}`,
+    checkAvailability: () => isMobile(),
+  },
 ];
 
 const WalletOptionsListing = styled.div`
@@ -166,60 +164,61 @@ const StyledButton = styled(FormButton)`
     }
 `;
 
-
 const SelectDestinationWallet = ({ handleSetActiveView, handleSetWallet, wallet, onClose }) => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const handleContinue = useCallback(() => {
-        handleSetWallet(wallet);
-        if (wallet.id === 'ledger') {
-            onClose();
-            return dispatch(redirectTo('/batch-ledger-export'));
-        } else {
-            return handleSetActiveView(WALLET_MIGRATION_VIEWS.MIGRATION_SECRET);
-        }
-    }, [wallet, handleSetActiveView, handleSetWallet]);
+  const handleContinue = useCallback(() => {
+    handleSetWallet(wallet);
+    if (wallet.id === "ledger") {
+      onClose();
+      return dispatch(redirectTo("/batch-ledger-export"));
+    } else {
+      return handleSetActiveView(WALLET_MIGRATION_VIEWS.MIGRATION_SECRET);
+    }
+  }, [wallet, handleSetActiveView, handleSetWallet]);
 
-    return (
-        <Modal
-            modalClass="slim"
-            id='migration-modal'
-            isOpen={true}
-            disableClose={true}
-            modalSize='md'
-            style={{ maxWidth: '435px' }}
-        >
-            <Container>
-                <IconWallet/>
-                <h4 className='title'><Translate id='walletMigration.selectWallet.title'/></h4>
-                <WalletOptionsListing>
-                    {WALLET_OPTIONS.map((walletOption) => {
-                        if (!walletOption.checkAvailability()) {
-                            return null;
-                        }
-                        return (
-                            <WalletOptionsListingItem
-                                className={classNames([{ active: walletOption.id === wallet?.id }])}
-                                onClick={() => handleSetWallet(walletOption)}
-                                key={walletOption.name}
-                            >
-                                <h4 className='name'>{walletOption.name}</h4>
-                                {walletOption.icon}
-                            </WalletOptionsListingItem>
-                        );
-                    })}
-                </WalletOptionsListing>
-                <ButtonsContainer>
-                    <StyledButton className="gray-blue" onClick={onClose}>
-                        <Translate id='button.cancel'/>
-                    </StyledButton>
-                    <StyledButton onClick={handleContinue} disabled={!wallet?.id}>
-                        <Translate id='button.continue'/>
-                    </StyledButton>
-                </ButtonsContainer>
-            </Container>
-        </Modal>
-    );
+  return (
+    <Modal
+      modalClass="slim"
+      id='migration-modal'
+      isOpen={true}
+      disableClose={true}
+      modalSize='md'
+      style={{ maxWidth: "435px" }}
+    >
+      <Container>
+        <IconWallet />
+        <h4 className='title'>
+          <Translate id='walletMigration.selectWallet.title' />
+        </h4>
+        <WalletOptionsListing>
+          {WALLET_OPTIONS.map((walletOption) => {
+            if (!walletOption.checkAvailability()) {
+              return null;
+            }
+            return (
+              <WalletOptionsListingItem
+                className={classNames([{ active: walletOption.id === wallet?.id }])}
+                onClick={() => handleSetWallet(walletOption)}
+                key={walletOption.name}
+              >
+                <h4 className='name'>{walletOption.name}</h4>
+                {walletOption.icon}
+              </WalletOptionsListingItem>
+            );
+          })}
+        </WalletOptionsListing>
+        <ButtonsContainer>
+          <StyledButton className="gray-blue" onClick={onClose}>
+            <Translate id='button.cancel' />
+          </StyledButton>
+          <StyledButton onClick={handleContinue} disabled={!wallet?.id}>
+            <Translate id='button.continue' />
+          </StyledButton>
+        </ButtonsContainer>
+      </Container>
+    </Modal>
+  );
 };
 
 export default SelectDestinationWallet;

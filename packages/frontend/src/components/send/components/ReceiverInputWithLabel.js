@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import classNames from '../../../utils/classNames';
-import InputAccountId from './InputAccountId';
+import classNames from "../../../utils/classNames";
+import InputAccountId from "./InputAccountId";
 
 const StyledContainer = styled.div`
     background-color: #FAFAFA;
@@ -45,39 +45,44 @@ const StyledContainer = styled.div`
 `;
 
 const ReceiverInputWithLabel = ({
-    receiverId,
-    handleChangeReceiverId,
-    checkAccountAvailable,
-    setIsImplicitAccount,
-    localAlert,
-    clearLocalAlert,
-    autoFocus,
-    isSuccess,
-    isProblem
+  receiverId,
+  handleChangeReceiverId,
+  checkAccountAvailable,
+  setIsImplicitAccount,
+  localAlert,
+  clearLocalAlert,
+  autoFocus,
+  isSuccess,
+  isProblem,
 }) => {
+  const [inputHasFocus, setInputHasFocus] = useState(false);
+  // TODO: Add remaining error style text
 
-    const [inputHasFocus, setInputHasFocus] = useState(false);
-    // TODO: Add remaining error style text
-
-    return (
-        <StyledContainer className={classNames([{ 'success': isSuccess }, { 'problem': isProblem }, { 'focus': inputHasFocus }])}>
-            <Translate id='sendV2.selectReceiver.receiverInputLabel' />
-            <InputAccountId
-                accountId={receiverId}
-                handleChange={handleChangeReceiverId}
-                ReceiverInputWithLabel={ReceiverInputWithLabel}
-                checkAvailability={checkAccountAvailable}
-                setIsImplicitAccount={setIsImplicitAccount}
-                localAlert={localAlert}
-                clearLocalAlert={clearLocalAlert}
-                onFocus={() => setInputHasFocus(true)}
-                onBlur={() => setInputHasFocus(false)}
-                autoFocus={!receiverId && autoFocus}
-                isSuccess={isSuccess}
-                isProblem={isProblem}
-            />  
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer
+      className={classNames([
+        { success: isSuccess },
+        { problem: isProblem },
+        { focus: inputHasFocus },
+      ])}
+    >
+      <Translate id='sendV2.selectReceiver.receiverInputLabel' />
+      <InputAccountId
+        accountId={receiverId}
+        handleChange={handleChangeReceiverId}
+        ReceiverInputWithLabel={ReceiverInputWithLabel}
+        checkAvailability={checkAccountAvailable}
+        setIsImplicitAccount={setIsImplicitAccount}
+        localAlert={localAlert}
+        clearLocalAlert={clearLocalAlert}
+        onFocus={() => setInputHasFocus(true)}
+        onBlur={() => setInputHasFocus(false)}
+        autoFocus={!receiverId && autoFocus}
+        isSuccess={isSuccess}
+        isProblem={isProblem}
+      />
+    </StyledContainer>
+  );
 };
 
 export default ReceiverInputWithLabel;

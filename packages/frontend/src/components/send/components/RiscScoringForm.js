@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useCallback, useEffect, useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import iconWarning from '../../../images/icon-warning.svg';
-import { Mixpanel } from '../../../mixpanel/index';
-import { checkAddress } from '../../../services/RiscScoring';
-import Checkbox from '../../common/Checkbox';
+import iconWarning from "../../../images/icon-warning.svg";
+import { Mixpanel } from "../../../mixpanel/index";
+import { checkAddress } from "../../../services/RiscScoring";
+import Checkbox from "../../common/Checkbox";
 
 const RSContainer = styled.div`
     margin-top: 20px;
@@ -54,75 +54,75 @@ const RSConsent = styled.div`
 `;
 
 export function useRiskScoringCheck(accountId) {
-    const [isRSWarned, setIsRSWarned] = useState(false);
-    const [isRSIgnored, setIsRSIgnored] = useState(false);
-    // track RiskScoring execution status, useful for loaders
-    // or indeterminate state
-    const [isRSFinished, setIsRSFinished] = useState(true);
+  const [isRSWarned, setIsRSWarned] = useState(false);
+  const [isRSIgnored, setIsRSIgnored] = useState(false);
+  // track RiskScoring execution status, useful for loaders
+  // or indeterminate state
+  const [isRSFinished, setIsRSFinished] = useState(true);
 
-    useEffect(() => {
-        setIsRSWarned(false);
-        setIsRSIgnored(false);
+  useEffect(() => {
+    setIsRSWarned(false);
+    setIsRSIgnored(false);
 
-        let isActive = true;
+    let isActive = true;
 
-        async function checkAccountWithHapi() {
-            try {
-                setIsRSFinished(false);
-                const hapiStatus = await checkAddress({ accountId });
-                if (isActive && hapiStatus && hapiStatus[0] !== 'None') {
-                    setIsRSWarned(true);
-                    Mixpanel.track('HAPI scammed address', {
-                        accountId,
-                        statusMsg: hapiStatus[0],
-                        statusCode: hapiStatus[1]
-                    });
-                }
-            } catch (e) {
-                // continue work
-            } finally {
-                if (isActive) {
-                    setIsRSFinished(true);
-                }
-            }
+    async function checkAccountWithHapi() {
+      try {
+        setIsRSFinished(false);
+        const hapiStatus = await checkAddress({ accountId });
+        if (isActive && hapiStatus && hapiStatus[0] !== "None") {
+          setIsRSWarned(true);
+          Mixpanel.track("HAPI scammed address", {
+            accountId,
+            statusMsg: hapiStatus[0],
+            statusCode: hapiStatus[1],
+          });
         }
-
-        if (accountId) {
-            checkAccountWithHapi();
-        } else {
-            setIsRSWarned(false);
+      } catch (e) {
+        // continue work
+      } finally {
+        if (isActive) {
+          setIsRSFinished(true);
         }
+      }
+    }
 
-        return () => { // prevent race condition
-            isActive = false;
-        };
-    }, [accountId]);
+    if (accountId) {
+      checkAccountWithHapi();
+    } else {
+      setIsRSWarned(false);
+    }
 
-    return { isRSWarned, isRSIgnored, isRSFinished, setIsRSIgnored };
+    return () => {
+      // prevent race condition
+      isActive = false;
+    };
+  }, [accountId]);
+
+  return { isRSWarned, isRSIgnored, isRSFinished, setIsRSIgnored };
 }
 
-
 const RiscScoringForm = ({ setIsRSIgnored, isIgnored }) => {
-    const onCheckboxChange = useCallback((e) => {
-        setIsRSIgnored(e.target.checked);
-    }, []);
+  const onCheckboxChange = useCallback((e) => {
+    setIsRSIgnored(e.target.checked);
+  }, []);
 
-    return (
-        <RSContainer className="risk-scoring-warning">
-            <RSWarning>
-                <img src={iconWarning} alt="Warning" />
-                <div>
-                    <Translate id='riscScoring.scamWarning' />
-                </div>
-            </RSWarning>
-            <RSConsent>
-                <label>
-                    <Checkbox checked={isIgnored} onChange={onCheckboxChange} />
-                    <Translate id='riscScoring.checkbox' />
-                </label>
-            </RSConsent>
-        </RSContainer>
-    );
+  return (
+    <RSContainer className="risk-scoring-warning">
+      <RSWarning>
+        <img src={iconWarning} alt="Warning" />
+        <div>
+          <Translate id='riscScoring.scamWarning' />
+        </div>
+      </RSWarning>
+      <RSConsent>
+        <label>
+          <Checkbox checked={isIgnored} onChange={onCheckboxChange} />
+          <Translate id='riscScoring.checkbox' />
+        </label>
+      </RSConsent>
+    </RSContainer>
+  );
 };
 
 export default RiscScoringForm;

@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import classNames from '../../../utils/classNames';
-import FormButton from '../../common/FormButton';
-import SafeTranslate from '../../SafeTranslate';
-import AlertTriangleIcon from '../../svg/AlertTriangleIcon.js';
+import classNames from "../../../utils/classNames";
+import FormButton from "../../common/FormButton";
+import SafeTranslate from "../../SafeTranslate";
+import AlertTriangleIcon from "../../svg/AlertTriangleIcon.js";
 
 const Container = styled.div`
     background-color: #FFF0DE;
@@ -53,14 +53,31 @@ const Container = styled.div`
 
 `;
 
-export default function AlertBanner({ title, button, linkTo, theme, titleData, 'data-test-id': testId, 'data-test-id-button': buttonTestId  }) {
-    return (
-        <Container className={classNames(['alert-banner', theme])} data-test-id={testId}>
-            <AlertTriangleIcon/>
-            <div>
-                <SafeTranslate id={title} data={{ data: titleData }}/>
-                {linkTo && button && <FormButton data-test-id={buttonTestId} className='link' linkTo={linkTo} trackingId="Click alert banner"><Translate id={button} /></FormButton>}
-            </div>
-        </Container>
-    );
+export default function AlertBanner({
+  title,
+  button,
+  linkTo,
+  theme,
+  titleData,
+  "data-test-id": testId,
+  "data-test-id-button": buttonTestId,
+}) {
+  return (
+    <Container className={classNames(["alert-banner", theme])} data-test-id={testId}>
+      <AlertTriangleIcon />
+      <div>
+        <SafeTranslate id={title} data={{ data: titleData }} />
+        {linkTo && button && (
+          <FormButton
+            data-test-id={buttonTestId}
+            className='link'
+            linkTo={linkTo}
+            trackingId="Click alert banner"
+          >
+            <Translate id={button} />
+          </FormButton>
+        )}
+      </div>
+    </Container>
+  );
 }

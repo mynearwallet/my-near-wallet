@@ -1,12 +1,12 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import AccountNotFound from '../../images/icon-account-not-found.svg';
-import ArrowUpImage from '../../images/icon-arrow-up-green.svg';
-import FormButton from '../common/FormButton';
-import Container from '../common/styled/Container.css';
-import SafeTranslate from '../SafeTranslate';
+import AccountNotFound from "../../images/icon-account-not-found.svg";
+import ArrowUpImage from "../../images/icon-arrow-up-green.svg";
+import FormButton from "../common/FormButton";
+import Container from "../common/styled/Container.css";
+import SafeTranslate from "../SafeTranslate";
 
 const CustomContainer = styled(Container)`
     display: flex;
@@ -85,43 +85,39 @@ const CustomContainer = styled(Container)`
 `;
 
 const SignTransferAccountNotFound = ({
-    handleCancel,
-    signCallbackUrl,
-    submittingTransaction,
-    signTransactionSignerId,
+  handleCancel,
+  signCallbackUrl,
+  submittingTransaction,
+  signTransactionSignerId,
 }) => (
-    <CustomContainer className="small-centered">
-        <div className="icon">
-            <img src={AccountNotFound} alt="Retry" />
-        </div>
-        <div className="title">
-            <h2>
-                <Translate id="sign.accountNotFound.title" />
-            </h2>
-        </div>
-        <div className="text">
-            <SafeTranslate
-                id="sign.accountNotFound.body"
-                data={{ signCallbackUrl, signTransactionSignerId }}
-            />
-        </div>
-        <div className="buttons">
-            <FormButton
-                onClick={handleCancel}
-                disabled={submittingTransaction}
-                color="gray-blue"
-            >
-                <Translate id="button.cancel" />
-            </FormButton>
-            <FormButton
-                linkTo="/recover-account"
-                disabled={submittingTransaction}
-                sending={submittingTransaction}
-            >
-                <Translate id="button.importAccount" />
-            </FormButton>
-        </div>
-    </CustomContainer>
+  <CustomContainer className="small-centered">
+    <div className="icon">
+      <img src={AccountNotFound} alt="Retry" />
+    </div>
+    <div className="title">
+      <h2>
+        <Translate id="sign.accountNotFound.title" />
+      </h2>
+    </div>
+    <div className="text">
+      <SafeTranslate
+        id="sign.accountNotFound.body"
+        data={{ signCallbackUrl, signTransactionSignerId }}
+      />
+    </div>
+    <div className="buttons">
+      <FormButton onClick={handleCancel} disabled={submittingTransaction} color="gray-blue">
+        <Translate id="button.cancel" />
+      </FormButton>
+      <FormButton
+        linkTo="/recover-account"
+        disabled={submittingTransaction}
+        sending={submittingTransaction}
+      >
+        <Translate id="button.importAccount" />
+      </FormButton>
+    </div>
+  </CustomContainer>
 );
 
 export default SignTransferAccountNotFound;

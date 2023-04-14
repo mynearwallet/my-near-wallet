@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import FungibleTokens from '../../services/FungibleTokens';
-import TokenBox from '../common/token/TokenBox';
+import FungibleTokens from "../../services/FungibleTokens";
+import TokenBox from "../common/token/TokenBox";
 
 const { getUniqueTokenIdentity } = FungibleTokens;
 
@@ -23,19 +23,19 @@ const StyledContainer = styled.div`
 `;
 
 const Tokens = ({ tokens, onClick, currentLanguage, showFiatPrice }) => {
-    return (
-        <StyledContainer>
-            {tokens.map((token, i) => (
-                <TokenBox
-                    key={getUniqueTokenIdentity(token)}
-                    token={token}
-                    onClick={onClick}
-                    currentLanguage={currentLanguage}
-                    showFiatPrice={showFiatPrice}
-                />
-            ))}
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer>
+      {tokens.map((token, i) => (
+        <TokenBox
+          key={getUniqueTokenIdentity(token)}
+          token={token}
+          onClick={onClick}
+          currentLanguage={currentLanguage}
+          showFiatPrice={showFiatPrice}
+        />
+      ))}
+    </StyledContainer>
+  );
 };
 
 export default Tokens;

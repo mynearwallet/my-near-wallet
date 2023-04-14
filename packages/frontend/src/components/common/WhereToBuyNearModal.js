@@ -1,13 +1,13 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import BinanceLogo from '../../images/binance-logo.svg';
-import HuobiLogo from '../../images/huobi-logo.svg';
-import LiqualityLogo from '../../images/liquality-logo.svg';
-import OkCoinLogo from '../../images/ok-coin-logo.svg';
-import OkexLogo from '../../images/okex-logo.svg';
-import Modal from '../common/modal/Modal';
+import BinanceLogo from "../../images/binance-logo.svg";
+import HuobiLogo from "../../images/huobi-logo.svg";
+import LiqualityLogo from "../../images/liquality-logo.svg";
+import OkCoinLogo from "../../images/ok-coin-logo.svg";
+import OkexLogo from "../../images/okex-logo.svg";
+import Modal from "../common/modal/Modal";
 
 const Container = styled.div`
     display: flex;
@@ -47,35 +47,39 @@ const Container = styled.div`
 `;
 
 const WhereToBuyNearModal = ({ open, onClose }) => {
-    return (
-        <Modal
-            id='where-to-buy-modal'
-            isOpen={open}
-            onClose={onClose}
-            closeButton='true'
-            modalSize='md'
-        >
-            <Container>
-                <h1><Translate id='account.createImplicit.pre.whereToBuy.title'/></h1>
-                <h2><Translate id='account.createImplicit.pre.whereToBuy.desc'/></h2>
-                <a href='https://www.binance.com/' target='_blank' rel='noreferrer'>
-                    <img src={BinanceLogo} alt='BINANCE'/>
-                </a>
-                <a href='https://www.huobi.com/' target='_blank' rel='noreferrer'>
-                    <img src={HuobiLogo} alt='HUOBI'/>
-                </a>
-                <a href='https://www.okex.com/' target='_blank' rel='noreferrer'>
-                    <img src={OkexLogo} alt='OKEX'/>
-                </a>
-                <a href='https://liquality.io/' target='_blank' rel='noreferrer'>
-                    <img src={LiqualityLogo} alt='LIQUALITY'/>
-                </a>
-                <a href='https://www.okcoin.com/' target='_blank' rel='noreferrer'>
-                    <img src={OkCoinLogo} alt='OKCOIN'/>
-                </a>
-            </Container>
-        </Modal>
-    );
+  return (
+    <Modal
+      id='where-to-buy-modal'
+      isOpen={open}
+      onClose={onClose}
+      closeButton='true'
+      modalSize='md'
+    >
+      <Container>
+        <h1>
+          <Translate id='account.createImplicit.pre.whereToBuy.title' />
+        </h1>
+        <h2>
+          <Translate id='account.createImplicit.pre.whereToBuy.desc' />
+        </h2>
+        <a href='https://www.binance.com/' target='_blank' rel='noreferrer'>
+          <img src={BinanceLogo} alt='BINANCE' />
+        </a>
+        <a href='https://www.huobi.com/' target='_blank' rel='noreferrer'>
+          <img src={HuobiLogo} alt='HUOBI' />
+        </a>
+        <a href='https://www.okex.com/' target='_blank' rel='noreferrer'>
+          <img src={OkexLogo} alt='OKEX' />
+        </a>
+        <a href='https://liquality.io/' target='_blank' rel='noreferrer'>
+          <img src={LiqualityLogo} alt='LIQUALITY' />
+        </a>
+        <a href='https://www.okcoin.com/' target='_blank' rel='noreferrer'>
+          <img src={OkCoinLogo} alt='OKCOIN' />
+        </a>
+      </Container>
+    </Modal>
+  );
 };
 
 export default WhereToBuyNearModal;

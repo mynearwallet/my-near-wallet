@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { withRouter } from 'react-router';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { withRouter } from "react-router";
+import styled from "styled-components";
 
-import ArrowGrnImage from '../../images/icon-arrow-grn.svg';
-import ArrowWhiteImage from '../../images/icon-arrow-white.svg';
-import { Mixpanel } from '../../mixpanel/index';
-import classNames from '../../utils/classNames';
+import ArrowGrnImage from "../../images/icon-arrow-grn.svg";
+import ArrowWhiteImage from "../../images/icon-arrow-white.svg";
+import { Mixpanel } from "../../mixpanel/index";
+import classNames from "../../utils/classNames";
 
 const CustomButton = styled.button`
     &&& {
@@ -36,7 +36,7 @@ const CustomButton = styled.button`
             height: 36px;
             border-radius: 20px;
             padding: 0px 0px;
-            
+
             font-size: 14px;
         }
 
@@ -63,7 +63,7 @@ const CustomButton = styled.button`
                 color: #A2A2A8;
             }
         }
-        
+
         &.dark-gray-light-blue {
             background-color: #37383C;
             border-color: #37383C;
@@ -196,7 +196,7 @@ const CustomButton = styled.button`
         &.green {
             border-color: #5ace84;
             background: #5ace84;
-            
+
 
             :disabled {
                 border-color: #e6e6e6;
@@ -410,7 +410,7 @@ const CustomButton = styled.button`
             :after {
                 content: '.';
                 animation: dots 1s steps(5, end) infinite;
-            
+
                 @keyframes dots {
                     0%, 20% {
                         color: rgba(0,0,0,0);
@@ -455,7 +455,7 @@ const CustomButton = styled.button`
             :after {
                 content: '.';
                 animation: link 1s steps(5, end) infinite;
-            
+
                 @keyframes link {
                     0%, 20% {
                         color: rgba(0,0,0,0);
@@ -493,55 +493,56 @@ const CustomButton = styled.button`
     }
 `;
 
-const FormButton = ({ 
-    children, 
-    type, 
-    color = 'blue', 
-    disabled = false,
-    onClick,
-    sending = false,
-    sendingString,
-    size,
-    linkTo,
-    history,
-    className,
-    id,
-    trackingId,
-    'data-test-id': testId,
-    style,
+const FormButton = ({
+  children,
+  type,
+  color = "blue",
+  disabled = false,
+  onClick,
+  sending = false,
+  sendingString,
+  size,
+  linkTo,
+  history,
+  className,
+  id,
+  trackingId,
+  "data-test-id": testId,
+  style,
 }) => (
-    <CustomButton
-        type={type}
-        id={id}
-        className={classNames([color, size, className, {'dots': sending}])}
-        disabled={disabled}
-        onClick={(e) => {
-            onClick && onClick(e);
-            linkTo && (linkTo.toLowerCase().startsWith('http') ? window.open(linkTo, '_blank') : history.push(linkTo));
-            trackingId && Mixpanel.track(trackingId);
-        }}
-        tabIndex='3'
-        data-test-id={testId}
-        style={style}
-    >
-        {sending
-            ? <Translate id={sendingString ? sendingString : 'sending'} />
-            : children
-        }
-    </CustomButton>
+  <CustomButton
+    type={type}
+    id={id}
+    className={classNames([color, size, className, { dots: sending }])}
+    disabled={disabled}
+    onClick={(e) => {
+      onClick?.(e);
+      linkTo &&
+        (linkTo.toLowerCase().startsWith("http")
+          ? window.open(linkTo, "_blank")
+          : history.push(linkTo));
+      trackingId && Mixpanel.track(trackingId);
+    }}
+    // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
+    tabIndex='3'
+    data-test-id={testId}
+    style={style}
+  >
+    {sending ? <Translate id={sendingString ? sendingString : "sending"} /> : children}
+  </CustomButton>
 );
 
 FormButton.propTypes = {
-    children: PropTypes.node.isRequired,
-    type: PropTypes.string,
-    color: PropTypes.string,
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    sending: PropTypes.bool,
-    size: PropTypes.string,
-    linkTo: PropTypes.string,
-    className: PropTypes.string,
-    trackingId: PropTypes.string
+  children: PropTypes.node.isRequired,
+  type: PropTypes.string,
+  color: PropTypes.string,
+  disabled: PropTypes.bool,
+  onClick: PropTypes.func,
+  sending: PropTypes.bool,
+  size: PropTypes.string,
+  linkTo: PropTypes.string,
+  className: PropTypes.string,
+  trackingId: PropTypes.string,
 };
 
 export default withRouter(FormButton);

@@ -1,8 +1,8 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from './FormButton';
+import FormButton from "./FormButton";
 
 const Container = styled.div`
     background-color: #fafafa;
@@ -48,33 +48,22 @@ const Container = styled.div`
     }
 `;
 
-const Banner = ({
-    title,
-    desc,
-    buttonTitle,
-    onButtonClick,
-    linkTo,
-    buttonColor
-}) => {
-    return (
-        <Container className='banner-container'>
-            <div className='content'>
-                <h4 className='title'>
-                    <Translate id={title} />
-                </h4>
-                <div className='desc'>
-                    <Translate id={desc} />
-                </div>
-            </div>
-            <FormButton
-                onClick={onButtonClick}
-                linkTo={linkTo}
-                color={buttonColor}
-            >
-                <Translate id={buttonTitle} />
-            </FormButton>
-        </Container>
-    );
+const Banner = ({ title, desc, buttonTitle, onButtonClick, linkTo, buttonColor }) => {
+  return (
+    <Container className='banner-container'>
+      <div className='content'>
+        <h4 className='title'>
+          <Translate id={title} />
+        </h4>
+        <div className='desc'>
+          <Translate id={desc} />
+        </div>
+      </div>
+      <FormButton onClick={onButtonClick} linkTo={linkTo} color={buttonColor}>
+        <Translate id={buttonTitle} />
+      </FormButton>
+    </Container>
+  );
 };
 
 export default Banner;

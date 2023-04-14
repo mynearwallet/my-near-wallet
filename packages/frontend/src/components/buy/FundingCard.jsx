@@ -1,8 +1,8 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import { FundingType } from './FundingType';
+import { FundingType } from "./FundingType";
 
 const Block = styled.div`
     display: grid;
@@ -89,28 +89,28 @@ const FundingTypeWrap = styled.div`
 `;
 
 export const FundingCard = ({ title, subTitle, actions, link }) => {
-    return (
-        <Block>
-            <TextWrap>
-                <Title>
-                    <Translate id={title} />
-                </Title>
-                <SubTitle>
-                    <Translate id={subTitle} />
-                    {link && (
-                        <Link>
-                            <a href={link.url} target='_blank' rel='noreferrer'>
-                                <Translate id={link.title} />
-                            </a>
-                        </Link>
-                    )}
-                </SubTitle>
-            </TextWrap>
-            <FundingTypeWrap>
-                {actions.map((action, i) => (
-                    <FundingType key={i} {...action} />
-                ))}
-            </FundingTypeWrap>
-        </Block>
-    );
+  return (
+    <Block>
+      <TextWrap>
+        <Title>
+          <Translate id={title} />
+        </Title>
+        <SubTitle>
+          <Translate id={subTitle} />
+          {link && (
+            <Link>
+              <a href={link.url} target='_blank' rel='noreferrer'>
+                <Translate id={link.title} />
+              </a>
+            </Link>
+          )}
+        </SubTitle>
+      </TextWrap>
+      <FundingTypeWrap>
+        {actions.map((action, i) => (
+          <FundingType key={`funding-type-${i}`} {...action} />
+        ))}
+      </FundingTypeWrap>
+    </Block>
+  );
 };

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -113,31 +113,42 @@ const StyledCardInfo = styled.div`
     text-align: left;
 `;
 
-
-
-export default function ({ content, translationId}) {
-    const { name, icon, sectionLink, colour, projects } = content;
-    return (
-        <StyledContainer>
-            <StyledHeader colour={colour}>
-                <img src={icon} alt={name}/>
-                <h2><Translate id={translationId}/></h2>
-                <a href={`https://awesomenear.com/categories/${sectionLink}`} target='_blank' rel='noopener noreferrer'><Translate id='explore.seeAll'/></a>
-            </StyledHeader>
-            <StyledContent>
-                {projects.map((el) => (
-                    <StyledCard key={el.name} href={`https://awesomenear.com/${el.linkName}`} target='_blank' rel='noopener noreferrer'>
-                        <StyledCardHeader>
-                            <img src={el.icon} alt={el.name} width='40' height='40'/>
-                            <StyledMeta>
-                                <div>{el.name}</div>
-                                <span>{el.category}</span>
-                            </StyledMeta>
-                        </StyledCardHeader>
-                        <StyledCardInfo>{el.info}</StyledCardInfo>
-                    </StyledCard>
-                ))}
-            </StyledContent>
-        </StyledContainer>
-    );
+export default function ({ content, translationId }) {
+  const { name, icon, sectionLink, colour, projects } = content;
+  return (
+    <StyledContainer>
+      <StyledHeader colour={colour}>
+        <img src={icon} alt={name} />
+        <h2>
+          <Translate id={translationId} />
+        </h2>
+        <a
+          href={`https://awesomenear.com/categories/${sectionLink}`}
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          <Translate id='explore.seeAll' />
+        </a>
+      </StyledHeader>
+      <StyledContent>
+        {projects.map((el) => (
+          <StyledCard
+            key={el.name}
+            href={`https://awesomenear.com/${el.linkName}`}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <StyledCardHeader>
+              <img src={el.icon} alt={el.name} width='40' height='40' />
+              <StyledMeta>
+                <div>{el.name}</div>
+                <span>{el.category}</span>
+              </StyledMeta>
+            </StyledCardHeader>
+            <StyledCardInfo>{el.info}</StyledCardInfo>
+          </StyledCard>
+        ))}
+      </StyledContent>
+    </StyledContainer>
+  );
 }

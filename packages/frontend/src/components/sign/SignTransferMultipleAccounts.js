@@ -1,12 +1,12 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import DangerIcon from '../../images/icon-danger-circle.svg';
-import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
-import FormButton from '../common/FormButton';
-import Container from '../common/styled/Container.css';
-import SafeTranslate from '../SafeTranslate';
+import DangerIcon from "../../images/icon-danger-circle.svg";
+import { isUrlNotJavascriptProtocol } from "../../utils/helper-api";
+import FormButton from "../common/FormButton";
+import Container from "../common/styled/Container.css";
+import SafeTranslate from "../SafeTranslate";
 
 const CustomContainer = styled(Container)`
     display: flex;
@@ -50,47 +50,43 @@ const CustomContainer = styled(Container)`
 `;
 
 const SignTransferMultipleAccounts = ({
-    handleCancel,
-    signCallbackUrl,
-    submittingTransaction,
-    signTransactionSignerId,
+  handleCancel,
+  signCallbackUrl,
+  submittingTransaction,
+  signTransactionSignerId,
 }) => (
-    <CustomContainer className='small-centered'>
-        <div className='icon'>
-            <img src={DangerIcon} alt='Retry' />
-        </div>
-        <div className='title'>
-            <h2>
-                <Translate id='sign.multipleAccountsError.title' />
-            </h2>
-        </div>
-        <div className='text' >
-            <SafeTranslate
-                id='sign.multipleAccountsError.body'
-                data={{ signCallbackUrl, signTransactionSignerId }}
-            />
-        </div>
-        <div className='buttons'>
-            <FormButton
-                onClick={handleCancel}
-                disabled={submittingTransaction}
-                color='gray-blue'
-            >
-                <Translate id='button.cancel' />
-            </FormButton>
-            <FormButton
-                onClick={() => {
-                    if (isUrlNotJavascriptProtocol(signCallbackUrl)) {
-                        window.location.href = signCallbackUrl;
-                    }
-                }}
-                disabled={submittingTransaction}
-                sending={submittingTransaction}
-            >
-                <Translate id='button.returnToApp' />
-            </FormButton>
-        </div>
-    </CustomContainer>
+  <CustomContainer className='small-centered'>
+    <div className='icon'>
+      <img src={DangerIcon} alt='Retry' />
+    </div>
+    <div className='title'>
+      <h2>
+        <Translate id='sign.multipleAccountsError.title' />
+      </h2>
+    </div>
+    <div className='text'>
+      <SafeTranslate
+        id='sign.multipleAccountsError.body'
+        data={{ signCallbackUrl, signTransactionSignerId }}
+      />
+    </div>
+    <div className='buttons'>
+      <FormButton onClick={handleCancel} disabled={submittingTransaction} color='gray-blue'>
+        <Translate id='button.cancel' />
+      </FormButton>
+      <FormButton
+        onClick={() => {
+          if (isUrlNotJavascriptProtocol(signCallbackUrl)) {
+            window.location.href = signCallbackUrl;
+          }
+        }}
+        disabled={submittingTransaction}
+        sending={submittingTransaction}
+      >
+        <Translate id='button.returnToApp' />
+      </FormButton>
+    </div>
+  </CustomContainer>
 );
 
 export default SignTransferMultipleAccounts;

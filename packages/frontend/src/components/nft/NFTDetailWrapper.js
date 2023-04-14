@@ -1,51 +1,51 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { selectAccountId, selectBalance } from '../../redux/slices/account';
+import { selectAccountId, selectBalance } from "../../redux/slices/account";
 import {
-    actions as nftActions,
-    selectTokenForAccountForContractForTokenId,
-    selectTransferredTokenForContractForTokenId,
-} from '../../redux/slices/nft';
-import { NFTDetail } from './NFTDetail';
+  actions as nftActions,
+  selectTokenForAccountForContractForTokenId,
+  selectTransferredTokenForContractForTokenId,
+} from "../../redux/slices/nft";
+import { NFTDetail } from "./NFTDetail";
 
-const NFTDetailWrapper = ({
-    match,
-    history
-}) => {
-    const { contractId: contractName, tokenId } = match.params;
-    const accountId = useSelector(selectAccountId);
-    const { balanceAvailable: nearBalance} = useSelector(selectBalance);
-    const nft = useSelector((state) => selectTokenForAccountForContractForTokenId(state, {
-        accountId,
-        contractName,
-        tokenId,
-    }));
+const NFTDetailWrapper = ({ match, history }) => {
+  const { contractId: contractName, tokenId } = match.params;
+  const accountId = useSelector(selectAccountId);
+  const { balanceAvailable: nearBalance } = useSelector(selectBalance);
+  const nft = useSelector((state) =>
+    selectTokenForAccountForContractForTokenId(state, {
+      accountId,
+      contractName,
+      tokenId,
+    }),
+  );
 
-    const transferredNft = useSelector((state) => selectTransferredTokenForContractForTokenId(state, {
-        contractName,
-        tokenId,
-    }));
+  const transferredNft = useSelector((state) =>
+    selectTransferredTokenForContractForTokenId(state, {
+      contractName,
+      tokenId,
+    }),
+  );
 
-    const dispatch = useDispatch();
-    const { fetchNFT } = nftActions;
+  const dispatch = useDispatch();
+  const { fetchNFT } = nftActions;
 
-    useEffect(() => {
-        if (accountId && !nft && !transferredNft) {
-            dispatch(fetchNFT({ accountId, contractName, tokenId }));
-        }
-    }, [accountId, contractName, nft, transferredNft]);
+  useEffect(() => {
+    if (accountId && !nft && !transferredNft) {
+      dispatch(fetchNFT({ accountId, contractName, tokenId }));
+    }
+  }, [accountId, contractName, nft, transferredNft]);
 
-    return (
-        <NFTDetail
-            nft={(nft && { ...nft, contract_id: contractName }) || transferredNft}
-            accountId={accountId}
-            nearBalance={nearBalance}
-            ownerId={nft?.owner_id || transferredNft?.owner_id}
-            history={history}
-        />
-    );
+  return (
+    <NFTDetail
+      nft={(nft && { ...nft, contract_id: contractName }) || transferredNft}
+      accountId={accountId}
+      nearBalance={nearBalance}
+      ownerId={nft?.owner_id || transferredNft?.owner_id}
+      history={history}
+    />
+  );
 };
 
 export default NFTDetailWrapper;
-

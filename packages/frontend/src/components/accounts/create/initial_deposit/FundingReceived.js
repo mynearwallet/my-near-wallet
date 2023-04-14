@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Checkbox from '../../../common/Checkbox';
-import FormButton from '../../../common/FormButton';
-import Container from '../../../common/styled/Container.css';
-import AccountFunded from '../status/AccountFunded';
+import Checkbox from "../../../common/Checkbox";
+import FormButton from "../../../common/FormButton";
+import Container from "../../../common/styled/Container.css";
+import AccountFunded from "../status/AccountFunded";
 
 const StyledContainer = styled(Container)`
     &&& {
@@ -43,40 +43,38 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    initialDeposit,
-    accountId,
-    onClaimAccount,
-    claimingAccount
-}) => {
-    const [newAddressApproved, setNewAddressApproved] = useState(false);
-    return (
-        <StyledContainer className='small-centered border'>
-            <h1><Translate id='initialDeposit.claimAccount.title' /></h1>
-            <h2><Translate id='initialDeposit.claimAccount.desc' /></h2>
-            <AccountFunded
-                initialDeposit={initialDeposit}
-                accountId={accountId}
-            />
-            <div className='checkbox-wrapper'>
-                <div>
-                    <Translate id='initialDeposit.claimAccount.disclaimer.desc' />
-                </div>
-                <label>
-                    <Checkbox
-                        checked={newAddressApproved}
-                        onChange={(e) => setNewAddressApproved(e.target.checked)}
-                    />
-                    <span><Translate id='initialDeposit.claimAccount.disclaimer.checkBox' /></span>
-                </label>
-            </div>
-            <FormButton
-                disabled={!newAddressApproved || claimingAccount}
-                sending={claimingAccount}
-                onClick={onClaimAccount}
-            >
-                <Translate id='button.claimMyAccount' />
-            </FormButton>
-        </StyledContainer>
-    );
+export default ({ initialDeposit, accountId, onClaimAccount, claimingAccount }) => {
+  const [newAddressApproved, setNewAddressApproved] = useState(false);
+  return (
+    <StyledContainer className='small-centered border'>
+      <h1>
+        <Translate id='initialDeposit.claimAccount.title' />
+      </h1>
+      <h2>
+        <Translate id='initialDeposit.claimAccount.desc' />
+      </h2>
+      <AccountFunded initialDeposit={initialDeposit} accountId={accountId} />
+      <div className='checkbox-wrapper'>
+        <div>
+          <Translate id='initialDeposit.claimAccount.disclaimer.desc' />
+        </div>
+        <label>
+          <Checkbox
+            checked={newAddressApproved}
+            onChange={(e) => setNewAddressApproved(e.target.checked)}
+          />
+          <span>
+            <Translate id='initialDeposit.claimAccount.disclaimer.checkBox' />
+          </span>
+        </label>
+      </div>
+      <FormButton
+        disabled={!newAddressApproved || claimingAccount}
+        sending={claimingAccount}
+        onClick={onClaimAccount}
+      >
+        <Translate id='button.claimMyAccount' />
+      </FormButton>
+    </StyledContainer>
+  );
 };

@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
-import React, { Component, createRef } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import PropTypes from "prop-types";
+import React, { Component, createRef } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import { Mixpanel } from '../../mixpanel/index';
-import classNames from '../../utils/classNames';
-import { ACCOUNT_CHECK_TIMEOUT } from '../../utils/wallet';
-import LocalAlertBox from '../common/LocalAlertBox.js';
+import CONFIG from "../../config";
+import { Mixpanel } from "../../mixpanel/index";
+import classNames from "../../utils/classNames";
+import { ACCOUNT_CHECK_TIMEOUT } from "../../utils/wallet";
+import LocalAlertBox from "../common/LocalAlertBox.js";
 
 const InputWrapper = styled.div`
     position: relative;
@@ -21,7 +21,7 @@ const InputWrapper = styled.div`
     input {
         margin-top: 0px !important;
     }
-    
+
     &.wrong-char {
         input {
             animation-duration: 0.4s;
@@ -51,228 +51,252 @@ const InputWrapper = styled.div`
     }
 `;
 class AccountFormAccountId extends Component {
-    state = {
-        accountId: this.props.defaultAccountId || '',
-        invalidAccountIdLength: false,
-        wrongChar: false
+  state = {
+    accountId: this.props.defaultAccountId || "",
+    invalidAccountIdLength: false,
+    wrongChar: false,
+  };
+
+  checkAccountAvailabilityTimer = null;
+  canvas = null;
+  suffix = createRef();
+
+  componentDidMount = () => {
+    const { defaultAccountId } = this.props;
+    const { accountId } = this.state;
+
+    if (defaultAccountId) {
+      this.handleChangeAccountId({ userValue: accountId });
+    }
+  };
+
+  updateSuffix = (userValue) => {
+    if (userValue.match(this.props.pattern)) {
+      return;
+    }
+    const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+    const width = this.getTextWidth(userValue, "16px Inter");
+    const extraSpace = isSafari ? 21.5 : 22;
+    this.suffix.current.style.left = `${width}${extraSpace}px`;
+    this.suffix.current.style.visibility = "visible";
+    if (userValue.length === 0) {
+      this.suffix.current.style.visibility = "hidden";
+    }
+  };
+
+  getTextWidth = (text, font) => {
+    if (!this.canvas) {
+      this.canvas = document.createElement("canvas");
+    }
+    const context = this.canvas.getContext("2d");
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+  };
+
+  handleChangeAccountId = ({ userValue, el }) => {
+    const { pattern, handleChange, type } = this.props;
+
+    const accountId = userValue.toLowerCase();
+
+    if (accountId === this.state.accountId) {
+      return;
     }
 
-    checkAccountAvailabilityTimer = null;
-    canvas = null;
-    suffix = createRef();
-
-    componentDidMount = () => {
-        const { defaultAccountId } = this.props;
-        const { accountId } = this.state;
-
-        if (defaultAccountId) {
-            this.handleChangeAccountId({ userValue: accountId });
-        }
-    }
-
-    updateSuffix = (userValue) => {
-        if (userValue.match(this.props.pattern)) {
-            return;
-        }
-        const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
-        const width = this.getTextWidth(userValue, '16px Inter');
-        const extraSpace = isSafari ? 21.5 : 22;
-        this.suffix.current.style.left = width + extraSpace + 'px';
-        this.suffix.current.style.visibility = 'visible';
-        if (userValue.length === 0) {
-            this.suffix.current.style.visibility = 'hidden';
-        }
-    }
-
-    getTextWidth = (text, font) => {
-        if (!this.canvas) {
-            this.canvas = document.createElement('canvas');
-        }
-        let context = this.canvas.getContext('2d');
-        context.font = font;
-        let metrics = context.measureText(text);
-        return metrics.width;
-    }
-
-    handleChangeAccountId = ({ userValue, el }) => {
-        const { pattern, handleChange, type } = this.props;
-
-        const accountId = userValue.toLowerCase();
-
-        if (accountId === this.state.accountId) {
-            return;
-        }
-
-        if (accountId.match(pattern)) {
-            if (this.state.wrongChar) {
-                el.style.animation = 'none';
-                void el.offsetHeight;
-                el.style.animation = null;
-            } else {
-                this.setState(() => ({
-                    wrongChar: true
-                }));
-            }
-            return false;
-        } else {
-            this.setState(() => ({
-                wrongChar: false
-            }));
-        }
-
+    if (accountId.match(pattern)) {
+      if (this.state.wrongChar) {
+        el.style.animation = "none";
+        void el.offsetHeight;
+        el.style.animation = null;
+      } else {
         this.setState(() => ({
-            accountId: accountId
+          wrongChar: true,
         }));
-
-        handleChange(accountId);
-
-        this.props.localAlert && this.props.clearLocalAlert();
-
-        this.state.invalidAccountIdLength && this.handleAccountIdLengthState(accountId);
-
-        this.checkAccountAvailabilityTimer && clearTimeout(this.checkAccountAvailabilityTimer);
-        this.checkAccountAvailabilityTimer = setTimeout(() => {
-            this.handleCheckAvailability(accountId, type);
-        }, ACCOUNT_CHECK_TIMEOUT);
+      }
+      return false;
+    } else {
+      this.setState(() => ({
+        wrongChar: false,
+      }));
     }
 
-    checkAccountIdLength = (accountId) => {
-        const accountIdWithSuffix = `${accountId}.${CONFIG.ACCOUNT_ID_SUFFIX}`;
-        return accountIdWithSuffix.length >= 2 && accountIdWithSuffix.length <= 64;
+    this.setState(() => ({
+      accountId: accountId,
+    }));
+
+    handleChange(accountId);
+
+    this.props.localAlert && this.props.clearLocalAlert();
+
+    this.state.invalidAccountIdLength && this.handleAccountIdLengthState(accountId);
+
+    this.checkAccountAvailabilityTimer && clearTimeout(this.checkAccountAvailabilityTimer);
+    this.checkAccountAvailabilityTimer = setTimeout(() => {
+      this.handleCheckAvailability(accountId, type);
+    }, ACCOUNT_CHECK_TIMEOUT);
+  };
+
+  checkAccountIdLength = (accountId) => {
+    const accountIdWithSuffix = `${accountId}.${CONFIG.ACCOUNT_ID_SUFFIX}`;
+    return accountIdWithSuffix.length >= 2 && accountIdWithSuffix.length <= 64;
+  };
+
+  handleAccountIdLengthState = (accountId) =>
+    this.setState(() => ({
+      invalidAccountIdLength: !!accountId && !this.checkAccountIdLength(accountId),
+    }));
+
+  handleCheckAvailability = (accountId, type) => {
+    if (type === "create") {
+      Mixpanel.track("CA Check account availability");
     }
-
-    handleAccountIdLengthState = (accountId) => this.setState(() => ({
-        invalidAccountIdLength: !!accountId && !this.checkAccountIdLength(accountId)
-    }))
-
-    handleCheckAvailability = (accountId, type) => {
-        if (type === 'create') {
-            Mixpanel.track('CA Check account availability');
-        }
-        if (!accountId) {
-            return false;
-        }
-        if (this.isImplicitAccount(accountId)) {
-            return true;
-        }
-        if (!(type === 'create' && !this.handleAccountIdLengthState(accountId) && !this.checkAccountIdLength(accountId))) {
-            return this.props.checkAvailability(type === 'create' ? this.props.accountId : accountId);
-        }
-        return false;
+    if (!accountId) {
+      return false;
     }
-
-    isSameAccount = () => this.props.type !== 'create' && this.props.stateAccountId === this.state.accountId
-
-    isImplicitAccount = (accountId) => this.props.type !== 'create' && accountId.length === 64
-
-    get loaderLocalAlert() {
-        return {
-            messageCode: `account.create.checkingAvailablity.${this.props.type}`
-        };
+    if (this.isImplicitAccount(accountId)) {
+      return true;
     }
-
-    get accountIdLengthLocalAlert() {
-        return {
-            success: false,
-            messageCode: 'account.create.errorInvalidAccountIdLength'
-        };
+    if (
+      !(
+        type === "create" &&
+        !this.handleAccountIdLengthState(accountId) &&
+        !this.checkAccountIdLength(accountId)
+      )
+    ) {
+      return this.props.checkAvailability(type === "create" ? this.props.accountId : accountId);
     }
+    return false;
+  };
 
-    get sameAccountLocalAlert() {
-        return {
-            success: false,
-            show: true,
-            messageCode: 'account.available.errorSameAccount'
-        };
+  isSameAccount = () =>
+    this.props.type !== "create" && this.props.stateAccountId === this.state.accountId;
+
+  isImplicitAccount = (accountId) => this.props.type !== "create" && accountId.length === 64;
+
+  get loaderLocalAlert() {
+    return {
+      messageCode: `account.create.checkingAvailablity.${this.props.type}`,
+    };
+  }
+
+  get accountIdLengthLocalAlert() {
+    return {
+      success: false,
+      messageCode: "account.create.errorInvalidAccountIdLength",
+    };
+  }
+
+  get sameAccountLocalAlert() {
+    return {
+      success: false,
+      show: true,
+      messageCode: "account.available.errorSameAccount",
+    };
+  }
+
+  get implicitAccountLocalAlert() {
+    return {
+      success: true,
+      messageCode: "account.available.implicitAccount",
+    };
+  }
+
+  get localAlertWithFormValidation() {
+    const { accountId, invalidAccountIdLength } = this.state;
+    const { mainLoader, localAlert } = this.props;
+
+    if (!accountId) {
+      return null;
     }
-
-    get implicitAccountLocalAlert() {
-        return {
-            success: true,
-            messageCode: 'account.available.implicitAccount'
-        };
+    if (this.isImplicitAccount(accountId)) {
+      return this.implicitAccountLocalAlert;
     }
-
-    get localAlertWithFormValidation() {
-        const { accountId, invalidAccountIdLength } = this.state;
-        const { mainLoader, localAlert } = this.props;
-
-        if (!accountId) {
-            return null;
-        }
-        if (this.isImplicitAccount(accountId)) {
-            return this.implicitAccountLocalAlert;
-        }
-        if (mainLoader) {
-            return this.loaderLocalAlert;
-        }
-        if (invalidAccountIdLength) {
-            return this.accountIdLengthLocalAlert;
-        }
-        if (this.isSameAccount()) {
-            return this.sameAccountLocalAlert;
-        }
-        return localAlert;
+    if (mainLoader) {
+      return this.loaderLocalAlert;
     }
-
-    render() {
-        const {
-            mainLoader,
-            autoFocus,
-            type,
-            disabled
-        } = this.props;
-
-        const { accountId, wrongChar } = this.state;
-
-        const localAlert = this.localAlertWithFormValidation;
-        const success = localAlert?.success;
-        const problem = !localAlert?.success && localAlert?.show;
-
-        return (
-            <>
-                <Translate>
-                    {({ translate }) => (
-                        <InputWrapper className={classNames([type, {'success': success}, {'problem': problem}, {'wrong-char': wrongChar}])}>
-                            <input
-                                name='accountId'
-                                data-test-id="createAccount.accountIdInput"
-                                value={accountId}
-                                onInput={(e) => type === 'create' && this.updateSuffix(e.target.value.trim())}
-                                onChange={(e) => this.handleChangeAccountId({ userValue: e.target.value.trim(), el: e.target })}
-                                placeholder={type === 'create' ? translate('createAccount.accountIdInput.placeholder', { data: CONFIG.ACCOUNT_ID_SUFFIX}) : translate('input.accountId.placeholder')}
-                                required
-                                autoComplete='off'
-                                autoCorrect='off'
-                                autoCapitalize='off'
-                                spellCheck='false'
-                                tabIndex='1'
-                                autoFocus={autoFocus && accountId.length === 0}
-                                disabled={disabled}
-                            />
-                            {type === 'create' && <span className='input-suffix' ref={this.suffix}>.{CONFIG.ACCOUNT_ID_SUFFIX}</span>}
-                            {type !== 'create' && <div className='input-sub-label'>{translate('input.accountId.subLabel')}</div>}
-                        </InputWrapper>
-                    )}
-                </Translate>
-                <LocalAlertBox dots={mainLoader} localAlert={localAlert} accountId={this.props.accountId}/>
-            </>
-        );
+    if (invalidAccountIdLength) {
+      return this.accountIdLengthLocalAlert;
     }
+    if (this.isSameAccount()) {
+      return this.sameAccountLocalAlert;
+    }
+    return localAlert;
+  }
+
+  render() {
+    const { mainLoader, autoFocus, type, disabled } = this.props;
+
+    const { accountId, wrongChar } = this.state;
+
+    const localAlert = this.localAlertWithFormValidation;
+    const success = localAlert?.success;
+    const problem = !localAlert?.success && localAlert?.show;
+
+    return (
+      <>
+        <Translate>
+          {({ translate }) => (
+            <InputWrapper
+              className={classNames([
+                type,
+                { success: success },
+                { problem: problem },
+                { "wrong-char": wrongChar },
+              ])}
+            >
+              <input
+                name='accountId'
+                data-test-id="createAccount.accountIdInput"
+                value={accountId}
+                onInput={(e) => type === "create" && this.updateSuffix(e.target.value.trim())}
+                onChange={(e) =>
+                  this.handleChangeAccountId({ userValue: e.target.value.trim(), el: e.target })
+                }
+                placeholder={
+                  type === "create"
+                    ? translate("createAccount.accountIdInput.placeholder", {
+                        data: CONFIG.ACCOUNT_ID_SUFFIX,
+                      })
+                    : translate("input.accountId.placeholder")
+                }
+                required
+                autoComplete='off'
+                autoCorrect='off'
+                autoCapitalize='off'
+                spellCheck='false'
+                // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
+                tabIndex='1'
+                disabled={disabled}
+              />
+              {type === "create" && (
+                <span className='input-suffix' ref={this.suffix}>
+                  .{CONFIG.ACCOUNT_ID_SUFFIX}
+                </span>
+              )}
+              {type !== "create" && (
+                <div className='input-sub-label'>{translate("input.accountId.subLabel")}</div>
+              )}
+            </InputWrapper>
+          )}
+        </Translate>
+        <LocalAlertBox dots={mainLoader} localAlert={localAlert} accountId={this.props.accountId} />
+      </>
+    );
+  }
 }
 
 AccountFormAccountId.propTypes = {
-    mainLoader: PropTypes.bool.isRequired,
-    handleChange: PropTypes.func.isRequired,
-    checkAvailability: PropTypes.func.isRequired,
-    defaultAccountId: PropTypes.string,
-    autoFocus: PropTypes.bool
+  mainLoader: PropTypes.bool.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  checkAvailability: PropTypes.func.isRequired,
+  defaultAccountId: PropTypes.string,
+  autoFocus: PropTypes.bool,
 };
 
 AccountFormAccountId.defaultProps = {
-    autoFocus: false,
-    pattern: /[^a-zA-Z0-9._-]/,
-    type: 'check'
+  autoFocus: false,
+  pattern: /[^a-zA-Z0-9._-]/,
+  type: "check",
 };
 
 export default AccountFormAccountId;

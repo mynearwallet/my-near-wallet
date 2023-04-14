@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import IntFlagIcon from '../../../images/int-flag-small.svg';
-import classNames from '../../../utils/classNames';
-import EmailIcon from '../../svg/EmailIcon';
+import IntFlagIcon from "../../../images/int-flag-small.svg";
+import classNames from "../../../utils/classNames";
+import EmailIcon from "../../svg/EmailIcon";
 
 const Container = styled.div`
     background-color: #F8F8F8;
@@ -114,25 +114,23 @@ const Title = styled.div`
     font-weight: 500;
 `;
 
-const TwoFactorOption = ({
-    children,
-    option,
-    onClick,
-    active,
-    problem
-}) => {
+const TwoFactorOption = ({ children, option, onClick, active, problem }) => {
+  active = active === option;
 
-    active = active === option;
-
-    return (
-        <Container onClick={onClick} className={classNames([{active: active, inputProblem: problem}])}>
-            <Header>
-                {option === 'email' ? <EmailIcon/> : null}
-                <Title><Translate id={`twoFactor.${option}`}/></Title>
-            </Header>
-            {active && children}
-        </Container>
-    );
+  return (
+    <Container
+      onClick={onClick}
+      className={classNames([{ active: active, inputProblem: problem }])}
+    >
+      <Header>
+        {option === "email" ? <EmailIcon /> : null}
+        <Title>
+          <Translate id={`twoFactor.${option}`} />
+        </Title>
+      </Header>
+      {active && children}
+    </Container>
+  );
 };
 
 export default TwoFactorOption;

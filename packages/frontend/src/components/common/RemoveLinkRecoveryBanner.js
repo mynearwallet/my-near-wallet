@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Banner from './Banner';
+import Banner from "./Banner";
 
 const StyledBanner = styled.div`
     .banner-container {
@@ -18,15 +18,15 @@ const StyledBanner = styled.div`
 `;
 
 export default function RemoveLinkRecoveryBanner() {
-    return (
-        <StyledBanner>
-            <Banner
-                linkTo='/profile'
-                title='removeLinkRecovery.title'
-                desc='removeLinkRecovery.desc'
-                buttonTitle='removeLinkRecovery.button'
-                buttonColor='red'
-            />
-        </StyledBanner>
-    );
-};
+  return (
+    <StyledBanner>
+      <Banner
+        linkTo='/profile'
+        title='removeLinkRecovery.title'
+        desc='removeLinkRecovery.desc'
+        buttonTitle='removeLinkRecovery.button'
+        buttonColor='red'
+      />
+    </StyledBanner>
+  );
+}

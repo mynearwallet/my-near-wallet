@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../../common/FormButton';
-import QRCodeIcon from '../../svg/QRCodeIcon';
-import SmartPhoneIcon from '../../svg/SmartPhoneIcon';
-import MobileSharingModal from './MobileSharingModal';
+import FormButton from "../../common/FormButton";
+import QRCodeIcon from "../../svg/QRCodeIcon";
+import SmartPhoneIcon from "../../svg/SmartPhoneIcon";
+import MobileSharingModal from "./MobileSharingModal";
 
 const QRCodeButton = styled(FormButton)`
     &&& {
@@ -20,31 +20,31 @@ const QRCodeButton = styled(FormButton)`
     }
 `;
 
-const MobileSharing = ({
-    mobileSharingLink
-}) => {
-    const [showMobileSharingModal, setShowMobileSharingModal] = useState(false);
-    return (
-        <>
-            <hr/>
-            <h2><SmartPhoneIcon/><Translate id='mobileDeviceAccess.title'/></h2>
-            <div className='sub-heading'><Translate id='mobileDeviceAccess.showCode.desc'/></div>
-            <QRCodeButton
-                color='gray-blue'
-                onClick={() => setShowMobileSharingModal(true)}
-            >
-                <QRCodeIcon/>
-                <Translate id='mobileDeviceAccess.showCode.button'/>
-            </QRCodeButton>
-            {showMobileSharingModal && (
-                <MobileSharingModal
-                    open={showMobileSharingModal}
-                    onClose={() => setShowMobileSharingModal(false)}
-                    mobileSharingLink={mobileSharingLink}
-                />
-            )}
-        </>
-    );
+const MobileSharing = ({ mobileSharingLink }) => {
+  const [showMobileSharingModal, setShowMobileSharingModal] = useState(false);
+  return (
+    <>
+      <hr />
+      <h2>
+        <SmartPhoneIcon />
+        <Translate id='mobileDeviceAccess.title' />
+      </h2>
+      <div className='sub-heading'>
+        <Translate id='mobileDeviceAccess.showCode.desc' />
+      </div>
+      <QRCodeButton color='gray-blue' onClick={() => setShowMobileSharingModal(true)}>
+        <QRCodeIcon />
+        <Translate id='mobileDeviceAccess.showCode.button' />
+      </QRCodeButton>
+      {showMobileSharingModal && (
+        <MobileSharingModal
+          open={showMobileSharingModal}
+          onClose={() => setShowMobileSharingModal(false)}
+          mobileSharingLink={mobileSharingLink}
+        />
+      )}
+    </>
+  );
 };
 
 export default MobileSharing;

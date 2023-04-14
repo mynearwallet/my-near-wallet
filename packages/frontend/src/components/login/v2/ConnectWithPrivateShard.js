@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import GlobeIcon from '../../svg/GlobeIcon';
+import GlobeIcon from "../../svg/GlobeIcon";
 
 const StyledContainer = styled.div`
     border: 1px solid #a47fcf;
@@ -22,8 +22,8 @@ const StyledContainer = styled.div`
 `;
 
 export default ({ customRPCUrl }) => (
-    <StyledContainer className='connect-with-application'>
-        <GlobeIcon/>
-        {customRPCUrl}
-    </StyledContainer>
+  <StyledContainer className='connect-with-application'>
+    <GlobeIcon />
+    {customRPCUrl}
+  </StyledContainer>
 );

@@ -1,11 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import IconCheck from '../../images/IconCheck';
-import SafeTranslate from '../SafeTranslate';
-import SwapGraphic from '../svg/SwapGraphic';
-
+import IconCheck from "../../images/IconCheck";
+import SafeTranslate from "../SafeTranslate";
+import SwapGraphic from "../svg/SwapGraphic";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -74,22 +73,26 @@ const StyledContainer = styled.div`
 `;
 
 export default ({ accountId, appName }) => {
-    return (
-        <StyledContainer>
-            <h3><Translate id='verifyOwner.summary.title' /></h3>
-            <div className='icon'>
-                <SwapGraphic />
-            </div>
-            <h2><SafeTranslate id='verifyOwner.summary.connetingWith' data={{accountId}}/></h2>
-            <div className='account signer'>
-                <Translate id='verifyOwner.summary.infoMessage' data={{appName}}/>
-            </div>
-            <div className='account permissions'>
-                <div className='check'>
-                    <IconCheck color='#0072CE' stroke='1.5px' rotate='180' />
-                </div>
-                <Translate id='verifyOwner.summary.permissions' />
-            </div>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer>
+      <h3>
+        <Translate id='verifyOwner.summary.title' />
+      </h3>
+      <div className='icon'>
+        <SwapGraphic />
+      </div>
+      <h2>
+        <SafeTranslate id='verifyOwner.summary.connetingWith' data={{ accountId }} />
+      </h2>
+      <div className='account signer'>
+        <Translate id='verifyOwner.summary.infoMessage' data={{ appName }} />
+      </div>
+      <div className='account permissions'>
+        <div className='check'>
+          <IconCheck color='#0072CE' stroke='1.5px' rotate='180' />
+        </div>
+        <Translate id='verifyOwner.summary.permissions' />
+      </div>
+    </StyledContainer>
+  );
 };

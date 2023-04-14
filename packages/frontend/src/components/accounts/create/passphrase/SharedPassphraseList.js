@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
     background-color: #F0F9FF;
@@ -45,12 +45,16 @@ const StyledContainer = styled.div`
 `;
 
 export default ({ newAccount, sharedAccounts }) => {
-    return (
-        <StyledContainer className='shared-passphrase-list'>
-            <div><div>{newAccount}</div> <span>New</span></div>
-            {
-                sharedAccounts.map((account) => <div key={account}><div>{account}</div></div>)
-            }
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer className='shared-passphrase-list'>
+      <div>
+        <div>{newAccount}</div> <span>New</span>
+      </div>
+      {sharedAccounts.map((account) => (
+        <div key={account}>
+          <div>{account}</div>
+        </div>
+      ))}
+    </StyledContainer>
+  );
 };

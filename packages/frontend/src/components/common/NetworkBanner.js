@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useEffect } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import { Mixpanel } from '../../mixpanel/index';
-import AlertTriangleIcon from '../svg/AlertTriangleIcon.js';
-import Tooltip from './Tooltip';
+import CONFIG from "../../config";
+import { Mixpanel } from "../../mixpanel/index";
+import AlertTriangleIcon from "../svg/AlertTriangleIcon.js";
+import Tooltip from "./Tooltip";
 
 const Container = styled.div`
     color: white;
@@ -65,48 +65,55 @@ const Container = styled.div`
 `;
 
 const NetworkBanner = ({ account }) => {
-
-    useEffect(() => {
-        Mixpanel.register({network_id: CONFIG.IS_MAINNET ? 'mainnet' : CONFIG.NETWORK_ID === 'default' ? 'testnet': CONFIG.NETWORK_ID});
-        setBannerHeight();
-        window.addEventListener('resize', setBannerHeight);
-        return () => {
-            window.removeEventListener('resize', setBannerHeight);
-        };
-    }, [account]);
-
-    const setBannerHeight = () => {
-        const banner =  document.getElementById('top-banner');
-        const bannerHeight = banner ? banner.getBoundingClientRect().top + banner.offsetHeight : 0;
-        const app = document.getElementById('app-container');
-        const navContainer = document.getElementById('nav-container');
-        navContainer.style.top = bannerHeight ? `${bannerHeight}px` : 0;
-        app.style.paddingTop = bannerHeight ? `${bannerHeight + 85}px` : '75px';
+  useEffect(() => {
+    Mixpanel.register({
+      network_id: CONFIG.IS_MAINNET
+        ? "mainnet"
+        : CONFIG.NETWORK_ID === "default"
+        ? "testnet"
+        : CONFIG.NETWORK_ID,
+    });
+    setBannerHeight();
+    window.addEventListener("resize", setBannerHeight);
+    return () => {
+      window.removeEventListener("resize", setBannerHeight);
     };
+  }, [account]);
 
-    if (!CONFIG.IS_MAINNET) {
-        return (
-            <Container id='top-banner'>
-                <Translate id='networkBanner.title' />
-                <span className='network-link'>
-                    (<a href={`${CONFIG.NODE_URL}/status`} target='_blank' rel='noopener noreferrer'>
-                        {CONFIG.NODE_URL.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]}
-                    </a>)
-                </span>
-                <Tooltip translate='networkBanner.desc' modalOnly={true}/>
-            </Container>
-        );
-    } else if (CONFIG.SHOW_PRERELEASE_WARNING) {
-        return (
-            <Container id='top-banner' className='staging-banner'>
-                <AlertTriangleIcon color='#A15600'/>
-                <Translate id='stagingBanner.title' />
-                <Tooltip translate='stagingBanner.desc' modalOnly={true}/>
-            </Container>
-        );
-    } else {
-        return null;
-    }
+  const setBannerHeight = () => {
+    const banner = document.getElementById("top-banner");
+    const bannerHeight = banner ? banner.getBoundingClientRect().top + banner.offsetHeight : 0;
+    const app = document.getElementById("app-container");
+    const navContainer = document.getElementById("nav-container");
+    navContainer.style.top = bannerHeight ? `${bannerHeight}px` : 0;
+    app.style.paddingTop = bannerHeight ? `${bannerHeight + 85}px` : "75px";
+  };
+
+  if (!CONFIG.IS_MAINNET) {
+    return (
+      <Container id='top-banner'>
+        <Translate id='networkBanner.title' />
+        <span className='network-link'>
+          (
+          <a href={`${CONFIG.NODE_URL}/status`} target='_blank' rel='noopener noreferrer'>
+            {CONFIG.NODE_URL.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split("/")[0]}
+          </a>
+          )
+        </span>
+        <Tooltip translate='networkBanner.desc' modalOnly={true} />
+      </Container>
+    );
+  } else if (CONFIG.SHOW_PRERELEASE_WARNING) {
+    return (
+      <Container id='top-banner' className='staging-banner'>
+        <AlertTriangleIcon color='#A15600' />
+        <Translate id='stagingBanner.title' />
+        <Tooltip translate='stagingBanner.desc' modalOnly={true} />
+      </Container>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default NetworkBanner;

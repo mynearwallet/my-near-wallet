@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import IconArrowRight from '../../images/IconArrowRight';
-import IconCheck from '../../images/IconCheck';
-import IconClose from '../../images/IconClose';
-import UserIconGrey from '../../images/UserIconGrey';
+import IconArrowRight from "../../images/IconArrowRight";
+import IconCheck from "../../images/IconCheck";
+import IconClose from "../../images/IconClose";
+import UserIconGrey from "../../images/UserIconGrey";
 
 const UserIcon = styled.div`
     background-size: 21px;
@@ -15,7 +15,7 @@ const UserIcon = styled.div`
     background-color: #f8f8f8;
     text-align: center;
     margin: 0 12px 0 0;
-    
+
     svg {
         width: 26px;
         height: 26px;
@@ -68,7 +68,7 @@ height: unset;
           }
         }
     }
-    
+
     &.rejected .status {
         background: #f4f4f4;
         color: #de2e32;
@@ -83,7 +83,7 @@ height: unset;
         :after {
             content: '.';
             animation: dots 1s steps(5, end) infinite;
-        
+
             @keyframes dots {
                 0%, 20% {
                     color: rgba(0,0,0,0);
@@ -120,7 +120,7 @@ height: unset;
         :after {
             content: '.';
             animation: dots 1s steps(5, end) infinite;
-        
+
             @keyframes dots {
                 0%, 20% {
                     color: rgba(0,0,0,0);
@@ -178,38 +178,41 @@ height: unset;
 `;
 
 const AccountListImport = ({ accounts = [], animationScope = 0, onClickAccount }) => (
-    <AnimateList animate={animationScope}>
-        {accounts.map((account) => (
-            <div
-                key={account.accountId}
-                className={`row ${account.status}`}
-                onClick={() => onClickAccount ? onClickAccount(account) : null}
-                style={{ cursor: onClickAccount ? 'pointer' : 'default' }}
-            >
-                <UserIcon>
-                    <UserIconGrey color='#9a9a9a' />
-                </UserIcon>
-                <div className='accountId'>
-                    {account.accountId}
-                </div>
-                {onClickAccount ? <div className='status onclick'><IconArrowRight stroke="#0072CE" /></div> : null}
-                {account.status && !onClickAccount ? (
-                    <div className='status'>
-                        <StatusIcon status={account.status}/>
-                    </div>
-                ) : null}
-            </div>
-        ))}
-    </AnimateList>
+  <AnimateList animate={animationScope}>
+    {accounts.map((account) => (
+      // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+       <div
+        key={account.accountId}
+        className={`row ${account.status}`}
+        onClick={() => (onClickAccount ? onClickAccount(account) : null)}
+        style={{ cursor: onClickAccount ? "pointer" : "default" }}
+      >
+        <UserIcon>
+          <UserIconGrey color='#9a9a9a' />
+        </UserIcon>
+        <div className='accountId'>{account.accountId}</div>
+        {onClickAccount ? (
+          <div className='status onclick'>
+            <IconArrowRight stroke="#0072CE" />
+          </div>
+        ) : null}
+        {account.status && !onClickAccount ? (
+          <div className='status'>
+            <StatusIcon status={account.status} />
+          </div>
+        ) : null}
+      </div>
+    ))}
+  </AnimateList>
 );
 
-const StatusIcon = ({status}) => {
-    if (status === 'success') {
-        return <IconCheck color='#5ace84' stroke='3px' />;
-    } else if (status === 'error') {
-        return <IconClose stroke="#FC5B5B" />;
-    }
-    return <Translate id={`signInLedger.modal.status.${status}`}/>;
+const StatusIcon = ({ status }) => {
+  if (status === "success") {
+    return <IconCheck color='#5ace84' stroke='3px' />;
+  } else if (status === "error") {
+    return <IconClose stroke="#FC5B5B" />;
+  }
+  return <Translate id={`signInLedger.modal.status.${status}`} />;
 };
 
 export default AccountListImport;

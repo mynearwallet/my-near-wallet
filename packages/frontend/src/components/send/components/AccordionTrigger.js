@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import SafeTranslate from '../../../components/SafeTranslate';
-import classNames from '../../../utils/classNames';
-import ChevronIcon from '../../svg/ChevronIcon';
+import SafeTranslate from "../../../components/SafeTranslate";
+import classNames from "../../../utils/classNames";
+import ChevronIcon from "../../svg/ChevronIcon";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -33,16 +33,16 @@ const StyledContainer = styled.div`
 `;
 
 const AccordionTrigger = ({ id, onClick, translateIdTitle, translateData, open }) => {
-    return (
-        <StyledContainer
-            id={id}
-            onClick={onClick}
-            className={classNames(['accordion-trigger' , open ? 'open' : ''])}
-        >
-            <SafeTranslate id={translateIdTitle} data={translateData} />
-            <ChevronIcon color='var(--mnw-color-1)'/>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer
+      id={id}
+      onClick={onClick}
+      className={classNames(["accordion-trigger", open ? "open" : ""])}
+    >
+      <SafeTranslate id={translateIdTitle} data={translateData} />
+      <ChevronIcon color='var(--mnw-color-1)' />
+    </StyledContainer>
+  );
 };
 
 export default AccordionTrigger;

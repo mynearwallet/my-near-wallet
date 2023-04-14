@@ -1,16 +1,12 @@
-import BN from 'bn.js';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import BN from "bn.js";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../../config';
-import classNames from '../../../utils/classNames';
-import FiatBalance from './FiatBalance';
-import {
-    formatNearAmount,
-    showInYocto,
-    YOCTO_NEAR_THRESHOLD
-} from './helpers';
+import CONFIG from "../../../config";
+import classNames from "../../../utils/classNames";
+import FiatBalance from "./FiatBalance";
+import { formatNearAmount, showInYocto, YOCTO_NEAR_THRESHOLD } from "./helpers";
 
 const StyledContainer = styled.div`
     white-space: nowrap;
@@ -70,63 +66,68 @@ const StyledContainer = styled.div`
 `;
 
 const BalanceDisplay = ({
-    amount,
-    showSymbolNEAR = true,
-    className,
-    showBalanceInNEAR = true,
-    showBalanceInUSD = true,
-    nearTokenFiatValueUSD,
-    showAlmostEqualSignUSD,
-    showSignUSD,
-    showSymbolUSD,
-    totalAmount,
-    'data-test-id': testId
+  amount,
+  showSymbolNEAR = true,
+  className,
+  showBalanceInNEAR = true,
+  showBalanceInUSD = true,
+  nearTokenFiatValueUSD,
+  showAlmostEqualSignUSD,
+  showSignUSD,
+  showSymbolUSD,
+  totalAmount,
+  "data-test-id": testId,
 }) => {
+  const amountToShow = amount && formatNearAmount(amount);
 
-    const amountToShow = amount && formatNearAmount(amount);
+  const handleShowInYocto = (amount) => {
+    if (new BN(amount).lte(YOCTO_NEAR_THRESHOLD)) {
+      return showInYocto(amount);
+    } else {
+      return "";
+    }
+  };
 
-    const handleShowInYocto = (amount) => {
-        if (new BN(amount).lte(YOCTO_NEAR_THRESHOLD)) {
-            return showInYocto(amount);
-        } else {
-            return '';
-        }
-    };
-
-    return (
-        <StyledContainer
-            title={handleShowInYocto(amount)}
-            className={classNames([
-                'balance',
-                className,
-                {
-                    'fiat-only': !showBalanceInNEAR,
-                },
-            ])}
-            data-test-id={testId}
-        >
-            {showBalanceInNEAR && (
-                <>
-                    {amount
-                        ? <div className='near-amount'>{amountToShow}{showSymbolNEAR !== false ? ` ${CONFIG.NEAR_ID}` : ''}</div>
-                        : <div className="dots"><Translate id='loadingNoDots'/></div>
-                    }
-                </>
-            )}
-            {showBalanceInUSD && (
-                <div className='fiat-amount'>
-                    <FiatBalance
-                        totalAmount={totalAmount}
-                        amount={amount}
-                        nearTokenFiatValueUSD={nearTokenFiatValueUSD}
-                        showAlmostEqualSignUSD={showAlmostEqualSignUSD}
-                        showSignUSD={showSignUSD}
-                        showSymbolUSD={showSymbolUSD}
-                    />
-                </div>
-            )}
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer
+      title={handleShowInYocto(amount)}
+      className={classNames([
+        "balance",
+        className,
+        {
+          "fiat-only": !showBalanceInNEAR,
+        },
+      ])}
+      data-test-id={testId}
+    >
+      {showBalanceInNEAR && (
+        <>
+          {amount ? (
+            <div className='near-amount'>
+              {amountToShow}
+              {showSymbolNEAR !== false ? ` ${CONFIG.NEAR_ID}` : ""}
+            </div>
+          ) : (
+            <div className="dots">
+              <Translate id='loadingNoDots' />
+            </div>
+          )}
+        </>
+      )}
+      {showBalanceInUSD && (
+        <div className='fiat-amount'>
+          <FiatBalance
+            totalAmount={totalAmount}
+            amount={amount}
+            nearTokenFiatValueUSD={nearTokenFiatValueUSD}
+            showAlmostEqualSignUSD={showAlmostEqualSignUSD}
+            showSignUSD={showSignUSD}
+            showSymbolUSD={showSymbolUSD}
+          />
+        </div>
+      )}
+    </StyledContainer>
+  );
 };
 
 export default BalanceDisplay;

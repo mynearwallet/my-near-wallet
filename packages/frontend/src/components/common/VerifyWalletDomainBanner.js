@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../config';
-import getWalletURL from '../../utils/getWalletURL';
-import LockIcon from '../svg/LockIcon';
+import CONFIG from "../../config";
+import getWalletURL from "../../utils/getWalletURL";
+import LockIcon from "../svg/LockIcon";
 
 const StyledContainer = styled.div`
     background-color: #fafafa;
@@ -52,24 +52,31 @@ const StyledContainer = styled.div`
     }
 `;
 
-const WalletURLString = () => <><span>https://</span><span>{getWalletURL(false)}</span></>;
+const WalletURLString = () => (
+  <>
+    <span>https://</span>
+    <span>{getWalletURL(false)}</span>
+  </>
+);
 
 export default () => {
-    return (
-        <StyledContainer className={(CONFIG.SHOW_PRERELEASE_WARNING || !CONFIG.IS_MAINNET) ? 'network-banner' : ''}>
-            <div className='desktop'>
-                <LockIcon color='#00C08B' />
-                <Translate id='verifyWalletDomainBanner.title' />
-                &nbsp;
-                <WalletURLString/>
-            </div>
-            <div className='mobile'>
-                <Translate id='verifyWalletDomainBanner.title' />
-                <div>
-                    <LockIcon color='#00C08B' />
-                    <WalletURLString/>
-                </div>
-            </div>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer
+      className={CONFIG.SHOW_PRERELEASE_WARNING || !CONFIG.IS_MAINNET ? "network-banner" : ""}
+    >
+      <div className='desktop'>
+        <LockIcon color='#00C08B' />
+        <Translate id='verifyWalletDomainBanner.title' />
+        &nbsp;
+        <WalletURLString />
+      </div>
+      <div className='mobile'>
+        <Translate id='verifyWalletDomainBanner.title' />
+        <div>
+          <LockIcon color='#00C08B' />
+          <WalletURLString />
+        </div>
+      </div>
+    </StyledContainer>
+  );
 };

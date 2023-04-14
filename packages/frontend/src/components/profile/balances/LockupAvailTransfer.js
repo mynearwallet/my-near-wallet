@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import { getNearAndFiatValue } from '../../common/balance/helpers';
-import FormButton from '../../common/FormButton';
-import SafeTranslate from '../../SafeTranslate';
-import GiftIcon from '../../svg/GiftIcon';
+import { getNearAndFiatValue } from "../../common/balance/helpers";
+import FormButton from "../../common/FormButton";
+import SafeTranslate from "../../SafeTranslate";
+import GiftIcon from "../../svg/GiftIcon";
 
 const Container = styled.div`
     background-color: #C8F6E0;
@@ -43,26 +43,27 @@ const Container = styled.div`
 `;
 
 const LockupAvailTransfer = ({ onTransfer, available, sending, tokenFiatValue }) => {
-    return (
-        <Container className='lockup-avail-transfer'> 
-            <GiftIcon/>
-            <div>
-                <SafeTranslate
-                    id='profile.lockupBanner.title'
-                    data={{ amount: getNearAndFiatValue(available, tokenFiatValue) }}
-                />
-            </div>
-            <FormButton color='green-dark border'
-                disabled={sending}
-                sending={sending}
-                sendingString='button.transferring'
-                onClick={onTransfer}
-                data-test-id="lockupTransferToWalletButton"
-            >
-                <Translate id='profile.lockupBanner.cta'/>
-            </FormButton>
-        </Container>
-    );
+  return (
+    <Container className='lockup-avail-transfer'>
+      <GiftIcon />
+      <div>
+        <SafeTranslate
+          id='profile.lockupBanner.title'
+          data={{ amount: getNearAndFiatValue(available, tokenFiatValue) }}
+        />
+      </div>
+      <FormButton
+        color='green-dark border'
+        disabled={sending}
+        sending={sending}
+        sendingString='button.transferring'
+        onClick={onTransfer}
+        data-test-id="lockupTransferToWalletButton"
+      >
+        <Translate id='profile.lockupBanner.cta' />
+      </FormButton>
+    </Container>
+  );
 };
 
 export default LockupAvailTransfer;

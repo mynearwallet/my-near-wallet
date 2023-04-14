@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
     &&& {
@@ -16,12 +16,6 @@ const StyledContainer = styled.div`
     }
 `;
 
-export default ({
-    children
-}) => {
-    return (
-        <StyledContainer className='button-group'>
-            {children}
-        </StyledContainer>
-    );
+export default ({ children }) => {
+  return <StyledContainer className='button-group'>{children}</StyledContainer>;
 };

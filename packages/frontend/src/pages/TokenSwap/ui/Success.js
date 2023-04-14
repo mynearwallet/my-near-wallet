@@ -1,14 +1,14 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../../../components/common/FormButton';
-import SafeTranslate from '../../../components/SafeTranslate';
-import AvatarSuccessIcon from '../../../components/svg/AvatarSuccessIcon';
-import FailIcon from '../../../components/svg/FailIcon';
-import { toSignificantDecimals } from '../../../utils/amounts';
-import { useSwapData } from '../model/Swap';
-import { DECIMALS_TO_SAFE } from '../utils/constants';
+import FormButton from "../../../components/common/FormButton";
+import SafeTranslate from "../../../components/SafeTranslate";
+import AvatarSuccessIcon from "../../../components/svg/AvatarSuccessIcon";
+import FailIcon from "../../../components/svg/FailIcon";
+import { toSignificantDecimals } from "../../../utils/amounts";
+import { useSwapData } from "../model/Swap";
+import { DECIMALS_TO_SAFE } from "../utils/constants";
 
 const StyledContainer = styled.div`
     > svg {
@@ -45,61 +45,56 @@ const ButtonsWrapper = styled.div`
 const noop = () => {};
 
 export default function Success({ onClickContinue = noop, onClickGoToExplorer }) {
-    const {
-        swapState: { tokenIn, amountIn, tokenOut, amountOut, lastSwapState = {} },
-    } = useSwapData();
+  const {
+    swapState: { tokenIn, amountIn, tokenOut, amountOut, lastSwapState = {} },
+  } = useSwapData();
 
-    const { success, hash: swapHash, failReason } = lastSwapState;
+  const { success, hash: swapHash, failReason } = lastSwapState;
 
-    const successData = {
-        amountFrom: `${toSignificantDecimals(amountIn, DECIMALS_TO_SAFE)} ${
-            tokenIn?.onChainFTMetadata?.symbol
-        }`,
-        amountTo: `${toSignificantDecimals(amountOut, DECIMALS_TO_SAFE)} ${
-            tokenOut?.onChainFTMetadata?.symbol
-        }`,
-    };
+  const successData = {
+    amountFrom: `${toSignificantDecimals(amountIn, DECIMALS_TO_SAFE)} ${
+      tokenIn?.onChainFTMetadata?.symbol
+    }`,
+    amountTo: `${toSignificantDecimals(amountOut, DECIMALS_TO_SAFE)} ${
+      tokenOut?.onChainFTMetadata?.symbol
+    }`,
+  };
 
-    return (
-        <StyledContainer className="buttons-bottom">
-            {success ? (
-                <>
-                    <AvatarSuccessIcon />
-                    <StyledHeader>
-                        <SafeTranslate
-                            id="swap.successTitle"
-                            data={successData}
-                            data-test-id="swapPageSuccessMessage"
-                        />
-                    </StyledHeader>
-                </>
-            ) : (
-                <>
-                    <FailIcon />
-                    <StyledHeader>
-                        <FailTitle>
-                            <SafeTranslate id="swap.failTitle" />
-                        </FailTitle>
-                        {failReason && (
-                            <Reason className="font-monospace">{failReason}</Reason>
-                        )}
-                    </StyledHeader>
-                </>
-            )}
-            <ButtonsWrapper>
-                <FormButton
-                    data-test-id="swapPageContinueAfterSwapButton"
-                    onClick={onClickContinue}
-                >
-                    <Translate id="button.continue" />
-                </FormButton>
+  return (
+    <StyledContainer className="buttons-bottom">
+      {success ? (
+        <>
+          <AvatarSuccessIcon />
+          <StyledHeader>
+            <SafeTranslate
+              id="swap.successTitle"
+              data={successData}
+              data-test-id="swapPageSuccessMessage"
+            />
+          </StyledHeader>
+        </>
+      ) : (
+        <>
+          <FailIcon />
+          <StyledHeader>
+            <FailTitle>
+              <SafeTranslate id="swap.failTitle" />
+            </FailTitle>
+            {failReason && <Reason className="font-monospace">{failReason}</Reason>}
+          </StyledHeader>
+        </>
+      )}
+      <ButtonsWrapper>
+        <FormButton data-test-id="swapPageContinueAfterSwapButton" onClick={onClickContinue}>
+          <Translate id="button.continue" />
+        </FormButton>
 
-                {swapHash && (
-                    <FormButton color="gray-gray" onClick={onClickGoToExplorer}>
-                        <Translate id="button.viewOnExplorer" />
-                    </FormButton>
-                )}
-            </ButtonsWrapper>
-        </StyledContainer>
-    );
+        {swapHash && (
+          <FormButton color="gray-gray" onClick={onClickGoToExplorer}>
+            <Translate id="button.viewOnExplorer" />
+          </FormButton>
+        )}
+      </ButtonsWrapper>
+    </StyledContainer>
+  );
 }

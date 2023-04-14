@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import CopyIcon from '../../svg/CopyIcon';
+import CopyIcon from "../../svg/CopyIcon";
 
 const Container = styled.div`
     display: flex;
@@ -35,15 +35,15 @@ const Container = styled.div`
     }
 `;
 
-const AccountId = ({ id,  'data-test-id': testId }) => {
-    return (
-        <Container data-test-id={testId}> 
-            <span>{id}</span>
-            <div>
-                <CopyIcon/>
-            </div>
-        </Container>
-    );
+const AccountId = ({ id, "data-test-id": testId }) => {
+  return (
+    <Container data-test-id={testId}>
+      <span>{id}</span>
+      <div>
+        <CopyIcon />
+      </div>
+    </Container>
+  );
 };
 
 export default AccountId;

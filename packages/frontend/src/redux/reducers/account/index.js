@@ -1,224 +1,256 @@
-import reduceReducers from 'reduce-reducers';
-import { handleActions } from 'redux-actions';
+import reduceReducers from "reduce-reducers";
+import { handleActions } from "redux-actions";
 
 import {
-    getAccessKeys,
-    clearCode,
-    promptTwoFactor,
-    refreshUrl,
-    checkCanEnableTwoFactor,
-    get2faMethod,
-    getLedgerKey,
-    getBalance,
-    makeAccountActive,
-    setLocalStorage,
-    getAccountBalance,
-    setAccountBalance,
-    getMultisigRequest,
-} from '../../actions/account';
-import {
-    staking
-} from '../../actions/staking';
-import refreshAccountOwner from '../../sharedThunks/refreshAccountOwner';
+  getAccessKeys,
+  clearCode,
+  promptTwoFactor,
+  refreshUrl,
+  checkCanEnableTwoFactor,
+  get2faMethod,
+  getLedgerKey,
+  getBalance,
+  makeAccountActive,
+  setLocalStorage,
+  getAccountBalance,
+  setAccountBalance,
+  getMultisigRequest,
+} from "../../actions/account";
+import { staking } from "../../actions/staking";
+import refreshAccountOwner from "../../sharedThunks/refreshAccountOwner";
 
 const initialState = {
-    accountExists: null,
-    formLoader: false,
-    sentMessage: false,
-    requestPending: null,
-    actionsPending: [],
-    canEnableTwoFactor: null,
-    twoFactor: null,
-    ledgerKey: null,
-    accountsBalance: undefined,
-    multisigRequest: null,
+  accountExists: null,
+  formLoader: false,
+  sentMessage: false,
+  requestPending: null,
+  actionsPending: [],
+  canEnableTwoFactor: null,
+  twoFactor: null,
+  ledgerKey: null,
+  accountsBalance: undefined,
+  multisigRequest: null,
 };
 
-const recoverCodeReducer = handleActions({
+const recoverCodeReducer = handleActions(
+  {
     [clearCode]: (state, { error, ready }) => {
-        return { ...state, sentMessage: false };
-    }
-}, initialState);
+      return { ...state, sentMessage: false };
+    },
+  },
+  initialState,
+);
 
-const accessKeys = handleActions({
+const accessKeys = handleActions(
+  {
     [getAccessKeys]: (state, { error, payload }) => ({
-        ...state,
-        authorizedApps: payload && payload.filter((it) => it.access_key && it.access_key.permission.FunctionCall && it.access_key.permission.FunctionCall.receiver_id !== state.accountId),
-        fullAccessKeys: payload && payload.filter((it) => it.access_key && it.access_key.permission === 'FullAccess'),
-    })
-}, initialState);
+      ...state,
+      authorizedApps:
+        payload?.filter(
+          (it) =>
+            it.access_key?.permission.FunctionCall &&
+            it.access_key?.permission.FunctionCall.receiver_id !== state.accountId,
+        ),
+      fullAccessKeys:
+        payload?.filter((it) => it.access_key && it.access_key.permission === "FullAccess"),
+    }),
+  },
+  initialState,
+);
 
-const url = handleActions({
+const url = handleActions(
+  {
     [refreshUrl]: (state, { payload }) => ({
-        ...state,
-        url: payload
-    })
-}, initialState);
+      ...state,
+      url: payload,
+    }),
+  },
+  initialState,
+);
 
-const canEnableTwoFactor = handleActions({
+const canEnableTwoFactor = handleActions(
+  {
     [checkCanEnableTwoFactor]: (state, { payload }) => ({
-        ...state,
-        canEnableTwoFactor: payload
-    })
-}, initialState);
+      ...state,
+      canEnableTwoFactor: payload,
+    }),
+  },
+  initialState,
+);
 
-const twoFactor = handleActions({
+const twoFactor = handleActions(
+  {
     [get2faMethod]: (state, { payload }) => ({
-        ...state,
-        twoFactor: payload
-    })
-}, initialState);
+      ...state,
+      twoFactor: payload,
+    }),
+  },
+  initialState,
+);
 
-const multisigRequest = handleActions({
+const multisigRequest = handleActions(
+  {
     [getMultisigRequest]: (state, { payload }) => ({
-        ...state,
-        multisigRequest: payload,
-    })
-}, initialState);
+      ...state,
+      multisigRequest: payload,
+    }),
+  },
+  initialState,
+);
 
-const twoFactorPrompt = handleActions({
+const twoFactorPrompt = handleActions(
+  {
     [promptTwoFactor]: (state, { payload }) => ({
-        ...state,
-        requestPending: payload.requestPending
-    })
-}, initialState);
+      ...state,
+      requestPending: payload.requestPending,
+    }),
+  },
+  initialState,
+);
 
-const ledgerKey = handleActions({
+const ledgerKey = handleActions(
+  {
     [getLedgerKey]: (state, { payload }) => ({
-        ...state,
-        ledgerKey: payload
-    })
-}, initialState);
+      ...state,
+      ledgerKey: payload,
+    }),
+  },
+  initialState,
+);
 
-const account = handleActions({
+const account = handleActions(
+  {
     [refreshAccountOwner.fulfilled]: (state, { payload }) => {
-        const resetAccountState = {
-            globalAlertPreventClear: payload && payload.globalAlertPreventClear,
-            resetAccount: (state.resetAccount && state.resetAccount.preventClear) 
-                ? {
-                    ...state.resetAccount,
-                    preventClear: false
-                }
-                : payload && payload.resetAccount
-        };
+      const resetAccountState = {
+        globalAlertPreventClear: payload?.globalAlertPreventClear,
+        resetAccount:
+          state.resetAccount?.preventClear
+            ? {
+                ...state.resetAccount,
+                preventClear: false,
+              }
+            : payload?.resetAccount,
+      };
 
-        return {
-            ...state,
-            ...payload,
-            accountExists: true,
-            balance: {
-                ...payload?.balance,
-                ...state.balance
-            },
-            ledger: undefined,
-            ...resetAccountState,
-            loader: false
-        };
+      return {
+        ...state,
+        ...payload,
+        accountExists: true,
+        balance: {
+          ...payload?.balance,
+          ...state.balance,
+        },
+        ledger: undefined,
+        ...resetAccountState,
+        loader: false,
+      };
     },
     [refreshAccountOwner.rejected]: (state, { error, payload }) => {
-        return {
-            ...state,
-            ...payload,
-            accountExists: error.message.includes('does not exist while viewing') ? false : null,
-            accountId: state.localStorage.accountFound ? state.localStorage.accountId : '',
-            balance: {
-                balanceAvailable: '0'
-            },
-            ledger: undefined,
-            loader: false
-        };
+      return {
+        ...state,
+        ...payload,
+        accountExists: error.message.includes("does not exist while viewing") ? false : null,
+        accountId: state.localStorage.accountFound ? state.localStorage.accountId : "",
+        balance: {
+          balanceAvailable: "0",
+        },
+        ledger: undefined,
+        loader: false,
+      };
     },
     [staking.updateAccount]: (state, { ready, error, payload }) =>
-        (!ready || error)
-            ? state
-            : ({
-                ...state,
-                balance: {
-                    ...state.balance,
-                    account: payload
-                }
-            }),
+      !ready || error
+        ? state
+        : {
+            ...state,
+            balance: {
+              ...state.balance,
+              account: payload,
+            },
+          },
     [staking.updateLockup]: (state, { ready, error, payload }) =>
-        (!ready || error)
-            ? state
-            : ({
-                ...state,
-                balance: {
-                    ...state.balance,
-                    lockupAccount: payload
-                }
-            }),
+      !ready || error
+        ? state
+        : {
+            ...state,
+            balance: {
+              ...state.balance,
+              lockupAccount: payload,
+            },
+          },
     [getBalance]: (state, { error, payload, ready }) =>
-        (!ready || error)
-            ? state
-            : ({
-                ...state,
-                balance: {
-                    ...state.balance,
-                    ...payload
-                }
-            }),
+      !ready || error
+        ? state
+        : {
+            ...state,
+            balance: {
+              ...state.balance,
+              ...payload,
+            },
+          },
     [makeAccountActive]: () => {
-        return initialState;
+      return initialState;
     },
     [setLocalStorage]: (state, { payload }) => ({
-        ...state,
-        localStorage: {
-            accountFound: !!payload,
-            accountId: payload
-        }
+      ...state,
+      localStorage: {
+        accountFound: !!payload,
+        accountId: payload,
+      },
     }),
     [getAccountBalance]: (state, { error, payload, ready, meta }) =>
-        (!ready || error)
-            ? {
-                ...state,
-                accountsBalance: {
-                    ...state.accountsBalance,
-                    [meta.accountId]: {
-                        loading: true
-                    }
-                }
-            }
-            : {
-                ...state,
-                accountsBalance: {
-                    ...state.accountsBalance,
-                    [meta.accountId]: {
-                        ...payload,
-                        loading: false
-                    }
-                }
+      !ready || error
+        ? {
+            ...state,
+            accountsBalance: {
+              ...state.accountsBalance,
+              [meta.accountId]: {
+                loading: true,
+              },
             },
+          }
+        : {
+            ...state,
+            accountsBalance: {
+              ...state.accountsBalance,
+              [meta.accountId]: {
+                ...payload,
+                loading: false,
+              },
+            },
+          },
     [setAccountBalance]: (state, { payload }) => ({
-        ...state,
-        accountsBalance: {
-            ...state.accountsBalance,
-            [payload]: {
-                loading: true
-            }
-        }
+      ...state,
+      accountsBalance: {
+        ...state.accountsBalance,
+        [payload]: {
+          loading: true,
+        },
+      },
     }),
     [staking.getLockup]: (state, { error, payload, ready, meta }) => {
-        if (!ready || error || !meta.isOwner) {
-            return state;
-        }
+      if (!ready || error || !meta.isOwner) {
+        return state;
+      }
 
-        return {
-            ...state,
-            hasLockup: !!payload
-        };
-    }
-}, initialState);
+      return {
+        ...state,
+        hasLockup: !!payload,
+      };
+    },
+  },
+  initialState,
+);
 
 export default reduceReducers(
-    initialState,
-    recoverCodeReducer,
-    accessKeys,
-    account,
-    url,
-    canEnableTwoFactor,
-    twoFactor,
-    twoFactorPrompt,
-    ledgerKey,
-    multisigRequest,
+  initialState,
+  recoverCodeReducer,
+  accessKeys,
+  account,
+  url,
+  canEnableTwoFactor,
+  twoFactor,
+  twoFactorPrompt,
+  ledgerKey,
+  multisigRequest,
 );

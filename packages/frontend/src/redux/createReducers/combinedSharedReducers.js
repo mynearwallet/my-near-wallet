@@ -1,9 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from "@reduxjs/toolkit";
 
-import tokensMetadataSlice from '../slices/tokensMetadata';
+import tokensMetadataSlice from "../slices/tokensMetadata";
 
 export default {
-    shared: combineReducers({
-        [tokensMetadataSlice.name]: tokensMetadataSlice.reducer,
-    })
+  shared: combineReducers({
+    [tokensMetadataSlice.name]: tokensMetadataSlice.reducer,
+  }),
 };

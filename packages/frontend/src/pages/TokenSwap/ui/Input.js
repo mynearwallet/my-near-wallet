@@ -1,16 +1,12 @@
-import React, { memo, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { memo, useEffect, useState } from "react";
+import styled from "styled-components";
 
-import SafeTranslate from '../../../components/SafeTranslate';
+import SafeTranslate from "../../../components/SafeTranslate";
 // @todo common component: move to .../common
-import Token from '../../../components/send/components/entry_types/Token';
-import ChevronIcon from '../../../components/svg/ChevronIcon';
-import {
-    isValidAmount,
-    toSignificantDecimals,
-    formatBalance,
-} from '../../../utils/amounts';
-import { DECIMALS_TO_SAFE } from '../utils/constants';
+import Token from "../../../components/send/components/entry_types/Token";
+import ChevronIcon from "../../../components/svg/ChevronIcon";
+import { isValidAmount, toSignificantDecimals, formatBalance } from "../../../utils/amounts";
+import { DECIMALS_TO_SAFE } from "../utils/constants";
 
 const InputWrapper = styled.div`
     padding: 1rem;
@@ -112,107 +108,96 @@ const TokenWrapper = styled.div`
 `;
 
 const Input = ({
-    value = '',
-    loading = false,
-    onChange,
-    onSelectToken,
-    labelId,
-    maxBalance = 0,
-    tokenSymbol,
-    tokenIcon,
-    tokenDecimals,
-    setIsValidInput,
-    inputTestId,
-    tokenSelectTestId,
-    disabled,
-    autoFocus,
+  value = "",
+  loading = false,
+  onChange,
+  onSelectToken,
+  labelId,
+  maxBalance = 0,
+  tokenSymbol,
+  tokenIcon,
+  tokenDecimals,
+  setIsValidInput,
+  inputTestId,
+  tokenSelectTestId,
+  disabled,
+  autoFocus,
 }) => {
-    const handleChange = (event) => {
-        event.preventDefault();
+  const handleChange = (event) => {
+    event.preventDefault();
 
-        const value = event.target.value.replace(',', '.');
+    const value = event.target.value.replace(",", ".");
 
-        if (!disabled && isValidAmount(value)) {
-            onChange(value);
-        }
-    };
+    if (!disabled && isValidAmount(value)) {
+      onChange(value);
+    }
+  };
 
-    const formattedMaxBalance = maxBalance && typeof tokenDecimals === 'number'
-        ? formatBalance(maxBalance, tokenDecimals)
-        : undefined;
+  const formattedMaxBalance =
+    maxBalance && typeof tokenDecimals === "number"
+      ? formatBalance(maxBalance, tokenDecimals)
+      : undefined;
 
-    const [isWrongAmount, setIsWrongAmount] = useState(false);
+  const [isWrongAmount, setIsWrongAmount] = useState(false);
 
-    useEffect(() => {
-        if (!disabled && value && formattedMaxBalance) {
-            const isValid = isValidAmount(value, formattedMaxBalance, tokenDecimals);
+  useEffect(() => {
+    if (!disabled && value && formattedMaxBalance) {
+      const isValid = isValidAmount(value, formattedMaxBalance, tokenDecimals);
 
-            setIsWrongAmount(!isValid);
+      setIsWrongAmount(!isValid);
 
-            if (setIsValidInput) {
-                setIsValidInput(isValid);
-            }
-        }
-    }, [disabled, value, formattedMaxBalance, tokenDecimals]);
+      if (setIsValidInput) {
+        setIsValidInput(isValid);
+      }
+    }
+  }, [disabled, value, formattedMaxBalance, tokenDecimals]);
 
-    const setMaxBalance = () => {
-        if (!disabled && formattedMaxBalance && value !== formattedMaxBalance) {
-            onChange(formattedMaxBalance);
-        }
-    };
+  const setMaxBalance = () => {
+    if (!disabled && formattedMaxBalance && value !== formattedMaxBalance) {
+      onChange(formattedMaxBalance);
+    }
+  };
 
-    const balanceData = {
-        amount: toSignificantDecimals(formattedMaxBalance),
-        symbol: tokenSymbol,
-    };
+  const balanceData = {
+    amount: toSignificantDecimals(formattedMaxBalance),
+    symbol: tokenSymbol,
+  };
 
-    const valueToShow =
-        disabled && value ? toSignificantDecimals(value, DECIMALS_TO_SAFE) : value;
+  const valueToShow = disabled && value ? toSignificantDecimals(value, DECIMALS_TO_SAFE) : value;
 
-    return (
-        <InputWrapper>
-            <Header>
-                {labelId && (
-                    <Label>
-                        <SafeTranslate id={labelId} />
-                    </Label>
-                )}
-                {formattedMaxBalance && (
-                    <Balance
-                        onClick={setMaxBalance}
-                        className={`${disabled ? 'disabled' : ''}`}
-                    >
-                        <SafeTranslate
-                            id={disabled ? 'swap.available' : 'swap.max'}
-                            data={balanceData}
-                        />
-                    </Balance>
-                )}
-            </Header>
-            <Footer>
-                <TokenWrapper
-                    className="token"
-                    onClick={onSelectToken}
-                    data-test-id={tokenSelectTestId}
-                >
-                    <Token symbol={tokenSymbol} icon={tokenIcon} />
-                    <ChevronIcon color="var(--mnw-color-1)" />
-                </TokenWrapper>
-                <input
-                    className={`${isWrongAmount ? 'error' : ''}`}
-                    inputMode="decimal"
-                    min={0}
-                    max={Number(maxBalance) || 0}
-                    value={loading ? '' : valueToShow}
-                    onChange={handleChange}
-                    placeholder="0"
-                    autoFocus={autoFocus}
-                    disabled={disabled}
-                    data-test-id={inputTestId}
-                />
-            </Footer>
-        </InputWrapper>
-    );
+  return (
+    <InputWrapper>
+      <Header>
+        {labelId && (
+          <Label>
+            <SafeTranslate id={labelId} />
+          </Label>
+        )}
+        {formattedMaxBalance && (
+          <Balance onClick={setMaxBalance} className={`${disabled ? "disabled" : ""}`}>
+            <SafeTranslate id={disabled ? "swap.available" : "swap.max"} data={balanceData} />
+          </Balance>
+        )}
+      </Header>
+      <Footer>
+        <TokenWrapper className="token" onClick={onSelectToken} data-test-id={tokenSelectTestId}>
+          <Token symbol={tokenSymbol} icon={tokenIcon} />
+          <ChevronIcon color="var(--mnw-color-1)" />
+        </TokenWrapper>
+        <input
+          className={`${isWrongAmount ? "error" : ""}`}
+          inputMode="decimal"
+          min={0}
+          max={Number(maxBalance) || 0}
+          value={loading ? "" : valueToShow}
+          onChange={handleChange}
+          placeholder="0"
+          disabled={disabled}
+          data-test-id={inputTestId}
+        />
+      </Footer>
+    </InputWrapper>
+  );
 };
 
 export default memo(Input);

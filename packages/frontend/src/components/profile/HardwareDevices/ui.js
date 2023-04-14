@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import Card from '../../common/styled/Card.css';
+import Card from "../../common/styled/Card.css";
 
 export const Container = styled(Card)`
     i {

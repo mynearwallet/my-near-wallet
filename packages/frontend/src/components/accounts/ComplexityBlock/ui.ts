@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
     height: 4px;
@@ -16,13 +16,19 @@ export const LevelWrapper = styled.div`
 `;
 
 export const Level = styled.div<{ level: number }>`
-    ${(props) => props.level === 1 && css`
+    ${(props) =>
+      props.level === 1 &&
+      css`
         background-color: #dc3d43;
     `}
-    ${(props) => props.level === 2 && css`
+    ${(props) =>
+      props.level === 2 &&
+      css`
         background-color: #ffa01c;
     `}
-    ${(props) => props.level === 3 && css`
+    ${(props) =>
+      props.level === 3 &&
+      css`
         background-color: #299764;
     `}
 
@@ -38,4 +44,3 @@ export const Description = styled.div`
     line-height: 16px;
     color: #7E868C;
 `;
-

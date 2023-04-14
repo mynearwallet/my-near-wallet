@@ -1,12 +1,12 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import classNames from '../../utils/classNames';
-import SafeTranslate from '../SafeTranslate';
-import AlertRoundedIcon from '../svg/AlertRoundedIcon.js';
-import AlertTriangleIcon from '../svg/AlertTriangleIcon.js';
-import FormButton from './FormButton';
+import classNames from "../../utils/classNames";
+import SafeTranslate from "../SafeTranslate";
+import AlertRoundedIcon from "../svg/AlertRoundedIcon.js";
+import AlertTriangleIcon from "../svg/AlertTriangleIcon.js";
+import FormButton from "./FormButton";
 
 const Container = styled.div`
     &&& {
@@ -99,25 +99,26 @@ const Container = styled.div`
 `;
 
 export default function AlertBanner({ title, button, linkTo, data, theme, children }) {
-    return (
-        <Container className={classNames(['alert-banner', theme])}>
-            {theme !== 'warning'
-                ? <AlertRoundedIcon/>
-                : <AlertTriangleIcon/>
-            }      
-            <div>
-                {title && <SafeTranslate id={title} data={{ data: data }}/>}
-                {linkTo ? (
-                    <>
-                        {linkTo.includes('http') ? (
-                            <a target='_blank' rel='noreferrer' className='link' href={linkTo}><Translate id={button} /></a>
-                        ) : (
-                            <FormButton className='link' linkTo={linkTo}><Translate id={button} /></FormButton>
-                        )}
-                    </>
-                ) : null}
-                {children}
-            </div>
-        </Container>
-    );
+  return (
+    <Container className={classNames(["alert-banner", theme])}>
+      {theme !== "warning" ? <AlertRoundedIcon /> : <AlertTriangleIcon />}
+      <div>
+        {title && <SafeTranslate id={title} data={{ data: data }} />}
+        {linkTo ? (
+          <>
+            {linkTo.includes("http") ? (
+              <a target='_blank' rel='noreferrer' className='link' href={linkTo}>
+                <Translate id={button} />
+              </a>
+            ) : (
+              <FormButton className='link' linkTo={linkTo}>
+                <Translate id={button} />
+              </FormButton>
+            )}
+          </>
+        ) : null}
+        {children}
+      </div>
+    </Container>
+  );
 }

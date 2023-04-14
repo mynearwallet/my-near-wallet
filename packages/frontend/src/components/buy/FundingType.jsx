@@ -1,18 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import arrow from './assets/arrow.svg';
+import arrow from "./assets/arrow.svg";
 
-const hoverEffect = (enabled) =>
-    enabled ? '&:hover { background: #f9f9f9; }' : '';
+const hoverEffect = (enabled) => (enabled ? "&:hover { background: #f9f9f9; }" : "");
 
-const paledIf = (disabled) =>
-    disabled ? 'opacity: 0.5; filter: grayscale(1);' : '';
+const paledIf = (disabled) => (disabled ? "opacity: 0.5; filter: grayscale(1);" : "");
 
 const LinkWrap = styled.a`
     display: block;
     border-top: 1px solid #f0f0f1;
-    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
     ${({ disabled }) => hoverEffect(!disabled)}
     ${({ disabled }) => paledIf(disabled)}
     @media (max-width: 992px) {
@@ -49,27 +47,21 @@ const WrapperImg = styled.div`
     display: flex;
 `;
 
-export const FundingType = ({
-    icon,
-    link,
-    name,
-    track,
-    disabled,
-}) => {
-    return (
-        <LinkWrap
-            href={link}
-            target='_blank'
-            rel='noreferrer'
-            onClick={() => track && track()}
-            disabled={disabled}
-        >
-            <Wrapper>
-                <WrapperImg title={name}>
-                    <img src={icon} alt={name} />
-                </WrapperImg>
-                {disabled ? null : <Button />}
-            </Wrapper>
-        </LinkWrap>
-    );
+export const FundingType = ({ icon, link, name, track, disabled }) => {
+  return (
+    <LinkWrap
+      href={link}
+      target='_blank'
+      rel='noreferrer'
+      onClick={() => track?.()}
+      disabled={disabled}
+    >
+      <Wrapper>
+        <WrapperImg title={name}>
+          <img src={icon} alt={name} />
+        </WrapperImg>
+        {disabled ? null : <Button />}
+      </Wrapper>
+    </LinkWrap>
+  );
 };

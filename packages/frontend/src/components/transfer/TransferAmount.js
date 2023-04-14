@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Balance from '../common/balance/Balance';
-import ArrowTransferIcon from './ArrowTransferIcon';
+import Balance from "../common/balance/Balance";
+import ArrowTransferIcon from "./ArrowTransferIcon";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -55,36 +55,25 @@ const StyledContainer = styled.div`
     }
 `;
 
-export default ({ 
-    transferAmount,
-    sender,
-    receiver,
-    receiverBalance
-}) => {
-    return (
-        <StyledContainer className='transfer-amount brs-8 bsw-l'>
-            <ArrowTransferIcon />
-            <Balance amount={transferAmount} />
-            <div className='account'>
-                <Translate id='transfer.from' />
-                <div>
-                    <div className='account-id'>{sender}</div>
-                    <Balance
-                        amount={transferAmount}
-                        showBalanceInUSD={false}
-                    />
-                </div>
-            </div>
-            <div className='account'>
-                <Translate id='transfer.to' />
-                <div>
-                    <div className='account-id'>{receiver}</div>
-                    <Balance
-                        amount={receiverBalance}
-                        showBalanceInUSD={false}
-                    />
-                </div>
-            </div>
-        </StyledContainer>
-    );
+export default ({ transferAmount, sender, receiver, receiverBalance }) => {
+  return (
+    <StyledContainer className='transfer-amount brs-8 bsw-l'>
+      <ArrowTransferIcon />
+      <Balance amount={transferAmount} />
+      <div className='account'>
+        <Translate id='transfer.from' />
+        <div>
+          <div className='account-id'>{sender}</div>
+          <Balance amount={transferAmount} showBalanceInUSD={false} />
+        </div>
+      </div>
+      <div className='account'>
+        <Translate id='transfer.to' />
+        <div>
+          <div className='account-id'>{receiver}</div>
+          <Balance amount={receiverBalance} showBalanceInUSD={false} />
+        </div>
+      </div>
+    </StyledContainer>
+  );
 };

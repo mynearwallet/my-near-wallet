@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import StarIcon from '../../svg/StarIcon.js';
+import StarIcon from "../../svg/StarIcon.js";
 
 const IdGraphic = styled.div`
     position: relative;
@@ -37,12 +37,12 @@ const IdGraphic = styled.div`
 `;
 
 export default ({ accountId }) => {
-    return (
-        <IdGraphic className='id-graphic'>
-            <StarIcon color='#80E8F8'/>
-            <StarIcon color='#ECE750'/>
-            <StarIcon/>
-            {accountId}
-        </IdGraphic>
-    );
+  return (
+    <IdGraphic className='id-graphic'>
+      <StarIcon color='#80E8F8' />
+      <StarIcon color='#ECE750' />
+      <StarIcon />
+      {accountId}
+    </IdGraphic>
+  );
 };

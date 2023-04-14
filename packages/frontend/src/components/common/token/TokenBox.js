@@ -1,11 +1,11 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import CONFIG from '../../../config';
-import Balance from '../balance/Balance';
-import TokenAmount from './TokenAmount';
-import TokenIcon from './TokenIcon';
+import CONFIG from "../../../config";
+import Balance from "../balance/Balance";
+import TokenAmount from "./TokenAmount";
+import TokenIcon from "./TokenIcon";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -137,98 +137,96 @@ const TokenBoxWrapper = styled.div`
 `;
 
 const Title = ({ content, title }) => {
-    const stopPropagation = (event) => event.stopPropagation();
+  const stopPropagation = (event) => event.stopPropagation();
 
-    return (
-        <span className='title' title={title || content}>
-            {title && title !== CONFIG.NEAR_ID ? (
-                <a
-                    href={`${CONFIG.EXPLORER_URL}/accounts/${title}`}
-                    onClick={stopPropagation}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                >
-                    {content}
-                </a>
-            ) : (
-                content
-            )}
-        </span>
-    );
+  return (
+    <span className='title' title={title || content}>
+      {title && title !== CONFIG.NEAR_ID ? (
+        // rome-ignore lint/a11y/useValidAnchor: <explanation>
+        <a
+          href={`${CONFIG.EXPLORER_URL}/accounts/${title}`}
+          onClick={stopPropagation}
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          {content}
+        </a>
+      ) : (
+        content
+      )}
+    </span>
+  );
 };
 
-const SubTitle = ({ showFiatPrice, price, currentLanguage, name = '-' }) => {
-    const fiatDecimals = 2;
+const SubTitle = ({ showFiatPrice, price, currentLanguage, name = "-" }) => {
+  const fiatDecimals = 2;
 
-    return (
-        <span className="subTitle">
-            {showFiatPrice ? (
-                price ? (
-                    <>
-                        $
-                        {new Intl.NumberFormat(`${currentLanguage}`, {
-                            minimumFractionDigits: fiatDecimals,
-                            maximumFractionDigits: fiatDecimals,
-                        }).format(price)}
-                    </>
-                ) : (
-                    <span>
-                        <Translate id="tokenBox.priceUnavailable" />
-                    </span>
-                )
-            ) : (
-                name
-            )}
-        </span>
-    );
+  return (
+    <span className="subTitle">
+      {showFiatPrice ? (
+        price ? (
+          <>
+            $
+            {new Intl.NumberFormat(`${currentLanguage}`, {
+              minimumFractionDigits: fiatDecimals,
+              maximumFractionDigits: fiatDecimals,
+            }).format(price)}
+          </>
+        ) : (
+          <span>
+            <Translate id="tokenBox.priceUnavailable" />
+          </span>
+        )
+      ) : (
+        name
+      )}
+    </span>
+  );
 };
 
 const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) => {
-    const { symbol = '', name = '', icon = '' } = token.onChainFTMetadata;
+  const { symbol = "", name = "", icon = "" } = token.onChainFTMetadata;
 
-    const selectToken = () => {
-        if (typeof onClick === 'function') {
-            onClick(token);
-        }
-    };
+  const selectToken = () => {
+    if (typeof onClick === "function") {
+      onClick(token);
+    }
+  };
 
-    return (
-        <StyledContainer
-            className='token-box'
-            onClick={selectToken}
-            data-test-id={`token-selection-${token.contractName || CONFIG.NEAR_ID}`}
-        >
-            <TokenBoxWrapper>
-                <div className='icon'>
-                    <TokenIcon symbol={symbol} icon={icon} />
-                </div>
-                <div className='description'>
-                    <Title title={token.contractName} content={symbol} />
-                    <SubTitle
-                        showFiatPrice={showFiatPrice}
-                        currentLanguage={currentLanguage}
-                        name={name || symbol}
-                        price={token.fiatValueMetadata?.usd}
-                    />
-                </div>
-                {!token.contractName || token.contractName === CONFIG.NEAR_ID ? (
-                    <div className='balance'>
-                        <Balance
-                            amount={token.balance}
-                            data-test-id='walletHomeNearBalance'
-                            symbol={false}
-                            showSymbolNEAR={false}
-                        />
-                    </div>
-                ) : (
-                    <TokenAmount
-                        token={token}
-                        className="balance"
-                    />
-                )}
-            </TokenBoxWrapper>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer
+      className='token-box'
+      onClick={selectToken}
+      data-test-id={`token-selection-${token.contractName || CONFIG.NEAR_ID}`}
+    >
+      <TokenBoxWrapper>
+        <div className='icon'>
+          <TokenIcon symbol={symbol} icon={icon} />
+        </div>
+        <div className='description'>
+          <Title title={token.contractName} content={symbol} />
+          <SubTitle
+            showFiatPrice={showFiatPrice}
+            currentLanguage={currentLanguage}
+            name={name || symbol}
+            price={token.fiatValueMetadata?.usd}
+          />
+        </div>
+        {!token.contractName || token.contractName === CONFIG.NEAR_ID ? (
+          <div className='balance'>
+            <Balance
+              amount={token.balance}
+              data-test-id='walletHomeNearBalance'
+              symbol={false}
+              showSymbolNEAR={false}
+            />
+          </div>
+        ) : (
+          <TokenAmount token={token} className="balance" />
+        )}
+      </TokenBoxWrapper>
+    </StyledContainer>
+  );
 };
 
 export default TokenBox;

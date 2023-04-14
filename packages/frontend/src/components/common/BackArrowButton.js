@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import ArrowIcon from '../svg/ArrowIcon';
+import ArrowIcon from "../svg/ArrowIcon";
 
 const StyledContainer = styled.div`
     &&& {
@@ -29,12 +29,12 @@ const StyledContainer = styled.div`
     }
 `;
 
-const BackArrowButton = ({ onClick, color = 'black' }) => {
-    return (
-        <StyledContainer onClick={onClick} className='back-arrow-button' type='button'>
-            <ArrowIcon color={color}/>
-        </StyledContainer>
-    );
+const BackArrowButton = ({ onClick, color = "black" }) => {
+  return (
+    <StyledContainer onClick={onClick} className='back-arrow-button' type='button'>
+      <ArrowIcon color={color} />
+    </StyledContainer>
+  );
 };
 
 export default BackArrowButton;

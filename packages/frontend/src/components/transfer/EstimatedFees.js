@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Balance from '../common/balance/Balance';
-import Tooltip from '../common/Tooltip';
+import Balance from "../common/balance/Balance";
+import Tooltip from "../common/Tooltip";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -28,13 +28,13 @@ const StyledContainer = styled.div`
 `;
 
 export default ({ gasFeeAmount }) => {
-    return (
-        <StyledContainer className='estimated-fees pg-20 brs-8 br-1-grey'>
-            <div className='left'>
-                <Translate id='transfer.estimatedFees' />
-                <Tooltip translate='sendV2.translateIdInfoTooltip.estimatedFees' />
-            </div>
-            <Balance amount={gasFeeAmount} />
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer className='estimated-fees pg-20 brs-8 br-1-grey'>
+      <div className='left'>
+        <Translate id='transfer.estimatedFees' />
+        <Tooltip translate='sendV2.translateIdInfoTooltip.estimatedFees' />
+      </div>
+      <Balance amount={gasFeeAmount} />
+    </StyledContainer>
+  );
 };

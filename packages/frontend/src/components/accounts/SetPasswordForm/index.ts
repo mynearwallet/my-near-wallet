@@ -1,3 +1,3 @@
-import SetPasswordForm from './SetPasswordForm';
+import SetPasswordForm from "./SetPasswordForm";
 
 export default SetPasswordForm;

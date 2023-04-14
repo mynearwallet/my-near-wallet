@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../common/FormButton';
-import DownArrowIcon from '../svg/DownArrowIcon';
-import SendIcon from '../svg/SendIcon';
+import FormButton from "../common/FormButton";
+import DownArrowIcon from "../svg/DownArrowIcon";
+import SendIcon from "../svg/SendIcon";
 
 const Container = styled.div`
     &&& {
@@ -57,16 +57,16 @@ const Container = styled.div`
 `;
 
 const SendReceiveButtons = () => (
-    <Container>
-        <FormButton linkTo='/send-money' color='dark-gray' className='small'>
-            <SendIcon/>
-            <Translate id='button.send'/>
-        </FormButton>
-        <FormButton linkTo='receive-money' color='dark-gray' className='small'>
-            <DownArrowIcon/>
-            <Translate id='button.receive'/>
-        </FormButton>
-    </Container>
+  <Container>
+    <FormButton linkTo='/send-money' color='dark-gray' className='small'>
+      <SendIcon />
+      <Translate id='button.send' />
+    </FormButton>
+    <FormButton linkTo='receive-money' color='dark-gray' className='small'>
+      <DownArrowIcon />
+      <Translate id='button.receive' />
+    </FormButton>
+  </Container>
 );
 
 export default SendReceiveButtons;

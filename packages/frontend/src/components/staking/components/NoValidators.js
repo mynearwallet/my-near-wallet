@@ -1,9 +1,9 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../../common/FormButton';
-import NearCircleIcon from '../../svg/NearCircleIcon.js';
+import FormButton from "../../common/FormButton";
+import NearCircleIcon from "../../svg/NearCircleIcon.js";
 
 const Container = styled.div`
     background-color: #F8F8F8;
@@ -34,18 +34,20 @@ const Container = styled.div`
 `;
 
 export default function NoValidators({ accountId }) {
-    return (
-        <Container className='no-validators'>
-            <NearCircleIcon/>
-            <div><Translate id='staking.noValidators.title' /></div>
-            <FormButton
-                disabled={!accountId}
-                className='gray-blue dark' 
-                linkTo='/staking/validators'
-                trackingId="STAKE Click stake my tokens button : no validators"
-            >
-                <Translate id='staking.staking.button' />
-            </FormButton>
-        </Container>
-    );
+  return (
+    <Container className='no-validators'>
+      <NearCircleIcon />
+      <div>
+        <Translate id='staking.noValidators.title' />
+      </div>
+      <FormButton
+        disabled={!accountId}
+        className='gray-blue dark'
+        linkTo='/staking/validators'
+        trackingId="STAKE Click stake my tokens button : no validators"
+      >
+        <Translate id='staking.staking.button' />
+      </FormButton>
+    </Container>
+  );
 }

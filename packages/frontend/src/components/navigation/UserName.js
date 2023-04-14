@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const StyledUserName = styled.div`
     overflow: hidden;
@@ -7,9 +7,7 @@ const StyledUserName = styled.div`
 `;
 
 const UserName = ({ accountId }) => (
-    <StyledUserName className='user-name'>
-        {accountId && `${accountId}`}
-    </StyledUserName>
+  <StyledUserName className='user-name'>{accountId && `${accountId}`}</StyledUserName>
 );
 
 export default UserName;

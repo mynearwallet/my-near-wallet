@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import AccountSelector from '../accounts/account_selector/AccountSelector';
-import AccessAccountBtn from './AccessAccountBtn';
-import CreateAccountBtn from './CreateAccountBtn';
+import AccountSelector from "../accounts/account_selector/AccountSelector";
+import AccessAccountBtn from "./AccessAccountBtn";
+import CreateAccountBtn from "./CreateAccountBtn";
 
 const Menu = styled.div`
     position: absolute;
@@ -27,31 +27,33 @@ const Menu = styled.div`
 `;
 
 const DesktopMenu = ({
-    show,
-    accounts,
-    handleSelectAccount,
-    accountIdLocalStorage,
-    accountsBalance,
-    refreshBalance
+  show,
+  accounts,
+  handleSelectAccount,
+  accountIdLocalStorage,
+  accountsBalance,
+  refreshBalance,
 }) => {
-    if (show) {
-        return (
-            <Menu id='desktop-menu'>
-                <h6><Translate id='link.switchAccount' /></h6>
-                <AccountSelector
-                    signedInAccountId={accountIdLocalStorage}
-                    availableAccounts={accounts}
-                    accountsBalances={accountsBalance}
-                    getAccountBalance={refreshBalance}
-                    onSelectAccount={handleSelectAccount}
-                    showBalanceInUSD={true}
-                />
-                <AccessAccountBtn />
-                <CreateAccountBtn />
-            </Menu>
-        );
-    }
-    return null;
+  if (show) {
+    return (
+      <Menu id='desktop-menu'>
+        <h6>
+          <Translate id='link.switchAccount' />
+        </h6>
+        <AccountSelector
+          signedInAccountId={accountIdLocalStorage}
+          availableAccounts={accounts}
+          accountsBalances={accountsBalance}
+          getAccountBalance={refreshBalance}
+          onSelectAccount={handleSelectAccount}
+          showBalanceInUSD={true}
+        />
+        <AccessAccountBtn />
+        <CreateAccountBtn />
+      </Menu>
+    );
+  }
+  return null;
 };
 
 export default DesktopMenu;

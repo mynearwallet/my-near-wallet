@@ -1,8 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import classNames from '../../utils/classNames';
-
+import classNames from "../../utils/classNames";
 
 const MenuBtn = styled.div`
     min-width: 22px;
@@ -22,14 +21,14 @@ const MenuBtn = styled.div`
             top: 0;
             transition: 300ms;
         }
-    
+
         :nth-child(2) {
             top: 0px;
             bottom: 0;
             margin: auto;
             transition: 100ms;
         }
-    
+
         :nth-child(3) {
             bottom: 0;
             transition: 300ms;
@@ -65,13 +64,14 @@ const MenuBtn = styled.div`
 `;
 
 const MenuButton = ({ onClick, open }) => (
-    <div className='menu-btn-wrapper' onClick={onClick}>
-        <MenuBtn className={classNames(['menu-btn', {'open' : open}])}>
-            <div/>
-            <div/>
-            <div/>
-        </MenuBtn>
-    </div>
+  // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+  <div className='menu-btn-wrapper' onClick={onClick}>
+    <MenuBtn className={classNames(["menu-btn", { open: open }])}>
+      <div />
+      <div />
+      <div />
+    </MenuBtn>
+  </div>
 );
 
 export default MenuButton;

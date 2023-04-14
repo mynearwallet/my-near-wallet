@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
 
-import Balance from '../../common/balance/Balance';
-import ClickToCopy from '../../common/ClickToCopy';
-import CopyIcon from '../../svg/CopyIcon';
-import EyeIcon from './EyeIcon';
+import Balance from "../../common/balance/Balance";
+import ClickToCopy from "../../common/ClickToCopy";
+import CopyIcon from "../../svg/CopyIcon";
+import EyeIcon from "./EyeIcon";
 
 const StyledContainer = styled.div`
     border-radius: 8px;
@@ -84,43 +84,47 @@ const StyledContainer = styled.div`
 `;
 
 export default ({
-    active,
-    accountId,
-    balance,
-    defaultShowBalance,
-    onSelectAccount,
-    onToggleShowBalance = () => {},
-    showBalanceInUSD
+  active,
+  accountId,
+  balance,
+  defaultShowBalance,
+  onSelectAccount,
+  onToggleShowBalance = () => {},
+  showBalanceInUSD,
 }) => {
-    const [showBalance, setShowBalance] = useState(defaultShowBalance);
-    return (
-        <StyledContainer className={active ? 'active' : ''} onClick={onSelectAccount}>
-            <div className='details'>
-                <div className='account-id'>{accountId}</div>
-                <div className='balance'>
-                    {showBalance
-                        ? (
-                            <Balance
-                                amount={balance}
-                                showBalanceInUSD={showBalanceInUSD}
-                                showBalanceInNEAR={!showBalanceInUSD}
-                            />
-                        )
-                        : '••••••'
-                    }
-                </div>
-            </div>
-            <ClickToCopy copy={accountId} className='copy' compact={true} onClick={(e) => e.stopPropagation()}>
-                <CopyIcon color='#2B9AF4' />
-            </ClickToCopy>
-            <EyeIcon
-                show={showBalance}
-                onClick={(e) => {
-                    setShowBalance(!showBalance);
-                    onToggleShowBalance();
-                    e.stopPropagation();
-                }}
+  const [showBalance, setShowBalance] = useState(defaultShowBalance);
+  return (
+    <StyledContainer className={active ? "active" : ""} onClick={onSelectAccount}>
+      <div className='details'>
+        <div className='account-id'>{accountId}</div>
+        <div className='balance'>
+          {showBalance ? (
+            <Balance
+              amount={balance}
+              showBalanceInUSD={showBalanceInUSD}
+              showBalanceInNEAR={!showBalanceInUSD}
             />
-        </StyledContainer>
-    );
+          ) : (
+            "••••••"
+          )}
+        </div>
+      </div>
+      <ClickToCopy
+        copy={accountId}
+        className='copy'
+        compact={true}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <CopyIcon color='#2B9AF4' />
+      </ClickToCopy>
+      <EyeIcon
+        show={showBalance}
+        onClick={(e) => {
+          setShowBalance(!showBalance);
+          onToggleShowBalance();
+          e.stopPropagation();
+        }}
+      />
+    </StyledContainer>
+  );
 };

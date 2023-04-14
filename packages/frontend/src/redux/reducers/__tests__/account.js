@@ -1,3 +1,3 @@
-test('dummy test', () => {
-    // Do nothing
+test("dummy test", () => {
+  // Do nothing
 });

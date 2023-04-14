@@ -1,15 +1,15 @@
-import BN from 'bn.js';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import BN from "bn.js";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import AlertBanner from '../../common/AlertBanner';
-import FormButton from '../../common/FormButton';
-import FormButtonGroup from '../../common/FormButtonGroup';
-import Container from '../../common/styled/Container.css';
-import ConnectWithApplication from '../../login/v2/ConnectWithApplication';
-import ConnectWithPrivateShard from '../../login/v2/ConnectWithPrivateShard';
-import SignTransaction from './SignTransaction';
+import AlertBanner from "../../common/AlertBanner";
+import FormButton from "../../common/FormButton";
+import FormButtonGroup from "../../common/FormButtonGroup";
+import Container from "../../common/styled/Container.css";
+import ConnectWithApplication from "../../login/v2/ConnectWithApplication";
+import ConnectWithPrivateShard from "../../login/v2/ConnectWithPrivateShard";
+import SignTransaction from "./SignTransaction";
 
 const StyledContainer = styled(Container)`
     &&& {
@@ -46,63 +46,61 @@ const StyledContainer = styled(Container)`
 `;
 
 export default ({
-    transferAmount,
-    accountLocalStorageAccountId,
-    availableBalance,
-    estimatedFees,
-    onClickCancel,
-    onClickApprove,
-    onClickMoreInformation,
-    accountUrlReferrer,
-    submittingTransaction,
-    isSignerValid,
-    isValidCallbackUrl,
-    customRPCUrl,
-    privateShardId
+  transferAmount,
+  accountLocalStorageAccountId,
+  availableBalance,
+  estimatedFees,
+  onClickCancel,
+  onClickApprove,
+  onClickMoreInformation,
+  accountUrlReferrer,
+  submittingTransaction,
+  isSignerValid,
+  isValidCallbackUrl,
+  customRPCUrl,
+  privateShardId,
 }) => {
-    const insufficientBalance = availableBalance && transferAmount && new BN(availableBalance).lt(new BN(transferAmount));
-    return (
-        <StyledContainer className='small-centered border'>
-            <h3><Translate id='sign.approveTransaction' /></h3>
-            {customRPCUrl
-                ? <ConnectWithPrivateShard customRPCUrl={customRPCUrl}/>
-                : <ConnectWithApplication appReferrer={accountUrlReferrer}/>
-            }
-            {insufficientBalance && (
-                <AlertBanner
-                    title='sign.insufficientFundsDesc'
-                    theme='warning'
-                />
-            )}
-            <SignTransaction
-                transferAmount={transferAmount}
-                sender={accountLocalStorageAccountId}
-                estimatedFees={estimatedFees}
-                availableBalance={availableBalance}
-                privateShardId={privateShardId}
-            />
-            <FormButton
-                className='link'
-                onClick={onClickMoreInformation}
-            >
-                <Translate id='button.moreInformation' />
-            </FormButton>
-            <FormButtonGroup>
-                <FormButton
-                    color='gray-blue'
-                    onClick={onClickCancel}
-                    disabled={submittingTransaction || !isValidCallbackUrl}
-                >
-                    <Translate id='button.cancel' />
-                </FormButton>
-                <FormButton
-                    onClick={onClickApprove}
-                    disabled={submittingTransaction || insufficientBalance || !isValidCallbackUrl || !isSignerValid}
-                    sending={submittingTransaction}
-                >
-                    <Translate id='button.approve' />
-                </FormButton>
-            </FormButtonGroup>
-        </StyledContainer>
-    );
+  const insufficientBalance =
+    availableBalance && transferAmount && new BN(availableBalance).lt(new BN(transferAmount));
+  return (
+    <StyledContainer className='small-centered border'>
+      <h3>
+        <Translate id='sign.approveTransaction' />
+      </h3>
+      {customRPCUrl ? (
+        <ConnectWithPrivateShard customRPCUrl={customRPCUrl} />
+      ) : (
+        <ConnectWithApplication appReferrer={accountUrlReferrer} />
+      )}
+      {insufficientBalance && <AlertBanner title='sign.insufficientFundsDesc' theme='warning' />}
+      <SignTransaction
+        transferAmount={transferAmount}
+        sender={accountLocalStorageAccountId}
+        estimatedFees={estimatedFees}
+        availableBalance={availableBalance}
+        privateShardId={privateShardId}
+      />
+      <FormButton className='link' onClick={onClickMoreInformation}>
+        <Translate id='button.moreInformation' />
+      </FormButton>
+      <FormButtonGroup>
+        <FormButton
+          color='gray-blue'
+          onClick={onClickCancel}
+          disabled={submittingTransaction || !isValidCallbackUrl}
+        >
+          <Translate id='button.cancel' />
+        </FormButton>
+        <FormButton
+          onClick={onClickApprove}
+          disabled={
+            submittingTransaction || insufficientBalance || !isValidCallbackUrl || !isSignerValid
+          }
+          sending={submittingTransaction}
+        >
+          <Translate id='button.approve' />
+        </FormButton>
+      </FormButtonGroup>
+    </StyledContainer>
+  );
 };

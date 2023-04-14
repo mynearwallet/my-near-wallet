@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Card = styled.div`
     border: 2px solid #e6e6e6;

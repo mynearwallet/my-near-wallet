@@ -1,12 +1,16 @@
-import { getLocation } from 'connected-react-router';
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import { getLocation } from "connected-react-router";
+import React from "react";
+import { Translate } from "react-localize-redux";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 
-import { actions as ledgerActions, selectLedgerConnectionAvailable, selectLedgerHasLedger } from '../../redux/slices/ledger';
-import CheckCircleIcon from '../svg/CheckCircleIcon';
-import LedgerSmall from '../svg/LedgerSmall';
+import {
+  actions as ledgerActions,
+  selectLedgerConnectionAvailable,
+  selectLedgerHasLedger,
+} from "../../redux/slices/ledger";
+import CheckCircleIcon from "../svg/CheckCircleIcon";
+import LedgerSmall from "../svg/LedgerSmall";
 
 const { handleShowConnectModal } = ledgerActions;
 
@@ -31,38 +35,37 @@ const ConnectLedgerButton = styled.div`
 `;
 
 export default () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const { pathname } = useSelector(getLocation);
-    const ledgerConnectionAvailable = useSelector(selectLedgerConnectionAvailable);
-    const hasLedger = useSelector(selectLedgerHasLedger);
+  const { pathname } = useSelector(getLocation);
+  const ledgerConnectionAvailable = useSelector(selectLedgerConnectionAvailable);
+  const hasLedger = useSelector(selectLedgerHasLedger);
 
-    const connectLedger =  () => dispatch(handleShowConnectModal());
-    
-    const showConnectLedgerButton = hasLedger || ['sign-in-ledger', 'setup-ledger'].includes(pathname.split('/')[1]);
-    
-    if (!showConnectLedgerButton) {
-        return null;
-    }
+  const connectLedger = () => dispatch(handleShowConnectModal());
 
-    return (
-        <>
-            <div className='divider'/>
-            <ConnectLedgerButton onClick={connectLedger}>
-                {ledgerConnectionAvailable
-                    ? (
-                        <>
-                            <CheckCircleIcon color='#00C08B' />
-                            <Translate id='connectLedger.ledgerConnected'/>
-                        </>
-                    ) : (
-                        <>
-                            <LedgerSmall />
-                            <Translate id='connectLedger.connectLedger'/>
-                        </>
-                    )
-                }
-            </ConnectLedgerButton>
-        </>
-    );
+  const showConnectLedgerButton =
+    hasLedger || ["sign-in-ledger", "setup-ledger"].includes(pathname.split("/")[1]);
+
+  if (!showConnectLedgerButton) {
+    return null;
+  }
+
+  return (
+    <>
+      <div className='divider' />
+      <ConnectLedgerButton onClick={connectLedger}>
+        {ledgerConnectionAvailable ? (
+          <>
+            <CheckCircleIcon color='#00C08B' />
+            <Translate id='connectLedger.ledgerConnected' />
+          </>
+        ) : (
+          <>
+            <LedgerSmall />
+            <Translate id='connectLedger.connectLedger' />
+          </>
+        )}
+      </ConnectLedgerButton>
+    </>
+  );
 };

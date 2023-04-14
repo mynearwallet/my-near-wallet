@@ -1,12 +1,11 @@
-import React, {useCallback, useState} from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useCallback, useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import IconSecurityLock from '../../images/wallet-migration/IconSecurityLock';
-import ClickToCopy from '../common/ClickToCopy';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
-
+import IconSecurityLock from "../../images/wallet-migration/IconSecurityLock";
+import ClickToCopy from "../common/ClickToCopy";
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
 
 const Container = styled.div`
     padding: 15px 0;
@@ -54,57 +53,45 @@ const StyledButton = styled(FormButton)`
     }
 `;
 
+const MigrationSecret = ({ showMigrationPrompt, showMigrateAccount, secretKey }) => {
+  const [shouldContinueDisabled, setContinueDisabled] = useState(true);
 
-const MigrationSecret = ({
-    showMigrationPrompt,
-    showMigrateAccount,
-    secretKey
-}) => {
-    const [shouldContinueDisabled, setContinueDisabled] = useState(true);
+  const setContinueEnable = useCallback(() => {
+    setContinueDisabled(false);
+  }, []);
 
-    const setContinueEnable = useCallback(() => {
-        setContinueDisabled(false);
-    }, []);
+  return (
+    <Modal
+      modalClass='slim'
+      id='migration-modal'
+      isOpen={true}
+      disableClose={true}
+      modalSize='md'
+      style={{ maxWidth: "431px" }}
+    >
+      <Container>
+        <IconSecurityLock />
+        <h3 className='title'>
+          <Translate id='walletMigration.migrationSecret.title' />
+        </h3>
+        <p>
+          <Translate id='walletMigration.migrationSecret.desc' />
+        </p>
+        <ClickToCopy copy={secretKey} onClick={setContinueEnable}>
+          <TextSelectDisplay>{secretKey}</TextSelectDisplay>
+        </ClickToCopy>
 
-    return (
-        <Modal
-            modalClass='slim'
-            id='migration-modal'
-            isOpen={true}
-            disableClose={true}
-            modalSize='md'
-            style={{ maxWidth: '431px' }}
-        >
-            <Container>
-                <IconSecurityLock/>
-                <h3 className='title'>
-                    <Translate id='walletMigration.migrationSecret.title'/>
-                </h3>
-                <p><Translate id='walletMigration.migrationSecret.desc'/></p>
-                <ClickToCopy
-                    copy={secretKey}
-                    onClick={setContinueEnable}>
-                    <TextSelectDisplay>
-                        {secretKey}
-                    </TextSelectDisplay>
-                </ClickToCopy>
-
-                <ButtonsContainer>
-                    <StyledButton
-                        className='gray-blue'
-                        onClick={showMigrationPrompt}>
-                        <Translate id='button.cancel' />
-                    </StyledButton>
-                    <StyledButton
-                        disabled={shouldContinueDisabled}
-                        onClick={showMigrateAccount}>
-                        <Translate id='button.continue' />
-                    </StyledButton>
-                </ButtonsContainer>
-            </Container>
-        </Modal>
-    );
+        <ButtonsContainer>
+          <StyledButton className='gray-blue' onClick={showMigrationPrompt}>
+            <Translate id='button.cancel' />
+          </StyledButton>
+          <StyledButton disabled={shouldContinueDisabled} onClick={showMigrateAccount}>
+            <Translate id='button.continue' />
+          </StyledButton>
+        </ButtonsContainer>
+      </Container>
+    </Modal>
+  );
 };
 
 export default MigrationSecret;
-

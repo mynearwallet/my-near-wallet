@@ -1,6 +1,6 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
 const StyledContainer = styled.div`
     color: #A2A2A8;
@@ -34,26 +34,39 @@ const StyledContainer = styled.div`
 `;
 
 const Check = () => (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M13.3332 4L5.99984 11.3333L2.6665 8" stroke="#0072CE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M13.3332 4L5.99984 11.3333L2.6665 8"
+      stroke="#0072CE"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
 );
 
 const X = () => (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 4L4 12" stroke="#A2A2A8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M4 4L12 12" stroke="#A2A2A8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M12 4L4 12"
+      stroke="#A2A2A8"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M4 4L12 12"
+      stroke="#A2A2A8"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
 );
 
-export default ({
-    permitted = true,
-    translateId
-}) => (
-    <StyledContainer className={permitted ? 'permitted' : ''}>
-        <div>
-            {permitted ? <Check /> : <X/>}
-        </div>
-        <Translate id={translateId} />
-    </StyledContainer>
+export default ({ permitted = true, translateId }) => (
+  <StyledContainer className={permitted ? "permitted" : ""}>
+    <div>{permitted ? <Check /> : <X />}</div>
+    <Translate id={translateId} />
+  </StyledContainer>
 );

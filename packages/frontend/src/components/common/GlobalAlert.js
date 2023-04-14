@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { Translate } from "react-localize-redux";
+import { connect } from "react-redux";
+import styled from "styled-components";
 
-import IconCheckCircleImage from '../../images/icon-check-circle.svg';
-import IconsAlertCircleImage from '../../images/icon_alert-circle.svg';
-import { clearGlobalAlert } from '../../redux/actions/status';
-import { selectStatusSlice } from '../../redux/slices/status';
-import SafeTranslate from '../SafeTranslate';
+import IconCheckCircleImage from "../../images/icon-check-circle.svg";
+import IconsAlertCircleImage from "../../images/icon_alert-circle.svg";
+import { clearGlobalAlert } from "../../redux/actions/status";
+import { selectStatusSlice } from "../../redux/slices/status";
+import SafeTranslate from "../SafeTranslate";
 
 const AlertContainer = styled.div`
     position: fixed;
@@ -67,12 +67,11 @@ const AlertContainer = styled.div`
     }
 `;
 
-
 const Alert = styled.div`
     background-color: #fff;
     border-left: 4px solid;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
-    border-color: ${(props) => props.success ? '#02ba86' : '#e41d22'};
+    border-color: ${(props) => (props.success ? "#02ba86" : "#e41d22")};
     margin-bottom: 12px;
 
     @media (max-width: 991px) {
@@ -162,7 +161,7 @@ const Close = styled.div`
 const Header = styled.div`
     font-weight: 600;
     margin-bottom: 8px;
-    color: ${(props) => props.success ? '#02ba86' : '#e41d22'};
+    color: ${(props) => (props.success ? "#02ba86" : "#e41d22")};
 `;
 
 const Console = styled.div`
@@ -176,100 +175,120 @@ const Console = styled.div`
 `;
 
 const GlobalAlertNew = ({ globalAlert, actionStatus, clearGlobalAlert, closeIcon = true }) => {
+  const [closing, setClosing] = useState(false);
+  const [alerts, setAlerts] = useState([]);
+  const zendeskBaseURL = "https://nearhelp.zendesk.com/hc/";
 
-    const [closing, setClosing] = useState(false);
-    const [alerts, setAlerts] = useState([]);
-    const zendeskBaseURL = 'https://nearhelp.zendesk.com/hc/';
+  const handleClose = (type) => {
+    setClosing(type);
+    setTimeout(() => {
+      clearGlobalAlert(type);
+      setClosing(false);
+    }, 300);
+  };
 
-    const handleClose = (type) => {
-        setClosing(type);
-        setTimeout(() => {
-            clearGlobalAlert(type);
-            setClosing(false);
-        }, 300);
-    };
+  useEffect(() => {
+    setAlerts(
+      Object.keys(globalAlert)
+        .filter((type) => globalAlert[type])
+        .reverse()
+        .map((type) => ({
+          type,
+          ...globalAlert[type],
+          ...actionStatus[type],
+        })),
+    );
+  }, [globalAlert]);
 
-    useEffect(() => {
-        setAlerts(Object.keys(globalAlert)
-            .filter((type) => globalAlert[type])
-            .reverse()
-            .map((type) => ({
-                type,
-                ...globalAlert[type],
-                ...actionStatus[type]
-            }))
-        );
-    }, [globalAlert]);
-
-    if (!!alerts.length) {
-        return (
-            <AlertContainer types={alerts.map((alert) => alert.type)}>
-                <Translate>
-                    {({ translate }) => (
-                        <>
-                            {alerts.filter((alert) => alert.show).map((alert, i) => {
-                                const msgCode = typeof translate(alert.messageCode) === 'string' ? translate(alert.messageCode) : '';
-                                const noTranslationFound = msgCode.includes('No default translation found!');
-                                return (
-                                    <Alert key={`alert-${i}`} success={alert.success} closing={closing} className={`number-${alert.type}`} type={alert.type}>
-                                        <Content>
-                                            <Icon>
-                                                <img src={alert.success ? IconCheckCircleImage : IconsAlertCircleImage} alt=''/>
-                                            </Icon>
-                                            <Text>
-                                                <Header success={alert.success}>
-                                                    <Translate id={alert.messageCodeHeader || (alert.success ? 'success' : 'error')} />
-                                                </Header>
-                                                <div className='message-code'>
-                                                    {noTranslationFound
-                                                        ? <Translate id={`reduxActions.default.${alert.success ? 'success' : 'error'}`} />
-                                                        : <SafeTranslate id={alert.messageCode} data={alert.data} />
-                                                    }
-                                                    {!alert.success && (
-                                                        <a
-                                                            href={(noTranslationFound || msgCode.includes('Sorry an error has occurred'))
-                                                                ? `${zendeskBaseURL}${alert.errorMessage ? `search?query=${encodeURIComponent(alert.errorMessage.substring(0, 500))}` : ''}` 
-                                                                : `${zendeskBaseURL}search?query=${encodeURIComponent(msgCode.substring(0, 500))}`
-                                                            }
-                                                            target='_blank'
-                                                            rel='noreferrer'
-                                                        >
-                                                            <Translate id='button.viewFAQ'/>
-                                                        </a>
-                                                    )}
-                                                </div>
-                                                {alert.console && (
-                                                    <Console>
-                                                        {alert.errorMessage}
-                                                    </Console>
-                                                )}
-                                            </Text>
-                                            {closeIcon &&
-                                                <Close onClick={() => handleClose(alert.type)} />
-                                            }
-                                        </Content>
-                                    </Alert>
-                                );
-                            })}
-                        </>
-                    )}
-                </Translate>
-            </AlertContainer>
-        );
-    } else {
-        return null;
-    }
+  if (alerts.length) {
+    return (
+      <AlertContainer types={alerts.map((alert) => alert.type)}>
+        <Translate>
+          {({ translate }) => (
+            <>
+              {alerts
+                .filter((alert) => alert.show)
+                .map((alert, i) => {
+                  const msgCode =
+                    typeof translate(alert.messageCode) === "string"
+                      ? translate(alert.messageCode)
+                      : "";
+                  const noTranslationFound = msgCode.includes("No default translation found!");
+                  return (
+                    <Alert
+                      key={`alert-${i}`}
+                      success={alert.success}
+                      closing={closing}
+                      className={`number-${alert.type}`}
+                      type={alert.type}
+                    >
+                      <Content>
+                        <Icon>
+                          <img
+                            src={alert.success ? IconCheckCircleImage : IconsAlertCircleImage}
+                            alt=''
+                          />
+                        </Icon>
+                        <Text>
+                          <Header success={alert.success}>
+                            <Translate
+                              id={alert.messageCodeHeader || (alert.success ? "success" : "error")}
+                            />
+                          </Header>
+                          <div className='message-code'>
+                            {noTranslationFound ? (
+                              <Translate
+                                id={`reduxActions.default.${alert.success ? "success" : "error"}`}
+                              />
+                            ) : (
+                              <SafeTranslate id={alert.messageCode} data={alert.data} />
+                            )}
+                            {!alert.success && (
+                              <a
+                                href={
+                                  noTranslationFound ||
+                                  msgCode.includes("Sorry an error has occurred")
+                                    ? `${zendeskBaseURL}${
+                                        alert.errorMessage
+                                          ? `search?query=${encodeURIComponent(
+                                              alert.errorMessage.substring(0, 500),
+                                            )}`
+                                          : ""
+                                      }`
+                                    : `${zendeskBaseURL}search?query=${encodeURIComponent(
+                                        msgCode.substring(0, 500),
+                                      )}`
+                                }
+                                target='_blank'
+                                rel='noreferrer'
+                              >
+                                <Translate id='button.viewFAQ' />
+                              </a>
+                            )}
+                          </div>
+                          {alert.console && <Console>{alert.errorMessage}</Console>}
+                        </Text>
+                        {closeIcon && <Close onClick={() => handleClose(alert.type)} />}
+                      </Content>
+                    </Alert>
+                  );
+                })}
+            </>
+          )}
+        </Translate>
+      </AlertContainer>
+    );
+  } else {
+    return null;
+  }
 };
 
 const mapDispatchToProps = {
-    clearGlobalAlert
+  clearGlobalAlert,
 };
 
 const mapStateToProps = (state) => ({
-    ...selectStatusSlice(state)
+  ...selectStatusSlice(state),
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(GlobalAlertNew);
+export default connect(mapStateToProps, mapDispatchToProps)(GlobalAlertNew);

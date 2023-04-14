@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import { useSelector } from "react-redux";
+import styled from "styled-components";
 
-import GiftBoxLineIcon from '../../images/gift-box-line.svg';
-import GiftBoxIcon from '../../images/gift-box.svg';
-import StarsIcon from '../../images/star.svg';
-import { selectAccountId } from '../../redux/slices/account';
-import { getReleaseNotesClosed, setReleaseNotesClosed } from '../../utils/localStorage';
-import { RELEASE_NOTES_MODAL_VERSION } from '../../utils/wallet';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
+import GiftBoxLineIcon from "../../images/gift-box-line.svg";
+import GiftBoxIcon from "../../images/gift-box.svg";
+import StarsIcon from "../../images/star.svg";
+import { selectAccountId } from "../../redux/slices/account";
+import { getReleaseNotesClosed, setReleaseNotesClosed } from "../../utils/localStorage";
+import { RELEASE_NOTES_MODAL_VERSION } from "../../utils/wallet";
+import FormButton from "../common/FormButton";
+import Modal from "../common/modal/Modal";
 
 const Header = styled.div`
     text-align: center;
@@ -100,54 +100,52 @@ const Container = styled.div`
 `;
 
 const ReleaseNotesModal = () => {
-    const accountId = useSelector((state) => selectAccountId(state));
-    const [open, setOpen] = useState(!getReleaseNotesClosed(RELEASE_NOTES_MODAL_VERSION));
-    
-    const onClose = () => {
-        setReleaseNotesClosed(RELEASE_NOTES_MODAL_VERSION);
-        setOpen(false);
-    };
-    
-    return (accountId && open)
-        ? (
-            <Modal
-                id='release-notes-modal'
-                isOpen={open}
-                onClose={onClose}
-                closeButton='true'
-            >
-                <Container>
-                    <Header icon={GiftBoxIcon}>
-                        <div />
-                        <h2><Translate id="releaseNotesModal.title" /></h2>
-                        <span>{RELEASE_NOTES_MODAL_VERSION}</span>
-                    </Header>
-                    <div className='text'><Translate id="releaseNotesModal.desc" /></div>
+  const accountId = useSelector((state) => selectAccountId(state));
+  const [open, setOpen] = useState(!getReleaseNotesClosed(RELEASE_NOTES_MODAL_VERSION));
 
-                    <SubHeader icon={GiftBoxLineIcon}>
-                        <Translate id="releaseNotesModal.subTitle1" />
-                    </SubHeader>
-                    <ul>
-                        <li><Translate id="releaseNotesModal.subText1" /></li>
-                    </ul>
+  const onClose = () => {
+    setReleaseNotesClosed(RELEASE_NOTES_MODAL_VERSION);
+    setOpen(false);
+  };
 
-                    <SubHeader icon={StarsIcon}>
-                        <Translate id="releaseNotesModal.subTitle2" />
-                    </SubHeader>
-                    <ul>
-                        <li><Translate id="releaseNotesModal.subText2" /></li>
-                    </ul>
+  return accountId && open ? (
+    <Modal id='release-notes-modal' isOpen={open} onClose={onClose} closeButton='true'>
+      <Container>
+        <Header icon={GiftBoxIcon}>
+          <div />
+          <h2>
+            <Translate id="releaseNotesModal.title" />
+          </h2>
+          <span>{RELEASE_NOTES_MODAL_VERSION}</span>
+        </Header>
+        <div className='text'>
+          <Translate id="releaseNotesModal.desc" />
+        </div>
 
-                    <FormButton 
-                        onClick={onClose}
-                        size='small'
-                    >
-                        <Translate id="button.continue" />
-                    </FormButton>
-                </Container>
-            </Modal>
-        )
-        : null;
+        <SubHeader icon={GiftBoxLineIcon}>
+          <Translate id="releaseNotesModal.subTitle1" />
+        </SubHeader>
+        <ul>
+          <li>
+            <Translate id="releaseNotesModal.subText1" />
+          </li>
+        </ul>
+
+        <SubHeader icon={StarsIcon}>
+          <Translate id="releaseNotesModal.subTitle2" />
+        </SubHeader>
+        <ul>
+          <li>
+            <Translate id="releaseNotesModal.subText2" />
+          </li>
+        </ul>
+
+        <FormButton onClick={onClose} size='small'>
+          <Translate id="button.continue" />
+        </FormButton>
+      </Container>
+    </Modal>
+  ) : null;
 };
 
 export default ReleaseNotesModal;

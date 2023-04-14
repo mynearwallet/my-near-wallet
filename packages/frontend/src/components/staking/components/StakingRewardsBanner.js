@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import FormButton from '../../common/FormButton';
-import Modal from '../../common/modal/Modal';
-import AlertRoundedIcon from '../../svg/AlertRoundedIcon.js';
-import NearCircleIcon from '../../svg/NearCircleIcon.js';
+import FormButton from "../../common/FormButton";
+import Modal from "../../common/modal/Modal";
+import AlertRoundedIcon from "../../svg/AlertRoundedIcon.js";
+import NearCircleIcon from "../../svg/NearCircleIcon.js";
 
 const Container = styled.div`
     &&&& {
@@ -62,37 +62,39 @@ const ModalContainer = styled.div`
 `;
 
 export default function StakingRewardsBanner() {
-    const [info, setInfo] = useState(false);
-    
-    return (
-        <Container>
-            <AlertRoundedIcon/>
-            <Translate id='staking.balanceBox.unclaimed.unavailable.title' />
-            <FormButton className='link' onClick={() => setInfo(true)}>
-                <Translate id='staking.balanceBox.unclaimed.unavailable.cta' />
+  const [info, setInfo] = useState(false);
+
+  return (
+    <Container>
+      <AlertRoundedIcon />
+      <Translate id='staking.balanceBox.unclaimed.unavailable.title' />
+      <FormButton className='link' onClick={() => setInfo(true)}>
+        <Translate id='staking.balanceBox.unclaimed.unavailable.cta' />
+      </FormButton>
+      {info && (
+        <Modal
+          id='staking-rewards-modal'
+          isOpen={info}
+          onClose={() => setInfo(false)}
+          closeButton='desktop'
+        >
+          <ModalContainer>
+            <NearCircleIcon />
+            <h2>
+              <Translate id='staking.balanceBox.unclaimed.unavailable.modalTitle' />
+            </h2>
+            <p>
+              <Translate id='staking.balanceBox.unclaimed.unavailable.modalDescOne' />
+            </p>
+            <p>
+              <Translate id='staking.balanceBox.unclaimed.unavailable.modalDescTwo' />
+            </p>
+            <FormButton color='gray-white' id='close-button'>
+              <Translate id='button.dismiss' />
             </FormButton>
-            {info && (
-                <Modal
-                    id='staking-rewards-modal'
-                    isOpen={info}
-                    onClose={() => setInfo(false)}
-                    closeButton='desktop'
-                >
-                    <ModalContainer>
-                        <NearCircleIcon/>
-                        <h2><Translate id='staking.balanceBox.unclaimed.unavailable.modalTitle' /></h2>
-                        <p>
-                            <Translate id='staking.balanceBox.unclaimed.unavailable.modalDescOne' />
-                        </p>
-                        <p>
-                            <Translate id='staking.balanceBox.unclaimed.unavailable.modalDescTwo' />
-                        </p>
-                        <FormButton color='gray-white' id='close-button'>
-                            <Translate id='button.dismiss'/>
-                        </FormButton>
-                    </ModalContainer>
-                </Modal>
-            )}
-        </Container>
-    );
+          </ModalContainer>
+        </Modal>
+      )}
+    </Container>
+  );
 }

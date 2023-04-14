@@ -1,10 +1,10 @@
-import React from 'react';
-import { Translate } from 'react-localize-redux';
-import styled from 'styled-components';
+import React from "react";
+import { Translate } from "react-localize-redux";
+import styled from "styled-components";
 
-import Modal from '../../common/modal/Modal';
-import AlertTriangleIcon from '../../svg/AlertTriangleIcon';
-import MobileSharingQRCode from './MobileSharingQRCode';
+import Modal from "../../common/modal/Modal";
+import AlertTriangleIcon from "../../svg/AlertTriangleIcon";
+import MobileSharingQRCode from "./MobileSharingQRCode";
 
 const StyledContainer = styled.div`
     &&& {
@@ -61,23 +61,25 @@ const StyledContainer = styled.div`
 `;
 
 const MobileSharingModal = ({ open, onClose, mobileSharingLink }) => {
-    return (
-        <Modal
-            isOpen={open}
-            onClose={onClose}
-            closeButton='desktop'
-        >
-            <StyledContainer>
-                <h2><Translate id='mobileDeviceAccess.showCode.modal.title'/></h2>
-                <div className='desc'><Translate id='mobileDeviceAccess.showCode.modal.desc'/></div>
-                <div className='disclaimer'>
-                    <div className='alert-triangle'><AlertTriangleIcon color='#995200'/></div>
-                    <Translate id='mobileDeviceAccess.showCode.modal.disclaimer'/>
-                </div>
-                <MobileSharingQRCode mobileSharingLink={mobileSharingLink}/>
-            </StyledContainer>
-        </Modal>
-    );
+  return (
+    <Modal isOpen={open} onClose={onClose} closeButton='desktop'>
+      <StyledContainer>
+        <h2>
+          <Translate id='mobileDeviceAccess.showCode.modal.title' />
+        </h2>
+        <div className='desc'>
+          <Translate id='mobileDeviceAccess.showCode.modal.desc' />
+        </div>
+        <div className='disclaimer'>
+          <div className='alert-triangle'>
+            <AlertTriangleIcon color='#995200' />
+          </div>
+          <Translate id='mobileDeviceAccess.showCode.modal.disclaimer' />
+        </div>
+        <MobileSharingQRCode mobileSharingLink={mobileSharingLink} />
+      </StyledContainer>
+    </Modal>
+  );
 };
 
 export default MobileSharingModal;
