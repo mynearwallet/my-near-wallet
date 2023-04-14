@@ -17,19 +17,15 @@
     "lint:fix": "yarn rome check . --apply",
     "format": "yarn rome format . --write"
   },
+  "dependencies": {},
   "devDependencies": {
-    "cz-conventional-changelog": "^3.3.0",
-    "husky": "^7.0.0",
-    "lerna": "^4.0.0",
-    "rome": "12.0.0"
+    "husky": "^8.0.3",
+    "lerna": "^6.6.1",
+    "rome": "12.0.0",
+    "@commitlint/cli": "^17.6.0",
+    "@commitlint/config-conventional": "^17.6.0"
   },
   "resolutions": {
     "node-gyp": "9.3.1"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "dependencies": {}
+  }
 }
