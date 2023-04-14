@@ -8,7 +8,7 @@ import styled from "styled-components";
 import CONFIG from "../../config";
 import { Mixpanel } from "../../mixpanel/index";
 import {
-  checkNearDropBalance,
+  checkLinkdropInfo,
   checkNewAccount,
   redirectTo,
   refreshAccount,
@@ -112,8 +112,8 @@ class CreateAccount extends Component {
   state = {
     loader: false,
     accountId: "",
-    invalidNearDrop: null,
-    fundingAmount: null,
+    invalidLinkdrop: null,
+    linkdropKeyInfo: null,
     termsAccepted: false,
     whereToBuy: false,
   };
@@ -122,7 +122,7 @@ class CreateAccount extends Component {
     const { fundingContract, fundingKey } = this.props;
 
     if (fundingContract && fundingKey) {
-      this.handleCheckNearDropBalance();
+      this.handleCheckLinkdropInfo();
     }
   }
 
@@ -130,15 +130,15 @@ class CreateAccount extends Component {
     this.props.clearLocalAlert();
   };
 
-  handleCheckNearDropBalance = async () => {
-    const { fundingContract, fundingKey, checkNearDropBalance } = this.props;
+  handleCheckLinkdropInfo = async () => {
+    const { fundingContract, fundingKey, checkLinkdropInfo } = this.props;
     await Mixpanel.withTracking(
       "CA Check near drop balance",
       async () => {
-        const fundingAmount = await checkNearDropBalance(fundingContract, fundingKey);
-        this.setState({ fundingAmount });
+        const linkdropKeyInfo = await checkLinkdropInfo(fundingContract, fundingKey);
+        this.setState({ linkdropKeyInfo });
       },
-      () => this.setState({ invalidNearDrop: true }),
+      () => this.setState({ invalidLinkdrop: true }),
     );
   };
 
@@ -151,7 +151,7 @@ class CreateAccount extends Component {
   };
 
   handleCreateAccount = async () => {
-    const { accountId, fundingAmount } = this.state;
+    const { accountId, linkdropKeyInfo } = this.state;
     const { fundingContract, fundingKey, fundingAccountId } = this.props;
 
     this.setState({ loader: true });
@@ -160,7 +160,7 @@ class CreateAccount extends Component {
     if (fundingAccountId || fundingContract) {
       const fundingOptions = fundingAccountId
         ? { fundingAccountId }
-        : { fundingContract, fundingKey, fundingAmount };
+        : { fundingContract, fundingKey, fundingAmount: linkdropKeyInfo.yoctoNEAR };
       queryString = `?fundingOptions=${encodeURIComponent(JSON.stringify(fundingOptions))}`;
     }
     Mixpanel.track("CA Click create account button");
@@ -168,7 +168,7 @@ class CreateAccount extends Component {
   };
 
   render() {
-    const { loader, accountId, invalidNearDrop, termsAccepted, whereToBuy } = this.state;
+    const { loader, accountId, invalidLinkdrop, termsAccepted, whereToBuy } = this.state;
 
     const {
       localAlert,
@@ -241,7 +241,7 @@ class CreateAccount extends Component {
       );
     }
 
-    if (!invalidNearDrop) {
+    if (!invalidLinkdrop) {
       return (
         <StyledContainer className='small-centered border'>
           <form
@@ -335,7 +335,7 @@ const mapDispatchToProps = {
   checkNewAccount,
   clearLocalAlert,
   refreshAccount,
-  checkNearDropBalance,
+  checkLinkdropInfo,
   redirectTo,
 };
 

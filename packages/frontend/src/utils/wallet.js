@@ -587,18 +587,40 @@ export default class Wallet {
     await account.deleteAccount(accountId);
   }
 
-  async checkNearDropBalance(fundingContract, fundingKey) {
+  async checkLinkdropInfo(fundingContract, fundingKey) {
+    console.log('fundingKey: ', fundingKey)
+    console.log('fundingContract: ', fundingContract)
     const account = await this.getAccount(fundingContract);
 
     const contract = new nearApiJs.Contract(account, fundingContract, {
-      viewMethods: ["get_key_balance"],
-      sender: fundingContract,
+        viewMethods: ['get_key_balance', 'get_key_information'],
+        sender: fundingContract
     });
 
     const key = nearApiJs.KeyPair.fromString(fundingKey).publicKey.toString();
 
-    return await contract.get_key_balance({ key });
-  }
+    let keyInfo = {
+      required_gas: '100000000000000',
+      yoctoNEAR: '0'
+    }
+
+    try {
+        let returnedKeyInfo = await contract.get_key_information({ key });
+        
+        if (Object.hasOwn(returnedKeyInfo, 'yoctoNEAR') && Object.hasOwn(returnedKeyInfo, 'required_gas')) {
+          return returnedKeyInfo;
+        }
+
+        let balance = await contract.get_key_balance({ key });
+        keyInfo.yoctoNEAR = balance;  
+    } catch (e) {
+        console.log('e: ', e)
+        let balance = await contract.get_key_balance({ key });
+        keyInfo.yoctoNEAR = balance;   
+    }
+
+    return keyInfo;
+}
 
   async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
     const account = new nearApiJs.Account(this.connectionBasic, fundingContract);

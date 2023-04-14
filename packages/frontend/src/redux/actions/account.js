@@ -272,7 +272,7 @@ export const {
   getLedgerPublicKey,
   setupRecoveryMessage,
   deleteRecoveryMethod,
-  checkNearDropBalance,
+  checkLinkdropInfo,
   claimLinkdropToAccount,
   checkIsNew,
   checkNewAccount,
@@ -335,7 +335,7 @@ export const {
   GET_LEDGER_PUBLIC_KEY: [wallet.getLedgerPublicKey.bind(wallet), () => ({})],
   SETUP_RECOVERY_MESSAGE: [wallet.setupRecoveryMessage.bind(wallet), () => showAlert()],
   DELETE_RECOVERY_METHOD: [wallet.deleteRecoveryMethod.bind(wallet), () => showAlert()],
-  CHECK_NEAR_DROP_BALANCE: [wallet.checkNearDropBalance.bind(wallet), () => ({})],
+  CHECK_LINKDROP_INFO: [wallet.checkLinkdropInfo.bind(wallet), () => ({})],
   CLAIM_LINKDROP_TO_ACCOUNT: [
     wallet.claimLinkdropToAccount.bind(wallet),
     () => showAlert({ onlyError: true }),
