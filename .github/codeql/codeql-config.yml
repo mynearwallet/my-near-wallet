@@ -1,0 +1,5 @@
+name: "CodeQL config"
+
+paths-ignore:
+  - packages/e2e-tests
+  - '**/*.(spec|test).(js|ts)'
