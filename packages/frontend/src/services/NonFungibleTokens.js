@@ -35,10 +35,10 @@ export default class NonFungibleTokens {
     // need to restructure response for Mintbase NFTs for consistency with NFT spec
     if (token.id && !token.token_id) {
       token.token_id = token.id.toString();
-      delete token.id;
+      token.id = undefined;
     }
 
-    if (token.owner_id && token.owner_id.Account) {
+    if (token.owner_id?.Account) {
       token.owner_id = token.owner_id.Account;
     }
 
@@ -56,7 +56,7 @@ export default class NonFungibleTokens {
     let metadata = await this.viewFunctionAccount.viewFunction(contractName, "nft_token_metadata", {
       token_id: tokenId,
     });
-    let { media, reference } = metadata;
+    const { media, reference } = metadata;
     if (!media && reference) {
       // TODO: Filter which URIs are allowed for privacy?
       // TODO: Figure out ARWeave CORS issue

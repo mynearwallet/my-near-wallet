@@ -57,7 +57,7 @@ export default function SelectAccount({ accounts, onChange, selectedAccount }) {
       selectedValue={selectedAccount}
     >
       {accounts.map((account, i) => (
-        <RadioButton value={account.accountId} key={i}>
+        <RadioButton value={account.accountId} key={`radio-button-${i}`}>
           <Container>
             <div>{account.accountId}</div>
             <div>

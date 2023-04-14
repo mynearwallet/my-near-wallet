@@ -3,6 +3,7 @@ import React from "react";
 export default ({ show, onClick }) => {
   if (show) {
     return (
+      // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
       <svg
         width="32"
         height="32"
@@ -37,6 +38,7 @@ export default ({ show, onClick }) => {
     );
   }
   return (
+    // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <svg
       width="32"
       height="32"

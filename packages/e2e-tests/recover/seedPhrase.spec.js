@@ -17,8 +17,8 @@ describe("Account Recovery Using Seed Phrase", () => {
   test("navigates to seed phrase page successfully", async ({ page }) => {
     await page.goto("/");
 
-    await page.click(`data-test-id=homePageImportAccountButton`);
-    await page.click(`data-test-id=recoverAccountWithPassphraseButton`);
+    await page.click("data-test-id=homePageImportAccountButton");
+    await page.click("data-test-id=recoverAccountWithPassphraseButton");
 
     await expect(page).toMatchURL(/\/recover-seed-phrase$/);
   });
@@ -27,7 +27,7 @@ describe("Account Recovery Using Seed Phrase", () => {
     await page.goto("/recover-seed-phrase");
 
     await page.fill("data-test-id=seedPhraseRecoveryInput", testAccount.seedPhrase);
-    await page.click(`data-test-id=seedPhraseRecoverySubmitButton`);
+    await page.click("data-test-id=seedPhraseRecoverySubmitButton");
 
     await page.waitForNavigation();
 

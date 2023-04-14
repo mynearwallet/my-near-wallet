@@ -15,7 +15,7 @@ const InputWrapper = styled.div`
     input {
         margin-top: 0px;
     }
-    
+
     &.wrong-char {
         input {
             animation-duration: 0.4s;
@@ -110,7 +110,7 @@ class InputAccountId extends Component {
     const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
     const width = this.getTextWidth(userValue, "16px Inter");
     const extraSpace = isSafari ? 22 : 23;
-    this.prefix.current.style.right = width + extraSpace + "px";
+    this.prefix.current.style.right = `${width}${extraSpace}px`;
     this.prefix.current.style.visibility = "visible";
     if (userValue.length === 0) {
       this.prefix.current.style.visibility = "hidden";
@@ -121,9 +121,9 @@ class InputAccountId extends Component {
     if (!this.canvas) {
       this.canvas = document.createElement("canvas");
     }
-    let context = this.canvas.getContext("2d");
+    const context = this.canvas.getContext("2d");
     context.font = font;
-    let metrics = context.measureText(text);
+    const metrics = context.measureText(text);
     return metrics.width;
   };
 
@@ -209,9 +209,9 @@ class InputAccountId extends Component {
               autoCorrect='off'
               autoCapitalize='off'
               spellCheck='false'
+              // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
               tabIndex='1'
               disabled={disabled}
-              autoFocus={autoFocus}
               onBlur={onBlur}
               onFocus={onFocus}
               data-test-id="sendMoneyPageAccountIdInput"

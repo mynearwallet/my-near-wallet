@@ -37,7 +37,7 @@ const StyledContainer = styled(Container)`
     h1, h2 {
         text-align: center !important;
     }
-    
+
     button {
         display: block !important;
         margin: 35px auto 40px auto !important;
@@ -65,7 +65,7 @@ const StyledContainer = styled(Container)`
             margin-bottom: 25px !important;
         }
     }
-    
+
     .input-validation-label {
         margin-top: -14px !important;
     }
@@ -163,7 +163,7 @@ const StyledContainer = styled(Container)`
         display: flex;
         align-items: center;
         margin-bottom: 10px;
-        
+
         .tooltip {
             margin-bottom: -1px;
         }
@@ -205,7 +205,7 @@ const StakingContainer = ({ history, match }) => {
     if (accountId) {
       dispatch(getBalance());
     }
-    if (!!balance.available) {
+    if (balance.available) {
       dispatch(updateStaking(getStakingAccountSelected()));
     }
   }, [accountId, !!balance.available]);
@@ -228,7 +228,7 @@ const StakingContainer = ({ history, match }) => {
   }, [currentAccount.accountId, validators]);
 
   const handleAction = async (action, validator, amount) => {
-    let id = Mixpanel.get_distinct_id();
+    const id = Mixpanel.get_distinct_id();
     Mixpanel.identify(id);
     await Mixpanel.withTracking(action.toUpperCase(), async () => {
       const properValidator = action === "stake" ? validator : selectedValidator || validator;

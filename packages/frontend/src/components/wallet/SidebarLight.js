@@ -27,7 +27,7 @@ const StyledContainer = styled.div`
             border-radius: 50%;
             margin: 0 5px;
             cursor: pointer;
-            
+
             &.active {
                 background-color: #8FCDFF;
             }
@@ -55,14 +55,16 @@ export default ({ availableAccounts }) => {
       </StyledBanner>
       {availableAccounts && (
         <div className='dots'>
+          {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
           <div
             className={`dot ${activeComponent === "ExploreApps" ? "active" : ""}`}
             onClick={() => setActiveComponent("ExploreApps")}
-          ></div>
+          />
+          {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
           <div
             className={`dot ${activeComponent === "CreateCustomName" ? "active" : ""}`}
             onClick={() => setActiveComponent("CreateCustomName")}
-          ></div>
+          />
         </div>
       )}
     </StyledContainer>

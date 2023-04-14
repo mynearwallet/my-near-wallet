@@ -15,7 +15,7 @@ export async function getTransactions({ accountId }) {
       .map((s) => s.substr(0, 1) + s.substr(1).toLowerCase())
       .join(""),
     block_timestamp: parseInt(t.block_timestamp.substr(0, 13), 10),
-    hash_with_index: t.action_index + ":" + t.hash,
+    hash_with_index: `${t.action_index}:${t.hash}`,
     checkStatus: !(i && t.hash === txs[i - 1].hash),
   }));
 }

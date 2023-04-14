@@ -267,7 +267,7 @@ const VerifyAccountWrapper = () => {
           return dispatch(
             redirectTo(
               `/initial-deposit${
-                location.search ? location.search + "&" : "?"
+                location.search ? `${location.search}&` : "?"
               }fundingMethod=creditCard`,
             ),
           );

@@ -12,7 +12,7 @@ const initSentry = () => {
     release: CONFIG.SENTRY_RELEASE,
     beforeSend(event) {
       if (event.request.url.includes("recover-with-link")) {
-        delete event.request.url;
+        event.request.url = undefined;
       }
       return event;
     },
@@ -22,7 +22,7 @@ const initSentry = () => {
         (breadcrumb.data.from.includes("recover-with-link") ||
           breadcrumb.data.to.includes("recover-with-link"))
       ) {
-        delete breadcrumb.data;
+        breadcrumb.data = undefined;
       }
       return breadcrumb;
     },

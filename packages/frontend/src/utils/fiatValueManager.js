@@ -72,7 +72,7 @@ export default class FiatValueManager {
         try {
           const refFinanceTokenFiatValues = await sendJson(
             "GET",
-            CONFIG.REF_FINANCE_API_ENDPOINT + "/list-token-price",
+            `${CONFIG.REF_FINANCE_API_ENDPOINT}/list-token-price`,
           );
           return [refFinanceTokenFiatValues];
         } catch (error) {

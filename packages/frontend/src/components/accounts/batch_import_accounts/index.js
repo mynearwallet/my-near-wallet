@@ -131,7 +131,6 @@ const EnterPublicKeyForm = ({ onCancel, onPublicKey }) => {
                 value={value}
                 autoCapitalize='off'
                 spellCheck='false'
-                autoFocus
               />
             </>
           )}

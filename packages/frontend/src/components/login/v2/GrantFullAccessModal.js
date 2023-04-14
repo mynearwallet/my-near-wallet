@@ -46,18 +46,18 @@ const StyledContainer = styled.div`
         .input-label {
             color: #72727A;
         }
-    
+
         .modal-footer {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-    
+
             > button {
                 width: auto;
                 &.link {
                     margin: 20px 35px;
                 }
-                
+
                 &.blue {
                     padding: 0 35px;
                 }
@@ -112,7 +112,6 @@ export default ({
                 autoCapitalize='off'
                 spellCheck='false'
                 disabled={loggingIn}
-                autoFocus={!isMobile()}
               />
             )}
           </Translate>

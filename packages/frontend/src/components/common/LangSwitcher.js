@@ -19,7 +19,7 @@ const LanguageToggle = ({ languages, activeLanguage, setActiveLanguage }) => {
     <select
       className='lang-selector'
       name='lang'
-      value={activeLanguage && activeLanguage.code}
+      value={activeLanguage?.code}
       onChange={targetValue(handleChange)}
     >
       {languages.map((lang) => (

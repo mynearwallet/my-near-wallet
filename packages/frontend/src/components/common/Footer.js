@@ -80,7 +80,7 @@ const StyledContainer = styled.div`
 
 const StyledLogo = styled.div`
     svg {
-        width: 218px;    
+        width: 218px;
     }
 `;
 
@@ -94,6 +94,7 @@ const Footer = () => {
         <div>
           &copy; {new Date().getFullYear()} <Translate id='footer.copyrights' />
           <div>
+            {/* rome-ignore lint/a11y/useValidAnchor: <explanation> */}
             <a
               href='/terms'
               rel='noopener noreferrer'
@@ -103,6 +104,7 @@ const Footer = () => {
               <Translate id='footer.termsOfService' />
             </a>
             <span className='color-brown-grey'>|</span>
+            {/* rome-ignore lint/a11y/useValidAnchor: <explanation> */}
             <a
               href='/privacy'
               rel='noopener noreferrer'
@@ -117,6 +119,7 @@ const Footer = () => {
       <div className='center'>
         <Translate id='footer.desc' />
         &nbsp;
+        {/* rome-ignore lint/a11y/useValidAnchor: <explanation> */}
         <a
           href='https://near.org'
           rel='noopener noreferrer'
@@ -129,6 +132,7 @@ const Footer = () => {
       <div className='right'>
         <Translate id='footer.needHelp' />
         <br />
+        {/* rome-ignore lint/a11y/useValidAnchor: <explanation> */}
         <a
           href='https://discord.com/invite/Vj74PpQYsh'
           rel='noopener noreferrer'

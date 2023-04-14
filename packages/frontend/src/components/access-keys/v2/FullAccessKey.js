@@ -115,7 +115,6 @@ export default ({
                   autoComplete='off'
                   spellCheck='false'
                   disabled={deAuthorizing}
-                  autoFocus={true}
                 />
               )}
             </Translate>

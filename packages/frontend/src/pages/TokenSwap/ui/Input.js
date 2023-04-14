@@ -192,7 +192,6 @@ const Input = ({
           value={loading ? "" : valueToShow}
           onChange={handleChange}
           placeholder="0"
-          autoFocus={autoFocus}
           disabled={disabled}
           data-test-id={inputTestId}
         />

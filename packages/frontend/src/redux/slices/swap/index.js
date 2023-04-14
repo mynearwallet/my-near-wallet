@@ -75,7 +75,7 @@ const updateAllTokensData = createAsyncThunk(
       swap: { tokenNames },
     } = getState();
     const tokens = {};
-    let tokensWithBalance = {};
+    const tokensWithBalance = {};
 
     dispatch(setAllTokensLoading(true));
 

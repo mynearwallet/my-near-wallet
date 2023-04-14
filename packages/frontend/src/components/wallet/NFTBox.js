@@ -152,6 +152,7 @@ const NFTBox = ({ tokenDetails }) => {
         <div className='tokens'>
           {ownedTokensMetadata.map(({ token_id, metadata: { mediaUrl, title } }, index) => {
             return (
+              // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
               <div
                 className='nft'
                 key={token_id}

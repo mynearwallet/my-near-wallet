@@ -200,7 +200,7 @@ const GlobalAlertNew = ({ globalAlert, actionStatus, clearGlobalAlert, closeIcon
     );
   }, [globalAlert]);
 
-  if (!!alerts.length) {
+  if (alerts.length) {
     return (
       <AlertContainer types={alerts.map((alert) => alert.type)}>
         <Translate>

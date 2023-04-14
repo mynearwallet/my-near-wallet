@@ -21,7 +21,7 @@ export default function Withdraw({ currentValidators }) {
           .filter((v) => v.available)
           .map((validator, i) => (
             <ValidatorBox
-              key={i}
+              key={`validator-box-${i}`}
               validator={validator}
               amount={validator.available}
               showBalanceInUSD={false}

@@ -34,7 +34,7 @@ const initialOwnedTokenState = {
 };
 
 async function getCachedContractMetadataOrFetch(contractName, state) {
-  let contractMetadata = selectOneContractMetadata(state, { contractName });
+  const contractMetadata = selectOneContractMetadata(state, { contractName });
   if (contractMetadata) {
     debugLog("Returning cached contract metadata", { contractName });
     return contractMetadata;
@@ -93,7 +93,7 @@ const updateNFTs = createAsyncThunk(
 
     const { dispatch, getState } = thunkAPI;
 
-    if (!!contractName) {
+    if (contractName) {
       const {
         actions: { clearTokenMetadata },
       } = nftSlice;
@@ -282,13 +282,13 @@ export const selectOneContractMetadata = createSelector(
 const selectOwnedTokensForAccount = createSelector(
   [selectOwnedTokens, getAccountIdParam],
   (ownedTokensByAccountId, accountId) =>
-    (ownedTokensByAccountId.byAccountId[accountId] || {}).byContractName || {},
+    ownedTokensByAccountId.byAccountId[accountId]?.byContractName || {},
 );
 
 const selectNumberOfOwnedTokensForAccount = createSelector(
   [selectOwnedTokens, getAccountIdParam],
   (ownedTokensByAccountId, accountId) =>
-    (ownedTokensByAccountId.byAccountId[accountId] || {}).numberByContractName || {},
+    ownedTokensByAccountId.byAccountId[accountId]?.numberByContractName || {},
 );
 
 const selectOwnedTokensForAccountForContract = createSelector(
@@ -329,7 +329,7 @@ export const selectHasFetchedAllTokensForAccountForContract = createSelector(
 export const selectTransferredTokenForContractForTokenId = createSelector(
   [selectTransferredTokensSlice, getContractNameParam, getTokenIdParam],
   (transferredTokens, contractName, tokenId) =>
-    (transferredTokens.byContractName[contractName] || {})[tokenId],
+    transferredTokens.byContractName[contractName]?.[tokenId],
 );
 
 // Returns owned tokens metadata for all tokens owned by the passed accountId, sorted by their `name` property

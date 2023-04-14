@@ -53,7 +53,7 @@ export const FundingType = ({ icon, link, name, track, disabled }) => {
       href={link}
       target='_blank'
       rel='noreferrer'
-      onClick={() => track && track()}
+      onClick={() => track?.()}
       disabled={disabled}
     >
       <Wrapper>

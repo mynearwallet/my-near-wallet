@@ -12,6 +12,7 @@ module.exports = base;
 
 module.exports.test = base.test.extend({
   bankAccount: [
+    // rome-ignore lint/correctness/noEmptyPattern: <explanation>
     async ({}, use, workerInfo) => {
       const bankAccount = await getBankAccount();
       const workerBankAccountId = getWorkerAccountId(workerInfo.workerIndex);

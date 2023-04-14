@@ -313,7 +313,7 @@ export const { staking } = createActions({
           mainAccountId: exAccountId,
         };
       }
-      let validator = validators.find((validator) => validator.accountId === selectedValidator);
+      const validator = validators.find((validator) => validator.accountId === selectedValidator);
 
       let totalStaked = ZERO.clone();
       let totalUnclaimed = ZERO.clone();
@@ -473,7 +473,7 @@ export const handleGetLockup = (externalAccountId) => async (dispatch, getState)
 };
 
 export const handleStakingUpdateAccount =
-  (recentlyStakedValidators = [], exAccountId) => async (dispatch, getState) => {
+  (recentlyStakedValidators, exAccountId) => async (dispatch, getState) => {
     const { accountId, balance } = exAccountId
       ? selectAllAccountsByAccountId(getState(), { accountId: exAccountId })
       : selectAccountSlice(getState());
@@ -555,7 +555,7 @@ export const updateStaking =
   };
 
 export const handleUpdateCurrent = (accountId) => async (dispatch, getState) => {
-  let currentAccount = selectStakingCurrentAccountbyAccountId(getState(), { accountId });
+  const currentAccount = selectStakingCurrentAccountbyAccountId(getState(), { accountId });
   dispatch(staking.updateCurrent({ currentAccount }));
 };
 

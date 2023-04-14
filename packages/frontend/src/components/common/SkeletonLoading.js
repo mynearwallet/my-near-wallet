@@ -37,7 +37,7 @@ const SkeletonLoading = ({ height, padding, number = 1, show, className }) => {
     return Array(number)
       .fill()
       .map((_, i) => (
-        <div className={className} style={{ padding }} key={i}>
+        <div className={className} style={{ padding }} key={`skeleton-${i}`}>
           <Wrapper className='animation-wrapper' style={{ height }}>
             <Animation className='animation' />
           </Wrapper>

@@ -13,7 +13,7 @@ export const formatNearAmount = (amount) => {
   if (amount === "0") {
     return amount;
   }
-  let formattedAmount = utils.format.formatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
+  const formattedAmount = utils.format.formatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
   if (formattedAmount === "0") {
     return `< ${
       !NEAR_FRACTIONAL_DIGITS ? "0" : `0.${"0".repeat((NEAR_FRACTIONAL_DIGITS || 1) - 1)}1`
@@ -23,7 +23,7 @@ export const formatNearAmount = (amount) => {
 };
 
 export const showInYocto = (amountStr) => {
-  return formatWithCommas(amountStr) + " yoctoNEAR";
+  return `${formatWithCommas(amountStr)} yoctoNEAR`;
 };
 
 export function formatErrorBalance(msg) {
@@ -31,7 +31,7 @@ export function formatErrorBalance(msg) {
   const yoctoSubString = msg.match(regExp);
   if (yoctoSubString) {
     const nearAmount = formatNearAmount(yoctoSubString[0].split(" ")[0]);
-    return msg.replace(regExp, nearAmount + " NEAR");
+    return msg.replace(regExp, `${nearAmount} NEAR`);
   }
 
   return msg;
@@ -51,7 +51,7 @@ export const getRoundedBalanceInFiat = (amount, tokenFiatValue, isNear, decimals
       ? formatNearAmount(amount).replace(/,/g, "")
       : formatTokenAmount(amount, decimals, decimals);
   const balanceInFiat = Number(formattedNearAmount) * tokenFiatValue;
-  const roundedBalanceInFiat = balanceInFiat && balanceInFiat.toFixed(2);
+  const roundedBalanceInFiat = balanceInFiat?.toFixed(2);
 
   if (roundedBalanceInFiat === "0.00" || formattedNearAmount === "< 0.00001") {
     return "< $0.01";
@@ -92,7 +92,7 @@ export const getTotalBalanceFromFungibleTokensListUSD = (fungibleTokensList) => 
   const tokensWithUSDValue = fungibleTokensList.filter(
     (token) => typeof token?.fiatValueMetadata?.usd === "number",
   );
-  for (let token of tokensWithUSDValue) {
+  for (const token of tokensWithUSDValue) {
     totalBalanceUSD +=
       token.fiatValueMetadata.usd *
       formatTokenAmount(token.balance, token.onChainFTMetadata?.decimals, 5);

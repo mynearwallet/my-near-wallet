@@ -31,7 +31,7 @@ export const toSignificantDecimals = (value, precision = 2) => {
 
   const fixed = Big(value).toFixed().replace(/,/g, ".");
   const integerPart = fixed?.split(".")[0];
-  let fractionalPart = fixed?.split(".")[1];
+  const fractionalPart = fixed?.split(".")[1];
 
   if (!fractionalPart) {
     return fixed;
@@ -114,7 +114,7 @@ export const formatBalance = (num, decimals) => {
 
   for (let i = num.length - 1; i >= 0; i--) {
     if (number.length === decimals) {
-      number = "." + number;
+      number = `.${number}`;
       dotPlace = i;
     }
 
@@ -126,9 +126,9 @@ export const formatBalance = (num, decimals) => {
   }
 
   if (decimals - number.length > 0) {
-    let countOfZeros = decimals - number.length;
+    const countOfZeros = decimals - number.length;
 
-    number = "0." + "0".repeat(countOfZeros) + number;
+    number = `0.${"0".repeat(countOfZeros)}${number}`;
 
     return removeTrailingZeros(number);
   }

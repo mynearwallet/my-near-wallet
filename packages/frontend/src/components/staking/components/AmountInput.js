@@ -46,13 +46,13 @@ export default function AmountInput({
       <input
         disabled={disabled}
         type='number'
-        autoFocus
         placeholder='0'
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className='stake-amount-input'
         data-test-id={inputTestId}
       />
+      {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div className='available-balance' onClick={availableClick}>
         <Translate id={`staking.${action}.input.availableBalance`} />
         <Balance amount={availableBalance} showBalanceInUSD={false} />

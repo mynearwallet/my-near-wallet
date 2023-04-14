@@ -10,7 +10,8 @@ const { StakeUnstakePage } = require("./models/StakeUnstake");
 const { describe, beforeAll, afterAll, beforeEach } = test;
 
 describe("Lockup stake and unstake", () => {
-  let testAccount, lockupAccount;
+  let testAccount;
+  let lockupAccount;
 
   beforeAll(async ({ bankAccount }) => {
     testAccount = await bankAccount.spawnRandomSubAccountInstance().create({ amount: "6.0" });
@@ -18,7 +19,7 @@ describe("Lockup stake and unstake", () => {
   });
 
   afterAll(async () => {
-    lockupAccount && (await lockupAccount.delete().then(() => testAccount && testAccount.delete));
+    lockupAccount && (await lockupAccount.delete().then(() => testAccount?.delete));
   });
 
   beforeEach(async ({ page }) => {

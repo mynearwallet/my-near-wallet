@@ -73,9 +73,10 @@ export default function AccountDropdown({ disabled, "data-test-id": testId }) {
         disabled={singleAccount || disabled}
         name='account-dropdown'
         title={shortAccountId}
-        content={accountsWithoutCurrent.map((account, i) => (
+        content={accountsWithoutCurrent.map((account) => (
+          // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
           <div
-            key={i}
+            key={account}
             title={account}
             onClick={() => dispatch(switchAccount({ accountId: account }))}
             className='account-dropdown-toggle'

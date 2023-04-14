@@ -87,7 +87,6 @@ const SelectToken = ({
             placeholder={translate("sendV2.selectAsset.assetInputPlaceholder")}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            autoFocus={isMobile ? false : true}
           />
         )}
       </Translate>

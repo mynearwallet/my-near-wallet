@@ -22,13 +22,14 @@ const RecoverAccountSeedPhraseForm = ({
           value={seedPhrase}
           onChange={(e) => handleChange(e.target.value)}
           className={classNames([
-            { success: localAlert && localAlert.success },
+            { success: localAlert?.success },
             { problem: localAlert && localAlert.success === false },
           ])}
           placeholder={translate("recoverSeedPhrase.seedPhraseInput.placeholder")}
           disabled={recoveringAccount}
           data-test-id="seedPhraseRecoveryInput"
           required
+          // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
           tabIndex='2'
           autoCapitalize='off'
         />

@@ -2,6 +2,7 @@ import React from "react";
 
 const UserIcon = ({ color = "#A2A2A8", background = false, onClick }) => {
   return (
+    // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <svg
       onClick={onClick}
       width="36"

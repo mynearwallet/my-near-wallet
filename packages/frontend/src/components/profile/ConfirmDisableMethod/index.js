@@ -41,7 +41,6 @@ const ConfirmDisableMethod = ({
               value={value}
               autoCapitalize='off'
               spellCheck='false'
-              autoFocus={!isMobile()}
             />
           )}
         </Translate>

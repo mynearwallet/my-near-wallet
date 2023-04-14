@@ -15,7 +15,7 @@ const UserIcon = styled.div`
     background-color: #f8f8f8;
     text-align: center;
     margin: 0 12px 0 0;
-    
+
     svg {
         width: 26px;
         height: 26px;
@@ -68,7 +68,7 @@ height: unset;
           }
         }
     }
-    
+
     &.rejected .status {
         background: #f4f4f4;
         color: #de2e32;
@@ -83,7 +83,7 @@ height: unset;
         :after {
             content: '.';
             animation: dots 1s steps(5, end) infinite;
-        
+
             @keyframes dots {
                 0%, 20% {
                     color: rgba(0,0,0,0);
@@ -120,7 +120,7 @@ height: unset;
         :after {
             content: '.';
             animation: dots 1s steps(5, end) infinite;
-        
+
             @keyframes dots {
                 0%, 20% {
                     color: rgba(0,0,0,0);
@@ -180,7 +180,8 @@ height: unset;
 const AccountListImport = ({ accounts = [], animationScope = 0, onClickAccount }) => (
   <AnimateList animate={animationScope}>
     {accounts.map((account) => (
-      <div
+      // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+       <div
         key={account.accountId}
         className={`row ${account.status}`}
         onClick={() => (onClickAccount ? onClickAccount(account) : null)}

@@ -31,8 +31,8 @@ class LedgerManager {
           this.transport.off("disconnect", this.disconnectHandler);
         }
       }
-      delete this.transport;
-      delete this.client;
+      this.transport = undefined;
+      this.client = undefined;
       this.setLedgerAvailableStatus(false);
     }
   }

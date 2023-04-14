@@ -1,7 +1,7 @@
 // Temporary workaround for returning JSON payloads for non-200 (failed) responses
 // Remove this file when this fix is implemented in `fetch-send-json`
 
-let fetch =
+const fetch =
   typeof window === "undefined" || window.name === "nodejs" ? require("node-fetch") : window.fetch;
 
 const createError = require("http-errors");

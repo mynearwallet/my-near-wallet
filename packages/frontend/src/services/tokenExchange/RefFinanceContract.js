@@ -49,7 +49,7 @@ class RefFinanceContract {
     }
 
     for (let req = 1; req <= numberOfRequests; req++) {
-      let startPoolsIndex = req * maxRequestAmount - maxRequestAmount;
+      const startPoolsIndex = req * maxRequestAmount - maxRequestAmount;
       let poolsAmountLimit = maxRequestAmount;
 
       if (req === numberOfRequests && remaningNumberOfPools) {

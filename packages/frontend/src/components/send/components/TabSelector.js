@@ -64,6 +64,7 @@ const TabSelector = () => {
 
   return (
     <StyledContainer className={SHOW_NETWORK_BANNER ? "showing-banner" : ""}>
+      {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div
         role='button'
         className={pathname.includes(sendMoneyRoute) ? "active" : ""}
@@ -73,6 +74,7 @@ const TabSelector = () => {
       >
         <Translate id='button.send' />
       </div>
+      {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div
         role='button'
         className={pathname.includes(receiveMoneyRoute) ? "active" : ""}

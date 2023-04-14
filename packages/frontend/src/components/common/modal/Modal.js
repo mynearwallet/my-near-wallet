@@ -32,14 +32,14 @@ function Modal({
     }
 
     const closeEl = document.getElementById("close-button");
-    closeEl && closeEl.addEventListener("click", handleClick, false);
+    closeEl?.addEventListener("click", handleClick, false);
     window.addEventListener("keydown", onEscKeyDown, false);
     const fadeIn = setTimeout(() => setFadeType("in"), 0);
     body.style.overflow = "hidden";
 
     return () => {
       window.removeEventListener("keydown", onEscKeyDown, false);
-      closeEl && closeEl.removeEventListener("click", handleClick, false);
+      closeEl?.removeEventListener("click", handleClick, false);
       clearTimeout(fadeIn);
       body.style.removeProperty("overflow");
     };

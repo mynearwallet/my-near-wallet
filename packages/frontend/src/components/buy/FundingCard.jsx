@@ -108,7 +108,7 @@ export const FundingCard = ({ title, subTitle, actions, link }) => {
       </TextWrap>
       <FundingTypeWrap>
         {actions.map((action, i) => (
-          <FundingType key={i} {...action} />
+          <FundingType key={`funding-type-${i}`} {...action} />
         ))}
       </FundingTypeWrap>
     </Block>

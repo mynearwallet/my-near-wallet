@@ -76,7 +76,7 @@ const handleTransactionsRejected = (state, { error }) => {
   });
 
   const hasAtLeastOneFunctionCallAction = retryTransactions.some((t) => {
-    return (t.actions || []).some((a) => a && a.functionCall);
+    return (t.actions || []).some((a) => a?.functionCall);
   });
 
   // If there are multiple tx, we want to check for the first tx with functionCall action, because it's possible that increasing gas for the other transactions will end with exceeded gas
@@ -117,7 +117,7 @@ const sign = handleActions(
         totalAmount: allActions
           .map(
             (a) =>
-              (a.transfer && a.transfer.deposit) || (a.functionCall && a.functionCall.deposit) || 0,
+              (a?.transfer.deposit) || (a?.functionCall.deposit) || 0,
           )
           .reduce((totalAmount, amount) => totalAmount.add(new BN(amount)), new BN(0))
           .toString(),

@@ -64,6 +64,7 @@ const Review = ({
       <div className='header'>
         <Translate id='sendV2.review.title' />
       </div>
+      {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div
         className='token-amount clickable'
         onClick={() => sendingToken !== true && onClickAmount()}

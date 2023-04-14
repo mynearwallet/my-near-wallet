@@ -24,7 +24,7 @@ export default createAsyncThunk(
           // Only switch to the next account if it's a named account since an implicit account could be valid but not funded yet.
           // Try to find existing account and switch to it
           let nextAccountId = "";
-          for (let curAccountId of Object.keys(wallet.accounts)) {
+          for (const curAccountId of Object.keys(wallet.accounts)) {
             if (await wallet.accountExists(curAccountId)) {
               nextAccountId = curAccountId;
               break;

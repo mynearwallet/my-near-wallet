@@ -76,7 +76,7 @@ export const handleRedirectUrl = (previousLocation) => (dispatch, getState) => {
   const recoverAccountPage = page === WALLET_RECOVER_ACCOUNT_URL;
 
   if ((guestLandingPage || createAccountPage || recoverAccountPage) && isValidRedirectUrl) {
-    let url = {
+    const url = {
       ...selectAccountUrl(getState()),
       redirect_url: previousLocation.pathname,
     };

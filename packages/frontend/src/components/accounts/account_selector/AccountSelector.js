@@ -80,7 +80,7 @@ export default ({
       <div className='accounts'>
         <Account
           accountId={signedInAccountId}
-          balance={accountsBalances && accountsBalances[signedInAccountId]?.balanceAvailable}
+          balance={accountsBalances?.[signedInAccountId]?.balanceAvailable}
           active={true}
           showBalanceInUSD={showBalanceInUSD}
           onToggleShowBalance={() => getAccountBalance(signedInAccountId, true)}
@@ -91,7 +91,7 @@ export default ({
             <Account
               key={accountId}
               accountId={accountId}
-              balance={accountsBalances && accountsBalances[accountId]?.balanceAvailable}
+              balance={accountsBalances?.[accountId]?.balanceAvailable}
               onSelectAccount={() => {
                 onSelectAccount(accountId);
                 getAccountBalance(accountId, true);

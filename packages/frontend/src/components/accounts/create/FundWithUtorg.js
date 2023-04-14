@@ -30,7 +30,7 @@ const Container = styled.div`
 `;
 
 export function buildUtorgPayLink(accountId, amount, amountFiat, currencyFiat) {
-  let uri = {
+  const uri = {
     url: CONFIG.UTORG_ORDER_URL,
     query: {
       currency: "NEAR",

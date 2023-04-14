@@ -30,7 +30,7 @@ const ComplexityBlock: FC<ComplexityBlockProps> = (props) => {
           {Array(getLevelsFromComplexity(props.complexity))
             .fill(undefined)
             .map((_, index) => (
-              <Level key={index} level={index + 1} />
+              <Level key={`level-${index}`} level={index + 1} />
             ))}
         </LevelWrapper>
         <Description>{renderComplexityTrans(props.complexity)}</Description>

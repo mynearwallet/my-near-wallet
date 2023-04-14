@@ -39,7 +39,7 @@ const EnterReceiver = ({
   isMobile,
 }) => {
   const [isImplicitAccount, setIsImplicitAccount] = useState(false);
-  const hasAccountValidationError = localAlert && localAlert.show && !localAlert.success;
+  const hasAccountValidationError = localAlert?.show && !localAlert.success;
   const validAccountId = hasAccountValidationError ? null : receiverId;
 
   // localAlert comes as {} object when no result is available

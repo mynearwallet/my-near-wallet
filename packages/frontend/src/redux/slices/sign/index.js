@@ -144,7 +144,7 @@ export const calculateGasForSuccessTransactions = ({ transactions, successHashes
   const successHashesNonce = successHashes.map((successHash) => successHash.nonceString);
   let gasUsed = new BN("0");
 
-  for (let { nonce, actions } of transactions) {
+  for (const { nonce, actions } of transactions) {
     if (successHashesNonce.includes(nonce.toString())) {
       gasUsed = gasUsed.add(new BN(calculateGasLimit(actions)));
     }
@@ -175,7 +175,7 @@ export const getFirstTransactionWithFunctionCallAction = ({ transactions }) => {
       return false;
     }
 
-    return t.actions.some((a) => a && a.functionCall);
+    return t.actions.some((a) => a?.functionCall);
   });
 };
 
@@ -195,7 +195,7 @@ export const increaseGasForFirstTransaction = ({ transactions }) => {
 
   // If there are multiple tx, we want to increase the gas, only for the first one, because it's possible that increasing gas for the other transactions will end with exceeded gas
   transaction.actions.forEach((a) => {
-    if (!(a.functionCall && a.functionCall.gas)) {
+    if (!(a.functionCall?.gas)) {
       return false;
     }
 
@@ -284,7 +284,7 @@ export const selectSignGasUsed = createSelector(
 export const selectSignFeesGasLimitIncludingGasChanges = createSelector(
   [selectSignTransactions, selectSignRetryTransactions, selectSignGasUsed],
   (transactions, retryTransactions, gasUsed) => {
-    const transactionsToCalculate = !!retryTransactions.length ? retryTransactions : transactions;
+    const transactionsToCalculate = retryTransactions.length ? retryTransactions : transactions;
 
     const tx = increaseGasForFirstTransaction({ transactions: cloneDeep(transactionsToCalculate) });
     return new BN(calculateGasLimit(tx.flatMap((t) => t.actions))).add(gasUsed);

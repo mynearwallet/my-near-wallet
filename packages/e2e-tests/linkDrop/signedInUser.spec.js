@@ -19,9 +19,9 @@ const LinkdropAccountManager = require("../utils/LinkdropAccountManager");
 const { describe, beforeAll, afterAll, beforeEach } = test;
 
 describe("Linkdrop flow", () => {
-  let linkdropAccountManager,
-    linkdropNEARAmount = "2.5",
-    deleteAccountsAfter = [];
+  let linkdropAccountManager;
+  const linkdropNEARAmount = "2.5";
+  const deleteAccountsAfter = [];
 
   const linkdropClaimableAmount = new BN(parseNearAmount(linkdropNEARAmount)).sub(
     LINKDROP_ACCESS_KEY_ALLOWANCE,

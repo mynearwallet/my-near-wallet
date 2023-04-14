@@ -21,14 +21,14 @@ const MenuBtn = styled.div`
             top: 0;
             transition: 300ms;
         }
-    
+
         :nth-child(2) {
             top: 0px;
             bottom: 0;
             margin: auto;
             transition: 100ms;
         }
-    
+
         :nth-child(3) {
             bottom: 0;
             transition: 300ms;
@@ -64,6 +64,7 @@ const MenuBtn = styled.div`
 `;
 
 const MenuButton = ({ onClick, open }) => (
+  // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
   <div className='menu-btn-wrapper' onClick={onClick}>
     <MenuBtn className={classNames(["menu-btn", { open: open }])}>
       <div />

@@ -150,7 +150,7 @@ const TwoFactorVerifyModal = ({ open, onClose }) => {
         className='color-black font-bw'
         style={{ marginTop: "-10px", fontWeight: "500", height: "19px" }}
       >
-        {method && method.detail}
+        {method?.detail}
       </p>
       {multisigRequest && <ActionDetailsBanner multisigRequest={multisigRequest} />}
       <Form

@@ -6,7 +6,7 @@ class CreateAccountPage {
     this.page = page;
   }
   async navigate() {
-    await this.page.goto(`/create`);
+    await this.page.goto("/create");
   }
   async acceptTerms() {
     if (nearApiJsConnection.config.networkId === WALLET_NETWORK.MAINNET) {
@@ -15,7 +15,7 @@ class CreateAccountPage {
   }
   async submitAccountId(accountId) {
     await this.page.type("data-test-id=createAccount.accountIdInput", accountId);
-    await this.page.click(`data-test-id=reserveAccountIdButton`);
+    await this.page.click("data-test-id=reserveAccountIdButton");
   }
 }
 

@@ -163,7 +163,6 @@ const ConfirmationScreen = ({ setCurrentView, onClose }) => {
             value={typedAccountId}
             autoCapitalize='off'
             spellCheck='false'
-            autoFocus={!isMobile()}
             className={accountIdConfirmed ? "success" : undefined}
           />
         )}

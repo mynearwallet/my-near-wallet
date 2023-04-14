@@ -71,7 +71,7 @@ const StyledContainer = styled(Container)`
             color: #72727A;
         }
     }
-    
+
     .alternatives-title {
         color: #24272a;
         text-align: center;
@@ -275,7 +275,7 @@ class CreateAccount extends Component {
               localAlert={useLocalAlert}
               accountId={accountId}
               clearLocalAlert={clearLocalAlert}
-              defaultAccountId={resetAccount && resetAccount.accountIdNotConfirmed.split(".")[0]}
+              defaultAccountId={resetAccount?.accountIdNotConfirmed.split(".")[0]}
               autoFocus={isMobile() ? false : true}
             />
             <AccountNote />
@@ -283,7 +283,7 @@ class CreateAccount extends Component {
             <FormButton
               type='submit'
               disabled={
-                !(localAlert && localAlert.success) || cannotCreateNewAccountWithZeroBalanceAccount
+                !(localAlert?.success) || cannotCreateNewAccountWithZeroBalanceAccount
               }
               sending={loader}
               data-test-id="reserveAccountIdButton"
@@ -298,6 +298,7 @@ class CreateAccount extends Component {
             <div className='alternatives-title'>
               <Translate id='createAccount.alreadyHaveAnAccount' />
             </div>
+            {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
             <div
               className='alternatives'
               onClick={() => {

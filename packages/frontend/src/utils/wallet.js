@@ -58,8 +58,8 @@ export const ENABLE_IDENTITY_VERIFIED_ACCOUNT = true;
 // TODO: Clean up all Coin-op 1.5 related code after test period
 
 const KEY_UNIQUE_PREFIX = "_4:";
-const KEY_WALLET_ACCOUNTS = KEY_UNIQUE_PREFIX + "wallet:accounts_v2";
-export const KEY_ACTIVE_ACCOUNT_ID = KEY_UNIQUE_PREFIX + "wallet:active_account_id_v2";
+const KEY_WALLET_ACCOUNTS = `${KEY_UNIQUE_PREFIX}wallet:accounts_v2`;
+export const KEY_ACTIVE_ACCOUNT_ID = `${KEY_UNIQUE_PREFIX}wallet:active_account_id_v2`;
 const ACCOUNT_ID_REGEX = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
 export const RELEASE_NOTES_MODAL_VERSION = "v0.01.2";
 
@@ -147,12 +147,12 @@ export default class Wallet {
     };
     this.connection = nearApiJs.Connection.fromConfig({
       networkId: CONFIG.NETWORK_ID,
-      provider: { type: "JsonRpcProvider", args: { url: CONFIG.NODE_URL + "/" } },
+      provider: { type: "JsonRpcProvider", args: { url: `${CONFIG.NODE_URL}/` } },
       signer: this.signer,
     });
     this.connectionBasic = nearApiJs.Connection.fromConfig({
       networkId: CONFIG.NETWORK_ID,
-      provider: { type: "JsonRpcProvider", args: { url: CONFIG.NODE_URL + "/" } },
+      provider: { type: "JsonRpcProvider", args: { url: `${CONFIG.NODE_URL}/` } },
       signer: this.inMemorySignerBasic,
     });
     this.getAccountsLocalStorage();
@@ -167,7 +167,7 @@ export default class Wallet {
   };
 
   async removeWalletAccount(accountId) {
-    let walletAccounts = this.getAccountsLocalStorage();
+    const walletAccounts = this.getAccountsLocalStorage();
     delete walletAccounts[accountId];
     setWalletAccounts(KEY_WALLET_ACCOUNTS, walletAccounts);
     await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
@@ -284,8 +284,7 @@ export default class Wallet {
         accessKeys,
         authorizedApps: accessKeys.filter(
           (it) =>
-            it.access_key &&
-            it.access_key.permission.FunctionCall &&
+            it.access_key?.permission.FunctionCall &&
             it.access_key.permission.FunctionCall.receiver_id !== this.accountId,
         ),
         fullAccessKeys: accessKeys.filter(
@@ -373,7 +372,7 @@ export default class Wallet {
             networkId: CONFIG.NETWORK_ID,
             provider: {
               type: "JsonRpcProvider",
-              args: { url: CONFIG.NODE_URL + "/" },
+              args: { url: `${CONFIG.NODE_URL}/` },
             },
             signer: new nearApiJs.InMemorySigner(keyStore),
           }),
@@ -473,7 +472,7 @@ export default class Wallet {
     if (accountId !== this.accountId) {
       return await (await this.getAccount(accountId)).state();
     } else {
-      throw new Error("You are logged into account " + accountId + " .");
+      throw new Error(`You are logged into account ${accountId} .`);
     }
   }
 
@@ -494,7 +493,7 @@ export default class Wallet {
     }
 
     if (await this.accountExists(accountId)) {
-      throw new Error("Account " + accountId + " already exists.");
+      throw new Error(`Account ${accountId} already exists.`);
     }
 
     return true;
@@ -517,7 +516,7 @@ export default class Wallet {
   async checkFundedAccountAvailable() {
     const { available } = await sendJson(
       "GET",
-      CONFIG.ACCOUNT_HELPER_URL + "/checkFundedAccountAvailable",
+      `${CONFIG.ACCOUNT_HELPER_URL}/checkFundedAccountAvailable`,
     );
     return available;
   }
@@ -689,8 +688,10 @@ export default class Wallet {
     accountId,
     contractId,
     publicKey,
-    fullAccess = false,
-    methodNames = "",
+    // rome-ignore lint/style/useDefaultParameterLast: <explanation>
+    fullAccess  = false,
+    // rome-ignore lint/style/useDefaultParameterLast: <explanation>
+    methodNames  = "",
     recoveryKeyIsFAK,
   ) {
     const account = recoveryKeyIsFAK
@@ -987,7 +988,7 @@ export default class Wallet {
     };
     await sendJson(
       "POST",
-      CONFIG.ACCOUNT_HELPER_URL + "/account/initializeRecoveryMethodForTempAccount",
+      `${CONFIG.ACCOUNT_HELPER_URL}/account/initializeRecoveryMethodForTempAccount`,
       body,
     );
     return seedPhrase;
@@ -1004,7 +1005,7 @@ export default class Wallet {
     if (isNew) {
       await sendJson(
         "POST",
-        CONFIG.ACCOUNT_HELPER_URL + "/account/initializeRecoveryMethodForTempAccount",
+        `${CONFIG.ACCOUNT_HELPER_URL}/account/initializeRecoveryMethodForTempAccount`,
         body,
       );
     } else {
@@ -1017,7 +1018,7 @@ export default class Wallet {
     try {
       await sendJson(
         "POST",
-        CONFIG.ACCOUNT_HELPER_URL + "/account/validateSecurityCodeForTempAccount",
+        `${CONFIG.ACCOUNT_HELPER_URL}/account/validateSecurityCodeForTempAccount`,
         {
           accountId: implicitAccountId,
           method,
@@ -1050,7 +1051,7 @@ export default class Wallet {
       if (isNew) {
         await sendJson(
           "POST",
-          CONFIG.ACCOUNT_HELPER_URL + "/account/validateSecurityCodeForTempAccount",
+          `${CONFIG.ACCOUNT_HELPER_URL}/account/validateSecurityCodeForTempAccount`,
           {
             ...body,
             enterpriseRecaptchaToken,
@@ -1068,7 +1069,7 @@ export default class Wallet {
 
   async getRecoveryMethods() {
     const { accountId } = this;
-    let recoveryMethods = await this.postSignedJson("/account/recoveryMethods", { accountId });
+    const recoveryMethods = await this.postSignedJson("/account/recoveryMethods", { accountId });
     const accessKeys = await this.getAccessKeys();
     const publicKeys = accessKeys.map((key) => key.public_key);
     const publicKeyMethods = recoveryMethods.filter(({ publicKey }) =>
@@ -1183,7 +1184,7 @@ export default class Wallet {
 
     const connection = nearApiJs.Connection.fromConfig({
       networkId: CONFIG.NETWORK_ID,
-      provider: { type: "JsonRpcProvider", args: { url: CONFIG.NODE_URL + "/" } },
+      provider: { type: "JsonRpcProvider", args: { url: `${CONFIG.NODE_URL}/` } },
       signer: new nearApiJs.InMemorySigner(tempKeyStore),
     });
 
@@ -1199,7 +1200,7 @@ export default class Wallet {
         // temp account
         this.connection = connection;
         this.accountId = accountId;
-        let account = await this.getAccount(accountId);
+        const account = await this.getAccount(accountId);
         let recoveryKeyIsFAK = false;
         // check if recover access key is FAK and if so add key without 2FA
         if (await TwoFactor.has2faEnabled(account)) {
@@ -1253,7 +1254,7 @@ export default class Wallet {
 
     this.connection = connectionConstructor;
 
-    if (!!accountIdsSuccess.length) {
+    if (accountIdsSuccess.length) {
       await Promise.all(
         accountIdsSuccess.map(async ({ accountId, newKeyPair }) => {
           await this.saveAccount(accountId, newKeyPair);
@@ -1289,8 +1290,9 @@ export default class Wallet {
     const account = await this.getAccount(accountId);
 
     const transactionHashes = [];
-    for (let { receiverId, nonce, blockHash, actions } of transactions) {
-      let status, transaction;
+    for (const { receiverId, nonce, blockHash, actions } of transactions) {
+      let status;
+      let transaction;
       // TODO: Decide whether we always want to be recreating transaction (vs only if it's invalid)
       // See https://github.com/near/near-wallet/issues/1856
       const recreateTransaction = account.deployMultisig || true;
@@ -1340,12 +1342,12 @@ export default class Wallet {
 
   async signAndSendCalimeroTransaction(
     transactions,
-    accountId = this.accountId,
+    accountId ,
     customRPCUrl,
     xApiToken,
   ) {
     const transactionHashes = [];
-    const args = { url: customRPCUrl + "/" };
+    const args = { url: `${customRPCUrl}/` };
     if (xApiToken) {
       args.headers = {
         "x-api-key": xApiToken,
@@ -1356,8 +1358,11 @@ export default class Wallet {
       provider: { type: "JsonRpcProvider", args },
       signer: this.signer,
     });
-    for (let { receiverId, nonce, blockHash, actions } of transactions) {
-      let status, transaction;
+    for (const { receiverId, nonce, blockHash, actions } of transactions) {
+      // rome-ignore lint/style/useConst: <explanation>
+      let status;
+      // rome-ignore lint/style/useConst: <explanation>
+      let transaction;
 
       const [, signedTransaction] = await nearApiJs.transactions.signTransaction(
         receiverId,

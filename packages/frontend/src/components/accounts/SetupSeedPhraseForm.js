@@ -74,7 +74,7 @@ const CustomDiv = styled("div")`
     }
 `;
 
-const Number = styled("span")`
+const NumberComponent = styled("span")`
     ::before {
         content: '${(props) => props.number || 1}';
         color: #2B9AF4;
@@ -96,9 +96,9 @@ const SetupSeedPhraseForm = ({
         <div id='seed-phrase'>
           {seedPhrase.split(" ").map((word, i) => (
             <span className='single-phrase' key={`phrase-${i}`}>
-              <Number number={i + 1} className='h4'>
+              <NumberComponent number={i + 1} className='h4'>
                 {word}{" "}
-              </Number>
+              </NumberComponent>
             </span>
           ))}
         </div>

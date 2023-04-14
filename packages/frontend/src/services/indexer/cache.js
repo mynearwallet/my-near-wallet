@@ -21,6 +21,7 @@ export class IndexerCache extends Cache {
   };
 
   _getRecord(accountId, kind) {
+    // rome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
     return new Promise(async (resolve, reject) => {
       const store = await this.getIndexStore();
       const query = store.get([accountId, kind]);
@@ -34,7 +35,8 @@ export class IndexerCache extends Cache {
   }
 
   _addRecord(accountId, kind, data) {
-    return new Promise(async (resolve) => {
+    // rome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
+    return  new Promise(async (resolve) => {
       const store = await this.getObjectStore();
 
       const item = {
@@ -51,7 +53,8 @@ export class IndexerCache extends Cache {
   }
 
   async _updateRecord(accountId, kind, data) {
-    return new Promise(async (resolve) => {
+    // rome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
+    return  new Promise(async (resolve) => {
       const store = await this.getObjectStore();
 
       store.openCursor().onsuccess = (event) => {
@@ -75,7 +78,7 @@ export class IndexerCache extends Cache {
     });
   }
 
-  _shouldUpdate(lastTimestampNs = 0, timeoutNs) {
+  _shouldUpdate(timeoutNs, lastTimestampNs = 0) {
     const timeNs = new Date().getTime() * 1000000;
 
     return timeNs - lastTimestampNs >= timeoutNs;
@@ -92,8 +95,8 @@ export class IndexerCache extends Cache {
       let shouldRestart = false;
       const lastTimestamp = parseInt(record?.data?.timestamp || 0, 10);
 
-      if (this._shouldUpdate(lastTimestamp, timeoutNs)) {
-        let { version, lastBlockTimestamp, list = [] } = await updater(lastTimestamp);
+      if (this._shouldUpdate(timeoutNs, lastTimestamp)) {
+        const { version, lastBlockTimestamp, list = [] } = await updater(lastTimestamp);
 
         const prev = record?.data?.list || [];
 
@@ -104,7 +107,7 @@ export class IndexerCache extends Cache {
           version,
         };
 
-        if (Boolean(record)) {
+        if (record) {
           // If the version is updated on the helper
           // we should rescan from the beginning of the blockchain
           const isVersionChanged = version !== record.data.version;

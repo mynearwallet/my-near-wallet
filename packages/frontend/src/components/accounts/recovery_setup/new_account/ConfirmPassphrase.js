@@ -18,7 +18,7 @@ const StyledContainer = styled(Container)`
     .color-red {
         margin-top: -20px;
     }
-    
+
     &&& {
         button {
             width: 100%;
@@ -73,6 +73,7 @@ export default ({
           value={userInputValue}
           onChange={handleValueChange}
           required
+          // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
           tabIndex='1'
           pattern='[a-zA-Z ]*'
           className={userInputValueWrongWord ? "problem" : ""}

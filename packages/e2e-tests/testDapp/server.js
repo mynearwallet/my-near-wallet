@@ -19,7 +19,7 @@ app.get("/near-api-js.min.js", function (req, res) {
 });
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(`${__dirname}/index.html`);
 });
 
 module.exports = app;

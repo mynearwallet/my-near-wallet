@@ -3,7 +3,7 @@ const pd = api({ token: process.env.PAGERDUTY_API_KEY });
 
 class PagerDutyReporter {
   onEnd(result) {
-    if (result.status == "failed" && process.env.isCI) {
+    if (result.status === "failed" && process.env.isCI) {
       // Creating incident on PagerDuty
       return pd.post("/incidents", {
         data: {

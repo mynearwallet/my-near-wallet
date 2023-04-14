@@ -95,6 +95,7 @@ const SetupSeedPhraseVerify = (
             onChange={(e) => handleChangeWord(e.target.value)}
             placeholder={translate("input.enterWord.placeholder")}
             required
+            // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
             tabIndex='1'
             pattern='[a-zA-Z ]*'
             className={localAlert ? (localAlert.success ? "success" : "problem") : ""}

@@ -142,6 +142,7 @@ const Title = ({ content, title }) => {
   return (
     <span className='title' title={title || content}>
       {title && title !== CONFIG.NEAR_ID ? (
+        // rome-ignore lint/a11y/useValidAnchor: <explanation>
         <a
           href={`${CONFIG.EXPLORER_URL}/accounts/${title}`}
           onClick={stopPropagation}

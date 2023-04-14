@@ -11,7 +11,7 @@ const LedgerConfirmActionModal = () => {
   const txSigned = useSelector(selectLedgerTxSigned);
   const modal = useSelector(selectLedgerModal);
 
-  return modal && modal.show ? (
+  return modal?.show ? (
     <Modal id='ledger-confirm-action-modal' closeButton='desktop' onClose={() => {}}>
       <ModalTheme />
       {!txSigned ? (

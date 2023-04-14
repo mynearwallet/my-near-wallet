@@ -137,7 +137,7 @@ export default function Staking({
           <ListWrapper>
             {currentValidators.map((validator, i) => (
               <ValidatorBox
-                key={i}
+                key={`validator-box${i}`}
                 validator={validator}
                 amount={validator.staked}
                 showBalanceInUSD={false}

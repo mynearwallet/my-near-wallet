@@ -121,7 +121,7 @@ export function EnableTwoFactor(props) {
         async () => (response = await dispatch(initTwoFactor(accountId, method))),
         () => {},
         async () => {
-          if (response && response.confirmed) {
+          if (response?.confirmed) {
             await Mixpanel.withTracking(
               "2FA Deploy multisig",
               async () => await handleDeployMultisig(),
@@ -202,6 +202,7 @@ export function EnableTwoFactor(props) {
                   placeholder={translate("setupRecovery.emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
                   tabIndex='1'
                   disabled={loading}
                 />

@@ -47,7 +47,6 @@ const TwoFactorVerifyInput = ({ onChange, onResend, code, account, resendCode, s
               aria-label={translate("setRecoveryConfirm.inputPlaceholder")}
               value={code}
               onChange={(e) => onChange(e.target.value)}
-              autoFocus={true}
             />
             {status.localAlert &&
               status.localAlert.messageCode === "reduxActions.VERIFY_TWO_FACTOR.error" &&
@@ -59,6 +58,7 @@ const TwoFactorVerifyInput = ({ onChange, onResend, code, account, resendCode, s
           </>
         )}
       </Translate>
+      {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div onClick={!resendCode ? onResend : null}>
         <Translate id='twoFactor.verify.didntReceive' />
         {!resendCode && (

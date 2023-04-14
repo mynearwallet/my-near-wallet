@@ -1,4 +1,4 @@
-/*  
+/*
     classNames example usage:
     <div className={classNames(['base-class', {'second' : someFlag, 'third' : true}])}></div>
 */
@@ -7,7 +7,7 @@ const classNames = (names) => {
     return false;
   }
 
-  let isArray = Array.isArray;
+  const isArray = Array.isArray;
 
   if (typeof names === "string") {
     return names || "";

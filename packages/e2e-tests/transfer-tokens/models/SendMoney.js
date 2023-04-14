@@ -3,17 +3,17 @@ class SendMoneyPage {
     this.page = page;
   }
   async navigate() {
-    await this.page.goto(`/send-money`);
+    await this.page.goto("/send-money");
   }
   async typeAmount(amount) {
-    await this.page.fill(`data-test-id=sendMoneyAmountInput`, amount.toString());
+    await this.page.fill("data-test-id=sendMoneyAmountInput", amount.toString());
   }
   async typeAndSubmitAmount(amount) {
     await this.typeAmount(amount);
     await this.page.click("data-test-id=sendMoneyPageSubmitAmountButton");
   }
   async selectAsset(assetContractName) {
-    await this.page.click(`data-test-id=sendMoneyPageSelectTokenButton`);
+    await this.page.click("data-test-id=sendMoneyPageSelectTokenButton");
     await this.page.click(`data-test-id=token-selection-${assetContractName}`);
   }
   async typeAccountId(accountId) {

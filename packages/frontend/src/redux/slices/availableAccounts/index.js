@@ -19,7 +19,7 @@ const availableAccountsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(refreshAccountOwner.fulfilled, (state, action) => {
-      set(state, ["items"], Object.keys((action.payload && action.payload.accounts) || {}).sort());
+      set(state, ["items"], Object.keys((action.payload?.accounts) || {}).sort());
     });
     builder.addCase(refreshAccountOwner.rejected, (state, action) => {
       set(state, ["items"], Object.keys(wallet.accounts || {}).sort());
@@ -48,5 +48,5 @@ export const selectAvailableAccounts = createSelector(
 
 export const selectAvailableAccountsIsLoading = createSelector(
   selectAvailableAccountsSlice,
-  (availableAccounts) => availableAccounts.status && availableAccounts.status.loading,
+  (availableAccounts) => availableAccounts.status?.loading,
 );

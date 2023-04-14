@@ -211,6 +211,7 @@ const SetupLedger = (props) => {
         <Translate id='setupLedger.one' />
         &nbsp;
         <Translate id='setupLedger.two' />{" "}
+        {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span className='link underline' onClick={openShowInstructions}>
           <Translate id='setupLedger.twoLink' />
         </span>

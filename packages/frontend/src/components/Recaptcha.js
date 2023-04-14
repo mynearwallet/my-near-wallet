@@ -110,7 +110,7 @@ export class Recaptcha extends Component {
       Mixpanel.track("solved reCaptcha");
     }
 
-    this.props.onChange && this.props.onChange(token);
+    this.props.onChange?.(token);
   };
 
   handleOnLoad = (scriptDetails) => {
@@ -122,7 +122,7 @@ export class Recaptcha extends Component {
       Mixpanel.track("failed to load reCaptcha script");
 
       this.setState({ loaded: false, loadFailed: true });
-      this.props.onLoadFailed && this.props.onLoadFailed();
+      this.props.onLoadFailed?.();
     } else {
       Mixpanel.track("loaded reCaptcha script");
       this.setState({ loaded: true });

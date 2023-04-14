@@ -19,18 +19,18 @@ class LoginPage {
     return testDapp;
   }
   async allowAccess() {
-    await this.page.click(`data-test-id=allowNonFullAccessButton`);
+    await this.page.click("data-test-id=allowNonFullAccessButton");
     await this.page.waitForNavigation();
   }
   async allowFullAccess() {
-    await this.page.click(`data-test-id=allowFullAccessButton`);
+    await this.page.click("data-test-id=allowFullAccessButton");
   }
   async denyAccess() {
-    await this.page.click(`data-test-id=denyAccessButton`);
+    await this.page.click("data-test-id=denyAccessButton");
   }
   async confirmAccountId(accountId) {
-    await this.page.fill(`data-test-id=FAKRequestAccountIdConfirmationInput`, accountId);
-    await this.page.click(`data-test-id=FAKRequestConfirmAccountIdButton`);
+    await this.page.fill("data-test-id=FAKRequestAccountIdConfirmationInput", accountId);
+    await this.page.click("data-test-id=FAKRequestConfirmAccountIdButton");
     await this.page.waitForNavigation();
   }
 }

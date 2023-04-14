@@ -20,7 +20,8 @@ class NearAPIJsConnection {
       this.config = config;
       NearAPIJsConnection._instance = this;
     }
-    return NearAPIJsConnection._instance;
+    // rome-ignore lint/correctness/noConstructorReturn: <explanation>
+    return  NearAPIJsConnection._instance;
   }
 
   getConnection() {

@@ -24,7 +24,7 @@ const StyledContainer = styled(Container)`
         margin-top: 50px !important;
         width: 100% !important;
     }
-    
+
     h4 {
         margin-top: 40px;
         font-weight: 600;
@@ -85,7 +85,7 @@ class SetupRecoveryMethod extends Component {
   checkDisabled = (method) => {
     const { recoveryMethods } = this.props;
     let activeMethods = [];
-    if (!!recoveryMethods.length) {
+    if (recoveryMethods.length) {
       activeMethods = recoveryMethods
         .filter((method) => method.confirmed)
         .map((method) => method.kind);

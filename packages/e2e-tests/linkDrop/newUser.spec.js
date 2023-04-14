@@ -18,9 +18,9 @@ const LinkdropAccountManager = require("../utils/LinkdropAccountManager");
 const { describe, beforeAll, afterAll } = test;
 
 describe("Linkdrop flow", () => {
-  let linkdropAccountManager,
-    linkdropNEARAmount = "2.5";
-  deleteAccountsAfter = [];
+  let linkdropAccountManager;
+  const linkdropNEARAmount = "2.5";
+  const deleteAccountsAfter = [];
 
   const linkdropClaimableAmount = new BN(parseNearAmount(linkdropNEARAmount)).sub(
     LINKDROP_ACCESS_KEY_ALLOWANCE,
@@ -48,9 +48,9 @@ describe("Linkdrop flow", () => {
     await expect(page).not.toHaveSelector(".dots");
     await linkdropPage.loginAndClaim();
 
-    await page.click(`data-test-id=recoverAccountWithPassphraseButton`);
+    await page.click("data-test-id=recoverAccountWithPassphraseButton");
     await page.fill("data-test-id=seedPhraseRecoveryInput", linkdropReceiverAccount.seedPhrase);
-    await page.click(`data-test-id=seedPhraseRecoverySubmitButton`);
+    await page.click("data-test-id=seedPhraseRecoverySubmitButton");
     await page.waitForNavigation();
     await linkdropPage.claimToExistingAccount();
     await page.waitForNavigation();
@@ -70,9 +70,9 @@ describe("Linkdrop flow", () => {
     await expect(page).not.toHaveSelector(".dots");
     await linkdropPage.loginAndClaim();
 
-    await page.click(`data-test-id=recoverAccountWithPassphraseButton`);
+    await page.click("data-test-id=recoverAccountWithPassphraseButton");
     await page.fill("data-test-id=seedPhraseRecoveryInput", linkdropReceiverAccount.seedPhrase);
-    await page.click(`data-test-id=seedPhraseRecoverySubmitButton`);
+    await page.click("data-test-id=seedPhraseRecoverySubmitButton");
     await page.waitForNavigation();
     await linkdropPage.claimToExistingAccount();
     await page.waitForNavigation();

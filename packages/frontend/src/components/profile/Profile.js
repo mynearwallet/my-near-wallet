@@ -45,7 +45,7 @@ import BalanceContainer from "./balances/BalanceContainer";
 import LockupAvailTransfer from "./balances/LockupAvailTransfer";
 import ExportKeyWrapper from "./export_private_key/ExportKeyWrapper";
 import MobileSharingWrapper from "./mobile_sharing/MobileSharingWrapper";
-import { Recovery } from "./recovery";
+import { Recovery } from "./Recovery";
 import RemoveAccountWrapper from "./remove_account/RemoveAccountWrapper";
 import TwoFactorAuth from "./two_factor/TwoFactorAuth";
 import { StyledContainer } from "./ui";
@@ -107,7 +107,7 @@ const Profile = ({ match }) => {
       (async () => {
         const accountKeyType = await wallet.getAccountKeyType(accountId);
         if (accountKeyType === WalletClass.KEY_TYPES.MULTISIG) {
-          let account = await wallet.getAccount(accountId);
+          const account = await wallet.getAccount(accountId);
           setIsBrickedAccount(await isAccountBricked(account));
         } else {
           setIsBrickedAccount(false);
@@ -118,7 +118,7 @@ const Profile = ({ match }) => {
 
   useEffect(() => {
     if (userRecoveryMethods) {
-      let id = Mixpanel.get_distinct_id();
+      const id = Mixpanel.get_distinct_id();
       Mixpanel.identify(id);
       Mixpanel.people.set_once({ create_date: new Date().toString() });
       Mixpanel.people.set({
@@ -127,7 +127,7 @@ const Profile = ({ match }) => {
       });
       Mixpanel.alias(accountId);
       userRecoveryMethods.forEach((method) =>
-        Mixpanel.people.set({ ["recovery_with_" + method.kind]: true }),
+        Mixpanel.people.set({ [`recovery_with_${method.kind}`]: true }),
       );
     }
   }, [userRecoveryMethods]);
@@ -141,7 +141,7 @@ const Profile = ({ match }) => {
 
   useEffect(() => {
     if (twoFactor) {
-      let id = Mixpanel.get_distinct_id();
+      const id = Mixpanel.get_distinct_id();
       Mixpanel.identify(id);
       Mixpanel.people.set({
         create_2FA_at: twoFactor.createdAt,
@@ -222,7 +222,7 @@ const Profile = ({ match }) => {
                 </FormButton>
               </div>
               {authorizedApps.slice(0, 2).map((app, i) => (
-                <AuthorizedApp key={i} app={app} />
+                <AuthorizedApp key={`authorized-app-${i}`} app={app} />
               ))}
             </>
           ) : null}

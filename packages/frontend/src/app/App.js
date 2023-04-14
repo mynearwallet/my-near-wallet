@@ -239,8 +239,8 @@ class Routing extends Component {
       this.props.getTokenWhiteList(account.accountId);
     }
 
-    const prevLangCode = prevProps.activeLanguage && prevProps.activeLanguage.code;
-    const curLangCode = activeLanguage && activeLanguage.code;
+    const prevLangCode = prevProps.activeLanguage?.code;
+    const curLangCode = activeLanguage?.code;
     const hasLanguageChanged = prevLangCode !== curLangCode;
 
     if (hasLanguageChanged) {

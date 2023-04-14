@@ -20,7 +20,7 @@ const readyStatePromise = (store) => (next) => (action) => {
 
   function makeAction(ready, data) {
     const newAction = Object.assign({}, action);
-    delete newAction.payload;
+    newAction.payload = undefined;
     return Object.assign(newAction, { ready }, data);
   }
 

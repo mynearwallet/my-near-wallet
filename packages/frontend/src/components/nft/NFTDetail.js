@@ -22,11 +22,11 @@ const StyledContainer = styled(Container)`
             max-width: 429px;
             margin-bottom: 83px;
 
-            filter: drop-shadow(0px 100px 80px rgba(0, 0, 0, 0.07)) 
-            drop-shadow(0px 41.7776px 33.4221px rgba(0, 0, 0, 0.0503198)) 
-            drop-shadow(0px 22.3363px 17.869px rgba(0, 0, 0, 0.0417275)) 
-            drop-shadow(0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035)) 
-            drop-shadow(0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725)) 
+            filter: drop-shadow(0px 100px 80px rgba(0, 0, 0, 0.07))
+            drop-shadow(0px 41.7776px 33.4221px rgba(0, 0, 0, 0.0503198))
+            drop-shadow(0px 22.3363px 17.869px rgba(0, 0, 0, 0.0417275))
+            drop-shadow(0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035))
+            drop-shadow(0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725))
             drop-shadow(0px 2.76726px 2.21381px rgba(0, 0, 0, 0.0196802));
         }
 
@@ -55,8 +55,8 @@ const StyledContainer = styled(Container)`
         }
 
         .inner {
-            
-            display: flex;         
+
+            display: flex;
             align-items: center;
             word-break: break-all;
             span {
@@ -97,7 +97,7 @@ const UserIcon = styled.div`
     background-color: #f8f8f8;
     text-align: center;
     margin: 0 12px 0 0;
-    
+
     svg {
         width: 26px;
         height: 26px;
@@ -121,7 +121,7 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
     <StyledContainer className='medium centered'>
       {nft && (
         <div className='container'>
-          <BackArrowButton onClick={() => history.goBack()} className='back-btn'></BackArrowButton>
+          <BackArrowButton onClick={() => history.goBack()} className='back-btn' />
 
           <NFTMedia mediaUrl={nft.metadata.mediaUrl} />
 

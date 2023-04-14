@@ -26,7 +26,7 @@ class StakeUnstakePage {
     await this.page.click(`data-test-id=stakingPageSelectValidator >> nth=${validatorIndex}`);
   }
   getNumberOfSelectableValidators() {
-    return this.page.locator(`data-test-id=stakingPageSelectValidator`).count();
+    return this.page.locator("data-test-id=stakingPageSelectValidator").count();
   }
   clickViewCurrentValidator() {
     return this.page.click("data-test-id=viewCurrentValidatorButton");

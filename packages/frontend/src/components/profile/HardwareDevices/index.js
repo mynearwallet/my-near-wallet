@@ -33,7 +33,7 @@ const HardwareDevices = ({
 
   const account = useSelector(selectAccountSlice);
   const { accountId } = account;
-  let userRecoveryMethods = recoveryMethods || [];
+  const userRecoveryMethods = recoveryMethods || [];
   const recoveryKeys = userRecoveryMethods
     .filter((method) => method.kind !== "ledger")
     .map((key) => key.publicKey);

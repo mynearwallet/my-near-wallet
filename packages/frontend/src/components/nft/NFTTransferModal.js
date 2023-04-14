@@ -40,7 +40,7 @@ const StyledContainer = styled.div`
         }
 
         .confirm-txt {
-            margin-bottom: 4px; 
+            margin-bottom: 4px;
         }
 
         .confirm-img {
@@ -177,7 +177,7 @@ const StyledContainer = styled.div`
                 &.link {
                     margin: 20px 35px;
                 }
-                
+
                 &.blue {
                     padding: 0 35px;
                 }
@@ -215,7 +215,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
   const isEmptyAlert = isImplicitAccount
     ? false
     : !localAlert || localAlert.show === undefined || localAlert.show === false;
-  const hasAccountValidationError = localAlert && localAlert.show && !localAlert.success;
+  const hasAccountValidationError = localAlert?.show && !localAlert.success;
 
   // TODO: Add RiskScoring validation
   const isLoading = isEmptyAlert;
@@ -321,7 +321,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
               <img src={nft.metadata.mediaUrl} alt='NFT' />
             </div>
 
-            <div className='line'></div>
+            <div className='line' />
             <div className='from-box'>
               <span className='confirm-txt v-center'>
                 <Translate id='transfer.from' />
@@ -333,7 +333,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                 <Balance amount={nearBalance} showBalanceInUSD={false} />
               </span>
             </div>
-            <div className='line'></div>
+            <div className='line' />
             <div className='to-box'>
               <span className='confirm-txt v-center'>
                 <Translate id='transfer.to' />

@@ -17,7 +17,7 @@ export default class StakingFarmContracts {
       networkId: CONFIG.NETWORK_ID,
       provider: {
         type: "JsonRpcProvider",
-        args: { url: CONFIG.NODE_URL + "/" },
+        args: { url: `${CONFIG.NODE_URL}/` },
       },
       signer: {},
     }),

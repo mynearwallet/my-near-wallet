@@ -1,7 +1,7 @@
 // copied from @playwright/test/lib/reporters/base
 const { relative, resolve } = require("path");
 const { gray, red, cyan, enabled, dim } = require("colors/safe");
-var _codeFrame = require("@babel/code-frame");
+const _codeFrame = require("@babel/code-frame");
 const fs = require("fs");
 const StackUtils = require("stack-utils");
 
@@ -117,13 +117,13 @@ function pad(line, char) {
 
 function formatTestHeader(config, test, indent, index) {
   const title = formatTestTitle(config, test);
-  const header = `${indent}${index ? index + ") " : ""}${title}`;
+  const header = `${indent}${index ? `${index}) ` : ""}${title}`;
   return pad(header, "=");
 }
 
 function stepSuffix(step) {
   const stepTitles = step ? step.titlePath() : [];
-  return stepTitles.map((t) => " › " + t).join("");
+  return stepTitles.map((t) => ` › ${t}`).join("");
 }
 
 function relativeTestPath(config, test) {
@@ -131,7 +131,7 @@ function relativeTestPath(config, test) {
 }
 
 function formatResultFailure(test, result, initialIndent, highlightCode) {
-  var _error;
+  let _error;
 
   const resultTokens = [];
 
@@ -142,7 +142,7 @@ function formatResultFailure(test, result, initialIndent, highlightCode) {
 
   if (result.status === "passed" && test.expectedStatus === "failed") {
     resultTokens.push("");
-    resultTokens.push(indent(red(`Expected to fail, but passed.`), initialIndent));
+    resultTokens.push(indent(red("Expected to fail, but passed."), initialIndent));
   }
 
   let error = undefined;
@@ -204,7 +204,7 @@ function formatFailure(config, test, options = {}) {
           resultLines.push(cyan(`    ${relativePath}`)); // Make this extensible
 
           if (attachment.name === "trace") {
-            resultLines.push(cyan(`    Usage:`));
+            resultLines.push(cyan("    Usage:"));
             resultLines.push("");
             resultLines.push(cyan(`        npx playwright show-trace ${relativePath}`));
             resultLines.push("");
@@ -212,7 +212,7 @@ function formatFailure(config, test, options = {}) {
         } else {
           if (attachment.contentType.startsWith("text/")) {
             let text = attachment.body.toString();
-            if (text.length > 300) text = text.slice(0, 300) + "...";
+            if (text.length > 300) text = `${text.slice(0, 300)}...`;
             resultLines.push(cyan(`    ${text}`));
           }
         }

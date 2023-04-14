@@ -89,12 +89,12 @@ let lastTestAccountId;
   try {
     const browser = await webkit.launch({ headless: HEADLESS });
     const page = await browser.newPage();
-    await page.goto(config.walletUrl + "/recover-seed-phrase");
+    await page.goto(`${config.walletUrl}/recover-seed-phrase`);
     const seedPhrase = `${testAccount1.accountId} ${TEST_ACCOUNT_SEED_PHRASE}`;
     await page.fill("[name=seedPhrase]", seedPhrase);
     await page.click("[type=submit]");
     await page.waitForNavigation();
-    assert(page.url() === config.walletUrl + "/");
+    assert(page.url() === `${config.walletUrl}/`);
     assert.strictEqual(await page.textContent(".user-name"), testAccount1.accountId);
     await browser.close();
   } finally {

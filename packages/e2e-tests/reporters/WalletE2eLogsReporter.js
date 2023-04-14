@@ -28,9 +28,9 @@ class WalletE2eLogsReporter {
     const title = formatTestTitle(this.config, test);
     let text = "";
     if (result.status === "skipped") {
-      text = "  -  " + title;
+      text = `  -  ${title}`;
     } else {
-      const statusMark = ("  " + (result.status === "passed" ? "✓" : "✘")).padEnd(5);
+      const statusMark = (`  ${(result.status === "passed" ? "✓" : "✘")}`).padEnd(5);
       text = statusMark + title + duration;
     }
     return text;

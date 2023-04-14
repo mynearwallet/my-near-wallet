@@ -11,10 +11,10 @@ const {
 const { describe, beforeAll, afterAll } = test;
 
 describe("Fully unvested lockup", () => {
-  let v2LockupTestAccount,
-    latestLockupTestAccount,
-    v2LockupContractAccount,
-    latestLockupContractAccount;
+  let v2LockupTestAccount;
+  let latestLockupTestAccount;
+  let v2LockupContractAccount;
+  let latestLockupContractAccount;
   const lockupAmount = "5.0";
 
   beforeAll(async ({ bankAccount }) => {
@@ -37,9 +37,8 @@ describe("Fully unvested lockup", () => {
 
   afterAll(async () => {
     await Promise.allSettled([
-      v2LockupContractAccount && v2LockupContractAccount.delete().then(v2LockupTestAccount.delete),
-      latestLockupContractAccount &&
-        latestLockupContractAccount.delete().then(latestLockupTestAccount.delete),
+      v2LockupContractAccount?.delete().then(v2LockupTestAccount.delete),
+      latestLockupContractAccount?.delete().then(latestLockupTestAccount.delete),
     ]);
   });
 

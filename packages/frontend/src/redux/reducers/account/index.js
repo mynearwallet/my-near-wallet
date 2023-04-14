@@ -46,16 +46,13 @@ const accessKeys = handleActions(
     [getAccessKeys]: (state, { error, payload }) => ({
       ...state,
       authorizedApps:
-        payload &&
-        payload.filter(
+        payload?.filter(
           (it) =>
-            it.access_key &&
-            it.access_key.permission.FunctionCall &&
-            it.access_key.permission.FunctionCall.receiver_id !== state.accountId,
+            it.access_key?.permission.FunctionCall &&
+            it.access_key?.permission.FunctionCall.receiver_id !== state.accountId,
         ),
       fullAccessKeys:
-        payload &&
-        payload.filter((it) => it.access_key && it.access_key.permission === "FullAccess"),
+        payload?.filter((it) => it.access_key && it.access_key.permission === "FullAccess"),
     }),
   },
   initialState,
@@ -125,14 +122,14 @@ const account = handleActions(
   {
     [refreshAccountOwner.fulfilled]: (state, { payload }) => {
       const resetAccountState = {
-        globalAlertPreventClear: payload && payload.globalAlertPreventClear,
+        globalAlertPreventClear: payload?.globalAlertPreventClear,
         resetAccount:
-          state.resetAccount && state.resetAccount.preventClear
+          state.resetAccount?.preventClear
             ? {
                 ...state.resetAccount,
                 preventClear: false,
               }
-            : payload && payload.resetAccount,
+            : payload?.resetAccount,
       };
 
       return {

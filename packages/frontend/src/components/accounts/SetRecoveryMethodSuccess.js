@@ -13,7 +13,7 @@ const Container = styled.div`
     .desc {
         color: #4a4f54;
         font-size: 20px;
-        
+
         &.one {
             margin-top: -10px;
         }
@@ -82,6 +82,7 @@ class SetRecoveryMethodSuccess extends Component {
           <Translate
             id={`setRecoveryConfirm.reenter.one.${recoverWithEmail ? "email" : "phoneNumber"}`}
           />
+          {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
           <span onClick={handleEnterNewRecoverValue} className='link'>
             <Translate id='setRecoveryConfirm.reenter.link' />
           </span>

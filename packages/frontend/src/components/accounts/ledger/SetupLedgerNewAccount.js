@@ -24,6 +24,7 @@ export default ({ onClickConnectLedger }) => {
         &nbsp;
         <Translate id='setupLedger.two' />
         &nbsp;
+        {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
           className='link underline'
           onClick={() => {

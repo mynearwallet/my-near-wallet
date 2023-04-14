@@ -29,7 +29,7 @@ const Container = styled.div`
         button {
             &.blue {
                 width: 100%;
-                
+
                 :focus {
                     box-shadow: 0 0 0 3pt #c8e3fc !important;
                 }
@@ -154,9 +154,11 @@ export const HDPathSelect = ({ handleConfirmHdPath, path, setPath, type = "impor
           <div className='custom-path'>
             {path}
             <div className='buttons-wrapper'>
+              {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
               <div className='arrow-btn increment' role='button' onClick={increment}>
                 <ChevronIcon />
               </div>
+              {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
               <div className='arrow-btn decrement' role='button' onClick={decrement}>
                 <ChevronIcon />
               </div>

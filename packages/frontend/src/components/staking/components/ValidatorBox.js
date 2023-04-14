@@ -145,7 +145,7 @@ export default function ValidatorBox({
   const { accountId: validatorId, active } = validator;
   const isFarmingValidator = validator?.version === ValidatorVersion[FARMING_VALIDATOR_VERSION];
 
-  const fee = validator.fee && validator.fee.percentage;
+  const fee = validator.fee?.percentage;
   const cta = amount ? (
     <ChevronIcon />
   ) : (

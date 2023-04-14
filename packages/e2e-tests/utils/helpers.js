@@ -36,7 +36,7 @@ function getWorkerAccountRegex(workerIndex) {
 }
 
 const bnSaturatingSub = (a, b) => {
-  let res = a.sub(b);
+  const res = a.sub(b);
   return res.gte(new BN(0)) ? res : new BN(0);
 };
 

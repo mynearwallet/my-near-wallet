@@ -5,8 +5,8 @@ import { formatNearAmount, showInYocto, formatWithCommas } from "./helpers";
 const contextZero = "0";
 const contextZeroBN = new BN(0);
 const contextTiny = "123456";
-const contextSmall = "1" + "0".repeat(19);
-const contextBig = "1234567" + "0".repeat(21);
+const contextSmall = `1${"0".repeat(19)}`;
+const contextBig = `1234567${"0".repeat(21)}`;
 
 /* formatNearAmount */
 

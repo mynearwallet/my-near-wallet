@@ -12,7 +12,7 @@ const initialState = {
 };
 
 export async function getCachedContractMetadataOrFetch(contractName, state) {
-  let contractMetadata = selectOneContractMetadata(state, { contractName });
+  const contractMetadata = selectOneContractMetadata(state, { contractName });
   if (contractMetadata) {
     return contractMetadata;
   }

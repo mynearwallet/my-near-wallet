@@ -47,7 +47,7 @@ export default function StakingAction({
   const [useMax, setUseMax] = useState(null);
   const [loadingStaking, setLoadingStaking] = useState(false);
   const hasStakeActionAmount = !loading && amount.length && amount !== "0";
-  let staked = (validator && validator.staked) || "0";
+  const staked = (validator?.staked) || "0";
   const stake = action === "stake" ? true : false;
   const displayAmount = useMax ? formatNearAmount(amount, 5).replace(/,/g, "") : amount;
   const availableToStake = availableBalance;

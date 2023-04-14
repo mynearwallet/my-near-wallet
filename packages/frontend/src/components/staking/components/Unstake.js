@@ -22,7 +22,7 @@ export default function Unstake({ currentValidators }) {
           .filter((v) => !new BN(v.staked).isZero())
           .map((validator, i) => (
             <ValidatorBox
-              key={i}
+              key={`validator-box-${i}`}
               validator={validator}
               amount={validator.staked}
               stakeAction='unstake'

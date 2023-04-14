@@ -12,13 +12,13 @@ class LinkDropPage {
     }
   }
   async claimToExistingAccount() {
-    await this.page.click(`data-test-id=linkdropClaimToExistingAccount`);
+    await this.page.click("data-test-id=linkdropClaimToExistingAccount");
   }
   async loginAndClaim() {
-    await this.page.click(`data-test-id=linkdropLoginAndClaim`);
+    await this.page.click("data-test-id=linkdropLoginAndClaim");
   }
   async createAccountToClaim() {
-    await this.page.click(`data-test-id=linkdropCreateAccountToClaim`);
+    await this.page.click("data-test-id=linkdropCreateAccountToClaim");
   }
 }
 

@@ -32,7 +32,7 @@ const StyledContainer = styled(Container)`
             margin-top: -15px;
         }
     }
-    
+
     .coingecko {
         color: #B4B4B4;
         align-self: end;
@@ -275,13 +275,13 @@ const StyledContainer = styled(Container)`
             > div {
                 border-top: 1px solid #F0F0F1;
                 padding: 20px;
-        
+
                 @media (max-width: 991px) {
                     margin: 0 -14px;
                     padding: 20px 0;
                     border-bottom: 15px solid #F0F0F1;
                 }
-        
+
                 @media (max-width: 767px) {
                     padding: 20px 14px 20px 14px;
                 }
@@ -318,12 +318,14 @@ export function Wallet({
       <div className="split">
         <div className="left">
           <div className="tab-selector">
+            {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
             <div
               className={classNames(["tab-balances", tab === "collectibles" ? "inactive" : ""])}
               onClick={() => setTab("")}
             >
               <Translate id="wallet.balances" />
             </div>
+            {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
             <div
               className={classNames(["tab-collectibles", tab !== "collectibles" ? "inactive" : ""])}
               onClick={() => setTab("collectibles")}

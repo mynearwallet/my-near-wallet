@@ -117,7 +117,7 @@ const saveAndSelectLedgerAccounts = createAsyncThunk(
 const signInWithLedgerAddAndSaveAccounts = createAsyncThunk(
   `${SLICE_NAME}/signInWithLedgerAddAndSaveAccounts`,
   async ({ path, accountIds }, { dispatch, getState }) => {
-    for (let accountId of accountIds) {
+    for (const accountId of accountIds) {
       try {
         setLedgerHdPath({ accountId, path });
         await dispatch(addLedgerAccountId({ accountId })).unwrap();

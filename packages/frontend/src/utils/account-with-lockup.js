@@ -33,7 +33,7 @@ export function decorateWithLockup(account) {
   // TODO: Use solution without hacky mix-in inheritance
   // TODO: Looks like best if near-api-js allows to specify transaction middleware
 
-  let decorated = {
+  const decorated = {
     ...account,
     wrappedAccount: account,
     signAndSendTransaction,
@@ -90,7 +90,7 @@ async function deleteLockupAccount(lockupAccountId) {
 }
 
 export async function transferAllFromLockup(missingAmount) {
-  let lockupAccountId = getLockupAccountId(this.accountId);
+  const lockupAccountId = getLockupAccountId(this.accountId);
   if (!(await this.wrappedAccount.viewFunction(lockupAccountId, "are_transfers_enabled"))) {
     await this.wrappedAccount.functionCall({
       contractId: lockupAccountId,
@@ -111,7 +111,7 @@ export async function transferAllFromLockup(missingAmount) {
     });
   }
 
-  let liquidBalance = new BN(
+  const liquidBalance = new BN(
     await this.wrappedAccount.viewFunction(lockupAccountId, "get_liquid_owners_balance"),
   );
 
@@ -183,7 +183,7 @@ export function getLockupAccountId(accountId) {
   if (CONFIG.REACT_APP_USE_TESTINGLOCKUP && accountId.length < 64) {
     return `testinglockup.${accountId}`;
   }
-  return sha256(Buffer.from(accountId)).substring(0, 40) + "." + CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX;
+  return `${sha256(Buffer.from(accountId)).substring(0, 40)}.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`;
 }
 
 function subtractReservedForGas(balance) {
@@ -221,7 +221,7 @@ async function getAccountBalance(limitedAccountData = false) {
   );
 
   // TODO: Should lockup contract balance be retrieved separately only when needed?
-  let lockupAccountId = getLockupAccountId(this.accountId);
+  const lockupAccountId = getLockupAccountId(this.accountId);
   console.log("lockupAccountId", lockupAccountId);
   try {
     const lockupAccount = new Account(this.connection, lockupAccountId);
@@ -242,7 +242,7 @@ async function getAccountBalance(limitedAccountData = false) {
     let transfersTimestamp = transfer_poll_account_id
       ? await this.viewFunction(transfer_poll_account_id, "get_result")
       : transfers_timestamp;
-    let areTransfersEnabled = !!transfersTimestamp;
+    const areTransfersEnabled = !!transfersTimestamp;
     transfersTimestamp = transfersTimestamp || (Date.now() * 1000000).toString();
     const { code_hash: lockupContractCodeHash } = await lockupAccount.state();
 
@@ -278,8 +278,8 @@ async function getAccountBalance(limitedAccountData = false) {
           } else if (dateNowBN.gte(vestingInformation.vestingEnd)) {
             unvestedAmount = new BN(0);
           } else {
-            let timeLeft = vestingInformation.vestingEnd.sub(dateNowBN);
-            let totalTime = vestingInformation.vestingEnd.sub(vestingInformation.vestingStart);
+            const timeLeft = vestingInformation.vestingEnd.sub(dateNowBN);
+            const totalTime = vestingInformation.vestingEnd.sub(vestingInformation.vestingStart);
             unvestedAmount = new BN(lockupAmount).mul(timeLeft).div(totalTime);
           }
         }
@@ -372,7 +372,7 @@ async function getAccountBalance(limitedAccountData = false) {
 }
 
 function readOption(reader, f) {
-  let x = reader.readU8();
+  const x = reader.readU8();
   if (x === 1) {
     return f();
   }
@@ -388,15 +388,15 @@ async function viewLockupState(connection, lockupAccountId) {
     account_id: lockupAccountId,
     prefix_base64: Buffer.from("STATE", "utf-8").toString("base64"),
   });
-  let value = Buffer.from(result.values[0].value, "base64");
-  let reader = new BinaryReader(value);
-  let owner = reader.readString();
-  let lockupAmount = reader.readU128().toString();
-  let terminationWithdrawnTokens = reader.readU128().toString();
-  let lockupDuration = reader.readU64().toString();
-  let releaseDuration = readOption(reader, () => reader.readU64().toString());
-  let lockupTimestamp = readOption(reader, () => reader.readU64().toString());
-  let tiType = reader.readU8();
+  const value = Buffer.from(result.values[0].value, "base64");
+  const reader = new BinaryReader(value);
+  const owner = reader.readString();
+  const lockupAmount = reader.readU128().toString();
+  const terminationWithdrawnTokens = reader.readU128().toString();
+  const lockupDuration = reader.readU64().toString();
+  const releaseDuration = readOption(reader, () => reader.readU64().toString());
+  const lockupTimestamp = readOption(reader, () => reader.readU64().toString());
+  const tiType = reader.readU8();
   let transferInformation;
   if (tiType === 0) {
     transferInformation = {
@@ -407,18 +407,18 @@ async function viewLockupState(connection, lockupAccountId) {
       transfer_poll_account_id: reader.readString(),
     };
   }
-  let vestingType = reader.readU8();
+  const vestingType = reader.readU8();
   let vestingInformation = null;
   if (vestingType === 1) {
     vestingInformation = { VestingHash: reader.readArray(() => reader.readU8()) };
   } else if (vestingType === 2) {
-    let vestingStart = reader.readU64();
-    let vestingCliff = reader.readU64();
-    let vestingEnd = reader.readU64();
+    const vestingStart = reader.readU64();
+    const vestingCliff = reader.readU64();
+    const vestingEnd = reader.readU64();
     vestingInformation = { vestingStart, vestingCliff, vestingEnd };
   } else if (vestingType === 3) {
-    let unvestedAmount = reader.readU128();
-    let terminationStatus = reader.readU8();
+    const unvestedAmount = reader.readU128();
+    const terminationStatus = reader.readU8();
     vestingInformation = { unvestedAmount, terminationStatus };
   } else {
     vestingInformation = "TODO";

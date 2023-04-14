@@ -28,13 +28,13 @@ const Accordion = ({ className, trigger, children, transition = "250" }) => {
     const toggles = document.getElementsByClassName(`${trigger}-toggle`);
     setContentHeight(contentHeight);
 
-    for (let toggle of toggles) {
+    for (const toggle of toggles) {
       toggle.addEventListener("click", handleClick);
     }
 
     return () => {
       el.removeEventListener("click", handleClick);
-      for (let toggle of toggles) {
+      for (const toggle of toggles) {
         toggle.removeEventListener("click", handleClick);
       }
     };

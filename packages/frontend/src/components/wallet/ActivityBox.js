@@ -57,7 +57,7 @@ const StyledContainer = styled.div`
 
             > span {
                 color: #3F4045;
-                
+
                 :first-of-type {
                     color: #A2A2A8;
                 }
@@ -103,7 +103,7 @@ const StyledContainer = styled.div`
             stroke: #0072CE;
         }
     }
-    
+
     .down-arrow-icon {
         path {
             stroke: #00C08B;
@@ -178,7 +178,7 @@ export const ActionMessage = ({ transaction, actionArgs, actionKind, accountId }
 const translateId = (transaction, actionArgs, actionKind, accountId) =>
   `${actionKind}${
     actionKind === "AddKey"
-      ? actionArgs.access_key && actionArgs.access_key.permission.permission_details
+      ? actionArgs.access_key?.permission.permission_details
         ? ".forContract"
         : ".forReceiver"
       : ""
@@ -219,7 +219,7 @@ const ActionIcon = ({ actionKind, receiverId, accountId }) => (
 
 const ActionTimeStamp = ({ timeStamp }) => {
   let time = format(timeStamp);
-  let formatting = {
+  const formatting = {
     ago: "",
     years: "y",
     year: "y",

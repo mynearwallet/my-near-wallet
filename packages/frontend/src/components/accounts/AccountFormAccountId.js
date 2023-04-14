@@ -21,7 +21,7 @@ const InputWrapper = styled.div`
     input {
         margin-top: 0px !important;
     }
-    
+
     &.wrong-char {
         input {
             animation-duration: 0.4s;
@@ -77,7 +77,7 @@ class AccountFormAccountId extends Component {
     const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
     const width = this.getTextWidth(userValue, "16px Inter");
     const extraSpace = isSafari ? 21.5 : 22;
-    this.suffix.current.style.left = width + extraSpace + "px";
+    this.suffix.current.style.left = `${width}${extraSpace}px`;
     this.suffix.current.style.visibility = "visible";
     if (userValue.length === 0) {
       this.suffix.current.style.visibility = "hidden";
@@ -88,9 +88,9 @@ class AccountFormAccountId extends Component {
     if (!this.canvas) {
       this.canvas = document.createElement("canvas");
     }
-    let context = this.canvas.getContext("2d");
+    const context = this.canvas.getContext("2d");
     context.font = font;
-    let metrics = context.measureText(text);
+    const metrics = context.measureText(text);
     return metrics.width;
   };
 
@@ -264,8 +264,8 @@ class AccountFormAccountId extends Component {
                 autoCorrect='off'
                 autoCapitalize='off'
                 spellCheck='false'
+                // rome-ignore lint/a11y/noPositiveTabindex: <explanation>
                 tabIndex='1'
-                autoFocus={autoFocus && accountId.length === 0}
                 disabled={disabled}
               />
               {type === "create" && (

@@ -10,7 +10,7 @@ const StyledContainer = styled.div`
     @media (max-width: 991px) {
         margin-bottom: 40px;
     }
-    > div {        
+    > div {
         > div {
             background-color: #F0F0F1;
             border-radius: 8px;
@@ -22,23 +22,23 @@ const StyledContainer = styled.div`
             :hover {
                 background-color: #ECECEC;
             }
-    
+
             > div {
                 margin-left: 15px;
-        
+
                 .banner-title {
                     color: #272729;
                     font-weight: 500;
                     font-size: 16px;
                 }
-        
+
                 .banner-desc {
                     margin-top: 5px;
                     color: #72727A;
                     line-height: 1.5;
                 }
             }
-    
+
             > svg {
                 min-width: 53px;
                 min-height: 53px;
@@ -53,6 +53,7 @@ export default () => {
   return (
     <StyledContainer className='deposit-near-banner'>
       <div>
+        {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <div onClick={() => dispatch(push({ pathname: "/buy" }))}>
           <NearLogoAndPlusIcon />
           <div>

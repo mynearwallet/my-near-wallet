@@ -57,7 +57,9 @@ describe("amounts", () => {
     expect(amounts.decreaseByPercent(250, 10)).toBe("225");
     expect(amounts.decreaseByPercent(930, 40)).toBe("558");
     expect(amounts.decreaseByPercent(42.2, 15.4)).toBe("36");
+    // rome-ignore lint/correctness/noPrecisionLoss: <explanation>
     expect(amounts.decreaseByPercent(0.000079630313987476842385, 0.1, 10)).toBe("0.0000795507");
+    // rome-ignore lint/correctness/noPrecisionLoss: <explanation>
     expect(amounts.decreaseByPercent(0.000079630313987476842385, 0.1, 18)).toBe(
       "0.000079550683673489",
     );

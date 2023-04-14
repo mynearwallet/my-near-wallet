@@ -72,7 +72,7 @@ const StyledContainer = styled(Container)`
     .recaptcha-failed-box, .recaptcha-widget {
         margin-top: 20px;
     }
- 
+
     .recaptcha-disclaimer {
         margin-top: 30px;
     }
@@ -154,7 +154,6 @@ const EnterVerificationCode = ({
                   setCode(e.target.value);
                   setError(false);
                 }}
-                autoFocus={true}
               />
             </div>
           )}
@@ -191,12 +190,14 @@ const EnterVerificationCode = ({
           <Translate id='setRecoveryConfirm.didNotReceive' />
         </div>
         <div>
+          {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
           <span onClick={!reSending ? onResend : () => {}} className='link'>
             <Translate id={`setRecoveryConfirm.${!reSending ? "resendCode" : "resending"}`} />
           </span>
           &nbsp;
           <Translate id='setRecoveryConfirm.or' />
           &nbsp;
+          {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
           <span onClick={onGoBack} className='link'>
             <Translate id='setRecoveryConfirm.sendToDifferent' />{" "}
             <Translate id={`setRecoveryConfirm.${useEmail ? "email" : "phone"}`} />
