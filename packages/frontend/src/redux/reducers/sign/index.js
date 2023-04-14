@@ -117,7 +117,7 @@ const sign = handleActions(
         totalAmount: allActions
           .map(
             (a) =>
-              (a?.transfer.deposit) || (a?.functionCall.deposit) || 0,
+              (a.transfer?.deposit) || (a.functionCall?.deposit) || 0,
           )
           .reduce((totalAmount, amount) => totalAmount.add(new BN(amount)), new BN(0))
           .toString(),
