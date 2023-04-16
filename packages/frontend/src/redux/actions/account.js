@@ -433,11 +433,6 @@ export const fundCreateAccountLedger = (accountId, ledgerPublicKey) => async (di
 // TODO: Refactor common code with setupRecoveryMessageNewAccount
 export const handleCreateAccountWithSeedPhrase =
   (accountId, recoveryKeyPair, fundingOptions, recaptchaToken) => async (dispatch) => {
-    console.log('recaptchaToken: ', recaptchaToken)
-    console.log('fundingOptions: ', fundingOptions)
-    console.log('recoveryKeyPair: ', recoveryKeyPair)
-    console.log('accountId: ', accountId)
-
     // Coin-op verify account flow
     if (CONFIG.DISABLE_CREATE_ACCOUNT && ENABLE_IDENTITY_VERIFIED_ACCOUNT && !fundingOptions) {
       await dispatch(fundCreateAccount(accountId, recoveryKeyPair, "phrase"));
@@ -472,7 +467,6 @@ export const handleCreateAccountWithSeedPhrase =
   };
 
 export const finishAccountSetup = () => async (dispatch, getState) => {
-  console.log('finishAccountSetup')
   await dispatch(refreshAccount());
   await dispatch(clearAccountState());
 
@@ -527,8 +521,6 @@ export const { sendMoney, transferAllFromLockup } = createActions({
 });
 
 export const refreshAccount = (basicData = false) => async (dispatch, getState) => {
-  console.log('refreshAccount', basicData, wallet)
-
   if (!wallet.accountId) {
     return;
   }

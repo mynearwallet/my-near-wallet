@@ -5,7 +5,6 @@ import {
 } from "./wallet";
 
 export const setAccountConfirmed = (accountId, confirmed) => {
-  console.log("setAccountConfirmed", accountId, confirmed);
   localStorage.setItem(keyAccountConfirmed(accountId), confirmed);
 };
 

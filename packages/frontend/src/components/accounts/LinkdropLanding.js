@@ -94,7 +94,6 @@ class LinkdropLanding extends Component {
 
   handleCheckLinkdropInfo = async () => {
     const { fundingContract, fundingKey, checkLinkdropInfo } = this.props;
-    console.log('this.props: ', this.props)
     await Mixpanel.withTracking(
       "CA Check near drop balance",
       async () => {
@@ -131,7 +130,6 @@ class LinkdropLanding extends Component {
     const { keyInfo, invalidNearDrop } = this.state;
     const fundingAmount = keyInfo?.yoctoNEAR || '0';
     const isTrialDrop = keyInfo?.trial_data?.exit || false
-    console.log('isTrialDrop: ', isTrialDrop)
 
     if (!invalidNearDrop) {
       if (isTrialDrop) {

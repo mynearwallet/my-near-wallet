@@ -29,7 +29,6 @@ const { signInWithLedger } = ledgerActions;
 export const addLocalKeyAndFinishSetup = createAsyncThunk(
   `${SLICE_NAME}/addLocalKeyAndFinishSetup`,
   async ({ accountId, recoveryMethod, publicKey, previousAccountId }, { dispatch }) => {
-    console.log('addLocalKeyAndFinishSetup', accountId, recoveryMethod, publicKey, previousAccountId)
 
     if (recoveryMethod === "ledger") {
       await wallet.addLedgerAccountId({ accountId });
@@ -45,11 +44,7 @@ export const addLocalKeyAndFinishSetup = createAsyncThunk(
         await wallet.saveAccount(accountId, newKeyPair);
       } else {
         const contractName = null;
-        console.log('contractName: ', contractName)
         const fullAccess = true;
-        console.log('fullAccess: ', fullAccess)
-        console.log('wallet: ', wallet)
-        console.log('publicKey.toString(): ', publicKey.toString())
         await wallet.postSignedJson("/account/seedPhraseAdded", {
           accountId,
           publicKey: publicKey.toString(),
@@ -58,7 +53,6 @@ export const addLocalKeyAndFinishSetup = createAsyncThunk(
           await wallet.addAccessKey(accountId, contractName, newPublicKey, fullAccess);
           await wallet.saveAccount(accountId, newKeyPair);
         } catch (error) {
-          console.log('error: ', error)
           if (previousAccountId) {
             await wallet.saveAndMakeAccountActive(previousAccountId);
           }
@@ -110,8 +104,6 @@ export const createNewAccount = createAsyncThunk(
     { dispatch },
   ) => {
     const { fundingContract, fundingKey, fundingAccountId, trialDrop = false } = fundingOptions || {};
-
-    console.log('wallet in create account: ', wallet)
     
     if (!trialDrop) {
       await wallet.checkNewAccount(accountId);
@@ -119,12 +111,10 @@ export const createNewAccount = createAsyncThunk(
 
     if (fundingContract && fundingKey) {
       await wallet.createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey);
-      console.log('wallet in create account: ', await wallet.keyStore.getKey(CONFIG.NETWORK_ID, fundingContract))
       await wallet.keyStore.removeKey(CONFIG.NETWORK_ID, fundingContract);
       
       // recoveryKeyPair always comes in from seedphrase recovery but NOT ledger
       if (trialDrop && recoveryKeyPair) {
-        console.log('adding recovery key lfg')
         await wallet.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, recoveryKeyPair);
       }
     } else if (fundingAccountId) {
@@ -176,9 +166,7 @@ export const createAccountWithSeedPhrase = createAsyncThunk(
   async ({ accountId, recoveryKeyPair, fundingOptions = {}, recaptchaToken }, { dispatch }) => {
     const recoveryMethod = "phrase";
     const previousAccountId = wallet.accountId;
-    console.log('wallet BEFORE: ', wallet)
     await wallet.saveAccount(accountId, recoveryKeyPair);
-    console.log('wallet AFTER: ', wallet)
     
     await dispatch(
       createNewAccount({

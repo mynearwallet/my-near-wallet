@@ -224,8 +224,6 @@ export default class Wallet {
   }
 
   save() {
-    console.log("Saving wallet", KEY_ACTIVE_ACCOUNT_ID, KEY_WALLET_ACCOUNTS, this.accountId)
-
     localStorage.setItem(KEY_ACTIVE_ACCOUNT_ID, this.accountId);
     localStorage.setItem(KEY_WALLET_ACCOUNTS, JSON.stringify(this.accounts));
   }
@@ -590,8 +588,6 @@ export default class Wallet {
   }
 
   async checkLinkdropInfo(fundingContract, fundingKey) {
-    console.log('fundingKey: ', fundingKey)
-    console.log('fundingContract: ', fundingContract)
     const account = await this.getAccount(fundingContract);
 
     const contract = new nearApiJs.Contract(account, fundingContract, {
@@ -616,7 +612,6 @@ export default class Wallet {
         let balance = await contract.get_key_balance({ key });
         keyInfo.yoctoNEAR = balance;  
     } catch (e) {
-        console.log('e: ', e)
         let balance = await contract.get_key_balance({ key });
         keyInfo.yoctoNEAR = balance;   
     }
@@ -625,12 +620,7 @@ export default class Wallet {
 }
 
   async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
-    console.log("createNewAccountLinkdrop", accountId, fundingContract, fundingKey, publicKey)
-    
     const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
-    console.log('account: ', account)
-    console.log('this.keyStore: ', this.keyStore)
-    console.log('nearApiJs.KeyPair.fromString(fundingKey),: ', nearApiJs.KeyPair.fromString(fundingKey))
     
     await this.keyStore.setKey(
       CONFIG.NETWORK_ID,
@@ -675,35 +665,25 @@ export default class Wallet {
   }
 
   async saveAccount(accountId, keyPair) {
-    console.log('saveAccount: ', accountId, keyPair)
-    console.log('this.accounts BEFORE: ', this.accounts)
     this.getAccountsLocalStorage();
-    console.log('this.accounts AFTER: ', this.accounts)
     await this.setKey(accountId, keyPair);
     this.accounts[accountId] = true;
-    console.log('this.accounts FINAL: ', this.accounts)
 
     // TODO: figure out better way to inject reducer
     store.addAccountReducer();
   }
 
   makeAccountActive(accountId) {
-    console.log('makeAccountActive: ', accountId)
-    console.log('this.accounts: ', this.accounts)
 
     if (!(accountId in this.accounts)) {
-      console.log('false: ', false)
       return false;
     }
     
-    console.log('this.accountId: ', this.accountId)
-    console.log('accountId: ', accountId)
     this.accountId = accountId;
     this.save();
   }
 
   async saveAndMakeAccountActive(accountId, keyPair) {
-    console.log('saveAndMakeAccountActive: ', accountId, keyPair)
     await this.saveAccount(accountId, keyPair);
     this.makeAccountActive(accountId);
     // TODO: What does setAccountConfirmed do?
@@ -717,13 +697,9 @@ export default class Wallet {
   }
 
   async setKey(accountId, keyPair) {
-    console.log('setKey in wallet: ', accountId, keyPair)
     if (keyPair) {
-      console.log('await this.keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);: ')
       await this.keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
-      console.log('this.keyStore: ', this.keyStore)
       const key = await this.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
-      console.log('key: ', key)
     }
   }
 
@@ -741,14 +717,11 @@ export default class Wallet {
     methodNames  = "",
     recoveryKeyIsFAK,
   ) {
-    console.log('addAccessKey: ', accountId, contractId, publicKey, fullAccess, methodNames, recoveryKeyIsFAK)
     const account = recoveryKeyIsFAK
     ? new nearApiJs.Account(this.connection, accountId)
     : await this.getAccount(accountId);
-    console.log('account: ', account)
     
     const has2fa = await TwoFactor.has2faEnabled(account);
-    console.log("key being added to 2fa account ?", has2fa, account);
     try {
       // TODO: Why not always pass `fullAccess` explicitly when it's desired?
       // TODO: Alternatively require passing MULTISIG_CHANGE_METHODS from caller as `methodNames`
@@ -1006,27 +979,19 @@ export default class Wallet {
   }
 
   async signatureFor(account) {
-    console.log("signatureFor", account);
 
     const { accountId } = account;
-    console.log('accountId: ', accountId)
     const block = await account.connection.provider.block({
       finality: "final",
     });
-    console.log('block: ', block)
     const blockNumber = block.header.height.toString();
-    console.log('blockNumber: ', blockNumber)
     const signer = account.inMemorySigner || account.connection.signer;
-    console.log('signer: ', signer)
     const signed = await signer.signMessage(Buffer.from(blockNumber), accountId, CONFIG.NETWORK_ID);
-    console.log('signed: ', signed)
     const blockNumberSignature = Buffer.from(signed.signature).toString("base64");
-    console.log('blockNumberSignature: ', blockNumberSignature)
     return { blockNumber, blockNumberSignature };
   }
 
   async postSignedJson(path, options) {
-    console.log("postSignedJson", path, options);
     return await sendJson("POST", CONFIG.ACCOUNT_HELPER_URL + path, {
       ...options,
       ...(await this.signatureFor(this)),
