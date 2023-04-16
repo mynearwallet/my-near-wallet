@@ -4,7 +4,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "forceConsistentCasingInFileNames": true,
-
     "skipLibCheck": true,
     "esModuleInterop": true,
     "isolatedModules": true,
@@ -12,19 +11,16 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-
     "allowJs": true,
     "checkJs": false,
     "target": "es2020",
     "jsx": "react-jsx",
-
     "inlineSources": false,
     "preserveWatchOutput": true,
-
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src", "declarations.d.ts"],
+  "include": ["src/**/*", "declarations.d.ts"],
   "exclude": [
     "node_modules",
     "test",
