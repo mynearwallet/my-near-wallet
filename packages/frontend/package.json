@@ -19,7 +19,9 @@
         "lint": "yarn rome check .",
         "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
         "precommit": "node .githooks/format-json-script.mjs",
-        "preinstall": "npx only-allow yarn"
+        "preinstall": "npx only-allow yarn",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
     },
     "browserslist": [
         ">0.2%",
@@ -84,25 +86,34 @@
         "use-immer": "^0.7.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.19.6",
-        "@babel/plugin-transform-react-jsx": "^7.19.0",
-        "@babel/preset-env": "^7.14.1",
-        "@babel/preset-react": "^7.13.13",
+        "@babel/core": "^7.21.4",
+        "@babel/plugin-transform-react-jsx": "^7.21.0",
+        "@babel/preset-env": "^7.21.4",
+        "@babel/preset-react": "^7.18.6",
+        "@babel/preset-typescript": "^7.21.4",
         "@sentry/cli": "^1.65.0",
+        "@storybook/addon-essentials": "^7.0.5",
+        "@storybook/addon-interactions": "^7.0.5",
+        "@storybook/addon-links": "^7.0.5",
+        "@storybook/blocks": "^7.0.5",
+        "@storybook/react": "^7.0.5",
+        "@storybook/react-webpack5": "^7.0.5",
+        "@storybook/testing-library": "^0.0.14-next.2",
         "@types/react-router": "^5.1.19",
         "@types/styled-components": "^5.1.26",
-        "babel-eslint": "^10.1.0",
         "babel-jest": "^27.0.1",
-        "babel-loader": "^8.1.0",
         "concurrently": "^7.0.0",
         "cross-env": "^7.0.3",
         "dotenv": "^11.0.0",
-        "glob": "^9.2.1",
         "gleap": "^10.0.0",
+        "glob": "^9.2.1",
         "jest": "^27.0.1",
         "jest-svg-transformer": "^1.0.0",
         "parcel-bundler": "^1.12.4",
         "parcel-plugin-bundle-visualiser": "^1.2.0",
-        "sort-json": "^2.0.1"
+        "sort-json": "^2.0.1",
+        "storybook": "^7.0.5",
+        "typescript": "^5.0.4",
+        "webpack": "^5.79.0"
     }
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import { Translate } from "react-localize-redux";
 import styled from "styled-components";
-
 import { FundingType } from "./FundingType";
 
 const Block = styled.div`
@@ -88,7 +87,17 @@ const FundingTypeWrap = styled.div`
     }
 `;
 
-export const FundingCard = ({ title, subTitle, actions, link }) => {
+interface Props {
+    title: string
+    subTitle: string
+    actions: any
+    link?: {
+        title: string
+        url: string
+    }
+}
+
+export const FundingCard: React.FunctionComponent<Props> = ({ title, subTitle, actions, link }) => {
   return (
     <Block>
       <TextWrap>
