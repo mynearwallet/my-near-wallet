@@ -82,7 +82,7 @@
         "redux-thunk": "^2.3.0",
         "regenerator-runtime": "^0.13.5",
         "reselect": "^4.0.0",
-        "styled-components": "^5.3.0",
+        "styled-components": "^5.3.9",
         "timeago.js": "^4.0.2",
         "use-immer": "^0.7.0"
     },
@@ -116,8 +116,6 @@
         "jest-environment-jsdom": "^29.5.0",
         "jest-svg-transformer": "^1.0.0",
         "parcel": "^2.8.3",
-        "parcel-bundler": "^1.12.4",
-        "parcel-plugin-bundle-visualiser": "^1.2.0",
         "sort-json": "^2.0.1",
         "storybook": "^7.0.5",
         "ts-jest": "^29.1.0",

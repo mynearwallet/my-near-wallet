@@ -6,7 +6,7 @@ const hoverEffect = (isEnabled: boolean) => (isEnabled ? "&:hover { background: 
 
 const paledIf = (isDisabled: boolean) => (isDisabled ? "opacity: 0.5; filter: grayscale(1);" : "");
 
-const LinkWrap = styled.a`
+const LinkWrap = styled.a<{disabled: boolean}>`
     display: block;
     border-top: 1px solid #f0f0f1;
     cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
