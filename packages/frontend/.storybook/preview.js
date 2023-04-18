@@ -1,8 +1,6 @@
 import React, { Suspense } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { LocalizeProvider } from "react-localize-redux";
 import i18n from '../src/translations';
-import { store } from '../src'
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -22,11 +20,9 @@ const withI18next = (Story) => {
     // This catches the suspense from components not yet ready (still loading translations)
     // Alternative: set useSuspense to false on i18next.options.react when initializing i18next
     <Suspense fallback={<div>loading translations...</div>}>
-        <LocalizeProvider store={store}>
-            <I18nextProvider i18n={i18n}>
+        <I18nextProvider i18n={i18n}>
                 <Story />
-            </I18nextProvider>
-        </LocalizeProvider>
+        </I18nextProvider>
     </Suspense>
   );
 };

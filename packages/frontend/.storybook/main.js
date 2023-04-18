@@ -8,6 +8,7 @@ const config = {
   ],
   framework: {
     name: "@storybook/react-webpack5",
+    disableTelemetry: true,
     options: {},
   },
   docs: {
