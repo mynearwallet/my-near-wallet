@@ -10,7 +10,7 @@
         "build-storybook": "storybook build",
         "bundle": "cross-env NODE_ENV=production node ci/runBundler.js",
         "check": "tsc --noEmit",
-        "dev": "yarn && cross-env NEAR_WALLET_ENV=mainnet yarn start",
+        "dev": "yarn && cross-env NEAR_WALLET_ENV=testnet yarn start",
         "preinstall": "npx only-allow yarn",
         "lint": "yarn rome check .",
         "pre-build": "npx rimraf dist/ && npx rimraf .parcel-cache/",
