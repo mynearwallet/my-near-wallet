@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap");
+
+
 @font-face {
     font-family: "Inter";
     font-style: normal;
@@ -58,8 +61,6 @@
     font-display: swap;
     src: url("../fonts/Inter-Black.woff2") format("woff2");
 }
-
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap");
 
 :root {
     --mnw-color-success: #5BB98C;
