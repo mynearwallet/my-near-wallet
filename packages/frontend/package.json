@@ -1,25 +1,27 @@
 {
-    "homepage": "https://wallet.near.org",
     "name": "@near-wallet/frontend",
     "version": "0.2.0",
+    "homepage": "https://wallet.near.org",
     "publishConfig": {
         "access": "public"
     },
     "scripts": {
-        "pre-deploy": "yarn build",
-        "update:static": "npx copyfiles 'src/wasm/*.wasm' 'dist'",
-        "start": "yarn update:static && parcel src/index.html --cache-dir ./.parcel-cache --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
-        "pre-build": "npx rimraf dist/ && npx rimraf .parcel-cache/",
         "build": "yarn run bundle && yarn run sentry",
+        "build-storybook": "storybook build",
         "bundle": "cross-env NODE_ENV=production node ci/runBundler.js",
         "check": "tsc --noEmit",
-        "dev": "yarn && cross-env NEAR_WALLET_ENV=mainnet yarn start",
-        "sentry": "node ci/sentry-send-release.js",
-        "test": "jest",
+        "dev": "yarn && cross-env NEAR_WALLET_ENV=testnet yarn start",
+        "preinstall": "npx only-allow yarn",
         "lint": "yarn rome check .",
-        "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
+        "pre-build": "npx rimraf dist/ && npx rimraf .parcel-cache/",
+        "pre-deploy": "yarn build",
         "precommit": "node .githooks/format-json-script.mjs",
-        "preinstall": "npx only-allow yarn"
+        "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
+        "sentry": "node ci/sentry-send-release.js",
+        "start": "yarn update:static && parcel src/index.html --cache-dir ./.parcel-cache --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
+        "storybook": "storybook dev -p 6006",
+        "test": "jest",
+        "update:static": "npx copyfiles 'src/wasm/*.wasm' 'dist'"
     },
     "browserslist": [
         ">0.2%",
@@ -80,15 +82,28 @@
         "redux-thunk": "^2.3.0",
         "regenerator-runtime": "^0.13.5",
         "reselect": "^4.0.0",
-        "styled-components": "^5.3.0",
+        "styled-components": "^5.3.9",
         "timeago.js": "^4.0.2",
         "use-immer": "^0.7.0"
     },
     "devDependencies": {
+        "@babel/core": "^7.21.4",
+        "@babel/plugin-transform-react-jsx": "^7.21.0",
+        "@babel/preset-env": "^7.21.4",
+        "@babel/preset-react": "^7.18.6",
+        "@babel/preset-typescript": "^7.21.4",
         "@parcel/config-default": "^2.8.3",
         "@parcel/transformer-raw": "^2.8.3",
         "@parcel/transformer-typescript-tsc": "^2.8.3",
         "@parcel/validator-typescript": "^2.8.3",
+        "@sentry/cli": "^1.65.0",
+        "@storybook/addon-essentials": "^7.0.5",
+        "@storybook/addon-interactions": "^7.0.5",
+        "@storybook/addon-links": "^7.0.5",
+        "@storybook/blocks": "^7.0.5",
+        "@storybook/react": "^7.0.5",
+        "@storybook/react-webpack5": "^7.0.5",
+        "@storybook/testing-library": "^0.0.14-next.2",
         "@types/jest": "^29.5.0",
         "@types/react-router": "^5.1.19",
         "@types/styled-components": "^5.1.26",
@@ -102,6 +117,9 @@
         "jest-svg-transformer": "^1.0.0",
         "parcel": "^2.8.3",
         "sort-json": "^2.0.1",
-        "ts-jest": "^29.1.0"
+        "storybook": "^7.0.5",
+        "ts-jest": "^29.1.0",
+        "typescript": "^5.0.4",
+        "webpack": "^5.79.0"
     }
 }

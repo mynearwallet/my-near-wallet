@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Translate } from "react-localize-redux";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-
 import { getPayMethods } from "../../config/buyNearConfig";
 import { Mixpanel } from "../../mixpanel";
 import { selectAccountId } from "../../redux/slices/account";
@@ -99,7 +98,7 @@ const StyledHeader = styled.div`
     }
 `;
 
-export function BuyNear({ history }) {
+export const BuyNear: React.FunctionComponent<{history: any}> = ({ history }) => {
   const accountId = useSelector(selectAccountId);
   const [moonPayAvailable, setMoonPayAvailable] = useState(true);
   const [signedMoonPayUrl, setSignedMoonPayUrl] = useState(null);
