@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
 import { createSelector } from "reselect";
 
-const getlanguagesList = (state) => state.localize.languages;
+const getLanguages = (state) => state.localize.languages;
 
-function getCurrentLanguage() {
-  const getlanguage = createSelector(getlanguagesList, (languages) =>
+const getCurrentLanguage = () => {
+  const language = createSelector(getLanguages, (languages) =>
     languages.find((language) => language.active),
   );
-  const currentLanguage = useSelector(getlanguage);
+  const currentLanguage = useSelector(language);
 
   return currentLanguage.code;
 }

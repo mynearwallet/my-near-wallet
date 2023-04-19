@@ -1,6 +1,8 @@
 import React, { Suspense } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../src/translations';
+import '../src/app/index.css'
+import GlobalStyle from '../src/components/GlobalStyle'
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -21,7 +23,8 @@ const withI18next = (Story) => {
     // Alternative: set useSuspense to false on i18next.options.react when initializing i18next
     <Suspense fallback={<div>loading translations...</div>}>
         <I18nextProvider i18n={i18n}>
-                <Story />
+            <GlobalStyle />
+            <Story />
         </I18nextProvider>
     </Suspense>
   );

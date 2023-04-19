@@ -1,21 +1,20 @@
-import React, { FC } from "react";
-
+import React from "react";
 import { getRoundedBalanceInFiat, formatWithCommas } from "./helpers";
 
 const USDSymbol = "USD";
 
-type FiatBalanceProps = {
+interface Props {
   amount: string;
   showAlmostEqualSignUSD?: boolean;
   showSymbolUSD?: boolean;
   showSignUSD?: boolean;
   nearTokenFiatValueUSD?: number;
   isNear?: boolean;
-  decimals: number;
+  decimals?: number;
   totalAmount?: string;
 };
 
-const FiatBalance: FC<FiatBalanceProps> = ({
+const FiatBalance: React.FunctionComponent<Props> = ({
   amount,
   showAlmostEqualSignUSD = false,
   showSymbolUSD = false,

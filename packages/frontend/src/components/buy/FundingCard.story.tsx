@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { FundingCard } from './FundingCard';
 
 const meta: Meta<typeof FundingCard> = {
-  title: 'Components/FundingCard',
+  title: 'Components/Common/FundingCard',
   component: FundingCard,
 };
 
