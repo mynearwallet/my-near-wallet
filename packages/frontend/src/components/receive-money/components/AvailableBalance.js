@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
-import Amount from "../../send/components/entry_types/Amount";
+import { Amount } from "../../send/components/entry_types/Amount";
 
 const StyledContainer = styled.div`
     background-color: #FAFAFA;

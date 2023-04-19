@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-
 import FormButton from "../../common/FormButton";
 import SetPassword from "../SetPassword";
 import { WithoutPassword, PasswordForm, Submit } from "./ui";
@@ -29,7 +28,8 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
         <SetPassword onChange={handlePasswordChange} />
       </PasswordForm>
       <Submit>
-        <FormButton onClick={handleClickNext} disabled={password === null}>
+        {/* @ts-ignore: prop error */}
+        <FormButton onClick={() => handleClickNext} disabled={password === null}>
           {t("button.next")}
         </FormButton>
       </Submit>

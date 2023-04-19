@@ -1,7 +1,5 @@
 import React, { Component, createRef } from "react";
-import { Translate } from "react-localize-redux";
 import styled from "styled-components";
-
 import classNames from "../../../utils/classNames";
 import { ACCOUNT_CHECK_TIMEOUT } from "../../../utils/wallet";
 import CheckCircleIcon from "../../svg/CheckCircleIcon";
@@ -183,7 +181,7 @@ class InputAccountId extends Component {
   };
 
   render() {
-    const { disabled, accountId, onFocus, onBlur, autoFocus, isSuccess, isProblem } = this.props;
+    const { disabled, accountId, onFocus, onBlur, isSuccess, isProblem } = this.props;
 
     const { wrongChar } = this.state;
 

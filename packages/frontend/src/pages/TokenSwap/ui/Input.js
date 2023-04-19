@@ -1,9 +1,8 @@
 import React, { memo, useEffect, useState } from "react";
 import styled from "styled-components";
-
 import SafeTranslate from "../../../components/SafeTranslate";
 // @todo common component: move to .../common
-import Token from "../../../components/send/components/entry_types/Token";
+import { Token } from "../../../components/send/components/entry_types/Token";
 import ChevronIcon from "../../../components/svg/ChevronIcon";
 import { isValidAmount, toSignificantDecimals, formatBalance } from "../../../utils/amounts";
 import { DECIMALS_TO_SAFE } from "../utils/constants";

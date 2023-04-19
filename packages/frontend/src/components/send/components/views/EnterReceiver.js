@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { Translate } from "react-localize-redux";
 import { Textfit } from "react-textfit";
 import styled from "styled-components";
-
 import BackArrowButton from "../../../common/BackArrowButton";
 import FormButton from "../../../common/FormButton";
-import RawTokenAmount from "../RawTokenAmount";
-import ReceiverInputWithLabel from "../ReceiverInputWithLabel";
-import RiscScoringForm, { useRiskScoringCheck } from "../RiscScoringForm";
+import { RawTokenAmount } from "../RawTokenAmount";
+import { ReceiverInputWithLabel } from "../ReceiverInputWithLabel";
+import { RiscScoringForm, useRiskScoringCheck } from "../RiscScoringForm";
 
 const StyledContainer = styled.form`
     .token-amount {

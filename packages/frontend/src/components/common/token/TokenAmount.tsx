@@ -1,5 +1,4 @@
-import React, { FC } from "react";
-
+import React from "react";
 import {
   formatTokenAmount,
   removeTrailingZeros,
@@ -29,19 +28,19 @@ const showFullAmount = (amount: string, decimals: number, symbol: string): strin
     : "";
 };
 
-type TokenAmountProps = {
+interface Props {
   token: Wallet.Token;
-  withSymbol?: boolean;
-  className: string;
+  className?: string;
   showFiatAmount?: boolean;
-  "data-test-id": string;
+  withSymbol?: boolean;
+  "data-test-id"?: string;
   balancePrefix?: string;
 };
 
-const TokenAmount: FC<TokenAmountProps> = ({
+const TokenAmount: React.FunctionComponent<Props> = ({
   token,
-  withSymbol = false,
   className,
+  withSymbol = false,
   showFiatAmount = true,
   "data-test-id": testId,
   balancePrefix = "",

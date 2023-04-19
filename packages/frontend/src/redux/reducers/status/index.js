@@ -153,9 +153,9 @@ const clearReducer = handleActions(
             {},
           ),
     }),
-    [makeAccountActive]: () => {
-      return initialState;
-    },
+    // [makeAccountActive]: () => {
+    //   return initialState;
+    // },
   },
   initialState,
 );
