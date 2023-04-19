@@ -18,7 +18,7 @@ import FormButton from "../common/FormButton";
 import Modal from "../common/modal/Modal";
 import ModalFooter from "../common/modal/ModalFooter";
 import SafeTranslate from "../SafeTranslate";
-import ReceiverInputWithLabel from "../send/components/ReceiverInputWithLabel";
+import { ReceiverInputWithLabel } from "../send/components/ReceiverInputWithLabel";
 import AvatarSuccessIcon from "../svg/AvatarSuccessIcon";
 import EstimatedFees from "../transfer/EstimatedFees";
 

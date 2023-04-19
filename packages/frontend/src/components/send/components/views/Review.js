@@ -2,12 +2,11 @@ import React from "react";
 import { Translate } from "react-localize-redux";
 import { Textfit } from "react-textfit";
 import styled from "styled-components";
-
 import classNames from "../../../../utils/classNames";
 import FormButton from "../../../common/FormButton";
-import Information from "../entry_types/Information";
-import RawTokenAmount from "../RawTokenAmount";
-import TransactionDetails from "../TransactionDetails";
+import { Information } from "../entry_types/Information";
+import { RawTokenAmount } from "../RawTokenAmount";
+import { TransactionDetails } from "../TransactionDetails";
 
 const StyledContainer = styled.div`
     .information {

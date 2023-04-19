@@ -1,6 +1,5 @@
 import React from "react";
-
-import Amount from "../../../../components/send/components/entry_types/Amount";
+import { Amount } from "../../../../components/send/components/entry_types/Amount";
 import CONFIG from "../../../../config";
 import { parseTokenAmount } from "../../../../utils/amounts";
 import { useSwapData } from "../../model/Swap";
