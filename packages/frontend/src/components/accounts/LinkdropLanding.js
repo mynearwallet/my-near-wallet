@@ -98,8 +98,13 @@ class LinkdropLanding extends Component {
       "CA Check near drop balance",
       async () => {
         const keyInfo = await checkLinkdropInfo(fundingContract, fundingKey);
-        
-        this.setState({ keyInfo });
+
+        // If there is trial data and exit is set to false, then the linkdrop should be invalid
+        if (keyInfo?.trial_data?.exit === false) {
+          this.setState({ invalidNearDrop: true })
+        } else {
+          this.setState({ keyInfo });
+        }
       },
       () => this.setState({ invalidNearDrop: true }),
     );

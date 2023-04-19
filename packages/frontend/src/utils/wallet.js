@@ -636,7 +636,7 @@ export default class Wallet {
     await contract.create_account_and_claim(
       {
         new_account_id: accountId,
-        new_public_key: publicKey.toString()//.replace("ed25519:", ""),
+        new_public_key: publicKey.toString().replace("ed25519:", ""),
       },
       CONFIG.LINKDROP_GAS,
     );
