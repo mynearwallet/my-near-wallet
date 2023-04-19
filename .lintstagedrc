@@ -1,0 +1,4 @@
+{
+    "*.{js,jsx,ts,tsx}": ["rome check", "rome format --write"],
+    "*.{json, md}": ["rome format --write"]
+}

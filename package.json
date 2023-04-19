@@ -1,9 +1,7 @@
 {
   "name": "@near-wallet/monorepo",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
     "pre-build": "cd packages/frontend && yarn install --frozen-lockfile && yarn pre-build",
     "build": "cd packages/frontend && yarn install --frozen-lockfile && yarn build",
@@ -17,13 +15,13 @@
     "lint:fix": "yarn rome check . --apply",
     "format": "yarn rome format . --write"
   },
-  "dependencies": {},
   "devDependencies": {
     "@commitlint/cli": "^17.6.0",
     "@commitlint/config-conventional": "^17.6.0",
     "crypto-browserify": "^3.12.0",
     "husky": "^8.0.3",
     "lerna": "^6.6.1",
+    "lint-staged": "^13.2.1",
     "rome": "12.0.0",
     "stream-browserify": "^3.0.0",
     "string_decoder": "^1.3.0"
