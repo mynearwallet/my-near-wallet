@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Token } from './Token';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Token } from "./Token";
 
 const meta: Meta<typeof Token> = {
-  title: 'Components/Send/Token',
+  title: "Components/Send/Token",
   component: Token,
 };
 

@@ -5,14 +5,14 @@ import StyledContainer from "./css/Style.css";
 import { useTranslation } from "react-i18next";
 
 interface Props {
-    translateIdTitle: string
-    amount: string
-    symbol?: string
-    decimals?: number
-    translateIdInfoTooltip?: string
-    isApproximate?: boolean
-    className?: string
-    'data-test-id'?: string
+  translateIdTitle: string;
+  amount: string;
+  symbol?: string;
+  decimals?: number;
+  translateIdInfoTooltip?: string;
+  isApproximate?: boolean;
+  className?: string;
+  "data-test-id"?: string;
 }
 
 export const Amount: React.FunctionComponent<Props> = ({
@@ -23,9 +23,9 @@ export const Amount: React.FunctionComponent<Props> = ({
   translateIdTitle,
   translateIdInfoTooltip,
   isApproximate,
-  'data-test-id': testId,
+  "data-test-id": testId,
 }) => {
-    const { t } = useTranslation()
+  const { t } = useTranslation();
   /* TODO: Handle long amounts */
   return (
     <StyledContainer className={className} data-test-id={testId}>

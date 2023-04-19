@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { TabSelector } from './TabSelector';
+import type { Meta, StoryObj } from "@storybook/react";
+import { TabSelector } from "./TabSelector";
 
 const meta: Meta<typeof TabSelector> = {
-  title: 'Components/Send/TabSelector',
+  title: "Components/Send/TabSelector",
   component: TabSelector,
 };
 

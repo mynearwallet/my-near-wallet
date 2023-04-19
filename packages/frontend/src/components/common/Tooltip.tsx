@@ -88,15 +88,22 @@ const Container = styled.div`
 `;
 
 interface Props {
-    data?: any
-    position?: string
-    modalOnly?: boolean
-    icon?: string
-    translate?: string
-    children?: any
+  data?: any;
+  position?: string;
+  modalOnly?: boolean;
+  icon?: string;
+  translate?: string;
+  children?: any;
 }
 
-const Tooltip: React.FunctionComponent<Props> = ({ children, translate, data, position, icon, modalOnly = false }) => {
+const Tooltip: React.FunctionComponent<Props> = ({
+  children,
+  translate,
+  data,
+  position,
+  icon,
+  modalOnly = false,
+}) => {
   const [show, setShow] = useState(false);
   const [mobile, setMobile] = useState(null);
   const [mouseDisabled, setMouseDisabled] = useState(false);

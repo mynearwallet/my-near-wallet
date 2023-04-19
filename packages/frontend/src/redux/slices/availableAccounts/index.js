@@ -19,7 +19,7 @@ const availableAccountsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(refreshAccountOwner.fulfilled, (state, action) => {
-      set(state, ["items"], Object.keys((action.payload?.accounts) || {}).sort());
+      set(state, ["items"], Object.keys(action.payload?.accounts || {}).sort());
     });
     builder.addCase(refreshAccountOwner.rejected, (state, action) => {
       set(state, ["items"], Object.keys(wallet.accounts || {}).sort());

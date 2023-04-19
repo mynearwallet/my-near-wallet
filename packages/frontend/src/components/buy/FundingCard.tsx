@@ -88,13 +88,13 @@ const FundingTypeWrap = styled.div`
 `;
 
 interface Props {
-    title: string
-    subTitle: string
-    actions: any
-    link?: {
-        title: string
-        url: string
-    }
+  title: string;
+  subTitle: string;
+  actions: any;
+  link?: {
+    title: string;
+    url: string;
+  };
 }
 
 export const FundingCard: React.FunctionComponent<Props> = ({ title, subTitle, actions, link }) => {

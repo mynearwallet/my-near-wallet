@@ -30,7 +30,7 @@ class WalletE2eLogsReporter {
     if (result.status === "skipped") {
       text = `  -  ${title}`;
     } else {
-      const statusMark = (`  ${(result.status === "passed" ? "✓" : "✘")}`).padEnd(5);
+      const statusMark = `  ${result.status === "passed" ? "✓" : "✘"}`.padEnd(5);
       text = statusMark + title + duration;
     }
     return text;

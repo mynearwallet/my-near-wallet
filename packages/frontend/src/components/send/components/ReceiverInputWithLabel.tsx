@@ -44,14 +44,14 @@ const StyledContainer = styled.div`
 `;
 
 interface Props {
-    receiverId: string
-    localAlert: string
-    isSuccess: boolean
-    isProblem: boolean
-    checkAccountAvailable: (accountId: string) => void,
-    setIsImplicitAccount: () => void,
-    clearLocalAlert: () => void
-    handleChangeReceiverId:  () => void
+  receiverId: string;
+  localAlert: string;
+  isSuccess: boolean;
+  isProblem: boolean;
+  checkAccountAvailable: (accountId: string) => void;
+  setIsImplicitAccount: () => void;
+  clearLocalAlert: () => void;
+  handleChangeReceiverId: () => void;
 }
 
 export const ReceiverInputWithLabel: React.FunctionComponent<Props> = ({
@@ -65,7 +65,7 @@ export const ReceiverInputWithLabel: React.FunctionComponent<Props> = ({
   handleChangeReceiverId,
 }) => {
   const [inputHasFocus, setInputHasFocus] = useState(false);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   // TODO: Add remaining error style text
 
   return (
@@ -76,7 +76,7 @@ export const ReceiverInputWithLabel: React.FunctionComponent<Props> = ({
         { focus: inputHasFocus },
       ])}
     >
-      {t('sendV2.selectReceiver.receiverInputLabel')}
+      {t("sendV2.selectReceiver.receiverInputLabel")}
       <InputAccountId
         accountId={receiverId}
         handleChange={handleChangeReceiverId}

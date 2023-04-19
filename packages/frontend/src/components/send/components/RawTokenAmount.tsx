@@ -3,11 +3,11 @@ import Balance from "../../common/balance/Balance";
 import TokenAmount from "../../common/token/TokenAmount";
 
 interface Props {
-    amount: string
-    showFiatAmountForNonNearToken: boolean
-    symbol?: string
-    decimals?: number | null
-    withSymbol?: boolean
+  amount: string;
+  showFiatAmountForNonNearToken: boolean;
+  symbol?: string;
+  decimals?: number | null;
+  withSymbol?: boolean;
 }
 
 export const RawTokenAmount: React.FunctionComponent<Props> = ({
@@ -23,7 +23,7 @@ export const RawTokenAmount: React.FunctionComponent<Props> = ({
         token={{
           onChainFTMetadata: {
             symbol,
-            decimals
+            decimals,
           },
           balance: amount,
         }}

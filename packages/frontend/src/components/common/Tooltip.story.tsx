@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import Tooltip from './Tooltip';
+import type { Meta, StoryObj } from "@storybook/react";
+import Tooltip from "./Tooltip";
 
 const meta: Meta<typeof Tooltip> = {
-  title: 'Components/Common/Tooltip',
+  title: "Components/Common/Tooltip",
   component: Tooltip,
 };
 
@@ -12,6 +12,6 @@ type Story = StoryObj<typeof Tooltip>;
 export const Primary: Story = {
   args: {
     modalOnly: false,
-    translate: 'sendV2.translateIdInfoTooltip.estimatedFees'
+    translate: "sendV2.translateIdInfoTooltip.estimatedFees",
   },
 };

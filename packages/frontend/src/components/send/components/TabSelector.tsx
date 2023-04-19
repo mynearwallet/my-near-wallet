@@ -58,7 +58,7 @@ export const TabSelector: React.FunctionComponent = () => {
   const pathname = location.pathname;
   const sendMoneyRoute = "/send-money";
   const receiveMoneyRoute = "/receive-money";
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   //TODO: Replace tab selector in Wallet.js with this component
 

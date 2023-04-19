@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import Balance from './Balance';
+import type { Meta, StoryObj } from "@storybook/react";
+import Balance from "./Balance";
 
 const meta: Meta<typeof Balance> = {
-  title: 'Components/Common/Balance',
+  title: "Components/Common/Balance",
   component: Balance,
 };
 

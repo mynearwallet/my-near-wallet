@@ -42,14 +42,20 @@ const getFontSize = (charLength: number): number => {
 };
 
 interface Props {
-    value: string
-    error: string
-    autoFocus?: boolean
-    maxLength?: number
-    onChange: (event: any) => void
+  value: string;
+  error: string;
+  autoFocus?: boolean;
+  maxLength?: number;
+  onChange: (event: any) => void;
 }
 
-export const AmountInput: React.FunctionComponent<Props> = ({ value, onChange, error, autoFocus = true, maxLength = 18 }) => {
+export const AmountInput: React.FunctionComponent<Props> = ({
+  value,
+  onChange,
+  error,
+  autoFocus = true,
+  maxLength = 18,
+}) => {
   return (
     <StyledInput
       className={error ? "error" : ""}

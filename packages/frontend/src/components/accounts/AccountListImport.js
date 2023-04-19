@@ -181,7 +181,7 @@ const AccountListImport = ({ accounts = [], animationScope = 0, onClickAccount }
   <AnimateList animate={animationScope}>
     {accounts.map((account) => (
       // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-       <div
+      <div
         key={account.accountId}
         className={`row ${account.status}`}
         onClick={() => (onClickAccount ? onClickAccount(account) : null)}

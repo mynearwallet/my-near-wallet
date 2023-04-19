@@ -67,82 +67,80 @@ const StyledContainer = styled.div`
 `;
 
 interface Props {
-    amount: string
-    totalAmount?: string
-    className?: string
-    showSymbolNEAR?: boolean
-    showBalanceInNEAR?: boolean
-    showBalanceInUSD?: boolean
-    showAlmostEqualSignUSD?: boolean
-    showSignUSD?: boolean
-    showSymbolUSD?: boolean
-    "data-test-id"?: string
+  amount: string;
+  totalAmount?: string;
+  className?: string;
+  showSymbolNEAR?: boolean;
+  showBalanceInNEAR?: boolean;
+  showBalanceInUSD?: boolean;
+  showAlmostEqualSignUSD?: boolean;
+  showSignUSD?: boolean;
+  showSymbolUSD?: boolean;
+  "data-test-id"?: string;
 }
 
 const Balance: React.FunctionComponent<Props> = ({
-    totalAmount,
-    amount,
-    showSymbolNEAR = true,
-    showBalanceInNEAR = true,
-    showBalanceInUSD = true,
-    showAlmostEqualSignUSD,
-    showSignUSD,
-    showSymbolUSD,
-    className,
-    "data-test-id": testId,
+  totalAmount,
+  amount,
+  showSymbolNEAR = true,
+  showBalanceInNEAR = true,
+  showBalanceInUSD = true,
+  showAlmostEqualSignUSD,
+  showSignUSD,
+  showSymbolUSD,
+  className,
+  "data-test-id": testId,
 }) => {
-    const { t } = useTranslation()
-    const nearTokenFiatValueUSD = useSelector(selectNearTokenFiatValueUSD);
-    const amountToShow = amount && formatNearAmount(amount);
+  const { t } = useTranslation();
+  const nearTokenFiatValueUSD = useSelector(selectNearTokenFiatValueUSD);
+  const amountToShow = amount && formatNearAmount(amount);
 
-    const handleShowInYocto = (amount: string) => {
-        if (new BN(amount).lte(YOCTO_NEAR_THRESHOLD)) {
-            return showInYocto(amount);
-        } else {
-            return "";
-        }
-    };
+  const handleShowInYocto = (amount: string) => {
+    if (new BN(amount).lte(YOCTO_NEAR_THRESHOLD)) {
+      return showInYocto(amount);
+    } else {
+      return "";
+    }
+  };
 
-    return (
-      <StyledContainer
-        title={handleShowInYocto(amount)}
-        className={classNames([
-          "balance",
-          className,
-          {
-            "fiat-only": !showBalanceInNEAR,
-          },
-        ])}
-        data-test-id={testId}
-      >
-        {showBalanceInNEAR && (
-          <>
-            {amount ? (
-              <div className='near-amount'>
-                {amountToShow}
-                {showSymbolNEAR !== false ? ` ${CONFIG.NEAR_ID}` : ""}
-              </div>
-            ) : (
-              <div className="dots">
-                {t("loadingNoDots")}
-              </div>
-            )}
-          </>
-        )}
-        {showBalanceInUSD && (
-          <div className='fiat-amount'>
-            <FiatBalance
-              totalAmount={totalAmount}
-              amount={amount}
-              nearTokenFiatValueUSD={nearTokenFiatValueUSD}
-              showAlmostEqualSignUSD={showAlmostEqualSignUSD}
-              showSignUSD={showSignUSD}
-              showSymbolUSD={showSymbolUSD}
-            />
-          </div>
-        )}
-      </StyledContainer>
-    );
+  return (
+    <StyledContainer
+      title={handleShowInYocto(amount)}
+      className={classNames([
+        "balance",
+        className,
+        {
+          "fiat-only": !showBalanceInNEAR,
+        },
+      ])}
+      data-test-id={testId}
+    >
+      {showBalanceInNEAR && (
+        <>
+          {amount ? (
+            <div className='near-amount'>
+              {amountToShow}
+              {showSymbolNEAR !== false ? ` ${CONFIG.NEAR_ID}` : ""}
+            </div>
+          ) : (
+            <div className="dots">{t("loadingNoDots")}</div>
+          )}
+        </>
+      )}
+      {showBalanceInUSD && (
+        <div className='fiat-amount'>
+          <FiatBalance
+            totalAmount={totalAmount}
+            amount={amount}
+            nearTokenFiatValueUSD={nearTokenFiatValueUSD}
+            showAlmostEqualSignUSD={showAlmostEqualSignUSD}
+            showSignUSD={showSignUSD}
+            showSymbolUSD={showSymbolUSD}
+          />
+        </div>
+      )}
+    </StyledContainer>
+  );
 };
 
 export default Balance;

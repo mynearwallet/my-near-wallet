@@ -7,7 +7,7 @@ import ArrowWhiteImage from "../../images/icon-arrow-white.svg";
 import { Mixpanel } from "../../mixpanel/index";
 import classNames from "../../utils/classNames";
 
-const CustomButton = styled.button<{style: any}>`
+const CustomButton = styled.button<{ style: any }>`
     &&& {
         color: #fff;
         margin: 24px 0 0 0;
@@ -492,21 +492,21 @@ const CustomButton = styled.button<{style: any}>`
 `;
 
 interface Props {
-    children: any
-    type?: "submit" | "reset" | "button"
-    color?: string
-    onClick?: (event: any) => void
-    disabled?: boolean
-    sending?: boolean
-    sendingString?: string
-    size?: string
-    linkTo?: string
-    history?: any[],
-    className?: string,
-    id?: string,
-    trackingId?: string,
-    "data-test-id"?: string,
-    style: any,
+  children: any;
+  type?: "submit" | "reset" | "button";
+  color?: string;
+  onClick?: (event: any) => void;
+  disabled?: boolean;
+  sending?: boolean;
+  sendingString?: string;
+  size?: string;
+  linkTo?: string;
+  history?: any[];
+  className?: string;
+  id?: string;
+  trackingId?: string;
+  "data-test-id"?: string;
+  style: any;
 }
 
 const FormButton: React.FunctionComponent<Props> = ({

@@ -44,11 +44,10 @@ const StyledCheckbox = styled.div<{ checked: boolean }>`
 `;
 
 interface Props {
-    checked: boolean
-    className?: string
-    onChange?: (event: any) => void
+  checked: boolean;
+  className?: string;
+  onChange?: (event: any) => void;
 }
-
 
 const Checkbox: React.FunctionComponent<Props> = ({ className, checked, ...props }) => (
   <CheckboxContainer className={className}>

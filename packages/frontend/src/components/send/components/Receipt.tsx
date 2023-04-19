@@ -22,21 +22,27 @@ const StyledContainer = styled.div`
 `;
 
 interface Props {
-    status: TransactionStatus
-    token: {
-        symbol: string
-        icon: string
-        amount: string
-        decimals: number
-    }
-    network_fees: string
-    receiver_id: string
-    block_timestamp: number
+  status: TransactionStatus;
+  token: {
+    symbol: string;
+    icon: string;
+    amount: string;
+    decimals: number;
+  };
+  network_fees: string;
+  receiver_id: string;
+  block_timestamp: number;
 }
 
 const prefixTXEntryTitleId = (key: string) => `sendV2.TXEntry.title.${key}`;
 
-export const Receipt: React.FunctionComponent<Props> = ({ status, token, network_fees, receiver_id, block_timestamp }) => {
+export const Receipt: React.FunctionComponent<Props> = ({
+  status,
+  token,
+  network_fees,
+  receiver_id,
+  block_timestamp,
+}) => {
   return (
     <StyledContainer>
       <Status translate={prefixTXEntryTitleId("status")} status={status} />

@@ -29,8 +29,8 @@ const StyledContainer = styled.div`
 `;
 
 interface Props {
-    token: Wallet.Token
-    onClick: () => void
+  token: Wallet.Token;
+  onClick: () => void;
 }
 
 export const SelectTokenButton: React.FunctionComponent<Props> = ({ token, onClick }) => {

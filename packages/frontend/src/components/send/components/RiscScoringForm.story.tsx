@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { RiscScoringForm } from './RiscScoringForm';
+import type { Meta, StoryObj } from "@storybook/react";
+import { RiscScoringForm } from "./RiscScoringForm";
 
 const meta: Meta<typeof RiscScoringForm> = {
-  title: 'Components/Send/RiscScoringForm',
+  title: "Components/Send/RiscScoringForm",
   component: RiscScoringForm,
 };
 

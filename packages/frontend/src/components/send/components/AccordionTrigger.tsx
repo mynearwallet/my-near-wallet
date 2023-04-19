@@ -32,14 +32,20 @@ const StyledContainer = styled.div`
 `;
 
 interface Props {
-    id: string
-    onClick: () => void
-    translateIdTitle: string
-    open: boolean
-    translateData?: any
+  id: string;
+  onClick: () => void;
+  translateIdTitle: string;
+  open: boolean;
+  translateData?: any;
 }
 
-export const AccordionTrigger: React.FunctionComponent<Props> = ({ id, onClick, translateIdTitle, translateData, open }) => {
+export const AccordionTrigger: React.FunctionComponent<Props> = ({
+  id,
+  onClick,
+  translateIdTitle,
+  translateData,
+  open,
+}) => {
   return (
     <StyledContainer
       id={id}

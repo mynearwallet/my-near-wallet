@@ -38,7 +38,7 @@ const initialState = {
  * */
 
 // rome-ignore lint/style/useDefaultParameterLast: <explanation>
-const  sequentialAccountImportReducer = (state = initialState, action) => {
+const sequentialAccountImportReducer = (state = initialState, action) => {
   switch (action.type) {
     case ACTIONS.REMOVE_ACCOUNTS: {
       if (state.accounts.every(({ status }) => status === null)) {

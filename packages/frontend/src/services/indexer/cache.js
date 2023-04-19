@@ -36,7 +36,7 @@ export class IndexerCache extends Cache {
 
   _addRecord(accountId, kind, data) {
     // rome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
-    return  new Promise(async (resolve) => {
+    return new Promise(async (resolve) => {
       const store = await this.getObjectStore();
 
       const item = {
@@ -54,7 +54,7 @@ export class IndexerCache extends Cache {
 
   async _updateRecord(accountId, kind, data) {
     // rome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
-    return  new Promise(async (resolve) => {
+    return new Promise(async (resolve) => {
       const store = await this.getObjectStore();
 
       store.openCursor().onsuccess = (event) => {

@@ -7,12 +7,12 @@ import { Amount } from "./entry_types/Amount";
 import { Token } from "./entry_types/Token";
 
 type Props = {
-    selectedToken: Wallet.Token
-    estimatedFeesInNear: string
-    estimatedTotalInNear: string
-    amount: string
-    onTokenClick: () => void
-}
+  selectedToken: Wallet.Token;
+  estimatedFeesInNear: string;
+  estimatedTotalInNear: string;
+  amount: string;
+  onTokenClick: () => void;
+};
 
 const prefixTXEntryTitledId = (key: string) => `sendV2.TXEntry.title.${key}`;
 

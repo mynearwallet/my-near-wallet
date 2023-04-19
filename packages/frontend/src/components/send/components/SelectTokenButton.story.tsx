@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { SelectTokenButton } from './SelectTokenButton';
+import type { Meta, StoryObj } from "@storybook/react";
+import { SelectTokenButton } from "./SelectTokenButton";
 
 const meta: Meta<typeof SelectTokenButton> = {
-  title: 'Components/Send/SelectTokenButton',
+  title: "Components/Send/SelectTokenButton",
   component: SelectTokenButton,
 };
 
@@ -12,10 +12,10 @@ type Story = StoryObj<typeof SelectTokenButton>;
 export const Primary: Story = {
   args: {
     token: {
-        onChainFTMetadata: {
-            symbol: "USD",
-            icon: "",
-        }
+      onChainFTMetadata: {
+        symbol: "USD",
+        icon: "",
+      },
     },
     onClick: () => null,
   },

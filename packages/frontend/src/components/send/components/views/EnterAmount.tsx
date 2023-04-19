@@ -37,18 +37,18 @@ const StyledContainer = styled.form`
 `;
 
 interface Props {
-    amount: string
-    rawAmount: string
-    availableToSend: string
-    continueAllowed: boolean
-    error: string
-    isMobile: boolean
-    selectedToken: Wallet.Token
-    onSetMaxAmount: () => void
-    onContinue: (event: any) => void
-    onClickCancel: () => void
-    onClickSelectToken: () => void
-    onChangeAmount: () => void
+  amount: string;
+  rawAmount: string;
+  availableToSend: string;
+  continueAllowed: boolean;
+  error: string;
+  isMobile: boolean;
+  selectedToken: Wallet.Token;
+  onSetMaxAmount: () => void;
+  onContinue: (event: any) => void;
+  onClickCancel: () => void;
+  onClickSelectToken: () => void;
+  onChangeAmount: () => void;
 }
 
 export const EnterAmount: React.FunctionComponent<Props> = ({
@@ -91,7 +91,7 @@ export const EnterAmount: React.FunctionComponent<Props> = ({
         color='light-blue'
         className='small rounded'
       >
-        {t('button.useMax')}
+        {t("button.useMax")}
       </FormButton>
       <SelectTokenButton token={selectedToken} onClick={onClickSelectToken} />
       <BalanceDetails availableToSend={availableToSend} selectedToken={selectedToken} />
@@ -102,10 +102,10 @@ export const EnterAmount: React.FunctionComponent<Props> = ({
           disabled={!continueAllowed}
           data-test-id="sendMoneyPageSubmitAmountButton"
         >
-          {t('button.continue')}
+          {t("button.continue")}
         </FormButton>
         <FormButton type='button' onClick={onClickCancel} className='link' color='gray'>
-          {t('button.cancel')}
+          {t("button.cancel")}
         </FormButton>
       </div>
     </StyledContainer>

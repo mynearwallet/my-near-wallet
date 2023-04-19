@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Amount } from './Amount';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Amount } from "./Amount";
 
 const meta: Meta<typeof Amount> = {
-  title: 'Components/Send/Amount',
+  title: "Components/Send/Amount",
   component: Amount,
 };
 

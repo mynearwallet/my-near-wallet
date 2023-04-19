@@ -7,20 +7,20 @@ import StyledModal, { ModalSize } from "./Style.css";
 
 const modalRoot = document.getElementById("modal-root");
 
-export type ModalClass = "slim" | "tooltip"
+export type ModalClass = "slim" | "tooltip";
 
 interface Props {
-    isOpen: boolean
-    modalSize: ModalSize
-    modalClass: ModalClass
-    closeButton: boolean,
-    onClose: () => void
-    disableClose?: boolean
-    id?: string
-    mobileActionSheet?: boolean
-    children?: any
-    'data-test-id'?: string
-    style?: any
+  isOpen: boolean;
+  modalSize: ModalSize;
+  modalClass: ModalClass;
+  closeButton: boolean;
+  onClose: () => void;
+  disableClose?: boolean;
+  id?: string;
+  mobileActionSheet?: boolean;
+  children?: any;
+  "data-test-id"?: string;
+  style?: any;
 }
 
 const Modal: React.FunctionComponent<Props> = ({
@@ -126,10 +126,14 @@ const Modal: React.FunctionComponent<Props> = ({
         {closeButton && <CloseButton device={closeButton} onClick={handleClick} />}
         {children}
       </div>
-      <div className='background' onMouseDown={handleClick} ref={background as React.RefObject<HTMLDivElement>} />
+      <div
+        className='background'
+        onMouseDown={handleClick}
+        ref={background as React.RefObject<HTMLDivElement>}
+      />
     </StyledModal>,
     modalRoot,
   );
-}
+};
 
 export default Modal;

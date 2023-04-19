@@ -115,10 +115,7 @@ const sign = handleActions(
         meta,
         transactions,
         totalAmount: allActions
-          .map(
-            (a) =>
-              (a.transfer?.deposit) || (a.functionCall?.deposit) || 0,
-          )
+          .map((a) => a.transfer?.deposit || a.functionCall?.deposit || 0)
           .reduce((totalAmount, amount) => totalAmount.add(new BN(amount)), new BN(0))
           .toString(),
         fees: {

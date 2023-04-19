@@ -12,7 +12,7 @@ interface Props {
   isNear?: boolean;
   decimals?: number;
   totalAmount?: string;
-};
+}
 
 const FiatBalance: React.FunctionComponent<Props> = ({
   amount,

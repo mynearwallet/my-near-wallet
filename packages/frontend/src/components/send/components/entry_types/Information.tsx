@@ -4,15 +4,20 @@ import StyledContainer from "./css/Style.css";
 import { useTranslation } from "react-i18next";
 
 interface Props {
-    translateIdTitle: string
-    informationValue: string
-    className?: string
-    onClick: () => void
+  translateIdTitle: string;
+  informationValue: string;
+  className?: string;
+  onClick: () => void;
 }
 
-export const Information: React.FunctionComponent<Props> = ({ className, translateIdTitle, informationValue, onClick }) => {
+export const Information: React.FunctionComponent<Props> = ({
+  className,
+  translateIdTitle,
+  informationValue,
+  onClick,
+}) => {
   /* TODO: Handle long informationValue */
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <StyledContainer

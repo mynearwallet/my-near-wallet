@@ -689,9 +689,9 @@ export default class Wallet {
     contractId,
     publicKey,
     // rome-ignore lint/style/useDefaultParameterLast: <explanation>
-    fullAccess  = false,
+    fullAccess = false,
     // rome-ignore lint/style/useDefaultParameterLast: <explanation>
-    methodNames  = "",
+    methodNames = "",
     recoveryKeyIsFAK,
   ) {
     const account = recoveryKeyIsFAK
@@ -1340,12 +1340,7 @@ export default class Wallet {
     return transactionHashes;
   }
 
-  async signAndSendCalimeroTransaction(
-    transactions,
-    accountId ,
-    customRPCUrl,
-    xApiToken,
-  ) {
+  async signAndSendCalimeroTransaction(transactions, accountId, customRPCUrl, xApiToken) {
     const transactionHashes = [];
     const args = { url: `${customRPCUrl}/` };
     if (xApiToken) {

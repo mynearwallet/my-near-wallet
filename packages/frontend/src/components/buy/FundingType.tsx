@@ -6,7 +6,7 @@ const hoverEffect = (isEnabled: boolean) => (isEnabled ? "&:hover { background: 
 
 const paledIf = (isDisabled: boolean) => (isDisabled ? "opacity: 0.5; filter: grayscale(1);" : "");
 
-const LinkWrap = styled.a<{disabled: boolean}>`
+const LinkWrap = styled.a<{ disabled: boolean }>`
     display: block;
     border-top: 1px solid #f0f0f1;
     cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
@@ -47,14 +47,20 @@ const WrapperImg = styled.div`
 `;
 
 interface Props {
-    icon: string
-    link: string
-    name: string
-    track?: () => void
-    disabled: boolean
+  icon: string;
+  link: string;
+  name: string;
+  track?: () => void;
+  disabled: boolean;
 }
 
-export const FundingType: React.FunctionComponent<Props> = ({ icon, link, name, track, disabled }) => {
+export const FundingType: React.FunctionComponent<Props> = ({
+  icon,
+  link,
+  name,
+  track,
+  disabled,
+}) => {
   return (
     <LinkWrap
       href={link}

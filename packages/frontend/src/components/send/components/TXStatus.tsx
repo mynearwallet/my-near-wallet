@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-export type TransactionStatus = "SuccessValue" | "Failure" | "notAvailable"
+export type TransactionStatus = "SuccessValue" | "Failure" | "notAvailable";
 
 const StyledContainer = styled.div`
     display: flex;
@@ -31,11 +31,11 @@ const getStatusColor = (status: TransactionStatus) => {
 };
 
 interface Props {
-    status: TransactionStatus
+  status: TransactionStatus;
 }
 
 export const TXStatus: React.FunctionComponent<Props> = ({ status }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <StyledContainer className='status'>

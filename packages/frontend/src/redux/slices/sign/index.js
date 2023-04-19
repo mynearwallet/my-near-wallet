@@ -195,7 +195,7 @@ export const increaseGasForFirstTransaction = ({ transactions }) => {
 
   // If there are multiple tx, we want to increase the gas, only for the first one, because it's possible that increasing gas for the other transactions will end with exceeded gas
   transaction.actions.forEach((a) => {
-    if (!(a.functionCall?.gas)) {
+    if (!a.functionCall?.gas) {
       return false;
     }
 

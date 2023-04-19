@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { TXStatus } from './TXStatus';
+import type { Meta, StoryObj } from "@storybook/react";
+import { TXStatus } from "./TXStatus";
 
 const meta: Meta<typeof TXStatus> = {
-  title: 'Components/Send/TXStatus',
+  title: "Components/Send/TXStatus",
   component: TXStatus,
   argTypes: {
     status: {
-        options: ["SuccessValue", "Failed", "notAvailable"],
-        control: { type: 'radio' },
-    }
-  }
+      options: ["SuccessValue", "Failed", "notAvailable"],
+      control: { type: "radio" },
+    },
+  },
 };
 
 export default meta;

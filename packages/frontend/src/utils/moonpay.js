@@ -36,8 +36,9 @@ export const isMoonpayAvailable = async () => {
 };
 
 export const getSignedUrl = async (accountId, redirectUrl) => {
-  const widgetUrl =
-    `${CONFIG.MOONPAY_BUY_URL_PREFIX}&walletAddress=${encodeURIComponent(accountId)}&currencyCode=NEAR&baseCurrencyCode=usd&redirectURL=${encodeURIComponent(redirectUrl)}`;
+  const widgetUrl = `${CONFIG.MOONPAY_BUY_URL_PREFIX}&walletAddress=${encodeURIComponent(
+    accountId,
+  )}&currencyCode=NEAR&baseCurrencyCode=usd&redirectURL=${encodeURIComponent(redirectUrl)}`;
   const { signature } = await sendJson(
     "GET",
     `${CONFIG.ACCOUNT_HELPER_URL}/moonpay/signURL?url=${encodeURIComponent(widgetUrl)}`,

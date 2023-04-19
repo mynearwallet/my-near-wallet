@@ -99,15 +99,15 @@ export const useRiskScoringCheck = (accountId: string) => {
   }, [accountId]);
 
   return { isRSWarned, isRSIgnored, isRSFinished, setIsRSIgnored };
-}
+};
 
 interface Props {
-    setIsRSIgnored: (checked: boolean) => void
-    isIgnored: boolean
+  setIsRSIgnored: (checked: boolean) => void;
+  isIgnored: boolean;
 }
 
 export const RiscScoringForm: React.FunctionComponent<Props> = ({ setIsRSIgnored, isIgnored }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const onCheckboxChange = useCallback((e) => {
     setIsRSIgnored(e.target.checked);
   }, []);
@@ -116,14 +116,12 @@ export const RiscScoringForm: React.FunctionComponent<Props> = ({ setIsRSIgnored
     <RSContainer className="risk-scoring-warning">
       <RSWarning>
         <img src={iconWarning} alt="Warning" />
-        <div>
-          {t('riscScoring.scamWarning')}
-        </div>
+        <div>{t("riscScoring.scamWarning")}</div>
       </RSWarning>
       <RSConsent>
         <label>
           <Checkbox checked={isIgnored} onChange={onCheckboxChange} />
-          {t('riscScoring.checkbox')}
+          {t("riscScoring.checkbox")}
         </label>
       </RSConsent>
     </RSContainer>

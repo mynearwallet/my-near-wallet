@@ -98,7 +98,7 @@ const StyledHeader = styled.div`
     }
 `;
 
-export const BuyNear: React.FunctionComponent<{history: any}> = ({ history }) => {
+export const BuyNear: React.FunctionComponent<{ history: any }> = ({ history }) => {
   const accountId = useSelector(selectAccountId);
   const [moonPayAvailable, setMoonPayAvailable] = useState(true);
   const [signedMoonPayUrl, setSignedMoonPayUrl] = useState(null);
@@ -188,4 +188,4 @@ export const BuyNear: React.FunctionComponent<{history: any}> = ({ history }) =>
       </div>
     </StyledContainer>
   );
-}
+};

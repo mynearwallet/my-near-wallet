@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-export type ModalSize = "lg" | "md" | "sm" | "xs"
+export type ModalSize = "lg" | "md" | "sm" | "xs";
 
-const Style = styled.div<{modalSize: ModalSize}>`
+const Style = styled.div<{ modalSize: ModalSize }>`
     position: fixed;
     top: 0;
     left: 0;
@@ -14,7 +14,7 @@ const Style = styled.div<{modalSize: ModalSize}>`
     opacity: 0;
     transition: 0.3s;
     z-index: 2000;
-    max-width: ${({modalSize}) => {
+    max-width: ${({ modalSize }) => {
       switch (modalSize) {
         case "lg":
           return "800";

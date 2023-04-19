@@ -35,7 +35,7 @@ interface Props {
   withSymbol?: boolean;
   "data-test-id"?: string;
   balancePrefix?: string;
-};
+}
 
 const TokenAmount: React.FunctionComponent<Props> = ({
   token,

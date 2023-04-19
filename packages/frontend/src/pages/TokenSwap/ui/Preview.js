@@ -93,7 +93,7 @@ export default function Preview({
           style={{
             fontSize: `${amountTokenFrom.length ? getFontSize(amountTokenFrom.length) : 24}px`,
           }}
-        >{`${(amountTokenFrom % 1) ? removeTrailingZeros(amountTokenFrom) : amountTokenFrom} ${
+        >{`${amountTokenFrom % 1 ? removeTrailingZeros(amountTokenFrom) : amountTokenFrom} ${
           activeTokenFrom.onChainFTMetadata?.symbol
         }`}</h1>
         {tokenFromFiatAmount && (

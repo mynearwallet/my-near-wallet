@@ -282,9 +282,7 @@ class CreateAccount extends Component {
             {cannotCreateNewAccountWithZeroBalanceAccount && <DepositNearBanner />}
             <FormButton
               type='submit'
-              disabled={
-                !(localAlert?.success) || cannotCreateNewAccountWithZeroBalanceAccount
-              }
+              disabled={!localAlert?.success || cannotCreateNewAccountWithZeroBalanceAccount}
               sending={loader}
               data-test-id="reserveAccountIdButton"
             >

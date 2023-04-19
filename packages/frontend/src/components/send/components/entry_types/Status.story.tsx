@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Status } from './Status';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Status } from "./Status";
 
 const meta: Meta<typeof Status> = {
-  title: 'Components/Send/Status',
+  title: "Components/Send/Status",
   component: Status,
   argTypes: {
     status: {
-        options: ["SuccessValue", "Failed", "notAvailable"],
-        control: { type: 'radio' },
-    }
-  }
+      options: ["SuccessValue", "Failed", "notAvailable"],
+      control: { type: "radio" },
+    },
+  },
 };
 
 export default meta;

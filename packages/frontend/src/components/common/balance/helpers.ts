@@ -45,7 +45,12 @@ export const formatWithCommas = (value) => {
   return value;
 };
 
-export const getRoundedBalanceInFiat = (amount: string | number, tokenFiatValue: number, isNear?: boolean, decimals?: number | null) => {
+export const getRoundedBalanceInFiat = (
+  amount: string | number,
+  tokenFiatValue: number,
+  isNear?: boolean,
+  decimals?: number | null,
+) => {
   const formattedNearAmount =
     amount && !isNear
       ? formatNearAmount(amount).replace(/,/g, "")
@@ -80,7 +85,11 @@ export const getTotalBalanceInFiat = (mainTokens, currentLanguage: string) => {
     : "0";
 };
 
-export const getNearAndFiatValue = (rawNearAmount: number, tokenFiatValue: number, fiat = "usd") => {
+export const getNearAndFiatValue = (
+  rawNearAmount: number,
+  tokenFiatValue: number,
+  fiat = "usd",
+) => {
   const nearAmount = formatNearAmount(rawNearAmount);
   const fiatAmount = getRoundedBalanceInFiat(rawNearAmount, tokenFiatValue);
   const fiatSymbol = fiat.toUpperCase();

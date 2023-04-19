@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Receipt } from './Receipt';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Receipt } from "./Receipt";
 
 const meta: Meta<typeof Receipt> = {
-  title: 'Components/Send/Receipt',
+  title: "Components/Send/Receipt",
   component: Receipt,
   argTypes: {
     status: {
-        options: ["SuccessValue", "Failed", "notAvailable"],
-        control: { type: 'radio' },
-    }
-  }
+      options: ["SuccessValue", "Failed", "notAvailable"],
+      control: { type: "radio" },
+    },
+  },
 };
 
 export default meta;
@@ -19,10 +19,10 @@ export const Primary: Story = {
   args: {
     status: "SuccessValue",
     token: {
-        symbol: "USD",
-        icon: "",
-        amount: "200",
-        decimals: 2,
+      symbol: "USD",
+      icon: "",
+      amount: "200",
+      decimals: 2,
     },
     network_fees: "2",
     receiver_id: "some-id",

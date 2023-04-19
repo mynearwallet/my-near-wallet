@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { EnterAmount } from './EnterAmount';
+import type { Meta, StoryObj } from "@storybook/react";
+import { EnterAmount } from "./EnterAmount";
 
 const meta: Meta<typeof EnterAmount> = {
-  title: 'Components/Send/EnterAmount',
+  title: "Components/Send/EnterAmount",
   component: EnterAmount,
 };
 
@@ -18,10 +18,10 @@ export const Primary: Story = {
     error: "",
     isMobile: false,
     selectedToken: {
-        onChainFTMetadata: {
-            symbol: "USD",
-            decimals: 2,
-        }
-    }
+      onChainFTMetadata: {
+        symbol: "USD",
+        decimals: 2,
+      },
+    },
   },
 };

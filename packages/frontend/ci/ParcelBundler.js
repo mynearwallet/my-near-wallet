@@ -47,15 +47,15 @@ class ParcelBundler {
     return {
       logLevel: 3, // 5 = save everything to a file, 4 = like 3, but with timestamps and additionally log http requests to dev server, 3 = log info, warnings & errors, 2 = log warnings & errors, 1 = log errors, 0 = log nothing
       shouldAutoInstall: true,
-      mode: this.isDevelopment ? 'development' : 'production',
+      mode: this.isDevelopment ? "development" : "production",
       detailedReport: false,
-      defaultConfig: '@parcel/config-default',
+      defaultConfig: "@parcel/config-default",
       cacheDir: CACHE_PATH,
       defaultTargetOptions: {
         shouldOptimize: !this.isDevelopment,
         distDir: this.distDir,
         sourceMaps: true,
-      }
+      },
     };
   }
 
@@ -89,9 +89,9 @@ class ParcelBundler {
       return {
         ...this.getBaseConfig(),
         defaultTargetOption: {
-            ...this.getBaseConfig().defaultTargetOption,
-            publicUrl: this.buildCloudflarePath(`/rnd/pr/${prNumber[1]}/`),
-        }
+          ...this.getBaseConfig().defaultTargetOption,
+          publicUrl: this.buildCloudflarePath(`/rnd/pr/${prNumber[1]}/`),
+        },
       };
     }
 
@@ -122,11 +122,10 @@ class ParcelBundler {
           return {
             ...this.getBaseConfig(),
             defaultTargetOption: {
-                ...this.getBaseConfig().defaultTargetOption,
-                publicUrl: this.buildCloudflarePath("/ntl/staging/"),
-            }
+              ...this.getBaseConfig().defaultTargetOption,
+              publicUrl: this.buildCloudflarePath("/ntl/staging/"),
+            },
           };
-
         }
 
         // Netlify production/mainnet is a dedicated deployment using 'stable' as the production branch
@@ -135,7 +134,7 @@ class ParcelBundler {
           defaultTargetOption: {
             ...this.getBaseConfig().defaultTargetOption,
             publicUrl: this.buildCloudflarePath("/ntl/mainnet/"),
-          }
+          },
         };
 
       case "branch-deploy":
@@ -144,7 +143,7 @@ class ParcelBundler {
           defaultTargetOption: {
             ...this.getBaseConfig().defaultTargetOption,
             publicUrl: this.buildCloudflarePath(`/ntl/branch/${branchName}/`),
-          }
+          },
         };
       case "deploy-preview":
         if (primeUrl.includes("near-wallet-staging")) {
@@ -152,9 +151,9 @@ class ParcelBundler {
           return {
             ...this.getBaseConfig(),
             defaultTargetOption: {
-                ...this.getBaseConfig().defaultTargetOption,
-                publicUrl: this.buildCloudflarePath(`/ntl/previewstaging/${pullRequestId}/`),
-              }
+              ...this.getBaseConfig().defaultTargetOption,
+              publicUrl: this.buildCloudflarePath(`/ntl/previewstaging/${pullRequestId}/`),
+            },
           };
         }
 
@@ -163,7 +162,7 @@ class ParcelBundler {
           defaultTargetOption: {
             ...this.getBaseConfig().defaultTargetOption,
             publicUrl: this.buildCloudflarePath(`/ntl/preview/${pullRequestId}/`),
-          }
+          },
         };
       default:
         throw new Error("Could not identify Netlify build environment");
@@ -194,7 +193,7 @@ class ParcelBundler {
 
     this.debugLog("entries", this.entries);
     this.debugLog("bundlerConfig", bundlerConfig);
-    this.bundler = new Parcel({...bundlerConfig, entries: this.entries});
+    this.bundler = new Parcel({ ...bundlerConfig, entries: this.entries });
 
     return this.bundler;
   }

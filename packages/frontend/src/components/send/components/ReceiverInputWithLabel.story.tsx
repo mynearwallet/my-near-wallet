@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { ReceiverInputWithLabel } from './ReceiverInputWithLabel';
+import type { Meta, StoryObj } from "@storybook/react";
+import { ReceiverInputWithLabel } from "./ReceiverInputWithLabel";
 
 const meta: Meta<typeof ReceiverInputWithLabel> = {
-  title: 'Components/Send/ReceiverInputWithLabel',
+  title: "Components/Send/ReceiverInputWithLabel",
   component: ReceiverInputWithLabel,
 };
 
@@ -11,13 +11,13 @@ type Story = StoryObj<typeof ReceiverInputWithLabel>;
 
 export const Primary: Story = {
   args: {
-    receiverId: 'some receiver id',
+    receiverId: "some receiver id",
     localAlert: "some alert",
     isSuccess: true,
     isProblem: false,
     checkAccountAvailable: () => null,
-    setIsImplicitAccount:() => null,
+    setIsImplicitAccount: () => null,
     clearLocalAlert: () => null,
-    handleChangeReceiverId: () => null
+    handleChangeReceiverId: () => null,
   },
 };
