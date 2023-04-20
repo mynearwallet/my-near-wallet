@@ -8,6 +8,7 @@ import { Mixpanel } from "../../mixpanel/index";
 import classNames from "../../utils/classNames";
 import { ACCOUNT_CHECK_TIMEOUT } from "../../utils/wallet";
 import LocalAlertBox from "../common/LocalAlertBox.js";
+import useDebouncedValue from "../../hooks/useDebouncedValue";
 
 const InputWrapper = styled.div`
     position: relative;
@@ -55,8 +56,7 @@ const AccountFormAccountId = (props) => {
   const [accountId, setAccountId] = useState(props.defaultAccountId || "");
   const [invalidAccountIdLength, setInvalidAccountIdLength] = useState(false);
   const [wrongChar, setWrongChar] = useState(false);
-
-  let checkAccountAvailabilityTimer = null;
+  const debouncedAccountId = useDebouncedValue(accountId, ACCOUNT_CHECK_TIMEOUT);
   let canvas = null;
   const suffix = createRef();
 
@@ -65,6 +65,10 @@ const AccountFormAccountId = (props) => {
       handleChangeAccountId({ userValue: accountId });
     }
   }, []);
+
+  useEffect(() => {
+    handleCheckAvailability(accountId, props.type);
+  }, [debouncedAccountId])
 
   const updateSuffix = (userValue) => {
     if (userValue.match(props.pattern)) {
@@ -110,17 +114,11 @@ const AccountFormAccountId = (props) => {
     } else {
       setWrongChar(false);
     }
+
     setAccountId(currentAccountId);
     props.handleChange(currentAccountId);
-
     props.localAlert && props.clearLocalAlert();
-
     invalidAccountIdLength && handleAccountIdLengthState(currentAccountId);
-
-    checkAccountAvailabilityTimer && clearTimeout(checkAccountAvailabilityTimer);
-    checkAccountAvailabilityTimer = setTimeout(() => {
-      handleCheckAvailability(currentAccountId, props.type);
-    }, ACCOUNT_CHECK_TIMEOUT);
   };
 
   const checkAccountIdLength = (accountId) => {
