@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import { Translate } from "react-localize-redux";
 import styled from "styled-components";
 
@@ -57,7 +57,7 @@ const AccountFormAccountId = (props) => {
   const [invalidAccountIdLength, setInvalidAccountIdLength] = useState(false);
   const [wrongChar, setWrongChar] = useState(false);
   const debouncedAccountId = useDebouncedValue(accountId, ACCOUNT_CHECK_TIMEOUT);
-  let canvas = null;
+  const canvas = useRef(null);
   const suffix = createRef();
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const AccountFormAccountId = (props) => {
     const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
     const width = getTextWidth(userValue, "16px Inter");
     const extraSpace = isSafari ? 21.5 : 22;
-    suffix.current.style.left = `${width}${extraSpace}px`;
+    suffix.current.style.left = `${width + extraSpace}px`;
     suffix.current.style.visibility = "visible";
     if (userValue.length === 0) {
       suffix.current.style.visibility = "hidden";
@@ -86,13 +86,13 @@ const AccountFormAccountId = (props) => {
   };
 
   const getTextWidth = (text, font) => {
-    if (!canvas) {
-      canvas = document.createElement("canvas");
+    if (!canvas.current) {
+      canvas.current = document.createElement("canvas");
     }
-    const context = canvas.getContext("2d");
+    const context = canvas.current.getContext("2d");
     context.font = font;
     const metrics = context.measureText(text);
-    return metrics.width + 20;
+    return metrics.width;
   };
 
   const handleChangeAccountId = ({ userValue, el }) => {
