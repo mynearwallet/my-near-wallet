@@ -15,7 +15,8 @@
     "commit": "cz",
     "lint": "yarn rome check .",
     "lint:fix": "yarn rome check . --apply",
-    "format": "yarn rome format . --write"
+    "format": "yarn rome format . --write",
+    "format:check": "yarn rome format . --write"
   },
   "dependencies": {},
   "devDependencies": {

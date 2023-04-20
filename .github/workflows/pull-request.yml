@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  checks:
+  lint:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -24,6 +24,20 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
       - run: yarn lint
+      - run: yarn format:check
+
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/frontend
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
       - run: yarn test
 
   testnet-bundle-preview:
@@ -39,4 +53,3 @@ jobs:
       environment: mainnet-preview
       near_wallet_env: mainnet_STAGING
     secrets: inherit
-
