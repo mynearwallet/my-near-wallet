@@ -1,6 +1,7 @@
 import React, { Component, createRef } from "react";
 import styled from "styled-components";
 import classNames from "../../../utils/classNames";
+import { Translate } from "react-localize-redux";
 import { ACCOUNT_CHECK_TIMEOUT } from "../../../utils/wallet";
 import CheckCircleIcon from "../../svg/CheckCircleIcon";
 
