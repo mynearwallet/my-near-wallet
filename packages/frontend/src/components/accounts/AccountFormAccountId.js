@@ -239,11 +239,7 @@ const AccountFormAccountId = (props) => {
           </InputWrapper>
         )}
       </Translate>
-      <LocalAlertBox
-        dots={props.mainLoader}
-        localAlert={localAlert}
-        accountId={props.accountId}
-      />
+      <LocalAlertBox dots={props.mainLoader} localAlert={localAlert} accountId={props.accountId} />
     </>
   );
 };
