@@ -708,6 +708,7 @@
         "ctaLogin": "Log In and Claim",
         "ctaNew": "Claim with New Account",
         "desc": "You may claim your NEAR drop with an existing account (must be logged in), or create a new account to receive it as an initial deposit.",
+        "loadingText": "Fetching Linkdrop Info",
         "modal": {
             "desc": "Your NEAR drop has been automatically deposited to your account.",
             "title": "Your NEAR drop has been claimed"
