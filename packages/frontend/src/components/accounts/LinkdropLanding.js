@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import { Mixpanel } from "../../mixpanel/index";
 import {
-  checkNearDropBalance,
+  checkLinkdropInfo,
   claimLinkdropToAccount,
   redirectTo,
   handleRefreshUrl,
@@ -22,6 +22,8 @@ import FormButton from "../common/FormButton";
 import Container from "../common/styled/Container.css";
 import BrokenLinkIcon from "../svg/BrokenLinkIcon";
 import NearGiftIcons from "../svg/NearGiftIcons";
+import NearDropLanding from "./linkdrops/NearDropLanding";
+import TrialDropLanding from "./linkdrops/TrialDropLanding";
 
 const { setLinkdropAmount } = linkdropActions;
 
@@ -77,26 +79,32 @@ const StyledContainer = styled(Container)`
 
 class LinkdropLanding extends Component {
   state = {
-    balance: null,
+    dropType: null,
+    keyInfo: null,
     invalidNearDrop: null,
   };
 
   componentDidMount() {
     const { fundingContract, fundingKey, handleRefreshUrl } = this.props;
     if (fundingContract && fundingKey) {
-      this.handleCheckNearDropBalance();
+      this.handleCheckLinkdropInfo();
       handleRefreshUrl();
     }
   }
 
-  handleCheckNearDropBalance = async () => {
-    const { fundingContract, fundingKey, checkNearDropBalance } = this.props;
+  handleCheckLinkdropInfo = async () => {
+    const { fundingContract, fundingKey, checkLinkdropInfo } = this.props;
     await Mixpanel.withTracking(
       "CA Check near drop balance",
       async () => {
-        const balance = await checkNearDropBalance(fundingContract, fundingKey);
+        const keyInfo = await checkLinkdropInfo(fundingContract, fundingKey);
 
-        this.setState({ balance });
+        // If there is trial data and exit is set to false, then the linkdrop should be invalid
+        if (keyInfo?.trial_data?.exit === false) {
+          this.setState({ invalidNearDrop: true })
+        } else {
+          this.setState({ keyInfo });
+        }
       },
       () => this.setState({ invalidNearDrop: true }),
     );
@@ -116,7 +124,7 @@ class LinkdropLanding extends Component {
     if (url?.redirectUrl && isUrlNotJavascriptProtocol(url?.redirectUrl)) {
       window.location = `${url.redirectUrl}?accountId=${accountId}`;
     } else {
-      setLinkdropAmount(this.state.balance);
+      setLinkdropAmount(this.state.keyInfo.yoctoNEAR);
       redirectTo("/");
     }
   };
@@ -124,62 +132,33 @@ class LinkdropLanding extends Component {
   render() {
     const { fundingContract, fundingKey, accountId, mainLoader, history, claimingDrop } =
       this.props;
-    const { balance, invalidNearDrop } = this.state;
-    const fundingAmount = balance;
+    const { keyInfo, invalidNearDrop } = this.state;
+    const fundingAmount = keyInfo?.yoctoNEAR || '0';
+    const isTrialDrop = keyInfo?.trial_data?.exit || false
 
     if (!invalidNearDrop) {
-      const params = parse(history.location.search);
-      const redirectUrl = params.redirectUrl
-        ? `&redirectUrl=${encodeURIComponent(params.redirectUrl)}`
-        : "";
+      if (isTrialDrop) {
+        return (
+            <TrialDropLanding 
+                fundingContract={fundingContract} 
+                fundingKey={fundingKey}
+                claimingDrop={claimingDrop}
+                history={history}
+            />
+          );
+      }
 
       return (
-        <StyledContainer className='xs-centered'>
-          <NearGiftIcons />
-          <h3>
-            <Translate id='linkdropLanding.title' />
-          </h3>
-          <div className='near-balance'>
-            <Balance data-test-id="linkdropBalanceAmount" amount={balance} />
-          </div>
-          <div className='desc'>
-            <Translate id='linkdropLanding.desc' />
-          </div>
-          {accountId ? (
-            <AccountDropdown disabled={claimingDrop} data-test-id="linkdropAccountDropdown" />
-          ) : null}
-          {accountId ? (
-            <FormButton
-              onClick={this.handleClaimNearDrop}
-              sending={claimingDrop}
-              disabled={mainLoader}
-              sendingString='linkdropLanding.claiming'
-              data-test-id="linkdropClaimToExistingAccount"
-            >
-              <Translate id='linkdropLanding.ctaAccount' />
-            </FormButton>
-          ) : (
-            <FormButton
-              linkTo={`/recover-account?fundingOptions=${encodeURIComponent(
-                JSON.stringify({ fundingContract, fundingKey, fundingAmount }),
-              )}${redirectUrl}`}
-              data-test-id="linkdropLoginAndClaim"
-            >
-              <Translate id='linkdropLanding.ctaLogin' />
-            </FormButton>
-          )}
-          <div className='or'>
-            <Translate id='linkdropLanding.or' />
-          </div>
-          <FormButton
-            data-test-id="linkdropCreateAccountToClaim"
-            color="gray-blue"
-            disabled={claimingDrop}
-            linkTo={`/create/${fundingContract}/${fundingKey}`}
-          >
-            <Translate id='linkdropLanding.ctaNew' />
-          </FormButton>
-        </StyledContainer>
+        <NearDropLanding 
+            fundingContract={fundingContract} 
+            fundingKey={fundingKey}
+            accountId={accountId}
+            mainLoader={mainLoader}
+            history={history}
+            claimingDrop={claimingDrop}
+            fundingAmount={fundingAmount}
+            handleClaimNearDrop={this.handleClaimNearDrop}
+        />
       );
     } else {
       return (
@@ -202,7 +181,7 @@ class LinkdropLanding extends Component {
 
 const mapDispatchToProps = {
   clearLocalAlert,
-  checkNearDropBalance,
+  checkLinkdropInfo,
   claimLinkdropToAccount,
   redirectTo,
   handleRefreshUrl,

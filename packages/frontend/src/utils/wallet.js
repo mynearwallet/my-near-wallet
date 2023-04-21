@@ -587,21 +587,41 @@ export default class Wallet {
     await account.deleteAccount(accountId);
   }
 
-  async checkNearDropBalance(fundingContract, fundingKey) {
+  async checkLinkdropInfo(fundingContract, fundingKey) {
     const account = await this.getAccount(fundingContract);
 
     const contract = new nearApiJs.Contract(account, fundingContract, {
-      viewMethods: ["get_key_balance"],
-      sender: fundingContract,
+        viewMethods: ['get_key_balance', 'get_key_information'],
+        sender: fundingContract
     });
 
     const key = nearApiJs.KeyPair.fromString(fundingKey).publicKey.toString();
 
-    return await contract.get_key_balance({ key });
-  }
+    let keyInfo = {
+      required_gas: '100000000000000',
+      yoctoNEAR: '0'
+    }
+
+    try {
+        let returnedKeyInfo = await contract.get_key_information({ key });
+        
+        if (Object.hasOwn(returnedKeyInfo, 'yoctoNEAR') && Object.hasOwn(returnedKeyInfo, 'required_gas')) {
+          return returnedKeyInfo;
+        }
+
+        let balance = await contract.get_key_balance({ key });
+        keyInfo.yoctoNEAR = balance;  
+    } catch (e) {
+        let balance = await contract.get_key_balance({ key });
+        keyInfo.yoctoNEAR = balance;   
+    }
+
+    return keyInfo;
+}
 
   async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
     const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+    
     await this.keyStore.setKey(
       CONFIG.NETWORK_ID,
       fundingContract,
@@ -654,9 +674,11 @@ export default class Wallet {
   }
 
   makeAccountActive(accountId) {
+
     if (!(accountId in this.accounts)) {
       return false;
     }
+    
     this.accountId = accountId;
     this.save();
   }
@@ -677,6 +699,7 @@ export default class Wallet {
   async setKey(accountId, keyPair) {
     if (keyPair) {
       await this.keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
+      const key = await this.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
     }
   }
 
@@ -695,11 +718,10 @@ export default class Wallet {
     recoveryKeyIsFAK,
   ) {
     const account = recoveryKeyIsFAK
-      ? new nearApiJs.Account(this.connection, accountId)
-      : await this.getAccount(accountId);
-
+    ? new nearApiJs.Account(this.connection, accountId)
+    : await this.getAccount(accountId);
+    
     const has2fa = await TwoFactor.has2faEnabled(account);
-    console.log("key being added to 2fa account ?", has2fa, account);
     try {
       // TODO: Why not always pass `fullAccess` explicitly when it's desired?
       // TODO: Alternatively require passing MULTISIG_CHANGE_METHODS from caller as `methodNames`
@@ -957,6 +979,7 @@ export default class Wallet {
   }
 
   async signatureFor(account) {
+
     const { accountId } = account;
     const block = await account.connection.provider.block({
       finality: "final",

@@ -62,22 +62,23 @@ export const actions = {
   ...recoveryMethodsSlice.actions,
 };
 
-const getAccountIdParam = createParameterSelector((params) => params.accountId);
+const getAccountIdParam = createParameterSelector((params) => params.accountId)
 
 // Top level selectors
-const selectRecoveryMethodsSlice = (state) => state[SLICE_NAME] || {};
+const selectRecoveryMethodsSlice = (state) => state[SLICE_NAME] || {}
 
 export const selectRecoveryMethodsObjectByAccountId = createSelector(
   [selectRecoveryMethodsSlice, getAccountIdParam],
   (recoveryMethods, accountId) => ({
     ...initialAccountIdState,
     ...recoveryMethods.byAccountId[accountId],
-  }),
+
+  })
 );
 
 export const selectRecoveryMethodsByAccountId = createSelector(
   [selectRecoveryMethodsObjectByAccountId],
-  (recoveryMethods) => recoveryMethods.items,
+  (recoveryMethods) => recoveryMethods.items
 );
 
 export const selectRecoveryMethodsLoading = createSelector(

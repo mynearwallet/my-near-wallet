@@ -29,6 +29,7 @@ const { signInWithLedger } = ledgerActions;
 export const addLocalKeyAndFinishSetup = createAsyncThunk(
   `${SLICE_NAME}/addLocalKeyAndFinishSetup`,
   async ({ accountId, recoveryMethod, publicKey, previousAccountId }, { dispatch }) => {
+
     if (recoveryMethod === "ledger") {
       await wallet.addLedgerAccountId({ accountId });
       await wallet.postSignedJson("/account/ledgerKeyAdded", {
@@ -99,15 +100,23 @@ export const createIdentityFundedAccount = createAsyncThunk(
 export const createNewAccount = createAsyncThunk(
   `${SLICE_NAME}/createNewAccount`,
   async (
-    { accountId, fundingOptions, recoveryMethod, publicKey, previousAccountId, recaptchaToken },
+    { accountId, fundingOptions, recoveryMethod, publicKey, previousAccountId, recaptchaToken, recoveryKeyPair = null },
     { dispatch },
   ) => {
-    await wallet.checkNewAccount(accountId);
+    const { fundingContract, fundingKey, fundingAccountId, trialDrop = false } = fundingOptions || {};
+    
+    if (!trialDrop) {
+      await wallet.checkNewAccount(accountId);
+    }
 
-    const { fundingContract, fundingKey, fundingAccountId } = fundingOptions || {};
     if (fundingContract && fundingKey) {
       await wallet.createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey);
       await wallet.keyStore.removeKey(CONFIG.NETWORK_ID, fundingContract);
+      
+      // recoveryKeyPair always comes in from seedphrase recovery but NOT ledger
+      if (trialDrop && recoveryKeyPair) {
+        await wallet.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, recoveryKeyPair);
+      }
     } else if (fundingAccountId) {
       await wallet.createNewAccountFromAnother(accountId, fundingAccountId, publicKey);
     } else if (CONFIG.RECAPTCHA_CHALLENGE_API_KEY && recaptchaToken) {
@@ -158,6 +167,7 @@ export const createAccountWithSeedPhrase = createAsyncThunk(
     const recoveryMethod = "phrase";
     const previousAccountId = wallet.accountId;
     await wallet.saveAccount(accountId, recoveryKeyPair);
+    
     await dispatch(
       createNewAccount({
         accountId,
@@ -166,6 +176,7 @@ export const createAccountWithSeedPhrase = createAsyncThunk(
         publicKey: recoveryKeyPair.publicKey,
         previousAccountId,
         recaptchaToken,
+        recoveryKeyPair
       }),
     ).unwrap();
   },
