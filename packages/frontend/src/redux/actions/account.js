@@ -247,7 +247,7 @@ export const {
     getLedgerPublicKey,
     setupRecoveryMessage,
     deleteRecoveryMethod,
-    checkNearDropBalance,
+    checkLinkdropInfo,
     claimLinkdropToAccount,
     checkIsNew,
     checkNewAccount,
@@ -334,8 +334,8 @@ export const {
         wallet.deleteRecoveryMethod.bind(wallet),
         () => showAlert()
     ],
-    CHECK_NEAR_DROP_BALANCE: [
-        wallet.checkNearDropBalance.bind(wallet),
+    CHECK_LINKDROP_INFO: [
+        wallet.checkLinkdropInfo.bind(wallet),
         () => ({})
     ],
     CLAIM_LINKDROP_TO_ACCOUNT: [
@@ -455,6 +455,7 @@ export const handleCreateAccountWithSeedPhrase = (accountId, recoveryKeyPair, fu
     try {
         await dispatch(createAccountWithSeedPhrase({ accountId, recoveryKeyPair, fundingOptions, recaptchaToken })).unwrap();
     } catch (error) {
+        console.log('error in handle create account with seedphrase: ', error);
         if (await wallet.accountExists(accountId)) {
             // Requests sometimes fail after creating the NEAR account for another reason (transport error?)
             // If that happened, we allow the user can add the NEAR account to the wallet by entering the seed phrase

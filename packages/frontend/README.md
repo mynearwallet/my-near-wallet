@@ -1,7 +1,7 @@
 # NEAR Wallet
 
 [![Build Status](https://travis-ci.com/near/near-wallet.svg?branch=master)](https://travis-ci.com/near/near-wallet)
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/near/near-wallet) 
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/near/near-wallet)
 
 This is in-browser web-based wallet for working with NEAR accounts. This wallet stores account keys in open text using the localStorage on user's machine.
 
@@ -19,7 +19,7 @@ as outlined above.
 `yarn && NEAR_WALLET_ENV=testnet yarn start` will start a server at https://localhost:1234.
 
 The environment must be set at bundle time rather than run time. If you wish to run the frontend package with a different
-environment, please run `yarn prebuild` first.
+environment, please run `yarn pre-build` first.
 
 
 Netlify
