@@ -4,7 +4,8 @@ import path from 'path';
 const TRANSLATION_BASE_PATH = path.resolve(__dirname, '../src/translations');
 
 test('translations contain no unescaped links', () => {
-    const translationPaths = fs.readdirSync(TRANSLATION_BASE_PATH)
+    const translationPaths = fs
+        .readdirSync(TRANSLATION_BASE_PATH)
         .filter((fileName) => fileName.endsWith('.json'))
         .map((fileName) => path.join(TRANSLATION_BASE_PATH, fileName));
 

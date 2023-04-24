@@ -1,13 +1,13 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Translate } from 'react-localize-redux';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Mixpanel } from '../../../mixpanel';
 import { deleteRecoveryMethod, redirectTo } from '../../../redux/actions/account';
 import { selectAccountLedgerKey } from '../../../redux/slices/account';
 import {
     actions as recoveryMethodsActions,
-    selectRecoveryMethodsStatus
+    selectRecoveryMethodsStatus,
 } from '../../../redux/slices/recoveryMethods';
 import Modal from '../../common/modal/Modal';
 import Tooltip from '../../common/Tooltip';
@@ -29,11 +29,7 @@ const RECOVERY_METHOD = {
 // TODO https://mnw.atlassian.net/browse/MNW-213
 const SHOULD_SHOW_PASSWORD_PROTECTION = false;
 
-export const Recovery = ({
-    account,
-    userRecoveryMethods,
-    twoFactor
-}) => {
+export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
     const [recoveryMethodsMap, setMethodsMap] = useState(
         createUserRecoveryMethodsMap(userRecoveryMethods)
     );
@@ -56,7 +52,8 @@ export const Recovery = ({
     const phraseMethod = recoveryMethodsMap[RECOVERY_METHOD.PHRASE];
 
     const loadingStatus = useSelector((state) =>
-        selectRecoveryMethodsStatus(state, { accountId: account.accountId }));
+        selectRecoveryMethodsStatus(state, { accountId: account.accountId })
+    );
 
     const handleEnableSeedPhrase = useCallback(() => {
         Mixpanel.track('SR-SP Click enable button');
@@ -79,14 +76,14 @@ export const Recovery = ({
         setPhraseProcessing(true);
         await Mixpanel.withTracking(
             'SR-SP Delete method',
-            async () => await dispatch(
-                deleteRecoveryMethod(phraseMethod, true)
-            )
+            async () => await dispatch(deleteRecoveryMethod(phraseMethod, true))
         );
 
-        dispatch(fetchRecoveryMethods({
-            accountId: account.accountId
-        }));
+        dispatch(
+            fetchRecoveryMethods({
+                accountId: account.accountId,
+            })
+        );
         setPhraseProcessing(false);
     }, [account, phraseMethod]);
 
@@ -106,11 +103,11 @@ export const Recovery = ({
         <>
             <h2>
                 <ShieldIcon />
-                <Translate id='profile.security.title' />
+                <Translate id="profile.security.title" />
             </h2>
             <h4>
-                <Translate id='profile.security.mostSecure' />
-                <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
+                <Translate id="profile.security.mostSecure" />
+                <Tooltip translate="profile.security.mostSecureDesc" icon="icon-lg" />
             </h4>
 
             {!twoFactor && (
@@ -137,20 +134,17 @@ export const Recovery = ({
                 </RecoveryOption>
             )}
             <h4>
-                <Translate id='profile.security.lessSecure' />
-                <Tooltip
-                    translate='profile.security.lessSecureDesc'
-                    icon='icon-lg' />
+                <Translate id="profile.security.lessSecure" />
+                <Tooltip translate="profile.security.lessSecureDesc" icon="icon-lg" />
             </h4>
             <RecoveryOption>
                 <RecoveryMethod
-                    title={
-                        <Translate id='recoveryMgmt.methodTitle.phrase' />
-                    }
-                    description={phraseMethod?.confirmed ?
-                        (
+                    title={<Translate id="recoveryMgmt.methodTitle.phrase" />}
+                    description={
+                        phraseMethod?.confirmed ? (
                             <>
-                                <Translate id='recoveryMgmt.enabled'/>&nbsp;
+                                <Translate id="recoveryMgmt.enabled" />
+                                &nbsp;
                                 {formatCreatedAt(phraseMethod?.createdAt)}
                             </>
                         ) : null
@@ -160,10 +154,10 @@ export const Recovery = ({
                     onEnable={handleEnableSeedPhrase}
                     onDisable={handleDisablePassPhrase}
                 />
-                { showPhraseDisabling && (
+                {showPhraseDisabling && (
                     <ConfirmDisableMethod
-                        title={<Translate id='recoveryMgmt.disableTitle' />}
-                        description={<Translate id='recoveryMgmt.disableTextPhrase' />}
+                        title={<Translate id="recoveryMgmt.disableTitle" />}
+                        description={<Translate id="recoveryMgmt.disableTextPhrase" />}
                         isProcessing={isPhraseProcessing}
                         isOpen={showPhraseDisabling}
                         onClose={() => setPhraseDisabling(false)}
@@ -172,10 +166,8 @@ export const Recovery = ({
                 )}
             </RecoveryOption>
             {showDisabledModal && (
-                <Modal
-                    isOpen={showDisabledModal}
-                    onClose={handleModalClose}>
-                    <Translate id='recoveryMgmt.disableNotAllowed' />
+                <Modal isOpen={showDisabledModal} onClose={handleModalClose}>
+                    <Translate id="recoveryMgmt.disableNotAllowed" />
                 </Modal>
             )}
         </>
