@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/named
 import { AnyAction, Store } from '@reduxjs/toolkit';
 import * as Sentry from '@sentry/browser';
 

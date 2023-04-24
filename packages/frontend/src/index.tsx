@@ -29,11 +29,10 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware({ serializableCheck: false }).concat(
                 readyStatePromise,
-                routerMiddleware(history),
+                routerMiddleware(history)
             ),
     });
 };
-
 
 export const store = setupStore({});
 export type RootState = ReturnType<typeof rootReducer>;
@@ -53,9 +52,9 @@ ReactDOM.render(
     >
         <Provider store={store}>
             <LocalizeProvider store={store}>
-                <App history={history}/>
+                <App history={history} />
             </LocalizeProvider>
         </Provider>
     </GoogleReCaptchaProvider>,
-    rootNode,
+    rootNode
 );
