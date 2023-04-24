@@ -8,6 +8,7 @@
     "lint": "cd packages/frontend && yarn install --frozen-lockfile && yarn lint",
     "pre-build": "cd packages/frontend && yarn install --frozen-lockfile && yarn pre-build",
     "build": "cd packages/frontend && yarn install --frozen-lockfile && yarn build",
+    "storybook": "cd packages/frontend && yarn storybook",
     "test": "cd packages/frontend && yarn install --frozen-lockfile && yarn test",
     "dev": "cd packages/frontend && yarn install --frozen-lockfile && yarn dev",
     "test:e2e": "cd packages/e2e-tests && yarn e2e",

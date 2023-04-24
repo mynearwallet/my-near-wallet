@@ -55,7 +55,7 @@ class ParcelBundler {
                 shouldOptimize: !this.isDevelopment,
                 distDir: this.distDir,
                 sourceMaps: true,
-            }
+            },
         };
     }
 
@@ -75,10 +75,14 @@ class ParcelBundler {
             externalUrl,
         });
         if (isPullRequestPreview) {
-            const prNumberRegex = new RegExp(/^http[s]?:\/\/near-wallet-pr-(\d+)\.onrender\.com/g);
+            const prNumberRegex = new RegExp(
+                /^http[s]?:\/\/near-wallet-pr-(\d+)\.onrender\.com/g
+            );
             const prNumber = prNumberRegex.exec(externalUrl);
             if (!prNumber) {
-                throw new Error(`Could not identify PR number from externalURL: ${externalUrl}`);
+                throw new Error(
+                    `Could not identify PR number from externalURL: ${externalUrl}`
+                );
             }
 
             return {
@@ -86,7 +90,7 @@ class ParcelBundler {
                 defaultTargetOption: {
                     ...this.getBaseConfig().defaultTargetOption,
                     publicUrl: this.buildCloudflarePath(`/rnd/pr/${prNumber[1]}/`),
-                }
+                },
             };
         }
 
@@ -116,9 +120,8 @@ class ParcelBundler {
                         defaultTargetOption: {
                             ...this.getBaseConfig().defaultTargetOption,
                             publicUrl: this.buildCloudflarePath('/ntl/staging/'),
-                        }
+                        },
                     };
-
                 }
 
                 // Netlify production/mainnet is a dedicated deployment using 'stable' as the production branch
@@ -127,7 +130,7 @@ class ParcelBundler {
                     defaultTargetOption: {
                         ...this.getBaseConfig().defaultTargetOption,
                         publicUrl: this.buildCloudflarePath('/ntl/mainnet/'),
-                    }
+                    },
                 };
 
             case 'branch-deploy':
@@ -136,7 +139,7 @@ class ParcelBundler {
                     defaultTargetOption: {
                         ...this.getBaseConfig().defaultTargetOption,
                         publicUrl: this.buildCloudflarePath(`/ntl/branch/${branchName}/`),
-                    }
+                    },
                 };
             case 'deploy-preview':
                 if (primeUrl.includes('near-wallet-staging')) {
@@ -145,8 +148,10 @@ class ParcelBundler {
                         ...this.getBaseConfig(),
                         defaultTargetOption: {
                             ...this.getBaseConfig().defaultTargetOption,
-                            publicUrl: this.buildCloudflarePath(`/ntl/previewstaging/${pullRequestId}/`),
-                        }
+                            publicUrl: this.buildCloudflarePath(
+                                `/ntl/previewstaging/${pullRequestId}/`
+                            ),
+                        },
                     };
                 }
 
@@ -154,8 +159,10 @@ class ParcelBundler {
                     ...this.getBaseConfig(),
                     defaultTargetOption: {
                         ...this.getBaseConfig().defaultTargetOption,
-                        publicUrl: this.buildCloudflarePath(`/ntl/preview/${pullRequestId}/`),
-                    }
+                        publicUrl: this.buildCloudflarePath(
+                            `/ntl/preview/${pullRequestId}/`
+                        ),
+                    },
                 };
             default:
                 throw new Error('Could not identify Netlify build environment');
@@ -172,7 +179,11 @@ class ParcelBundler {
         if (isRender) {
             return this.composeRenderBuildConfig(this.baseConfig);
         }
-        console.error('Could not identify build environment', { isRender, isNetlify, isDevelopment });
+        console.error('Could not identify build environment', {
+            isRender,
+            isNetlify,
+            isDevelopment,
+        });
         throw new Error('Unknown environment for build');
     }
     initializeBundlerInstance() {
@@ -180,7 +191,7 @@ class ParcelBundler {
 
         this.debugLog('entries', this.entries);
         this.debugLog('bundlerConfig', bundlerConfig);
-        this.bundler = new Parcel({...bundlerConfig, entries: this.entries});
+        this.bundler = new Parcel({ ...bundlerConfig, entries: this.entries });
 
         return this.bundler;
     }

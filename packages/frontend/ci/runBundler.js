@@ -27,9 +27,15 @@ const runBundler = async () => {
 
     await bundler.bundle();
 
-    fs.copyFileSync(buildWasmSourcePath('multisig.wasm'),buildOutputPath('multisig.wasm'),);
+    fs.copyFileSync(
+        buildWasmSourcePath('multisig.wasm'),
+        buildOutputPath('multisig.wasm')
+    );
     fs.copyFileSync(buildWasmSourcePath('main.wasm'), buildOutputPath('main.wasm'));
-    fs.copyFileSync(buildWasmSourcePath('state_cleanup.wasm'), buildOutputPath('state_cleanup.wasm'));
+    fs.copyFileSync(
+        buildWasmSourcePath('state_cleanup.wasm'),
+        buildOutputPath('state_cleanup.wasm')
+    );
 };
 
 runBundler();
