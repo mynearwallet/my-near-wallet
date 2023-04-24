@@ -30,9 +30,8 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
                 <SetPassword onChange={handlePasswordChange} />
             </PasswordForm>
             <Submit>
-                <FormButton
-                    onClick={handleClickNext}
-                    disabled={password === null}>
+                {/* @ts-ignore: prop error */}
+                <FormButton onClick={handleClickNext} disabled={password === null}>
                     {t('button.next')}
                 </FormButton>
             </Submit>

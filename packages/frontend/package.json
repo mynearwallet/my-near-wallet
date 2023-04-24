@@ -8,8 +8,8 @@
     "scripts": {
         "pre-deploy": "yarn build",
         "update:static": "npx copyfiles 'src/wasm/*.wasm' 'dist'",
-        "start": "yarn update:static && parcel src/index.html --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
-        "pre-build": "npx rimraf dist/ && npx rimraf .cache/",
+        "start": "yarn update:static && parcel src/index.html --cache-dir ./.parcel-cache --https --cert devServerCertificates/primary.crt --key devServerCertificates/private.pem",
+        "pre-build": "npx rimraf dist/ && npx rimraf .parcel-cache/",
         "build": "yarn run bundle && yarn run sentry",
         "bundle": "cross-env NODE_ENV=production node ci/runBundler.js",
         "check": "tsc --noEmit",
@@ -85,10 +85,10 @@
         "use-immer": "^0.7.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.19.6",
-        "@babel/plugin-transform-react-jsx": "^7.19.0",
-        "@babel/preset-env": "^7.14.1",
-        "@babel/preset-react": "^7.13.13",
+        "@parcel/config-default": "^2.8.3",
+        "@parcel/transformer-raw": "^2.8.3",
+        "@parcel/transformer-typescript-tsc": "^2.8.3",
+        "@parcel/validator-typescript": "^2.8.3",
         "@sentry/cli": "^1.65.0",
         "@types/react-router": "^5.1.19",
         "@types/styled-components": "^5.1.26",
@@ -110,8 +110,7 @@
         "glob": "^9.2.1",
         "jest": "^27.0.1",
         "jest-svg-transformer": "^1.0.0",
-        "parcel-bundler": "^1.12.4",
-        "parcel-plugin-bundle-visualiser": "^1.2.0",
+        "parcel": "^2.8.3",
         "prettier": "2.8.4",
         "prettier-plugin-sort-json": "^1.0.0",
         "sort-json": "^2.0.1"

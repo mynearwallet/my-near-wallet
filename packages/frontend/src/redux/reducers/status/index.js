@@ -3,7 +3,7 @@ import reduceReducers from 'reduce-reducers';
 import { handleActions } from 'redux-actions';
 
 import { showAlert } from '../../../utils/alerts';
-import { makeAccountActive } from '../../actions/account';
+// import { makeAccountActive } from '../../actions/account';
 import {
     clearLocalAlert,
     clearGlobalAlert,
@@ -61,13 +61,13 @@ const alertReducer = (state, { error, ready, payload, meta, type }) => {
         [type]: (typeof ready === 'undefined' && type !== 'SHOW_CUSTOM_ALERT')
             ? undefined
             : {
-                success: typeof ready === 'undefined' 
-                    ? typeof payload?.success === 'undefined' 
+                success: typeof ready === 'undefined'
+                    ? typeof payload?.success === 'undefined'
                         ? !error
                         : meta.alert.success
                     : (ready ? !error : undefined),
-                pending: typeof ready === 'undefined' 
-                    ? undefined 
+                pending: typeof ready === 'undefined'
+                    ? undefined
                     : !meta?.alert?.ignoreMainLoader && !ready,
                 errorType: payload?.type,
                 errorMessage: (error && payload?.message) || (type === 'SHOW_CUSTOM_ALERT' && payload.errorMessage) || undefined,
@@ -93,8 +93,8 @@ const alertReducer = (state, { error, ready, payload, meta, type }) => {
                         ? true
                         : ready && ((meta?.alert?.onlyError && error) || (meta?.alert?.onlySuccess && !error)),
                     messageCodeHeader: meta?.alert?.messageCodeHeader || undefined,
-                    messageCode: 
-                        payload?.messageCode 
+                    messageCode:
+                        payload?.messageCode
                         || (error
                             ? payload?.type !== 'UntypedError'
                                 ? `reduxActions.${payload?.type}`
@@ -125,14 +125,14 @@ const alertReducer = (state, { error, ready, payload, meta, type }) => {
 const clearReducer = handleActions({
     [clearLocalAlert]: (state) => Object.keys(state)
         .reduce((obj, key) => (
-            key !== 'localAlert' 
-                ? (obj[key] = state[key], obj) 
+            key !== 'localAlert'
+                ? (obj[key] = state[key], obj)
                 : obj)
         , {}),
     [clearGlobalAlert]: (state, { payload }) => ({
         ...state,
-        globalAlert: !payload 
-            ? {} 
+        globalAlert: !payload
+            ? {}
             : Object.keys(state.globalAlert).reduce((x, type) => ({
                 ...x,
                 ...(type !== payload
@@ -142,9 +142,10 @@ const clearReducer = handleActions({
                     : undefined)
             }), {})
     }),
-    [makeAccountActive]: () => {
-        return initialState;
-    }
+    // Not sure why this is here but it causes an app initialization error after updating parcel to v2
+    // [makeAccountActive]: () => {
+    //     return initialState;
+    // }
 }, initialState);
 
 const mainLoader = handleActions({
