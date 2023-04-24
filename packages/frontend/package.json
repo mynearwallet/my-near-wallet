@@ -33,6 +33,7 @@
         "@near-wallet-selector/account-export": "^7.6.1",
         "@reduxjs/toolkit": "1.6.2",
         "@sentry/browser": "^6.4.1",
+        "big.js": "^6.2.1",
         "bip39-light": "^1.0.7",
         "connected-react-router": "^6.6.0",
         "dataloader": "^2.1.0",
@@ -92,9 +93,7 @@
         "@sentry/cli": "^1.65.0",
         "@types/react-router": "^5.1.19",
         "@types/styled-components": "^5.1.26",
-        "babel-eslint": "^10.1.0",
-        "babel-jest": "^27.0.1",
-        "babel-loader": "^8.1.0",
+        "@types/jest": "^29.5.1",
         "concurrently": "^7.0.0",
         "cross-env": "^7.0.3",
         "dotenv": "^11.0.0",
@@ -108,11 +107,13 @@
         "eslint-plugin-react": "^7.23.2",
         "gleap": "^10.0.0",
         "glob": "^9.2.1",
-        "jest": "^27.0.1",
+        "jest": "^29.5.0",
+        "jest-environment-jsdom": "^29.5.0",
         "jest-svg-transformer": "^1.0.0",
         "parcel": "^2.8.3",
         "prettier": "2.8.4",
         "prettier-plugin-sort-json": "^1.0.0",
-        "sort-json": "^2.0.1"
+        "sort-json": "^2.0.1",
+        "ts-jest": "^29.1.0"
     }
 }
