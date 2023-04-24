@@ -15,7 +15,7 @@ const InputWrapper = styled.div`
     input {
         margin-top: 0px;
     }
-    
+
     &.wrong-char {
         input {
             animation-duration: 0.4s;
@@ -110,7 +110,7 @@ class InputAccountId extends Component {
         const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
         const width = this.getTextWidth(userValue, '16px Inter');
         const extraSpace = isSafari ? 22 : 23;
-        this.prefix.current.style.right = width + extraSpace + 'px';
+        this.prefix.current.style.right = `${width + extraSpace}px`;
         this.prefix.current.style.visibility = 'visible';
         if (userValue.length === 0) {
             this.prefix.current.style.visibility = 'hidden';
