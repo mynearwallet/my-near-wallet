@@ -98,21 +98,30 @@ export const createNewAccount = createAsyncThunk(
         recoveryMethod,
         publicKey,
         previousAccountId,
-        recaptchaToken
+        recaptchaToken,
+        recoveryKeyPair = null
     }, { dispatch }) => {
-        await wallet.checkNewAccount(accountId);
+        const { fundingContract, fundingKey, fundingAccountId, trialDrop = false } = fundingOptions || {};
 
-        const { fundingContract, fundingKey, fundingAccountId } = fundingOptions || {};
+        if (!trialDrop) {
+            await wallet.checkNewAccount(accountId);
+        }
+
         if (fundingContract && fundingKey) {
             await wallet.createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey);
             await wallet.keyStore.removeKey(CONFIG.NETWORK_ID, fundingContract);
+
+            // recoveryKeyPair always comes in from seedphrase recovery but NOT ledger
+            if (trialDrop && recoveryKeyPair) {
+                await wallet.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, recoveryKeyPair);
+            }
         } else if (fundingAccountId) {
             await wallet.createNewAccountFromAnother(accountId, fundingAccountId, publicKey);
         } else if (CONFIG.RECAPTCHA_CHALLENGE_API_KEY && recaptchaToken) {
             await sendJson('POST', FUNDED_ACCOUNT_CREATE_URL, {
                 newAccountId: accountId,
                 newAccountPublicKey: publicKey.toString(),
-                recaptchaCode: recaptchaToken
+                recaptchaCode: recaptchaToken,
             });
         } else {
             await sendJson('POST', CONTRACT_CREATE_ACCOUNT_URL, {
@@ -122,7 +131,9 @@ export const createNewAccount = createAsyncThunk(
         }
 
         await wallet.saveAndMakeAccountActive(accountId);
-        await dispatch(addLocalKeyAndFinishSetup({ accountId, recoveryMethod, publicKey, previousAccountId })).unwrap();
+        await dispatch(
+            addLocalKeyAndFinishSetup({ accountId, recoveryMethod, publicKey, previousAccountId }),
+        ).unwrap();
     }
 );
 
@@ -155,7 +166,7 @@ export const createAccountWithSeedPhrase = createAsyncThunk(
         const recoveryMethod = 'phrase';
         const previousAccountId = wallet.accountId;
         await wallet.saveAccount(accountId, recoveryKeyPair);
-        await dispatch(createNewAccount({ accountId, fundingOptions, recoveryMethod, publicKey: recoveryKeyPair.publicKey, previousAccountId, recaptchaToken })).unwrap();
+        await dispatch(createNewAccount({ accountId, fundingOptions, recoveryMethod, publicKey: recoveryKeyPair.publicKey, previousAccountId, recaptchaToken, recoveryKeyPair })).unwrap();
     }
     // TODO: showAlert()
 );
@@ -167,6 +178,7 @@ export const createNewAccountWithCurrentActiveAccount = createAsyncThunk(
         implicitAccountId,
         newInitialBalance,
         recoveryMethod
+
     }, { dispatch }) => {
         await wallet.checkNewAccount(newAccountId);
         const newPublicKey = new PublicKey({ keyType: KeyType.ED25519, data: Buffer.from(implicitAccountId, 'hex') });

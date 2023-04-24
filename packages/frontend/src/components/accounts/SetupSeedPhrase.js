@@ -60,9 +60,12 @@ class SetupSeedPhrase extends Component {
         const recoveryKeyPair = KeyPair.fromString(secretKey);
         const wordId = Math.floor(Math.random() * 12);
 
+        const fundingOptions = parseFundingOptions(location.search);
+        const isTrial = fundingOptions?.trialDrop || false;
+
         const isNewAccount = await checkIsNew(accountId);
 
-        if (!isNewAccount) {
+        if (!isNewAccount && !isTrial) {
             fetchRecoveryMethods({ accountId });
         }
 
@@ -135,7 +138,10 @@ class SetupSeedPhrase extends Component {
         } = this.props;
         const { recoveryKeyPair, recaptchaToken } = this.state;
 
-        if (!this.state.isNewAccount) {
+        const fundingOptions = parseFundingOptions(location.search);
+        const isTrial = fundingOptions?.trialDrop || false;
+
+        if (!this.state.isNewAccount && !isTrial) {
             debugLog('handleSetupSeedPhrase()/existing account');
 
             await Mixpanel.withTracking('SR-SP Setup for existing account',
@@ -143,8 +149,6 @@ class SetupSeedPhrase extends Component {
             );
             return;
         }
-
-        const fundingOptions = parseFundingOptions(location.search);
 
         await Mixpanel.withTracking('SR-SP Setup for new account',
             async () => {
