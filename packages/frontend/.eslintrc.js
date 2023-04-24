@@ -87,5 +87,11 @@ module.exports = {
                 'no-process-env': ['off']
             },
         },
+        {
+            files: ["*.ts"],
+            rules: {
+                'no-undef': off
+            }
+        }
     ],
 }
