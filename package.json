@@ -15,14 +15,13 @@
     "release": "lerna version --conventional-commits"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.6.0",
+    "@commitlint/config-conventional": "^17.6.0",
     "husky": "^8.0.3",
-    "lerna": "^6.6.1"
+    "lerna": "^6.6.1",
+    "lint-staged": "^13.2.1"
   },
   "resolutions": {
     "node-gyp": "9.3.1"
-  },
-  "dependencies": {
-    "@commitlint/cli": "^17.6.0",
-    "@commitlint/config-conventional": "^17.6.0"
   }
 }
