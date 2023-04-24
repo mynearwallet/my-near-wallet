@@ -1,14 +1,14 @@
-import PropTypes from "prop-types";
-import React, { createRef, useEffect, useRef, useState } from "react";
-import { Translate } from "react-localize-redux";
-import styled from "styled-components";
+import PropTypes from 'prop-types';
+import React, { createRef, useEffect, useRef, useState } from 'react';
+import { Translate } from 'react-localize-redux';
+import styled from 'styled-components';
 
-import CONFIG from "../../config";
-import { Mixpanel } from "../../mixpanel/index";
-import classNames from "../../utils/classNames";
-import { ACCOUNT_CHECK_TIMEOUT } from "../../utils/wallet";
-import LocalAlertBox from "../common/LocalAlertBox.js";
-import useDebouncedValue from "../../hooks/useDebouncedValue";
+import CONFIG from '../../config';
+import useDebouncedValue from '../../hooks/useDebouncedValue';
+import { Mixpanel } from '../../mixpanel/index';
+import classNames from '../../utils/classNames';
+import { ACCOUNT_CHECK_TIMEOUT } from '../../utils/wallet';
+import LocalAlertBox from '../common/LocalAlertBox.js';
 
 const InputWrapper = styled.div`
     position: relative;
@@ -53,7 +53,7 @@ const InputWrapper = styled.div`
 `;
 
 const AccountFormAccountId = (props) => {
-    const [accountId, setAccountId] = useState(props.defaultAccountId || "");
+    const [accountId, setAccountId] = useState(props.defaultAccountId || '');
     const [invalidAccountIdLength, setInvalidAccountIdLength] = useState(false);
     const [wrongChar, setWrongChar] = useState(false);
     const debouncedAccountId = useDebouncedValue(accountId, ACCOUNT_CHECK_TIMEOUT);
@@ -68,7 +68,7 @@ const AccountFormAccountId = (props) => {
 
     useEffect(() => {
         handleCheckAvailability(accountId, props.type);
-    }, [debouncedAccountId])
+    }, [debouncedAccountId]);
 
     const updateSuffix = (userValue) => {
         if (userValue.match(props.pattern)) {
@@ -76,20 +76,20 @@ const AccountFormAccountId = (props) => {
         }
 
         const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
-        const width = getTextWidth(userValue, "16px Inter");
+        const width = getTextWidth(userValue, '16px Inter');
         const extraSpace = isSafari ? 21.5 : 22;
         suffix.current.style.left = `${width + extraSpace}px`;
-        suffix.current.style.visibility = "visible";
+        suffix.current.style.visibility = 'visible';
         if (userValue.length === 0) {
-            suffix.current.style.visibility = "hidden";
+            suffix.current.style.visibility = 'hidden';
         }
     };
 
     const getTextWidth = (text, font) => {
         if (!canvas.current) {
-            canvas.current = document.createElement("canvas");
+            canvas.current = document.createElement('canvas');
         }
-        const context = canvas.current.getContext("2d");
+        const context = canvas.current.getContext('2d');
         context.font = font;
         const metrics = context.measureText(text);
         return metrics.width;
@@ -104,7 +104,7 @@ const AccountFormAccountId = (props) => {
 
         if (currentAccountId.match(props.pattern)) {
             if (wrongChar) {
-                el.style.animation = "none";
+                el.style.animation = 'none';
                 void el.offsetHeight;
                 el.style.animation = null;
             } else {
@@ -130,8 +130,8 @@ const AccountFormAccountId = (props) => {
         setInvalidAccountIdLength(!!accountId && !checkAccountIdLength(accountId));
 
     const handleCheckAvailability = (currentAccountId, type) => {
-        if (type === "create") {
-            Mixpanel.track("CA Check account availability");
+        if (type === 'create') {
+            Mixpanel.track('CA Check account availability');
         }
         if (!currentAccountId) {
             return false;
@@ -141,19 +141,19 @@ const AccountFormAccountId = (props) => {
         }
         if (
             !(
-                type === "create" &&
+                type === 'create' &&
                 !handleAccountIdLengthState(currentAccountId) &&
                 !checkAccountIdLength(currentAccountId)
             )
         ) {
-            return props.checkAvailability(type === "create" ? props.accountId : currentAccountId);
+            return props.checkAvailability(type === 'create' ? props.accountId : currentAccountId);
         }
         return false;
     };
 
-    const isSameAccount = () => props.type !== "create" && props.stateAccountId === accountId;
+    const isSameAccount = () => props.type !== 'create' && props.stateAccountId === accountId;
 
-    const isImplicitAccount = (accountId) => props.type !== "create" && accountId.length === 64;
+    const isImplicitAccount = (accountId) => props.type !== 'create' && accountId.length === 64;
 
     const localAlertWithFormValidation = () => {
         if (!accountId) {
@@ -162,7 +162,7 @@ const AccountFormAccountId = (props) => {
         if (isImplicitAccount(accountId)) {
             return {
                 success: true,
-                messageCode: "account.available.implicitAccount",
+                messageCode: 'account.available.implicitAccount',
             };
         }
         if (props.mainLoader) {
@@ -173,14 +173,14 @@ const AccountFormAccountId = (props) => {
         if (invalidAccountIdLength) {
             return {
                 success: false,
-                messageCode: "account.create.errorInvalidAccountIdLength",
+                messageCode: 'account.create.errorInvalidAccountIdLength',
             };
         }
         if (isSameAccount()) {
             return {
                 success: false,
                 show: true,
-                messageCode: "account.available.errorSameAccount",
+                messageCode: 'account.available.errorSameAccount',
             };
         }
         return props.localAlert;
@@ -199,23 +199,23 @@ const AccountFormAccountId = (props) => {
                             props.type,
                             { success: success },
                             { problem: problem },
-                            { "wrong-char": wrongChar },
+                            { 'wrong-char': wrongChar },
                         ])}
                     >
                         <input
                             name='accountId'
                             data-test-id="createAccount.accountIdInput"
                             value={accountId}
-                            onInput={(e) => props.type === "create" && updateSuffix(e.target.value.trim())}
+                            onInput={(e) => props.type === 'create' && updateSuffix(e.target.value.trim())}
                             onChange={(e) =>
                                 handleChangeAccountId({ userValue: e.target.value.trim(), el: e.target })
                             }
                             placeholder={
-                                props.type === "create"
-                                    ? translate("createAccount.accountIdInput.placeholder", {
+                                props.type === 'create'
+                                    ? translate('createAccount.accountIdInput.placeholder', {
                                         data: CONFIG.ACCOUNT_ID_SUFFIX,
                                     })
-                                    : translate("input.accountId.placeholder")
+                                    : translate('input.accountId.placeholder')
                             }
                             required
                             autoComplete='off'
@@ -225,13 +225,13 @@ const AccountFormAccountId = (props) => {
                             tabIndex='1'
                             disabled={props.disabled}
                         />
-                        {props.type === "create" && (
+                        {props.type === 'create' && (
                             <span className='input-suffix' ref={suffix}>
                                 .{CONFIG.ACCOUNT_ID_SUFFIX}
                             </span>
                         )}
-                        {props.type !== "create" && (
-                            <div className='input-sub-label'>{translate("input.accountId.subLabel")}</div>
+                        {props.type !== 'create' && (
+                            <div className='input-sub-label'>{translate('input.accountId.subLabel')}</div>
                         )}
                     </InputWrapper>
                 )}
@@ -252,7 +252,7 @@ AccountFormAccountId.propTypes = {
 AccountFormAccountId.defaultProps = {
     autoFocus: false,
     pattern: /[^a-zA-Z0-9._-]/,
-    type: "check",
+    type: 'check',
 };
 
 export default AccountFormAccountId;
