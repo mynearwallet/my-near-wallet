@@ -136,13 +136,13 @@ export const AccountFormAccountId: React.FunctionComponent<Props> = ({ defaultAc
         return metrics.width;
     };
 
-    const checkAccountIdLength = (accountId: string) => {
+    const isAccountIdLengthValid = (accountId: string) => {
         const accountIdWithSuffix = `${accountId}.${CONFIG.ACCOUNT_ID_SUFFIX}`;
         return accountIdWithSuffix.length >= 2 && accountIdWithSuffix.length <= 64;
     };
 
     const handleAccountIdLengthState = (accountId: string) =>
-        setInvalidAccountIdLength(!!accountId && !checkAccountIdLength(accountId));
+        setInvalidAccountIdLength(!!accountId && !isAccountIdLengthValid(accountId));
 
     const handleCheckAvailability = (currentAccountId: string, type: string) => {
         if (type === 'create') {
@@ -157,7 +157,7 @@ export const AccountFormAccountId: React.FunctionComponent<Props> = ({ defaultAc
         if (
             !(
                 type === 'create' &&
-                !checkAccountIdLength(currentAccountId)
+                !isAccountIdLengthValid(currentAccountId)
             )
         ) {
             return checkAvailability(type === 'create' ? accountIdFromProps : currentAccountId);
