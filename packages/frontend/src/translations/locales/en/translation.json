@@ -446,16 +446,19 @@
         "tite": "Your Shared Passphrase"
       }
     },
-    "step": "Step ${step}/${total}",
-    "terms": {
-      "agreeBtn": "Agree & Continue",
-      "declineBtn": "Decline",
-      "desc": "By proceeding with creating a NEAR account, you agree to the NEAR Wallet Terms of Service and Privacy Policy. We urge you to read them carefully:",
-      "privacyCheck": "I agree to the Privacy Policy",
-      "privacyLink": "Privacy Policy",
-      "termsCheck": "I agree to the Terms of Service",
-      "termsLink": "Terms & Conditions",
-      "title": "Terms & Conditions"
+    "linkdropLanding": {
+        "claiming": "Claiming",
+        "ctaAccount": "Claim with Existing Account",
+        "ctaLogin": "Log In and Claim",
+        "ctaNew": "Claim with New Account",
+        "desc": "You may claim your NEAR drop with an existing account (must be logged in), or create a new account to receive it as an initial deposit.",
+        "loadingText": "Fetching Linkdrop Info",
+        "modal": {
+            "desc": "Your NEAR drop has been automatically deposited to your account.",
+            "title": "Your NEAR drop has been claimed"
+        },
+        "or": "or",
+        "title": "You've received a NEAR drop!"
     },
     "termsPage": {
       "descOne": "NEAR accounts require a minimum balance of <b>at least ${amount}</b> to <a href='https://docs.near.org/docs/concepts/account' rel='noopener noreferrer' target='_blank'>hold a place on the network.</a>",

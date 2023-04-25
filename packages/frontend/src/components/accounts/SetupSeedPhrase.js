@@ -7,19 +7,19 @@ import { withRouter, Route } from "react-router-dom";
 
 import { Mixpanel } from "../../mixpanel/index";
 import {
-  handleAddAccessKeySeedPhrase,
-  refreshAccount,
-  checkIsNew,
-  handleCreateAccountWithSeedPhrase,
-  fundCreateAccount,
+    handleAddAccessKeySeedPhrase,
+    refreshAccount,
+    checkIsNew,
+    handleCreateAccountWithSeedPhrase,
+    fundCreateAccount,
 } from "../../redux/actions/account";
 import { clearGlobalAlert, showCustomAlert } from "../../redux/actions/status";
 import { selectAccountSlice } from "../../redux/slices/account";
 import { actions as linkdropActions } from "../../redux/slices/linkdrop";
 import {
-  actions as recoveryMethodsActions,
-  selectRecoveryMethodsByAccountId,
-  selectRecoveryMethodsLoading,
+    actions as recoveryMethodsActions,
+    selectRecoveryMethodsByAccountId,
+    selectRecoveryMethodsLoading,
 } from "../../redux/slices/recoveryMethods";
 import { selectStatusMainLoader } from "../../redux/slices/status";
 import copyText from "../../utils/copyText";
@@ -41,321 +41,397 @@ const ENABLE_DEBUG_LOGGING = false;
 const debugLog = (...args) => ENABLE_DEBUG_LOGGING && console.log("SetupSeedPhrase:", ...args);
 
 class SetupSeedPhrase extends Component {
-  recaptchaRef = null;
+    recaptchaRef = null;
 
-  state = {
-    seedPhrase: "",
-    enterWord: "",
-    wordId: null,
-    localAlert: null,
-    successSnackbar: false,
-    submitting: false,
-    recaptchaToken: null,
-    isNewAccount: false,
-  };
+    state = {
+        seedPhrase: "",
+        enterWord: "",
+        wordId: null,
+        localAlert: null,
+        successSnackbar: false,
+        submitting: false,
+        recaptchaToken: null,
+        isNewAccount: false,
+    };
 
-  componentDidMount = async () => {
-    this.refreshData();
-  };
+    componentDidMount = async () => {
+        this.refreshData();
+    };
 
-  refreshData = async () => {
-    const { accountId, fetchRecoveryMethods, checkIsNew } = this.props;
-    const { seedPhrase, publicKey, secretKey } = generateSeedPhrase();
-    const recoveryKeyPair = KeyPair.fromString(secretKey);
-    const wordId = Math.floor(Math.random() * 12);
+    refreshData = async () => {
+        const { accountId, fetchRecoveryMethods, checkIsNew } = this.props;
+        const { seedPhrase, publicKey, secretKey } = generateSeedPhrase();
+        const recoveryKeyPair = KeyPair.fromString(secretKey);
+        const wordId = Math.floor(Math.random() * 12);
 
-    const isNewAccount = await checkIsNew(accountId);
+        const isNewAccount = await checkIsNew(accountId);
 
-    if (!isNewAccount) {
-      fetchRecoveryMethods({ accountId });
-    }
+        if (!isNewAccount) {
+            fetchRecoveryMethods({ accountId });
+        }
 
-    this.setState((prevState) => ({
-      ...prevState,
-      seedPhrase,
-      publicKey,
-      wordId,
-      enterWord: "",
-      localAlert: null,
-      recoveryKeyPair,
-      isNewAccount,
-    }));
-  };
+        this.setState((prevState) => ({
+            ...prevState,
+            seedPhrase,
+            publicKey,
+            wordId,
+            enterWord: "",
+            localAlert: null,
+            recoveryKeyPair,
+            isNewAccount,
+        }));
+    };
 
-  handleChangeWord = (value) => {
-    if (value.match(/[^a-zA-Z]/)) {
-      return false;
-    }
+    handleChangeWord = (value) => {
+        if (value.match(/[^a-zA-Z]/)) {
+            return false;
+        }
 
-    this.setState(() => ({
-      enterWord: value.trim().toLowerCase(),
-      localAlert: null,
-    }));
-  };
+        this.setState(() => ({
+            enterWord: value.trim().toLowerCase(),
+            localAlert: null,
+        }));
+    };
+}
 
-  handleStartOver = () => {
-    const { history, location, accountId } = this.props;
+const fundingOptions = parseFundingOptions(location.search);
+const isTrial = fundingOptions?.trialDrop || false;
 
-    this.refreshData();
-    history.push(`/setup-seed-phrase/${accountId}/phrase${location.search}`);
-  };
+const isNewAccount = await checkIsNew(accountId);
 
-  handleVerifyPhrase = () => {
+if (!isNewAccount && !isTrial) {
+    fetchRecoveryMethods({ accountId });
+}
+
+handleVerifyPhrase = () => {
     const { seedPhrase, enterWord, wordId, submitting } = this.state;
     Mixpanel.track("SR-SP Verify start");
 
     if (enterWord !== seedPhrase.split(" ")[wordId]) {
-      this.setState(() => ({
-        localAlert: {
-          success: false,
-          messageCode: "account.verifySeedPhrase.error",
-          show: true,
-        },
-      }));
-      Mixpanel.track("SR-SP Verify fail", { error: "word is not matched the phrase" });
-      return false;
+        this.setState(() => ({
+            localAlert: {
+                success: false,
+                messageCode: "account.verifySeedPhrase.error",
+                show: true,
+            },
+        }));
+        Mixpanel.track("SR-SP Verify fail", { error: "word is not matched the phrase" });
+        return false;
     }
 
     if (!submitting) {
-      this.setState({ submitting: true }, this.handleSetupSeedPhrase);
+        this.setState({ submitting: true }, this.handleSetupSeedPhrase);
     }
     Mixpanel.track("SR-SP Verify finish");
-  };
+};
 
-  handleSetupSeedPhrase = async () => {
+handleSetupSeedPhrase = async () => {
     debugLog("handleSetupSeedPhrase()");
     const {
-      accountId,
-      handleAddAccessKeySeedPhrase,
-      handleCreateAccountWithSeedPhrase,
-      fundCreateAccount,
-      showCustomAlert,
-      location,
-      setLinkdropAmount,
+        accountId,
+        handleAddAccessKeySeedPhrase,
+        handleCreateAccountWithSeedPhrase,
+        fundCreateAccount,
+        showCustomAlert,
+        location,
+        setLinkdropAmount,
     } = this.props;
     const { recoveryKeyPair, recaptchaToken } = this.state;
 
     if (!this.state.isNewAccount) {
-      debugLog("handleSetupSeedPhrase()/existing account");
+        debugLog("handleSetupSeedPhrase()/existing account");
 
-      await Mixpanel.withTracking(
-        "SR-SP Setup for existing account",
-        async () => await handleAddAccessKeySeedPhrase(accountId, recoveryKeyPair),
-      );
-      return;
+        await Mixpanel.withTracking(
+            "SR-SP Setup for existing account",
+            async () => await handleAddAccessKeySeedPhrase(accountId, recoveryKeyPair),
+        );
+        return;
     }
 
     const fundingOptions = parseFundingOptions(location.search);
 
-    await Mixpanel.withTracking(
-      "SR-SP Setup for new account",
-      async () => {
-        await handleCreateAccountWithSeedPhrase(
-          accountId,
-          recoveryKeyPair,
-          fundingOptions,
-          recaptchaToken,
+    this.refreshData();
+    history.push(`/setup-seed-phrase/${accountId}/phrase${location.search}`);
+}
+
+handleVerifyPhrase = () => {
+    const { seedPhrase, enterWord, wordId, submitting } = this.state;
+    Mixpanel.track('SR-SP Verify start');
+
+    if (enterWord !== seedPhrase.split(' ')[wordId]) {
+        this.setState(() => ({
+            localAlert: {
+                success: false,
+                messageCode: 'account.verifySeedPhrase.error',
+                show: true
+            }
+        }));
+        Mixpanel.track('SR-SP Verify fail', { error: 'word is not matched the phrase' });
+        return false;
+    }
+
+    if (!submitting) {
+        this.setState({ submitting: true }, this.handleSetupSeedPhrase);
+    }
+    Mixpanel.track('SR-SP Verify finish');
+}
+
+handleSetupSeedPhrase = async () => {
+    debugLog('handleSetupSeedPhrase()');
+    const {
+        accountId,
+        handleAddAccessKeySeedPhrase,
+        handleCreateAccountWithSeedPhrase,
+        fundCreateAccount,
+        showCustomAlert,
+        location,
+        setLinkdropAmount
+    } = this.props;
+    const { recoveryKeyPair, recaptchaToken } = this.state;
+
+    const fundingOptions = parseFundingOptions(location.search);
+    const isTrial = fundingOptions?.trialDrop || false;
+
+    if (!this.state.isNewAccount && !isTrial) {
+        debugLog('handleSetupSeedPhrase()/existing account');
+
+        await Mixpanel.withTracking('SR-SP Setup for existing account',
+            async () => await handleAddAccessKeySeedPhrase(accountId, recoveryKeyPair)
         );
-        if (fundingOptions?.fundingAmount) {
-          setLinkdropAmount(fundingOptions.fundingAmount);
+        return;
+    }
+
+    await Mixpanel.withTracking('SR-SP Setup for new account',
+        async () => {
+            await handleCreateAccountWithSeedPhrase(accountId, recoveryKeyPair, fundingOptions, recaptchaToken);
+            if (fundingOptions?.fundingAmount) {
+                setLinkdropAmount(fundingOptions.fundingAmount);
+            }
+        },
+        async (err) => {
+            debugLog('failed to create account!', err);
+
+            this.setState({ submitting: false });
+
+            if (isRetryableRecaptchaError(err)) {
+                Mixpanel.track('Funded account creation failed due to invalid / expired reCaptcha response from user');
+                this.recaptchaRef.reset();
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    messageCode: 'walletErrorCodes.invalidRecaptchaCode',
+                    errorMessage: err.message
+                });
+            } else if (err.code === 'NotEnoughBalance') {
+                Mixpanel.track('SR-SP NotEnoughBalance creating funded account');
+                await fundCreateAccount(accountId, recoveryKeyPair, 'phrase');
+            } else {
+                showCustomAlert({
+                    errorMessage: err.message,
+                    success: false,
+                    messageCodeHeader: 'error'
+                });
+            }
         }
-      },
-      async (err) => {
+    );
+    if (fundingOptions?.fundingAmount) {
+        setLinkdropAmount(fundingOptions.fundingAmount);
+    }
+
+    async (err) => {
         debugLog("failed to create account!", err);
 
         this.setState({ submitting: false });
 
         if (isRetryableRecaptchaError(err)) {
-          Mixpanel.track(
-            "Funded account creation failed due to invalid / expired reCaptcha response from user",
-          );
-          this.recaptchaRef.reset();
-          showCustomAlert({
-            success: false,
-            messageCodeHeader: "error",
-            messageCode: "walletErrorCodes.invalidRecaptchaCode",
-            errorMessage: err.message,
-          });
+            Mixpanel.track(
+                "Funded account creation failed due to invalid / expired reCaptcha response from user",
+            );
+            this.recaptchaRef.reset();
+            showCustomAlert({
+                success: false,
+                messageCodeHeader: "error",
+                messageCode: "walletErrorCodes.invalidRecaptchaCode",
+                errorMessage: err.message,
+            });
         } else if (err.code === "NotEnoughBalance") {
-          Mixpanel.track("SR-SP NotEnoughBalance creating funded account");
-          await fundCreateAccount(accountId, recoveryKeyPair, "phrase");
+            Mixpanel.track("SR-SP NotEnoughBalance creating funded account");
+            await fundCreateAccount(accountId, recoveryKeyPair, "phrase");
         } else {
-          showCustomAlert({
-            errorMessage: err.message,
-            success: false,
-            messageCodeHeader: "error",
-          });
+            showCustomAlert({
+                errorMessage: err.message,
+                success: false,
+                messageCodeHeader: "error",
+            });
         }
-      },
-    );
+    },
   };
 
-  handleCopyPhrase = () => {
+handleCopyPhrase = () => {
     Mixpanel.track("SR-SP Copy seed phrase");
     if (navigator.share && isMobile()) {
-      navigator
-        .share({
-          text: this.state.seedPhrase,
-        })
-        .catch((err) => {
-          debugLog(err.message);
-        });
+        navigator
+            .share({
+                text: this.state.seedPhrase,
+            })
+            .catch((err) => {
+                debugLog(err.message);
+            });
     } else {
-      this.handleCopyDesktop();
+        this.handleCopyDesktop();
     }
-  };
+};
 
-  handleCopyDesktop = () => {
+handleCopyDesktop = () => {
     copyText(document.getElementById("seed-phrase"));
     this.setState({ successSnackbar: true }, () => {
-      setTimeout(() => {
-        this.setState({ successSnackbar: false });
-      }, snackbarDuration);
+        setTimeout(() => {
+            this.setState({ successSnackbar: false });
+        }, snackbarDuration);
     });
-  };
+};
 
-  handleRecaptchaChange = (recaptchaToken) => {
+handleRecaptchaChange = (recaptchaToken) => {
     debugLog("handleRecaptchaChange()", recaptchaToken);
     this.setState({ recaptchaToken });
-  };
+};
 
-  handleOnSubmit = (e) => {
+handleOnSubmit = (e) => {
     this.handleVerifyPhrase();
     e.preventDefault();
-  };
+};
 
-  handleSubmitPasswordStep = (password) => {
+handleSubmitPasswordStep = (password) => {
     console.log(password);
-  };
+};
 
-  render() {
+render() {
     const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } = this.props;
     const hasSeedPhraseRecovery =
-      recoveryMethodsLoader || recoveryMethods.filter((m) => m.kind === "phrase").length > 0;
+        recoveryMethodsLoader || recoveryMethods.filter((m) => m.kind === "phrase").length > 0;
     const { seedPhrase, enterWord, wordId, submitting, localAlert, isNewAccount, successSnackbar } =
-      this.state;
+        this.state;
 
     return (
-      <Translate>
-        {({ translate }) => (
-          <Fragment>
-            <Route
-              exact
-              path={"/setup-seed-phrase/:accountId/phrase"}
-              render={() => (
-                <Container className='small-centered border'>
-                  <h1>
-                    <Translate id='setupSeedPhrase.pageTitle' />
-                  </h1>
-                  <h2>
-                    <Translate id='setupSeedPhrase.pageText' />
-                  </h2>
-                  <SetupSeedPhraseForm
-                    seedPhrase={seedPhrase}
-                    handleCopyPhrase={this.handleCopyPhrase}
-                    hasSeedPhraseRecovery={hasSeedPhraseRecovery}
-                    refreshData={this.refreshData}
-                    onClickContinue={() =>
-                      history.push(`/setup-seed-phrase/${accountId}/verify${location.search}`)
-                    }
-                    onClickCancel={() => {
-                      if (isNewAccount) {
-                        history.push(`/set-recovery/${accountId}${location.search}`);
-                      } else {
-                        history.push("/profile");
-                      }
-                    }}
-                  />
-                </Container>
-              )}
-            />
-            <Route
-              exact
-              path={"/setup-seed-phrase/:accountId/verify"}
-              render={() => (
-                <Container className='small-centered border'>
-                  <form onSubmit={this.handleOnSubmit} autoComplete='off'>
-                    <h1>
-                      <Translate id='setupSeedPhraseVerify.pageTitle' />
-                    </h1>
-                    <h2>
-                      <Translate id='setupSeedPhraseVerify.pageText' />
-                    </h2>
-                    <SetupSeedPhraseVerify
-                      enterWord={enterWord}
-                      wordId={wordId}
-                      handleChangeWord={this.handleChangeWord}
-                      handleStartOver={this.handleStartOver}
-                      mainLoader={this.props.mainLoader || submitting}
-                      localAlert={localAlert}
-                      globalAlert={this.props.globalAlert}
-                      onRecaptchaChange={this.handleRecaptchaChange}
-                      ref={(ref) => (this.recaptchaRef = ref)}
-                      isNewAccount={isNewAccount}
-                      onSubmit={this.handleOnSubmit}
-                      isLinkDrop={parseFundingOptions(this.props.location.search) !== null}
-                      hasSeedPhraseRecovery={hasSeedPhraseRecovery}
+        <Translate>
+            {({ translate }) => (
+                <Fragment>
+                    <Route
+                        exact
+                        path={"/setup-seed-phrase/:accountId/phrase"}
+                        render={() => (
+                            <Container className='small-centered border'>
+                                <h1>
+                                    <Translate id='setupSeedPhrase.pageTitle' />
+                                </h1>
+                                <h2>
+                                    <Translate id='setupSeedPhrase.pageText' />
+                                </h2>
+                                <SetupSeedPhraseForm
+                                    seedPhrase={seedPhrase}
+                                    handleCopyPhrase={this.handleCopyPhrase}
+                                    hasSeedPhraseRecovery={hasSeedPhraseRecovery}
+                                    refreshData={this.refreshData}
+                                    onClickContinue={() =>
+                                        history.push(`/setup-seed-phrase/${accountId}/verify${location.search}`)
+                                    }
+                                    onClickCancel={() => {
+                                        if (isNewAccount) {
+                                            history.push(`/set-recovery/${accountId}${location.search}`);
+                                        } else {
+                                            history.push("/profile");
+                                        }
+                                    }}
+                                />
+                            </Container>
+                        )}
                     />
-                  </form>
-                </Container>
-              )}
-            />
-            <Route
-              path={"/setup-seed-phrase/:accountId/set-encryption"}
-              render={() => (
-                <Container className='small-centered border'>
-                  <form onSubmit={this.handleSubmitPasswordStep} autoComplete='off'>
-                    <h1>
-                      <Translate id='setupPasswordProtection.pageTitle' />
-                    </h1>
-                    <h2>
-                      <Translate id='setupPasswordProtection.pageText' />
-                    </h2>
-                    <SetPasswordForm onSubmit={this.handleSubmitPasswordStep} />
-                  </form>
-                </Container>
-              )}
-            />
-            <Snackbar
-              theme='success'
-              message={translate("setupSeedPhrase.snackbarCopySuccess")}
-              show={successSnackbar}
-              onHide={() => this.setState({ successSnackbar: false })}
-            />
-          </Fragment>
-        )}
-      </Translate>
+                    <Route
+                        exact
+                        path={"/setup-seed-phrase/:accountId/verify"}
+                        render={() => (
+                            <Container className='small-centered border'>
+                                <form onSubmit={this.handleOnSubmit} autoComplete='off'>
+                                    <h1>
+                                        <Translate id='setupSeedPhraseVerify.pageTitle' />
+                                    </h1>
+                                    <h2>
+                                        <Translate id='setupSeedPhraseVerify.pageText' />
+                                    </h2>
+                                    <SetupSeedPhraseVerify
+                                        enterWord={enterWord}
+                                        wordId={wordId}
+                                        handleChangeWord={this.handleChangeWord}
+                                        handleStartOver={this.handleStartOver}
+                                        mainLoader={this.props.mainLoader || submitting}
+                                        localAlert={localAlert}
+                                        globalAlert={this.props.globalAlert}
+                                        onRecaptchaChange={this.handleRecaptchaChange}
+                                        ref={(ref) => (this.recaptchaRef = ref)}
+                                        isNewAccount={isNewAccount}
+                                        onSubmit={this.handleOnSubmit}
+                                        isLinkDrop={parseFundingOptions(this.props.location.search) !== null}
+                                        hasSeedPhraseRecovery={hasSeedPhraseRecovery}
+                                    />
+                                </form>
+                            </Container>
+                        )}
+                    />
+                    <Route
+                        path={"/setup-seed-phrase/:accountId/set-encryption"}
+                        render={() => (
+                            <Container className='small-centered border'>
+                                <form onSubmit={this.handleSubmitPasswordStep} autoComplete='off'>
+                                    <h1>
+                                        <Translate id='setupPasswordProtection.pageTitle' />
+                                    </h1>
+                                    <h2>
+                                        <Translate id='setupPasswordProtection.pageText' />
+                                    </h2>
+                                    <SetPasswordForm onSubmit={this.handleSubmitPasswordStep} />
+                                </form>
+                            </Container>
+                        )}
+                    />
+                    <Snackbar
+                        theme='success'
+                        message={translate("setupSeedPhrase.snackbarCopySuccess")}
+                        show={successSnackbar}
+                        onHide={() => this.setState({ successSnackbar: false })}
+                    />
+                </Fragment>
+            )}
+        </Translate>
     );
-  }
 }
 
 const mapDispatchToProps = {
-  clearGlobalAlert,
-  handleAddAccessKeySeedPhrase,
-  refreshAccount,
-  checkIsNew,
-  handleCreateAccountWithSeedPhrase,
-  fundCreateAccount,
-  fetchRecoveryMethods,
-  showCustomAlert,
-  setLinkdropAmount,
+    clearGlobalAlert,
+    handleAddAccessKeySeedPhrase,
+    refreshAccount,
+    checkIsNew,
+    handleCreateAccountWithSeedPhrase,
+    fundCreateAccount,
+    fetchRecoveryMethods,
+    showCustomAlert,
+    setLinkdropAmount,
 };
 
 const mapStateToProps = (state, { match }) => {
-  const { accountId } = match.params;
+    const { accountId } = match.params;
 
-  return {
-    ...selectAccountSlice(state),
-    accountId,
-    recoveryMethods: selectRecoveryMethodsByAccountId(state, { accountId }),
-    mainLoader: selectStatusMainLoader(state),
-    recoveryMethodsLoader: selectRecoveryMethodsLoading(state, { accountId }),
-  };
+    return {
+        ...selectAccountSlice(state),
+        accountId,
+        recoveryMethods: selectRecoveryMethodsByAccountId(state, { accountId }),
+        mainLoader: selectStatusMainLoader(state),
+        recoveryMethodsLoader: selectRecoveryMethodsLoading(state, { accountId }),
+    };
 };
 
 const SetupSeedPhraseWithRouter = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+    mapStateToProps,
+    mapDispatchToProps,
 )(withRouter(SetupSeedPhrase));
 
 export default SetupSeedPhraseWithRouter;

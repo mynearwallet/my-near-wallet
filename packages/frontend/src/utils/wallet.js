@@ -115,15 +115,656 @@ export default class Wallet {
           return ledgerKey;
         }
 
-        return await inMemorySigner.getPublicKey(accountId, networkId);
-      },
-      async signMessage(message, accountId, networkId) {
-        if (await wallet.getLedgerKey(accountId)) {
-          wallet.dispatchShowLedgerModal(true);
-          const path = getLedgerHDPath(accountId);
+        // additional check if the ledger is not connected but exists as a recovery method
+        const userRecoveryMethods = await this.getRecoveryMethods();
+        const accountState = await this.loadAccount();
+        const hasLedger = userRecoveryMethods.some((method) => method.kind === 'ledger');
+        const ledgerIsConnected = accountState.ledgerKey;
+        const hasLedgerButNotConnected = hasLedger && !ledgerIsConnected;
+        if (hasLedgerButNotConnected) {
+            return true;
+        }
+    }
 
-          const { client } = ledgerManager;
-          if (!client) {
+    async loadAccount(limitedAccountData = false) {
+        if (!this.isEmpty()) {
+            const accessKeys = limitedAccountData
+                ? []
+                : await this.getAccessKeys() || [];
+            const ledgerKey = accessKeys.find((key) => key.meta.type === 'ledger');
+            const account = await this.getAccount(this.accountId, limitedAccountData);
+            const state = await account.state();
+
+            return {
+                ...state,
+                has2fa: !!account.has2fa,
+                balance: {
+                    available: ''
+                },
+                accountId: this.accountId,
+                accounts: this.accounts,
+                accessKeys,
+                authorizedApps: accessKeys.filter((it) => (
+                    it.access_key
+                    && it.access_key.permission.FunctionCall
+                    && it.access_key.permission.FunctionCall.receiver_id !== this.accountId
+                )),
+                fullAccessKeys: accessKeys.filter((it) => (
+                    it.access_key
+                    && it.access_key.permission === 'FullAccess'
+                )),
+                ledger: {
+                    ledgerKey,
+                    hasLedger: !!ledgerKey
+                }
+            };
+        }
+    }
+
+    // TODO: Figure out whether wallet should work with any account or current one.
+    // Maybe make wallet account specific and switch whole Wallet?
+    async getAccessKeys(accountId) {
+        accountId = accountId || this.accountId;
+        if (!accountId) {
+            return null;
+        }
+
+        const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
+        return Promise.all(accessKeys.map(async (accessKey) => ({
+            ...accessKey,
+            meta: await getKeyMeta(accessKey.public_key)
+        })));
+    }
+
+    async getPublicKeyType(accountId, publicKeyString) {
+        const allKeys = await this.getAccessKeys(accountId);
+        const keyInfoView = allKeys.find(({public_key}) => public_key === publicKeyString);
+
+        if (keyInfoView) {
+            if (this.isFullAccessKeyInfoView(keyInfoView)) {
+                return Wallet.KEY_TYPES.FAK;
+            }
+            if (this.isLedgerKeyInfoView(accountId, keyInfoView)) {
+                return Wallet.KEY_TYPES.LEDGER;
+            }
+            if (this.isMultisigKeyInfoView(accountId, keyInfoView)) {
+                return Wallet.KEY_TYPES.MULTISIG;
+            }
+            return Wallet.KEY_TYPES.OTHER;
+        }
+
+        throw new Error('No matching key pair for public key');
+    }
+
+    async getAccountKeyType(accountId) {
+        const keypair = await wallet.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
+        return this.getPublicKeyType(accountId, keypair.getPublicKey().toString());
+    }
+
+    isFullAccessKeyInfoView(keyInfoView) {
+        return keyInfoView?.access_key?.permission === 'FullAccess';
+    }
+
+    isLedgerKeyInfoView(accountId, keyInfoView) {
+        const receiver_id = keyInfoView?.access_key?.permission?.FunctionCall?.receiver_id;
+        const method_names = keyInfoView?.access_key?.permission?.FunctionCall?.method_names;
+        return receiver_id === accountId && isEqual(method_names, ['__wallet__metadata']);
+    }
+
+    isMultisigKeyInfoView(accountId, keyInfoView) {
+        const receiver_id = keyInfoView?.access_key?.permission?.FunctionCall?.receiver_id;
+        const method_names = keyInfoView?.access_key?.permission?.FunctionCall?.method_names;
+        return receiver_id === accountId && isEqual(method_names, [
+            'add_request',
+            'add_request_and_confirm',
+            'delete_request',
+            'confirm'
+        ]);
+    }
+
+    async addExistingAccountKeyToWalletKeyStore(accountId, keyPair, ledgerHdPath) {
+        const keyType = await this.getPublicKeyType(
+            accountId,
+            keyPair.getPublicKey().toString()
+        );
+
+        switch (keyType) {
+            case Wallet.KEY_TYPES.FAK: {
+                const keyStore = new nearApiJs.keyStores.InMemoryKeyStore();
+                await keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
+                const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+                const account = new nearApiJs.Account(
+                    nearApiJs.Connection.fromConfig({
+                        networkId: CONFIG.NETWORK_ID,
+                        provider: {
+                            type: 'JsonRpcProvider',
+                            args: { url: CONFIG.NODE_URL + '/' },
+                        },
+                        signer: new nearApiJs.InMemorySigner(keyStore),
+                    }),
+                    accountId
+                );
+
+                await account.addKey(newKeyPair.getPublicKey());
+                await this.saveAccount(accountId, newKeyPair);
+
+                if (!this.accountId) {
+                    return this.makeAccountActive(accountId);
+                }
+                return this.save();
+            }
+            case Wallet.KEY_TYPES.MULTISIG: {
+                await this.saveAccount(accountId, keyPair);
+                if (!this.accountId) {
+                    return this.makeAccountActive(accountId);
+                }
+                return this.save();
+            }
+            case Wallet.KEY_TYPES.LEDGER: {
+                await this.saveAccount(accountId, keyPair);
+                if (ledgerHdPath) {
+                    setLedgerHdPath({accountId, path: ledgerHdPath});
+                }
+                await this.getLedgerPublicKey(ledgerHdPath)
+                    .then((publicKey) =>
+                        setKeyMeta(publicKey.toString(), {type: 'ledger'}));
+
+                if (!this.accountId) {
+                    return this.makeAccountActive(accountId);
+                }
+                return this.save();
+            }
+            default:
+                throw new Error('Unable to add unrecognized key to wallet key store');
+        }
+    }
+
+    async removeAccessKey(publicKey) {
+        return await (await this.getAccount(this.accountId)).deleteKey(publicKey);
+    }
+
+    async removeNonLedgerAccessKeys() {
+        const accessKeys = await this.getAccessKeys();
+        const localAccessKey = await this.getLocalAccessKey(this.accountId, accessKeys);
+        const account = await this.getAccount(this.accountId);
+        const keysToRemove = accessKeys.filter(({
+            public_key,
+            access_key: { permission },
+            meta: { type }
+        }) => permission === 'FullAccess'
+            && type !== 'ledger'
+            && !(localAccessKey && public_key === localAccessKey.public_key));
+
+        const WALLET_METADATA_METHOD = '__wallet__metadata';
+        let newLocalKeyPair;
+        if (!localAccessKey || (!localAccessKey.access_key.permission.FunctionCall ||
+            !localAccessKey.access_key.permission.FunctionCall.method_names.includes(WALLET_METADATA_METHOD))) {
+            // NOTE: This key isn't used to call actual contract method, just used to verify connection with account in private DB
+            newLocalKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+            await account.addKey(newLocalKeyPair.getPublicKey(), this.accountId, WALLET_METADATA_METHOD, '0');
+        }
+
+        for (const { public_key } of keysToRemove) {
+            await account.deleteKey(public_key);
+        }
+
+        if (newLocalKeyPair) {
+            if (localAccessKey) {
+                await account.deleteKey(localAccessKey.public_key);
+            }
+            await this.keyStore.setKey(CONFIG.NETWORK_ID, this.accountId, newLocalKeyPair);
+        }
+
+        const recoveryMethods = await this.getRecoveryMethods();
+        const methodsToRemove = recoveryMethods.filter((method) => method.kind !== 'ledger');
+        for (const recoveryMethod of methodsToRemove) {
+            await this.deleteRecoveryMethod(recoveryMethod);
+        }
+    }
+
+    async checkAccountAvailable(accountId) {
+        if (!this.isLegitAccountId(accountId)) {
+            throw new Error('Invalid username.');
+        }
+        if (accountId !== this.accountId) {
+            return await (await this.getAccount(accountId)).state();
+        } else {
+            throw new Error('You are logged into account ' + accountId + ' .');
+        }
+    }
+
+    // TODO: Rename to make it clear that this is used to check if account can be created and that it throws. requireAccountNotExists?
+    async checkNewAccount(accountId) {
+        if (!this.isLegitAccountId(accountId)) {
+            throw new Error('Invalid username.');
+        }
+
+        // TODO: This check doesn't seem up to date on what are current account name requirements
+        // TODO: Is it even needed or is checked already both upstream/downstream?
+        if (accountId.match(/.*[.@].*/)) {
+            if (!accountId.endsWith(`.${CONFIG.ACCOUNT_ID_SUFFIX}`)) {
+                throw new Error('Characters `.` and `@` have special meaning and cannot be used as part of normal account name.');
+            }
+        }
+
+        if (await this.accountExists(accountId)) {
+            throw new Error('Account ' + accountId + ' already exists.');
+        }
+
+        return true;
+    }
+
+    async checkIsNew(accountId) {
+        return !(await this.accountExists(accountId));
+    }
+
+    async sendIdentityVerificationMethodCode({ kind, identityKey, recaptchaToken, recaptchaAction }) {
+        return await sendJson('POST', IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL, {
+            kind,
+            identityKey,
+            recaptchaToken,
+            recaptchaAction,
+            recaptchaSiteKey: CONFIG.RECAPTCHA_ENTERPRISE_SITE_KEY
+        });
+    }
+
+    async checkFundedAccountAvailable() {
+        const { available } = await sendJson('GET', CONFIG.ACCOUNT_HELPER_URL + '/checkFundedAccountAvailable');
+        return available;
+    }
+    async createNewAccountWithNearContract({
+        account,
+        newAccountId,
+        newPublicKey,
+        newInitialBalance
+    }) {
+        const {
+            status: { SuccessValue: createResultBase64 },
+            transaction: { hash: transactionHash },
+        } = await account.functionCall({
+            contractId: CONFIG.ACCOUNT_ID_SUFFIX,
+            methodName: 'create_account',
+            args: {
+                new_account_id: newAccountId,
+                new_public_key: newPublicKey.toString()
+                    .replace(/^ed25519:/, ''),
+            },
+            gas: CONFIG.LINKDROP_GAS,
+            attachedDeposit: newInitialBalance,
+        });
+        const createResult = JSON.parse(Buffer.from(createResultBase64, 'base64'));
+        if (!createResult) {
+            throw new WalletError(
+                'Creating account has failed',
+                'createAccount.returnedFalse',
+                { transactionHash }
+            );
+        }
+    }
+
+    async createNewAccountFromAnother(accountId, fundingAccountId, publicKey) {
+        const account = await this.getAccount(fundingAccountId);
+
+        await this.createNewAccountWithNearContract({
+            account,
+            newAccountId: accountId,
+            newPublicKey: publicKey,
+            newInitialBalance: CONFIG.MIN_BALANCE_FOR_GAS
+        });
+
+        if (this.accounts[fundingAccountId] || fundingAccountId.length !== 64) {
+            return;
+        }
+
+        // Check if account has any non-implicit keys (meaning account cannot be safely deleted)
+        const accessKeys = await account.getAccessKeys();
+        if (accessKeys.length !== 1) {
+            return;
+        }
+
+        const [{ access_key: { permission }, public_key }] = accessKeys;
+        const implicitPublicKey = new PublicKey({
+            keyType: KeyType.ED25519,
+            data: Buffer.from(fundingAccountId, 'hex')
+        });
+
+        if (permission !== 'FullAccess' || implicitPublicKey.toString() !== public_key) {
+            return;
+        }
+
+        // TODO: Send transfer action as well to fail for sure if destination account doesn't exist?
+        // Temporary implicit account used for funding – move whole balance by deleting it
+        await account.deleteAccount(accountId);
+    }
+
+    async checkLinkdropInfo(fundingContract, fundingKey) {
+        const account = await this.getAccount(fundingContract);
+
+        const contract = new nearApiJs.Contract(account, fundingContract, {
+            viewMethods: ['get_key_balance', 'get_key_information'],
+            sender: fundingContract
+        });
+
+        const key = nearApiJs.KeyPair.fromString(fundingKey).publicKey.toString();
+
+        let keyInfo = {
+            required_gas: '100000000000000',
+            yoctoNEAR: '0'
+        };
+
+        try {
+            let returnedKeyInfo = await contract.get_key_information({ key });
+
+            if (Object.hasOwn(returnedKeyInfo, 'yoctoNEAR') && Object.hasOwn(returnedKeyInfo, 'required_gas')) {
+                return returnedKeyInfo;
+            }
+
+            let balance = await contract.get_key_balance({ key });
+            keyInfo.yoctoNEAR = balance;
+        } catch (e) {
+            let balance = await contract.get_key_balance({ key });
+            keyInfo.yoctoNEAR = balance;
+        }
+
+        return keyInfo;
+    }
+
+    async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
+        const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+        await this.keyStore.setKey(
+            CONFIG.NETWORK_ID,
+            fundingContract,
+            nearApiJs.KeyPair.fromString(fundingKey)
+        );
+
+        const contract = new nearApiJs.Contract(account, fundingContract, {
+            changeMethods: ['create_account_and_claim', 'claim'],
+            sender: fundingContract
+        });
+
+        await contract.create_account_and_claim({
+            new_account_id: accountId,
+            new_public_key: publicKey.toString().replace('ed25519:', '')
+        }, CONFIG.LINKDROP_GAS);
+    }
+
+    async claimLinkdropToAccount(fundingContract, fundingKey) {
+        const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+        await this.keyStore.setKey(
+            CONFIG.NETWORK_ID,
+            fundingContract,
+            nearApiJs.KeyPair.fromString(fundingKey)
+        );
+
+        const accountId = this.accountId;
+
+        const contract = new nearApiJs.Contract(account, fundingContract, {
+            changeMethods: ['claim'],
+            sender: fundingContract
+        });
+
+        await contract.claim({ account_id: accountId }, CONFIG.LINKDROP_GAS);
+    }
+
+    async saveAccountKeyPair({ accountId, recoveryKeyPair }) {
+        await this.keyStore.setKey(this.connection.networkId, accountId, recoveryKeyPair);
+    }
+
+    async saveAccount(accountId, keyPair) {
+        this.getAccountsLocalStorage();
+        await this.setKey(accountId, keyPair);
+        this.accounts[accountId] = true;
+
+        // TODO: figure out better way to inject reducer
+        store.addAccountReducer();
+    }
+
+    makeAccountActive(accountId) {
+        if (!(accountId in this.accounts)) {
+            return false;
+        }
+        this.accountId = accountId;
+        this.save();
+    }
+
+    async saveAndMakeAccountActive(accountId, keyPair) {
+        await this.saveAccount(accountId, keyPair);
+        this.makeAccountActive(accountId);
+        // TODO: What does setAccountConfirmed do?
+        setAccountConfirmed(this.accountId, false);
+    }
+
+    async importZeroBalanceAccount(accountId, keyPair) {
+        await this.saveAccount(accountId, keyPair);
+        this.makeAccountActive(accountId);
+        setAccountConfirmed(this.accountId, true);
+    }
+
+    async setKey(accountId, keyPair) {
+        if (keyPair) {
+            await this.keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
+        }
+    }
+
+    /********************************
+     recovering a second account attempts to call this method with the currently logged in account and not the tempKeyStore
+     ********************************/
+    // TODO: Why is fullAccess needed? Everything without contractId should be full access.
+    async addAccessKey(accountId, contractId, publicKey, fullAccess = false, methodNames = '', recoveryKeyIsFAK) {
+        const account = recoveryKeyIsFAK ?
+            new nearApiJs.Account(this.connection, accountId) :
+            await this.getAccount(accountId);
+
+        const has2fa = await TwoFactor.has2faEnabled(account);
+        console.log('key being added to 2fa account ?', has2fa, account);
+        try {
+            // TODO: Why not always pass `fullAccess` explicitly when it's desired?
+            // TODO: Alternatively require passing MULTISIG_CHANGE_METHODS from caller as `methodNames`
+            if (fullAccess || (!has2fa && accountId === contractId && !methodNames.length)) {
+                console.log('adding full access key', publicKey.toString());
+                return await account.addKey(publicKey);
+            } else {
+                const isMultisig = has2fa && !methodNames.length && accountId === contractId;
+                const methodNames = isMultisig ? MULTISIG_CHANGE_METHODS : methodNames;
+
+                return await account.addKey(
+                    publicKey.toString(),
+                    contractId,
+                    methodNames,
+                    CONFIG.ACCESS_KEY_FUNDING_AMOUNT
+                );
+            }
+        } catch (e) {
+            if (e.type === 'AddKeyAlreadyExists') {
+                return true;
+            }
+            throw e;
+        }
+    }
+
+    async addLedgerAccessKey(path, accountIdOverride) {
+        const accountId = accountIdOverride || this.accountId;
+
+        // additional check if the 2fa is enabled, in case the user was able to omit disabled buttons
+        const account = new nearApiJs.Account(this.connection, accountId);
+        const has2fa = await TwoFactor.has2faEnabled(account);
+        // throw error if 2fa is enabled
+        if (has2fa) {
+            throw new WalletError(
+                'Two-Factor Authentication is enabled',
+                'addLedgerAccessKey.2faEnabled'
+            );
+        }
+
+        const ledgerPublicKey = await this.getLedgerPublicKey(path);
+        const accessKeys = await this.getAccessKeys(accountId);
+        const accountHasLedgerKey = accessKeys.some((key) =>
+            key.public_key === ledgerPublicKey.toString());
+
+        await setKeyMeta(ledgerPublicKey, { type: 'ledger' });
+
+        if (!accountHasLedgerKey) {
+            const account = await this.getAccount(accountId);
+            await account.addKey(ledgerPublicKey);
+            await this.postSignedJson('/account/ledgerKeyAdded', {
+                accountId,
+                publicKey: ledgerPublicKey.toString()
+            });
+        }
+    }
+
+    async exportToLedgerWallet(path, accountId) {
+        const ledgerPublicKey = await this.getLedgerPublicKey(path);
+        const accessKeys = await this.getAccessKeys(accountId);
+        const accountHasLedgerKey = accessKeys.some((key) =>
+            key.public_key === ledgerPublicKey.toString());
+
+        if (!accountHasLedgerKey) {
+            const account = await this.getAccount(accountId);
+            const has2fa = await TwoFactor.has2faEnabled(account);
+
+            if (has2fa) {
+                await store.dispatch(switchAccount({
+                    accountId: account.accountId
+                }));
+            }
+            await account.addKey(ledgerPublicKey);
+        }
+    }
+
+    async disableLedger() {
+        const account = await this.getAccount(this.accountId);
+        const keyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+        await account.addKey(keyPair.publicKey);
+        await this.keyStore.setKey(CONFIG.NETWORK_ID, this.accountId, keyPair);
+
+        const path = getLedgerHDPath(this.accountId);
+        const publicKey = await this.getLedgerPublicKey(path);
+        await this.removeAccessKey(publicKey);
+        await this.getAccessKeys(this.accountId);
+
+        await this.deleteRecoveryMethod({
+            kind: 'ledger',
+            publicKey: publicKey.toString()
+        });
+        removeLedgerHDPath(this.accountId);
+    }
+
+    async addWalletMetadataAccessKeyIfNeeded(accountId, localAccessKey) {
+        if (!localAccessKey || (!localAccessKey.access_key.permission.FunctionCall ||
+            !localAccessKey.access_key.permission.FunctionCall.method_names.includes(WALLET_METADATA_METHOD))) {
+            // NOTE: This key isn't used to call actual contract method, just used to verify connection with account in private DB
+            const newLocalKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+            const account = await this.getAccount(accountId);
+            try {
+                await account.addKey(
+                    newLocalKeyPair.getPublicKey(),
+                    accountId,
+                    WALLET_METADATA_METHOD,
+                    '0'
+                );
+            } catch (error) {
+                if (error.type === 'KeyNotFound') {
+                    throw new WalletError(
+                        'No accounts were found.',
+                        'getLedgerAccountIds.noAccounts'
+                    );
+                }
+                throw error;
+            }
+            return newLocalKeyPair;
+        }
+
+        return null;
+    }
+
+    async getLedgerAccountIds({ path }) {
+        const publicKey = await this.getLedgerPublicKey(path);
+        await setKeyMeta(publicKey, { type: 'ledger' });
+
+        let accountIds;
+        try {
+            accountIds = await getAccountIds(publicKey);
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                throw new WalletError(
+                    'Fetch aborted.',
+                    'getLedgerAccountIds.aborted'
+                );
+            }
+            throw error;
+        }
+
+        const checkedAccountIds = (await Promise.all(
+            accountIds
+                .map(async (accountId) => {
+                    try {
+                        const account = await this.getAccount(accountId);
+                        const accountKeys = await account.getAccessKeys();
+                        return accountKeys.find(({ public_key }) =>
+                            public_key === publicKey.toString()) ? accountId : null;
+                    } catch (error) {
+                        if (error.toString().indexOf('does not exist while viewing') !== -1) {
+                            return null;
+                        }
+                        throw error;
+                    }
+                })
+        )
+        )
+            // todo: implicit boolean cast, maybe .filter((accountId) => Boolean(accountId)) ?
+            .filter((accountId) => accountId);
+
+        if (!checkedAccountIds.length) {
+            throw new WalletError(
+                'No accounts were found.',
+                'getLedgerAccountIds.noAccounts'
+            );
+        }
+
+        return checkedAccountIds;
+    }
+
+    async addLedgerAccountId({ accountId }) {
+        try {
+            const accessKeys = await this.getAccessKeys(accountId);
+            const localAccessKey = await this.getLocalAccessKey(accountId, accessKeys);
+
+            const newKeyPair = await this.addWalletMetadataAccessKeyIfNeeded(accountId, localAccessKey);
+            await this.setKey(accountId, newKeyPair);
+        } catch (error) {
+            if (error.name !== 'TransportStatusError') {
+                throw new WalletError(error.message, 'addLedgerAccountId.errorRpc');
+            }
+            throw error;
+        }
+    }
+
+    async saveAndSelectLedgerAccounts({ accounts }) {
+        const accountIds = Object.keys(accounts)
+            .filter((accountId) => accounts[accountId].status === 'success');
+
+        if (!accountIds.length) {
+            throw new WalletError(
+                'No accounts were accepted.',
+                'getLedgerAccountIds.noAccountsAccepted'
+            );
+        }
+
+        await Promise.all(accountIds.map(async (accountId) => {
+            await this.saveAccount(accountId);
+        }));
+
+        store.dispatch(makeAccountActive(accountIds[accountIds.length - 1]));
+
+        return {
+            numberOfAccounts: accountIds.length
+        };
+    }
+
+    async getLedgerPublicKey(path) {
+        const { client } = ledgerManager;
+        if (!client) {
             store.dispatch(checkAndHideLedgerModal());
             store.dispatch(handleShowConnectModal());
             throw new WalletError("The Ledger client is unavailable.", "connectLedger.noClient");
@@ -689,9 +1330,9 @@ export default class Wallet {
     contractId,
     publicKey,
     // rome-ignore lint/style/useDefaultParameterLast: <explanation>
-    fullAccess  = false,
+    fullAccess = false,
     // rome-ignore lint/style/useDefaultParameterLast: <explanation>
-    methodNames  = "",
+    methodNames = "",
     recoveryKeyIsFAK,
   ) {
     const account = recoveryKeyIsFAK
@@ -1340,12 +1981,7 @@ export default class Wallet {
     return transactionHashes;
   }
 
-  async signAndSendCalimeroTransaction(
-    transactions,
-    accountId ,
-    customRPCUrl,
-    xApiToken,
-  ) {
+  async signAndSendCalimeroTransaction(transactions, accountId, customRPCUrl, xApiToken) {
     const transactionHashes = [];
     const args = { url: `${customRPCUrl}/` };
     if (xApiToken) {

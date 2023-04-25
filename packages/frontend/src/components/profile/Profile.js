@@ -18,38 +18,35 @@ import {
 } from "../../redux/actions/account";
 import { selectProfileBalance } from "../../redux/reducers/selectors/balance";
 import {
-  selectAccountAuthorizedApps,
-  selectAccountHas2fa,
-  selectAccountHasLockup,
-  selectAccountId,
-  selectAccountLedgerKey,
-  selectAccountExists,
-} from "../../redux/slices/account";
-import { selectAllAccountsHasLockup } from "../../redux/slices/allAccounts";
-import {
-  actions as recoveryMethodsActions,
-  selectRecoveryMethodsByAccountId,
-} from "../../redux/slices/recoveryMethods";
-import { selectNearTokenFiatValueUSD } from "../../redux/slices/tokenFiatValues";
-import isMobile from "../../utils/isMobile";
-import WalletClass, { wallet } from "../../utils/wallet";
-import AlertBanner from "../common/AlertBanner";
-import FormButton from "../common/FormButton";
-import SkeletonLoading from "../common/SkeletonLoading";
-import CheckCircleIcon from "../svg/CheckCircleIcon";
-import LockIcon from "../svg/LockIcon";
-import UserIcon from "../svg/UserIcon";
-import { isAccountBricked } from "../wallet-migration/utils";
-import AuthorizedApp from "./authorized_apps/AuthorizedApp";
-import BalanceContainer from "./balances/BalanceContainer";
-import LockupAvailTransfer from "./balances/LockupAvailTransfer";
-import ExportKeyWrapper from "./export_private_key/ExportKeyWrapper";
-import MobileSharingWrapper from "./mobile_sharing/MobileSharingWrapper";
-import { Recovery } from "./Recovery";
-import RemoveAccountWrapper from "./remove_account/RemoveAccountWrapper";
-import TwoFactorAuth from "./two_factor/TwoFactorAuth";
-import { StyledContainer } from "./ui";
-import { ZeroBalanceAccountWrapper } from "./zero_balance/ZeroBalanceAccountWrapper";
+    selectAccountAuthorizedApps,
+    selectAccountHas2fa,
+    selectAccountHasLockup,
+    selectAccountId,
+    selectAccountLedgerKey,
+    selectAccountExists,
+} from '../../redux/slices/account';
+import { selectAllAccountsHasLockup } from '../../redux/slices/allAccounts';
+import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId } from '../../redux/slices/recoveryMethods';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import isMobile from '../../utils/isMobile';
+import WalletClass, { wallet } from '../../utils/wallet';
+import AlertBanner from '../common/AlertBanner';
+import FormButton from '../common/FormButton';
+import SkeletonLoading from '../common/SkeletonLoading';
+import CheckCircleIcon from '../svg/CheckCircleIcon';
+import LockIcon from '../svg/LockIcon';
+import UserIcon from '../svg/UserIcon';
+import { isAccountBricked } from '../wallet-migration/utils';
+import AuthorizedApp from './authorized_apps/AuthorizedApp';
+import BalanceContainer from './balances/BalanceContainer';
+import LockupAvailTransfer from './balances/LockupAvailTransfer';
+import ExportKeyWrapper from './export_private_key/ExportKeyWrapper';
+import MobileSharingWrapper from './mobile_sharing/MobileSharingWrapper';
+import { Recovery } from './Recovery';
+import RemoveAccountWrapper from './remove_account/RemoveAccountWrapper';
+import TwoFactorAuth from './two_factor/TwoFactorAuth';
+import { StyledContainer } from './ui';
+import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrapper';
 
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 

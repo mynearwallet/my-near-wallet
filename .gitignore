@@ -26,3 +26,7 @@ yarn-error.log*
 
 # parcel
 /.parcel-cache
+/.cache
+
+# storybook
+storybook-static

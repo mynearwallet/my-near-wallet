@@ -1,7 +1,8 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import styled from "styled-components";
-import { FundingType } from "./FundingType";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import { FundingType } from './FundingType';
 
 const Block = styled.div`
     display: grid;
@@ -98,28 +99,27 @@ interface Props {
 }
 
 export const FundingCard: React.FunctionComponent<Props> = ({ title, subTitle, actions, link }) => {
-  const { t } = useTranslation();
-
-  return (
-    <Block>
-      <TextWrap>
-        <Title>{t(title)}</Title>
-        <SubTitle>
-          {t(subTitle)}
-          {link && (
-            <Link>
-              <a href={link.url} target='_blank' rel='noreferrer'>
-                {t(link.title)}
-              </a>
-            </Link>
-          )}
-        </SubTitle>
-      </TextWrap>
-      <FundingTypeWrap>
-        {actions.map((action, i) => (
-          <FundingType key={`funding-type-${i}`} {...action} />
-        ))}
-      </FundingTypeWrap>
-    </Block>
-  );
+    const { t } = useTranslation();
+    return (
+        <Block>
+            <TextWrap>
+                <Title>{t(title)}</Title>
+                <SubTitle>
+                    {t(subTitle)}
+                    {link && (
+                        <Link>
+                            <a href={link.url} target='_blank' rel='noreferrer'>
+                                {t(link.title)}
+                            </a>
+                        </Link>
+                    )}
+                </SubTitle>
+            </TextWrap>
+            <FundingTypeWrap>
+                {actions.map((action, i) => (
+                    <FundingType key={i} {...action} />
+                ))}
+            </FundingTypeWrap>
+        </Block>
+    );
 };

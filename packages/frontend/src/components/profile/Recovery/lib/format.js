@@ -1,1 +1,2 @@
-export const formatCreatedAt = (date) => new Date(date).toDateString().replace(/^\S+\s/, "");
+export const formatCreatedAt = (date) =>
+    new Date(date).toDateString().replace(/^\S+\s/, '');

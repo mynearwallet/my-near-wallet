@@ -257,29 +257,29 @@ const twoFactorMethod = async (method, wallet, args) => {
 };
 
 export const {
-  initializeRecoveryMethod,
-  validateSecurityCode,
-  initTwoFactor,
-  reInitTwoFactor,
-  resendTwoFactor,
-  verifyTwoFactor,
-  promptTwoFactor,
-  deployMultisig,
-  disableMultisig,
-  checkCanEnableTwoFactor,
-  get2faMethod,
-  getLedgerKey,
-  getLedgerPublicKey,
-  setupRecoveryMessage,
-  deleteRecoveryMethod,
-  checkNearDropBalance,
-  claimLinkdropToAccount,
-  checkIsNew,
-  checkNewAccount,
-  saveAccount,
-  checkAccountAvailable,
-  clearCode,
-  getMultisigRequest,
+    initializeRecoveryMethod,
+    validateSecurityCode,
+    initTwoFactor,
+    reInitTwoFactor,
+    resendTwoFactor,
+    verifyTwoFactor,
+    promptTwoFactor,
+    deployMultisig,
+    disableMultisig,
+    checkCanEnableTwoFactor,
+    get2faMethod,
+    getLedgerKey,
+    getLedgerPublicKey,
+    setupRecoveryMessage,
+    deleteRecoveryMethod,
+    checkLinkdropInfo,
+    claimLinkdropToAccount,
+    checkIsNew,
+    checkNewAccount,
+    saveAccount,
+    checkAccountAvailable,
+    clearCode,
+    getMultisigRequest,
 } = createActions({
   INITIALIZE_RECOVERY_METHOD: [wallet.initializeRecoveryMethod.bind(wallet), () => ({})],
   VALIDATE_SECURITY_CODE: [wallet.validateSecurityCode.bind(wallet), () => ({})],
@@ -298,56 +298,80 @@ export const {
   ],
   PROMPT_TWO_FACTOR: [
     (requestPending) => {
-      let promise;
-      if (requestPending !== null) {
-        promise = new Promise((resolve, reject) => {
-          requestPending = (verified, error) => {
-            if (verified) {
-              resolve(verified);
-            } else {
-              reject(error);
-            }
-          };
-        });
-      }
-      return { requestPending, promise };
-    },
-    () => ({}),
-  ],
-  DEPLOY_MULTISIG: [
-    () => new TwoFactor(wallet, wallet.accountId).deployMultisig(),
-    () => showAlert(),
-  ],
-  DISABLE_MULTISIG: [
-    (...args) => twoFactorMethod("disableMultisig", wallet, args),
-    () => showAlert(),
-  ],
-  CHECK_CAN_ENABLE_TWO_FACTOR: [
-    (...args) => TwoFactor.checkCanEnableTwoFactor(...args),
-    () => ({}),
-  ],
-  GET_2FA_METHOD: [(...args) => twoFactorMethod("get2faMethod", wallet, args), () => ({})],
-  GET_MULTISIG_REQUEST: [
-    () => new TwoFactor(wallet, wallet.accountId).getMultisigRequest(),
-    () => ({}),
-  ],
-  GET_LEDGER_KEY: [wallet.getLedgerKey.bind(wallet), () => ({})],
-  GET_LEDGER_PUBLIC_KEY: [wallet.getLedgerPublicKey.bind(wallet), () => ({})],
-  SETUP_RECOVERY_MESSAGE: [wallet.setupRecoveryMessage.bind(wallet), () => showAlert()],
-  DELETE_RECOVERY_METHOD: [wallet.deleteRecoveryMethod.bind(wallet), () => showAlert()],
-  CHECK_NEAR_DROP_BALANCE: [wallet.checkNearDropBalance.bind(wallet), () => ({})],
-  CLAIM_LINKDROP_TO_ACCOUNT: [
-    wallet.claimLinkdropToAccount.bind(wallet),
-    () => showAlert({ onlyError: true }),
-  ],
-  CHECK_IS_NEW: [wallet.checkIsNew.bind(wallet), () => showAlert({ localAlert: true })],
-  CHECK_NEW_ACCOUNT: [wallet.checkNewAccount.bind(wallet), () => showAlert({ localAlert: true })],
-  SAVE_ACCOUNT: wallet.saveAccount.bind(wallet),
-  CHECK_ACCOUNT_AVAILABLE: [
-    wallet.checkAccountAvailable.bind(wallet),
-    () => showAlert({ localAlert: true }),
-  ],
-  CLEAR_CODE: null,
+        let promise;
+        if (requestPending !== null) {
+          promise = new Promise((resolve, reject) => {
+            requestPending = (verified, error) => {
+              if (verified) {
+                resolve(verified);
+              } else {
+                reject(error);
+              }
+            };
+          });
+        }
+        return { requestPending, promise };
+      },
+      () => ({}),
+    ],
+    DEPLOY_MULTISIG: [
+        () => new TwoFactor(wallet, wallet.accountId).deployMultisig(),
+        () => showAlert()
+    ],
+    DISABLE_MULTISIG: [
+        (...args) => twoFactorMethod('disableMultisig', wallet, args),
+        () => showAlert()
+    ],
+    CHECK_CAN_ENABLE_TWO_FACTOR: [
+        (...args) => TwoFactor.checkCanEnableTwoFactor(...args),
+        () => ({})
+    ],
+    GET_2FA_METHOD: [
+        (...args) => twoFactorMethod('get2faMethod', wallet, args),
+        () => ({})
+    ],
+    GET_MULTISIG_REQUEST: [
+        () => new TwoFactor(wallet, wallet.accountId).getMultisigRequest(),
+        () => ({}),
+    ],
+    GET_LEDGER_KEY: [
+        wallet.getLedgerKey.bind(wallet),
+        () => ({})
+    ],
+    GET_LEDGER_PUBLIC_KEY: [
+        wallet.getLedgerPublicKey.bind(wallet),
+        () => ({})
+    ],
+    SETUP_RECOVERY_MESSAGE: [
+        wallet.setupRecoveryMessage.bind(wallet),
+        () => showAlert()
+    ],
+    DELETE_RECOVERY_METHOD: [
+        wallet.deleteRecoveryMethod.bind(wallet),
+        () => showAlert()
+    ],
+    CHECK_LINKDROP_INFO: [
+        wallet.checkLinkdropInfo.bind(wallet),
+        () => ({})
+    ],
+    CLAIM_LINKDROP_TO_ACCOUNT: [
+        wallet.claimLinkdropToAccount.bind(wallet),
+        () => showAlert({ onlyError: true })
+    ],
+    CHECK_IS_NEW: [
+        wallet.checkIsNew.bind(wallet),
+        () => showAlert({ localAlert: true })
+    ],
+    CHECK_NEW_ACCOUNT: [
+        wallet.checkNewAccount.bind(wallet),
+        () => showAlert({ localAlert: true })
+    ],
+    SAVE_ACCOUNT: wallet.saveAccount.bind(wallet),
+    CHECK_ACCOUNT_AVAILABLE: [
+        wallet.checkAccountAvailable.bind(wallet),
+        () => showAlert({ localAlert: true })
+    ],
+    CLEAR_CODE: null
 });
 
 export const {
@@ -450,18 +474,17 @@ export const handleCreateAccountWithSeedPhrase =
         createAccountWithSeedPhrase({ accountId, recoveryKeyPair, fundingOptions, recaptchaToken }),
       ).unwrap();
     } catch (error) {
-      if (await wallet.accountExists(accountId)) {
-        // Requests sometimes fail after creating the NEAR account for another reason (transport error?)
-        // If that happened, we allow the user can add the NEAR account to the wallet by entering the seed phrase
-        dispatch(
-          redirectTo("/recover-seed-phrase", {
-            globalAlertPreventClear: true,
-            defaultAccountId: accountId,
-          }),
-        );
-        return;
-      }
-      throw error;
+        console.log('error in handle create account with seedphrase: ', error);
+        if (await wallet.accountExists(accountId)) {
+            // Requests sometimes fail after creating the NEAR account for another reason (transport error?)
+            // If that happened, we allow the user can add the NEAR account to the wallet by entering the seed phrase
+            dispatch(redirectTo('/recover-seed-phrase', {
+                globalAlertPreventClear: true,
+                defaultAccountId: accountId
+            }));
+            return;
+        }
+        throw error;
     }
   };
 
