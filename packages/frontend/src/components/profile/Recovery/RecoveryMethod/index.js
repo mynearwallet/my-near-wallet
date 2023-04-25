@@ -12,15 +12,10 @@ const RecoveryMethod = ({
     methodEnabled,
     canDisable,
     onEnable,
-    onDisable
+    onDisable,
 }) => {
     if (skeleton) {
-        return (
-            <SkeletonLoading
-                height={skeleton}
-                show
-            />
-        );
+        return <SkeletonLoading height={skeleton} show />;
     }
 
     return (
@@ -30,14 +25,14 @@ const RecoveryMethod = ({
                     <Title>{title}</Title>
                 </TitleWrapper>
                 <FormButton
-                    type='submit'
+                    type="submit"
                     color={methodEnabled ? 'gray-red small' : 'blue small'}
                     onClick={methodEnabled ? onDisable : onEnable}
                 >
-                    <Translate id={methodEnabled ? 'button.disable' : 'button.enable' }/>
+                    <Translate id={methodEnabled ? 'button.disable' : 'button.enable'} />
                 </FormButton>
             </Main>
-            {description && (<Description>{description}</Description>)}
+            {description && <Description>{description}</Description>}
         </Container>
     );
 };

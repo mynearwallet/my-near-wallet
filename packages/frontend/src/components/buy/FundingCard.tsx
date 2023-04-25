@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translate } from 'react-localize-redux';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { FundingType } from './FundingType';
@@ -88,19 +88,28 @@ const FundingTypeWrap = styled.div`
     }
 `;
 
-export const FundingCard = ({ title, subTitle, actions, link }) => {
+interface Props {
+    title: string
+    subTitle: string
+    actions: any
+    link?: {
+        title: string
+        url: string
+    }
+}
+
+export const FundingCard: React.FunctionComponent<Props> = ({ title, subTitle, actions, link }) => {
+    const { t } = useTranslation();
     return (
         <Block>
             <TextWrap>
-                <Title>
-                    <Translate id={title} />
-                </Title>
+                <Title>{t(title)}</Title>
                 <SubTitle>
-                    <Translate id={subTitle} />
+                    {t(subTitle)}
                     {link && (
                         <Link>
                             <a href={link.url} target='_blank' rel='noreferrer'>
-                                <Translate id={link.title} />
+                                {t(link.title)}
                             </a>
                         </Link>
                     )}
