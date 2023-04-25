@@ -4,16 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { clearLocalAlert } from '../../../../redux/actions/status';
 import { selectStatusSlice } from '../../../../redux/slices/status';
-import AccountFormAccountId from '../../../accounts/AccountFormAccountId';
+import { AccountFormAccountId } from '../../../accounts/AccountFormAccountId';
 import FormButton from '../../../common/FormButton';
 import LedgerImageCircle from '../../../svg/LedgerImageCircle';
 
 const EnterAccountId = ({
-    handleAdditionalAccountId, 
-    handleChange, 
-    checkAccountAvailable, 
-    mainLoader, 
-    stateAccountId, 
+    handleAdditionalAccountId,
+    handleChange,
+    checkAccountAvailable,
+    mainLoader,
+    stateAccountId,
     loader,
     clearSignInWithLedgerModalState
 }) => {

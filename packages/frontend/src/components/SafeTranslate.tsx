@@ -6,7 +6,7 @@ import mapValues from 'lodash.mapvalues';
 import React from 'react';
 import { Translate } from 'react-localize-redux';
 
-function processDataValue(value) {
+const processDataValue = (value) => {
     // 99% of the time we'll just have a single `data` string
     if (isString(value)) {
         return escapeHtml(value);
@@ -24,9 +24,15 @@ function processDataValue(value) {
 
     // Otherwise we're gonna leave it well enough alone
     return value;
+};
+
+interface Props {
+    id: string
+    children?: any
+    data?: any
 }
 
-export default function SafeTranslate({ children, ...origProps }) {
+const SafeTranslate: React.FunctionComponent<Props> = ({ children, ...origProps }) => {
     const props = {
         ...origProps,
         data: processDataValue(origProps.data)
@@ -38,3 +44,5 @@ export default function SafeTranslate({ children, ...origProps }) {
         </Translate>
     );
 }
+
+export default SafeTranslate

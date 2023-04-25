@@ -30,7 +30,7 @@ import SafeTranslate from '../SafeTranslate';
 import BrokenLinkIcon from '../svg/BrokenLinkIcon';
 import FundNearIcon from '../svg/FundNearIcon';
 import DepositNearBanner from '../wallet/DepositNearBanner';
-import AccountFormAccountId from './AccountFormAccountId';
+import { AccountFormAccountId } from './AccountFormAccountId';
 
 const StyledContainer = styled(Container)`
     .input {
@@ -69,7 +69,7 @@ const StyledContainer = styled(Container)`
             color: #72727A;
         }
     }
-    
+
     .alternatives-title {
         color: #24272a;
         text-align: center;
