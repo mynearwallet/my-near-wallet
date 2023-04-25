@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import classNames from '../../../utils/classNames';
-import InputAccountId from './InputAccountId';
+import { InputAccountId } from './InputAccountId';
 
 const StyledContainer = styled.div`
     background-color: #FAFAFA;
@@ -75,7 +75,7 @@ const ReceiverInputWithLabel = ({
                 autoFocus={!receiverId && autoFocus}
                 isSuccess={isSuccess}
                 isProblem={isProblem}
-            />  
+            />
         </StyledContainer>
     );
 };

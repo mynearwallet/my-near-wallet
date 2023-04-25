@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import IconCheck from '../../../images/IconCheck';
 import UserIconGrey from '../../../images/UserIconGrey';
 import { LEDGER_MODAL_STATUS } from '../../../redux/slices/ledger';
-import AccountFormAccountId from '../../accounts/AccountFormAccountId';
+import { AccountFormAccountId } from '../../accounts/AccountFormAccountId';
 import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
 import LedgerImage from '../../svg/LedgerImage';
@@ -19,7 +19,7 @@ const UserIcon = styled.div`
     background-color: #f8f8f8;
     text-align: center;
     margin: 0 12px 0 0;
-    
+
     svg {
         width: 26px;
         height: 26px;
@@ -53,7 +53,7 @@ const AnimateList = styled.div`
 
     .accountId {
         overflow: hidden;
-        
+
         > h3 {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -90,7 +90,7 @@ const AnimateList = styled.div`
             :after {
                 content: '.';
                 animation: dots 1s steps(5, end) infinite;
-            
+
                 @keyframes dots {
                     0%, 20% {
                         color: rgba(0,0,0,0);
@@ -142,27 +142,27 @@ const AnimateList = styled.div`
     }
 `;
 
-const LedgerSignInModal = ({ 
-    open, 
-    onClose, 
-    ledgerAccounts, 
+const LedgerSignInModal = ({
+    open,
+    onClose,
+    ledgerAccounts,
     accountsApproved,
     accountsError,
     accountsRejected,
-    totalAccounts, 
-    txSigned, 
-    handleAdditionalAccountId, 
-    signInWithLedgerStatus, 
-    handleChange, 
-    checkAccountAvailable, 
-    localAlert, 
-    mainLoader, 
-    clearLocalAlert, 
-    stateAccountId, 
+    totalAccounts,
+    txSigned,
+    handleAdditionalAccountId,
+    signInWithLedgerStatus,
+    handleChange,
+    checkAccountAvailable,
+    localAlert,
+    mainLoader,
+    clearLocalAlert,
+    stateAccountId,
     loader,
     clearSignInWithLedgerModalState
 }) => {
-    
+
     const animationScope = Math.min(Math.max((accountsApproved + accountsError + accountsRejected) - 1, 0), totalAccounts - 3);
 
     return (
@@ -185,7 +185,7 @@ const LedgerSignInModal = ({
                             <div>
                                 <H4><Translate id='signInLedger.modal.confirmPublicKey'/></H4>
                             </div>
-                        </>        
+                        </>
                 )
                 : (
                         <>
@@ -257,7 +257,7 @@ const LedgerSignInModal = ({
                                         </h3>
                                     </div>
                                     <div className='status'>
-                                        {account.status !== 'success' 
+                                        {account.status !== 'success'
                                             ? <Translate id={`signInLedger.modal.status.${account.status}`}/>
                                             : <IconCheck color='#5ace84' stroke='3px' />
                                         }
