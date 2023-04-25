@@ -1191,6 +1191,9 @@
             "balanceDetails": "Balance details",
             "transactionDetails": "Transaction Details"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "This is a bridged token. Do not send it to exchanges like Binance."
+        },
         "review": {
             "title": "You are sending"
         },
@@ -1206,9 +1209,6 @@
         "selectTokenButtonTitle": "Select Asset",
         "success": {
             "title": "Transaction complete!</br>You sent <span class='color-blue'>${amount}</span></br>to <span class='color-green'>${receiverId}</span>"
-        },
-        "enterAmount": {
-            "bridgedTokenWarning": "This is a bridged token. Do not send it to exchanges like Binance."
         },
         "translateIdInfoTooltip": {
             "estimatedFees": "The estimated cost of processing your transaction.",
