@@ -5,21 +5,22 @@ import styled from 'styled-components';
 import CONFIG from '../../config';
 import { ENABLE_IDENTITY_VERIFIED_ACCOUNT } from '../../utils/wallet';
 import FormButton from '../common/FormButton';
-import LocalAlertBox from '../common/LocalAlertBox';
+import { LocalAlertBox } from '../common/LocalAlertBox';
 import { Recaptcha } from '../Recaptcha';
 import SafeTranslate from '../SafeTranslate';
 
 // FIXME: Use `debug` npm package so we can keep some debug logging around but not spam the console everywhere
 const ENABLE_DEBUG_LOGGING = false;
-const debugLog = (...args) => ENABLE_DEBUG_LOGGING && console.log('SetupSeedPhraseVerify:', ...args);
+const debugLog = (...args) =>
+    ENABLE_DEBUG_LOGGING && console.log('SetupSeedPhraseVerify:', ...args);
 
 const CustomDiv = styled.div`
-
     input {
         margin-bottom: 30px !important;
     }
 
-    .blue, .input {
+    .blue,
+    .input {
         width: 100% !important;
     }
 
@@ -47,7 +48,6 @@ const CustomDiv = styled.div`
     }
 `;
 
-
 const SetupSeedPhraseVerify = (
     {
         enterWord,
@@ -60,7 +60,7 @@ const SetupSeedPhraseVerify = (
         onSubmit,
         isLinkDrop,
         hasSeedPhraseRecovery,
-        handleStartOver
+        handleStartOver,
     },
     ref
 ) => {
@@ -72,66 +72,74 @@ const SetupSeedPhraseVerify = (
         reset() {
             debugLog('in imperative handle reset()');
             return recaptchaRef.current.reset();
-        }
+        },
     }));
 
-    const shouldRenderRecaptcha = !ENABLE_IDENTITY_VERIFIED_ACCOUNT && !isLinkDrop && CONFIG.RECAPTCHA_CHALLENGE_API_KEY && isNewAccount;
+    const shouldRenderRecaptcha =
+        !ENABLE_IDENTITY_VERIFIED_ACCOUNT &&
+        !isLinkDrop &&
+        CONFIG.RECAPTCHA_CHALLENGE_API_KEY &&
+        isNewAccount;
 
     return (
         <CustomDiv>
             <h4 data-test-id="seedPhraseVerificationWordNumber">
-                <SafeTranslate
-                    id="input.enterWord.title"
-                    data={{ wordId: wordId + 1 }}
-                />
+                <SafeTranslate id="input.enterWord.title" data={{ wordId: wordId + 1 }} />
             </h4>
             <Translate>
                 {({ translate }) => (
                     <input
                         data-test-id="seedPhraseVerificationWordInput"
-                        name='enterWord'
+                        name="enterWord"
                         value={enterWord}
                         onChange={(e) => handleChangeWord(e.target.value)}
                         placeholder={translate('input.enterWord.placeholder')}
                         required
-                        tabIndex='1'
-                        pattern='[a-zA-Z ]*'
-                        className={localAlert ? (localAlert.success ? 'success' : 'problem') : ''}
+                        tabIndex="1"
+                        pattern="[a-zA-Z ]*"
+                        className={
+                            localAlert ? (localAlert.success ? 'success' : 'problem') : ''
+                        }
                         disabled={mainLoader}
                     />
                 )}
             </Translate>
-            <LocalAlertBox localAlert={localAlert}/>
-            {
-                shouldRenderRecaptcha && (
-                    <Recaptcha
-                        ref={recaptchaRef}
-                        onChange={(token) => {
-                            debugLog('onChange from recaptcha', token);
-                            setRecaptchaToken(token);
-                            onRecaptchaChange(token);
-                        }}
-                        onFundAccountCreation={onSubmit}
-                    />
-                )
-            }
+            <LocalAlertBox localAlert={localAlert} />
+            {shouldRenderRecaptcha && (
+                <Recaptcha
+                    ref={recaptchaRef}
+                    onChange={(token) => {
+                        debugLog('onChange from recaptcha', token);
+                        setRecaptchaToken(token);
+                        onRecaptchaChange(token);
+                    }}
+                    onFundAccountCreation={onSubmit}
+                />
+            )}
             <FormButton
-                type='submit'
-                color='blue'
-                disabled={hasSeedPhraseRecovery || !enterWord || mainLoader || (!recaptchaToken && shouldRenderRecaptcha)}
+                type="submit"
+                color="blue"
+                disabled={
+                    hasSeedPhraseRecovery ||
+                    !enterWord ||
+                    mainLoader ||
+                    (!recaptchaToken && shouldRenderRecaptcha)
+                }
                 sending={mainLoader}
-                sendingString={isNewAccount ? 'button.creatingAccount' : 'button.verifying'}
+                sendingString={
+                    isNewAccount ? 'button.creatingAccount' : 'button.verifying'
+                }
                 data-test-id="seedPhraseVerificationWordSubmit"
             >
-                <Translate id='button.verify'/>
+                <Translate id="button.verify" />
             </FormButton>
             <FormButton
-                type='button'
-                color='gray'
-                className='link start-over'
+                type="button"
+                color="gray"
+                className="link start-over"
                 onClick={handleStartOver}
             >
-                <Translate id='button.startOver'/>
+                <Translate id="button.startOver" />
             </FormButton>
         </CustomDiv>
     );
