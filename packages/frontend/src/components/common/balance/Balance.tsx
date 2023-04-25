@@ -1,9 +1,11 @@
 import BN from 'bn.js';
 import React from 'react';
 import { Translate } from 'react-localize-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import CONFIG from '../../../config';
+import { selectNearTokenFiatValueUSD } from '../../../redux/slices/tokenFiatValues';
 import classNames from '../../../utils/classNames';
 import FiatBalance from './FiatBalance';
 import {
@@ -11,6 +13,7 @@ import {
     showInYocto,
     YOCTO_NEAR_THRESHOLD
 } from './helpers';
+
 
 const StyledContainer = styled.div`
     white-space: nowrap;
@@ -69,13 +72,25 @@ const StyledContainer = styled.div`
     }
 `;
 
-const BalanceDisplay = ({
+interface Props {
+    amount: string
+    totalAmount?: string
+    showAlmostEqualSignUSD?: boolean
+    showSignUSD?: boolean
+    showSymbolUSD?: boolean
+    showSymbolNEAR?: boolean
+    showBalanceInNEAR?: boolean
+    showBalanceInUSD?: boolean
+    className?: string
+    'data-test-id'?: string
+}
+
+const Balance: React.FunctionComponent<Props> = ({
     amount,
     showSymbolNEAR = true,
     className,
     showBalanceInNEAR = true,
     showBalanceInUSD = true,
-    nearTokenFiatValueUSD,
     showAlmostEqualSignUSD,
     showSignUSD,
     showSymbolUSD,
@@ -83,6 +98,7 @@ const BalanceDisplay = ({
     'data-test-id': testId
 }) => {
 
+    const nearTokenFiatValueUSD = useSelector(selectNearTokenFiatValueUSD);
     const amountToShow = amount && formatNearAmount(amount);
 
     const handleShowInYocto = (amount) => {
@@ -129,4 +145,4 @@ const BalanceDisplay = ({
     );
 };
 
-export default BalanceDisplay;
+export default Balance;

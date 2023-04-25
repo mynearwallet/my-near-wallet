@@ -6,6 +6,7 @@ import { createSelector } from 'reselect';
 
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
+import * as tokenUtils from '../../../utils/token';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
@@ -88,10 +89,11 @@ const fetchTokens = createAsyncThunk(
                     fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                 };
 
-                tokens[contractName] = tokenConfig;
+                const formattedToken = tokenUtils.formatToken(tokenConfig);
+                tokens[contractName] = formattedToken;
 
                 if (Number(balance)) {
-                    tokensWithBalance[contractName] = tokenConfig;
+                    tokensWithBalance[contractName] = formattedToken;
                 }
             } catch (e) {
                 // Continue loading other likely contracts on failures

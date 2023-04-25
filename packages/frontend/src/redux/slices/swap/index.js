@@ -6,6 +6,7 @@ import { batch } from 'react-redux';
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
+import * as tokenUtils from '../../../utils/token';
 import { wallet } from '../../../utils/wallet';
 import { getBalance } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
@@ -92,10 +93,11 @@ const updateAllTokensData = createAsyncThunk(
                     fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                 };
 
-                tokens[contractName] = config;
+                const formattedToken = tokenUtils.formatToken(config);
+                tokens[contractName] = formattedToken;
 
                 if (balance > 0) {
-                    tokensWithBalance[contractName] = config;
+                    tokensWithBalance[contractName] = formattedToken;
                 }
             })
         );

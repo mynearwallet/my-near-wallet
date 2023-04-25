@@ -1,13 +1,15 @@
 import React from 'react';
-import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import * as tokenUtils from '../../../../utils/token';
 import Balance from '../../../common/balance/Balance';
 import FormButton from '../../../common/FormButton';
+import Notification from '../../../common/Notification';
 import AmountInput from '../AmountInput';
 import BalanceDetails from '../BalanceDetails';
 import SelectTokenButton from '../SelectTokenButton';
 import TabSelector from '../TabSelector';
+import { useTranslation } from 'react-i18next';
 
 const StyledContainer = styled.form`
     &&& {
@@ -34,34 +36,55 @@ const StyledContainer = styled.form`
         .select-token-btn {
             margin: 55px 0 5px 0;
         }
+
+        .warning-message {
+            margin-top: 15px;
+        }
     }
 `;
 
-const EnterAmount = ({ 
+interface Props {
+    amount: string
+    rawAmount: string
+    availableToSend: string
+    continueAllowed: boolean
+    isMobile: boolean
+    selectedToken: Wallet.Token
+    error: string
+    onContinue: (event: any) => void
+    onClickCancel: () => void
+    onClickSelectToken: () => void
+    onChangeAmount: () => void
+    onSetMaxAmount: () => void
+}
+
+export const EnterAmount: React.FunctionComponent<Props> = ({
     amount,
     rawAmount,
-    onChangeAmount,
-    onSetMaxAmount,
     availableToSend,
     continueAllowed,
+    isMobile,
+    selectedToken,
+    error,
     onContinue,
     onClickCancel,
-    selectedToken,
     onClickSelectToken,
-    error,
-    isMobile
+    onChangeAmount,
+    onSetMaxAmount,
 }) => {
+    const { t } = useTranslation()
+    const isBridgedToken = selectedToken?.onChainFTMetadata?.symbol.includes(tokenUtils.BRIDGED_CONSTANT);
 
     return (
-        <StyledContainer 
+        <StyledContainer
             className='buttons-bottom'
             onSubmit={(e) => {
                 onContinue(e);
                 e.preventDefault();
             }}
-            novalidate
+            noValidate
         >
-            <TabSelector/>
+            <TabSelector />
             <div className='amount-input-wrapper'>
                 <AmountInput
                     value={amount}
@@ -72,7 +95,7 @@ const EnterAmount = ({
             </div>
             {selectedToken.onChainFTMetadata?.symbol === 'NEAR' && (
                 <div className='usd-amount'>
-                    <Balance amount={rawAmount} showBalanceInNEAR={false}/>
+                    <Balance amount={rawAmount} showBalanceInNEAR={false} />
                 </div>
             )}
             <FormButton
@@ -81,7 +104,7 @@ const EnterAmount = ({
                 color='light-blue'
                 className='small rounded'
             >
-                <Translate id='button.useMax'/>
+                {t('button.useMax')}
             </FormButton>
             <SelectTokenButton
                 token={selectedToken}
@@ -91,6 +114,13 @@ const EnterAmount = ({
                 availableToSend={availableToSend}
                 selectedToken={selectedToken}
             />
+            {isBridgedToken && (
+                <div className='warning-message'>
+                    <Notification type='warning'>
+                        {t('sendV2.enterAmount.bridgedTokenWarning')}
+                    </Notification>
+                </div>
+            )}
             <div className='buttons-bottom-buttons'>
                 {/* TODO: Add error state */}
                 <FormButton
@@ -98,7 +128,7 @@ const EnterAmount = ({
                     disabled={!continueAllowed}
                     data-test-id="sendMoneyPageSubmitAmountButton"
                 >
-                    <Translate id='button.continue'/>
+                    {t('button.continue')}
                 </FormButton>
                 <FormButton
                     type='button'
@@ -106,11 +136,9 @@ const EnterAmount = ({
                     className='link'
                     color='gray'
                 >
-                    <Translate id='button.cancel'/>
+                    {t('button.cancel')}
                 </FormButton>
             </div>
         </StyledContainer>
     );
 };
-
-export default EnterAmount;

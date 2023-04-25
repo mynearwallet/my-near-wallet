@@ -6,15 +6,15 @@ declare module Wallet {
         contractName?: string;
         balance: string;
         onChainFTMetadata: {
-            decimals: number;
-            icon: string;
-            name: string;
-            reference: string | null;
-            reference_hash: string | null;
-            spec: string;
-            symbol: string;
+            decimals?: number;
+            icon?: string;
+            name?: string;
+            reference?: string | null;
+            reference_hash?: string | null;
+            spec?: string;
+            symbol?: string;
         };
-        fiatValueMetadata: {
+        fiatValueMetadata?: {
             last_updated_at: number;
             usd: number;
         };

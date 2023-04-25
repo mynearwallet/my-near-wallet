@@ -8,7 +8,7 @@ import classNames from '../../utils/classNames';
 import isDecimalString from '../../utils/isDecimalString';
 import { getNearAndFiatValue } from '../common/balance/helpers';
 import Container from '../common/styled/Container.css';
-import EnterAmount from './components/views/EnterAmount';
+import { EnterAmount } from './components/views/EnterAmount';
 import EnterReceiver from './components/views/EnterReceiver';
 import Review from './components/views/Review';
 import SelectToken from './components/views/SelectToken';
@@ -106,9 +106,9 @@ const SendContainerV2 = ({
     useEffect(() => {
         // fungibleTokens contains balance data for each token -- we need to update local state every time it changes
         // TODO: Add a `byIdentity` reducer for faster lookups than .find()
-        let targetToken = fungibleTokens.find(({ contractName }) => 
+        let targetToken = fungibleTokens.find(({ contractName }) =>
             (contractName && contractName === selectedToken.contractName)
-        ) || fungibleTokens.find(({ onChainFTMetadata }) => 
+        ) || fungibleTokens.find(({ onChainFTMetadata }) =>
             onChainFTMetadata?.symbol === selectedToken.onChainFTMetadata?.symbol
         );
 

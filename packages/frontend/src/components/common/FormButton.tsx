@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { Translate } from 'react-localize-redux';
 import { withRouter } from 'react-router';
@@ -9,7 +8,7 @@ import ArrowWhiteImage from '../../images/icon-arrow-white.svg';
 import { Mixpanel } from '../../mixpanel/index';
 import classNames from '../../utils/classNames';
 
-const CustomButton = styled.button`
+const CustomButton = styled.button<{ style: any }>`
     &&& {
         color: #fff;
         margin: 24px 0 0 0;
@@ -36,7 +35,7 @@ const CustomButton = styled.button`
             height: 36px;
             border-radius: 20px;
             padding: 0px 0px;
-            
+
             font-size: 14px;
         }
 
@@ -63,7 +62,7 @@ const CustomButton = styled.button`
                 color: #A2A2A8;
             }
         }
-        
+
         &.dark-gray-light-blue {
             background-color: #37383C;
             border-color: #37383C;
@@ -196,7 +195,7 @@ const CustomButton = styled.button`
         &.green {
             border-color: #5ace84;
             background: #5ace84;
-            
+
 
             :disabled {
                 border-color: #e6e6e6;
@@ -410,7 +409,7 @@ const CustomButton = styled.button`
             :after {
                 content: '.';
                 animation: dots 1s steps(5, end) infinite;
-            
+
                 @keyframes dots {
                     0%, 20% {
                         color: rgba(0,0,0,0);
@@ -455,7 +454,7 @@ const CustomButton = styled.button`
             :after {
                 content: '.';
                 animation: link 1s steps(5, end) infinite;
-            
+
                 @keyframes link {
                     0%, 20% {
                         color: rgba(0,0,0,0);
@@ -493,12 +492,30 @@ const CustomButton = styled.button`
     }
 `;
 
-const FormButton = ({ 
-    children, 
-    type, 
-    color = 'blue', 
+interface Props {
+    type: "button" | "submit" | "reset"
+    color: string
+    disabled: boolean
+    sending: boolean
+    sendingString: string
+    size: string
+    linkTo: string
+    history: any[]
+    className: string
+    id: string
+    trackingId: string
+    'data-test-id': string
+    style?: any
+    children?: any
+    onClick?: (event: any) => void
+}
+
+const FormButton: React.FunctionComponent<Props> = ({
+    children = undefined,
+    type,
+    color = 'blue',
     disabled = false,
-    onClick,
+    onClick = undefined,
     sending = false,
     sendingString,
     size,
@@ -520,7 +537,7 @@ const FormButton = ({
             linkTo && (linkTo.toLowerCase().startsWith('http') ? window.open(linkTo, '_blank') : history.push(linkTo));
             trackingId && Mixpanel.track(trackingId);
         }}
-        tabIndex='3'
+        tabIndex={3}
         data-test-id={testId}
         style={style}
     >
@@ -531,17 +548,4 @@ const FormButton = ({
     </CustomButton>
 );
 
-FormButton.propTypes = {
-    children: PropTypes.node.isRequired,
-    type: PropTypes.string,
-    color: PropTypes.string,
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    sending: PropTypes.bool,
-    size: PropTypes.string,
-    linkTo: PropTypes.string,
-    className: PropTypes.string,
-    trackingId: PropTypes.string
-};
-
-export default withRouter(FormButton);
+export default withRouter(FormButton as any) as any;
