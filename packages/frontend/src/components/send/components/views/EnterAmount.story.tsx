@@ -56,7 +56,7 @@ export const WithWarning: Story = {
                 name: 'Token Name',
                 isBridged: true,
             },
-        } as unknown as Wallet.Token,
+        } as Wallet.Token,
         error: '',
         onContinue: () => null,
         onClickCancel: () => null,

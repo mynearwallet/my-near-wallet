@@ -24,7 +24,7 @@ declare module Wallet {
 
     declare interface FungibleTokenMetadataWithAdditionalProperties
         extends FungibleTokenMetadata {
-        isBridged?: string;
+        isBridged?: boolean;
     }
 
     // @todo Find or wait "near-api-js" package types
