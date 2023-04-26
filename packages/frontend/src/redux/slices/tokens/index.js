@@ -4,9 +4,9 @@ import set from 'lodash.set';
 import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 
-import { formatToken } from '../../../utils/token';
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
+import { formatToken } from '../../../utils/token';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';

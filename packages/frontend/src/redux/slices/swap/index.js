@@ -3,10 +3,10 @@ import merge from 'lodash.merge';
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
-import { formatToken } from '../../../utils/token';
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
+import { formatToken } from '../../../utils/token';
 import { wallet } from '../../../utils/wallet';
 import { getBalance } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
