@@ -6,12 +6,12 @@ import { batch } from 'react-redux';
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
-import * as tokenUtils from '../../../utils/token';
 import { wallet } from '../../../utils/wallet';
 import { getBalance } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
+import { formatToken } from '../../../utils/token';
 
 const SLICE_NAME = 'swap';
 
@@ -93,7 +93,7 @@ const updateAllTokensData = createAsyncThunk(
                     fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                 };
 
-                const formattedToken = tokenUtils.formatToken(config);
+                const formattedToken = formatToken(config);
                 tokens[contractName] = formattedToken;
 
                 if (balance > 0) {

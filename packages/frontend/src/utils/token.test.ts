@@ -9,7 +9,8 @@ describe('Token utils', () => {
             ['usdtt.fakes.testnet', 'Native USDT'],
             ['usdc.fakes.testnet', 'Bridged USDC'],
             ['a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near', 'Bridged USDC'],
-        ])('when token contract name is $s it transforms the token symbol to %s without changing anything else', (contractName, expectedSymbol) => {
+            ['something else', 'SOMETHING ELSE'],
+        ])('when token contract name is %s it transforms the token symbol to %s without changing anything else', (contractName, expectedSymbol) => {
             const token = {
                 contractName,
                 onChainFTMetadata: {

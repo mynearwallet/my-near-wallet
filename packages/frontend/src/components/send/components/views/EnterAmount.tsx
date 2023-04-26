@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import * as tokenUtils from '../../../../utils/token';
 import Balance from '../../../common/balance/Balance';
 import FormButton from '../../../common/FormButton';
 import Notification from '../../../common/Notification';
@@ -10,6 +9,7 @@ import BalanceDetails from '../BalanceDetails';
 import SelectTokenButton from '../SelectTokenButton';
 import TabSelector from '../TabSelector';
 import { useTranslation } from 'react-i18next';
+import { BRIDGED_CONSTANT } from '../../../../utils/token';
 
 const StyledContainer = styled.form`
     &&& {
@@ -73,7 +73,7 @@ export const EnterAmount: React.FunctionComponent<Props> = ({
     onSetMaxAmount,
 }) => {
     const { t } = useTranslation()
-    const isBridgedToken = selectedToken?.onChainFTMetadata?.symbol.includes(tokenUtils.BRIDGED_CONSTANT);
+    const isBridgedToken = selectedToken?.onChainFTMetadata?.symbol.includes(BRIDGED_CONSTANT);
 
     return (
         <StyledContainer

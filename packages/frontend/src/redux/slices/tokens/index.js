@@ -6,7 +6,6 @@ import { createSelector } from 'reselect';
 
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
-import * as tokenUtils from '../../../utils/token';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import selectNEARAsTokenWithMetadata from '../../selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
@@ -14,6 +13,7 @@ import { createParameterSelector, selectSliceByAccountId } from '../../selectors
 import { selectSetOfBlacklistedTokenNames } from '../security';
 import { selectUSDNTokenFiatValueUSD, selectTokensFiatValueUSD } from '../tokenFiatValues';
 import tokensMetadataSlice, { getCachedContractMetadataOrFetch, selectContractsMetadata, selectOneContractMetadata } from '../tokensMetadata';
+import { formatToken } from '../../../utils/token';
 
 const SLICE_NAME = 'tokens';
 
@@ -89,7 +89,7 @@ const fetchTokens = createAsyncThunk(
                     fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
                 };
 
-                const formattedToken = tokenUtils.formatToken(tokenConfig);
+                const formattedToken = formatToken(tokenConfig);
                 tokens[contractName] = formattedToken;
 
                 if (Number(balance)) {
