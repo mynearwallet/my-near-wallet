@@ -21,8 +21,7 @@
         "inlineSources": false,
         "preserveWatchOutput": true,
 
-        "outDir": "./dist",
-        "rootDir": "./src"
+        "outDir": "./dist"
     },
     "exclude": ["node_modules", "test", "**/*.test.ts", "dist", ".cache", "../e2e-tests"],
     "include": ["src/**/*", "declarations.d.ts"]

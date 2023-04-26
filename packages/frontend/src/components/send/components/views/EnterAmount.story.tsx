@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 
+import { DEFAULT_TOKEN_METADATA } from '../../../../../.storybook/token';
 import { StyledContainer } from '../../SendContainerV2';
 import { EnterAmount } from './EnterAmount';
 
@@ -29,10 +30,10 @@ export const Primary: Story = {
         selectedToken: {
             balance: '100',
             onChainFTMetadata: {
+                ...DEFAULT_TOKEN_METADATA,
                 symbol: 'Token',
-                name: 'Token Name',
             },
-        } as Wallet.Token,
+        },
         error: '',
         onContinue: () => null,
         onClickCancel: () => null,
@@ -52,11 +53,11 @@ export const WithWarning: Story = {
         selectedToken: {
             balance: '100',
             onChainFTMetadata: {
+                ...DEFAULT_TOKEN_METADATA,
                 symbol: 'Bridged Token',
-                name: 'Token Name',
                 isBridged: true,
             },
-        } as Wallet.Token,
+        },
         error: '',
         onContinue: () => null,
         onClickCancel: () => null,
