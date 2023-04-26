@@ -35,7 +35,8 @@ const InputWrapper = styled.div`
         }
     }
 
-    &.success, &.problem {
+    &.success,
+    &.problem {
         input {
             border: 0;
         }
@@ -70,7 +71,7 @@ const InputWrapper = styled.div`
 
     &.success {
         input {
-            color: #008D6A;
+            color: #008d6a;
             &:focus {
                 box-shadow: none;
             }
@@ -82,7 +83,7 @@ const InputWrapper = styled.div`
 
     &.problem {
         input {
-            color: #FC5B5B;
+            color: #fc5b5b;
             &:focus {
                 box-shadow: none;
             }
@@ -90,20 +91,19 @@ const InputWrapper = styled.div`
     }
 `;
 interface Props {
-    accountId: string
-    localAlert: LocalAlert
-    disabled: boolean
-    autoFocus: boolean
-    isSuccess: boolean
-    isProblem: boolean
-    onFocus: () => void
-    onBlur: () => void
-    handleChange: (accountId: string) => void
-    clearLocalAlert: () => void
-    setIsImplicitAccount: (isImplicitAccount: boolean) => void
-    checkAvailability: (accountId: string) => void
+    accountId: string;
+    localAlert: LocalAlert;
+    disabled: boolean;
+    autoFocus: boolean;
+    isSuccess: boolean;
+    isProblem: boolean;
+    onFocus: () => void;
+    onBlur: () => void;
+    handleChange: (accountId: string) => void;
+    clearLocalAlert: () => void;
+    setIsImplicitAccount: (isImplicitAccount: boolean) => void;
+    checkAvailability: (accountId: string) => void;
 }
-
 
 export const InputAccountId: React.FunctionComponent<Props> = ({
     accountId,
@@ -117,20 +117,20 @@ export const InputAccountId: React.FunctionComponent<Props> = ({
     handleChange,
     clearLocalAlert,
     setIsImplicitAccount,
-    checkAvailability
+    checkAvailability,
 }) => {
-    const [wrongChar, setWrongChar] = useState(false)
-    let canvas = useRef<HTMLCanvasElement>(null)
+    const [wrongChar, setWrongChar] = useState(false);
+    let canvas = useRef<HTMLCanvasElement>(null);
     const prefix = useRef(null);
     const debouncedAccountId = useDebouncedValue(accountId, ACCOUNT_CHECK_TIMEOUT);
-    const { t } = useTranslation()
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (accountId) {
             handleChangeAccountId({ userValue: accountId });
             updatePrefix(accountId);
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         handleCheckAvailability(accountId);
@@ -138,7 +138,8 @@ export const InputAccountId: React.FunctionComponent<Props> = ({
 
     const updatePrefix = (userValue: string) => {
         // FIX: Handle prefix placement for overflowing input (implicit accounts, etc.)
-        const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+        const isSafari =
+            /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
         const width = getTextWidth(userValue, '16px Inter');
         const extraSpace = isSafari ? 22 : 23;
         prefix.current.style.right = `${width + extraSpace}px`;
@@ -146,7 +147,7 @@ export const InputAccountId: React.FunctionComponent<Props> = ({
         if (userValue.length === 0) {
             prefix.current.style.visibility = 'hidden';
         }
-    }
+    };
 
     const getTextWidth = (text: string, font: string) => {
         if (!canvas.current) {
@@ -156,9 +157,15 @@ export const InputAccountId: React.FunctionComponent<Props> = ({
         context.font = font;
         let metrics = context.measureText(text);
         return metrics.width;
-    }
+    };
 
-    const handleChangeAccountId = ({ userValue, el }: { userValue: string, el?: any }) => {
+    const handleChangeAccountId = ({
+        userValue,
+        el,
+    }: {
+        userValue: string;
+        el?: any;
+    }) => {
         const pattern = /[^a-zA-Z0-9._-]/;
 
         const accountId = userValue.trim().toLowerCase();
@@ -169,20 +176,21 @@ export const InputAccountId: React.FunctionComponent<Props> = ({
                 void el.offsetHeight;
                 el.style.animation = null;
             } else {
-                setWrongChar(true)
+                setWrongChar(true);
             }
             return;
         } else {
-            setWrongChar(false)
+            setWrongChar(false);
         }
 
         setIsImplicitAccount(false);
         handleChange(accountId);
 
         localAlert && clearLocalAlert();
-    }
+    };
 
-    const isImplicitAccount = (accountId: string) => accountId.length === 64 && !accountId.includes('.')
+    const isImplicitAccount = (accountId: string) =>
+        accountId.length === 64 && !accountId.includes('.');
 
     const handleCheckAvailability = async (accountId: string) => {
         if (!accountId) {
@@ -192,21 +200,34 @@ export const InputAccountId: React.FunctionComponent<Props> = ({
         try {
             await checkAvailability(accountId);
         } catch (e) {
-            if (isImplicitAccount(accountId) && e.toString().includes('does not exist while viewing')) {
-                console.warn(`${accountId} does not exist. Assuming this is an implicit Account ID.`);
+            if (
+                isImplicitAccount(accountId) &&
+                e.toString().includes('does not exist while viewing')
+            ) {
+                console.warn(
+                    `${accountId} does not exist. Assuming this is an implicit Account ID.`
+                );
                 clearLocalAlert();
                 setIsImplicitAccount(true);
                 return;
             }
         }
-    }
+    };
 
     return (
-        <InputWrapper className={classNames([{ 'success': isSuccess }, { 'problem': isProblem }, { 'wrong-char': wrongChar }])}>
+        <InputWrapper
+            className={classNames([
+                { success: isSuccess },
+                { problem: isProblem },
+                { 'wrong-char': wrongChar },
+            ])}
+        >
             <input
                 value={accountId}
                 onInput={(e) => updatePrefix((e as any).target.value)}
-                onChange={(e) => handleChangeAccountId({ userValue: e.target.value, el: e.target })}
+                onChange={(e) =>
+                    handleChangeAccountId({ userValue: e.target.value, el: e.target })
+                }
                 placeholder={t('input.accountId.placeHolderAlt')}
                 required
                 autoComplete='off'
@@ -218,11 +239,11 @@ export const InputAccountId: React.FunctionComponent<Props> = ({
                 autoFocus={autoFocus}
                 onBlur={onBlur}
                 onFocus={onFocus}
-                data-test-id="sendMoneyPageAccountIdInput"
+                data-test-id='sendMoneyPageAccountIdInput'
             />
             <span className='success-prefix' ref={prefix}>
                 <CheckCircleIcon color='#00C08B' />
             </span>
         </InputWrapper>
-    )
-}
+    );
+};

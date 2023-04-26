@@ -3,10 +3,11 @@ import styled from 'styled-components';
 
 import arrow from './assets/arrow.svg';
 
+const hoverEffect = (isEnabled: boolean) =>
+    isEnabled ? '&:hover { background: #f9f9f9; }' : '';
 
-const hoverEffect = (isEnabled: boolean) => (isEnabled ? '&:hover { background: #f9f9f9; }' : '');
-
-const paledIf = (isDisabled: boolean) => (isDisabled ? 'opacity: 0.5; filter: grayscale(1);' : '');
+const paledIf = (isDisabled: boolean) =>
+    isDisabled ? 'opacity: 0.5; filter: grayscale(1);' : '';
 
 const LinkWrap = styled.a<{ disabled: boolean }>`
     display: block;
@@ -48,16 +49,21 @@ const WrapperImg = styled.div`
     display: flex;
 `;
 
-
 interface Props {
-    icon: string
-    link: string
-    name: string
-    track?: () => void
-    disabled: boolean
+    icon: string;
+    link: string;
+    name: string;
+    track?: () => void;
+    disabled: boolean;
 }
 
-export const FundingType: React.FunctionComponent<Props> = ({ icon, link, name, track, disabled }) => {
+export const FundingType: React.FunctionComponent<Props> = ({
+    icon,
+    link,
+    name,
+    track,
+    disabled,
+}) => {
     return (
         <LinkWrap
             href={link}

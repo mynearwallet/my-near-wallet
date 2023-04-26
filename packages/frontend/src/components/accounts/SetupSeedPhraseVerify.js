@@ -83,20 +83,20 @@ const SetupSeedPhraseVerify = (
 
     return (
         <CustomDiv>
-            <h4 data-test-id="seedPhraseVerificationWordNumber">
-                <SafeTranslate id="input.enterWord.title" data={{ wordId: wordId + 1 }} />
+            <h4 data-test-id='seedPhraseVerificationWordNumber'>
+                <SafeTranslate id='input.enterWord.title' data={{ wordId: wordId + 1 }} />
             </h4>
             <Translate>
                 {({ translate }) => (
                     <input
-                        data-test-id="seedPhraseVerificationWordInput"
-                        name="enterWord"
+                        data-test-id='seedPhraseVerificationWordInput'
+                        name='enterWord'
                         value={enterWord}
                         onChange={(e) => handleChangeWord(e.target.value)}
                         placeholder={translate('input.enterWord.placeholder')}
                         required
-                        tabIndex="1"
-                        pattern="[a-zA-Z ]*"
+                        tabIndex='1'
+                        pattern='[a-zA-Z ]*'
                         className={
                             localAlert ? (localAlert.success ? 'success' : 'problem') : ''
                         }
@@ -117,8 +117,8 @@ const SetupSeedPhraseVerify = (
                 />
             )}
             <FormButton
-                type="submit"
-                color="blue"
+                type='submit'
+                color='blue'
                 disabled={
                     hasSeedPhraseRecovery ||
                     !enterWord ||
@@ -129,17 +129,17 @@ const SetupSeedPhraseVerify = (
                 sendingString={
                     isNewAccount ? 'button.creatingAccount' : 'button.verifying'
                 }
-                data-test-id="seedPhraseVerificationWordSubmit"
+                data-test-id='seedPhraseVerificationWordSubmit'
             >
-                <Translate id="button.verify" />
+                <Translate id='button.verify' />
             </FormButton>
             <FormButton
-                type="button"
-                color="gray"
-                className="link start-over"
+                type='button'
+                color='gray'
+                className='link start-over'
                 onClick={handleStartOver}
             >
-                <Translate id="button.startOver" />
+                <Translate id='button.startOver' />
             </FormButton>
         </CustomDiv>
     );

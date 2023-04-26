@@ -27,22 +27,18 @@ const processDataValue = (value) => {
 };
 
 interface Props {
-    id: string
-    children?: any
-    data?: any
+    id: string;
+    children?: any;
+    data?: any;
 }
 
 const SafeTranslate: React.FunctionComponent<Props> = ({ children, ...origProps }) => {
     const props = {
         ...origProps,
-        data: processDataValue(origProps.data)
+        data: processDataValue(origProps.data),
     };
 
-    return (
-        <Translate {...props}>
-            {children}
-        </Translate>
-    );
-}
+    return <Translate {...props}>{children}</Translate>;
+};
 
-export default SafeTranslate
+export default SafeTranslate;

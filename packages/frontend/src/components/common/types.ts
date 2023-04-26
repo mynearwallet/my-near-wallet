@@ -1,5 +1,5 @@
 export interface LocalAlert {
-    success?: Boolean
-    show?: boolean
-    messageCode?: string
+    success?: Boolean;
+    show?: boolean;
+    messageCode?: string;
 }

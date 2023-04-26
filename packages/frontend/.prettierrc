@@ -5,7 +5,7 @@
     "useTabs": false,
     "trailingComma": "es5",
     "jsxBracketSameLine": false,
-    "jsxSingleQuote": false,
+    "jsxSingleQuote": true,
     "arrowParens": "always",
     "bracketSpacing": true,
     "printWidth": 90

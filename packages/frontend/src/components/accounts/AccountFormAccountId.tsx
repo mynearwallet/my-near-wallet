@@ -53,29 +53,47 @@ const InputWrapper = styled.div`
 `;
 
 interface Props {
-    defaultAccountId: string
-    type: string
-    pattern: string
-    stateAccountId: string
-    accountId: string
-    mainLoader: any
-    disabled: boolean
-    localAlert: LocalAlert
-    clearLocalAlert: () => void
-    handleChange: (accountId: string) => void
-    checkAvailability: (accountId: string) => void
+    defaultAccountId: string;
+    type: string;
+    pattern: string;
+    stateAccountId: string;
+    accountId: string;
+    mainLoader: any;
+    disabled: boolean;
+    localAlert: LocalAlert;
+    clearLocalAlert: () => void;
+    handleChange: (accountId: string) => void;
+    checkAvailability: (accountId: string) => void;
 }
 
-export const AccountFormAccountId: React.FunctionComponent<Props> = ({ defaultAccountId, type = 'check', pattern = /[^a-zA-Z0-9._-]/, handleChange, checkAvailability, clearLocalAlert, stateAccountId, mainLoader, disabled, localAlert: localAlertFromProps, accountId: accountIdFromProps }) => {
+export const AccountFormAccountId: React.FunctionComponent<Props> = ({
+    defaultAccountId,
+    type = 'check',
+    pattern = /[^a-zA-Z0-9._-]/,
+    handleChange,
+    checkAvailability,
+    clearLocalAlert,
+    stateAccountId,
+    mainLoader,
+    disabled,
+    localAlert: localAlertFromProps,
+    accountId: accountIdFromProps,
+}) => {
     const [accountId, setAccountId] = useState(defaultAccountId || '');
     const [invalidAccountIdLength, setInvalidAccountIdLength] = useState(false);
     const [wrongChar, setWrongChar] = useState(false);
     const debouncedAccountId = useDebouncedValue(accountId, ACCOUNT_CHECK_TIMEOUT);
-    const canvas = useRef<HTMLCanvasElement>(null)
+    const canvas = useRef<HTMLCanvasElement>(null);
     const suffix = useRef(null);
-    const { t } = useTranslation()
+    const { t } = useTranslation();
 
-    const handleChangeAccountId = ({ userValue, el }: { userValue: string, el?: any }) => {
+    const handleChangeAccountId = ({
+        userValue,
+        el,
+    }: {
+        userValue: string;
+        el?: any;
+    }) => {
         const currentAccountId = userValue.toLowerCase();
 
         if (currentAccountId === accountId) {
@@ -116,7 +134,8 @@ export const AccountFormAccountId: React.FunctionComponent<Props> = ({ defaultAc
             return;
         }
 
-        const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+        const isSafari =
+            /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
         const width = getTextWidth(userValue, '16px Inter');
         const extraSpace = isSafari ? 21.5 : 22;
         suffix.current.style.left = `${width + extraSpace}px`;
@@ -154,13 +173,10 @@ export const AccountFormAccountId: React.FunctionComponent<Props> = ({ defaultAc
         if (isImplicitAccount(currentAccountId)) {
             return true;
         }
-        if (
-            !(
-                type === 'create' &&
-                !isAccountIdLengthValid(currentAccountId)
-            )
-        ) {
-            return checkAvailability(type === 'create' ? accountIdFromProps : currentAccountId);
+        if (!(type === 'create' && !isAccountIdLengthValid(currentAccountId))) {
+            return checkAvailability(
+                type === 'create' ? accountIdFromProps : currentAccountId
+            );
         }
         return false;
     };
@@ -216,17 +232,22 @@ export const AccountFormAccountId: React.FunctionComponent<Props> = ({ defaultAc
             >
                 <input
                     name='accountId'
-                    data-test-id="createAccount.accountIdInput"
+                    data-test-id='createAccount.accountIdInput'
                     value={accountId}
-                    onInput={(e) => type === 'create' && updateSuffix((e as any).target.value.trim())}
+                    onInput={(e) =>
+                        type === 'create' && updateSuffix((e as any).target.value.trim())
+                    }
                     onChange={(e) =>
-                        handleChangeAccountId({ userValue: e.target.value.trim(), el: e.target })
+                        handleChangeAccountId({
+                            userValue: e.target.value.trim(),
+                            el: e.target,
+                        })
                     }
                     placeholder={
                         type === 'create'
                             ? t('createAccount.accountIdInput.placeholder', {
-                                data: CONFIG.ACCOUNT_ID_SUFFIX,
-                            })
+                                  data: CONFIG.ACCOUNT_ID_SUFFIX,
+                              })
                             : t('input.accountId.placeholder')
                     }
                     required
@@ -246,7 +267,11 @@ export const AccountFormAccountId: React.FunctionComponent<Props> = ({ defaultAc
                     <div className='input-sub-label'>{t('input.accountId.subLabel')}</div>
                 )}
             </InputWrapper>
-            <LocalAlertBox dots={mainLoader} localAlert={localAlert} accountId={accountIdFromProps} />
+            <LocalAlertBox
+                dots={mainLoader}
+                localAlert={localAlert}
+                accountId={accountIdFromProps}
+            />
         </>
     );
 };
