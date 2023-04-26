@@ -4,6 +4,7 @@ import set from 'lodash.set';
 import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 
+import { formatToken } from '../../../utils/token';
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
@@ -13,7 +14,6 @@ import { createParameterSelector, selectSliceByAccountId } from '../../selectors
 import { selectSetOfBlacklistedTokenNames } from '../security';
 import { selectUSDNTokenFiatValueUSD, selectTokensFiatValueUSD } from '../tokenFiatValues';
 import tokensMetadataSlice, { getCachedContractMetadataOrFetch, selectContractsMetadata, selectOneContractMetadata } from '../tokensMetadata';
-import { formatToken } from '../../../utils/token';
 
 const SLICE_NAME = 'tokens';
 

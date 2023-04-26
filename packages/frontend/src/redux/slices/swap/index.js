@@ -3,6 +3,7 @@ import merge from 'lodash.merge';
 import set from 'lodash.set';
 import { batch } from 'react-redux';
 
+import { formatToken } from '../../../utils/token';
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import fungibleTokenExchange from '../../../services/tokenExchange';
@@ -11,7 +12,6 @@ import { getBalance } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
-import { formatToken } from '../../../utils/token';
 
 const SLICE_NAME = 'swap';
 
