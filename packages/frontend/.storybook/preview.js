@@ -1,17 +1,17 @@
-import React, { Suspense } from "react";
-import { I18nextProvider } from "react-i18next";
-import STATE from './state'
-import i18n from "../src/translations";
-import "../src/app/index.css";
-import GlobalStyle from "../src/components/GlobalStyle";
-import { setupStore } from "../src";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
+import React, { Suspense } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import STATE from './state';
+import i18n from '../src/translations';
+import '../src/app/index.css';
+import GlobalStyle from '../src/components/GlobalStyle';
+import { setupStore } from '../src';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
     parameters: {
-        actions: { argTypesRegex: "^on[A-Z].*" },
+        actions: { argTypesRegex: '^on[A-Z].*' },
         controls: {
             matchers: {
                 color: /(background|color)$/i,
@@ -26,14 +26,14 @@ const store = setupStore(STATE);
 const withProviders = (Story, context) => {
     return (
         <Provider store={store}>
-                <MemoryRouter>
-                    <Suspense fallback={<div>loading translations...</div>}>
-                        <I18nextProvider i18n={i18n}>
-                            <GlobalStyle />
-                            <Story {...context} />
-                        </I18nextProvider>
-                    </Suspense>
-                </MemoryRouter>
+            <MemoryRouter>
+                <Suspense fallback={<div>loading translations...</div>}>
+                    <I18nextProvider i18n={i18n}>
+                        <GlobalStyle />
+                        <Story {...context} />
+                    </I18nextProvider>
+                </Suspense>
+            </MemoryRouter>
         </Provider>
     );
 };

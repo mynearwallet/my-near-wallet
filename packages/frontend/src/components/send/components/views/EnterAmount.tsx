@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import Balance from '../../../common/balance/Balance';
@@ -8,8 +9,6 @@ import AmountInput from '../AmountInput';
 import BalanceDetails from '../BalanceDetails';
 import SelectTokenButton from '../SelectTokenButton';
 import TabSelector from '../TabSelector';
-import { useTranslation } from 'react-i18next';
-import { BRIDGED_CONSTANT } from '../../../../utils/token';
 
 const StyledContainer = styled.form`
     &&& {
@@ -30,7 +29,7 @@ const StyledContainer = styled.form`
         .usd-amount {
             text-align: center;
             margin-bottom: 20px;
-            color: #A2A2A8;
+            color: #a2a2a8;
         }
 
         .select-token-btn {
@@ -44,18 +43,18 @@ const StyledContainer = styled.form`
 `;
 
 interface Props {
-    amount: string
-    rawAmount: string
-    availableToSend: string
-    continueAllowed: boolean
-    isMobile: boolean
-    selectedToken: Wallet.Token
-    error: string
-    onContinue: (event: any) => void
-    onClickCancel: () => void
-    onClickSelectToken: () => void
-    onChangeAmount: () => void
-    onSetMaxAmount: () => void
+    amount: string;
+    rawAmount: string;
+    availableToSend: string;
+    continueAllowed: boolean;
+    isMobile: boolean;
+    selectedToken: Wallet.Token;
+    error: string;
+    onContinue: (event: any) => void;
+    onClickCancel: () => void;
+    onClickSelectToken: () => void;
+    onChangeAmount: () => void;
+    onSetMaxAmount: () => void;
 }
 
 export const EnterAmount: React.FunctionComponent<Props> = ({
@@ -72,8 +71,8 @@ export const EnterAmount: React.FunctionComponent<Props> = ({
     onChangeAmount,
     onSetMaxAmount,
 }) => {
-    const { t } = useTranslation()
-    const isBridgedToken = selectedToken?.onChainFTMetadata?.symbol.includes(BRIDGED_CONSTANT);
+    const { t } = useTranslation();
+    const isBridgedToken = selectedToken?.onChainFTMetadata?.isBridged;
 
     return (
         <StyledContainer
@@ -106,10 +105,7 @@ export const EnterAmount: React.FunctionComponent<Props> = ({
             >
                 {t('button.useMax')}
             </FormButton>
-            <SelectTokenButton
-                token={selectedToken}
-                onClick={onClickSelectToken}
-            />
+            <SelectTokenButton token={selectedToken} onClick={onClickSelectToken} />
             <BalanceDetails
                 availableToSend={availableToSend}
                 selectedToken={selectedToken}
@@ -126,7 +122,7 @@ export const EnterAmount: React.FunctionComponent<Props> = ({
                 <FormButton
                     type='submit'
                     disabled={!continueAllowed}
-                    data-test-id="sendMoneyPageSubmitAmountButton"
+                    data-test-id='sendMoneyPageSubmitAmountButton'
                 >
                     {t('button.continue')}
                 </FormButton>

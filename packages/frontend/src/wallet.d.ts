@@ -13,6 +13,7 @@ declare module Wallet {
             reference_hash?: string | null;
             spec?: string;
             symbol?: string;
+            isBridged?: string;
         };
         fiatValueMetadata?: {
             last_updated_at: number;
