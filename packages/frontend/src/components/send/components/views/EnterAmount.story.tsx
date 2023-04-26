@@ -30,9 +30,9 @@ export const Primary: Story = {
             balance: '100',
             onChainFTMetadata: {
                 symbol: 'Token',
-                name: 'Token Name'
-            }
-        },
+                name: 'Token Name',
+            },
+        } as Wallet.Token,
         error: '',
         onContinue: () => null,
         onClickCancel: () => null,
@@ -53,9 +53,10 @@ export const WithWarning: Story = {
             balance: '100',
             onChainFTMetadata: {
                 symbol: 'Bridged Token',
-                name: 'Token Name'
-            }
-        },
+                name: 'Token Name',
+                isBridged: true,
+            },
+        } as unknown as Wallet.Token,
         error: '',
         onContinue: () => null,
         onClickCancel: () => null,

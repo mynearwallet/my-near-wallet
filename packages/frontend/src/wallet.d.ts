@@ -5,20 +5,26 @@ declare module Wallet {
         // * for example one place has "contractName" in the object, but not in another.
         contractName?: string;
         balance: string;
-        onChainFTMetadata: {
-            decimals?: number;
-            icon?: string;
-            name?: string;
-            reference?: string | null;
-            reference_hash?: string | null;
-            spec?: string;
-            symbol?: string;
-            isBridged?: string;
-        };
+        onChainFTMetadata: FungibleTokenMetadataWithAdditionalProperties;
         fiatValueMetadata?: {
             last_updated_at: number;
             usd: number;
         };
+    }
+
+    declare interface FungibleTokenMetadata {
+        spec: string;
+        name: string;
+        symbol: string;
+        icon: string | null;
+        reference: string | null;
+        reference_hash: string | null;
+        decimals: number;
+    }
+
+    declare interface FungibleTokenMetadataWithAdditionalProperties
+        extends FungibleTokenMetadata {
+        isBridged?: string;
     }
 
     // @todo Find or wait "near-api-js" package types
