@@ -53,7 +53,7 @@ describe("Linkdrop flow", () => {
 
         await expect(page).toMatchURL(/\/$/);
         await page.reload();
-        await expect(page).not.toHaveSelector(".dots");
+        await expect(page).not.toHaveSelector(".tokensLoading");
         const nearBalance = await new HomePage(page).getNearBalanceInNear();
         await expect(new BN(parseNearAmount(nearBalance)).gte(linkdropClaimableAmount)).toBe(true);
     });

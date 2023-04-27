@@ -108,6 +108,7 @@ const SetupSeedPhraseForm = ({
                             <FormButton
                                 color='gray-blue'
                                 className='small'
+                                data-test-id="copySeedPhraseButton"
                             >
                                 <CopyIcon color='#A2A2A8' />
                                 <Translate id='button.copy' />

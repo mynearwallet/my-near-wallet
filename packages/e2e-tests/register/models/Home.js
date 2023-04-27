@@ -38,7 +38,12 @@ class HomePage {
         await this.loginWithKeyPairLocalStorage(accountId, getKeyPairFromSeedPhrase(seedPhrase));
     }
     async getNearBalanceInNear() {
-        return this.page.textContent("data-test-id=walletHomeNearBalance").then((bal) => bal.split(" ")[0]);
+        const rawBalance = await this.page.textContent("data-test-id=walletHomeNearBalance")
+        const mixed = rawBalance.split(" ")[0]
+        if(mixed.includes("$")){
+            return mixed.split("$")[0]
+        }
+        return mixed
     }
 
     async loginAndNavigate(accountId, seed) {
