@@ -39,7 +39,7 @@ describe("Login with Dapp", () => {
         await expect(page).not.toHaveSelector(".dots");
         await expect(page).toHaveSelector("data-test-id=fullAccessKeyRequestLabel");
         await expect(page).toMatchText(
-            "data-test-id=dropdownCurrentlySelectedAccount",
+            ".account-id",
             currentlyLoggedInUser
         );
     });
@@ -66,7 +66,7 @@ describe("Login with Dapp", () => {
             );
         await expect(accesskeyLocalStorageKey).toBeTruthy();
 
-        await expect(page).toMatchText(
+        await expect(testDappPage).toMatchText(
             "data-test-id=testDapp-currentUser",
             new RegExp(testAccount.accountId)
         );

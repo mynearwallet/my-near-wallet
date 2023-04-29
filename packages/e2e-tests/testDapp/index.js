@@ -43,7 +43,7 @@ const { connect, keyStores, WalletConnection } = nearApi;
         document
             .getElementById("signInBtn")
             .addEventListener("click", () =>
-                wallet.requestSignIn(BANK_ACCOUNT)
+                wallet.requestSignIn({contractId: BANK_ACCOUNT, methodNames: ['something']})
             );
         document
             .getElementById("signInWithFAKBtn")

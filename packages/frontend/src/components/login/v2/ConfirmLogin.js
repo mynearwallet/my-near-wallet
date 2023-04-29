@@ -71,6 +71,7 @@ export default ({
                             onClick={onClickCancel}
                             color='gray-blue'
                             disabled={loggingIn}
+                            data-test-id="dapp-deny"
                         >
                             <Translate id='button.cancel' />
                         </FormButton>
@@ -85,6 +86,7 @@ export default ({
                             disabled={loggingIn || !successUrlIsValid}
                             sending={loggingIn}
                             sendingString='button.connecting'
+                            data-test-id="dapp-grant"
                         >
                             <Translate id='button.connect' />
                         </FormButton>

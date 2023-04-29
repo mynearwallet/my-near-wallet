@@ -715,12 +715,12 @@ export default class Wallet {
                 return await account.addKey(publicKey);
             } else {
                 const isMultisig = has2fa && !methodNames.length && accountId === contractId;
-                const methodNames = isMultisig ? MULTISIG_CHANGE_METHODS : methodNames;
+                const finalMethodNames = isMultisig ? MULTISIG_CHANGE_METHODS : methodNames;
 
                 return await account.addKey(
                     publicKey.toString(),
                     contractId,
-                    methodNames,
+                    finalMethodNames,
                     CONFIG.ACCESS_KEY_FUNDING_AMOUNT
                 );
             }

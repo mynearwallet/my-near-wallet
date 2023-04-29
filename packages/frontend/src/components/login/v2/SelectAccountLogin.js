@@ -65,6 +65,7 @@ export default ({
                 <FormButton
                     onClick={onClickNext}
                     disabled={!failureAndSuccessUrlsAreValid || accountExists === false}
+                    data-test-id="continue-with-current-account"
                 >
                     <Translate id='button.next' />
                 </FormButton>
