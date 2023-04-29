@@ -23,14 +23,20 @@ class LoginPage {
         await this.page.click(`data-test-id=dapp-grant`);
         await this.page.waitForNavigation();
     }
-    async allowFullAccess() {
+    async allowFullAccess(accountId) {
         await this.page.click(`data-test-id=continue-with-current-account`);
         await this.page.click(`data-test-id=dapp-grant`);
-        // await this.page.waitForNavigation();
+        await this.page.fill(
+            "data-test-id=fullaccess-acc-id-input",
+            accountId
+        );
+        await this.page.click("data-test-id=fullaccess-modal-confirm")
+        await this.page.waitForNavigation();
     }
     async denyAccess() {
         await this.page.click(`data-test-id=continue-with-current-account`);
         await this.page.click(`data-test-id=dapp-deny`);
+        await this.page.click(`data-test-id=cancel-select-account`);
     }
     async confirmAccountId(accountId) {
         await this.page.fill(

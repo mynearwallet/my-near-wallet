@@ -29,7 +29,7 @@ export default ({
     <Container className='small-centered border'>
         <LoginStyle className={loginAccessType === LOGIN_ACCESS_TYPES.FULL_ACCESS ? 'full-access' : ''}>
             <h3><Translate id='login.v2.connectWithNear.title' /></h3>
-            <div className='desc'>
+            <div className='desc' data-test-id={`type-${loginAccessType}`}>
                 <Translate>
                     {({ translate }) => (
                         <Translate
@@ -59,6 +59,7 @@ export default ({
                     onClick={onClickCancel}
                     color='gray-blue'
                     disabled={!failureAndSuccessUrlsAreValid}
+                    data-test-id="cancel-select-account"
                 >
                     <Translate id='button.cancel' />
                 </FormButton>

@@ -47,6 +47,6 @@ const { connect, keyStores, WalletConnection } = nearApi;
             );
         document
             .getElementById("signInWithFAKBtn")
-            .addEventListener("click", () => wallet.requestSignIn(""));
+            .addEventListener("click", () => wallet.requestSignIn({contractId: BANK_ACCOUNT}));
     }
 })();

@@ -113,6 +113,7 @@ export default ({
                                 spellCheck='false'
                                 disabled={loggingIn}
                                 autoFocus={!isMobile()}
+                                data-test-id="fullaccess-acc-id-input"
                             />
                         )}
                     </Translate>
@@ -122,6 +123,7 @@ export default ({
                             color='light-gray'
                             className='link'
                             type='button'
+                            data-test-id="fullaccess-modal-cancel"
                             disabled={loggingIn}
                         >
                             <Translate id='button.cancel' />
@@ -132,6 +134,7 @@ export default ({
                             sending={loggingIn}
                             sendingString='button.connecting'
                             type='submit'
+                            data-test-id="fullaccess-modal-confirm"
                         >
                             <Translate id='button.confirm' />
                         </FormButton>

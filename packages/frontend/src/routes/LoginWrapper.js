@@ -28,12 +28,13 @@ const LoginWrapper = () => {
     const failureUrl = URLParams.failure_url;
     const successUrl = URLParams.success_url;
     const invalidContractId = URLParams.invalidContractId;
-
+    const methodNames = URLParams.methodNames;
     const contractIdUrl = `${CONFIG.EXPLORER_URL}/accounts/${contractId}`;
 
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
 
-    let requestingFullAccess = !contractId || (publicKey && contractId?.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`)) || contractId === accountLocalStorageAccountId;
+    let requestingFullAccess = !methodNames || !contractId || (publicKey && contractId?.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`)) || contractId === accountLocalStorageAccountId;
+
     const requestAccountIdOnly = !publicKey && !contractId;
     if (requestAccountIdOnly) {
         requestingFullAccess = false;

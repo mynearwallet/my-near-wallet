@@ -61,9 +61,9 @@ describe("Login with Dapp", () => {
                 testAccount.accountId
             );
         await expect(accesskeyLocalStorageKey).toBeTruthy();
-
-        await expect(testDappPage).toMatchText(
-            "data-test-id='testDapp-currentUser'",
+        
+        await expect(page).toMatchText(
+            'data-test-id=testDapp-currentUser',
             new RegExp(testAccount.accountId)
         );
     });
@@ -85,6 +85,6 @@ describe("Login with Dapp", () => {
             );
         await expect(accesskeyLocalStorageKey).toBeFalsy();
 
-        await expect(testDappPage).toHaveSelector("data-test-id=testDapp-signInBtn");
+        await expect(page).toHaveSelector("data-test-id=testDapp-signInBtn");
     });
 });

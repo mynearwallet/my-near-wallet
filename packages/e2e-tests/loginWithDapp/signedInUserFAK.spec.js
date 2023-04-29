@@ -37,7 +37,7 @@ describe("Login with Dapp", () => {
             "data-test-id=currentUser"
         );
         await expect(page).not.toHaveSelector(".dots");
-        await expect(page).toHaveSelector("data-test-id=fullAccessKeyRequestLabel");
+        await expect(page).toHaveSelector("data-test-id=type-fullAccess");
         await expect(page).toMatchText(
             ".account-id",
             currentlyLoggedInUser
@@ -48,11 +48,8 @@ describe("Login with Dapp", () => {
     }) => {
         const loginPage = new LoginPage(page);
         const testDappPage = await loginPage.navigateToFAKFlow();
-
-        await loginPage.allowFullAccess();
-        await expect(page).toMatchURL(/\/confirm$/);
-
-        await loginPage.confirmAccountId(testAccount.accountId)
+        
+        await loginPage.allowFullAccess(testAccount.accountId);
 
         await expect(page).toMatchURL(new RegExp(testDappURL));
 
@@ -66,7 +63,7 @@ describe("Login with Dapp", () => {
             );
         await expect(accesskeyLocalStorageKey).toBeTruthy();
 
-        await expect(testDappPage).toMatchText(
+        await expect(page).toMatchText(
             "data-test-id=testDapp-currentUser",
             new RegExp(testAccount.accountId)
         );
