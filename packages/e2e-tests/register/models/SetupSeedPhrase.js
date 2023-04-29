@@ -6,6 +6,7 @@ class SetupSeedPhrasePage {
         await this.page.goto(`/setup-seed-phrase/${accountId}/phrase`);
     }
     async copySeedPhrase() {
+        await this.page.waitForSelector(".single-phrase")
         await this.page.click(`data-test-id=copySeedPhraseButton`);
         return this.page.evaluate(() => navigator.clipboard.readText());
     }

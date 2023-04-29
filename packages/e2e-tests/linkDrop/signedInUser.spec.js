@@ -65,12 +65,13 @@ describe("Linkdrop flow", () => {
     test("adds to current account balance", async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.navigate();
-        await page.waitForSelector(".dots", { state: "detached" });
+        await expect(page).not.toHaveSelector(".tokensLoading");
         const startBalance = new BN(parseNearAmount(await homePage.getNearBalanceInNear()));
         const linkdropPage = new LinkDropPage(page);
         const endBalance = formatNearAmount(startBalance.add(linkdropClaimableAmount).toString());
-        const { linkdropContractAccount, lastSecretKey: linkdropSecretKey } = linkdropAccountManager;
-
+        
+        const { linkdropContractAccount } = linkdropAccountManager;
+        const linkdropSecretKey = await linkdropAccountManager.send(linkdropNEARAmount);
         await linkdropPage.navigate(linkdropContractAccount.accountId, linkdropSecretKey);
         await expect(page).not.toHaveSelector(".dots");
 
@@ -79,7 +80,7 @@ describe("Linkdrop flow", () => {
 
         await page.reload();
 
-        await expect(page).not.toHaveSelector(".dots");
+        await expect(page).not.toHaveSelector(".tokensLoading");
         await expect(page).toMatchText("data-test-id=walletHomeNearBalance", new RegExp(endBalance));
     });
     test("redirects to redirectUrl after adding when redirectUrl provided", async ({ page }) => {

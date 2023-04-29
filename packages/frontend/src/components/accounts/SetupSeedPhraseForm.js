@@ -96,7 +96,7 @@ const SetupSeedPhraseForm = ({
         <CustomDiv translate='no' className='notranslate skiptranslate'>
             <div className='seed-phrase-wrapper'>
                 <div id='seed-phrase'>
-                    {seedPhrase.split(' ').map((word, i) => (
+                    {seedPhrase && seedPhrase.split(' ').map((word, i) => (
                         <span className='single-phrase' key={`phrase-${i}`}>
                             <Number number={i + 1} className='h4'>{word} </Number>
                         </span>

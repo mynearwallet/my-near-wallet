@@ -472,7 +472,7 @@ const FungibleTokens = ({
             {!hideFungibleTokenSection && (
                 <>
                     <div className="sub-title tokens">
-                        <span className={classNames({ dots: tokensLoading, tokensLoading })}>
+                        <span className={classNames({ dots: tokensLoading })}>
                             <Translate id="wallet.yourPortfolio" />
                         </span>
                     </div>
