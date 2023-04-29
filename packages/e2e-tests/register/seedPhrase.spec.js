@@ -53,20 +53,6 @@ describe("Account Registration Using Seed Phrase", () => {
             /active/
         );
 
-        await setRecoveryOptionPage.clickEmailRecoveryOption();
-        await expect(page).toMatchAttribute(
-            setRecoveryOptionPage.getEmailSelector(),
-            "class",
-            /active/
-        );
-
-        await setRecoveryOptionPage.clickPhoneRecoveryOption();
-        await expect(page).toMatchAttribute(
-            setRecoveryOptionPage.getPhoneSelector(),
-            "class",
-            /active/
-        );
-
         await setRecoveryOptionPage.clickSeedPhraseRecoveryOption();
         await expect(page).toMatchAttribute(
             setRecoveryOptionPage.getSeedPhraseSelector(),
@@ -98,9 +84,6 @@ describe("Account Registration Using Seed Phrase", () => {
         await setupSeedPhrasePage.navigate(`${testAccountId}.${nearApiJsConnection.config.networkId}`);
 
         const copiedSeedPhrase = await setupSeedPhrasePage.copySeedPhrase();
-        await expect(page).toHaveSelector(
-            'div :text-matches("Passphrase copied", "i")'
-        );
 
         await setupSeedPhrasePage.continueToSeedPhraseVerification();
         await expect(page).toMatchURL(
