@@ -43,7 +43,9 @@ class StakeUnstakePage {
         await this.page.click("data-test-id=submitStakeButton");
     }
     async submitStakeWithAmount(amount) {
-        await this.page.fill("data-test-id=stakingAmountInput", amount.toString());
+        // this is to compensate the FE will enable and disable in a row...
+        await this.page.locator("data-test-id=stakingAmountInput").fill("")
+        await this.page.locator("data-test-id=stakingAmountInput").fill(amount.toString())
         await this.submitStake();
     }
     async confirmStakeOnModal() {

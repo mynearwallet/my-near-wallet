@@ -30,6 +30,9 @@ describe("Staking flow", () => {
         await stakeUnstakePage.navigate();
 
         await expect(page).toMatchURL(/\/staking$/);
+        await page.locator("data-test-id=stakeMyTokensButton").click({
+            trial: true
+        })
         // TODO assert current balance
         await expect(page).toMatchText("data-test-id=accountSelectStakedBalance", "0 NEAR");
     });
@@ -49,6 +52,9 @@ describe("Staking flow", () => {
 
         const stakeUnstakePage = new StakeUnstakePage(page);
         await stakeUnstakePage.navigate();
+        await page.locator("data-test-id=stakeMyTokensButton").click({
+            trial: true
+        })
         let currentlyDisplayedWalletBalance = await stakeUnstakePage.getCurrentlyDisplayedBalance();
         await stakeUnstakePage.clickStakeButton();
         const validatorName = await stakeUnstakePage.getValidatorName(validatorIndex);
@@ -66,12 +72,15 @@ describe("Staking flow", () => {
         await stakeUnstakePage.returnToDashboard();
 
         await expect(page).toMatchURL(/\/staking$/);
+        await page.locator("data-test-id=stakingPageUnstakingButton").click({
+            trial: true
+        })
 
         const maxRemainingNear = currentlyDisplayedWalletBalance.sub(
             new BN(parseNearAmount(testStakeAmount.toString()))
         );
         currentlyDisplayedWalletBalance = await stakeUnstakePage.getCurrentlyDisplayedBalance();
-        await expect(maxRemainingNear.gt(currentlyDisplayedWalletBalance)).toBe(true);
+        expect(maxRemainingNear.gt(currentlyDisplayedWalletBalance)).toBe(true);
         await expect(page).toMatchText(
             "data-test-id=accountSelectStakedBalance",
             new RegExp(testStakeAmount.toString())
