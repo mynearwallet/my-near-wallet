@@ -173,7 +173,6 @@ describe("Swap wrapped NEAR with NEP141", () => {
             getResultMessageRegExp({
                 fromSymbol: token.symbol,
                 fromAmount: tokenBalanceAfterFirstSwap,
-                acceptableInputDifference: 1,
                 toSymbol: TESTNET.wNEAR.symbol,
                 toAmount: wNearOutAmount,
                 acceptableOutputDifference: 2,

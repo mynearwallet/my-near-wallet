@@ -138,6 +138,6 @@ describe("Swap NEP141 with NEP141", () => {
         const token1ParsedBalanceAfter = Number(formatAmount(token1BalanceAfter, token1.decimals));
 
         expect(token0ParsedBalanceAfter).toEqual(0);
-        expect(token1ParsedBalanceAfter).toMatch(new RegExp(withoutLastChars(token1OutAmount, 1)))
+        expect(token1ParsedBalanceAfter.toString()).toMatch(new RegExp(withoutLastChars(token1OutAmount, 1)))
     });
 });
