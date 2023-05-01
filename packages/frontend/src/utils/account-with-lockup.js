@@ -277,9 +277,10 @@ async function getAccountBalance(limitedAccountData = false) {
         // if acc is deletable (nothing locked && nothing stake) you can transfer the whole amount ohterwise get_liquid_owners_balance
         const isAccDeletable = lockedAmount.isZero() && stakedBalanceLockup.isZero() && !hasUnclaimedTokenBalance;
         const MIN_BALANCE_FOR_STORAGE = getLockupMinBalanceForStorage(lockupContractCodeHash);
-        const liquidOwnersBalanceTransfersEnabled = isAccDeletable
-            ? new BN(lockupBalance.total)
-            : BN.min(ownersBalance, new BN(lockupBalance.total).sub(new BN(MIN_BALANCE_FOR_STORAGE)));
+        let liquidOwnersBalanceTransfersEnabled = new BN(lockupBalance.total);
+        if (!isAccDeletable) {
+            liquidOwnersBalanceTransfersEnabled = new BN(await this.wrappedAccount.viewFunction(lockupAccountId, 'get_liquid_owners_balance'));
+        }
         const liquidOwnersBalance = areTransfersEnabled ? liquidOwnersBalanceTransfersEnabled : new BN(0);
 
         const available = BN.max(new BN(0), new BN(balance.available).add(new BN(liquidOwnersBalance)).sub(new BN(CONFIG.MIN_BALANCE_FOR_GAS)));

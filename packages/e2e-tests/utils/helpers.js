@@ -41,7 +41,7 @@ const bnSaturatingSub = (a, b) => {
 };
 
 const bnIsWithinUncertainty = (uncertaintyBn, bn1, bn2) => {
-    return bn1.sub(bn2).abs().lt(uncertaintyBn.abs())
+    return bn1.sub(bn2).abs().lte(uncertaintyBn.abs())
 }
 
 module.exports = {
