@@ -512,7 +512,10 @@
             "title": "NEAR Drop của bạn đã được claim"
         },
         "or": "or",
-        "title": "Bạn đã nhận được một NEAR Drop!"
+        "title": "Bạn đã nhận được một NEAR Drop!",
+        "error": {
+            "invalidRedirectUrl": "URL chuyển hướng không hợp lệ"
+        }
     },
     "loading": "Đang tải...",
     "lockedBalance": "NEAR đang bị khóa trong hợp đồng khóa và không thể rút. Bạn vẫn có thể ủy quyền hoặc stake NEAR này. Khi NEAR được mở khóa, bạn có thể xem nó trong số dư đã mở khóa của bạn và chọn rút nó (chuyển sang số dư khả dụng của bạn).",

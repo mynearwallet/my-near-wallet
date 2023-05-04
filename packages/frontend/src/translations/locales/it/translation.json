@@ -584,7 +584,10 @@
             "title": "Il tuo NEAR drop è stato riscosso"
         },
         "or": "or",
-        "title": "Hai ricevuto un NEAR drop!"
+        "title": "Hai ricevuto un NEAR drop!",
+        "error": {
+            "invalidRedirectUrl": "URL di reindirizzamento non valido"
+        }
     },
     "loading": "Caricamento in corso...",
     "loadingNoDots": "Caricamento in corso",

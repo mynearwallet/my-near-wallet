@@ -714,7 +714,10 @@
             "title": "Your NEAR drop has been claimed"
         },
         "or": "or",
-        "title": "You've received a NEAR drop!"
+        "title": "You've received a NEAR drop!",
+        "error": {
+            "invalidRedirectUrl": "Invalid redirect URL"
+        }
     },
     "loading": "Loading...",
     "loadingNoDots": "Loading",

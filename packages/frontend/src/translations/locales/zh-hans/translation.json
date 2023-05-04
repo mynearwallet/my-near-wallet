@@ -688,7 +688,10 @@
             "title": "你的 NEAR 空投已领取"
         },
         "or": "或",
-        "title": "你收到了 NEAR 空投！"
+        "title": "你收到了 NEAR 空投！",
+        "error": {
+            "invalidRedirectUrl": "无效的重定向 URL"
+        }
     },
     "loading": "加载中...",
     "loadingNoDots": "加载中",

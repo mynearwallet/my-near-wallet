@@ -606,7 +606,10 @@
             "title": "Ваш NEAR drop був отриманий"
         },
         "or": "або",
-        "title": "Ви отримали NEAR drop!"
+        "title": "Ви отримали NEAR drop!",
+        "error": {
+            "invalidRedirectUrl": "Неприпустимий URL-адрес перенаправлення"
+        }
     },
     "loading": "Завантаження...",
     "loadingNoDots": "Завантаження",

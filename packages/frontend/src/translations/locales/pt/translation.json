@@ -566,7 +566,10 @@
             "title": "Recompensa de NEAR foi reivindicada."
         },
         "or": "ou",
-        "title": "Você recebeu uma distribuição de NEAR!"
+        "title": "Você recebeu uma distribuição de NEAR!",
+        "error": {
+            "invalidRedirectUrl": "URL de redirecionamento inválido"
+        }
     },
     "loading": "Carregando...",
     "loadingNoDots": "Carregando",

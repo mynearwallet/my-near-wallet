@@ -545,7 +545,10 @@
             "title": "NEAR bahşişiniz talep edildi"
         },
         "or": "veya",
-        "title": "NEAR bahşişi aldınız!"
+        "title": "NEAR bahşişi aldınız!",
+        "error": {
+            "invalidRedirectUrl": "Geçersiz yönlendirme URL'si"
+        }
     },
     "loading": "Yükleniyor...",
     "loadingNoDots": "Yükleniyor",
