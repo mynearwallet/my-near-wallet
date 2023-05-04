@@ -29,8 +29,9 @@ class StakeUnstakePage {
     clickViewCurrentValidator() {
         return this.page.click("data-test-id=viewCurrentValidatorButton")
     }
-    selectNthAccount(n = 0) {
-        return this.page.click(`data-test-id=accountSelectAvailableBalance >> nth=${n}`);
+    async selectNthAccount(n = 0) {
+        this.page.click(`data-test-id=accountSelectAvailableBalance >> nth=${n}`);
+        return await this.page.locator(`.radio-input >> nth=${n}`).isChecked()
     }
     async getCurrentlyDisplayedBalance(index = 0) {
         const balanceString = await this.page.textContent(`data-test-id=accountSelectAvailableBalance >> nth=${index}`);

@@ -4,28 +4,25 @@ const {
 
 const { test, expect } = require("../playwrightWithFixtures");
 const { HomePage } = require("../register/models/Home");
-const { generateNUniqueRandomNumbersInRange } = require("../utils/helpers");
+const { generateNUniqueRandomNumbersInRange, retryableAssert } = require("../utils/helpers");
 const { StakeUnstakePage } = require("./models/StakeUnstake");
 
-const { describe, beforeAll, afterAll, beforeEach } = test;
+const { describe, afterEach, beforeEach } = test;
 
 describe("Lockup stake and unstake", () => {
     let testAccount, lockupAccount;
 
-    beforeAll(async ({ bankAccount }) => {
+    beforeEach(async ({ page, bankAccount }) => {
         testAccount = await bankAccount.spawnRandomSubAccountInstance().create({ amount: "6.0" });
         lockupAccount = await testAccount.createTestLockupSubAccountInstance(FULLY_UNVESTED_CONFIG);
-    });
-
-    afterAll(async () => {
-        lockupAccount && (await lockupAccount.delete().then(() => testAccount && testAccount.delete));
-    });
-
-    beforeEach(async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.navigate();
         await homePage.loginWithSeedPhraseLocalStorage(testAccount.accountId, testAccount.seedPhrase);
     });
+
+    afterEach(async () => {
+        lockupAccount && (await lockupAccount.delete().then(() => testAccount && testAccount.delete));
+    })
 
     test("Is able to run normal staking flow still", async ({ page }) => {
         const stakeUnstakePage = new StakeUnstakePage(page);
@@ -39,13 +36,14 @@ describe("Lockup stake and unstake", () => {
         await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0.1 NEAR/);
     });
 
-    // Seems like not relevant anymore?
-    // You do not have the tokens anyways
-    test.skip("Stakes and unstakes with locked funds and can't stake with multiple validators simultaneously", async ({ page }) => {
+    test("Stakes and unstakes with locked funds and can't stake with multiple validators simultaneously", async ({ page }) => {
         const stakeUnstakePage = new StakeUnstakePage(page);
         await stakeUnstakePage.navigate();
+        await page.locator("data-test-id=stakeMyTokensButton").click({
+            trial: true
+        })
         await stakeUnstakePage.selectNthAccount(0);
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0.1 NEAR/);
+        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
         await stakeUnstakePage.selectNthAccount(1);
         await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
 
@@ -56,8 +54,11 @@ describe("Lockup stake and unstake", () => {
         await stakeUnstakePage.runStakingFlowWithAmount(0.2, randomValidatorIndexes[0]);
 
         await stakeUnstakePage.selectNthAccount(0);
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0.1 NEAR/);
+        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
         await stakeUnstakePage.selectNthAccount(1);
+        await page.locator("data-test-id=stakingPageUnstakingButton").click({
+            trial: true
+        })
         await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0.2 NEAR/);
 
         await stakeUnstakePage.clickStakeButton();
@@ -71,9 +72,18 @@ describe("Lockup stake and unstake", () => {
         await stakeUnstakePage.returnToDashboard();
 
         await stakeUnstakePage.selectNthAccount(0);
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0.1 NEAR/);
-        await stakeUnstakePage.selectNthAccount(1);
+        // artificial wait here because frontend is too slow to react
+        await page.waitForTimeout(5000);
         await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
+        await stakeUnstakePage.selectNthAccount(1);
+        const pass = await retryableAssert({
+            assertFN: async () => {
+                const e = await page.locator("data-test-id=stakingPageTotalStakedAmount").textContent()
+                return new RegExp('0 NEAR').test(e)
+            },
+            retryCount: 6
+        })
+        expect(pass).toBe(true);
 
         await stakeUnstakePage.clickStakeButton();
         await stakeUnstakePage.stakeWithValidator(randomValidatorIndexes[1]);
