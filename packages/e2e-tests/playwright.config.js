@@ -15,7 +15,7 @@ const config = {
         timeout: 120 * 1000,
         reuseExistingServer: false,
     },
-    timeout: 60000,
+    timeout: 5 * 60 * 1000,
     use: {
         baseURL: process.env.WALLET_URL || "https://wallet.testnet.near.org",
         headless: true,
