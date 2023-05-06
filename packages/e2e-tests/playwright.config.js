@@ -1,4 +1,5 @@
 require("dotenv").config();
+const {devices} = require('playwright')
 
 const config = {
     expect: {
