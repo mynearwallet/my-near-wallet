@@ -1,3 +1,4 @@
+// @ts-check
 const nearApi = require("near-api-js");
 
 const { test, expect } = require("../playwrightWithFixtures");
@@ -25,14 +26,10 @@ describe("Swap NEAR with NEP141", () => {
     const maxDecimalsToCheck = 2;
     let account;
     let totalBalanceOnStart;
-    let page;
     let homePage;
     let swapPage;
 
-    beforeAll(async ({ browser, bankAccount }) => {
-        const context = await browser.newContext();
-
-        page = await context.newPage();
+    beforeAll(async ({ bankAccount, page }) => {
         homePage = new HomePage(page);
         swapPage = new SwapPage(page);
 
@@ -46,8 +43,6 @@ describe("Swap NEAR with NEP141", () => {
     });
 
     afterAll(async () => {
-        await homePage.close();
-        await swapPage.close();
         await account.delete();
     });
 
@@ -91,7 +86,7 @@ describe("Swap NEAR with NEP141", () => {
 
         const nearBalanceAfter = await account.getUpdatedBalance();
         const formattedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
-        const parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        const parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
         const spentInSwap = swapAmount + SWAP_FEE;
 
         expect(Number(formattedTotalAfter)).toBeCloseTo(

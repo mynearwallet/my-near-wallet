@@ -1,3 +1,4 @@
+// @ts-check
 const { test, expect } = require("@playwright/test");
 
 const {
@@ -20,7 +21,7 @@ describe("Account Registration Using Seed Phrase", () => {
 
     afterAll(async () => {
         if (testAccount) {
-            await testAccount.nearApiJsAccount.deleteAccount(nearApiJsConnection.config.networkId);
+            await testAccount.nearApiJsAccount.deleteAccount(nearApiJsConnection.config?.networkId);
         }
     });
 
@@ -31,12 +32,12 @@ describe("Account Registration Using Seed Phrase", () => {
         await homePage.navigate();
 
         await homePage.clickCreateAccount();
-        await expect(page).toMatchURL(/\/create$/);
+        await expect(page).toHaveURL(/\/create$/);
 
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         await createAccountPage.submitAccountId(testAccountId);
-        await expect(page).toMatchURL(
+        await expect(page).toHaveURL(
             new RegExp(`/set-recovery/${testAccountId}`)
         );
     });
@@ -44,27 +45,18 @@ describe("Account Registration Using Seed Phrase", () => {
         page,
     }) => {
         const setRecoveryOptionPage = new SetRecoveryOptionPage(page);
-        await setRecoveryOptionPage.navigate(`${testAccountId}.${nearApiJsConnection.config.networkId}`);
+        await setRecoveryOptionPage.navigate(`${testAccountId}.${nearApiJsConnection.config?.networkId}`);
 
         await setRecoveryOptionPage.clickLedgerRecoveryOption();
-        await expect(page).toMatchAttribute(
-            setRecoveryOptionPage.getLedgerSelector(),
-            "class",
-            /active/
-        );
-
+        await expect(page.locator(setRecoveryOptionPage.getLedgerSelector())).toHaveAttribute('class', /active/)
         await setRecoveryOptionPage.clickSeedPhraseRecoveryOption();
-        await expect(page).toMatchAttribute(
-            setRecoveryOptionPage.getSeedPhraseSelector(),
-            "class",
-            /active/
-        );
+        await expect(page.locator(setRecoveryOptionPage.getSeedPhraseSelector())).toHaveAttribute('class', /active/)
 
         await setRecoveryOptionPage.clickSeedPhraseRecoveryOption();
         await setRecoveryOptionPage.submitRecoveryOption();
 
-        await expect(page).toMatchURL(
-            new RegExp(`/setup-seed-phrase/${testAccountId}.${nearApiJsConnection.config.networkId}/phrase`)
+        await expect(page).toHaveURL(
+            new RegExp(`/setup-seed-phrase/${testAccountId}.${nearApiJsConnection.config?.networkId}/phrase`)
         );
     });
     test("is able to verify seed phrase and access wallet", async ({
@@ -76,18 +68,18 @@ describe("Account Registration Using Seed Phrase", () => {
             .grantPermissions(["clipboard-read", "clipboard-write"])
             .catch(test.skip);
         // skip test on mainnet
-        if (nearApiJsConnection.config.networkId === WALLET_NETWORK.MAINNET) {
+        if (nearApiJsConnection.config?.networkId === WALLET_NETWORK.MAINNET) {
             test.skip();
         }
 
         const setupSeedPhrasePage = new SetupSeedPhrasePage(page);
-        await setupSeedPhrasePage.navigate(`${testAccountId}.${nearApiJsConnection.config.networkId}`);
+        await setupSeedPhrasePage.navigate(`${testAccountId}.${nearApiJsConnection.config?.networkId}`);
 
         const copiedSeedPhrase = await setupSeedPhrasePage.copySeedPhrase();
 
         await setupSeedPhrasePage.continueToSeedPhraseVerification();
-        await expect(page).toMatchURL(
-            new RegExp(`/setup-seed-phrase/${testAccountId}.${nearApiJsConnection.config.networkId}/verify`)
+        await expect(page).toHaveURL(
+            new RegExp(`/setup-seed-phrase/${testAccountId}.${nearApiJsConnection.config?.networkId}/verify`)
         );
 
         const verifySeedPhrasePage = new VerifySeedPhrasePage(page);
@@ -98,15 +90,12 @@ describe("Account Registration Using Seed Phrase", () => {
             copiedSeedPhrase.split(" ")[requestedVerificationWordNumber - 1]
         );
 
-        await expect(page).toMatchURL(/\/$/);
-        await expect(page).toMatchText(
-            "data-test-id=currentUser >> visible=true",
-            `${testAccountId}.${nearApiJsConnection.config.networkId}`
-        );
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.locator("data-test-id=currentUser >> visible=true")).toHaveText(`${testAccountId}.${nearApiJsConnection.config?.networkId}`)
         testAccount = await new E2eTestAccount(
-            `${testAccountId}.${nearApiJsConnection.config.networkId}`,
+            `${testAccountId}.${nearApiJsConnection.config?.networkId}`,
             copiedSeedPhrase,
-            { accountId: nearApiJsConnection.config.networkId }
+            { accountId: nearApiJsConnection.config?.networkId }
         ).initialize();
     });
 });

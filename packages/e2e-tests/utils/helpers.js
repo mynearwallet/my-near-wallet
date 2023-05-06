@@ -44,30 +44,6 @@ const bnIsWithinUncertainty = (uncertaintyBn, bn1, bn2) => {
     return bn1.sub(bn2).abs().lte(uncertaintyBn.abs())
 }
 
-const wait = (seconds) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, seconds * 1000);
-  });
-
-const retryableAssert = async ({assertFN, retryCount = 5, interval = 10}) => {
-  let pass = false;
-
-  let retriedCount = 0;
-  do {
-    retriedCount++;
-    pass = await assertFN();
-    if (retriedCount === retryCount) {
-      break;
-    }
-    if (!pass) {
-      await wait(interval);
-    }
-  } while (!pass);
-  return pass;
-};
-
 module.exports = {
     generateNUniqueRandomNumbersInRange,
     getKeyPairFromSeedPhrase,
@@ -76,6 +52,5 @@ module.exports = {
     getWorkerAccountId,
     getWorkerAccountRegex,
     bnSaturatingSub,
-    bnIsWithinUncertainty,
-    retryableAssert
+    bnIsWithinUncertainty
 };

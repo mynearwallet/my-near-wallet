@@ -34,6 +34,15 @@ class E2eTestAccount {
         this.nearApiJsAccount = await near.account(this.accountId);
         await this.nearApiJsAccount.state();
     }
+    /**
+     * 
+     * @param {Object} options 
+     * @param {string} options.amount
+     * @param {string=} options.contractWasm
+     * @param {string=} options.initArgs
+     * @param {string=} options.initFunction
+     * @returns 
+     */
     async create({ amount, contractWasm, initArgs, initFunction } = { amount: TEST_ACCOUNT_DEPOSIT_AMOUNT }) {
         if (contractWasm) {
             if (initFunction && initArgs) {
@@ -63,7 +72,17 @@ class E2eTestAccount {
         this.isCreated = true;
         return this.initialize();
     }
-    // fully unlocked / vested by default
+    /**
+     * fully unlocked / vested by default
+     * 
+     * @param {Object} options
+     * @param {string=} options.amount
+     * @param {string=} options.release_duration
+     * @param {string=} options.lockup_timestamp
+     * @param {any} options.vesting_schedule
+     * @param {boolean=} options.v2Wasm
+     * @returns 
+     */
     async createTestLockupSubAccountInstance({ amount, release_duration, lockup_timestamp, vesting_schedule, v2Wasm } = {}) {
         if (!this.nearApiJsAccount) {
             throw new Error("Account needs to be initialized to spawn sub accounts");

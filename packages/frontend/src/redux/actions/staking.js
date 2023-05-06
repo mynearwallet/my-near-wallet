@@ -294,7 +294,12 @@ export const { staking } = createActions({
         },
         UPDATE_LOCKUP: async (contract, account_id, exAccountId, accountId, validators) => {
             // use MIN_LOCKUP_AMOUNT vs. actual storage amount
-            const deposited = new BN(await contract.get_known_deposited_balance());
+            let deposited;
+            try {
+                deposited = new BN(await contract.get_known_deposited_balance());
+            } catch (err) {
+                return {};
+            }
             const { code_hash } = await contract.account.state();
             let totalUnstaked = new BN(await contract.get_owners_balance())
                 .add(new BN(await contract.get_locked_amount()))

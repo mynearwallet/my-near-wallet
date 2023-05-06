@@ -1,3 +1,4 @@
+// @ts-check
 const { test, expect } = require("../playwrightWithFixtures");
 
 const { HomePage } = require("../register/models/Home");
@@ -31,16 +32,14 @@ describe("Login with Dapp", () => {
         const loginPage = new LoginPage(page);
         await loginPage.navigate();
 
-        await expect(page).toMatchURL(/\/login/);
+        await expect(page).toHaveURL(/\/login/);
 
         const currentlyLoggedInUser = await page.textContent(
             "data-test-id=currentUser"
         );
-        await expect(page).not.toHaveSelector(".dots");
-        await expect(page).toMatchText(
-            ".account-id",
-            currentlyLoggedInUser
-        );
+        expect(currentlyLoggedInUser).not.toBe(null)
+        await expect(page.locator(".dots")).not.toBeVisible();
+        await expect(page.locator('.account-id')).toHaveText(currentlyLoggedInUser || "")
     });
     test("navigates back to dapp with access key when access is granted", async ({
         page,
@@ -50,22 +49,19 @@ describe("Login with Dapp", () => {
 
         await loginPage.allowAccess();
 
-        await expect(page).toMatchURL(new RegExp(testDappURL));
+        await expect(page).toHaveURL(new RegExp(testDappURL));
 
         const pendingkeyLocalStorageKeys =
             await testDappPage.getPendingAccessKeys();
-        await expect(pendingkeyLocalStorageKeys).toHaveLength(0);
+        expect(pendingkeyLocalStorageKeys).toHaveLength(0);
 
         const accesskeyLocalStorageKey =
             await testDappPage.getAccessKeyForAccountId(
                 testAccount.accountId
             );
-        await expect(accesskeyLocalStorageKey).toBeTruthy();
-        
-        await expect(page).toMatchText(
-            'data-test-id=testDapp-currentUser',
-            new RegExp(testAccount.accountId)
-        );
+        expect(accesskeyLocalStorageKey).toBeTruthy();
+
+        await expect(page.locator("data-test-id=testDapp-currentUser")).toHaveText(new RegExp(testAccount.accountId))
     });
     test("navigates back to dapp when access is denied", async ({ page }) => {
         const loginPage = new LoginPage(page);
@@ -73,18 +69,18 @@ describe("Login with Dapp", () => {
 
         await loginPage.denyAccess();
 
-        await expect(page).toMatchURL(new RegExp(testDappURL));
+        await expect(page).toHaveURL(new RegExp(testDappURL));
 
         const pendingkeyLocalStorageKeys =
             await testDappPage.getPendingAccessKeys();
-        await expect(pendingkeyLocalStorageKeys).not.toHaveLength(0);
+        expect(pendingkeyLocalStorageKeys).not.toHaveLength(0);
 
         const accesskeyLocalStorageKey =
             await testDappPage.getAccessKeyForAccountId(
                 testAccount.accountId
             );
-        await expect(accesskeyLocalStorageKey).toBeFalsy();
+        expect(accesskeyLocalStorageKey).toBeFalsy();
 
-        await expect(page).toHaveSelector("data-test-id=testDapp-signInBtn");
+        await expect(page.locator("data-test-id=testDapp-signInBtn")).toBeVisible()
     });
 });

@@ -37,6 +37,10 @@ class HomePage {
     async loginWithSeedPhraseLocalStorage(accountId, seedPhrase) {
         await this.loginWithKeyPairLocalStorage(accountId, getKeyPairFromSeedPhrase(seedPhrase));
     }
+    /**
+     * 
+     * @returns {Promise<string>}
+     */
     async getNearBalanceInNear() {
         const rawBalance = await this.page.textContent("data-test-id=walletHomeNearBalance")
         const mixed = rawBalance.split(" ")[0]

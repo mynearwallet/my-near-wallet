@@ -1,3 +1,4 @@
+// @ts-check
 const nearApi = require("near-api-js");
 
 const { test, expect } = require("../playwrightWithFixtures");
@@ -24,29 +25,19 @@ describe("Swap NEP141 with NEP141", () => {
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
-    let page;
     let homePage;
     let swapPage;
 
-    beforeAll(async ({ browser, bankAccount }) => {
-        const context = await browser.newContext();
-
-        page = await context.newPage();
+    beforeAll(async ({ page, bankAccount }) => {
         homePage = new HomePage(page);
         swapPage = new SwapPage(page);
 
         account = bankAccount.spawnRandomSubAccountInstance();
 
         await account.create();
-
-        const { total } = await account.getUpdatedBalance();
-
-        totalBalanceOnStart = Number(format.formatNearAmount(total));
     });
 
     afterAll(async () => {
-        await homePage.close();
-        await swapPage.close();
         await account.delete();
     });
 
@@ -69,7 +60,7 @@ describe("Swap NEP141 with NEP141", () => {
         const outInput = await swapPage.getOutputInput();
         const token0OutAmount = await outInput.inputValue();
         let nearBalanceBefore = await account.getUpdatedBalance();
-        let parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        let parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
@@ -101,7 +92,7 @@ describe("Swap NEP141 with NEP141", () => {
         const token1OutInput = await swapPage.getOutputInput();
         const token1OutAmount = await token1OutInput.inputValue();
         nearBalanceBefore = await account.getUpdatedBalance();
-        parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
 
         expect(Number(token1OutAmount) > 0).toBeTruthy();
 

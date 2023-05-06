@@ -1,3 +1,4 @@
+// @ts-check
 const nearApi = require("near-api-js");
 
 const { test, expect } = require("../playwrightWithFixtures");
@@ -25,30 +26,19 @@ describe("Swap wrapped NEAR with NEP141", () => {
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
-    let totalBalanceOnStart;
-    let page;
     let homePage;
     let swapPage;
 
-    beforeAll(async ({ browser, bankAccount }) => {
-        const context = await browser.newContext();
-
-        page = await context.newPage();
+    beforeAll(async ({ page, bankAccount }) => {
         homePage = new HomePage(page);
         swapPage = new SwapPage(page);
 
         account = bankAccount.spawnRandomSubAccountInstance();
 
         await account.create();
-
-        const { total } = await account.getUpdatedBalance();
-
-        totalBalanceOnStart = Number(format.formatNearAmount(total));
     });
 
     afterAll(async () => {
-        await homePage.close();
-        await swapPage.close();
         await account.delete();
     });
 
@@ -71,7 +61,7 @@ describe("Swap wrapped NEAR with NEP141", () => {
 
         let outInput = await swapPage.getOutputInput();
         let nearBalanceBefore = await account.getUpdatedBalance();
-        let parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        let parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
@@ -94,13 +84,13 @@ describe("Swap wrapped NEAR with NEP141", () => {
         });
 
         outInput = await swapPage.getOutputInput();
-        outAmount = await outInput.inputValue();
+        let outAmount = await outInput.inputValue();
 
         expect(Number(outAmount) > 0).toBeTruthy();
 
         // Fetch NEAR and wNEAR before the swap
         nearBalanceBefore = await account.getUpdatedBalance();
-        parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
         const wNearBalanceBefore = await account.getTokenBalance(TESTNET.wNEAR.id);
         const wNearFormattedBalanceBefore = Number(formatAmount(wNearBalanceBefore, TESTNET.wNEAR.decimals));
 
@@ -154,8 +144,8 @@ describe("Swap wrapped NEAR with NEP141", () => {
             initialDelay: waitAfterSwapWhileBalancesLoading,
         });
 
-        outInput = await swapPage.getOutputInput();
-        wNearOutAmount = await outInput.inputValue();
+        let outInput = await swapPage.getOutputInput();
+        let wNearOutAmount = await outInput.inputValue();
 
         expect(Number(wNearOutAmount) > 0).toBeTruthy();
 

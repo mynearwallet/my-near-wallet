@@ -1,10 +1,11 @@
+// @ts-check
 const {
     LOCKUP_CONFIGS: { FULLY_UNVESTED_CONFIG },
 } = require("../constants");
 
 const { test, expect } = require("../playwrightWithFixtures");
 const { HomePage } = require("../register/models/Home");
-const { generateNUniqueRandomNumbersInRange, retryableAssert } = require("../utils/helpers");
+const { generateNUniqueRandomNumbersInRange } = require("../utils/helpers");
 const { StakeUnstakePage } = require("./models/StakeUnstake");
 
 const { describe, afterEach, beforeEach } = test;
@@ -33,7 +34,7 @@ describe("Lockup stake and unstake", () => {
         const [randomValidatorIndex] = generateNUniqueRandomNumbersInRange({ from: 0, to: validatorLastIndex }, 1);
         await stakeUnstakePage.runStakingFlowWithAmount(0.1, randomValidatorIndex);
         await page.locator("data-test-id=stakingPageUnstakingButton").click({trial: true})
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0.1 NEAR/);
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(/0.1 NEAR/)
     });
 
     test("Stakes and unstakes with locked funds and can't stake with multiple validators simultaneously", async ({ page }) => {
@@ -43,9 +44,9 @@ describe("Lockup stake and unstake", () => {
             trial: true
         })
         await stakeUnstakePage.selectNthAccount(0);
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(/0 NEAR/)
         await stakeUnstakePage.selectNthAccount(1);
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(/0 NEAR/)
 
         await stakeUnstakePage.clickStakeButton();
         const validatorLastIndex = (await stakeUnstakePage.getNumberOfSelectableValidators()) - 1;
@@ -54,16 +55,16 @@ describe("Lockup stake and unstake", () => {
         await stakeUnstakePage.runStakingFlowWithAmount(0.2, randomValidatorIndexes[0]);
 
         await stakeUnstakePage.selectNthAccount(0);
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(/0 NEAR/)
         await stakeUnstakePage.selectNthAccount(1);
         await page.locator("data-test-id=stakingPageUnstakingButton").click({
             trial: true
         })
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0.2 NEAR/);
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(/0.2 NEAR/)
 
         await stakeUnstakePage.clickStakeButton();
         await stakeUnstakePage.stakeWithValidator(randomValidatorIndexes[1]);
-        await expect(page).toHaveSelector("data-test-id=cantStakeWithValidatorContainer");
+        await expect(page.locator("data-test-id=cantStakeWithValidatorContainer")).toBeVisible()
 
         await stakeUnstakePage.clickViewCurrentValidator();
         await stakeUnstakePage.clickValidatorPageUnstakeButton();
@@ -74,20 +75,14 @@ describe("Lockup stake and unstake", () => {
         await stakeUnstakePage.selectNthAccount(0);
         // artificial wait here because frontend is too slow to react
         await page.waitForTimeout(5000);
-        await expect(page).toMatchText("data-test-id=stakingPageTotalStakedAmount", /0 NEAR/);
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(/0 NEAR/)
         await stakeUnstakePage.selectNthAccount(1);
-        const pass = await retryableAssert({
-            assertFN: async () => {
-                const e = await page.locator("data-test-id=stakingPageTotalStakedAmount").textContent()
-                return new RegExp('0 NEAR').test(e)
-            },
-            retryCount: 6
-        })
-        expect(pass).toBe(true);
-
+        await expect(async () => {
+            await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(new RegExp('0 NEAR'))
+        }).toPass()
         await stakeUnstakePage.clickStakeButton();
         await stakeUnstakePage.stakeWithValidator(randomValidatorIndexes[1]);
-        await expect(page).toHaveSelector("data-test-id=cantStakeWithValidatorContainer");
+        await expect(page.locator("data-test-id=cantStakeWithValidatorContainer")).toBeVisible()
 
         await stakeUnstakePage.navigate();
         await stakeUnstakePage.selectNthAccount(1);

@@ -1,3 +1,4 @@
+// @ts-check
 const { test, expect } = require("../playwrightWithFixtures");
 const BN = require("bn.js");
 const { parseNearAmount, formatNearAmount } = require("near-api-js/lib/utils/format");
@@ -29,12 +30,12 @@ describe("Staking flow", () => {
         const stakeUnstakePage = new StakeUnstakePage(page);
         await stakeUnstakePage.navigate();
 
-        await expect(page).toMatchURL(/\/staking$/);
+        await expect(page).toHaveURL(/\/staking$/);
         await page.locator("data-test-id=stakeMyTokensButton").click({
             trial: true
         })
         // TODO assert current balance
-        await expect(page).toMatchText("data-test-id=accountSelectStakedBalance", "0 NEAR");
+        await expect(page.locator("data-test-id=accountSelectStakedBalance")).toHaveText("0 NEAR")
     });
     test("correctly searches for validators", async ({ page }) => {
         const stakeUnstakePage = new StakeUnstakePage(page);
@@ -43,8 +44,8 @@ describe("Staking flow", () => {
         const firstValidatorName = await stakeUnstakePage.getValidatorName();
         await stakeUnstakePage.searhForValidator(firstValidatorName);
 
-        await expect(page).toHaveSelector("data-test-id=stakingPageValidatorFoundLabel");
-        await expect(page).toHaveSelectorCount("data-test-id=stakingPageValidatorItem", 1);
+        await expect(page.locator("data-test-id=stakingPageValidatorFoundLabel")).toBeVisible()
+        expect(await page.locator('data-test-id=stakingPageValidatorItem').count()).toBe(1)
     });
     test("correctly selects and stakes with validator", async ({ page }) => {
         const testStakeAmount = 0.1;
@@ -60,35 +61,29 @@ describe("Staking flow", () => {
         const validatorName = await stakeUnstakePage.getValidatorName(validatorIndex);
         await stakeUnstakePage.stakeWithValidator(validatorIndex);
 
-        await expect(page).toMatchURL(new RegExp(`/${validatorName}$`));
-        await expect(page).toMatchText("data-test-id=validatorNamePageTitle", new RegExp(`${validatorName}`));
+        await expect(page).toHaveURL(new RegExp(`/${validatorName}$`));
+
+        await expect(page.locator("data-test-id=validatorNamePageTitle")).toHaveText(new RegExp(`${validatorName}`))
 
         await stakeUnstakePage.clickStakeWithValidator();
         await stakeUnstakePage.submitStakeWithAmount(testStakeAmount);
         await stakeUnstakePage.confirmStakeOnModal();
 
-        await expect(page).toHaveSelector("data-test-id=stakingSuccessMessage");
-
+        await expect(page.locator("data-test-id=stakingSuccessMessage")).toBeVisible()
         await stakeUnstakePage.returnToDashboard();
 
-        await expect(page).toMatchURL(/\/staking$/);
+        await expect(page).toHaveURL(/\/staking$/);
         await page.locator("data-test-id=stakingPageUnstakingButton").click({
             trial: true
         })
 
         const maxRemainingNear = currentlyDisplayedWalletBalance.sub(
-            new BN(parseNearAmount(testStakeAmount.toString()))
+            new BN(parseNearAmount(testStakeAmount.toString()) || "")
         );
         currentlyDisplayedWalletBalance = await stakeUnstakePage.getCurrentlyDisplayedBalance();
         expect(maxRemainingNear.gt(currentlyDisplayedWalletBalance)).toBe(true);
-        await expect(page).toMatchText(
-            "data-test-id=accountSelectStakedBalance",
-            new RegExp(testStakeAmount.toString())
-        );
-        await expect(page).toMatchText(
-            "data-test-id=stakingPageTotalStakedAmount",
-            new RegExp(testStakeAmount.toString())
-        );
+        await expect(page.locator("data-test-id=accountSelectStakedBalance")).toHaveText(new RegExp(testStakeAmount.toString()))
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(new RegExp(testStakeAmount.toString()))
 
         const stakedAmount = await testAccount.getAmountStakedWithValidator(validatorName);
 

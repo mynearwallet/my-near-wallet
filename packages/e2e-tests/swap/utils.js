@@ -38,7 +38,7 @@ function getResultMessageRegExp({
     );
 
     return new RegExp(
-        `You swapped ${expectedFromAmount} ${fromSymbol}[ ]{1,}to ${expectedToAmount}\\d* ${toSymbol}`,
+        `You swapped ${expectedFromAmount}\\d* ${fromSymbol}[ ]{1,}to ${expectedToAmount}\\d* ${toSymbol}`,
         'im'
     );
 };

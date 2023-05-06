@@ -1,3 +1,4 @@
+// @ts-check
 const { test, expect } = require("../playwrightWithFixtures");
 const { formatNearAmount } = require("near-api-js/lib/utils/format");
 
@@ -6,30 +7,6 @@ const { HomePage } = require("../register/models/Home");
 const { generateNUniqueRandomNumbersInRange } = require("../utils/helpers");
 
 const { describe, afterEach, beforeEach } = test;
-
-const wait = (seconds) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, seconds * 1000);
-  });
-
-const retryableAssert = async ({assertFN, retryCount = 5, interval = 10}) => {
-  let pass = false;
-
-  let retriedCount = 0;
-  do {
-    retriedCount++;
-    pass = await assertFN();
-    if (retriedCount === retryCount) {
-      break;
-    }
-    if (!pass) {
-      await wait(interval);
-    }
-  } while (!pass);
-  expect(pass).toBe(true)
-};
 
 describe("Unstaking flow", () => {
     let testAccount;
@@ -62,19 +39,12 @@ describe("Unstaking flow", () => {
         await stakeUnstakePage.runStakingFlowWithAmount(0.2, randomValidatorIndexes[1]);
         await stakeUnstakePage.clickStakingPageUnstakeButton();
 
-        await expect(page).toMatchURL(/\/staking\/unstake$/);
-        await retryableAssert({
-          assertFN: async () => {
-            return (
-              await page.locator("data-test-id=stakingPageValidatorItem").count() ===
-              2
-            );
-          },
-          retryCount: 6
-        });
-        await expect(page).toHaveSelectorCount("data-test-id=stakingPageValidatorItem", 2);
-        await expect(page).toMatchText(/0.1 NEAR/);
-        await expect(page).toMatchText(/0.2 NEAR/);
+        await expect(page).toHaveURL(/\/staking\/unstake$/);
+        await expect(async () => {
+          expect(await page.locator("data-test-id=stakingPageValidatorItem").count()).toBe(2)
+        }).toPass()
+        expect(page.getByText(/0.1 NEAR/)).toBeTruthy()
+        expect(page.getByText(/0.2 NEAR/)).toBeTruthy()
     });
 
     test("successfully unstakes and displays the right data after", async ({ page }) => {
@@ -100,30 +70,17 @@ describe("Unstaking flow", () => {
         await stakeUnstakePage.returnToDashboard();
 
         // wait for stake details to be updated.
-        await retryableAssert({
-            assertFN: async () => {
-                const e = await page.locator("data-test-id=accountSelectStakedBalance").textContent()
-                return new RegExp(`${amountStillStaked} NEAR`).test(e)
-            },
-            retryCount: 6
-        })
-        await expect(page).toMatchText(
-            "data-test-id=accountSelectStakedBalance",
-            new RegExp(`${amountStillStaked} NEAR`)
-        );
-        await expect(page).toMatchText(
-            "data-test-id=stakingPageTotalStakedAmount",
-            new RegExp(`${amountStillStaked} NEAR`)
-        );
-        await expect(page).toMatchText(
-            "data-test-id=stakingPagePendingReleaseAmount",
-            new RegExp(`${submittedUnstakeAmount} NEAR`)
-        );
+        await expect(async () => {
+          await expect(page.locator("data-test-id=accountSelectStakedBalance")).toHaveText(new RegExp(`${amountStillStaked} NEAR`))
+        }).toPass()
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(new RegExp(`${amountStillStaked} NEAR`))
+        await expect(page.locator("data-test-id=stakingPagePendingReleaseAmount")).toHaveText(new RegExp(`${submittedUnstakeAmount} NEAR`))
 
         await stakeUnstakePage.clickStakingPageUnstakeButton();
 
-        await expect(page).toHaveSelectorCount("data-test-id=stakingPageValidatorItem", 1);
-        await expect(page).toMatchText(new RegExp(`${amountStillStaked} NEAR`));
+        
+        expect(await page.locator("data-test-id=stakingPageValidatorItem").count()).toBe(1)
+        expect(page.getByText(new RegExp(`${amountStillStaked} NEAR`))).toBeTruthy()
 
         const stakedAmount = await testAccount.getAmountStakedWithValidator(stakedValidatorName);
 
