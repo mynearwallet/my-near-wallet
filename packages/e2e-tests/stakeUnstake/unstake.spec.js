@@ -30,11 +30,6 @@ describe("Unstaking flow", () => {
         const validatorLastIndex = (await stakeUnstakePage.getNumberOfSelectableValidators()) - 1;
         const randomValidatorIndexes = generateNUniqueRandomNumbersInRange({ from: 0, to: validatorLastIndex }, 2);
         await stakeUnstakePage.runStakingFlowWithAmount(0.1, randomValidatorIndexes[0]);
-        // account will be deleted if we don't wait for this
-        // not sure why, need to be figured out...
-        await page.locator("data-test-id=stakingPageUnstakingButton").click({
-            trial: true
-        })
         await stakeUnstakePage.clickStakeButton();
         await stakeUnstakePage.runStakingFlowWithAmount(0.2, randomValidatorIndexes[1]);
         await stakeUnstakePage.clickStakingPageUnstakeButton();
@@ -54,11 +49,6 @@ describe("Unstaking flow", () => {
         const validatorLastIndex = (await stakeUnstakePage.getNumberOfSelectableValidators()) - 1;
         const randomValidatorIndexes = generateNUniqueRandomNumbersInRange({ from: 0, to: validatorLastIndex }, 2);
         await stakeUnstakePage.runStakingFlowWithAmount(0.1, randomValidatorIndexes[0]);
-        // account will be deleted if we don't wait for this
-        // not sure why, need to be figured out...
-        await page.locator("data-test-id=stakingPageUnstakingButton").click({
-            trial: true
-        })
         await stakeUnstakePage.clickStakeButton();
         await stakeUnstakePage.runStakingFlowWithAmount(0.2, randomValidatorIndexes[1]);
         await stakeUnstakePage.clickStakingPageUnstakeButton();
