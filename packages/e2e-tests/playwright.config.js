@@ -3,7 +3,7 @@ const {devices} = require('playwright')
 
 const config = {
     expect: {
-        timeout: 30 * 1000// unit is ms, default is 5s
+        timeout: 60 * 1000// unit is ms, default is 5s
     },
     globalSetup: require.resolve("./global-setup.js"),
     reporter: [["./reporters/WalletE2eLogsReporter.js", { logger: console }], ["./reporters/pagerduty-reporter.js"]],

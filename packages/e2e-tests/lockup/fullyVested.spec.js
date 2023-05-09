@@ -85,6 +85,9 @@ describe("Fully vested lockup", () => {
         expect(bnIsWithinUncertainty(uncertaintyForGas, new BN(lockupTotalBalance), ownersBalanceChange)).toBe(true);
         
         await new StakeUnstakePage(page).clickStakingTab();
+        await page.locator("data-test-id=stakeMyTokensButton").click({
+            trial: true
+        })
         expect(await page.locator("data-test-id=accountSelectAvailableBalance").count()).toBe(1)
     });
 
@@ -139,6 +142,9 @@ describe("Fully vested lockup", () => {
         expect(bnIsWithinUncertainty(uncertaintyForGas, new BN(lockupTotalBalance), ownersBalanceChange)).toBe(true);
 
         await new StakeUnstakePage(page).clickStakingTab();
+        await page.locator("data-test-id=stakeMyTokensButton").click({
+            trial: true
+        })
         expect(await page.locator("data-test-id=accountSelectAvailableBalance").count()).toBe(1)
     });
 });
