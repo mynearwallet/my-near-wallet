@@ -46,7 +46,11 @@ describe("Swap wrapped NEAR with NEP141", () => {
     afterAll(async () => {
         await homePage.close();
         await swapPage.close();
-        await account.delete();
+        try{
+            await account.delete();
+        }catch(err){
+            // allow account deletion to be failed.
+        }
     });
 
     const token = NEP141_TOKENS.TESTNET[0];
