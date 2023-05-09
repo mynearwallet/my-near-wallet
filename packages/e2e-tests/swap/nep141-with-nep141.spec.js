@@ -25,10 +25,15 @@ describe("Swap NEP141 with NEP141", () => {
     // Limit on amount decimals because we don't know the exact transaction fees
     const maxDecimalsToCheck = 2;
     let account;
+    let page;
     let homePage;
     let swapPage;
 
-    beforeAll(async ({ page, bankAccount }) => {
+    // @ts-ignore
+    beforeAll(async ({ browser, bankAccount }) => {
+        const context = await browser.newContext();
+
+        page = await context.newPage();
         homePage = new HomePage(page);
         swapPage = new SwapPage(page);
 
@@ -38,6 +43,8 @@ describe("Swap NEP141 with NEP141", () => {
     });
 
     afterAll(async () => {
+        await homePage.close();
+        await swapPage.close();
         await account.delete();
     });
 

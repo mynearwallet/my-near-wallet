@@ -25,10 +25,15 @@ describe("Swap NEAR with wrapped NEAR", () => {
     const maxDecimalsToCheck = 2;
     let account;
     let totalBalanceOnStart;
+    let page;
     let homePage;
     let swapPage;
 
-    beforeAll(async ({ page, bankAccount }) => {
+    // @ts-ignore
+    beforeAll(async ({ browser, bankAccount }) => {
+        const context = await browser.newContext();
+
+        page = await context.newPage();
         homePage = new HomePage(page);
         swapPage = new SwapPage(page);
 
@@ -42,6 +47,8 @@ describe("Swap NEAR with wrapped NEAR", () => {
     });
 
     afterAll(async () => {
+        await homePage.close();
+        await swapPage.close();
         await account.delete();
     });
 

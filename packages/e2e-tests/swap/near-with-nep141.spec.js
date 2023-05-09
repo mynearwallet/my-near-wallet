@@ -14,7 +14,7 @@ const {
 } = require("./constants");
 
 const { utils: { format } } = nearApi;
-const { describe, beforeAll, afterAll } = test;
+const { describe, beforeAll, afterAll, beforeEach } = test;
 const { TESTNET } = CONTRACT;
 
 test.setTimeout(140_000)
@@ -26,10 +26,15 @@ describe("Swap NEAR with NEP141", () => {
     const maxDecimalsToCheck = 2;
     let account;
     let totalBalanceOnStart;
+    let page;
     let homePage;
     let swapPage;
 
-    beforeAll(async ({ bankAccount, page }) => {
+    // @ts-ignore
+    beforeAll(async ({ browser, bankAccount }) => {
+        const context = await browser.newContext();
+
+        page = await context.newPage();
         homePage = new HomePage(page);
         swapPage = new SwapPage(page);
 
@@ -43,6 +48,8 @@ describe("Swap NEAR with NEP141", () => {
     });
 
     afterAll(async () => {
+        await homePage.close();
+        await swapPage.close();
         await account.delete();
     });
 
@@ -127,7 +134,7 @@ describe("Swap NEAR with NEP141", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
-        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
+        await swapPage.waitResultMessageElement();
 
         const nearBalanceAfter = await account.getUpdatedBalance();
         const formattedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
