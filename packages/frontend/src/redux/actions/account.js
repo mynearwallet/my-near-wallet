@@ -129,8 +129,8 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
             referrer: document.referrer ? new URL(document.referrer).hostname : undefined,
             redirect_url: prevRouter ? prevRouter.location.pathname : undefined
         };
-        const isPrivateShard = parsedFragment?.calimeroShardId;
         const parsedFragment = parse(hash);
+        const isPrivateShard = parsedFragment?.calimeroShardId;
         if ( parsedFragment.calimeroShardId) {
             parsedUrl = { ...parsedUrl, ...parsedFragment };
         }
