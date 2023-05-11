@@ -38,7 +38,7 @@ class E2eTestAccount {
      * 
      * @param {Object} options 
      * @param {string} options.amount
-     * @param {string=} options.contractWasm
+     * @param {Buffer=} options.contractWasm
      * @param {string=} options.initArgs
      * @param {string=} options.initFunction
      * @returns 

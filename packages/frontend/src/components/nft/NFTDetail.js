@@ -147,6 +147,7 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                         <FormButton
                             className='transfer-btn'
                             color='gray-gray'
+                            data-test-id="nft-transfer-button"
                             disabled={!hasSufficientBalance}
                             onClick={() => setTransferNftDetail(nft)}
                         >
