@@ -1,3 +1,4 @@
+// @ts-check
 const { test, expect } = require("../playwrightWithFixtures");
 const { BN } = require("bn.js");
 const { parseNearAmount, formatNearAmount } = require("near-api-js/lib/utils/format");
@@ -23,10 +24,10 @@ describe("Linkdrop flow", () => {
         linkdropNEARAmount = "2.5",
         deleteAccountsAfter = [];
 
-    const linkdropClaimableAmount = new BN(parseNearAmount(linkdropNEARAmount)).sub(LINKDROP_ACCESS_KEY_ALLOWANCE);
+    const linkdropClaimableAmount = new BN(parseNearAmount(linkdropNEARAmount) || "").sub(LINKDROP_ACCESS_KEY_ALLOWANCE);
 
     beforeAll(async ({ bankAccount }) => {
-        linkdropAccountManager = await new LinkdropAccountManager(bankAccount).initialize("11.0");
+        linkdropAccountManager = await new LinkdropAccountManager(bankAccount).initialize("14.0");
     });
 
     beforeEach(async ({ page }) => {
@@ -39,7 +40,7 @@ describe("Linkdrop flow", () => {
     afterAll(async () => {
         linkdropAccountManager && (await linkdropAccountManager.deleteAccounts());
         await Promise.allSettled(
-            deleteAccountsAfter.map((account) => account.nearApiJsAccount.deleteAccount(nearApiJsConnection.config.networkId))
+            deleteAccountsAfter.map((account) => account.nearApiJsAccount.deleteAccount(nearApiJsConnection.config?.networkId))
         );
     });
 
@@ -53,53 +54,52 @@ describe("Linkdrop flow", () => {
         const contractAccountId = linkdropContractAccount.accountId;
         await linkdropPage.navigate(linkdropContractAccount.accountId, linkdropSecretKey);
 
-        await expect(page).not.toHaveSelector(".dots");
-        await expect(page).toMatchURL(new RegExp(`/linkdrop/${contractAccountId}/${linkdropSecretKey}`));
-        await expect(page).toMatchText(
-            "data-test-id=linkdropBalanceAmount",
-            new RegExp(`${formatNearAmount(linkdropClaimableAmount.toString())} NEAR`)
-        );
-        await expect(page).toMatchText("data-test-id=linkdropAccountDropdown", new RegExp(process.env.BANK_ACCOUNT));
-        await expect(page).toMatchText("data-test-id=linkdropAccountDropdown", new RegExp(linkdropReceiverAccount.accountId));
+        await expect(page.locator('.dots')).not.toBeVisible()
+        await expect(page).toHaveURL(new RegExp(`/linkdrop/${contractAccountId}/${linkdropSecretKey}`));
+        await expect(page.locator('data-test-id=linkdropBalanceAmount')).toHaveText(new RegExp(`${formatNearAmount(linkdropClaimableAmount.toString())} NEAR`))
+        await expect(page.locator('data-test-id=linkdropAccountDropdown')).toHaveText(new RegExp(process.env.BANK_ACCOUNT || ""))
+        await expect(page.locator('data-test-id=linkdropAccountDropdown')).toHaveText(new RegExp(linkdropReceiverAccount.accountId))
     });
+
     test("adds to current account balance", async ({ page }) => {
         const homePage = new HomePage(page);
         await homePage.navigate();
-        await page.waitForSelector(".dots", { state: "detached" });
-        const startBalance = new BN(parseNearAmount(await homePage.getNearBalanceInNear()));
+        await expect(page.locator('.tokensLoading')).not.toBeVisible();
+        const startBalance = new BN(parseNearAmount(await homePage.getNearBalanceInNear()) || "");
         const linkdropPage = new LinkDropPage(page);
         const endBalance = formatNearAmount(startBalance.add(linkdropClaimableAmount).toString());
-        const { linkdropContractAccount, lastSecretKey: linkdropSecretKey } = linkdropAccountManager;
-
+        
+        const { linkdropContractAccount } = linkdropAccountManager;
+        const linkdropSecretKey = await linkdropAccountManager.send(linkdropNEARAmount);
         await linkdropPage.navigate(linkdropContractAccount.accountId, linkdropSecretKey);
-        await expect(page).not.toHaveSelector(".dots");
+        await expect(page.locator('.dots')).not.toBeVisible()
 
         await linkdropPage.claimToExistingAccount();
-        await page.waitForNavigation();
+        await expect(page).toHaveURL(/\/$/);
 
         await page.reload();
-
-        await expect(page).not.toHaveSelector(".dots");
-        await expect(page).toMatchText("data-test-id=walletHomeNearBalance", new RegExp(endBalance));
+        await expect(page.locator('.tokensLoading')).not.toBeVisible();
+        await expect(page.locator("data-test-id=walletHomeNearBalance")).toHaveText(new RegExp(endBalance))
     });
+
     test("redirects to redirectUrl after adding when redirectUrl provided", async ({ page }) => {
         const linkdropPage = new LinkDropPage(page);
         const { linkdropContractAccount, linkdropReceiverAccount } = linkdropAccountManager;
         const linkdropSecretKey = await linkdropAccountManager.send(linkdropNEARAmount);
 
         await linkdropPage.navigate(linkdropContractAccount.accountId, linkdropSecretKey, testDappURL);
-        await expect(page).not.toHaveSelector(".dots");
+        await expect(page.locator('.dots')).not.toBeVisible()
 
         await linkdropPage.claimToExistingAccount();
-        await page.waitForNavigation();
 
-        await expect(page).toMatchURL(new RegExp(testDappURL));
-        await expect(page).toMatchURL(new RegExp(`accountId=${linkdropReceiverAccount.accountId}`));
+        await expect(page).toHaveURL(new RegExp(testDappURL));
+        await expect(page).toHaveURL(new RegExp(`accountId=${linkdropReceiverAccount.accountId}`));
     });
+
     test("claims linkdrop to new account", async ({ page, context }) => {
         await context.grantPermissions(["clipboard-read", "clipboard-write"]).catch(test.skip);
         // skip test on mainnet
-        if (nearApiJsConnection.config.networkId === WALLET_NETWORK.MAINNET) {
+        if (nearApiJsConnection.config?.networkId === WALLET_NETWORK.MAINNET) {
             test.skip();
         }
 
@@ -112,7 +112,7 @@ describe("Linkdrop flow", () => {
             "send",
             { public_key: linkdropKeyPair.publicKey.toString() },
             null,
-            new BN(parseNearAmount(linkdropNEARAmount))
+            new BN(parseNearAmount(linkdropNEARAmount) || "")
         );
         const linkdropPage = new LinkDropPage(page);
         await linkdropPage.navigate(linkdropContractTLAAccountId, linkdropKeyPair.secretKey);
@@ -135,21 +135,22 @@ describe("Linkdrop flow", () => {
         const requestedVerificationWordNumber = await verifySeedPhrasePage.getRequestedVerificationWordNumber();
         await verifySeedPhrasePage.verifyWithWord(copiedSeedPhrase.split(" ")[requestedVerificationWordNumber - 1]);
         const testAccount = await new E2eTestAccount(
-            `${testAccountId}.${nearApiJsConnection.config.networkId}`,
+            `${testAccountId}.${nearApiJsConnection.config?.networkId}`,
             copiedSeedPhrase,
             {
-                accountId: nearApiJsConnection.config.networkId,
+                accountId: nearApiJsConnection.config?.networkId,
             }
         ).initialize();
         deleteAccountsAfter.push(testAccount);
 
-        await expect(page).toMatchURL(/\/$/);
-        await expect(page).toHaveSelector("data-test-id=linkDropSuccessModal");
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.locator('data-test-id=linkDropSuccessModal')).toBeVisible()
     });
+
     test("redirects to redirectUrl when provided after creating a new account", async ({ page, context }) => {
         await context.grantPermissions(["clipboard-read", "clipboard-write"]).catch(test.skip);
         // skip test on mainnet
-        if (nearApiJsConnection.config.networkId === WALLET_NETWORK.MAINNET) {
+        if (nearApiJsConnection.config?.networkId === WALLET_NETWORK.MAINNET) {
             test.skip();
         }
 
@@ -162,7 +163,7 @@ describe("Linkdrop flow", () => {
             "send",
             { public_key: linkdropKeyPair.publicKey.toString() },
             null,
-            new BN(parseNearAmount(linkdropNEARAmount))
+            new BN(parseNearAmount(linkdropNEARAmount) || "")
         );
         const linkdropPage = new LinkDropPage(page);
         await linkdropPage.navigate(linkdropContractTLAAccountId, linkdropKeyPair.secretKey, testDappURL);
@@ -185,15 +186,15 @@ describe("Linkdrop flow", () => {
         const requestedVerificationWordNumber = await verifySeedPhrasePage.getRequestedVerificationWordNumber();
         await verifySeedPhrasePage.verifyWithWord(copiedSeedPhrase.split(" ")[requestedVerificationWordNumber - 1]);
         const testAccount = await new E2eTestAccount(
-            `${testAccountId}.${nearApiJsConnection.config.networkId}`,
+            `${testAccountId}.${nearApiJsConnection.config?.networkId}`,
             copiedSeedPhrase,
             {
-                accountId: nearApiJsConnection.config.networkId,
+                accountId: nearApiJsConnection.config?.networkId,
             }
         ).initialize();
         deleteAccountsAfter.push(testAccount);
 
-        await expect(page).toMatchURL(new RegExp(testDappURL));
-        await expect(page).toMatchURL(new RegExp(`accountId=${testAccountId}`));
+        await expect(page).toHaveURL(new RegExp(testDappURL));
+        await expect(page).toHaveURL(new RegExp(`accountId=${testAccountId}`));
     });
 });

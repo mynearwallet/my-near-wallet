@@ -109,7 +109,7 @@ const BalanceDisplay = ({
                 <>
                     {amount
                         ? <div className='near-amount'>{amountToShow}{showSymbolNEAR !== false ? ` ${CONFIG.NEAR_ID}` : ''}</div>
-                        : <div className="dots"><Translate id='loadingNoDots'/></div>
+                        : <div className="dots tokensLoading"><Translate id='loadingNoDots'/></div>
                     }
                 </>
             )}

@@ -61,6 +61,7 @@ import {
     handleStakingUpdateLockup,
     handleGetLockup
 } from './staking';
+import { showCustomAlert } from './status';
 
 const {
     handleFlowLimitation,
@@ -477,8 +478,25 @@ export const finishAccountSetup = () => async (dispatch, getState) => {
     const redirectUrl = selectAccountUrlRedirectUrl(getState());
     const accountId = selectAccountId(getState());
 
-    if (redirectUrl && isUrlNotJavascriptProtocol(redirectUrl)) {
-        window.location = `${redirectUrl}?accountId=${accountId}`;
+    if (redirectUrl) {
+        if (isUrlNotJavascriptProtocol(redirectUrl)) {
+            window.location = `${redirectUrl}?accountId=${accountId}`;
+        } else {
+            dispatch(handleRefreshUrl());
+            dispatch(push({
+                pathname: '/',
+                search: '',
+                state: {
+                    globalAlertPreventClear: true
+                }
+            }));
+            dispatch(showCustomAlert({
+                success: false,
+                messageCodeHeader: 'error',
+                messageCode: 'linkdropLanding.error.invalidRedirectUrl',
+                errorMessage: redirectUrl
+            }));
+        }
     } else {
         dispatch(redirectToApp('/'));
     }

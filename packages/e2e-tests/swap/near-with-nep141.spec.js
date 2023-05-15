@@ -1,3 +1,4 @@
+// @ts-check
 const nearApi = require("near-api-js");
 
 const { test, expect } = require("../playwrightWithFixtures");
@@ -13,7 +14,7 @@ const {
 } = require("./constants");
 
 const { utils: { format } } = nearApi;
-const { describe, beforeAll, afterAll } = test;
+const { describe, beforeAll, afterAll, beforeEach } = test;
 const { TESTNET } = CONTRACT;
 
 test.setTimeout(140_000)
@@ -29,6 +30,7 @@ describe("Swap NEAR with NEP141", () => {
     let homePage;
     let swapPage;
 
+    // @ts-ignore
     beforeAll(async ({ browser, bankAccount }) => {
         const context = await browser.newContext();
 
@@ -91,7 +93,7 @@ describe("Swap NEAR with NEP141", () => {
 
         const nearBalanceAfter = await account.getUpdatedBalance();
         const formattedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
-        const parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        const parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
         const spentInSwap = swapAmount + SWAP_FEE;
 
         expect(Number(formattedTotalAfter)).toBeCloseTo(
@@ -132,7 +134,7 @@ describe("Swap NEAR with NEP141", () => {
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
-        await swapPage.wait(TRANSACTIONS_LOADING_DELAY);
+        await swapPage.waitResultMessageElement();
 
         const nearBalanceAfter = await account.getUpdatedBalance();
         const formattedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);

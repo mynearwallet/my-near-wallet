@@ -77,41 +77,62 @@ const stakingHandlers = handleActions({
                 ...state,
                 allValidators: payload
             }),
-    [getValidatorFarmData.pending]: (state, { meta: { arg: { validator } } }) => ({
-        ...state,
-        farmingValidators: {
-            ...state.farmingValidators,
-            [validator.accountId]: {
-                ...state.farmingValidators?.[validator.accountId],
-                loading: true
-            },
+    [getValidatorFarmData.pending]: (state, { meta: { arg: { validator } } }) => {
+        if (!validator) {
+            return {
+                ...state
+            };
         }
-    }),
-    [getValidatorFarmData.fulfilled]: (state, { payload }) => ({
-        ...state,
-        farmingValidators: {
-            ...state.farmingValidators,
-            [payload.validatorId]: {
-                ...payload.farmData,
-                farmRewards: {
-                    ...state.farmingValidators?.[payload.validatorId]
-                        ?.farmRewards,
-                    ...payload.farmData.farmRewards,
+        return {
+            ...state,
+            farmingValidators: {
+                ...state.farmingValidators,
+                [validator.accountId]: {
+                    ...state.farmingValidators?.[validator.accountId],
+                    loading: true
                 },
-                loading: false
-            },
+            }
+        };
+    },
+    [getValidatorFarmData.fulfilled]: (state, { payload }) => {
+        if (!payload) {
+            return {
+                ...state,
+            };
         }
-    }),
-    [getValidatorFarmData.rejected]: (state, { meta: { arg: { validator } } }) => ({
-        ...state,
-        farmingValidators: {
-            ...state.farmingValidators,
-            [validator.accountId]: {
-                ...state.farmingValidators?.[validator.accountId],
-                loading: false
-            },
+        return {
+            ...state,
+            farmingValidators: {
+                ...state.farmingValidators,
+                [payload.validatorId]: {
+                    ...payload.farmData,
+                    farmRewards: {
+                        ...state.farmingValidators?.[payload.validatorId]
+                            ?.farmRewards,
+                        ...payload.farmData.farmRewards,
+                    },
+                    loading: false
+                },
+            }
+        };
+    },
+    [getValidatorFarmData.rejected]: (state, { meta: { arg: { validator } } }) => {
+        if (!validator) {
+            return {
+                ...state
+            };
         }
-    }),
+        return {
+            ...state,
+            farmingValidators: {
+                ...state.farmingValidators,
+                [validator.accountId]: {
+                    ...state.farmingValidators?.[validator.accountId],
+                    loading: false
+                },
+            }
+        };
+    },
     [clearAccountState]: () => initialState
 }, initialState);
 

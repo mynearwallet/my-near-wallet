@@ -65,11 +65,10 @@ export default function Success({ onClickContinue = noop, onClickGoToExplorer })
             {success ? (
                 <>
                     <AvatarSuccessIcon />
-                    <StyledHeader>
+                    <StyledHeader data-test-id="swapPageSuccessMessage">
                         <SafeTranslate
                             id="swap.successTitle"
                             data={successData}
-                            data-test-id="swapPageSuccessMessage"
                         />
                     </StyledHeader>
                 </>
