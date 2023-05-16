@@ -214,6 +214,15 @@ export const allowLogin = () => async (dispatch, getState) => {
     const shardInfo = selectAccountUrlPrivateShard(getState());
     const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
 
+    if (shardInfo) {
+        const account = await wallet.getAccount(wallet.accountId);
+        const signature = await wallet.signatureFor(account);
+        const publicKey = await wallet.getPublicKey(account.accountId);
+        const publicKeyString = publicKey.toString(publicKey);
+        signature.publicKey = publicKeyString;
+        await syncPrivateShardAccount({ accountId: wallet.accountId, publicKey: publicKeyString, signature, shardInfo });
+    }
+
     if (successUrl) {
         if (publicKey) {
             await dispatch(withAlert(addAccessKeyAction(wallet.accountId, contractId, publicKey, false, methodNames, shardInfo), { onlyError: true }));
@@ -541,9 +550,6 @@ export const {
     ADD_SHARD_ACCESS_KEY: [
         async (accountId, contractId, publicKey, fullAccess = false, methodNames = '', shardInfo) => {
             try {
-                const account = await wallet.getAccount(accountId);
-                const signature = await wallet.signatureFor(account);
-                await syncPrivateShardAccount({ accountId, publicKey, signature, shardInfo });
                 await new Wallet(shardInfo).addAccessKey(accountId, contractId, publicKey, fullAccess, methodNames);
             } catch (error) {
                 throw new WalletError(error, 'addAccessKeyToPrivateShard.errorPrivateShard');
