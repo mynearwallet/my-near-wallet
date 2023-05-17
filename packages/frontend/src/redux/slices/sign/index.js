@@ -4,9 +4,9 @@ import cloneDeep from 'lodash.clonedeep';
 import { createSelector } from 'reselect';
 
 import { Mixpanel } from '../../../mixpanel';
-import { wallet } from '../../../utils/wallet';
+import Wallet, { wallet } from '../../../utils/wallet';
 import { showCustomAlert } from '../../actions/status';
-import { selectAccountId } from '../account';
+import { selectAccountId, selectAccountUrlPrivateShard } from '../account';
 
 const SLICE_NAME = 'sign';
 
@@ -31,6 +31,7 @@ export const handleSignTransactions = createAsyncThunk(
         const { dispatch, getState } = thunkAPI;
         let transactionsHashes;
         const retryingTx = !!selectSignRetryTransactions(getState()).length;
+        const shardInfo = selectAccountUrlPrivateShard(getState());
 
         const mixpanelName = `SIGN${retryingTx ? ' - RETRYRETRY WITH INCREASED GAS' : ''}`;
         await Mixpanel.withTracking(mixpanelName,
@@ -45,7 +46,8 @@ export const handleSignTransactions = createAsyncThunk(
                 const accountId = selectAccountId(getState());
 
                 try {
-                    transactionsHashes = await wallet.signAndSendTransactions(transactions, accountId);
+                    const signingWallet = shardInfo ? new Wallet(shardInfo) : wallet;
+                    transactionsHashes = await signingWallet.signAndSendTransactions(transactions, accountId);
                     dispatch(updateSuccessHashes(transactionsHashes));
                 } catch (error) {
                     if (error.message.includes('TotalPrepaidGasExceeded')) {
@@ -67,46 +69,6 @@ export const handleSignTransactions = createAsyncThunk(
                 }
             }
         );
-        return selectSignSuccessHashesOnlyHash(getState());
-    },
-    {
-        condition: (_, thunkAPI) => {
-            const { getState } = thunkAPI;
-            if (selectSignStatus(getState()) === SIGN_STATUS.IN_PROGRESS) {
-                return false;
-            }
-        }
-    }
-);
-
-export const handleSignPrivateShardTransactions = createAsyncThunk(
-    `${SLICE_NAME}/handleSignPrivateShardTransactions`,
-    async ({ customRPCUrl, xApiToken }, thunkAPI) => {
-        const { dispatch, getState } = thunkAPI;
-        let transactionsHashes;
-        const retryingTx = !!selectSignRetryTransactions(getState()).length;
-
-        const transactions = retryingTx ? selectSignRetryTransactions(getState()) : selectSignTransactions(getState());        
-        const accountId = selectAccountId(getState());
-
-        try {
-            transactionsHashes = await wallet.signAndSendCalimeroTransaction(transactions, accountId, customRPCUrl, xApiToken);
-            dispatch(updateSuccessHashes(transactionsHashes));
-        } catch (error) {
-            if (error.message.includes('Exceeded the prepaid gas')) {
-                const successHashes = error?.data?.transactionHashes;
-                dispatch(updateSuccessHashes(successHashes));
-            }
-
-            dispatch(showCustomAlert({
-                success: false,
-                messageCodeHeader: 'error',
-                messageCode: `reduxActions.${error.code}`,
-                errorMessage: error.message
-            }));
-            throw error;
-        }
-
         return selectSignSuccessHashesOnlyHash(getState());
     },
     {

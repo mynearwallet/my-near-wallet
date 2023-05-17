@@ -8,9 +8,10 @@ const E2eTestAccount = require("./utils/E2eTestAccount");
 const { getTestAccountSeedPhrase, getWorkerAccountId } = require("./utils/helpers");
 const SelfReloadingE2eTestAccount = require("./utils/SelfReloadingE2eTestAccount");
 
-module.exports = base;
-
-module.exports.test = base.test.extend({
+/**
+ * @type {base.TestType<base.PlaywrightTestArgs & base.PlaywrightTestOptions,{bankAccount: E2eTestAccount | SelfReloadingE2eTestAccount}>}
+ */
+const test = base.test.extend({
     bankAccount: [
         async ({}, use, workerInfo) => {
             const bankAccount = await getBankAccount();
@@ -39,3 +40,8 @@ module.exports.test = base.test.extend({
         { scope: "worker", auto: true },
     ],
 });
+
+module.exports = {
+    ...base,
+    test
+}

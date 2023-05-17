@@ -1,3 +1,4 @@
+// @ts-check
 const nearApi = require("near-api-js");
 
 const { test, expect } = require("../playwrightWithFixtures");
@@ -28,6 +29,7 @@ describe("Swap NEP141 with NEP141", () => {
     let homePage;
     let swapPage;
 
+    // @ts-ignore
     beforeAll(async ({ browser, bankAccount }) => {
         const context = await browser.newContext();
 
@@ -38,10 +40,6 @@ describe("Swap NEP141 with NEP141", () => {
         account = bankAccount.spawnRandomSubAccountInstance();
 
         await account.create();
-
-        const { total } = await account.getUpdatedBalance();
-
-        totalBalanceOnStart = Number(format.formatNearAmount(total));
     });
 
     afterAll(async () => {
@@ -69,7 +67,7 @@ describe("Swap NEP141 with NEP141", () => {
         const outInput = await swapPage.getOutputInput();
         const token0OutAmount = await outInput.inputValue();
         let nearBalanceBefore = await account.getUpdatedBalance();
-        let parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        let parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
@@ -101,7 +99,7 @@ describe("Swap NEP141 with NEP141", () => {
         const token1OutInput = await swapPage.getOutputInput();
         const token1OutAmount = await token1OutInput.inputValue();
         nearBalanceBefore = await account.getUpdatedBalance();
-        parsedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
 
         expect(Number(token1OutAmount) > 0).toBeTruthy();
 
@@ -138,6 +136,6 @@ describe("Swap NEP141 with NEP141", () => {
         const token1ParsedBalanceAfter = Number(formatAmount(token1BalanceAfter, token1.decimals));
 
         expect(token0ParsedBalanceAfter).toEqual(0);
-        expect(token1ParsedBalanceAfter).toMatch(new RegExp(withoutLastChars(token1OutAmount, 1)))
+        expect(token1ParsedBalanceAfter.toString()).toMatch(new RegExp(withoutLastChars(token1OutAmount, 1)))
     });
 });

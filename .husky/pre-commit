@@ -2,4 +2,5 @@
 # This runs the precommit script on any modified packages
 . "$(dirname "$0")/_/husky.sh"
 
+npx lint-staged
 npx lerna run --concurrency 1 --stream precommit --exclude-dependents

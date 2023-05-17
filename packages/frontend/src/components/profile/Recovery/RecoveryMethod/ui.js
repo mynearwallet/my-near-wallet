@@ -12,7 +12,7 @@ export const Main = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     > button {
         margin: 0 !important;
     }
@@ -26,7 +26,7 @@ export const Title = styled.div`
     font-weight: 700;
     font-size: 14px;
     line-height: 150%;
-    color: #3F4045;
+    color: #3f4045;
 `;
 
 export const Description = styled.div`

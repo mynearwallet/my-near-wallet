@@ -294,6 +294,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                                 <FormButton
                                     className='next-btn'
                                     type='submit'
+                                    data-test-id="nft-transfer-next-1"
                                     disabled={isLoading || isProblem}
                                     onClick={() => setViewType('confirm')}
                                 >
@@ -352,6 +353,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                                 <FormButton
                                     className='next-btn'
                                     type='submit'
+                                    data-test-id="nft-transfer-next-2"
                                     sending={sending}
                                     onClick={() => sendNFT(nft, receiverId)}
                                 >
@@ -391,6 +393,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                                 <FormButton
                                     className='next-btn'
                                     type='submit'
+                                    data-test-id="nft-transfer-next-3"
                                     linkTo='/?tab=collectibles'
                                 >
                                     <Translate id='NFTTransfer.continue' />

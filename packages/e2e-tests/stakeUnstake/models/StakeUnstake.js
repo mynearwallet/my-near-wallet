@@ -29,8 +29,9 @@ class StakeUnstakePage {
     clickViewCurrentValidator() {
         return this.page.click("data-test-id=viewCurrentValidatorButton")
     }
-    selectNthAccount(n = 0) {
-        return this.page.click(`data-test-id=accountSelectAvailableBalance >> nth=${n}`);
+    async selectNthAccount(n = 0) {
+        this.page.click(`data-test-id=accountSelectAvailableBalance >> nth=${n}`);
+        return await this.page.locator(`.radio-input >> nth=${n}`).isChecked()
     }
     async getCurrentlyDisplayedBalance(index = 0) {
         const balanceString = await this.page.textContent(`data-test-id=accountSelectAvailableBalance >> nth=${index}`);
@@ -43,7 +44,9 @@ class StakeUnstakePage {
         await this.page.click("data-test-id=submitStakeButton");
     }
     async submitStakeWithAmount(amount) {
-        await this.page.fill("data-test-id=stakingAmountInput", amount.toString());
+        // this is to compensate the FE will enable and disable in a row...
+        await this.page.locator("data-test-id=stakingAmountInput").fill("")
+        await this.page.locator("data-test-id=stakingAmountInput").fill(amount.toString())
         await this.submitStake();
     }
     async confirmStakeOnModal() {

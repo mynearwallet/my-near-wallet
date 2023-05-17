@@ -9,6 +9,7 @@ import LoadingDots from '../../common/loader/LoadingDots';
 import Container from '../../common/styled/Container.css';
 import DepositNearBanner from '../../wallet/DepositNearBanner';
 import ConnectWithApplication from './ConnectWithApplication';
+import ConnectWithPrivateShard from './ConnectWithPrivateShard';
 import LoginStyle from './style/LoginStyle.css';
 
 export default ({
@@ -24,25 +25,25 @@ export default ({
     appReferrer,
     contractIdUrl,
     failureAndSuccessUrlsAreValid,
-    accountExists
+    accountExists,
+    privateShardInfo
 }) => (
     <Container className='small-centered border'>
         <LoginStyle className={loginAccessType === LOGIN_ACCESS_TYPES.FULL_ACCESS ? 'full-access' : ''}>
-            <h3><Translate id='login.v2.connectWithNear.title' /></h3>
-            <div className='desc'>
-                <Translate>
-                    {({ translate }) => (
-                        <Translate
-                            id='login.v2.connectWithNear.desc'
-                            data={{ accessType: translate(`login.v2.connectWithNear.${loginAccessType}`) }}
-                        />
-                    )}
-                </Translate>
-            </div>
-            <ConnectWithApplication
-                appReferrer={appReferrer}
-                contractIdUrl={contractIdUrl}
-            />
+            <LoginHeader privateShardInfo={privateShardInfo} loginAccessType={loginAccessType}>
+
+            </LoginHeader>
+            {privateShardInfo ? (
+                <ConnectWithPrivateShard
+                    privateShardInfo={privateShardInfo}
+                />
+            ) : (
+                <ConnectWithApplication
+                    appReferrer={appReferrer}
+                    contractIdUrl={contractIdUrl}
+                />
+            )}
+            
             <LoadingDots />
             <AccountSelector
                 signedInAccountId={signedInAccountId}
@@ -59,12 +60,14 @@ export default ({
                     onClick={onClickCancel}
                     color='gray-blue'
                     disabled={!failureAndSuccessUrlsAreValid}
+                    data-test-id="cancel-select-account"
                 >
                     <Translate id='button.cancel' />
                 </FormButton>
                 <FormButton
                     onClick={onClickNext}
                     disabled={!failureAndSuccessUrlsAreValid || accountExists === false}
+                    data-test-id="continue-with-current-account"
                 >
                     <Translate id='button.next' />
                 </FormButton>
@@ -72,3 +75,22 @@ export default ({
         </LoginStyle>
     </Container>
 );
+
+const LoginHeader = ({loginAccessType, privateShardInfo}) => {
+    const titleId = !!privateShardInfo ? 'login.v2.connectWithNear.privateShardTitle' : 'login.v2.connectWithNear.title';
+    const descId = !!privateShardInfo ? 'login.v2.connectWithNear.privateShardDesc' : 'login.v2.connectWithNear.desc';
+    return (
+        <>
+            <h3><Translate id={titleId} /></h3>
+            <div className='desc' data-test-id={`type-${loginAccessType}`}>
+                <Translate>
+                    {({ translate }) => (
+                        <Translate
+                            id={descId}
+                            data={{ accessType: translate(`login.v2.connectWithNear.${loginAccessType}`), shardId: privateShardInfo?.shardId }} />
+                    )}
+                </Translate>
+            </div>
+        </>
+    );
+};

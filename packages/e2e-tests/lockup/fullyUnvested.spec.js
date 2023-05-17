@@ -1,3 +1,4 @@
+// @ts-check
 const { BN } = require("bn.js");
 const { formatNearAmount, parseNearAmount } = require("near-api-js/lib/utils/format");
 
@@ -37,7 +38,7 @@ describe("Fully unvested lockup", () => {
     }) => {
         const { total: lockupTotalBalance } = await latestLockupContractAccount.getUpdatedBalance();
         const lockupUnlockedAmount = new BN(lockupTotalBalance)
-            .sub(new BN(parseNearAmount(lockupAmount)))
+            .sub(new BN(parseNearAmount(lockupAmount) || ""))
             .toString();
         const lockupAvailableToTransfer = await latestLockupContractAccount.nearApiJsAccount.viewFunction(
             latestLockupContractAccount.accountId,
@@ -48,29 +49,21 @@ describe("Fully unvested lockup", () => {
         await homePage.loginWithSeedPhraseLocalStorage(latestLockupTestAccount.accountId, latestLockupTestAccount.seedPhrase);
         const profilePage = new ProfilePage(page);
         await profilePage.navigate();
-        await expect(page).toMatchText("data-test-id=lockupAccount.total", new RegExp(formatNearAmount(lockupTotalBalance, 5)));
-        await expect(page).toMatchText("data-test-id=lockupAccount.locked", /5 NEAR/);
-        await expect(page).toMatchText(
-            "data-test-id=lockupAccount.unlocked",
-            new RegExp(`${formatNearAmount(lockupUnlockedAmount, 5)} NEAR`)
-        );
-        await expect(page).toMatchText(
-            "data-test-id=lockupAccount.availableToTransfer",
-            new RegExp(`${formatNearAmount(lockupAvailableToTransfer, 5)} NEAR`)
-        );
-        await expect(page).toMatchText("data-test-id=lockupAccount.reservedForStorage", /3.5 NEAR/);
-        await expect(page).toMatchText(
-            "data-test-id=lockupAccount.accountId",
-            new RegExp(`${latestLockupContractAccount.accountId}`)
-        );
-        await expect(page).not.toHaveSelector("data-test-id=lockupTransferToWalletButton");
+        await expect(page.locator('data-test-id=lockupAccount.total')).toHaveText(new RegExp(formatNearAmount(lockupTotalBalance, 5)));
+        await expect(page.locator('data-test-id=lockupAccount.locked')).toHaveText(/5 NEAR/);
+        await expect(page.locator('data-test-id=lockupAccount.unlocked')).toHaveText(new RegExp(`${formatNearAmount(lockupUnlockedAmount, 5)} NEAR`));
+        await expect(page.locator('data-test-id=lockupAccount.availableToTransfer')).toHaveText(new RegExp(`${formatNearAmount(lockupAvailableToTransfer, 5)} NEAR`));
+        await expect(page.locator('data-test-id=lockupAccount.reservedForStorage')).toHaveText(/3.5 NEAR/);
+        await expect(page.locator('data-test-id=lockupAccount.accountId')).toHaveText(new RegExp(`${latestLockupContractAccount.accountId}`));
+
+        await expect(page.locator('data-test-id=lockupTransferToWalletButton')).not.toBeVisible()
     });
     test("v2 lockup contract displays the whole amount as locked, correct unlocked, correct available to transfer and other info correctly", async ({
         page,
     }) => {
         const { total: lockupTotalBalance } = await v2LockupContractAccount.getUpdatedBalance();
         const lockupUnlockedAmount = new BN(lockupTotalBalance)
-            .sub(new BN(parseNearAmount(lockupAmount)))
+            .sub(new BN(parseNearAmount(lockupAmount) || ""))
             .toString();
         const lockupAvailableToTransfer = await v2LockupContractAccount.nearApiJsAccount.viewFunction(
             v2LockupContractAccount.accountId,
@@ -81,21 +74,14 @@ describe("Fully unvested lockup", () => {
         await homePage.loginWithSeedPhraseLocalStorage(v2LockupTestAccount.accountId, v2LockupTestAccount.seedPhrase);
         const profilePage = new ProfilePage(page);
         await profilePage.navigate();
-        await expect(page).toMatchText("data-test-id=lockupAccount.total", new RegExp(formatNearAmount(lockupTotalBalance, 5)));
-        await expect(page).toMatchText("data-test-id=lockupAccount.locked", /5 NEAR/);
-        await expect(page).toMatchText(
-            "data-test-id=lockupAccount.unlocked",
-            new RegExp(`${formatNearAmount(lockupUnlockedAmount, 5)} NEAR`)
-        );
-        await expect(page).toMatchText(
-            "data-test-id=lockupAccount.availableToTransfer",
-            new RegExp(`${formatNearAmount(lockupAvailableToTransfer, 5)} NEAR`)
-        );
-        await expect(page).toMatchText("data-test-id=lockupAccount.reservedForStorage", /35 NEAR/);
-        await expect(page).toMatchText(
-            "data-test-id=lockupAccount.accountId",
-            new RegExp(`${v2LockupContractAccount.accountId}`)
-        );
-        await expect(page).not.toHaveSelector("data-test-id=lockupTransferToWalletButton");
+
+        await expect(page.locator('data-test-id=lockupAccount.total')).toHaveText(new RegExp(formatNearAmount(lockupTotalBalance, 5)));
+        await expect(page.locator('data-test-id=lockupAccount.locked')).toHaveText(/5 NEAR/);
+        await expect(page.locator('data-test-id=lockupAccount.unlocked')).toHaveText(new RegExp(`${formatNearAmount(lockupUnlockedAmount, 5)} NEAR`));
+        await expect(page.locator('data-test-id=lockupAccount.availableToTransfer')).toHaveText(new RegExp(`${formatNearAmount(lockupAvailableToTransfer, 5)} NEAR`));
+        await expect(page.locator('data-test-id=lockupAccount.reservedForStorage')).toHaveText(/35 NEAR/);
+        await expect(page.locator('data-test-id=lockupAccount.accountId')).toHaveText(new RegExp(`${v2LockupContractAccount.accountId}`));
+
+        await expect(page.locator('data-test-id=lockupTransferToWalletButton')).not.toBeVisible()
     });
 });

@@ -32,7 +32,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test
-      - run: yarn bundle --outDir=dist/${{ inputs.environment }}
+      - run: yarn bundle --distDir=dist/${{ inputs.environment }}
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1

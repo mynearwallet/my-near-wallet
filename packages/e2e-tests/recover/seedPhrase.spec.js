@@ -1,3 +1,4 @@
+// @ts-check
 const { test, expect } = require("../playwrightWithFixtures");
 
 const { describe, beforeAll, afterAll } = test;
@@ -20,7 +21,7 @@ describe("Account Recovery Using Seed Phrase", () => {
         await page.click(`data-test-id=homePageImportAccountButton`);
         await page.click(`data-test-id=recoverAccountWithPassphraseButton`);
 
-        await expect(page).toMatchURL(/\/recover-seed-phrase$/);
+        await expect(page).toHaveURL(/\/recover-seed-phrase$/);
     });
 
     test("recovers account using seed phrase", async ({ page }) => {
@@ -32,12 +33,7 @@ describe("Account Recovery Using Seed Phrase", () => {
         );
         await page.click(`data-test-id=seedPhraseRecoverySubmitButton`);
 
-        await page.waitForNavigation();
-
-        await expect(page).toMatchURL(/\/$/);
-        await expect(page).toMatchText(
-            "data-test-id=currentUser >> visible=true",
-            testAccount.accountId
-        );
+        await expect(page).toHaveURL(/\/$/);
+        await expect(page.locator("data-test-id=currentUser >> visible=true")).toHaveText(testAccount.accountId)
     });
 });

@@ -2,7 +2,7 @@ import { ConnectedRouter, getRouter } from 'connected-react-router';
 import isString from 'lodash.isstring';
 import { parseSeedPhrase } from 'near-seed-phrase';
 import PropTypes from 'prop-types';
-import { parse, stringify } from 'query-string';
+import { stringify } from 'query-string';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { withLocalize } from 'react-localize-redux';
@@ -618,11 +618,7 @@ class Routing extends Component {
                             <PrivateRoute
                                 exact
                                 path="/sign"
-                                render={() => (
-                                    <SignWrapper
-                                        urlQuery={parse(this.props.router.location.hash)}
-                                    />
-                                )}
+                                component={SignWrapper}
                             />
                             <PrivateRoute
                                 path="/staking"

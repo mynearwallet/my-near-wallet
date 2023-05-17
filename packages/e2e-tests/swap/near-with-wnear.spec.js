@@ -1,3 +1,4 @@
+// @ts-check
 const nearApi = require("near-api-js");
 
 const { test, expect } = require("../playwrightWithFixtures");
@@ -28,6 +29,7 @@ describe("Swap NEAR with wrapped NEAR", () => {
     let homePage;
     let swapPage;
 
+    // @ts-ignore
     beforeAll(async ({ browser, bankAccount }) => {
         const context = await browser.newContext();
 
@@ -88,7 +90,7 @@ describe("Swap NEAR with wrapped NEAR", () => {
         const nearBalanceAfter = await account.getUpdatedBalance();
         const spentInSwap = swapAmount + NEAR_DEPOSIT_FEE;
         const formattedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
-        const formattedTotalBefore = format.formatNearAmount(nearBalanceBefore.total);
+        const formattedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
 
         expect(Number(formattedTotalAfter)).toBeCloseTo(
             formattedTotalBefore - spentInSwap,

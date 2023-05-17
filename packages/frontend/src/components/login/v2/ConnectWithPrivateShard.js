@@ -19,11 +19,20 @@ const StyledContainer = styled.div`
         margin-right: 10px;
         min-width: 17px;
     }
+
+    > span {
+        font-size: 14px;
+        font-weight: 600;
+        width: 100%;
+        text-align: center;
+    }
 `;
 
-export default ({ customRPCUrl }) => (
-    <StyledContainer className='connect-with-application'>
-        <GlobeIcon/>
-        {customRPCUrl}
-    </StyledContainer>
-);
+export default ({ privateShardInfo }) => {
+    return (
+        <StyledContainer className='connect-with-application'>
+            <GlobeIcon />
+            <span>{privateShardInfo.shardId}</span>
+        </StyledContainer>
+    );
+};
