@@ -82,7 +82,7 @@ const LoginHeader = ({loginAccessType, privateShardInfo}) => {
     return (
         <>
             <h3><Translate id={titleId} /></h3>
-            <div className='desc'>
+            <div className='desc' data-test-id={`type-${loginAccessType}`}>
                 <Translate>
                     {({ translate }) => (
                         <Translate
