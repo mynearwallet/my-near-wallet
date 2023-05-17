@@ -19,8 +19,7 @@ export default ({
     signGasFee,
     isSignerValid,
     isValidCallbackUrl,
-    customRPCUrl,
-    privateShardId,
+    privateShardInfo,
 }) => {
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
     const accountUrlReferrer = useSelector(selectAccountUrlReferrer);
@@ -40,8 +39,7 @@ export default ({
             submittingTransaction={submittingTransaction}
             isSignerValid={isSignerValid}
             isValidCallbackUrl={isValidCallbackUrl}
-            customRPCUrl={customRPCUrl}
-            privateShardId={privateShardId}
+            privateShardInfo={privateShardInfo}
         />
     );
 };

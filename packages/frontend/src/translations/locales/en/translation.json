@@ -782,7 +782,9 @@
                 "desc": "An application is requesting <b>${accessType}</b> to your NEAR account. Select the account you wish to connect.",
                 "fullAccess": "full access",
                 "limitedAccess": "limited access",
-                "title": "Connect with NEAR"
+                "title": "Connect with NEAR",
+                "privateShardTitle": "Connect with Calimero Shard",
+                "privateShardDesc": "An application is requesting your permission to sync your NEAR account with the Calimero private shard <b>${shardId}</b>. This will create a matching account and add an <b>${accessType}</b> access key. Transactions on private shard will not affect your NEAR account. Choose the account to connect."
             }
         }
     },
@@ -1827,6 +1829,9 @@
         },
         "addLedgerAccountId": {
             "errorRpc": "Error appears while recovering the account."
+        },
+        "addAccessKeyToPrivateShard": {
+            "errorPrivateShard": "An error has occurred.<br />The access key wasn't synced in the private shard."
         },
         "connectLedger": {
             "noClient": "Ledger is not connected yet. Please connect ledger first."
