@@ -901,6 +901,9 @@
             "balanceDetails": "Сведения о балансе",
             "transactionDetails": "Детали транзакции"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Это мостовой токен. Не отправляйте его на биржи, такие как Binance."
+        },
         "review": {
             "title": "Вы отправляете"
         },

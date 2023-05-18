@@ -1196,6 +1196,9 @@
             "balanceDetails": "Balance details",
             "transactionDetails": "Transaction Details"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "This is a bridged token. Do not send it to exchanges like Binance."
+        },
         "review": {
             "title": "You are sending"
         },
