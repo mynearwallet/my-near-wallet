@@ -1167,6 +1167,9 @@
             "balanceDetails": "余额详情",
             "transactionDetails": "交易详情"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "这是一个跨链代币。请不要将其发送到交易所（如币安）。"
+        },
         "review": {
             "title": "你正在发送"
         },

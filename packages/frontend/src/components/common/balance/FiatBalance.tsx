@@ -11,7 +11,7 @@ type FiatBalanceProps = {
     showSignUSD?: boolean,
     nearTokenFiatValueUSD?: number,
     isNear?: boolean,
-    decimals: number,
+    decimals?: number,
     totalAmount?: string
 }
 

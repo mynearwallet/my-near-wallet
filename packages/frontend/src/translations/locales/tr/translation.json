@@ -978,6 +978,9 @@
             "balanceDetails": "Bakiye ayrıntıları",
             "transactionDetails": "İşlem Ayrıntıları"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Bu bir köprü tokenidir. Binance gibi borsalara göndermeyin."
+        },
         "review": {
             "title": "Gönderiyorsunuz"
         },

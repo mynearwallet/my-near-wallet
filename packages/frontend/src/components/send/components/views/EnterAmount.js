@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Balance from '../../../common/balance/Balance';
 import FormButton from '../../../common/FormButton';
+import Notification from '../../../common/Notification';
 import AmountInput from '../AmountInput';
 import BalanceDetails from '../BalanceDetails';
 import SelectTokenButton from '../SelectTokenButton';
@@ -34,6 +35,10 @@ const StyledContainer = styled.form`
         .select-token-btn {
             margin: 55px 0 5px 0;
         }
+
+        .warning-message {
+            margin-top: 15px;
+        }
     }
 `;
 
@@ -51,6 +56,7 @@ const EnterAmount = ({
     error,
     isMobile
 }) => {
+    const isBridgedToken = selectedToken?.onChainFTMetadata?.isBridged;
 
     return (
         <StyledContainer 
@@ -91,12 +97,19 @@ const EnterAmount = ({
                 availableToSend={availableToSend}
                 selectedToken={selectedToken}
             />
+            {isBridgedToken && (
+                <div className='warning-message' data-test-id='bridge-token-warning'>
+                    <Notification type='warning'>
+                        <Translate id='sendV2.enterAmount.bridgedTokenWarning' />
+                    </Notification>
+                </div>
+            )}
             <div className='buttons-bottom-buttons'>
                 {/* TODO: Add error state */}
                 <FormButton
                     type='submit'
                     disabled={!continueAllowed}
-                    data-test-id="sendMoneyPageSubmitAmountButton"
+                    data-test-id='sendMoneyPageSubmitAmountButton'
                 >
                     <Translate id='button.continue'/>
                 </FormButton>

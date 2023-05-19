@@ -1061,6 +1061,9 @@
             "balanceDetails": "Відомості про баланс",
             "transactionDetails": "Деталі транзакції"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Це токен-міст. Не відправляйте його на біржі, такі як Binance."
+        },
         "review": {
             "title": "ви надсилаєте"
         },

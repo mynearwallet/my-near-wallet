@@ -926,6 +926,9 @@
             "balanceDetails": "Chi tiết Số dư",
             "transactionDetails": "Chi tiết Giao dịch"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Đây là một token cầu nối. Đừng gửi nó đến các sàn giao dịch như Binance."
+        },
         "review": {
             "title": "Bạn đang gửi"
         },
