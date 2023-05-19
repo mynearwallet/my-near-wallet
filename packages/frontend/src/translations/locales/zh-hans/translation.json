@@ -1603,7 +1603,8 @@
             "minimumReceived": "从此笔交易中你将最少收到的数额。",
             "priceImpact": "市场价格和预估价格之间的区别是由于交易规模。",
             "slippage": "交易失败前价格可能上涨的百分比."
-        }
+        },
+        "inputTooLow": "输入金额过低"
     },
     "swapping": "正在兑换",
     "sync": "刷新",

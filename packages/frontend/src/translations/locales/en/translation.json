@@ -1647,7 +1647,8 @@
             "priceImpact": "The difference between the market price and estimated price due to trade size.",
             "slippage": "The percentage the price may increase before the transaction fails.",
             "swapFee": "Fee for liquidity providers taken on the amount paid in."
-        }
+        },
+        "inputTooLow": "Input amount is too low"
     },
     "swapping": "Swapping",
     "sync": "Sync",

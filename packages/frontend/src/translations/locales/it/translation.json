@@ -1450,7 +1450,8 @@
             "priceImpact": "La differenza tra il prezzo di mercato e il prezzo stimato a causa delle dimensioni del commercio.",
             "slippage": "La percentuale che il prezzo può aumentare prima che la transazione fallisca.",
             "swapFee": "Commissione per i fornitori di liquidità presa sull'importo pagato."
-        }
+        },
+        "inputTooLow": "L'importo inserito è troppo basso"
     },
     "sync": "Sync",
     "tokenBox": {

@@ -1353,7 +1353,8 @@
             "priceImpact": "Piyasa fiyatı ile tahmini fiyat arasındaki fark, ticaretin büyüklüğüne bağlıdır.",
             "slippage": "İşlem başarısız olmadan önce fiyatın artabileceği yüzde.",
             "swapFee": "Likidite sağlayıcıları için ödenen tutar üzerinden alınan ücret."
-        }
+        },
+        "inputTooLow": "Giriş miktarı çok düşük"
     },
     "swapping": "Swapping",
     "sync": "Eşitle",

@@ -1385,7 +1385,8 @@
             "priceImpact": "A diferença entre o preço de mercado e o preço estimado devido à dimensão do comércio.",
             "slippage": "A percentagem que o preço pode aumentar antes de a operação falhar.",
             "swapFee": "Taxa para os fornecedores de liquidez tomada sobre o montante pago."
-        }
+        },
+        "inputTooLow": "O valor inserido é muito baixo"
     },
     "swapping": "Swapping",
     "sync": "Sincronizar",
