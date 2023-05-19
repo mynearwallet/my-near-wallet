@@ -683,15 +683,15 @@
         "ctaLogin": "登录并领取",
         "ctaNew": "注册新账户并领取",
         "desc": "你可以登录已有的账户领取，或创建新的账户领取。",
+        "error": {
+            "invalidRedirectUrl": "无效的重定向 URL"
+        },
         "modal": {
             "desc": "你的 NEAR 空投已自动领取至你的账户。",
             "title": "你的 NEAR 空投已领取"
         },
         "or": "或",
-        "title": "你收到了 NEAR 空投！",
-        "error": {
-            "invalidRedirectUrl": "无效的重定向 URL"
-        }
+        "title": "你收到了 NEAR 空投！"
     },
     "loading": "加载中...",
     "loadingNoDots": "加载中",
@@ -1584,6 +1584,7 @@
         "failTitle": "交换失败!",
         "fee": "估计费用",
         "from": "来自",
+        "inputTooLow": "输入金额过低",
         "insufficientBalanceForAmountAndFee": "余额不足以支付输入金额和掉期费用",
         "insufficientBalanceForFee": "余额不足以支付掉期费用",
         "max": "最多：${amount} ${symbol}",
@@ -1603,8 +1604,7 @@
             "minimumReceived": "从此笔交易中你将最少收到的数额。",
             "priceImpact": "市场价格和预估价格之间的区别是由于交易规模。",
             "slippage": "交易失败前价格可能上涨的百分比."
-        },
-        "inputTooLow": "输入金额过低"
+        }
     },
     "swapping": "正在兑换",
     "sync": "刷新",

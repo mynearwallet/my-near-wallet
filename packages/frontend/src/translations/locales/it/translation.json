@@ -579,15 +579,15 @@
         "ctaLogin": "Accedi e Riscuoti",
         "ctaNew": "Riscuoti con un Nuovo Account",
         "desc": "Puoi richiedere i tuoi NEAR con un account esistente (deve essere collegato), o crea un nuovo account per riceverlo come deposito iniziale.",
+        "error": {
+            "invalidRedirectUrl": "URL di reindirizzamento non valido"
+        },
         "modal": {
             "desc": "Il tuo NEAR drop è stato automaticamente depositato nel tuo account.",
             "title": "Il tuo NEAR drop è stato riscosso"
         },
         "or": "or",
-        "title": "Hai ricevuto un NEAR drop!",
-        "error": {
-            "invalidRedirectUrl": "URL di reindirizzamento non valido"
-        }
+        "title": "Hai ricevuto un NEAR drop!"
     },
     "loading": "Caricamento in corso...",
     "loadingNoDots": "Caricamento in corso",
@@ -1428,6 +1428,7 @@
         "failTitle": "Scambio non riuscito!",
         "fee": "Tariffe stimate",
         "from": "From",
+        "inputTooLow": "L'importo inserito è troppo basso",
         "insufficientBalanceForAmountAndFee": "Saldo insufficiente per pagare l'importo dell'input e la commissione di swap",
         "insufficientBalanceForFee": "Saldo insufficiente per pagare la commissione di swap",
         "max": "Massimo: ${amount} ${symbol}",
@@ -1450,8 +1451,7 @@
             "priceImpact": "La differenza tra il prezzo di mercato e il prezzo stimato a causa delle dimensioni del commercio.",
             "slippage": "La percentuale che il prezzo può aumentare prima che la transazione fallisca.",
             "swapFee": "Commissione per i fornitori di liquidità presa sull'importo pagato."
-        },
-        "inputTooLow": "L'importo inserito è troppo basso"
+        }
     },
     "sync": "Sync",
     "tokenBox": {

@@ -507,15 +507,15 @@
         "ctaLogin": "Đăng nhập và Claim",
         "ctaNew": "Claim với Tài khoản mới",
         "desc": "Bạn có thể claim NEAR của mình với một tài khoản hiện có (phải đăng nhập) hoặc tạo một tài khoản mới để nhận nó như một khoản gửi tiền ban đầu.",
+        "error": {
+            "invalidRedirectUrl": "URL chuyển hướng không hợp lệ"
+        },
         "modal": {
             "desc": "NEAR Drop của bạn đã được tự động gửi vào tài khoản của bạn.",
             "title": "NEAR Drop của bạn đã được claim"
         },
         "or": "or",
-        "title": "Bạn đã nhận được một NEAR Drop!",
-        "error": {
-            "invalidRedirectUrl": "URL chuyển hướng không hợp lệ"
-        }
+        "title": "Bạn đã nhận được một NEAR Drop!"
     },
     "loading": "Đang tải...",
     "lockedBalance": "NEAR đang bị khóa trong hợp đồng khóa và không thể rút. Bạn vẫn có thể ủy quyền hoặc stake NEAR này. Khi NEAR được mở khóa, bạn có thể xem nó trong số dư đã mở khóa của bạn và chọn rút nó (chuyển sang số dư khả dụng của bạn).",
@@ -1287,6 +1287,7 @@
         "failTitle": "Swap thất bại!",
         "fee": "Phí ước tính",
         "from": "Từ",
+        "inputTooLow": "Số tiền nhập vào quá thấp",
         "insufficientBalanceForAmountAndFee": "Không đủ số dư để thanh toán số tiền đầu vào và phí hoán đổi",
         "insufficientBalanceForFee": "Không đủ số dư để trả phí hoán đổi",
         "max": "Tối đa: ${amount} ${symbol}",
@@ -1314,8 +1315,7 @@
             "priceImpact": "Sự khác biệt giữa giá thị trường và giá ước tính do quy mô thương mại.",
             "slippage": "Tỷ lệ phần trăm giá có thể tăng trước khi giao dịch không thành công.",
             "swapFee": "Lệ phí cho các nhà cung cấp thanh khoản thực hiện trên số tiền thanh toán trong."
-        },
-        "inputTooLow": "Số tiền nhập vào quá thấp"
+        }
     },
     "topLevelAccounts": {
         "body": "Tên tài khoản tương tự như tên miền. Chỉ tài khoản ${data} mới có thể tạo các tài khoản như yourname.${data}, và chỉ yourname.${data} có thể tạo app.yourname.${data}. Tất cả các tài khoản được tạo trong ví này đều sử dụng .${data} Tài khoản cấp cao nhất (TLA). Để tìm hiểu thêm về tên tài khoản và tạo TLA của riêng bạn, truy cập <a rel='noopener noreferrer' href='https://docs.nearprotocol.com/docs/concepts/account'>trang tài liệu</a>.",
