@@ -996,6 +996,9 @@
             "balanceDetails": "Detalhes do saldo",
             "transactionDetails": "Detalhes da transação"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Este é um token de ponte. Não o envie para exchanges como a Binance."
+        },
         "review": {
             "title": "Você está enviando"
         },

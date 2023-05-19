@@ -1032,6 +1032,9 @@
             "balanceDetails": "Dettagli del Saldo",
             "transactionDetails": "Dettagli Transazione"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Questo è un token collegato. Non inviarlo a scambi come Binance."
+        },
         "review": {
             "title": "Stai inviando"
         },

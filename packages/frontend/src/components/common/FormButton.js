@@ -520,7 +520,7 @@ const FormButton = ({
             linkTo && (linkTo.toLowerCase().startsWith('http') ? window.open(linkTo, '_blank') : history.push(linkTo));
             trackingId && Mixpanel.track(trackingId);
         }}
-        tabIndex='3'
+        tabIndex={3}
         data-test-id={testId}
         style={style}
     >
