@@ -561,15 +561,15 @@
         "ctaLogin": "Logar e Reivindicar",
         "ctaNew": "Reivindicar com uma Nova Conta",
         "desc": "Você pode reivindicar a distribuição de NEAR com uma conta existente (precisar estar logado), ou criar uma nova conta para receber como depósito inicial.",
+        "error": {
+            "invalidRedirectUrl": "URL de redirecionamento inválido"
+        },
         "modal": {
             "desc": "Sua recompensa de NEAR foi automaticamente depositada na sua conta.",
             "title": "Recompensa de NEAR foi reivindicada."
         },
         "or": "ou",
-        "title": "Você recebeu uma distribuição de NEAR!",
-        "error": {
-            "invalidRedirectUrl": "URL de redirecionamento inválido"
-        }
+        "title": "Você recebeu uma distribuição de NEAR!"
     },
     "loading": "Carregando...",
     "loadingNoDots": "Carregando",
@@ -1365,6 +1365,7 @@
         "failTitle": "Falha na troca!",
         "fee": "Taxas estimadas",
         "from": "From",
+        "inputTooLow": "O valor inserido é muito baixo",
         "insufficientBalanceForAmountAndFee": "Saldo insuficiente para pagar o montante da contribuição e a taxa de swap",
         "insufficientBalanceForFee": "Saldo insuficiente para pagar a taxa de swap",
         "max": "Maximo: ${amount} ${symbol}",

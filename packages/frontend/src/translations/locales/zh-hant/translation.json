@@ -683,15 +683,15 @@
         "ctaLogin": "登錄並領取",
         "ctaNew": "註冊新賬戶並領取",
         "desc": "你可以登錄已有的賬戶領取，或創建新的賬戶領取。",
+        "error": {
+            "invalidRedirectUrl": "無效的重新導向 URL"
+        },
         "modal": {
             "desc": "你的 NEAR 空投已自動領取至你的賬戶。",
             "title": "你的 NEAR 空投已領取"
         },
         "or": "或",
-        "title": "你收到了 NEAR 空投！",
-        "error": {
-            "invalidRedirectUrl": "無效的重新導向 URL"
-        }
+        "title": "你收到了 NEAR 空投！"
     },
     "loading": "加載中...",
     "loadingNoDots": "加載中",
@@ -1584,6 +1584,7 @@
         "failTitle": "交换失败!",
         "fee": "估計費用",
         "from": "來自",
+        "inputTooLow": "輸入金額過低",
         "insufficientBalanceForAmountAndFee": "余额不足以支付输入金额和掉期费用",
         "insufficientBalanceForFee": "余额不足以支付掉期费用",
         "max": "最多：${amount} ${symbol}",
