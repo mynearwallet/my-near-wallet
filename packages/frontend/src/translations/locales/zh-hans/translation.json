@@ -113,6 +113,7 @@
                     "desc": "该账户还未充值。请购买 $NEAR 并充值到该账户。",
                     "ledger": "该账户成功通过 Ledger 密钥导入：",
                     "phrase": "该账户成功通过助记词导入：",
+                    "privateKey": "您提供的私钥成功导入了以下账户：",
                     "title": "账户已导入"
                 }
             }
@@ -960,6 +961,10 @@
         "phrase": {
             "desc": "请确认已准备 12 个单词组成的助记词，然后点击下方开始恢复账户流程。",
             "title": "助记词"
+        },
+        "privateKey": {
+            "desc": "请确保您的私钥以ed25519开头，然后点击下方开始恢复过程。",
+            "title": "私钥"
         }
     },
     "recoverSeedPhrase": {
@@ -976,6 +981,13 @@
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "助记词（12 个单词）"
+        }
+    },
+    "recoverPrivateKey": {
+        "pageText": "请输入与该账户关联的私钥。",
+        "pageTitle": "使用私钥进行恢复",
+        "privateKeyInput": {
+            "title": "私钥"
         }
     },
     "recoverWithLink": {
@@ -1793,6 +1805,9 @@
             "errorInvalidSeedPhrase": "助记词无效",
             "errorNotAbleToImportAccount": "导入账户失败。请重试，或联系客服获得帮助。",
             "errorSeedPhraseNotValid": "助记词无效，请检查后重试。"
+        },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "提供的私钥无效。请检查您的私钥并重试。"
         },
         "recoveryMethods": {
             "lastMethod": "无法删除最后一个恢复方式。除非你添加了 Ledger，你需要保留至少一种账户恢复方式。",

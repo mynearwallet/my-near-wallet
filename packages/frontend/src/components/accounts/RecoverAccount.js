@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import CONFIG from '../../config';
 import HardwareDeviceIcon from '../../images/icon-hardware-device.svg';
 import EmailIcon from '../../images/icon-recover-email.svg';
+import KeyIcon from '../../images/icon-recover-key.svg';
 import PhoneIcon from '../../images/icon-recover-phone.svg';
 import PhraseIcon from '../../images/icon-recover-seedphrase.svg';
 import { Mixpanel } from '../../mixpanel/index';
@@ -13,16 +14,17 @@ import Container from '../common/styled/Container.css';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 import SmartPhoneIcon from '../svg/SmartPhoneIcon';
 
-
 const StyledContainer = styled(Container)`
-    h1, h2 {
+    h1,
+    h2 {
         text-align: center;
     }
     h2 {
         margin-top: 20px;
     }
     @media (min-width: 992px) {
-        h1, h2 {
+        h1,
+        h2 {
             max-width: 700px;
             margin: 0 auto;
         }
@@ -104,58 +106,117 @@ const P = styled.p`
     }
 `;
 
-const RecoverAccount = ({
-    locationSearch,
-    isMobile
-}) => {
+const RecoverAccount = ({ locationSearch, isMobile }) => {
     return (
         <>
             <VerifyWalletDomainBanner />
             <StyledContainer>
-                <h1><Translate id='recoverAccount.pageTitle' /></h1>
-                <h2><Translate id='recoverAccount.pageText' /></h2>
+                <h1>
+                    <Translate id="recoverAccount.pageTitle" />
+                </h1>
+                <h2>
+                    <Translate id="recoverAccount.pageText" />
+                </h2>
                 <Options>
                     <Option>
-                        <Header icon={EmailIcon}><Translate id='recoverAccount.email.title' /></Header>
-                        <P><Translate id='recoverAccount.email.desc' /> <span><Translate id='recoverAccount.email.subject' /></span></P>
-                        <P><Translate id='recoverAccount.actionRequired' /></P>
-                        <P><Translate id='recoverAccount.cannotResend' /></P>
+                        <Header icon={EmailIcon}>
+                            <Translate id="recoverAccount.email.title" />
+                        </Header>
+                        <P>
+                            <Translate id="recoverAccount.email.desc" />{' '}
+                            <span>
+                                <Translate id="recoverAccount.email.subject" />
+                            </span>
+                        </P>
+                        <P>
+                            <Translate id="recoverAccount.actionRequired" />
+                        </P>
+                        <P>
+                            <Translate id="recoverAccount.cannotResend" />
+                        </P>
                     </Option>
                     <Option>
-                        <Header icon={PhoneIcon}><Translate id='recoverAccount.phone.title' /></Header>
-                        <P><Translate id='recoverAccount.phone.desc' /> <span><Translate id='recoverAccount.phone.number' /></span></P>
-                        <P><Translate id='recoverAccount.actionRequired' /></P>
-                        <P><Translate id='recoverAccount.cannotResend' /></P>
+                        <Header icon={PhoneIcon}>
+                            <Translate id="recoverAccount.phone.title" />
+                        </Header>
+                        <P>
+                            <Translate id="recoverAccount.phone.desc" />{' '}
+                            <span>
+                                <Translate id="recoverAccount.phone.number" />
+                            </span>
+                        </P>
+                        <P>
+                            <Translate id="recoverAccount.actionRequired" />
+                        </P>
+                        <P>
+                            <Translate id="recoverAccount.cannotResend" />
+                        </P>
                     </Option>
                     <Option>
-                        <Header icon={PhraseIcon}><Translate id='recoverAccount.phrase.title' /></Header>
-                        <P><Translate id='recoverAccount.phrase.desc' /></P>
+                        <Header icon={PhraseIcon}>
+                            <Translate id="recoverAccount.phrase.title" />
+                        </Header>
+                        <P>
+                            <Translate id="recoverAccount.phrase.desc" />
+                        </P>
                         <FormButton
-                            color='seafoam-blue'
+                            color="seafoam-blue"
                             linkTo={`/recover-seed-phrase${locationSearch}`}
-                            onClick={() => Mixpanel.track('IE Click seed phrase recovery button')}
+                            onClick={() =>
+                                Mixpanel.track('IE Click seed phrase recovery button')
+                            }
                             data-test-id="recoverAccountWithPassphraseButton"
-                            id='IE Click seed phrase recovery button'
+                            id="IE Click seed phrase recovery button"
                         >
-                            <Translate id='button.recoverAccount' />
+                            <Translate id="button.recoverAccount" />
                         </FormButton>
                     </Option>
                     <Option>
-                        <Header icon={HardwareDeviceIcon}><Translate id='recoverAccount.ledger.title' /></Header>
-                        <P><Translate id='recoverAccount.ledger.desc' /></P>
+                        <Header icon={HardwareDeviceIcon}>
+                            <Translate id="recoverAccount.ledger.title" />
+                        </Header>
+                        <P>
+                            <Translate id="recoverAccount.ledger.desc" />
+                        </P>
                         <FormButton
-                            color='seafoam-blue'
+                            color="seafoam-blue"
                             linkTo={`/sign-in-ledger${locationSearch}`}
-                            onClick={() => Mixpanel.track('IE Click ledger recovery button')}
-                            id='IE Click ledger recovery button'
+                            onClick={() =>
+                                Mixpanel.track('IE Click ledger recovery button')
+                            }
+                            id="IE Click ledger recovery button"
                         >
-                            <Translate id='button.signInLedger' />
+                            <Translate id="button.signInLedger" />
+                        </FormButton>
+                    </Option>
+                    <Option>
+                        <Header icon={KeyIcon}>
+                            <Translate id="recoverAccount.privateKey.title" />
+                        </Header>
+                        <P>
+                            <Translate id="recoverAccount.privateKey.desc" />
+                        </P>
+                        <FormButton
+                            color="seafoam-blue"
+                            linkTo={`/private-key${locationSearch}`}
+                            onClick={() =>
+                                Mixpanel.track('IE Click private key recovery button')
+                            }
+                            data-test-id="recoverAccountWithPrivateKey"
+                            id="IE Click private key recovery button"
+                        >
+                            <Translate id="button.recoverAccount" />
                         </FormButton>
                     </Option>
                     {!CONFIG.IS_MAINNET && isMobile && (
                         <Option>
-                            <Header className='no-background'><SmartPhoneIcon /><Translate id='mobileDeviceAccess.title' /></Header>
-                            <P><Translate id='mobileDeviceAccess.importCode.desc' /></P>
+                            <Header className="no-background">
+                                <SmartPhoneIcon />
+                                <Translate id="mobileDeviceAccess.title" />
+                            </Header>
+                            <P>
+                                <Translate id="mobileDeviceAccess.importCode.desc" />
+                            </P>
                         </Option>
                     )}
                 </Options>

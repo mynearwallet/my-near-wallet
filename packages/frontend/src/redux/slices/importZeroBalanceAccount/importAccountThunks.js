@@ -1,8 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { KeyPair } from 'near-api-js';
 
 import { SLICE_NAME } from '.';
 import { setLedgerHdPath } from '../../../utils/localStorage';
-import { getImplicitAccountIdFromSeedPhrase, getKeyPairFromSeedPhrase } from '../../../utils/parseSeedPhrase';
+import {
+    getImplicitAccountIdFromSeedPhrase,
+    getKeyPairFromSeedPhrase,
+} from '../../../utils/parseSeedPhrase';
 import { wallet, setKeyMeta } from '../../../utils/wallet';
 import { getLedgerPublicKey } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
@@ -20,29 +24,38 @@ export const importZeroBalanceAccountLedger = createAsyncThunk(
                     const errorMessage = `Implicit account ID ${implicitAccountId} derived from Ledger HD path ${ledgerHdPath} already exists but is not controlled by this Ledger device.`;
                     // This could happen if user creates an implicit account with Ledger but then switches to seed phrase recovery, etc.
                     console.log(errorMessage);
-                    dispatch(showCustomAlert({
-                        errorMessage: errorMessage,
-                        success: false,
-                        messageCodeHeader: 'error'
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            errorMessage: errorMessage,
+                            success: false,
+                            messageCodeHeader: 'error',
+                        })
+                    );
                     return;
                 }
             } catch (e) {
                 if (e.message.includes('does not exist while viewing')) {
-                    console.log('Ledger implicit Account ID does not exist on chain. Importing as zero balance account.');
+                    console.log(
+                        'Ledger implicit Account ID does not exist on chain. Importing as zero balance account.'
+                    );
                     await setKeyMeta(ledgerPublicKey, { type: 'ledger' });
-                    await setLedgerHdPath({ accountId: implicitAccountId, path: ledgerHdPath });
+                    await setLedgerHdPath({
+                        accountId: implicitAccountId,
+                        path: ledgerHdPath,
+                    });
                     await wallet.importZeroBalanceAccount(implicitAccountId);
                 } else {
                     throw e;
                 }
             }
         } catch (e) {
-            dispatch(showCustomAlert({
-                errorMessage: e.message,
-                success: false,
-                messageCodeHeader: 'error'
-            }));
+            dispatch(
+                showCustomAlert({
+                    errorMessage: e.message,
+                    success: false,
+                    messageCodeHeader: 'error',
+                })
+            );
         }
     }
 );
@@ -55,12 +68,38 @@ export const importZeroBalanceAccountPhrase = createAsyncThunk(
         try {
             await wallet.importZeroBalanceAccount(implicitAccountId, recoveryKeyPair);
         } catch (e) {
-            dispatch(showCustomAlert({
-                success: false,
-                messageCodeHeader: 'error',
-                messageCode: 'walletErrorCodes.recoverAccountSeedPhrase.errorNotAbleToImportAccount',
-                errorMessage: e.message
-            }));
+            dispatch(
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    messageCode:
+                        'walletErrorCodes.recoverAccountSeedPhrase.errorNotAbleToImportAccount',
+                    errorMessage: e.message,
+                })
+            );
+        }
+    }
+);
+
+export const importZeroBalanceAccountPrivateKey = createAsyncThunk(
+    `${SLICE_NAME}/importZeroBalanceAccountPrivateKey`,
+    async (secretKey, { dispatch }) => {
+        const recoveryKeyPair = KeyPair.fromString(secretKey);
+        const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString(
+            'hex'
+        );
+        try {
+            await wallet.importZeroBalanceAccount(implicitAccountId, recoveryKeyPair);
+        } catch (e) {
+            dispatch(
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    messageCode:
+                        'walletErrorCodes.recoverAccountSeedPhrase.errorNotAbleToImportAccount',
+                    errorMessage: e.message,
+                })
+            );
         }
     }
 );
