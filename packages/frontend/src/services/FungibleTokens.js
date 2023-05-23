@@ -160,7 +160,7 @@ export default class FungibleTokens {
                         account,
                         contractName,
                         receiverId,
-                        storageDepositAmount: CONFIG.FT_MINIMUM_STORAGE_BALANCE,
+                        storageDepositAmount: CONFIG.FT_MINIMUM_STORAGE_BALANCE_LARGE,
                     });
                 }
             }
