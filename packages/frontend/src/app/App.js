@@ -25,6 +25,7 @@ import SetupLedgerWithRouter from '../components/accounts/ledger/SetupLedger';
 import SetupLedgerSuccessWithRouter from '../components/accounts/ledger/SetupLedgerSuccess';
 import SignInLedgerWrapper from '../components/accounts/ledger/SignInLedgerWrapper';
 import LinkdropLandingWithRouter from '../components/accounts/LinkdropLanding';
+import RecoverAccountPrivateKey from '../components/accounts/RecoverAccountPrivateKey';
 import RecoverAccountSeedPhraseWithRouter from '../components/accounts/RecoverAccountSeedPhrase';
 import RecoverAccountWrapper from '../components/accounts/RecoverAccountWrapper';
 import SetupRecoveryMethodWithRouter from '../components/accounts/recovery_setup/SetupRecoveryMethod';
@@ -161,30 +162,21 @@ class Routing extends Component {
             { name: 'Українська', code: 'ua' },
         ];
 
-        const browserLanguage = getBrowserLocale(
-            languages.map((l) => l.code)
-        );
+        const browserLanguage = getBrowserLocale(languages.map((l) => l.code));
         const activeLang =
-            localStorage.getItem('languageCode') ||
-            browserLanguage ||
-            languages[0].code;
+            localStorage.getItem('languageCode') || browserLanguage || languages[0].code;
 
         this.props.initialize({
             languages,
             options: {
                 defaultLanguage: 'en',
-                onMissingTranslation: ({
-                    translationId,
-                    defaultTranslation,
-                }) => {
+                onMissingTranslation: ({ translationId, defaultTranslation }) => {
                     if (isString(defaultTranslation)) {
                         // do anything to change the defaultTranslation as you wish
                         return defaultTranslation;
                     } else {
                         // that's the code that can fix the issue
-                        return ReactDOMServer.renderToStaticMarkup(
-                            defaultTranslation
-                        );
+                        return ReactDOMServer.renderToStaticMarkup(defaultTranslation);
                     }
                 },
                 renderToStaticMarkup: ReactDOMServer.renderToStaticMarkup,
@@ -231,8 +223,7 @@ class Routing extends Component {
             handleClearUrl();
             if (
                 !WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS.find(
-                    (path) =>
-                        this.props.router.location.pathname.indexOf(path) > -1
+                    (path) => this.props.router.location.pathname.indexOf(path) > -1
                 )
             ) {
                 await refreshAccount(true);
@@ -253,8 +244,7 @@ class Routing extends Component {
             this.props.getTokenWhiteList(account.accountId);
         }
 
-        const prevLangCode =
-            prevProps.activeLanguage && prevProps.activeLanguage.code;
+        const prevLangCode = prevProps.activeLanguage && prevProps.activeLanguage.code;
         const curLangCode = activeLanguage && activeLanguage.code;
         const hasLanguageChanged = prevLangCode !== curLangCode;
 
@@ -266,11 +256,11 @@ class Routing extends Component {
 
     handleTransferClick = () => {
         this.setState({ openTransferPopup: true });
-    }
+    };
 
     closeTransferPopup = () => {
         this.setState({ openTransferPopup: false });
-    }
+    };
 
     render() {
         const {
@@ -318,10 +308,7 @@ class Routing extends Component {
                 <Bootstrap />
                 <Updater />
                 <GlobalStyle />
-                <ConnectedRouter
-                    basename={PATH_PREFIX}
-                    history={this.props.history}
-                >
+                <ConnectedRouter basename={PATH_PREFIX} history={this.props.history}>
                     <ThemeProvider theme={theme}>
                         <ScrollToTop />
                         <NetworkBanner account={account} />
@@ -330,14 +317,14 @@ class Routing extends Component {
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}
-                            onClose={this.closeTransferPopup} />
+                            onClose={this.closeTransferPopup}
+                        />
                         <LedgerConfirmActionModal />
                         <LedgerConnectModal />
                         {account.requestPending !== null && (
                             <TwoFactorVerifyModal
                                 onClose={(verified, error) => {
-                                    const { account, promptTwoFactor } =
-                                        this.props;
+                                    const { account, promptTwoFactor } = this.props;
                                     Mixpanel.track('2FA Modal Verify start');
                                     // requestPending will resolve (verified == true) or reject the Promise being awaited in the method that dispatched promptTwoFactor
                                     account.requestPending(verified, error);
@@ -345,15 +332,12 @@ class Routing extends Component {
                                     promptTwoFactor(null);
                                     if (error) {
                                         // tracking error
-                                        Mixpanel.track(
-                                            '2FA Modal Verify fail',
-                                            { error: error.message }
-                                        );
+                                        Mixpanel.track('2FA Modal Verify fail', {
+                                            error: error.message,
+                                        });
                                     }
                                     if (verified) {
-                                        Mixpanel.track(
-                                            '2FA Modal Verify finish'
-                                        );
+                                        Mixpanel.track('2FA Modal Verify finish');
                                     }
                                 }}
                             />
@@ -370,11 +354,7 @@ class Routing extends Component {
                                 exact
                                 path="/"
                                 render={(props) => (
-                                    <WalletWrapper
-                                        tab={tab}
-                                        setTab={setTab}
-                                        {...props}
-                                    />
+                                    <WalletWrapper tab={tab} setTab={setTab} {...props} />
                                 )}
                                 accountFound={accountFound}
                                 indexBySearchEngines={!accountFound}
@@ -394,9 +374,7 @@ class Routing extends Component {
                                 path="/create"
                                 render={(props) =>
                                     accountFound || !CONFIG.DISABLE_CREATE_ACCOUNT ? (
-                                        <CreateAccountWithRouter
-                                            {...props}
-                                        />
+                                        <CreateAccountWithRouter {...props} />
                                     ) : (
                                         <CreateAccountLanding />
                                     )
@@ -421,9 +399,7 @@ class Routing extends Component {
                             <PublicRoute
                                 exact
                                 path="/set-recovery-implicit-account"
-                                component={
-                                    SetupRecoveryImplicitAccountWrapper
-                                }
+                                component={SetupRecoveryImplicitAccountWrapper}
                             />
                             <PublicRoute
                                 exact
@@ -497,18 +473,21 @@ class Routing extends Component {
                             />
                             <Route
                                 exact
+                                path="/recover-private-key"
+                                component={RecoverAccountPrivateKey}
+                            />
+                            <Route
+                                exact
                                 path="/auto-import-seed-phrase"
                                 render={({ location }) => {
                                     const importString = decodeURIComponent(
                                         location.hash.substring(1)
                                     );
-                                    const hasAccountId =
-                                        importString.includes('/');
+                                    const hasAccountId = importString.includes('/');
                                     const seedPhrase = hasAccountId
                                         ? importString.split('/')[1]
                                         : importString;
-                                    const { secretKey } =
-                                        parseSeedPhrase(seedPhrase);
+                                    const { secretKey } = parseSeedPhrase(seedPhrase);
                                     return (
                                         <AutoImportWrapper
                                             secretKey={secretKey}
@@ -529,8 +508,7 @@ class Routing extends Component {
                                     const importString = decodeURIComponent(
                                         location.hash.substring(1)
                                     );
-                                    const hasAccountId =
-                                        importString.includes('/');
+                                    const hasAccountId = importString.includes('/');
                                     return (
                                         <AutoImportWrapper
                                             secretKey={
@@ -548,9 +526,14 @@ class Routing extends Component {
                                     );
                                 }}
                             />
-                            <Route exact path="/batch-import" render={() =>
-                                (<BatchImportAccounts
-                                    onCancel={() => this.props.history.replace('/')} />)}
+                            <Route
+                                exact
+                                path="/batch-import"
+                                render={() => (
+                                    <BatchImportAccounts
+                                        onCancel={() => this.props.history.replace('/')}
+                                    />
+                                )}
                             />
                             <Route
                                 exact
@@ -562,10 +545,7 @@ class Routing extends Component {
                                 path="/sign-in-ledger"
                                 component={SignInLedgerWrapper}
                             />
-                            <PrivateRoute
-                                path="/login"
-                                component={LoginWrapper}
-                            />
+                            <PrivateRoute path="/login" component={LoginWrapper} />
                             <PrivateRoute
                                 exact
                                 path="/authorized-apps"
@@ -595,37 +575,19 @@ class Routing extends Component {
                                 path="/receive-money"
                                 component={ReceiveContainerWrapper}
                             />
-                            <PrivateRoute
-                                exact
-                                path="/buy"
-                                component={BuyNear}
-                            />
-                            <PrivateRoute
-                                exact
-                                path="/swap"
-                                component={TokenSwap}
-                            />
-                            <Route
-                                exact
-                                path="/profile/:accountId"
-                                component={Profile}
-                            />
+                            <PrivateRoute exact path="/buy" component={BuyNear} />
+                            <PrivateRoute exact path="/swap" component={TokenSwap} />
+                            <Route exact path="/profile/:accountId" component={Profile} />
                             <PrivateRoute
                                 exact
                                 path="/profile/:accountId?"
                                 component={Profile}
                             />
-                            <PrivateRoute
-                                exact
-                                path="/sign"
-                                component={SignWrapper}
-                            />
+                            <PrivateRoute exact path="/sign" component={SignWrapper} />
                             <PrivateRoute
                                 path="/staking"
                                 render={() => (
-                                    <StakingContainer
-                                        history={this.props.history}
-                                    />
+                                    <StakingContainer history={this.props.history} />
                                 )}
                             />
                             <PrivateRoute
@@ -688,7 +650,4 @@ const mapStateToProps = (state) => ({
     router: getRouter(state),
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(withLocalize(Routing));
+export default connect(mapStateToProps, mapDispatchToProps)(withLocalize(Routing));

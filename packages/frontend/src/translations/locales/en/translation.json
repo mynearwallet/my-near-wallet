@@ -113,6 +113,7 @@
                     "desc": "The account has not yet been funded. Purchase $NEAR to perform transactions with the account.",
                     "ledger": "The following account was successfully imported using the Ledger key you provided:",
                     "phrase": "The following account was successfully imported using the passphrase you provided:",
+                    "privateKey": "The following account was successfully imported using the private key you provided:",
                     "title": "Account Imported"
                 }
             }
@@ -980,6 +981,10 @@
         "phrase": {
             "desc": "Make sure you have your 12 word recovery phrase, then click below to begin the recovery process.",
             "title": "Passphrase"
+        },
+        "privateKey": {
+            "desc": "Make sure you have your private key started with ed25519, then click below to begin the recovery process.",
+            "title": "Private Key"
         }
     },
     "recoverSeedPhrase": {
@@ -996,6 +1001,13 @@
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "Passphrase (12 words)"
+        }
+    },
+    "recoverPrivateKey": {
+        "pageText": "Enter the private key associated with the account.",
+        "pageTitle": "Recover using Private Key",
+        "privateKeyInput": {
+            "title": "Private Key"
         }
     },
     "recoverWithLink": {
@@ -1877,12 +1889,15 @@
             "errorNotAbleToImportAccount": "Import of your account failed. Please try again or contact support for assistance.",
             "errorSeedPhraseNotValid": "The provided passphrase is not valid. Please check your passphrase and try again."
         },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "The provided private key is not valid. Please check your private key and try again."
+        },
         "recoveryMethods": {
             "lastMethod": "Cannot delete your last recovery method. Unless you have Ledger enabled, you need to keep at least one recovery method active to ensure recoverability of your account.",
             "setupMethod": "An error occurred. Please check your recovery method."
         },
         "refreshAccountOwner": {
-            "error": "An error occured while loading your account. Some wallet data may not be up-to-date. Please try refreshing your browser."
+            "error": "An error occurred while loading your account. Some wallet data may not be up-to-date. Please try refreshing your browser."
         },
         "sendFungibleToken": {
             "error": "An error occurred. Your send transaction was cancelled."

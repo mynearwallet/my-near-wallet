@@ -95,7 +95,12 @@
         "recoverAccount": {
             "error": "Không thể khôi phục tài khoản. Không có tài khoản nào được tìm thấy cho cụm từ khôi phục này.",
             "errorInvalidSeedPhrase": "Không có tài khoản nào được tìm thấy cho cụm từ khôi phục này.",
-            "success": "Quá trình khôi phục bằng cách sử dụng cụm từ khôi phục đã hoàn tất.<br/><b>tài khoản ${numberOfAccounts}</b> đã được khôi phục thành công.<br/>Tài khoản đang hoạt động."
+            "success": "Quá trình khôi phục bằng cách sử dụng cụm từ khôi phục đã hoàn tất.<br/><b>tài khoản ${numberOfAccounts}</b> đã được khôi phục thành công.<br/>Tài khoản đang hoạt động.",
+            "zeroBalance": {
+                "success": {
+                    "privateKey": "Tài khoản sau đã được nhập thành công bằng cách sử dụng khóa riêng mà bạn cung cấp:"
+                }
+            }
         },
         "requestCode": {
             "error": "Không gửi được mã SMS.",
@@ -743,6 +748,10 @@
         "phrase": {
             "desc": "Đảm bảo bạn có 12 từ khôi phục, sau đó nhấp vào bên dưới để bắt đầu quá trình khôi phục.",
             "title": "Cụm từ khôi phục"
+        },
+        "privateKey": {
+            "desc": "Hãy đảm bảo rằng bạn có khóa riêng bắt đầu bằng ed25519, sau đó nhấp vào liên kết bên dưới để bắt đầu quá trình khôi phục.",
+            "title": "Khóa riêng"
         }
     },
     "recoverSeedPhrase": {
@@ -751,6 +760,13 @@
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "Cụm từ khôi phục (12 từ)"
+        }
+    },
+    "recoverPrivateKey": {
+        "pageText": "Vui lòng nhập khóa riêng liên kết với tài khoản.",
+        "pageTitle": "Khôi phục bằng Khóa Riêng",
+        "privateKeyInput": {
+            "title": "Khóa riêng"
         }
     },
     "recoverWithLink": {
@@ -1402,6 +1418,9 @@
         },
         "recoverAccountSeedPhrase": {
             "errorInvalidSeedPhrase": "Không có tài khoản nào được tìm thấy cho cụm từ khôi phục này."
+        },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "Khóa riêng được cung cấp không hợp lệ. Vui lòng kiểm tra lại khóa riêng và thử lại."
         },
         "recoveryMethods": {
             "lastMethod": "Không thể xóa phương thức khôi phục cuối cùng của bạn. Trừ khi bạn đã bật Ledger, bạn cần duy trì hoạt động ít nhất một phương thức khôi phục để đảm bảo khả năng khôi phục của tài khoản của bạn.",

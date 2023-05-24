@@ -15,6 +15,7 @@ const { SetupSeedPhrasePage } = require("../register/models/SetupSeedPhrase");
 const { WALLET_NETWORK, LINKDROP_ACCESS_KEY_ALLOWANCE } = require("../constants");
 const { testDappURL } = require("../utils/config");
 const LinkdropAccountManager = require("../utils/LinkdropAccountManager");
+const { getKeyPairFromSeedPhrase } = require("../utils/helpers");
 
 const { describe, beforeAll, afterAll } = test;
 
@@ -48,6 +49,27 @@ describe("Linkdrop flow", () => {
         await page.click(`data-test-id=recoverAccountWithPassphraseButton`);
         await page.fill("data-test-id=seedPhraseRecoveryInput", linkdropReceiverAccount.seedPhrase);
         await page.click(`data-test-id=seedPhraseRecoverySubmitButton`);
+        await linkdropPage.claimToExistingAccount();
+        
+        await expect(page).toHaveURL(/\/$/);
+        await page.reload();
+        await expect(page.locator('.tokensLoading')).not.toBeVisible();
+        const nearBalance = await new HomePage(page).getNearBalanceInNear();
+        expect(new BN(parseNearAmount(nearBalance) || "").gte(linkdropClaimableAmount)).toBe(true);
+    });
+
+    test("logs in via private key and claims linkdrop", async ({ page }) => {
+        const linkdropPage = new LinkDropPage(page);
+        const linkdropSecretKey = await linkdropAccountManager.send(linkdropNEARAmount);
+        const { linkdropContractAccount, linkdropReceiverAccount } = linkdropAccountManager;
+
+        await linkdropPage.navigate(linkdropContractAccount.accountId, linkdropSecretKey);
+        await expect(page.locator('.dots')).not.toBeVisible()
+        await linkdropPage.loginAndClaim();
+        const keyPair = getKeyPairFromSeedPhrase(linkdropReceiverAccount.seedPhrase)
+        await page.click(`data-test-id=recoverAccountWithPrivateKey`);
+        await page.fill("data-test-id=privateKeyRecoveryInput", keyPair.toString());
+        await page.click(`data-test-id=privateKeyRecoverySubmitButton`);
         await linkdropPage.claimToExistingAccount();
         
         await expect(page).toHaveURL(/\/$/);
