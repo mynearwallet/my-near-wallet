@@ -50,7 +50,7 @@ const Header = styled.div`
     grid-template-columns: repeat(3, 1fr);
 
     .title {
-        font-family: "Inter";
+        font-family: 'Inter';
         font-style: normal;
         font-size: 1.25rem;
         line-height: 1.5rem;
@@ -88,9 +88,10 @@ const tokenSelectState = {
     selectOut: 2,
 };
 
-const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
+const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
     const availableBalance = useSelector(selectAvailableBalance);
     const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
+    const [zeroAmountOut, setZeroAmountOut] = useState(false);
     const {
         swapState: {
             tokenIn,
@@ -101,20 +102,15 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
             swapPoolId,
             estimatedFee,
         },
-        events: {
-            setViewState,
-            setTokenIn,
-            setTokenOut,
-            setAmountIn,
-            setAmountOut,
-        },
+        events: { setViewState, setTokenIn, setTokenOut, setAmountIn, setAmountOut },
     } = useSwapData();
 
     useEffect(() => {
         if (!tokenIn && listOfTokensIn[0]) {
             setTokenIn(listOfTokensIn[0]);
         } else {
-            const newTokenIn = tokensIn[tokenIn?.contractName] || tokensOut[tokenIn?.contractName];
+            const newTokenIn =
+                tokensIn[tokenIn?.contractName] || tokensOut[tokenIn?.contractName];
 
             setTokenIn(newTokenIn);
         }
@@ -171,10 +167,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
         setAmountOut('');
     };
 
-    const {
-        swapNotification,
-        loading,
-    } = useSwapInfo({
+    const { swapNotification, loading } = useSwapInfo({
         account,
         tokenIn,
         amountIn,
@@ -186,12 +179,16 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
     useEffect(() => {
         if (notification) {
             setNotification(null);
-        };
+        }
 
         if (swapNotification) {
             setNotification(swapNotification);
         } else if (estimatedFee && availableBalance) {
-            const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
+            const formattedBalance = formatTokenAmount(
+                availableBalance,
+                NEAR_DECIMALS,
+                NEAR_DECIMALS
+            );
 
             // If we have NEAR in the input field check is available balance >= amount + swap fee
             if (
@@ -232,17 +229,27 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
                 amountOut
         );
 
+        let isZeroOutput = false;
+
         if (formIsFilled && availableBalance) {
-            const formattedBalance = formatTokenAmount(availableBalance, NEAR_DECIMALS, NEAR_DECIMALS);
+            const formattedBalance = formatTokenAmount(
+                availableBalance,
+                NEAR_DECIMALS,
+                NEAR_DECIMALS
+            );
             const isInsufficientBalance = Big(estimatedFee)
                 .plus(tokenIn?.contractName === CONFIG.NEAR_ID ? amountIn : 0)
                 .gt(formattedBalance);
 
             if (isValidInput && !isInsufficientBalance) {
-                return true;
+                if (Number(amountOut) > 0) {
+                    return true;
+                } else {
+                    isZeroOutput = true;
+                }
             }
         }
-
+        setZeroAmountOut(isZeroOutput);
         return false;
     }, [
         tokenIn,
@@ -313,6 +320,12 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig  }) => {
                                     id={notification.id}
                                     data={notification.data}
                                 />
+                            </Notification>
+                        )}
+
+                        {zeroAmountOut && (
+                            <Notification type="error">
+                                <Translate id="swap.inputTooLow" />
                             </Notification>
                         )}
 

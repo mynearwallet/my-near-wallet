@@ -540,15 +540,15 @@
         "ctaLogin": "Giriş Yap ve Talep Et",
         "ctaNew": "Yeni Hesapla Talep Edin",
         "desc": "NEAR Hediyelerinizi mevcut bir hesapla talep edebilir (oturum açmış olmanız gerekir), veya ilk depozito olarak almak için yeni bir hesap oluşturabilirsiniz.",
+        "error": {
+            "invalidRedirectUrl": "Geçersiz yönlendirme URL'si"
+        },
         "modal": {
             "desc": "NEAR bahşişiniz otomatik olarak hesabınıza yatırıldı.",
             "title": "NEAR bahşişiniz talep edildi"
         },
         "or": "veya",
-        "title": "NEAR bahşişi aldınız!",
-        "error": {
-            "invalidRedirectUrl": "Geçersiz yönlendirme URL'si"
-        }
+        "title": "NEAR bahşişi aldınız!"
     },
     "loading": "Yükleniyor...",
     "loadingNoDots": "Yükleniyor",
@@ -1331,6 +1331,7 @@
         "failTitle": "Takas başarısız oldu!",
         "fee": "Tahmini Ücretler",
         "from": "From",
+        "inputTooLow": "Giriş miktarı çok düşük",
         "insufficientBalanceForAmountAndFee": "Girdi tutarını ve takas ücretini ödemek için yetersiz bakiye",
         "insufficientBalanceForFee": "Takas ücretini ödemek için yetersiz bakiye",
         "max": "Maks: ${amount} ${symbol}",
