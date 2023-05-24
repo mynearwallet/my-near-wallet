@@ -579,6 +579,9 @@
         "ctaLogin": "Accedi e Riscuoti",
         "ctaNew": "Riscuoti con un Nuovo Account",
         "desc": "Puoi richiedere i tuoi NEAR con un account esistente (deve essere collegato), o crea un nuovo account per riceverlo come deposito iniziale.",
+        "error": {
+            "invalidRedirectUrl": "URL di reindirizzamento non valido"
+        },
         "modal": {
             "desc": "Il tuo NEAR drop è stato automaticamente depositato nel tuo account.",
             "title": "Il tuo NEAR drop è stato riscosso"
@@ -1029,6 +1032,9 @@
             "balanceDetails": "Dettagli del Saldo",
             "transactionDetails": "Dettagli Transazione"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Questo è un token collegato. Non inviarlo a scambi come Binance."
+        },
         "review": {
             "title": "Stai inviando"
         },
@@ -1422,6 +1428,7 @@
         "failTitle": "Scambio non riuscito!",
         "fee": "Tariffe stimate",
         "from": "From",
+        "inputTooLow": "L'importo inserito è troppo basso",
         "insufficientBalanceForAmountAndFee": "Saldo insufficiente per pagare l'importo dell'input e la commissione di swap",
         "insufficientBalanceForFee": "Saldo insufficiente per pagare la commissione di swap",
         "max": "Massimo: ${amount} ${symbol}",

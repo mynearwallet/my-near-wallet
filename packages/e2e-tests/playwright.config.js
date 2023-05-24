@@ -1,30 +1,22 @@
 require("dotenv").config();
-
-const { devices, expect } = require("@playwright/test");
-const { matchers } = require("expect-playwright");
-
-expect.extend(matchers);
+const {devices} = require('playwright')
 
 const config = {
+    expect: {
+        timeout: 60 * 1000// unit is ms, default is 5s
+    },
     globalSetup: require.resolve("./global-setup.js"),
     reporter: [["./reporters/WalletE2eLogsReporter.js", { logger: console }], ["./reporters/pagerduty-reporter.js"]],
-    webServer: {
-        command:
-            "cd ../frontend && npx serve dist -l 1234 -s --ssl-cert devServerCertificates/primary.crt --ssl-key devServerCertificates/private.pem",
-        port: 1234,
-        timeout: 120 * 1000,
-        reuseExistingServer: false,
-    },
-    timeout: 60000,
+    timeout: 5 * 60 * 1000,
     use: {
-        baseURL: process.env.WALLET_URL || "https://wallet.testnet.near.org",
+        baseURL: process.env.WALLET_URL || "https://localhost:1234",
         headless: true,
         viewport: { width: 1280, height: 720 },
         ignoreHTTPSErrors: true,
         storageState: {
             origins: [
                 {
-                    origin: process.env.WALLET_URL || "https://wallet.testnet.near.org",
+                    origin: process.env.WALLET_URL || "https://localhost:1234",
                     localStorage: [{ name: "wallet.releaseNotesModal:v0.01.2:closed", value: "true" }],
                 },
             ],

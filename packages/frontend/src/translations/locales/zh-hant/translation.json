@@ -683,6 +683,9 @@
         "ctaLogin": "登錄並領取",
         "ctaNew": "註冊新賬戶並領取",
         "desc": "你可以登錄已有的賬戶領取，或創建新的賬戶領取。",
+        "error": {
+            "invalidRedirectUrl": "無效的重新導向 URL"
+        },
         "modal": {
             "desc": "你的 NEAR 空投已自動領取至你的賬戶。",
             "title": "你的 NEAR 空投已領取"
@@ -1164,6 +1167,9 @@
             "balanceDetails": "餘額詳情",
             "transactionDetails": "交易詳情"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "這是一個跨鏈代幣。請不要將其發送到交易所（如幣安）。"
+        },
         "review": {
             "title": "你正在發送"
         },
@@ -1578,6 +1584,7 @@
         "failTitle": "交换失败!",
         "fee": "估計費用",
         "from": "來自",
+        "inputTooLow": "輸入金額過低",
         "insufficientBalanceForAmountAndFee": "余额不足以支付输入金额和掉期费用",
         "insufficientBalanceForFee": "余额不足以支付掉期费用",
         "max": "最多：${amount} ${symbol}",

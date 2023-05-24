@@ -507,6 +507,9 @@
         "ctaLogin": "Đăng nhập và Claim",
         "ctaNew": "Claim với Tài khoản mới",
         "desc": "Bạn có thể claim NEAR của mình với một tài khoản hiện có (phải đăng nhập) hoặc tạo một tài khoản mới để nhận nó như một khoản gửi tiền ban đầu.",
+        "error": {
+            "invalidRedirectUrl": "URL chuyển hướng không hợp lệ"
+        },
         "modal": {
             "desc": "NEAR Drop của bạn đã được tự động gửi vào tài khoản của bạn.",
             "title": "NEAR Drop của bạn đã được claim"
@@ -923,6 +926,9 @@
             "balanceDetails": "Chi tiết Số dư",
             "transactionDetails": "Chi tiết Giao dịch"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Đây là một token cầu nối. Đừng gửi nó đến các sàn giao dịch như Binance."
+        },
         "review": {
             "title": "Bạn đang gửi"
         },
@@ -1281,6 +1287,7 @@
         "failTitle": "Swap thất bại!",
         "fee": "Phí ước tính",
         "from": "Từ",
+        "inputTooLow": "Số tiền nhập vào quá thấp",
         "insufficientBalanceForAmountAndFee": "Không đủ số dư để thanh toán số tiền đầu vào và phí hoán đổi",
         "insufficientBalanceForFee": "Không đủ số dư để trả phí hoán đổi",
         "max": "Tối đa: ${amount} ${symbol}",

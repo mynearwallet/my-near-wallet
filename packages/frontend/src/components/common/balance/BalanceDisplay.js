@@ -80,10 +80,21 @@ const BalanceDisplay = ({
     showSignUSD,
     showSymbolUSD,
     totalAmount,
+    showGenericSymbol = false,
     'data-test-id': testId
 }) => {
 
     const amountToShow = amount && formatNearAmount(amount);
+
+    const getSymbol = () => {
+        if (showGenericSymbol) {
+            return ' Ⓣ';
+        }
+        if (showSymbolNEAR) {
+            return ` ${CONFIG.NEAR_ID}`;
+        }
+        return '';
+    };
 
     const handleShowInYocto = (amount) => {
         if (new BN(amount).lte(YOCTO_NEAR_THRESHOLD)) {
@@ -108,8 +119,8 @@ const BalanceDisplay = ({
             {showBalanceInNEAR && (
                 <>
                     {amount
-                        ? <div className='near-amount'>{amountToShow}{showSymbolNEAR !== false ? ` ${CONFIG.NEAR_ID}` : ''}</div>
-                        : <div className="dots"><Translate id='loadingNoDots'/></div>
+                        ? <div className='near-amount'>{amountToShow}{getSymbol()}</div>
+                        : <div className="dots tokensLoading"><Translate id='loadingNoDots'/></div>
                     }
                 </>
             )}

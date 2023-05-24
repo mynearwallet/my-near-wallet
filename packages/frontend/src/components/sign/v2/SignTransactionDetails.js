@@ -98,7 +98,8 @@ const StyledContainer = styled(Container)`
 export default ({
     onClickGoBack,
     transactions,
-    signGasFee
+    signGasFee,
+    privateShardInfo
 }) => {
     return (
         <StyledContainer className='small-centered border'>
@@ -108,17 +109,23 @@ export default ({
             </div>
             <div className='network-fees'>
                 <div className='title'><Translate id='sign.networkFees' /></div>
-                <div className='entry'>
-                    <Translate id='sign.estimatedFees' />
-                    <Balance
-                        amount={signGasFee}
-                        showBalanceInUSD={false}
-                    />
-                </div>
-                <div className='entry'>
-                    <Translate id='sign.feeLimit' />
-                    <div>{signGasFee} Tgas</div>
-                </div>
+                {privateShardInfo ? (
+                    <div className='entry'>No fees</div>
+                ) : (
+                    <>
+                        <div className='entry'>
+                            <Translate id='sign.estimatedFees' />
+                            <Balance
+                                amount={signGasFee}
+                                showBalanceInUSD={false}
+                            />
+                        </div>
+                        <div className='entry'>
+                            <Translate id='sign.feeLimit' />
+                            <div>{signGasFee} Tgas</div>
+                        </div>
+                    </>
+                ) }
             </div>
 
             <div className='contract-details'>

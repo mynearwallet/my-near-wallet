@@ -1,3 +1,4 @@
+// @ts-check
 const { test, expect } = require("../playwrightWithFixtures");
 const { formatNearAmount } = require("near-api-js/lib/utils/format");
 
@@ -33,10 +34,12 @@ describe("Unstaking flow", () => {
         await stakeUnstakePage.runStakingFlowWithAmount(0.2, randomValidatorIndexes[1]);
         await stakeUnstakePage.clickStakingPageUnstakeButton();
 
-        await expect(page).toMatchURL(/\/staking\/unstake$/);
-        await expect(page).toHaveSelectorCount("data-test-id=stakingPageValidatorItem", 2);
-        await expect(page).toMatchText(/0.1 NEAR/);
-        await expect(page).toMatchText(/0.2 NEAR/);
+        await expect(page).toHaveURL(/\/staking\/unstake$/);
+        await expect(async () => {
+          expect(await page.locator("data-test-id=stakingPageValidatorItem").count()).toBe(2)
+        }).toPass()
+        expect(page.getByText(/0.1 NEAR/)).toBeTruthy()
+        expect(page.getByText(/0.2 NEAR/)).toBeTruthy()
     });
 
     test("successfully unstakes and displays the right data after", async ({ page }) => {
@@ -56,23 +59,18 @@ describe("Unstaking flow", () => {
         await stakeUnstakePage.confirmStakeOnModal();
         await stakeUnstakePage.returnToDashboard();
 
-        await expect(page).toMatchText(
-            "data-test-id=accountSelectStakedBalance",
-            new RegExp(`${amountStillStaked} NEAR`)
-        );
-        await expect(page).toMatchText(
-            "data-test-id=stakingPageTotalStakedAmount",
-            new RegExp(`${amountStillStaked} NEAR`)
-        );
-        await expect(page).toMatchText(
-            "data-test-id=stakingPagePendingReleaseAmount",
-            new RegExp(`${submittedUnstakeAmount} NEAR`)
-        );
+        // wait for stake details to be updated.
+        await expect(async () => {
+          await expect(page.locator("data-test-id=accountSelectStakedBalance")).toHaveText(new RegExp(`${amountStillStaked} NEAR`))
+        }).toPass()
+        await expect(page.locator("data-test-id=stakingPageTotalStakedAmount")).toHaveText(new RegExp(`${amountStillStaked} NEAR`))
+        await expect(page.locator("data-test-id=stakingPagePendingReleaseAmount")).toHaveText(new RegExp(`${submittedUnstakeAmount} NEAR`))
 
         await stakeUnstakePage.clickStakingPageUnstakeButton();
 
-        await expect(page).toHaveSelectorCount("data-test-id=stakingPageValidatorItem", 1);
-        await expect(page).toMatchText(new RegExp(`${amountStillStaked} NEAR`));
+        
+        expect(await page.locator("data-test-id=stakingPageValidatorItem").count()).toBe(1)
+        expect(page.getByText(new RegExp(`${amountStillStaked} NEAR`))).toBeTruthy()
 
         const stakedAmount = await testAccount.getAmountStakedWithValidator(stakedValidatorName);
 

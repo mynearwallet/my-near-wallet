@@ -708,6 +708,9 @@
         "ctaLogin": "Log In and Claim",
         "ctaNew": "Claim with New Account",
         "desc": "You may claim your NEAR drop with an existing account (must be logged in), or create a new account to receive it as an initial deposit.",
+        "error": {
+            "invalidRedirectUrl": "Invalid redirect URL"
+        },
         "loadingText": "Fetching Linkdrop Info",
         "modal": {
             "desc": "Your NEAR drop has been automatically deposited to your account.",
@@ -779,6 +782,8 @@
                 "desc": "An application is requesting <b>${accessType}</b> to your NEAR account. Select the account you wish to connect.",
                 "fullAccess": "full access",
                 "limitedAccess": "limited access",
+                "privateShardDesc": "An application is requesting your permission to sync your NEAR account with the Calimero private shard <b>${shardId}</b>. This will create a matching account and add an <b>${accessType}</b> access key. Transactions on private shard will not affect your NEAR account. Choose the account to connect.",
+                "privateShardTitle": "Connect with Calimero Shard",
                 "title": "Connect with NEAR"
             }
         }
@@ -1190,6 +1195,9 @@
         "accordionTriggerTitle": {
             "balanceDetails": "Balance details",
             "transactionDetails": "Transaction Details"
+        },
+        "enterAmount": {
+            "bridgedTokenWarning": "This is a bridged token. Do not send it to exchanges like Binance."
         },
         "review": {
             "title": "You are sending"
@@ -1617,6 +1625,7 @@
         "failTitle": "Swap failed!",
         "fee": "Estimated fees",
         "from": "From",
+        "inputTooLow": "Input amount is too low",
         "insufficientBalanceForAmountAndFee": "Insufficient balance to pay input amount and swap fee",
         "insufficientBalanceForFee": "Insufficient balance to pay swap fee",
         "max": "Max: ${amount} ${symbol}",
@@ -1815,6 +1824,9 @@
         },
         "addAccessKeySeedPhrase": {
             "errorSecond": "An error has occurred.<br />The passphrase was not added to your account. Please try again."
+        },
+        "addAccessKeyToPrivateShard": {
+            "errorPrivateShard": "An error has occurred.<br />The access key wasn't synced in the private shard."
         },
         "addAccessKeyZeroBalanceAccountSetup": {
             "error": "Something went wrong while finishing import of your now active account. Please re-import your account in the wallet."

@@ -1,4 +1,4 @@
-const { connect, keyStores, WalletConnection } = nearApi;
+const { connect, keyStores, WalletConnection, utils } = nearApi;
 
 (async () => {
     const { DEFAULT_NEAR_CONFIG, BANK_ACCOUNT } = await fetch(
@@ -14,6 +14,25 @@ const { connect, keyStores, WalletConnection } = nearApi;
     const wallet = new WalletConnection(near);
 
     const walletAccountId = wallet.getAccountId();
+
+    const PENDING_ACCESS_KEY_PREFIX = "pending_key";
+
+    const loginFullAccess = async (options) => {
+        const currentUrl = new URL(window.location.href);
+        const newUrl = new URL(wallet._walletBaseUrl + "/login/");
+        newUrl.searchParams.set("success_url", options.successUrl || currentUrl.href);
+        newUrl.searchParams.set("failure_url", options.failureUrl || currentUrl.href);
+        
+        const accessKey = utils.KeyPair.fromRandom("ed25519");
+        newUrl.searchParams.set("public_key", accessKey.getPublicKey().toString());
+        await wallet._keyStore.setKey(
+            wallet._networkId,
+            PENDING_ACCESS_KEY_PREFIX + accessKey.getPublicKey(),
+            accessKey
+        );
+        
+        window.location.assign(newUrl.toString());
+    };
 
     if (walletAccountId) {
         document.getElementById("content").innerHTML = `
@@ -47,6 +66,6 @@ const { connect, keyStores, WalletConnection } = nearApi;
             );
         document
             .getElementById("signInWithFAKBtn")
-            .addEventListener("click", () => wallet.requestSignIn(""));
+            .addEventListener("click", () => loginFullAccess({}));
     }
 })();

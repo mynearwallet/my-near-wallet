@@ -73,20 +73,6 @@ function generateCodeFrame(options, file, position) {
     return codeFrame;
 }
 
-function prepareErrorStack(stack, file) {
-    const lines = stack.split("\n");
-    let firstStackLine = lines.findIndex((line) => line.startsWith("    at "));
-    if (firstStackLine === -1) firstStackLine = lines.length;
-    const message = lines.slice(0, firstStackLine).join("\n");
-    const stackLines = lines.slice(firstStackLine);
-    const position = file ? positionInFile(stackLines, file) : undefined;
-    return {
-        message,
-        stackLines,
-        position,
-    };
-}
-
 function positionInFile(stackLines, file) {
     // Stack will have /private/var/folders instead of /var/folders on Mac.
     file = fs.realpathSync(file);

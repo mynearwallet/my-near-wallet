@@ -901,6 +901,9 @@
             "balanceDetails": "Сведения о балансе",
             "transactionDetails": "Детали транзакции"
         },
+        "enterAmount": {
+            "bridgedTokenWarning": "Это мостовой токен. Не отправляйте его на биржи, такие как Binance."
+        },
         "review": {
             "title": "Вы отправляете"
         },
@@ -1264,6 +1267,7 @@
         "failTitle": "Обмен не завершен!",
         "fee": "Комиссия за транзакцию",
         "from": "From",
+        "inputTooLow": "Введенная сумма слишком мала",
         "insufficientBalanceForAmountAndFee": "Недостаточный баланс для оплаты кол-ва и комиссии за обмен",
         "insufficientBalanceForFee": "Недостаточный баланс для оплаты комиссии за обмен",
         "max": "Макс: ${amount} ${symbol}",
