@@ -473,7 +473,7 @@ class Routing extends Component {
                             />
                             <Route
                                 exact
-                                path="/private-key"
+                                path="/recover-private-key"
                                 component={RecoverAccountPrivateKey}
                             />
                             <Route

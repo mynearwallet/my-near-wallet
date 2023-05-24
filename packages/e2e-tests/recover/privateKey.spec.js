@@ -22,11 +22,11 @@ describe("Account Recovery Using Private Key", () => {
         await page.click(`data-test-id=homePageImportAccountButton`);
         await page.click(`data-test-id=recoverAccountWithPrivateKey`);
 
-        await expect(page).toHaveURL(/\/private-key$/);
+        await expect(page).toHaveURL(/\/recover-private-key$/);
     });
 
     test("recovers account using private key", async ({ page }) => {
-        await page.goto("/private-key");
+        await page.goto("/recover-private-key");
         const keyPair = getKeyPairFromSeedPhrase(testAccount.seedPhrase)
         await page.fill(
             "data-test-id=privateKeyRecoveryInput",

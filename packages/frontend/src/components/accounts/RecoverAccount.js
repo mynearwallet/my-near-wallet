@@ -198,7 +198,7 @@ const RecoverAccount = ({ locationSearch, isMobile }) => {
                         </P>
                         <FormButton
                             color="seafoam-blue"
-                            linkTo={`/private-key${locationSearch}`}
+                            linkTo={`/recover-private-key${locationSearch}`}
                             onClick={() =>
                                 Mixpanel.track('IE Click private key recovery button')
                             }
