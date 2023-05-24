@@ -113,6 +113,7 @@
                     "desc": "該賬戶還未充值。請購買 $NEAR 並充值到該賬戶。",
                     "ledger": "該賬戶成功通過 Ledger 密鑰導入：",
                     "phrase": "該賬戶成功通過助記詞導入：",
+                    "privateKey": "以下帳戶已成功使用您提供的私鑰導入：",
                     "title": "賬戶已導入"
                 }
             }
@@ -960,6 +961,10 @@
         "phrase": {
             "desc": "請確認已準備 12 個單詞組成的助記詞，然後點擊下方開始恢復賬戶流程。",
             "title": "助記詞"
+        },
+        "privateKey": {
+            "desc": "請確保您的私鑰以 ed25519 開頭，然後點擊下方開始恢復流程。",
+            "title": "私鑰"
         }
     },
     "recoverSeedPhrase": {
@@ -976,6 +981,13 @@
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "助記詞（12 個單詞）"
+        }
+    },
+    "recoverPrivateKey": {
+        "pageText": "請輸入與該帳戶相關聯的私鑰。",
+        "pageTitle": "使用私鑰進行恢復",
+        "privateKeyInput": {
+            "title": "私鑰"
         }
     },
     "recoverWithLink": {
@@ -1793,6 +1805,9 @@
             "errorInvalidSeedPhrase": "助記詞無效",
             "errorNotAbleToImportAccount": "導入賬戶失敗。請重試，或聯繫客服獲得幫助。",
             "errorSeedPhraseNotValid": "助記詞無效，請檢查後重試。"
+        },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "提供的私鑰無效。請檢查您的私鑰並重試。"
         },
         "recoveryMethods": {
             "lastMethod": "無法刪除最後一個恢復方式。除非你添加了 Ledger，你需要保留至少一種賬戶恢復方式。",

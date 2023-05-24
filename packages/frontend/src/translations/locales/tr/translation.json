@@ -88,7 +88,12 @@
         "recoverAccount": {
             "error": "Hesap kurtarılamadı. Bu Anahtar Kelime için hesap bulunamadı.",
             "errorInvalidSeedPhrase": "Bu Anahtar Kelime için hesap bulunamadı.",
-            "success": "Anahtar Kelime kullanılarak kurtarma işlemi tamamlandı.<br/><b>${numberOfAccounts} hesap(s)</b> başarıyla kurtarıldı.<br/>Sonuncusu aktif olarak ayarlanmıştır."
+            "success": "Anahtar Kelime kullanılarak kurtarma işlemi tamamlandı.<br/><b>${numberOfAccounts} hesap(s)</b> başarıyla kurtarıldı.<br/>Sonuncusu aktif olarak ayarlanmıştır.",
+            "zeroBalance": {
+                "success": {
+                    "privateKey": "Aşağıdaki hesap, sağladığınız özel anahtar kullanılarak başarıyla içe aktarıldı:"
+                }
+            }
         },
         "requestCode": {
             "error": "Kod içeren SMS gönderilemedi.",
@@ -785,6 +790,10 @@
         "phrase": {
             "desc": "12 kelimelik kurtarma sözcüklerinizi yanınızda bulunduğundan emin olun, ardından kurtarma işlemine başlamak için aşağıya tıklayın.",
             "title": "Anahtar Kelimeler"
+        },
+        "privateKey": {
+            "desc": "Özel anahtarınızın ed25519 ile başladığından emin olun, ardından kurtarma sürecini başlatmak için aşağıdaki linke tıklayın.",
+            "title": "Özel Anahtar"
         }
     },
     "recoverSeedPhrase": {
@@ -793,6 +802,13 @@
         "seedPhraseInput": {
             "placeholder": "kelime dizinini doğru giriniz...",
             "title": "Anahtar Kelime (12 Kelime)"
+        }
+    },
+    "recoverPrivateKey": {
+        "pageText": "Hesapla ilişkili olan özel anahtarı girin.",
+        "pageTitle": "Özel Anahtar ile Kurtarma Yap",
+        "privateKeyInput": {
+            "title": "Özel Anahtar"
         }
     },
     "recoverWithLink": {
@@ -1513,6 +1529,9 @@
         },
         "recoverAccountSeedPhrase": {
             "errorInvalidSeedPhrase": "Bu Anahtar Kelime için hesap bulunamadı."
+        },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "Sağlanan özel anahtar geçerli değil. Lütfen özel anahtarınızı kontrol edin ve tekrar deneyin."
         },
         "recoveryMethods": {
             "lastMethod": "Son kurtarma yönteminizi silemezsiniz. Ledger'i etkinleştirmedikçe, hesabınızın kurtarılabilirliğini sağlamak için en az bir kurtarma yöntemini etkin tutmanız gerekir.",
