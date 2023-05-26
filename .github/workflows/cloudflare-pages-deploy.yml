@@ -14,9 +14,6 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    defaults:
-      run:
-        working-directory: packages/frontend
     env:
       NEAR_WALLET_ENV: ${{ inputs.near_wallet_env }}
     name: Build and Publish to Cloudflare Pages
@@ -32,7 +29,8 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test
-      - run: yarn bundle --distDir=dist/${{ inputs.environment }}
+      - working-directory: packages/frontend
+        run: yarn bundle --distDir=dist/${{ inputs.environment }}
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
