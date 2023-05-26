@@ -16,7 +16,9 @@ import LedgerImageCircle from '../../svg/LedgerImageCircle';
 import AccountListImport from '../AccountListImport';
 import { IMPORT_STATUS } from '../batch_import_accounts';
 import BatchImportAccountsSuccessScreen from '../batch_import_accounts/BatchImportAccountsSuccessScreen';
-import reducer, { ACTIONS } from '../batch_import_accounts/sequentialAccountImportReducer';
+import reducer, {
+    ACTIONS,
+} from '../batch_import_accounts/sequentialAccountImportReducer';
 import AccountExportModal from './AccountExportModal';
 
 const CustomContainer = styled.div`
@@ -33,8 +35,8 @@ const CustomContainer = styled.div`
     }
 
     .screen-descripton {
-      margin-top: 40px;
-      margin-bottom: 56px;
+        margin-top: 40px;
+        margin-bottom: 56px;
     }
 `;
 
@@ -43,7 +45,7 @@ const BatchLedgerExport = ({ history }) => {
     const [, setLedgerAccounts] = useState([]);
 
     const [state, dispatch] = useImmerReducer(reducer, {
-        accounts: []
+        accounts: [],
     });
 
     useEffect(() => {
@@ -52,7 +54,7 @@ const BatchLedgerExport = ({ history }) => {
             const getAccountWithAccessKeysAndType = async (accountId) => {
                 const keyType = await wallet.getAccountKeyType(accountId);
                 const accessKeys = await wallet.getAccessKeys(accountId);
-                return {accountId, accessKeys, keyType};
+                return { accountId, accessKeys, keyType };
             };
             const accountsWithKeys = await Promise.all(
                 accounts.map(getAccountWithAccessKeysAndType)
@@ -61,63 +63,90 @@ const BatchLedgerExport = ({ history }) => {
                 accountsWithKeys,
                 ({ keyType, accessKeys }) =>
                     keyType === WalletClass.KEY_TYPES.LEDGER ||
-                    accessKeys.some(
-                        (accessKey) => accessKey.meta.type === 'ledger'
-                    )
+                    accessKeys.some((accessKey) => accessKey.meta.type === 'ledger')
             );
             setLedgerAccounts(ledgerAccounts);
-            dispatch({type: ACTIONS.ADD_ACCOUNTS, accounts: nonLedgerAccounts.map(({accountId, keyType}) => ({
-                accountId,
-                status: null,
-                keyType
-            }))});
+            dispatch({
+                type: ACTIONS.ADD_ACCOUNTS,
+                accounts: nonLedgerAccounts.map(({ accountId, keyType }) => ({
+                    accountId,
+                    status: null,
+                    keyType,
+                })),
+            });
         };
         addAccountsToList();
-    },[]);
+    }, []);
 
-    const currentAccount = useMemo(() => state.accounts.find((account) => account.status === IMPORT_STATUS.PENDING), [state.accounts]);
-    const accountsApproved = useMemo(() => state.accounts.filter((account) => account.status === IMPORT_STATUS.SUCCESS), [state.accounts]);
-    const completed = useMemo(() => state.accounts.every((account) => account.status === IMPORT_STATUS.SUCCESS || account.status === IMPORT_STATUS.FAILED), [state.accounts]);
-    const showSuccessScreen = useMemo(() => completed && state.accounts.some((account) => account.status === IMPORT_STATUS.SUCCESS), [completed, state.accounts]);
+    const currentAccount = useMemo(
+        () => state.accounts.find((account) => account.status === IMPORT_STATUS.PENDING),
+        [state.accounts]
+    );
+    const accountsApproved = useMemo(
+        () =>
+            state.accounts.filter((account) => account.status === IMPORT_STATUS.SUCCESS),
+        [state.accounts]
+    );
+    const completed = useMemo(
+        () =>
+            state.accounts.every(
+                (account) =>
+                    account.status === IMPORT_STATUS.SUCCESS ||
+                    account.status === IMPORT_STATUS.FAILED
+            ),
+        [state.accounts]
+    );
+    const showSuccessScreen = useMemo(
+        () =>
+            completed &&
+            state.accounts.some((account) => account.status === IMPORT_STATUS.SUCCESS),
+        [completed, state.accounts]
+    );
 
     if (showSuccessScreen) {
-        return <BatchImportAccountsSuccessScreen accounts={accountsApproved} customTitleId="batchExportAccounts.successScreen.title" />;
+        return (
+            <BatchImportAccountsSuccessScreen
+                accounts={accountsApproved}
+                customTitleId='batchExportAccounts.successScreen.title'
+            />
+        );
     }
 
     return (
         <>
-            <Container className="small-centered border ledger-theme">
+            <Container className='small-centered border ledger-theme'>
                 <CustomContainer>
                     <LedgerImageCircle color='#D6EDFF' />
                     <div className='screen-descripton'>
                         <h3>
-                            <Translate id="batchExportAccounts.exportScreen.weFound" data={{ noOfAccounts: state.accounts.length }}/>
+                            <Translate
+                                id='batchExportAccounts.exportScreen.weFound'
+                                data={{ noOfAccounts: state.accounts.length }}
+                            />
                         </h3>
                         <br />
                         <br />
-                        <Translate id="batchExportAccounts.exportScreen.desc"/>
+                        <Translate id='batchExportAccounts.exportScreen.desc' />
                     </div>
-                    <div className="title">
+                    <div className='title'>
                         {accountsApproved.length}/{state.accounts.length}{' '}
-                        <Translate id="signInLedger.modal.accountsApproved" />
+                        <Translate id='signInLedger.modal.accountsApproved' />
                     </div>
                     <AccountListImport accounts={state.accounts} />
                     <div style={{ borderTop: '2px solid #f5f5f5' }} />
                     <FormButtonGroup>
                         <FormButton
                             onClick={() => history.goBack()}
-                            className="gray-blue"
+                            className='gray-blue'
                             disabled={availableAccountsIsLoading}
                         >
-                            <Translate id="button.cancel" />
+                            <Translate id='button.cancel' />
                         </FormButton>
                         <FormButton
-                            onClick={() =>
-                                dispatch({ type: ACTIONS.BEGIN_IMPORT })
-                            }
+                            onClick={() => dispatch({ type: ACTIONS.BEGIN_IMPORT })}
                             disabled={availableAccountsIsLoading || completed}
                         >
-                            <Translate id="button.beginExport" />
+                            <Translate id='button.beginExport' />
                         </FormButton>
                     </FormButtonGroup>
                 </CustomContainer>
@@ -125,12 +154,8 @@ const BatchLedgerExport = ({ history }) => {
             {currentAccount ? (
                 <AccountExportModal
                     account={currentAccount}
-                    onSuccess={() =>
-                        dispatch({ type: ACTIONS.SET_CURRENT_DONE })
-                    }
-                    onFail={() =>
-                        dispatch({ type: ACTIONS.SET_CURRENT_FAILED })
-                    }
+                    onSuccess={() => dispatch({ type: ACTIONS.SET_CURRENT_DONE })}
+                    onFail={() => dispatch({ type: ACTIONS.SET_CURRENT_FAILED })}
                 />
             ) : null}
         </>

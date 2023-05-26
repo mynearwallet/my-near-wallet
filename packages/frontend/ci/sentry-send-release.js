@@ -11,7 +11,11 @@ if (Config.RENDER && Config.SENTRY_AUTH_TOKEN) {
         console.log(result);
     };
 
-    system(`node_modules/.bin/sentry-cli releases files ${Config.SENTRY_RELEASE} upload-sourcemaps dist/`);
-    system(`node_modules/.bin/sentry-cli releases set-commits ${Config.SENTRY_RELEASE} --commit "near/near-wallet@${Config.RENDER_GIT_COMMIT}"`);
+    system(
+        `node_modules/.bin/sentry-cli releases files ${Config.SENTRY_RELEASE} upload-sourcemaps dist/`
+    );
+    system(
+        `node_modules/.bin/sentry-cli releases set-commits ${Config.SENTRY_RELEASE} --commit "near/near-wallet@${Config.RENDER_GIT_COMMIT}"`
+    );
     system(`node_modules/.bin/sentry-cli releases finalize ${Config.SENTRY_RELEASE}`);
 }

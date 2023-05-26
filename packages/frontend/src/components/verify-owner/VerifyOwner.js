@@ -6,12 +6,11 @@ import IconCheck from '../../images/IconCheck';
 import SafeTranslate from '../SafeTranslate';
 import SwapGraphic from '../svg/SwapGraphic';
 
-
 const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+
     h3 {
         color: #272729;
         text-align: center;
@@ -20,7 +19,7 @@ const StyledContainer = styled.div`
         line-height: 32px;
     }
 
-    h2 { 
+    h2 {
         font-weight: 900;
         font-size: 20px;
         color: #272729;
@@ -56,13 +55,13 @@ const StyledContainer = styled.div`
             text-align: justify;
             text-color: #272729;
             margin: 0 12px 12px 12px;
-            }
         }
+    }
 
     .check {
         width: 32px;
         height: 32px;
-        background: #D6EDFF;
+        background: #d6edff;
         border-radius: 50px;
         padding-top: 3px;
         margin-right: 15px;
@@ -76,13 +75,20 @@ const StyledContainer = styled.div`
 export default ({ accountId, appName }) => {
     return (
         <StyledContainer>
-            <h3><Translate id='verifyOwner.summary.title' /></h3>
+            <h3>
+                <Translate id='verifyOwner.summary.title' />
+            </h3>
             <div className='icon'>
                 <SwapGraphic />
             </div>
-            <h2><SafeTranslate id='verifyOwner.summary.connetingWith' data={{accountId}}/></h2>
+            <h2>
+                <SafeTranslate
+                    id='verifyOwner.summary.connetingWith'
+                    data={{ accountId }}
+                />
+            </h2>
             <div className='account signer'>
-                <Translate id='verifyOwner.summary.infoMessage' data={{appName}}/>
+                <Translate id='verifyOwner.summary.infoMessage' data={{ appName }} />
             </div>
             <div className='account permissions'>
                 <div className='check'>

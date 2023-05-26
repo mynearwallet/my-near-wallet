@@ -27,7 +27,7 @@ const FlipButtonWrapper = styled.button`
 export default function FlipButton({ onClick }) {
     return (
         <FlipButtonWrapper onClick={onClick}>
-            <WrapIcon color="var(--color-icon)" />
+            <WrapIcon color='var(--color-icon)' />
         </FlipButtonWrapper>
     );
 }

@@ -13,14 +13,19 @@ const Style = styled.div`
     transition: 0.3s;
     z-index: 2000;
     max-width: ${(props) => {
-    switch (props.modalSize) {
-        case 'lg': return '800';
-        case 'md': return '550';
-        case 'sm': return '400'; 
-        case 'xs': return '300'; 
-        default: return '650';
-    }
-}}px;
+        switch (props.modalSize) {
+            case 'lg':
+                return '800';
+            case 'md':
+                return '550';
+            case 'sm':
+                return '400';
+            case 'xs':
+                return '300';
+            default:
+                return '650';
+        }
+    }}px;
     margin: 40px auto;
 
     &.slim {
@@ -114,7 +119,7 @@ const Style = styled.div`
                     max-width: 25px;
                     min-height: 25px;
                     max-height: 25px;
-        
+
                     svg {
                         width: 25px;
                         height: 25px;

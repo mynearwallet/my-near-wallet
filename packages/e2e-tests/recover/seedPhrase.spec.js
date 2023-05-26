@@ -1,9 +1,9 @@
 // @ts-check
-const { test, expect } = require("../playwrightWithFixtures");
+const { test, expect } = require('../playwrightWithFixtures');
 
 const { describe, beforeAll, afterAll } = test;
 
-describe("Account Recovery Using Seed Phrase", () => {
+describe('Account Recovery Using Seed Phrase', () => {
     let testAccount;
 
     beforeAll(async ({ bankAccount }) => {
@@ -15,25 +15,24 @@ describe("Account Recovery Using Seed Phrase", () => {
         await testAccount.delete();
     });
 
-    test("navigates to seed phrase page successfully", async ({ page }) => {
-        await page.goto("/");
+    test('navigates to seed phrase page successfully', async ({ page }) => {
+        await page.goto('/');
 
-        await page.click(`data-test-id=homePageImportAccountButton`);
-        await page.click(`data-test-id=recoverAccountWithPassphraseButton`);
+        await page.click('data-test-id=homePageImportAccountButton');
+        await page.click('data-test-id=recoverAccountWithPassphraseButton');
 
         await expect(page).toHaveURL(/\/recover-seed-phrase$/);
     });
 
-    test("recovers account using seed phrase", async ({ page }) => {
-        await page.goto("/recover-seed-phrase");
+    test('recovers account using seed phrase', async ({ page }) => {
+        await page.goto('/recover-seed-phrase');
 
-        await page.fill(
-            "data-test-id=seedPhraseRecoveryInput",
-            testAccount.seedPhrase
-        );
-        await page.click(`data-test-id=seedPhraseRecoverySubmitButton`);
+        await page.fill('data-test-id=seedPhraseRecoveryInput', testAccount.seedPhrase);
+        await page.click('data-test-id=seedPhraseRecoverySubmitButton');
 
         await expect(page).toHaveURL(/\/$/);
-        await expect(page.locator("data-test-id=currentUser >> visible=true")).toHaveText(testAccount.accountId)
+        await expect(page.locator('data-test-id=currentUser >> visible=true')).toHaveText(
+            testAccount.accountId
+        );
     });
 });

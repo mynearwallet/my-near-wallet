@@ -13,7 +13,6 @@ import KeyIcon from '../svg/KeyIcon';
 import SendIcon from '../svg/SendIcon';
 import UserIcon from '../svg/UserIcon';
 
-
 const StyledContainer = styled.div`
     display: flex;
     align-items: center;
@@ -33,7 +32,7 @@ const StyledContainer = styled.div`
         min-height: 40px;
         width: 40px;
         height: 40px;
-        border: 1px solid #F0F0F1;
+        border: 1px solid #f0f0f1;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -49,7 +48,7 @@ const StyledContainer = styled.div`
 
         > span {
             font-weight: normal;
-            color: #A2A2A8;
+            color: #a2a2a8;
             overflow: hidden;
             display: block;
             text-overflow: ellipsis;
@@ -57,12 +56,11 @@ const StyledContainer = styled.div`
             margin-right: 20px;
 
             > span {
-                color: #3F4045;
-                
-                :first-of-type {
-                    color: #A2A2A8;
-                }
+                color: #3f4045;
 
+                :first-of-type {
+                    color: #a2a2a8;
+                }
             }
         }
     }
@@ -82,32 +80,32 @@ const StyledContainer = styled.div`
 
             &.transferred {
                 &::before {
-                    content: '-'
+                    content: '-';
                 }
             }
             &.received {
-                color: #00C08B;
+                color: #00c08b;
 
                 &::before {
-                    content: '+'
+                    content: '+';
                 }
             }
         }
         .time {
-            color: #A2A2A8;
+            color: #a2a2a8;
             text-align: right;
         }
     }
 
     .send-icon {
         path {
-            stroke: #0072CE;
+            stroke: #0072ce;
         }
     }
-    
+
     .down-arrow-icon {
         path {
-            stroke: #00C08B;
+            stroke: #00c08b;
         }
     }
 `;
@@ -120,12 +118,26 @@ const StyledDot = styled.span`
     margin-right: 5px;
 `;
 
-const ActivityBox = ({ transaction, actionArgs, actionKind, accountId, setTransactionHash, receiverId }) => {
+const ActivityBox = ({
+    transaction,
+    actionArgs,
+    actionKind,
+    accountId,
+    setTransactionHash,
+    receiverId,
+}) => {
     const { block_timestamp, hash_with_index } = transaction;
 
     return (
-        <StyledContainer className='activity-box' onClick={() => setTransactionHash(hash_with_index)}>
-            <ActionIcon actionKind={actionKind} receiverId={receiverId} accountId={accountId}/>
+        <StyledContainer
+            className='activity-box'
+            onClick={() => setTransactionHash(hash_with_index)}
+        >
+            <ActionIcon
+                actionKind={actionKind}
+                receiverId={receiverId}
+                accountId={accountId}
+            />
             <div className='desc'>
                 <ActionTitle
                     transaction={transaction}
@@ -150,9 +162,7 @@ const ActivityBox = ({ transaction, actionArgs, actionKind, accountId, setTransa
                         showBalanceInUSD={false}
                     />
                 )}
-                <ActionTimeStamp
-                    timeStamp={block_timestamp}
-                />
+                <ActionTimeStamp timeStamp={block_timestamp} />
             </div>
         </StyledContainer>
     );
@@ -160,48 +170,64 @@ const ActivityBox = ({ transaction, actionArgs, actionKind, accountId, setTransa
 
 export const ActionTitle = ({ transaction, actionArgs, actionKind, accountId }) => (
     <Translate
-        id={`dashboardActivity.title.${translateId(transaction, actionArgs, actionKind, accountId)}`}
+        id={`dashboardActivity.title.${translateId(
+            transaction,
+            actionArgs,
+            actionKind,
+            accountId
+        )}`}
     />
 );
 
 export const ActionMessage = ({ transaction, actionArgs, actionKind, accountId }) => (
     <SafeTranslate
-        id={`dashboardActivity.message.${translateId(transaction, actionArgs, actionKind, accountId)}`}
+        id={`dashboardActivity.message.${translateId(
+            transaction,
+            actionArgs,
+            actionKind,
+            accountId
+        )}`}
         data={translateData(transaction, actionArgs, actionKind)}
     />
 );
 
-const translateId = (transaction, actionArgs, actionKind, accountId) => (
-    `${actionKind
-        }${actionKind === 'AddKey'
+const translateId = (transaction, actionArgs, actionKind, accountId) =>
+    `${actionKind}${
+        actionKind === 'AddKey'
             ? actionArgs.access_key && actionArgs.access_key.permission.permission_details
                 ? '.forContract'
                 : '.forReceiver'
             : ''
-        }${actionKind === 'Transfer'
+    }${
+        actionKind === 'Transfer'
             ? transaction.signer_id === accountId
                 ? '.transferred'
                 : '.received'
             : ''
-    }`
-);
+    }`;
 
 export const translateData = (transaction, actionArgs, actionKind) => ({
     receiverId: transaction.receiver_id || '',
     signerId: transaction.signer_id || '',
     methodName: actionKind === 'FunctionCall' ? actionArgs.method_name : '',
     deposit: actionKind === 'Transfer' ? <Balance amount={actionArgs.deposit} /> : '',
-    stake: actionKind === 'Stake' ? <Balance amount={actionArgs.stake} />  : '',
-    permissionReceiverId: (actionKind === 'AddKey' && actionArgs.access_key && actionArgs.access_key.permission.permission_kind === 'FUNCTION_CALL') ? actionArgs.access_key.permission.permission_details.receiver_id : '',
+    stake: actionKind === 'Stake' ? <Balance amount={actionArgs.stake} /> : '',
+    permissionReceiverId:
+        actionKind === 'AddKey' &&
+        actionArgs.access_key &&
+        actionArgs.access_key.permission.permission_kind === 'FUNCTION_CALL'
+            ? actionArgs.access_key.permission.permission_details.receiver_id
+            : '',
 });
 
 const ActionIcon = ({ actionKind, receiverId, accountId }) => (
     <div className='symbol'>
         {actionKind === 'CreateAccount' && <UserIcon color='#0072CE' />}
-        {actionKind === 'DeleteAccount' && <UserIcon color='#ff585d'/>}
+        {actionKind === 'DeleteAccount' && <UserIcon color='#ff585d' />}
         {actionKind === 'DeployContract' && <CodeIcon />}
         {actionKind === 'FunctionCall' && <CodeIcon />}
-        {actionKind === 'Transfer' && (receiverId === accountId ? <DownArrowIcon /> : <SendIcon/>)}
+        {actionKind === 'Transfer' &&
+            (receiverId === accountId ? <DownArrowIcon /> : <SendIcon />)}
         {actionKind === 'Stake' && <IconTStake />}
         {actionKind === 'AddKey' && <KeyIcon />}
         {actionKind === 'DeleteKey' && <KeyIcon color='#ff585d' />}
@@ -211,20 +237,20 @@ const ActionIcon = ({ actionKind, receiverId, accountId }) => (
 const ActionTimeStamp = ({ timeStamp }) => {
     let time = format(timeStamp);
     let formatting = {
-        'ago': '',
-        'years': 'y',
-        'year': 'y',
-        'months': 'mo',
-        'month': 'mo',
-        'weeks': 'w',
-        'week': 'w',
-        'days': 'd',
-        'day': 'd',
-        'hours': 'hr',
-        'hour': 'hr',
-        'minutes': 'min',
-        'minute': 'min',
-        'seconds': 's'
+        ago: '',
+        years: 'y',
+        year: 'y',
+        months: 'mo',
+        month: 'mo',
+        weeks: 'w',
+        week: 'w',
+        days: 'd',
+        day: 'd',
+        hours: 'hr',
+        hour: 'hr',
+        minutes: 'min',
+        minute: 'min',
+        seconds: 's',
     };
 
     for (const format in formatting) {
@@ -235,17 +261,31 @@ const ActionTimeStamp = ({ timeStamp }) => {
         time = time.split(' ').join('');
     }
 
-    return (
-        <span className='time'>
-            {time}
-        </span>
-    );
+    return <span className='time'>{time}</span>;
 };
 
-export const ActionValue = ({ transaction, actionArgs, actionKind, accountId, showBalanceInUSD }) => (
-    <div className={`value ${actionKind === 'Transfer' ? transaction.signer_id === accountId ? 'transferred' : 'received' : ''}`}>
-        {actionKind === 'Transfer' && <Balance amount={actionArgs.deposit} showBalanceInUSD={showBalanceInUSD}/>}
-        {actionKind === 'Stake' && <Balance amount={actionArgs.stake} showBalanceInUSD={showBalanceInUSD}/>}
+export const ActionValue = ({
+    transaction,
+    actionArgs,
+    actionKind,
+    accountId,
+    showBalanceInUSD,
+}) => (
+    <div
+        className={`value ${
+            actionKind === 'Transfer'
+                ? transaction.signer_id === accountId
+                    ? 'transferred'
+                    : 'received'
+                : ''
+        }`}
+    >
+        {actionKind === 'Transfer' && (
+            <Balance amount={actionArgs.deposit} showBalanceInUSD={showBalanceInUSD} />
+        )}
+        {actionKind === 'Stake' && (
+            <Balance amount={actionArgs.stake} showBalanceInUSD={showBalanceInUSD} />
+        )}
     </div>
 );
 
@@ -254,11 +294,11 @@ const TX_STATUS_COLOR = {
     Started: '#6ad1e3',
     Failure: '#ff585d',
     SuccessValue: '#5ace84',
-    notAvailable: '#ff585d'
+    notAvailable: '#ff585d',
 };
 
 export const ActionStatus = ({ status }) => (
-    <span className={classNames(['status', {'dots': !status}])}>
+    <span className={classNames(['status', { dots: !status }])}>
         {status && <StyledDot background={TX_STATUS_COLOR[status]} />}
         <Translate id={`transaction.status.${status || 'checkingStatus'}`} />
     </span>

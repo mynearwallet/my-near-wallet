@@ -137,9 +137,10 @@ const Input = ({
         }
     };
 
-    const formattedMaxBalance = maxBalance && typeof tokenDecimals === 'number'
-        ? formatBalance(maxBalance, tokenDecimals)
-        : undefined;
+    const formattedMaxBalance =
+        maxBalance && typeof tokenDecimals === 'number'
+            ? formatBalance(maxBalance, tokenDecimals)
+            : undefined;
 
     const [isWrongAmount, setIsWrongAmount] = useState(false);
 
@@ -191,21 +192,21 @@ const Input = ({
             </Header>
             <Footer>
                 <TokenWrapper
-                    className="token"
+                    className='token'
                     onClick={onSelectToken}
                     data-test-id={tokenSelectTestId}
                 >
                     <Token symbol={tokenSymbol} icon={tokenIcon} />
-                    <ChevronIcon color="var(--mnw-color-1)" />
+                    <ChevronIcon color='var(--mnw-color-1)' />
                 </TokenWrapper>
                 <input
                     className={`${isWrongAmount ? 'error' : ''}`}
-                    inputMode="decimal"
+                    inputMode='decimal'
                     min={0}
                     max={Number(maxBalance) || 0}
                     value={loading ? '' : valueToShow}
                     onChange={handleChange}
-                    placeholder="0"
+                    placeholder='0'
                     autoFocus={autoFocus}
                     disabled={disabled}
                     data-test-id={inputTestId}

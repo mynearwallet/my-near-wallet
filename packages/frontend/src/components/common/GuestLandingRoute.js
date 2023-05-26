@@ -10,21 +10,14 @@ const GuestLandingRoute = ({
     accountFound,
     indexBySearchEngines,
     ...rest
-}) => (
-    !accountFound
-        ? (
-            <PublicRoute
-                component={GuestLanding}
-                indexBySearchEngines={indexBySearchEngines}
-            />
-        )
-        : (
-            <PrivateRoute
-                {...rest}
-                component={Component}
-                render={render}
-            />
-        )
-);
+}) =>
+    !accountFound ? (
+        <PublicRoute
+            component={GuestLanding}
+            indexBySearchEngines={indexBySearchEngines}
+        />
+    ) : (
+        <PrivateRoute {...rest} component={Component} render={render} />
+    );
 
 export default GuestLandingRoute;

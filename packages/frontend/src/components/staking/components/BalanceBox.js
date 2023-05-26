@@ -11,9 +11,11 @@ import TokenIcon from '../../common/token/TokenIcon';
 import Tooltip from '../../common/Tooltip';
 
 const Container = styled.div`
-    ${(props) => !props.hideBorder && css`
-        border-bottom: 2px solid #F2F2F2;
-    `}
+    ${(props) =>
+        !props.hideBorder &&
+        css`
+            border-bottom: 2px solid #f2f2f2;
+        `}
     padding: 15px 0;
     display: flex;
 
@@ -32,13 +34,13 @@ const Container = styled.div`
             font-size: 14px;
             font-weight: 400;
             margin-top: 6px;
-            color: #72727A;
+            color: #72727a;
             line-height: normal;
         }
     }
 
     .title {
-        color: #6E7073;
+        color: #6e7073;
         display: flex;
         align-items: center;
 
@@ -48,7 +50,6 @@ const Container = styled.div`
     }
 
     .trigger {
-
         margin-left: 10px;
 
         svg {
@@ -72,7 +73,7 @@ const Container = styled.div`
 
     @media (max-width: 767px) {
         border: 0;
-        border-bottom: 2px solid #F2F2F2;
+        border-bottom: 2px solid #f2f2f2;
         margin: 0px -14px 0 -14px;
         border-radius: 0;
     }
@@ -94,7 +95,8 @@ const Container = styled.div`
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
             align-self: center;
 
-            img, svg {
+            img,
+            svg {
                 height: 32px;
                 width: 32px;
             }
@@ -114,42 +116,44 @@ export default function BalanceBox({
     linkTo,
     buttonTestId,
     balanceTestId,
-    hideBorder = false
+    hideBorder = false,
 }) {
     return (
         <Container className='balance-box' hideBorder={hideBorder}>
             <div className='left'>
                 {(title || info) && (
                     <div className='title'>
-                        {title && <Translate id={title}/>}
-                        {info && <Tooltip translate={info}/>}
-                        {loading && <span className="animated-dots" />}
+                        {title && <Translate id={title} />}
+                        {info && <Tooltip translate={info} />}
+                        {loading && <span className='animated-dots' />}
                     </div>
                 )}
                 <div className='token-balance'>
                     <div className='icon'>
-                        <TokenIcon symbol={token.onChainFTMetadata?.symbol} icon={token.onChainFTMetadata?.icon}/>
+                        <TokenIcon
+                            symbol={token.onChainFTMetadata?.symbol}
+                            icon={token.onChainFTMetadata?.icon}
+                        />
                     </div>
-                    {token.onChainFTMetadata?.symbol === 'NEAR' &&
-                    !token.contractName ? (
-                            <Balance
-                                amount={token.balance}
-                                data-test-id={balanceTestId}
-                                symbol={false}
-                            />
-                        ) : (
-                            <TokenAmount
-                                token={token}
-                                className="balance"
-                                withSymbol={true}
-                                data-test-id={balanceTestId}
-                            />
-                        )}
+                    {token.onChainFTMetadata?.symbol === 'NEAR' && !token.contractName ? (
+                        <Balance
+                            amount={token.balance}
+                            data-test-id={balanceTestId}
+                            symbol={false}
+                        />
+                    ) : (
+                        <TokenAmount
+                            token={token}
+                            className='balance'
+                            withSymbol={true}
+                            data-test-id={balanceTestId}
+                        />
+                    )}
                 </div>
 
                 {disclaimer && (
                     <div className='withdrawal-disclaimer'>
-                        <Translate id={disclaimer}/>
+                        <Translate id={disclaimer} />
                     </div>
                 )}
             </div>
@@ -161,7 +165,7 @@ export default function BalanceBox({
                     linkTo={linkTo}
                     className={classNames(['small', buttonColor])}
                 >
-                    <Translate id={button}/>
+                    <Translate id={button} />
                 </FormButton>
             )}
         </Container>

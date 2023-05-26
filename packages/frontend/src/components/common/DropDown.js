@@ -20,7 +20,7 @@ const Container = styled.div`
     .dropdown-title-wrapper {
         display: flex;
         align-items: center;
-        border: 2px solid #F2F2F2;
+        border: 2px solid #f2f2f2;
         border-radius: 8px;
         padding: 12px 25px 12px 15px;
         cursor: pointer;
@@ -31,7 +31,7 @@ const Container = styled.div`
             transform: rotate(90deg);
             transition: 200ms;
             path {
-                stroke: #D5D4D8;
+                stroke: #d5d4d8;
             }
         }
 
@@ -45,14 +45,15 @@ const Container = styled.div`
             font-weight: 500;
         }
 
-        :hover, &.open {
+        :hover,
+        &.open {
             > svg {
                 path {
                     stroke: #0072ce;
                 }
             }
 
-            border-color: #E6E6E6;
+            border-color: #e6e6e6;
         }
 
         &.open {
@@ -72,14 +73,14 @@ const Container = styled.div`
         border-radius: 8px;
 
         &.open {
-            border: 2px solid #F0F0F0;
+            border: 2px solid #f0f0f0;
             border-top: 0;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
             box-shadow: 0px 3px 9px -1px rgb(206 206 206 / 17%);
         }
     }
-    
+
     &.max-height {
         .dropdown-content {
             &.open {
@@ -88,22 +89,28 @@ const Container = styled.div`
             }
         }
     }
-
 `;
 
-export default function DropDown({ name, title, icon, content, disabled, maxHeight = true }) {
+export default function DropDown({
+    name,
+    title,
+    icon,
+    content,
+    disabled,
+    maxHeight = true,
+}) {
     return (
-        <Container className={classNames(['dropdown-container', disabled ? 'disabled' : '', maxHeight ? 'max-height' : ''])}>
+        <Container
+            className={classNames([
+                'dropdown-container',
+                disabled ? 'disabled' : '',
+                maxHeight ? 'max-height' : '',
+            ])}
+        >
             <div id={name} className='dropdown-title-wrapper'>
-                {icon ? (
-                    <div className='icon-wrapper'>
-                        {icon}
-                    </div>
-                ) : null}
-                <div className='dropdown-title'>
-                    {title}
-                </div>
-                <ChevronIcon color='#0072ce'/>
+                {icon ? <div className='icon-wrapper'>{icon}</div> : null}
+                <div className='dropdown-title'>{title}</div>
+                <ChevronIcon color='#0072ce' />
             </div>
             <Accordion
                 trigger={name}
@@ -120,12 +127,6 @@ export default function DropDown({ name, title, icon, content, disabled, maxHeig
 DropDown.propTypes = {
     name: PropTypes.string.isRequired,
     icon: PropTypes.object,
-    title: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object
-    ]),
-    content: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object
-    ])
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    content: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };

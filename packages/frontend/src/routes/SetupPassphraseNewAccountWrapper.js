@@ -8,22 +8,20 @@ import { initiateSetupForZeroBalanceAccountPhrase } from '../redux/slices/accoun
 const SetupPassphraseNewAccountWrapper = () => {
     const dispatch = useDispatch();
 
-    const handleConfirmPassphrase = useCallback(async ({
-        implicitAccountId,
-        recoveryKeyPair
-    }) => {
-        await dispatch(initiateSetupForZeroBalanceAccountPhrase({
-            implicitAccountId,
-            recoveryKeyPair
-        }));
-        dispatch(redirectTo('/'));
-    }, [dispatch]);
-
-    return (
-        <SetupPassphraseNewAccount
-            onConfirmPassphrase={handleConfirmPassphrase}
-        />
+    const handleConfirmPassphrase = useCallback(
+        async ({ implicitAccountId, recoveryKeyPair }) => {
+            await dispatch(
+                initiateSetupForZeroBalanceAccountPhrase({
+                    implicitAccountId,
+                    recoveryKeyPair,
+                })
+            );
+            dispatch(redirectTo('/'));
+        },
+        [dispatch]
     );
+
+    return <SetupPassphraseNewAccount onConfirmPassphrase={handleConfirmPassphrase} />;
 };
 
 export default SetupPassphraseNewAccountWrapper;

@@ -21,7 +21,7 @@ let Mixpanel = {
     track: (eventName) => {},
     people: {
         set: (props) => {},
-        set_once: (props)  => {}
+        set_once: (props) => {},
     },
     withTracking: async (name, fn, errorOperation, finalOperation) => {
         try {
@@ -38,12 +38,12 @@ let Mixpanel = {
             }
         }
     },
-    register: () => {}
+    register: () => {},
 };
 
 if (CONFIG.BROWSER_MIXPANEL_TOKEN) {
     mixpanel.init(CONFIG.BROWSER_MIXPANEL_TOKEN);
-    mixpanel.register({'timestamp': new Date().toString(), '$referrer': document.referrer});
+    mixpanel.register({ timestamp: new Date().toString(), $referrer: document.referrer });
     Mixpanel = {
         get_distinct_id: () => {
             return mixpanel.get_distinct_id();
@@ -64,9 +64,9 @@ if (CONFIG.BROWSER_MIXPANEL_TOKEN) {
             set: (props) => {
                 mixpanel.people.set(props);
             },
-            set_once: (props)  => {
+            set_once: (props) => {
                 mixpanel.people.set_once(props);
-            }
+            },
         },
         withTracking: async (name, fn, errorOperation, finalOperation) => {
             try {
@@ -91,7 +91,7 @@ if (CONFIG.BROWSER_MIXPANEL_TOKEN) {
         },
         register: (props) => {
             mixpanel.register(props);
-        }
+        },
     };
 }
 

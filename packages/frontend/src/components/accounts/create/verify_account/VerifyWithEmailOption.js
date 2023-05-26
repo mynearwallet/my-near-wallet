@@ -11,7 +11,7 @@ export default ({
     verificationEmail,
     disabled,
     onChangeVerificationEmail,
-    onBlur
+    onBlur,
 }) => {
     return (
         <VerifyOption

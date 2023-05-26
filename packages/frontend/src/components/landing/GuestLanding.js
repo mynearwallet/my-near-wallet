@@ -8,7 +8,6 @@ import Container from '../common/styled/Container.css';
 import LandingBackground from './LandingBackground';
 
 const StyledContainer = styled.div`
-
     &&& {
         margin: 35px 5px 0 5px;
         position: relative;
@@ -142,29 +141,37 @@ const StyledContainer = styled.div`
 export function GuestLanding() {
     return (
         <StyledContainer>
-            <LandingBackground/>
+            <LandingBackground />
             <Container className='small-centered'>
-                <h1><Translate id='landing.title' /></h1>
-                <h3><Translate id='landing.desc' /></h3>
+                <h1>
+                    <Translate id='landing.title' />
+                </h1>
+                <h3>
+                    <Translate id='landing.desc' />
+                </h3>
                 <div className='buttons'>
                     <FormButton
-                        linkTo="/create"
-                        trackingId="Click create account button"
-                        data-test-id="landingPageCreateAccount"
+                        linkTo='/create'
+                        trackingId='Click create account button'
+                        data-test-id='landingPageCreateAccount'
                     >
-                        <Translate id="button.createAccount" />
+                        <Translate id='button.createAccount' />
                     </FormButton>
-                    <span><Translate id='landing.or' /></span>
+                    <span>
+                        <Translate id='landing.or' />
+                    </span>
                     <FormButton
-                        data-test-id="homePageImportAccountButton"
-                        linkTo="/recover-account"
-                        className="link"
-                        trackingId="Click import existing link"
+                        data-test-id='homePageImportAccountButton'
+                        linkTo='/recover-account'
+                        className='link'
+                        trackingId='Click import existing link'
                     >
-                        <Translate id="button.importExistingAccount" />
+                        <Translate id='button.importExistingAccount' />
                     </FormButton>
                 </div>
-                <div className='img-wrapper'><img src={iPhoneMockup} alt='Sign up'/></div>
+                <div className='img-wrapper'>
+                    <img src={iPhoneMockup} alt='Sign up' />
+                </div>
             </Container>
         </StyledContainer>
     );

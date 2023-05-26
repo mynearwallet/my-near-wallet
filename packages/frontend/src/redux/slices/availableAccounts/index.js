@@ -11,25 +11,29 @@ const SLICE_NAME = 'availableAccounts';
 
 const initialState = {
     ...initialStatusState,
-    items: []
+    items: [],
 };
 
 const availableAccountsSlice = createSlice({
     name: SLICE_NAME,
     initialState,
-    extraReducers: ((builder) => {
+    extraReducers: (builder) => {
         builder.addCase(refreshAccountOwner.fulfilled, (state, action) => {
-            set(state, ['items'], Object.keys((action.payload && action.payload.accounts) || {}).sort());
+            set(
+                state,
+                ['items'],
+                Object.keys((action.payload && action.payload.accounts) || {}).sort()
+            );
         });
         builder.addCase(refreshAccountOwner.rejected, (state, action) => {
-            set(state, ['items'], Object.keys((wallet.accounts) || {}).sort());
+            set(state, ['items'], Object.keys(wallet.accounts || {}).sort());
         });
         handleAsyncThunkStatus({
             asyncThunk: refreshAccountOwner,
             buildStatusPath: () => [],
-            builder
+            builder,
         });
-    })
+    },
 });
 
 export default availableAccountsSlice;

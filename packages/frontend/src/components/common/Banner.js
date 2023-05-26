@@ -48,14 +48,7 @@ const Container = styled.div`
     }
 `;
 
-const Banner = ({
-    title,
-    desc,
-    buttonTitle,
-    onButtonClick,
-    linkTo,
-    buttonColor
-}) => {
+const Banner = ({ title, desc, buttonTitle, onButtonClick, linkTo, buttonColor }) => {
     return (
         <Container className='banner-container'>
             <div className='content'>
@@ -66,11 +59,7 @@ const Banner = ({
                     <Translate id={desc} />
                 </div>
             </div>
-            <FormButton
-                onClick={onButtonClick}
-                linkTo={linkTo}
-                color={buttonColor}
-            >
+            <FormButton onClick={onButtonClick} linkTo={linkTo} color={buttonColor}>
                 <Translate id={buttonTitle} />
             </FormButton>
         </Container>

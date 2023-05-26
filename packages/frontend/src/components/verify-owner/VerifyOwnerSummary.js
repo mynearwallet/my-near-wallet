@@ -8,7 +8,7 @@ import Container from '../common/styled/Container.css';
 import VerifyOwner from './VerifyOwner';
 
 const StyledContainer = styled(Container)`
-    background-color: ##F0F0F1;
+    background-color: ##f0f0f1;
     padding: 25px;
     &&& {
         > button {
@@ -35,7 +35,7 @@ export default ({
     accountUrlReferrer,
     signing,
     message,
-    isValidCallbackUrl
+    isValidCallbackUrl,
 }) => {
     return (
         <StyledContainer className='small-centered border brs-8 bsw-l'>

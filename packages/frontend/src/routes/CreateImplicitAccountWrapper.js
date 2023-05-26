@@ -49,66 +49,68 @@ const CreateImplicitAccountWrapper = () => {
 
     useEffect(() => {
         const checkIfMoonPayIsAvailable = async () => {
-            await Mixpanel.withTracking('CA Check Moonpay available',
-                async () => {
-                    const moonpayAvailable = await isMoonpayAvailable();
-                    if (moonpayAvailable) {
-                        const moonpaySignedUrl = await getSignedUrl(implicitAccountId, window.location.href);
-                        setMoonpaySignedUrl(moonpaySignedUrl);
-                    }
+            await Mixpanel.withTracking('CA Check Moonpay available', async () => {
+                const moonpayAvailable = await isMoonpayAvailable();
+                if (moonpayAvailable) {
+                    const moonpaySignedUrl = await getSignedUrl(
+                        implicitAccountId,
+                        window.location.href
+                    );
+                    setMoonpaySignedUrl(moonpaySignedUrl);
                 }
-            );
+            });
         };
         checkIfMoonPayIsAvailable();
-    }, [
-        implicitAccountId,
-        window.location.href
-    ]);
+    }, [implicitAccountId, window.location.href]);
 
     useRecursiveTimeout(async () => {
-        await checkFundingAddressBalance().catch(() => { });
+        await checkFundingAddressBalance().catch(() => {});
     }, 3000);
 
     const checkFundingAddressBalance = async () => {
         if (fundingNeeded) {
-            await Mixpanel.withTracking('CA Check balance from implicit',
-                async () => {
-                    try {
-                        const account = wallet.getAccountBasic(implicitAccountId);
-                        const state = await account.state();
-                        if (new BN(state.amount).gte(new BN(CONFIG.MIN_BALANCE_TO_CREATE))) {
-                            Mixpanel.track('CA Check balance from implicit: sufficient');
-                            setFundingNeeded(false);
-                            console.log('Minimum funding amount received. Finishing acccount setup.');
-                            await dispatch(finishSetupImplicitAccount({
+            await Mixpanel.withTracking('CA Check balance from implicit', async () => {
+                try {
+                    const account = wallet.getAccountBasic(implicitAccountId);
+                    const state = await account.state();
+                    if (new BN(state.amount).gte(new BN(CONFIG.MIN_BALANCE_TO_CREATE))) {
+                        Mixpanel.track('CA Check balance from implicit: sufficient');
+                        setFundingNeeded(false);
+                        console.log(
+                            'Minimum funding amount received. Finishing acccount setup.'
+                        );
+                        await dispatch(
+                            finishSetupImplicitAccount({
                                 implicitAccountId,
-                                recoveryMethod
-                            })).unwrap();
-                            if (new BN(state.amount).gte(new BN(NAMED_ACCOUNT_MIN))) {
-                                dispatch(setCreateCustomName(true));
-                            }
-                            return;
-                        } else {
-                            console.log('Insufficient funding amount');
-                            Mixpanel.track('CA Check balance from implicit: insufficient');
+                                recoveryMethod,
+                            })
+                        ).unwrap();
+                        if (new BN(state.amount).gte(new BN(NAMED_ACCOUNT_MIN))) {
+                            dispatch(setCreateCustomName(true));
                         }
-                    } catch (e) {
-                        if (e.message.includes('does not exist while viewing')) {
-                            return;
-                        }
-                        dispatch(showCustomAlert({
+                        return;
+                    } else {
+                        console.log('Insufficient funding amount');
+                        Mixpanel.track('CA Check balance from implicit: insufficient');
+                    }
+                } catch (e) {
+                    if (e.message.includes('does not exist while viewing')) {
+                        return;
+                    }
+                    dispatch(
+                        showCustomAlert({
                             errorMessage: e.message,
                             success: false,
-                            messageCodeHeader: 'error'
-                        }));
-                        throw e;
-                    } finally {
-                        if (recoveryMethod === 'ledger') {
-                            dispatch(checkAndHideLedgerModal());
-                        }
+                            messageCodeHeader: 'error',
+                        })
+                    );
+                    throw e;
+                } finally {
+                    if (recoveryMethod === 'ledger') {
+                        dispatch(checkAndHideLedgerModal());
                     }
                 }
-            );
+            });
         }
     };
 

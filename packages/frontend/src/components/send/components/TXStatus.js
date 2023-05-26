@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
 const Indicator = styled.span`
     display: inline-block;
     width: 9px;
-    height: 9px;   
+    height: 9px;
     background-color: ${(props) => props.color};
     border-radius: 50%;
     margin-right: 10px;
@@ -31,7 +31,7 @@ const getStatusColor = (status) => {
 const TXStatus = ({ status }) => {
     return (
         <StyledContainer className='status'>
-            <Indicator color={getStatusColor(status)}/>
+            <Indicator color={getStatusColor(status)} />
             <Translate id={`sendV2.TXEntry.status.${status}`} />
         </StyledContainer>
     );

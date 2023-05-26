@@ -5,7 +5,6 @@ import Tooltip from '../../../common/Tooltip';
 import RawTokenAmount from '../RawTokenAmount';
 import StyledContainer from './css/Style.css';
 
-
 const Amount = ({
     className,
     symbol,
@@ -14,15 +13,13 @@ const Amount = ({
     translateIdTitle,
     translateIdInfoTooltip,
     isApproximate,
-    'data-test-id': testId
+    'data-test-id': testId,
 }) => {
     /* TODO: Handle long amounts */
     return (
         <StyledContainer className={className} data-test-id={testId}>
             <Translate id={translateIdTitle} />
-            {translateIdInfoTooltip &&
-                <Tooltip translate={translateIdInfoTooltip} />
-            }
+            {translateIdInfoTooltip && <Tooltip translate={translateIdInfoTooltip} />}
             <div className='amount'>
                 {isApproximate && '~'}
                 <RawTokenAmount

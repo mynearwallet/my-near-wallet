@@ -13,15 +13,9 @@ const compareInDecreasingOrderByPrice = (t1, t2) => {
     }
 
     const price1 = t1.fiatValueMetadata?.usd;
-    const balance1 = formatTokenAmount(
-        t1.balance,
-        t1.onChainFTMetadata.decimals
-    );
+    const balance1 = formatTokenAmount(t1.balance, t1.onChainFTMetadata.decimals);
     const price2 = t2.fiatValueMetadata?.usd;
-    const balance2 = formatTokenAmount(
-        t2.balance,
-        t2.onChainFTMetadata.decimals
-    );
+    const balance2 = formatTokenAmount(t2.balance, t2.onChainFTMetadata.decimals);
 
     if (typeof price1 !== 'number') {
         return 1;

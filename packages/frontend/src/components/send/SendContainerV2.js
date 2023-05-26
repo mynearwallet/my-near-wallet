@@ -14,14 +14,15 @@ import Review from './components/views/Review';
 import SelectToken from './components/views/SelectToken';
 import Success from './components/views/Success';
 
-const { getFormattedTokenAmount, getParsedTokenAmount, getUniqueTokenIdentity } = FungibleTokens;
+const { getFormattedTokenAmount, getParsedTokenAmount, getUniqueTokenIdentity } =
+    FungibleTokens;
 
 export const VIEWS = {
     ENTER_AMOUNT: 'enterAmount',
     SELECT_TOKEN: 'selectToken',
     ENTER_RECEIVER: 'enterReceiver',
     REVIEW: 'review',
-    SUCCESS: 'success'
+    SUCCESS: 'success',
 };
 
 export const StyledContainer = styled(Container)`
@@ -95,7 +96,7 @@ const SendContainerV2 = ({
     handleContinueToReview,
     sendingToken,
     transactionHash,
-    nearTokenFiatValueUSD
+    nearTokenFiatValueUSD,
 }) => {
     const [userInputAmount, setUserInputAmount] = useState('');
     const [isMaxAmount, setIsMaxAmount] = useState(false);
@@ -106,11 +107,15 @@ const SendContainerV2 = ({
     useEffect(() => {
         // fungibleTokens contains balance data for each token -- we need to update local state every time it changes
         // TODO: Add a `byIdentity` reducer for faster lookups than .find()
-        let targetToken = fungibleTokens.find(({ contractName }) => 
-            (contractName && contractName === selectedToken.contractName)
-        ) || fungibleTokens.find(({ onChainFTMetadata }) => 
-            onChainFTMetadata?.symbol === selectedToken.onChainFTMetadata?.symbol
-        );
+        let targetToken =
+            fungibleTokens.find(
+                ({ contractName }) =>
+                    contractName && contractName === selectedToken.contractName
+            ) ||
+            fungibleTokens.find(
+                ({ onChainFTMetadata }) =>
+                    onChainFTMetadata?.symbol === selectedToken.onChainFTMetadata?.symbol
+            );
 
         setSelectedToken(targetToken);
     }, [fungibleTokens]);
@@ -131,18 +136,29 @@ const SendContainerV2 = ({
         setIsMaxAmount(false);
     }, [accountId]);
 
-    const getRawAmount = () => getParsedTokenAmount(userInputAmount, selectedToken.onChainFTMetadata?.symbol, selectedToken.onChainFTMetadata?.decimals);
+    const getRawAmount = () =>
+        getParsedTokenAmount(
+            userInputAmount,
+            selectedToken.onChainFTMetadata?.symbol,
+            selectedToken.onChainFTMetadata?.decimals
+        );
     const isValidAmount = () => {
         // TODO: Handle rounding issue that can occur entering exact available amount
         if (isMaxAmount === true) {
             return true;
         }
 
-        return !new BN(getRawAmount()).isZero() && new BN(getRawAmount()).lte(new BN(selectedToken.balance)) && isDecimalString(userInputAmount);
+        return (
+            !new BN(getRawAmount()).isZero() &&
+            new BN(getRawAmount()).lte(new BN(selectedToken.balance)) &&
+            isDecimalString(userInputAmount)
+        );
     };
 
     const enterAmountIsComplete = () => {
-        return userInputAmount && !new BN(selectedToken.balance).isZero() && isValidAmount();
+        return (
+            userInputAmount && !new BN(selectedToken.balance).isZero() && isValidAmount()
+        );
     };
 
     const getCurrentViewComponent = (view) => {
@@ -159,12 +175,18 @@ const SendContainerV2 = ({
                             setUserInputAmount(userInputAmount);
                         }}
                         onSetMaxAmount={() => {
-                            const formattedTokenAmount = getFormattedTokenAmount(selectedToken.balance, selectedToken.onChainFTMetadata?.symbol, selectedToken.onChainFTMetadata?.decimals);
+                            const formattedTokenAmount = getFormattedTokenAmount(
+                                selectedToken.balance,
+                                selectedToken.onChainFTMetadata?.symbol,
+                                selectedToken.onChainFTMetadata?.decimals
+                            );
 
                             if (!new BN(selectedToken.balance).isZero()) {
                                 Mixpanel.track('SEND Use max amount');
                                 setIsMaxAmount(true);
-                                setUserInputAmount(formattedTokenAmount.replace(/,/g, ''));
+                                setUserInputAmount(
+                                    formattedTokenAmount.replace(/,/g, '')
+                                );
                             }
                         }}
                         availableToSend={selectedToken.balance}
@@ -175,7 +197,11 @@ const SendContainerV2 = ({
                         onClickCancel={() => redirectTo('/')}
                         selectedToken={selectedToken}
                         onClickSelectToken={() => setActiveView(VIEWS.SELECT_TOKEN)}
-                        error={userInputAmount && userInputAmount !== '0' && !enterAmountIsComplete()}
+                        error={
+                            userInputAmount &&
+                            userInputAmount !== '0' &&
+                            !enterAmountIsComplete()
+                        }
                         isMobile={isMobile}
                     />
                 );
@@ -208,7 +234,7 @@ const SendContainerV2 = ({
                             handleContinueToReview({
                                 token: selectedToken,
                                 rawAmount: getRawAmount(),
-                                receiverId
+                                receiverId,
                             });
                         }}
                         isMobile={isMobile}
@@ -223,7 +249,13 @@ const SendContainerV2 = ({
                         }}
                         amount={getRawAmount()}
                         selectedToken={selectedToken}
-                        onClickContinue={() => handleSendToken(isMaxAmount ? selectedToken.balance : getRawAmount(), receiverId, selectedToken.contractName)}
+                        onClickContinue={() =>
+                            handleSendToken(
+                                isMaxAmount ? selectedToken.balance : getRawAmount(),
+                                receiverId,
+                                selectedToken.contractName
+                            )
+                        }
                         senderId={accountId}
                         receiverId={receiverId}
                         estimatedFeesInNear={estimatedTotalFees}
@@ -238,13 +270,21 @@ const SendContainerV2 = ({
                 return (
                     <Success
                         amount={
-                        selectedToken.onChainFTMetadata?.symbol === 'NEAR'
-                            ? getNearAndFiatValue(getRawAmount(), nearTokenFiatValueUSD)
-                            : `${userInputAmount} ${selectedToken.onChainFTMetadata?.symbol}`
+                            selectedToken.onChainFTMetadata?.symbol === 'NEAR'
+                                ? getNearAndFiatValue(
+                                      getRawAmount(),
+                                      nearTokenFiatValueUSD
+                                  )
+                                : `${userInputAmount} ${selectedToken.onChainFTMetadata?.symbol}`
                         }
                         receiverId={receiverId}
                         onClickContinue={() => redirectTo('/')}
-                        onClickGoToExplorer={() => window.open(`${explorerUrl}/transactions/${transactionHash}`, '_blank')}
+                        onClickGoToExplorer={() =>
+                            window.open(
+                                `${explorerUrl}/transactions/${transactionHash}`,
+                                '_blank'
+                            )
+                        }
                     />
                 );
             default:
@@ -253,7 +293,12 @@ const SendContainerV2 = ({
     };
 
     return (
-        <StyledContainer className={classNames(['small-centered', { 'showing-banner': showNetworkBanner }])}>
+        <StyledContainer
+            className={classNames([
+                'small-centered',
+                { 'showing-banner': showNetworkBanner },
+            ])}
+        >
             {getCurrentViewComponent(activeView)}
         </StyledContainer>
     );

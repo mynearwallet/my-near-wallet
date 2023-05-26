@@ -19,23 +19,13 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-
-const ReceiveContainer = ({
-    accountId,
-    availableBalance
-}) => {
+const ReceiveContainer = ({ accountId, availableBalance }) => {
     return (
         <StyledContainer className='small-centered'>
-            <TabSelector/>
-            <AccountIdQRCode
-                accountId={accountId}
-            />
-            <AccountId
-                accountId={accountId}
-            />
-            <AvailableBalance
-                availableBalance={availableBalance}
-            />
+            <TabSelector />
+            <AccountIdQRCode accountId={accountId} />
+            <AccountId accountId={accountId} />
+            <AvailableBalance availableBalance={availableBalance} />
         </StyledContainer>
     );
 };

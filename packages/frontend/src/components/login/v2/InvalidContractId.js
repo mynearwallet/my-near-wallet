@@ -9,16 +9,16 @@ import LoginStyle from './style/LoginStyle.css';
 export default ({ invalidContractId, onClickReturnToApp }) => (
     <Container className='small-centered border'>
         <LoginStyle className='invalid-contract'>
-            <h3><Translate id='account.login.incorrectContractId.errorTitle' /></h3>
+            <h3>
+                <Translate id='account.login.incorrectContractId.errorTitle' />
+            </h3>
             <div className='desc'>
                 <SafeTranslate
                     id='account.login.incorrectContractId.error'
                     data={{ contractId: invalidContractId }}
                 />
             </div>
-            <FormButton
-                onClick={onClickReturnToApp}
-            >
+            <FormButton onClick={onClickReturnToApp}>
                 <Translate id='button.returnToApp' />
             </FormButton>
         </LoginStyle>

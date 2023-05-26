@@ -29,8 +29,8 @@ const NEP141_TOKEN_PAIRS = {
                 name: 'Dai Stablecoin',
                 decimals: 18,
             },
-        }
-    ]
+        },
+    ],
 };
 
 const TOKENS_LOADING_DELAY = 6_000;

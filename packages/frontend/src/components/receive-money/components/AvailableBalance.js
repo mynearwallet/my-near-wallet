@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Amount from '../../send/components/entry_types/Amount';
 
 const StyledContainer = styled.div`
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-radius: 8px;
 `;
 

@@ -9,7 +9,7 @@ import {
     actions as transactionsActions,
     selectTransactionsOneByIdentity,
     selectTransactionsByAccountId,
-    selectTransactionsLoading
+    selectTransactionsLoading,
 } from '../../redux/slices/transactions';
 import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
@@ -20,12 +20,12 @@ const StyledContainer = styled.div`
     width: 100%;
 
     .no-activity {
-        color: #B4B4B4;
+        color: #b4b4b4;
         line-height: 150%;
     }
 
     @media (min-width: 992px) {
-        border: 2px solid #F0F0F0;
+        border: 2px solid #f0f0f0;
         border-radius: 8px;
         padding: 20px;
 
@@ -43,13 +43,13 @@ const StyledContainer = styled.div`
             }
 
             :first-of-type {
-                border-top: 1px solid #F0F0F1;
+                border-top: 1px solid #f0f0f1;
             }
         }
     }
 
     .activity-box {
-        border-bottom: 1px solid #F0F0F1;
+        border-bottom: 1px solid #f0f0f1;
 
         :last-of-type {
             border-bottom: 0;
@@ -65,29 +65,23 @@ const StyledContainer = styled.div`
             position: absolute;
             content: '.';
             animation: link 1s steps(5, end) infinite;
-        
+
             @keyframes link {
-                0%, 20% {
-                    color: rgba(0,0,0,0);
-                    text-shadow:
-                        .3em 0 0 rgba(0,0,0,0),
-                        .6em 0 0 rgba(0,0,0,0);
+                0%,
+                20% {
+                    color: rgba(0, 0, 0, 0);
+                    text-shadow: 0.3em 0 0 rgba(0, 0, 0, 0), 0.6em 0 0 rgba(0, 0, 0, 0);
                 }
                 40% {
                     color: #24272a;
-                    text-shadow:
-                        .3em 0 0 rgba(0,0,0,0),
-                        .6em 0 0 rgba(0,0,0,0);
+                    text-shadow: 0.3em 0 0 rgba(0, 0, 0, 0), 0.6em 0 0 rgba(0, 0, 0, 0);
                 }
                 60% {
-                    text-shadow:
-                        .3em 0 0 #24272a,
-                        .6em 0 0 rgba(0,0,0,0);
+                    text-shadow: 0.3em 0 0 #24272a, 0.6em 0 0 rgba(0, 0, 0, 0);
                 }
-                80%, 100% {
-                    text-shadow:
-                        .3em 0 0 #24272a,
-                        .6em 0 0 #24272a;
+                80%,
+                100% {
+                    text-shadow: 0.3em 0 0 #24272a, 0.6em 0 0 #24272a;
                 }
             }
         }
@@ -99,9 +93,15 @@ const ActivitiesWrapper = () => {
 
     const [transactionHash, setTransactionHash] = useState();
     const accountId = useSelector(selectAccountId);
-    const transactions = useSelector((state) => selectTransactionsByAccountId(state, { accountId }));
-    const transaction = useSelector((state) => selectTransactionsOneByIdentity(state, { accountId, id: transactionHash }));
-    const activityLoader = useSelector((state) => selectTransactionsLoading(state, { accountId }));
+    const transactions = useSelector((state) =>
+        selectTransactionsByAccountId(state, { accountId })
+    );
+    const transaction = useSelector((state) =>
+        selectTransactionsOneByIdentity(state, { accountId, id: transactionHash })
+    );
+    const activityLoader = useSelector((state) =>
+        selectTransactionsLoading(state, { accountId })
+    );
 
     useEffect(() => {
         if (accountId) {
@@ -111,7 +111,9 @@ const ActivitiesWrapper = () => {
 
     return (
         <StyledContainer>
-            <h2 className={classNames({'dots': activityLoader})}><Translate id='dashboard.activity' /></h2>
+            <h2 className={classNames({ dots: activityLoader })}>
+                <Translate id='dashboard.activity' />
+            </h2>
             {transactions.map((transaction, i) => (
                 <ActivityBox
                     key={`${transaction.hash_with_index}-${transaction.block_hash}-${transaction.kind}`}
@@ -124,7 +126,9 @@ const ActivitiesWrapper = () => {
                 />
             ))}
             {transactions?.length === 0 && !activityLoader && (
-                <div className='no-activity'><Translate id='dashboard.noActivity' /></div>
+                <div className='no-activity'>
+                    <Translate id='dashboard.noActivity' />
+                </div>
             )}
             {transactionHash && (
                 <ActivityDetailModal
@@ -139,7 +143,7 @@ const ActivitiesWrapper = () => {
                 linkTo={`${CONFIG.EXPLORER_URL}/accounts/${accountId}`}
                 trackingId='Click to account on explorer'
             >
-                <Translate id='button.viewAll'/>
+                <Translate id='button.viewAll' />
             </FormButton>
         </StyledContainer>
     );

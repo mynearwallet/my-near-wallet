@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -18,7 +18,7 @@ const StyledContainer = styled(Container)`
     .color-red {
         margin-top: -20px;
     }
-    
+
     &&& {
         button {
             width: 100%;
@@ -42,9 +42,12 @@ export default ({
     onConfirmPassphrase,
     onWordChange,
 }) => {
-    const handleValueChange = useCallback((e) => {
-        onWordChange(e.target.value);
-    }, [onWordChange]);
+    const handleValueChange = useCallback(
+        (e) => {
+            onWordChange(e.target.value);
+        },
+        [onWordChange]
+    );
 
     return (
         <StyledContainer className='small-centered border'>
@@ -56,8 +59,12 @@ export default ({
                 disabled={finishingSetup}
                 autoComplete='off'
             >
-                <h1><Translate id='setupSeedPhraseVerify.pageTitle' /></h1>
-                <h2><Translate id='setupSeedPhraseVerify.pageText' /></h2>
+                <h1>
+                    <Translate id='setupSeedPhraseVerify.pageTitle' />
+                </h1>
+                <h2>
+                    <Translate id='setupSeedPhraseVerify.pageText' />
+                </h2>
                 <h4 data-test-id='seedPhraseVerificationWordNumber'>
                     <SafeTranslate
                         id='input.enterWord.title'

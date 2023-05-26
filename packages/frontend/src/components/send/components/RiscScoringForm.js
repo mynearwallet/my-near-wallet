@@ -36,20 +36,20 @@ const RSConsent = styled.div`
     padding: 20px;
 
     & label {
-      user-select: none;
-      display: flex;
-      gap: 0 12px;
-      
-      & input {
-        width: inherit;
-        height: inherit;
-        border: none;
-        appearance: auto;
-        position: inherit;
-        margin: 0;
-        background: none;
-        box-shadow: none;
-      }
+        user-select: none;
+        display: flex;
+        gap: 0 12px;
+
+        & input {
+            width: inherit;
+            height: inherit;
+            border: none;
+            appearance: auto;
+            position: inherit;
+            margin: 0;
+            background: none;
+            box-shadow: none;
+        }
     }
 `;
 
@@ -75,7 +75,7 @@ export function useRiskScoringCheck(accountId) {
                     Mixpanel.track('HAPI scammed address', {
                         accountId,
                         statusMsg: hapiStatus[0],
-                        statusCode: hapiStatus[1]
+                        statusCode: hapiStatus[1],
                     });
                 }
             } catch (e) {
@@ -93,7 +93,8 @@ export function useRiskScoringCheck(accountId) {
             setIsRSWarned(false);
         }
 
-        return () => { // prevent race condition
+        return () => {
+            // prevent race condition
             isActive = false;
         };
     }, [accountId]);
@@ -101,16 +102,15 @@ export function useRiskScoringCheck(accountId) {
     return { isRSWarned, isRSIgnored, isRSFinished, setIsRSIgnored };
 }
 
-
 const RiscScoringForm = ({ setIsRSIgnored, isIgnored }) => {
     const onCheckboxChange = useCallback((e) => {
         setIsRSIgnored(e.target.checked);
     }, []);
 
     return (
-        <RSContainer className="risk-scoring-warning">
+        <RSContainer className='risk-scoring-warning'>
             <RSWarning>
-                <img src={iconWarning} alt="Warning" />
+                <img src={iconWarning} alt='Warning' />
                 <div>
                     <Translate id='riscScoring.scamWarning' />
                 </div>

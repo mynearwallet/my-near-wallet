@@ -7,6 +7,7 @@ images/
 fonts/
 documents/
 translations/
+node_modules/
 
 .github/
 .githooks/
@@ -17,3 +18,8 @@ translations/
 *.png
 *.ico
 *.pdf
+*.md
+*.yml
+
+lerna.json
+package.json

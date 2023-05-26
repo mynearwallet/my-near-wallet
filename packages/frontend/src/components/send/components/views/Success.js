@@ -18,38 +18,25 @@ const StyledContainer = styled.div`
     }
 `;
 
-const Success = ({
-    amount,
-    receiverId,
-    onClickContinue,
-    onClickGoToExplorer
-}) => {
-
+const Success = ({ amount, receiverId, onClickContinue, onClickGoToExplorer }) => {
     return (
         <StyledContainer className='buttons-bottom'>
-            <AvatarSuccessIcon/>
-            <div
-                className="header"
-                data-test-id="sendTransactionSuccessMessage"
-            >
-                <SafeTranslate id='sendV2.success.title'
-                    data={{ 
+            <AvatarSuccessIcon />
+            <div className='header' data-test-id='sendTransactionSuccessMessage'>
+                <SafeTranslate
+                    id='sendV2.success.title'
+                    data={{
                         amount: amount,
-                        receiverId: receiverId
+                        receiverId: receiverId,
                     }}
                 />
             </div>
             <div className='buttons-bottom-buttons'>
-                <FormButton
-                    onClick={onClickContinue}
-                >
-                    <Translate id='button.continue'/>
+                <FormButton onClick={onClickContinue}>
+                    <Translate id='button.continue' />
                 </FormButton>
-                <FormButton
-                    color='gray-gray'
-                    onClick={onClickGoToExplorer}
-                >
-                    <Translate id='button.viewOnExplorer'/>
+                <FormButton color='gray-gray' onClick={onClickGoToExplorer}>
+                    <Translate id='button.viewOnExplorer' />
                 </FormButton>
             </div>
         </StyledContainer>

@@ -8,16 +8,17 @@ import FormButton from '../common/FormButton';
 import CopyIcon from '../svg/CopyIcon';
 import GenerateNewIcon from '../svg/GenerateNewIcon';
 
-
 const CustomDiv = styled('div')`
     .seed-phrase-wrapper {
-        box-shadow: 0px 45px 56px rgba(0, 0, 0, 0.07), 0px 10.0513px 12.5083px rgba(0, 0, 0, 0.0417275), 0px 2.99255px 3.72406px rgba(0, 0, 0, 0.0282725);
+        box-shadow: 0px 45px 56px rgba(0, 0, 0, 0.07),
+            0px 10.0513px 12.5083px rgba(0, 0, 0, 0.0417275),
+            0px 2.99255px 3.72406px rgba(0, 0, 0, 0.0282725);
         border-radius: 8px;
         padding: 10px;
     }
     &&& {
         .buttons-wrapper {
-            border-top: 1px solid #F0F0F1;
+            border-top: 1px solid #f0f0f1;
             margin: 15px -10px 0 -10px;
             > div {
                 padding: 20px 15px 10px 15px;
@@ -59,7 +60,7 @@ const CustomDiv = styled('div')`
         display: flex;
 
         .single-phrase {
-            background: #D6EDFF;
+            background: #d6edff;
             padding: 10px;
             word-break: break-all;
             margin: 5px;
@@ -78,7 +79,7 @@ const CustomDiv = styled('div')`
 const Number = styled('span')`
     ::before {
         content: '${(props) => props.number || 1}';
-        color: #2B9AF4;
+        color: #2b9af4;
         padding-right: 8px;
         font-size: 12px;
     }
@@ -89,18 +90,21 @@ const SetupSeedPhraseForm = ({
     refreshData,
     onClickContinue,
     onClickCancel,
-    hasSeedPhraseRecovery = false
+    hasSeedPhraseRecovery = false,
 }) => {
-
     return (
         <CustomDiv translate='no' className='notranslate skiptranslate'>
             <div className='seed-phrase-wrapper'>
                 <div id='seed-phrase'>
-                    {seedPhrase && seedPhrase.length > 0 && seedPhrase.split(' ').map((word, i) => (
-                        <span className='single-phrase' key={`phrase-${i}`}>
-                            <Number number={i + 1} className='h4'>{word} </Number>
-                        </span>
-                    ))}
+                    {seedPhrase &&
+                        seedPhrase.length > 0 &&
+                        seedPhrase.split(' ').map((word, i) => (
+                            <span className='single-phrase' key={`phrase-${i}`}>
+                                <Number number={i + 1} className='h4'>
+                                    {word}{' '}
+                                </Number>
+                            </span>
+                        ))}
                 </div>
                 <div className='buttons-wrapper'>
                     <div>
@@ -108,7 +112,7 @@ const SetupSeedPhraseForm = ({
                             <FormButton
                                 color='gray-blue'
                                 className='small'
-                                data-test-id="copySeedPhraseButton"
+                                data-test-id='copySeedPhraseButton'
                             >
                                 <CopyIcon color='#A2A2A8' />
                                 <Translate id='button.copy' />
@@ -129,15 +133,11 @@ const SetupSeedPhraseForm = ({
                 disabled={hasSeedPhraseRecovery}
                 onClick={onClickContinue}
                 color='blue'
-                data-test-id="continueToSeedPhraseVerificationButton"
+                data-test-id='continueToSeedPhraseVerificationButton'
             >
                 <Translate id='button.continue' />
             </FormButton>
-            <FormButton
-                onClick={onClickCancel}
-                className='link'
-                color='gray'
-            >
+            <FormButton onClick={onClickCancel} className='link' color='gray'>
                 <Translate id='button.cancel' />
             </FormButton>
         </CustomDiv>

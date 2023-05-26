@@ -7,7 +7,6 @@ import IconMigrateAccount from '../../images/wallet-migration/IconMigrateAccount
 import FormButton from '../common/FormButton';
 import Modal from '../common/modal/Modal';
 
-
 const Container = styled.div`
     padding: 15px 0;
     text-align: center;
@@ -28,7 +27,7 @@ const Container = styled.div`
 
 const AccountListing = styled.div`
     margin-top: 56px;
-    border-top: 1px solid #EDEDED;
+    border-top: 1px solid #ededed;
 `;
 
 const AccountListingItem = styled.div`
@@ -39,7 +38,7 @@ const AccountListingItem = styled.div`
     overflow: hidden;
 
     &:not(:first-child) {
-        border-top: 1px solid #EDEDED;
+        border-top: 1px solid #ededed;
     }
 
     svg {
@@ -53,7 +52,7 @@ const ButtonsContainer = styled.div`
     width: 100% !important;
     display: flex;
     padding: 12px 24px 24px;
-    border-top: 1px solid #EDEDED;
+    border-top: 1px solid #ededed;
 `;
 
 const StyledButton = styled(FormButton)`
@@ -76,23 +75,22 @@ const MigrateAccounts = ({ accounts, onContinue, onClose }) => {
             style={{ maxWidth: '496px' }}
         >
             <Container>
-                <IconMigrateAccount/>
+                <IconMigrateAccount />
                 <h3 className='title'>
-                    <Translate  id='walletMigration.migrateAccounts.title' data={{count: accounts.length}}/>
+                    <Translate
+                        id='walletMigration.migrateAccounts.title'
+                        data={{ count: accounts.length }}
+                    />
                 </h3>
                 <p>
-                    <Translate id='walletMigration.migrateAccounts.desc'/>
+                    <Translate id='walletMigration.migrateAccounts.desc' />
                 </p>
                 <AccountListing>
-                    {
-                        accounts.map((account) => (
-                            <AccountListingItem
-                                key={account}
-                                data-accountid={account}>
-                                <IconAccount/> {account}
-                            </AccountListingItem>
-                        ))
-                    }
+                    {accounts.map((account) => (
+                        <AccountListingItem key={account} data-accountid={account}>
+                            <IconAccount /> {account}
+                        </AccountListingItem>
+                    ))}
                 </AccountListing>
 
                 <ButtonsContainer>

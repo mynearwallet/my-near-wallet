@@ -18,10 +18,10 @@ const StyledContainer = styled.div`
     .balance {
         text-align: right;
         .near-amount {
-            color: #3F4045;
+            color: #3f4045;
         }
         .fiat-amount {
-            color: #A2A2A8;
+            color: #a2a2a8;
             margin-top: 3px;
         }
     }

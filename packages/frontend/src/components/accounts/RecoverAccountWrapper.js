@@ -8,12 +8,7 @@ import RecoverAccount from './RecoverAccount';
 const RecoverAccountWrapper = () => {
     const location = useSelector(getLocation);
 
-    return (
-        <RecoverAccount
-            locationSearch={location.search}
-            isMobile={isMobile()}
-        />
-    );
+    return <RecoverAccount locationSearch={location.search} isMobile={isMobile()} />;
 };
 
 export default RecoverAccountWrapper;

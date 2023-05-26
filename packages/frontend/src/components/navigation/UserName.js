@@ -7,9 +7,7 @@ const StyledUserName = styled.div`
 `;
 
 const UserName = ({ accountId }) => (
-    <StyledUserName className='user-name'>
-        {accountId && `${accountId}`}
-    </StyledUserName>
+    <StyledUserName className='user-name'>{accountId && `${accountId}`}</StyledUserName>
 );
 
 export default UserName;

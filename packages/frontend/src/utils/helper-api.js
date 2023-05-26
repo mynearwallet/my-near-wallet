@@ -21,12 +21,15 @@ export function isUrlNotJavascriptProtocol(url) {
     try {
         const urlProtocol = new URL(url).protocol;
         if (urlProtocol === 'javascript:') {
-            console.log('Invalid URL protocol:', urlProtocol, 'URL cannot execute JavaScript');
+            console.log(
+                'Invalid URL protocol:',
+                urlProtocol,
+                'URL cannot execute JavaScript'
+            );
             return false;
         }
         return true;
     } catch (error) {
         return false;
     }
-
 }

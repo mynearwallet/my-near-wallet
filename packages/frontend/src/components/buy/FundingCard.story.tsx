@@ -17,7 +17,7 @@ export const Primary: Story = {
         actions: [],
         link: {
             title: 'Link Title',
-            url: 'some url'
-        }
+            url: 'some url',
+        },
     },
 };

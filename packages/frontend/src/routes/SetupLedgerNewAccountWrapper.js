@@ -5,14 +5,10 @@ import SetupLedgerNewAccount from '../components/accounts/ledger/SetupLedgerNewA
 import { getLedgerPublicKey, redirectTo } from '../redux/actions/account';
 import { showCustomAlert } from '../redux/actions/status';
 import { initiateSetupForZeroBalanceAccountLedger } from '../redux/slices/account/createAccountThunks';
-import {
-    actions as ledgerActions
-} from '../redux/slices/ledger';
+import { actions as ledgerActions } from '../redux/slices/ledger';
 import { wallet } from '../utils/wallet';
 
-const {
-    checkAndHideLedgerModal
-} = ledgerActions;
+const { checkAndHideLedgerModal } = ledgerActions;
 
 const SetupLedgerNewAccountWrapper = () => {
     const dispatch = useDispatch();
@@ -21,7 +17,9 @@ const SetupLedgerNewAccountWrapper = () => {
             onClickConnectLedger={async (path) => {
                 try {
                     const ledgerPublicKey = await dispatch(getLedgerPublicKey(path));
-                    const implicitAccountId = Buffer.from(ledgerPublicKey.data).toString('hex');
+                    const implicitAccountId = Buffer.from(ledgerPublicKey.data).toString(
+                        'hex'
+                    );
                     const account = wallet.getAccountBasic(implicitAccountId);
                     try {
                         const accountState = await account.state();
@@ -38,19 +36,23 @@ const SetupLedgerNewAccountWrapper = () => {
                         }
                     }
 
-                    await dispatch(initiateSetupForZeroBalanceAccountLedger({
-                        implicitAccountId,
-                        ledgerPublicKey,
-                        ledgerHdPath: path
-                    }));
+                    await dispatch(
+                        initiateSetupForZeroBalanceAccountLedger({
+                            implicitAccountId,
+                            ledgerPublicKey,
+                            ledgerHdPath: path,
+                        })
+                    );
                     dispatch(redirectTo('/'));
                     dispatch(checkAndHideLedgerModal());
                 } catch (e) {
-                    dispatch(showCustomAlert({
-                        errorMessage: e.message,
-                        success: false,
-                        messageCodeHeader: 'error'
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            errorMessage: e.message,
+                            success: false,
+                            messageCodeHeader: 'error',
+                        })
+                    );
                 }
             }}
         />

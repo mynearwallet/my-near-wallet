@@ -25,34 +25,38 @@ const AutoImport = ({
     accountId,
     recoveryFailed,
     onClickRecoverWithSecretKey,
-    onCancel
+    onCancel,
 }) => (
     <StyledContainer className='small-centered'>
-        {recoveryFailed
-            ? (
-<>
+        {recoveryFailed ? (
+            <>
                 <h1>
                     <SafeTranslate
                         id={`importAccount.${accountId ? 'withIdFailed' : 'noIdFailed'}`}
                         data={{ accountId: accountId }}
                     />
                 </h1>
-                <FormButton onClick={onClickRecoverWithSecretKey}><Translate id='button.tryAgain'/></FormButton>
-                {onCancel
-                    ? <FormButton color='gray-blue' onClick={onCancel}><Translate id='button.cancel' /></FormButton>
-                    : <FormButton color='gray-blue' linkTo='/create'><Translate id='button.createNewAccount' /></FormButton>
-                }
+                <FormButton onClick={onClickRecoverWithSecretKey}>
+                    <Translate id='button.tryAgain' />
+                </FormButton>
+                {onCancel ? (
+                    <FormButton color='gray-blue' onClick={onCancel}>
+                        <Translate id='button.cancel' />
+                    </FormButton>
+                ) : (
+                    <FormButton color='gray-blue' linkTo='/create'>
+                        <Translate id='button.createNewAccount' />
+                    </FormButton>
+                )}
             </>
-            )
-            : (
-                <h1 className='animated-dots'>
-                    <SafeTranslate
-                        id={`importAccount.${accountId ? 'withId' : 'noId'}`}
-                        data={{ accountId: accountId }}
-                    />
-                </h1>
-            )
-        }
+        ) : (
+            <h1 className='animated-dots'>
+                <SafeTranslate
+                    id={`importAccount.${accountId ? 'withId' : 'noId'}`}
+                    data={{ accountId: accountId }}
+                />
+            </h1>
+        )}
     </StyledContainer>
 );
 

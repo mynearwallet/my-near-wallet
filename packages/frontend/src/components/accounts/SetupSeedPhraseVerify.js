@@ -11,15 +11,16 @@ import SafeTranslate from '../SafeTranslate';
 
 // FIXME: Use `debug` npm package so we can keep some debug logging around but not spam the console everywhere
 const ENABLE_DEBUG_LOGGING = false;
-const debugLog = (...args) => ENABLE_DEBUG_LOGGING && console.log('SetupSeedPhraseVerify:', ...args);
+const debugLog = (...args) =>
+    ENABLE_DEBUG_LOGGING && console.log('SetupSeedPhraseVerify:', ...args);
 
 const CustomDiv = styled.div`
-
     input {
         margin-bottom: 30px !important;
     }
 
-    .blue, .input {
+    .blue,
+    .input {
         width: 100% !important;
     }
 
@@ -47,7 +48,6 @@ const CustomDiv = styled.div`
     }
 `;
 
-
 const SetupSeedPhraseVerify = (
     {
         enterWord,
@@ -60,7 +60,7 @@ const SetupSeedPhraseVerify = (
         onSubmit,
         isLinkDrop,
         hasSeedPhraseRecovery,
-        handleStartOver
+        handleStartOver,
     },
     ref
 ) => {
@@ -72,23 +72,24 @@ const SetupSeedPhraseVerify = (
         reset() {
             debugLog('in imperative handle reset()');
             return recaptchaRef.current.reset();
-        }
+        },
     }));
 
-    const shouldRenderRecaptcha = !ENABLE_IDENTITY_VERIFIED_ACCOUNT && !isLinkDrop && CONFIG.RECAPTCHA_CHALLENGE_API_KEY && isNewAccount;
+    const shouldRenderRecaptcha =
+        !ENABLE_IDENTITY_VERIFIED_ACCOUNT &&
+        !isLinkDrop &&
+        CONFIG.RECAPTCHA_CHALLENGE_API_KEY &&
+        isNewAccount;
 
     return (
         <CustomDiv>
-            <h4 data-test-id="seedPhraseVerificationWordNumber">
-                <SafeTranslate
-                    id="input.enterWord.title"
-                    data={{ wordId: wordId + 1 }}
-                />
+            <h4 data-test-id='seedPhraseVerificationWordNumber'>
+                <SafeTranslate id='input.enterWord.title' data={{ wordId: wordId + 1 }} />
             </h4>
             <Translate>
                 {({ translate }) => (
                     <input
-                        data-test-id="seedPhraseVerificationWordInput"
+                        data-test-id='seedPhraseVerificationWordInput'
                         name='enterWord'
                         value={enterWord}
                         onChange={(e) => handleChangeWord(e.target.value)}
@@ -96,34 +97,41 @@ const SetupSeedPhraseVerify = (
                         required
                         tabIndex='1'
                         pattern='[a-zA-Z ]*'
-                        className={localAlert ? (localAlert.success ? 'success' : 'problem') : ''}
+                        className={
+                            localAlert ? (localAlert.success ? 'success' : 'problem') : ''
+                        }
                         disabled={mainLoader}
                     />
                 )}
             </Translate>
-            <LocalAlertBox localAlert={localAlert}/>
-            {
-                shouldRenderRecaptcha && (
-                    <Recaptcha
-                        ref={recaptchaRef}
-                        onChange={(token) => {
-                            debugLog('onChange from recaptcha', token);
-                            setRecaptchaToken(token);
-                            onRecaptchaChange(token);
-                        }}
-                        onFundAccountCreation={onSubmit}
-                    />
-                )
-            }
+            <LocalAlertBox localAlert={localAlert} />
+            {shouldRenderRecaptcha && (
+                <Recaptcha
+                    ref={recaptchaRef}
+                    onChange={(token) => {
+                        debugLog('onChange from recaptcha', token);
+                        setRecaptchaToken(token);
+                        onRecaptchaChange(token);
+                    }}
+                    onFundAccountCreation={onSubmit}
+                />
+            )}
             <FormButton
                 type='submit'
                 color='blue'
-                disabled={hasSeedPhraseRecovery || !enterWord || mainLoader || (!recaptchaToken && shouldRenderRecaptcha)}
+                disabled={
+                    hasSeedPhraseRecovery ||
+                    !enterWord ||
+                    mainLoader ||
+                    (!recaptchaToken && shouldRenderRecaptcha)
+                }
                 sending={mainLoader}
-                sendingString={isNewAccount ? 'button.creatingAccount' : 'button.verifying'}
-                data-test-id="seedPhraseVerificationWordSubmit"
+                sendingString={
+                    isNewAccount ? 'button.creatingAccount' : 'button.verifying'
+                }
+                data-test-id='seedPhraseVerificationWordSubmit'
             >
-                <Translate id='button.verify'/>
+                <Translate id='button.verify' />
             </FormButton>
             <FormButton
                 type='button'
@@ -131,7 +139,7 @@ const SetupSeedPhraseVerify = (
                 className='link start-over'
                 onClick={handleStartOver}
             >
-                <Translate id='button.startOver'/>
+                <Translate id='button.startOver' />
             </FormButton>
         </CustomDiv>
     );

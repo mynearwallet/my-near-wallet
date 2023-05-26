@@ -10,15 +10,23 @@ import {
     updateStaking,
     handleStakingAction,
     handleUpdateCurrent,
-    getValidatorFarmData
+    getValidatorFarmData,
 } from '../../redux/actions/staking';
-import { selectAccountHas2fa, selectAccountHasLockup, selectAccountId, selectBalance } from '../../redux/slices/account';
+import {
+    selectAccountHas2fa,
+    selectAccountHasLockup,
+    selectAccountId,
+    selectBalance,
+} from '../../redux/slices/account';
 import { selectLedgerHasLedger } from '../../redux/slices/ledger';
 import { selectStakingSlice } from '../../redux/slices/staking';
 import { selectStatusSlice } from '../../redux/slices/status';
 import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
 import { FARMING_VALIDATOR_VERSION } from '../../utils/constants';
-import { setStakingAccountSelected, getStakingAccountSelected } from '../../utils/localStorage';
+import {
+    setStakingAccountSelected,
+    getStakingAccountSelected,
+} from '../../utils/localStorage';
 import Container from '../common/styled/Container.css';
 import { ClaimSuccess } from './components/ClaimSuccess';
 import Staking from './components/Staking';
@@ -29,10 +37,11 @@ import Validators from './components/Validators';
 import Withdraw from './components/Withdraw';
 
 const StyledContainer = styled(Container)`
-    h1, h2 {
+    h1,
+    h2 {
         text-align: center !important;
     }
-    
+
     button {
         display: block !important;
         margin: 35px auto 40px auto !important;
@@ -60,13 +69,13 @@ const StyledContainer = styled(Container)`
             margin-bottom: 25px !important;
         }
     }
-    
+
     .input-validation-label {
         margin-top: -14px !important;
     }
 
     h3 {
-        border-bottom: 2px solid #F2F2F2;
+        border-bottom: 2px solid #f2f2f2;
         margin-top: 50px;
         padding-bottom: 15px;
 
@@ -106,7 +115,7 @@ const StyledContainer = styled(Container)`
     }
 
     .amount-header-wrapper,
-    .validator-header-wrapper  {
+    .validator-header-wrapper {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -137,9 +146,9 @@ const StyledContainer = styled(Container)`
     }
 
     .radio-label {
-        cursor: ${(props) => props.multipleAccounts ? 'pointer' : 'default'};
+        cursor: ${(props) => (props.multipleAccounts ? 'pointer' : 'default')};
         .input-wrapper {
-            display: ${(props) => props.multipleAccounts ? 'block' : 'none'};
+            display: ${(props) => (props.multipleAccounts ? 'block' : 'none')};
         }
     }
 
@@ -158,7 +167,7 @@ const StyledContainer = styled(Container)`
         display: flex;
         align-items: center;
         margin-bottom: 10px;
-        
+
         .tooltip {
             margin-bottom: -1px;
         }
@@ -179,16 +188,22 @@ const StakingContainer = ({ history, match }) => {
     const { currentAccount } = staking;
     const currentAccountDataForInactiveAccount = {
         accountId,
-        ...currentAccount
+        ...currentAccount,
     };
-    const stakingAccounts = staking.accounts.length ? staking.accounts : [currentAccountDataForInactiveAccount];
+    const stakingAccounts = staking.accounts.length
+        ? staking.accounts
+        : [currentAccountDataForInactiveAccount];
     const validators = staking.allValidators;
     const currentValidators = currentAccount.validators;
     const validatorId = history.location.pathname.split('/')[2];
-    let validator = currentValidators.filter((validator) => validator.accountId === validatorId)[0];
+    let validator = currentValidators.filter(
+        (validator) => validator.accountId === validatorId
+    )[0];
     // validator profile not in account's current validators (with balances) find validator in allValidators
     if (!validator) {
-        validator = validators.filter((validator) => validator.accountId === validatorId)[0];
+        validator = validators.filter(
+            (validator) => validator.accountId === validatorId
+        )[0];
     }
     const { totalUnstaked, selectedValidator } = currentAccount;
     const loadingBalance = !stakingAccounts.every((account) => !!account.totalUnstaked);
@@ -215,22 +230,26 @@ const StakingContainer = ({ history, match }) => {
 
         validators
             .filter((validator) => validator.version === FARMING_VALIDATOR_VERSION)
-            .forEach((validator) => dispatch(getValidatorFarmData({ validator, accountId: currentAccount.accountId })));
+            .forEach((validator) =>
+                dispatch(
+                    getValidatorFarmData({
+                        validator,
+                        accountId: currentAccount.accountId,
+                    })
+                )
+            );
     }, [currentAccount.accountId, validators]);
 
     const handleAction = async (action, validator, amount) => {
         let id = Mixpanel.get_distinct_id();
         Mixpanel.identify(id);
-        await Mixpanel.withTracking(action.toUpperCase(),
-            async () => {
-                const properValidator = action === 'stake'
-                    ? validator
-                    : selectedValidator || validator;
+        await Mixpanel.withTracking(action.toUpperCase(), async () => {
+            const properValidator =
+                action === 'stake' ? validator : selectedValidator || validator;
 
-                dispatch(handleStakingAction(action, properValidator, amount));
-                Mixpanel.people.set({ [`last_${action}_time`]: new Date().toString() });
-            }
-        );
+            dispatch(handleStakingAction(action, properValidator, amount));
+            Mixpanel.people.set({ [`last_${action}_time`]: new Date().toString() });
+        });
     };
 
     const multipleAccounts = stakingAccounts.length > 1;
@@ -251,7 +270,10 @@ const StakingContainer = ({ history, match }) => {
                                 activeAccount={currentAccount}
                                 accountId={accountId}
                                 loading={status.mainLoader && !stakingAccounts.length}
-                                loadingDetails={(status.mainLoader && !stakingAccounts.length) || loadingBalance}
+                                loadingDetails={
+                                    (status.mainLoader && !stakingAccounts.length) ||
+                                    loadingBalance
+                                }
                                 hasLockup={hasLockup}
                                 stakeFromAccount={stakeFromAccount}
                                 selectedValidator={selectedValidator}
@@ -274,20 +296,14 @@ const StakingContainer = ({ history, match }) => {
                         exact
                         path='/staking/unstake'
                         render={(props) => (
-                            <Unstake
-                                {...props}
-                                currentValidators={currentValidators}
-                            />
+                            <Unstake {...props} currentValidators={currentValidators} />
                         )}
                     />
                     <Route
                         exact
                         path='/staking/withdraw'
                         render={(props) => (
-                            <Withdraw
-                                {...props}
-                                currentValidators={currentValidators}
-                            />
+                            <Withdraw {...props} currentValidators={currentValidators} />
                         )}
                     />
                     <Route
@@ -344,11 +360,7 @@ const StakingContainer = ({ history, match }) => {
                     <Route
                         exact
                         path='/staking/:validator/claim'
-                        render={(props) => (
-                            <ClaimSuccess
-                                {...props}
-                            />
-                        )}
+                        render={(props) => <ClaimSuccess {...props} />}
                     />
                 </Switch>
             </ConnectedRouter>

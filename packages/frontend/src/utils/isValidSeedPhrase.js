@@ -8,7 +8,9 @@ export default (seedPhrase) => {
     const isValidSeedPhrase = bip39.validateMnemonic(seedPhrase.trim());
 
     if (!isValidSeedPhrase) {
-        throw new Error('Provided seed phrase is not valid according to bip39-light standard');
+        throw new Error(
+            'Provided seed phrase is not valid according to bip39-light standard'
+        );
     }
 
     return isValidSeedPhrase;

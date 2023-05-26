@@ -25,16 +25,13 @@ export default function useSwapInfo({
 
     const [loading, setLoading] = useState(false);
     const debounceAmountIn = useDebouncedValue(amountIn, delay);
-    const isNearTransformation = useMemo(
-        () => {
-            if (tokenIn && tokenOut) {
-                return fungibleTokenExchange.isNearTransformation({ tokenIn, tokenOut });
-            }
+    const isNearTransformation = useMemo(() => {
+        if (tokenIn && tokenOut) {
+            return fungibleTokenExchange.isNearTransformation({ tokenIn, tokenOut });
+        }
 
-            return false;
-        },
-        [tokenIn, tokenOut]
-    );
+        return false;
+    }, [tokenIn, tokenOut]);
 
     useEffect(
         () => setIsNearTransformation(isNearTransformation),
@@ -82,13 +79,14 @@ export default function useSwapInfo({
                 setLoading(true);
 
                 try {
-                    const { amountOut, poolId, swapFee, priceImpactPercent } = await fungibleTokenExchange.estimate({
-                        account,
-                        poolsByIds: pools,
-                        tokenIn,
-                        amountIn: debounceAmountIn,
-                        tokenOut,
-                    });
+                    const { amountOut, poolId, swapFee, priceImpactPercent } =
+                        await fungibleTokenExchange.estimate({
+                            account,
+                            poolsByIds: pools,
+                            tokenIn,
+                            amountIn: debounceAmountIn,
+                            tokenOut,
+                        });
 
                     if (!cancelledRequest) {
                         setSwapPoolId(poolId);

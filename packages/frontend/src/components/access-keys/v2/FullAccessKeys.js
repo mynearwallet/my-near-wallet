@@ -29,11 +29,13 @@ export default ({
     setUserInputAccountId,
     accountId,
     confirmDeAuthorizeKey,
-    setConfirmDeAuthorizeKey
+    setConfirmDeAuthorizeKey,
 }) => {
     return (
         <StyledContainer className='medium centered'>
-            <h1><Translate id='fullAccessKeys.pageTitle' /> ({fullAccessKeys?.length})</h1>
+            <h1>
+                <Translate id='fullAccessKeys.pageTitle' /> ({fullAccessKeys?.length})
+            </h1>
             <div className='access-keys'>
                 {fullAccessKeys?.map((accessKey, i) => (
                     <FullAccessKey
@@ -48,9 +50,9 @@ export default ({
                         setConfirmDeAuthorizeKey={setConfirmDeAuthorizeKey}
                     />
                 ))}
-                {fullAccessKeys?.length === 0 &&
+                {fullAccessKeys?.length === 0 && (
                     <Translate id='fullAccessKeys.dashboardNoKeys' />
-                }
+                )}
             </div>
         </StyledContainer>
     );

@@ -9,13 +9,14 @@ import SelectAccountLoginWrapper from '../components/login/v2/SelectAccountLogin
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import {
-    selectAccountLocalStorageAccountId, selectAccountUrlPrivateShard
+    selectAccountLocalStorageAccountId,
+    selectAccountUrlPrivateShard,
 } from '../redux/slices/account';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
 export const LOGIN_ACCESS_TYPES = {
     FULL_ACCESS: 'fullAccess',
-    LIMITED_ACCESS: 'limitedAccess'
+    LIMITED_ACCESS: 'limitedAccess',
 };
 
 const LoginWrapper = () => {
@@ -33,20 +34,28 @@ const LoginWrapper = () => {
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
     const isPrivateShard = !!useSelector(selectAccountUrlPrivateShard);
 
-    let requestingFullAccess = !contractId || (publicKey && contractId?.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`)) || contractId === accountLocalStorageAccountId;
+    let requestingFullAccess =
+        !contractId ||
+        (publicKey && contractId?.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`)) ||
+        contractId === accountLocalStorageAccountId;
 
     const requestAccountIdOnly = !publicKey && !contractId;
     if (requestAccountIdOnly) {
         requestingFullAccess = false;
     }
-    const loginAccessType = requestingFullAccess ? LOGIN_ACCESS_TYPES.FULL_ACCESS : LOGIN_ACCESS_TYPES.LIMITED_ACCESS;
+    const loginAccessType = requestingFullAccess
+        ? LOGIN_ACCESS_TYPES.FULL_ACCESS
+        : LOGIN_ACCESS_TYPES.LIMITED_ACCESS;
 
     if (invalidContractId) {
         return (
             <InvalidContractId
                 invalidContractId={contractId}
                 onClickReturnToApp={() => {
-                    Mixpanel.track('LOGIN Invalid contract id Click return to app button', { contract_id: contractId });
+                    Mixpanel.track(
+                        'LOGIN Invalid contract id Click return to app button',
+                        { contract_id: contractId }
+                    );
                     if (isUrlNotJavascriptProtocol(failureUrl)) {
                         window.location.href = failureUrl;
                     }

@@ -1,17 +1,17 @@
 import styled from 'styled-components';
 
 export const PasswordForm = styled.div`
-  margin-bottom: 72px;
+    margin-bottom: 72px;
 `;
 
 export const WithoutPassword = styled.div<{ hide: boolean }>`
-    opacity: ${(props) => props.hide ? '0' : '1'};
+    opacity: ${(props) => (props.hide ? '0' : '1')};
     margin-top: 48px;
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
     text-align: center;
-    color: #0072CE;
+    color: #0072ce;
     flex: none;
     order: 3;
     align-self: stretch;

@@ -14,12 +14,11 @@ import { redirectTo } from '../../redux/actions/account';
 import classNames from '../../utils/classNames';
 import {
     getMeteorWalletUrl,
-    getMyNearWalletUrlFromNEARORG
+    getMyNearWalletUrlFromNEARORG,
 } from '../../utils/getWalletURL';
 import FormButton from '../common/FormButton';
 import Modal from '../common/modal/Modal';
 import { WALLET_MIGRATION_VIEWS } from './WalletMigration';
-
 
 const Container = styled.div`
     padding: 15px 0;
@@ -45,7 +44,7 @@ const WALLET_OPTIONS = [
     {
         id: 'my-near-wallet',
         name: 'My NEAR Wallet',
-        icon: <img src={ImgMyNearWallet} alt="MyNearWallet Logo" />,
+        icon: <img src={ImgMyNearWallet} alt='MyNearWallet Logo' />,
         getUrl: ({ hash }) => `${getMyNearWalletUrlFromNEARORG()}/batch-import#${hash}`,
         checkAvailability: () => true,
     },
@@ -58,21 +57,23 @@ const WALLET_OPTIONS = [
     {
         id: 'sender',
         name: 'Sender',
-        icon: <img src={SenderLogo} alt="Sender Wallet Logo"/>,
-        getUrl: ({ hash, networkId }) => `https://sender.org/transfer?keystore=${hash}&network=${networkId}`,
+        icon: <img src={SenderLogo} alt='Sender Wallet Logo' />,
+        getUrl: ({ hash, networkId }) =>
+            `https://sender.org/transfer?keystore=${hash}&network=${networkId}`,
         checkAvailability: () => true,
     },
     {
         id: 'meteor-wallet',
         name: 'Meteor Wallet',
-        icon: <img src={ImgMeteorWallet} alt={'Meteor Wallet Logo'}/>,
-        getUrl: ({ hash, networkId }) => `${getMeteorWalletUrl()}/batch-import?hash=${hash}&network=${networkId}`,
+        icon: <img src={ImgMeteorWallet} alt={'Meteor Wallet Logo'} />,
+        getUrl: ({ hash, networkId }) =>
+            `${getMeteorWalletUrl()}/batch-import?hash=${hash}&network=${networkId}`,
         checkAvailability: () => true,
     },
     {
         id: 'finer-wallet',
         name: 'FiNER Wallet',
-        icon: <img src={ImgFinerWallet} alt="Finer Wallet Logo" />,
+        icon: <img src={ImgFinerWallet} alt='Finer Wallet Logo' />,
         getUrl: ({ hash }) => `finer://wallet.near.org/batch-import#${hash}`,
         checkAvailability: () => isMobile(),
     },
@@ -84,7 +85,7 @@ const WalletOptionsListing = styled.div`
 
 const WalletOptionsListingItem = styled.div`
     position: relative;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     padding: 14px 16px;
     cursor: pointer;
     text-align: left;
@@ -96,7 +97,7 @@ const WalletOptionsListingItem = styled.div`
     cursor: pointer;
 
     &:hover {
-        background: #F0F9FF;
+        background: #f0f9ff;
     }
 
     &:before {
@@ -104,18 +105,18 @@ const WalletOptionsListingItem = styled.div`
         height: 22px;
         width: 22px;
         top: calc((100% - 22px) / 2);
-        border: 2px solid #E6E6E6;
+        border: 2px solid #e6e6e6;
         border-radius: 50%;
         position: absolute;
     }
 
     &.active {
-        background-color: #F0F9FF;
-        border-left: solid 4px #2B9AF4;
+        background-color: #f0f9ff;
+        border-left: solid 4px #2b9af4;
 
         :before {
-            background-color: #2B9AF4;
-            border-color: #2B9AF4;
+            background-color: #2b9af4;
+            border-color: #2b9af4;
         }
 
         :after {
@@ -137,14 +138,15 @@ const WalletOptionsListingItem = styled.div`
         font-weight: 700;
         padding-left: 40px;
         text-align: left;
-        color: #3F4045;
+        color: #3f4045;
     }
 
     &:not(:first-child) {
         margin-top: 8px;
     }
 
-    svg, img {
+    svg,
+    img {
         height: 48px;
         width: 48px;
         padding: 8px;
@@ -166,8 +168,12 @@ const StyledButton = styled(FormButton)`
     }
 `;
 
-
-const SelectDestinationWallet = ({ handleSetActiveView, handleSetWallet, wallet, onClose }) => {
+const SelectDestinationWallet = ({
+    handleSetActiveView,
+    handleSetWallet,
+    wallet,
+    onClose,
+}) => {
     const dispatch = useDispatch();
 
     const handleContinue = useCallback(() => {
@@ -182,7 +188,7 @@ const SelectDestinationWallet = ({ handleSetActiveView, handleSetWallet, wallet,
 
     return (
         <Modal
-            modalClass="slim"
+            modalClass='slim'
             id='migration-modal'
             isOpen={true}
             disableClose={true}
@@ -190,8 +196,10 @@ const SelectDestinationWallet = ({ handleSetActiveView, handleSetWallet, wallet,
             style={{ maxWidth: '435px' }}
         >
             <Container>
-                <IconWallet/>
-                <h4 className='title'><Translate id='walletMigration.selectWallet.title'/></h4>
+                <IconWallet />
+                <h4 className='title'>
+                    <Translate id='walletMigration.selectWallet.title' />
+                </h4>
                 <WalletOptionsListing>
                     {WALLET_OPTIONS.map((walletOption) => {
                         if (!walletOption.checkAvailability()) {
@@ -199,7 +207,9 @@ const SelectDestinationWallet = ({ handleSetActiveView, handleSetWallet, wallet,
                         }
                         return (
                             <WalletOptionsListingItem
-                                className={classNames([{ active: walletOption.id === wallet?.id }])}
+                                className={classNames([
+                                    { active: walletOption.id === wallet?.id },
+                                ])}
                                 onClick={() => handleSetWallet(walletOption)}
                                 key={walletOption.name}
                             >
@@ -210,11 +220,11 @@ const SelectDestinationWallet = ({ handleSetActiveView, handleSetWallet, wallet,
                     })}
                 </WalletOptionsListing>
                 <ButtonsContainer>
-                    <StyledButton className="gray-blue" onClick={onClose}>
-                        <Translate id='button.cancel'/>
+                    <StyledButton className='gray-blue' onClick={onClose}>
+                        <Translate id='button.cancel' />
                     </StyledButton>
                     <StyledButton onClick={handleContinue} disabled={!wallet?.id}>
-                        <Translate id='button.continue'/>
+                        <Translate id='button.continue' />
                     </StyledButton>
                 </ButtonsContainer>
             </Container>

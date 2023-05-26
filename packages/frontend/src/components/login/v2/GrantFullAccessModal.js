@@ -19,7 +19,7 @@ const StyledContainer = styled.div`
 
             .alert-triangle {
                 margin: 20px 0 50px 0;
-                background-color: #FEF2F2;
+                background-color: #fef2f2;
                 border-radius: 50%;
                 width: 64px;
                 height: 64px;
@@ -37,27 +37,27 @@ const StyledContainer = styled.div`
             }
 
             .desc {
-                color: #72727A;
+                color: #72727a;
                 line-height: 150%;
                 margin-bottom: 65px;
             }
         }
 
         .input-label {
-            color: #72727A;
+            color: #72727a;
         }
-    
+
         .modal-footer {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-    
+
             > button {
                 width: auto;
                 &.link {
                     margin: 20px 35px;
                 }
-                
+
                 &.blue {
                     padding: 0 35px;
                 }
@@ -74,7 +74,7 @@ export default ({
     contractId,
     contractIdUrl,
     signedInAccountId,
-    loggingIn
+    loggingIn,
 }) => {
     const [userInputValue, setUserInputValue] = useState('');
     return (
@@ -84,16 +84,22 @@ export default ({
             onClose={onClose}
             modalSize='md'
         >
-            <form onSubmit={(e) => {
-                if (signedInAccountId === userInputValue && !loggingIn) {
-                    onConfirm();
-                }
-                e.preventDefault();
-            }}>
+            <form
+                onSubmit={(e) => {
+                    if (signedInAccountId === userInputValue && !loggingIn) {
+                        onConfirm();
+                    }
+                    e.preventDefault();
+                }}
+            >
                 <StyledContainer>
                     <div className='upper-body'>
-                        <div className='alert-triangle'><AlertTriangleIcon color='#DC1F25' /></div>
-                        <h3><Translate id='login.v2.connectConfirm.fullAccessModal.title' /></h3>
+                        <div className='alert-triangle'>
+                            <AlertTriangleIcon color='#DC1F25' />
+                        </div>
+                        <h3>
+                            <Translate id='login.v2.connectConfirm.fullAccessModal.title' />
+                        </h3>
                         <ConnectWithApplication
                             appReferrer={appReferrer}
                             contractIdUrl={contractIdUrl}
@@ -102,7 +108,9 @@ export default ({
                             <Translate id='login.v2.connectConfirm.fullAccessModal.desc' />
                         </div>
                     </div>
-                    <div className='input-label'><Translate id='input.accountId.title' /></div>
+                    <div className='input-label'>
+                        <Translate id='input.accountId.title' />
+                    </div>
                     <Translate>
                         {({ translate }) => (
                             <input
@@ -113,7 +121,7 @@ export default ({
                                 spellCheck='false'
                                 disabled={loggingIn}
                                 autoFocus={!isMobile()}
-                                data-test-id="fullaccess-acc-id-input"
+                                data-test-id='fullaccess-acc-id-input'
                             />
                         )}
                     </Translate>
@@ -123,7 +131,7 @@ export default ({
                             color='light-gray'
                             className='link'
                             type='button'
-                            data-test-id="fullaccess-modal-cancel"
+                            data-test-id='fullaccess-modal-cancel'
                             disabled={loggingIn}
                         >
                             <Translate id='button.cancel' />
@@ -134,7 +142,7 @@ export default ({
                             sending={loggingIn}
                             sendingString='button.connecting'
                             type='submit'
-                            data-test-id="fullaccess-modal-confirm"
+                            data-test-id='fullaccess-modal-confirm'
                         >
                             <Translate id='button.confirm' />
                         </FormButton>
@@ -143,5 +151,4 @@ export default ({
             </form>
         </Modal>
     );
-
 };

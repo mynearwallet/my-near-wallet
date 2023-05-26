@@ -16,7 +16,7 @@ const Container = styled.div`
     font-size: 14px;
     margin-bottom: 20px;
     padding: 0 15px;
-    border-bottom: 1px solid #F0F0F1;
+    border-bottom: 1px solid #f0f0f1;
 
     @media (min-width: 992px) {
         display: flex;
@@ -37,11 +37,10 @@ const Container = styled.div`
     .divider {
         height: 35px;
         width: 2px;
-        background-color: #E5E5E6;
+        background-color: #e5e5e6;
         margin: 0 20px;
     }
 `;
-
 
 const Lang = styled.div`
     margin-left: auto;
@@ -49,7 +48,7 @@ const Lang = styled.div`
 
     &:after {
         content: '';
-        border-color: #72727A;
+        border-color: #72727a;
         border-style: solid;
         border-width: 2px 2px 0 0;
         display: inline-block;
@@ -104,19 +103,19 @@ class DesktopContainer extends Component {
 
         return (
             <Container>
-                <Logo link={!flowLimitationMainMenu}/>
-                {showAllNavigationLinks &&
-                    <NavLinks />
-                }
+                <Logo link={!flowLimitationMainMenu} />
+                {showAllNavigationLinks && <NavLinks />}
                 <Lang>
                     <LanguageToggle />
                 </Lang>
                 <ConnectLedger />
                 {showNavLinks && (
                     <>
-                        <div className='divider'/>
+                        <div className='divider' />
                         <UserAccount
-                            accountId={account.accountId || account.localStorage?.accountId}
+                            accountId={
+                                account.accountId || account.localStorage?.accountId
+                            }
                             onClick={toggleMenu}
                             flowLimitationSubMenu={flowLimitationSubMenu}
                         />

@@ -118,8 +118,7 @@ const StyledContainer = styled.div`
                             0.6em 0 0 rgba(0, 0, 0, 0);
                     }
                     60% {
-                        text-shadow: 0.3em 0 0 #24272a,
-                            0.6em 0 0 rgba(0, 0, 0, 0);
+                        text-shadow: 0.3em 0 0 #24272a, 0.6em 0 0 rgba(0, 0, 0, 0);
                     }
                     80%,
                     100% {
@@ -161,7 +160,7 @@ const SubTitle = ({ showFiatPrice, price, currentLanguage, name = '-' }) => {
     const fiatDecimals = 2;
 
     return (
-        <span className="subTitle">
+        <span className='subTitle'>
             {showFiatPrice ? (
                 price ? (
                     <>
@@ -173,7 +172,7 @@ const SubTitle = ({ showFiatPrice, price, currentLanguage, name = '-' }) => {
                     </>
                 ) : (
                     <span>
-                        <Translate id="tokenBox.priceUnavailable" />
+                        <Translate id='tokenBox.priceUnavailable' />
                     </span>
                 )
             ) : (
@@ -221,10 +220,7 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
                         />
                     </div>
                 ) : (
-                    <TokenAmount
-                        token={token}
-                        className="balance"
-                    />
+                    <TokenAmount token={token} className='balance' />
                 )}
             </TokenBoxWrapper>
         </StyledContainer>

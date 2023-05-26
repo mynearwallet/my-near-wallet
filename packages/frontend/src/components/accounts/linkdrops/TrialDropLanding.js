@@ -12,7 +12,7 @@ const StyledContainer = styled(Container)`
     text-align: center;
 
     .desc {
-        color: #72727A;
+        color: #72727a;
         margin-bottom: 40px;
     }
 
@@ -25,36 +25,35 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-const TrialDropLanding = ({
-    fundingContract,
-    fundingKey,
-    claimingDrop,
-    history
-}) => {
+const TrialDropLanding = ({ fundingContract, fundingKey, claimingDrop, history }) => {
     const handleSecureAccount = async () => {
-        let queryString = `?fundingOptions=${encodeURIComponent(JSON.stringify({ fundingContract, fundingKey, fundingAmount: '0', trialDrop: true }))}`;
+        let queryString = `?fundingOptions=${encodeURIComponent(
+            JSON.stringify({
+                fundingContract,
+                fundingKey,
+                fundingAmount: '0',
+                trialDrop: true,
+            })
+        )}`;
         history.push(`/set-recovery/${fundingContract}${queryString}`);
     };
 
     return (
         <StyledContainer className='xs-centered'>
             <NearGiftIcons />
-            <h3>
-            Secure Your Trial Account
-            </h3>
+            <h3>Secure Your Trial Account</h3>
             <div className='desc'>
-            We hope you enjoyed your trial. Add a seedphrase to secure your account!
+                We hope you enjoyed your trial. Add a seedphrase to secure your account!
             </div>
 
             <FormButton
-                data-test-id="linkdropCreateAccountToClaim"
-                color="gray-blue"
+                data-test-id='linkdropCreateAccountToClaim'
+                color='gray-blue'
                 disabled={claimingDrop}
                 onClick={handleSecureAccount}
             >
-            Secure Account
+                Secure Account
             </FormButton>
-
         </StyledContainer>
     );
 };

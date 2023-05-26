@@ -11,7 +11,7 @@ import TransactionDetails from '../TransactionDetails';
 
 const StyledContainer = styled.div`
     .information {
-        background-color: #FAFAFA;
+        background-color: #fafafa;
         border-radius: 8px;
         margin-bottom: 5px;
     }
@@ -55,15 +55,22 @@ const Review = ({
     sendingToken,
     onClickAmount,
     onClickReceiver,
-    onClickSelectedToken
+    onClickSelectedToken,
 }) => {
-
     return (
-        <StyledContainer className={classNames(['buttons-bottom', {'sending-token' : sendingToken === true}])}>
+        <StyledContainer
+            className={classNames([
+                'buttons-bottom',
+                { 'sending-token': sendingToken === true },
+            ])}
+        >
             <div className='header'>
-                <Translate id='sendV2.review.title'/>
+                <Translate id='sendV2.review.title' />
             </div>
-            <div className='token-amount clickable' onClick={() => sendingToken !== true && onClickAmount()}>
+            <div
+                className='token-amount clickable'
+                onClick={() => sendingToken !== true && onClickAmount()}
+            >
                 <Textfit mode='single' max={38}>
                     <RawTokenAmount
                         amount={amount}
@@ -94,9 +101,13 @@ const Review = ({
                     onClick={onClickContinue}
                     disabled={sendingToken === true}
                     sending={sendingToken === true}
-                    data-test-id="sendMoneyPageConfirmButton"
+                    data-test-id='sendMoneyPageConfirmButton'
                 >
-                    <Translate id={`button.${sendingToken === 'failed' ? 'retry' : 'confirmAndSend'}`}/>
+                    <Translate
+                        id={`button.${
+                            sendingToken === 'failed' ? 'retry' : 'confirmAndSend'
+                        }`}
+                    />
                 </FormButton>
                 <FormButton
                     disabled={sendingToken === true}
@@ -104,7 +115,7 @@ const Review = ({
                     className='link'
                     color='gray'
                 >
-                    <Translate id='button.cancel'/>
+                    <Translate id='button.cancel' />
                 </FormButton>
             </div>
         </StyledContainer>

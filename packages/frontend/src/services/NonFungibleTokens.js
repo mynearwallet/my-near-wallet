@@ -11,22 +11,30 @@ const functionCall = nearAPI.transactions.functionCall;
 // Methods for interacting with NEP171 tokens (https://nomicon.io/Standards/NonFungibleToken/README.html)
 export default class NonFungibleTokens {
     // View functions are not signed, so do not require a real account!
-    static viewFunctionAccount = wallet.getAccountBasic('dontcare')
+    static viewFunctionAccount = wallet.getAccountBasic('dontcare');
 
     static getLikelyTokenContracts = async (accountId) => {
         return listLikelyNfts(accountId);
-    }
+    };
 
     static getMetadata = async (contractName) => {
         return this.viewFunctionAccount.viewFunction(contractName, 'nft_metadata');
-    }
+    };
 
     static getNumberOfTokens = ({ contractName, accountId }) => {
-        return this.viewFunctionAccount.viewFunction(contractName, 'nft_supply_for_owner', { account_id: accountId });
-    }
+        return this.viewFunctionAccount.viewFunction(
+            contractName,
+            'nft_supply_for_owner',
+            { account_id: accountId }
+        );
+    };
 
     static getToken = async (contractName, tokenId, base_uri) => {
-        const token = await this.viewFunctionAccount.viewFunction(contractName, 'nft_token', { token_id: tokenId });
+        const token = await this.viewFunctionAccount.viewFunction(
+            contractName,
+            'nft_token',
+            { token_id: tokenId }
+        );
 
         // need to restructure response for Mintbase NFTs for consistency with NFT spec
         if (token.id && !token.token_id) {
@@ -46,10 +54,14 @@ export default class NonFungibleTokens {
         }
 
         return this.mapTokenMediaUrl(token, base_uri);
-    }
+    };
 
     static getTokenMetadata = async (contractName, tokenId, base_uri) => {
-        let metadata = await this.viewFunctionAccount.viewFunction(contractName, 'nft_token_metadata', { token_id: tokenId });
+        let metadata = await this.viewFunctionAccount.viewFunction(
+            contractName,
+            'nft_token_metadata',
+            { token_id: tokenId }
+        );
         let { media, reference } = metadata;
         if (!media && reference) {
             // TODO: Filter which URIs are allowed for privacy?
@@ -60,18 +72,27 @@ export default class NonFungibleTokens {
         }
 
         return metadata;
-    }
+    };
 
     static getTokens = async ({ contractName, accountId, base_uri, fromIndex = 0 }) => {
         let tokens;
         try {
-            const tokenIds = await this.viewFunctionAccount.viewFunction(contractName, 'nft_tokens_for_owner_set', { account_id: accountId });
+            const tokenIds = await this.viewFunctionAccount.viewFunction(
+                contractName,
+                'nft_tokens_for_owner_set',
+                { account_id: accountId }
+            );
             tokens = await Promise.all(
-                tokenIds.slice(fromIndex, TOKENS_PER_PAGE + fromIndex)
+                tokenIds
+                    .slice(fromIndex, TOKENS_PER_PAGE + fromIndex)
                     .map(async (token_id) => ({
                         token_id: token_id.toString(),
                         owner_id: accountId,
-                        metadata: await this.getTokenMetadata(contractName, token_id.toString(), base_uri),
+                        metadata: await this.getTokenMetadata(
+                            contractName,
+                            token_id.toString(),
+                            base_uri
+                        ),
                     }))
             );
         } catch (e) {
@@ -79,16 +100,21 @@ export default class NonFungibleTokens {
                 throw e;
             }
 
-            tokens = await this.viewFunctionAccount.viewFunction(contractName, 'nft_tokens_for_owner', {
-                account_id: accountId,
-                from_index: fromIndex.toString(),
-                limit: TOKENS_PER_PAGE
-            });
+            tokens = await this.viewFunctionAccount.viewFunction(
+                contractName,
+                'nft_tokens_for_owner',
+                {
+                    account_id: accountId,
+                    from_index: fromIndex.toString(),
+                    limit: TOKENS_PER_PAGE,
+                }
+            );
         }
         // TODO: Separate Redux action for loading image
-        return tokens.filter(({ metadata }) => !!metadata)
+        return tokens
+            .filter(({ metadata }) => !!metadata)
             .map((token) => this.mapTokenMediaUrl(token, base_uri));
-    }
+    };
 
     static buildMediaUrl = (media, base_uri) => {
         // return the provided media string if it is empty or already in a URI format
@@ -101,7 +127,7 @@ export default class NonFungibleTokens {
         }
 
         return `https://cloudflare-ipfs.com/ipfs/${media}`;
-    }
+    };
 
     static mapTokenMediaUrl = ({ metadata, ...token }, base_uri) => {
         const { media } = metadata;
@@ -110,9 +136,9 @@ export default class NonFungibleTokens {
             metadata: {
                 ...metadata,
                 mediaUrl: this.buildMediaUrl(media, base_uri),
-            }
+            },
         };
-    }
+    };
 
     static transfer = async ({ accountId, contractId, tokenId, receiverId }) => {
         const account = await wallet.getAccount(accountId);
@@ -124,14 +150,14 @@ export default class NonFungibleTokens {
                     'nft_transfer',
                     {
                         receiver_id: receiverId,
-                        token_id: tokenId
+                        token_id: tokenId,
                     },
                     CONFIG.NFT_TRANSFER_GAS,
                     CONFIG.TOKEN_TRANSFER_DEPOSIT
-                )
-            ]
+                ),
+            ],
         });
-    }
+    };
 }
 
 export const nonFungibleTokensService = new NonFungibleTokens();

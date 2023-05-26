@@ -5,15 +5,15 @@ import { getRoundedBalanceInFiat, formatWithCommas } from './helpers';
 const USDSymbol = 'USD';
 
 type FiatBalanceProps = {
-    amount: string,
-    showAlmostEqualSignUSD?: boolean,
-    showSymbolUSD?: boolean,
-    showSignUSD?: boolean,
-    nearTokenFiatValueUSD?: number,
-    isNear?: boolean,
-    decimals?: number,
-    totalAmount?: string
-}
+    amount: string;
+    showAlmostEqualSignUSD?: boolean;
+    showSymbolUSD?: boolean;
+    showSignUSD?: boolean;
+    nearTokenFiatValueUSD?: number;
+    isNear?: boolean;
+    decimals?: number;
+    totalAmount?: string;
+};
 
 const FiatBalance: FC<FiatBalanceProps> = ({
     amount,
@@ -23,7 +23,7 @@ const FiatBalance: FC<FiatBalanceProps> = ({
     nearTokenFiatValueUSD,
     isNear = false,
     decimals,
-    totalAmount = ''
+    totalAmount = '',
 }) => {
     const roundedBalanceInUSD =
         amount &&
@@ -41,23 +41,19 @@ const FiatBalance: FC<FiatBalanceProps> = ({
                         {showSignUSD && '$'}
                     </>
                 )}
-                {totalAmount ? formatWithCommas(totalAmount) : formatWithCommas(roundedBalanceInUSD)}
+                {totalAmount
+                    ? formatWithCommas(totalAmount)
+                    : formatWithCommas(roundedBalanceInUSD)}
                 {showSymbolUSD && ` ${USDSymbol}`}
             </>
         );
     }
 
     if (typeof roundedBalanceInUSD === 'number' && roundedBalanceInUSD === 0) {
-        return (
-            <>
-                {showSignUSD && '$'}0
-            </>
-        );
+        return <>{showSignUSD && '$'}0</>;
     }
 
-    return (
-        <>—</>
-    );
+    return <>—</>;
 };
 
 export default FiatBalance;

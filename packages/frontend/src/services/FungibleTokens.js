@@ -71,51 +71,61 @@ export default class FungibleTokens {
     }
 
     static async getMetadata({ contractName }) {
-        return this.viewFunctionAccount.viewFunction(
-            contractName,
-            'ft_metadata'
-        );
+        return this.viewFunctionAccount.viewFunction(contractName, 'ft_metadata');
     }
 
     static async getBalanceOf({ contractName, accountId }) {
-        return this.viewFunctionAccount.viewFunction(
-            contractName,
-            'ft_balance_of',
-            { account_id: accountId }
-        );
+        return this.viewFunctionAccount.viewFunction(contractName, 'ft_balance_of', {
+            account_id: accountId,
+        });
     }
 
     async getEstimatedTotalFees({ accountId, contractName } = {}) {
         if (contractName && accountId) {
-            const isRegistrationRequired = await this.isAccountUnregistered({ contractName, accountId });
-            const isStorageDepositRequired = await this.isStorageDepositRequired({ contractName, accountId });
+            const isRegistrationRequired = await this.isAccountUnregistered({
+                contractName,
+                accountId,
+            });
+            const isStorageDepositRequired = await this.isStorageDepositRequired({
+                contractName,
+                accountId,
+            });
 
             const transferGasFee = new BN(CONFIG.FT_TRANSFER_GAS);
 
             if (isRegistrationRequired) {
-                const gasFeesWithStorage = await getTotalGasFee(transferGasFee.add(new BN(CONFIG.FT_REGISTRATION_DEPOSIT_GAS)));
+                const gasFeesWithStorage = await getTotalGasFee(
+                    transferGasFee.add(new BN(CONFIG.FT_REGISTRATION_DEPOSIT_GAS))
+                );
                 return new BN(gasFeesWithStorage)
-                    .add(new BN(CONFIG.FT_REGISTRATION_DEPOSIT)).toString();
+                    .add(new BN(CONFIG.FT_REGISTRATION_DEPOSIT))
+                    .toString();
             }
 
             if (isStorageDepositRequired) {
-                const gasFeesWithStorage = await getTotalGasFee(transferGasFee.add(new BN(CONFIG.FT_STORAGE_DEPOSIT_GAS)));
+                const gasFeesWithStorage = await getTotalGasFee(
+                    transferGasFee.add(new BN(CONFIG.FT_STORAGE_DEPOSIT_GAS))
+                );
                 return new BN(gasFeesWithStorage)
-                    .add(new BN(CONFIG.FT_MINIMUM_STORAGE_BALANCE)).toString();
+                    .add(new BN(CONFIG.FT_MINIMUM_STORAGE_BALANCE))
+                    .toString();
             }
         }
 
-        return getTotalGasFee(contractName ? CONFIG.FT_TRANSFER_GAS : CONFIG.SEND_NEAR_GAS);
+        return getTotalGasFee(
+            contractName ? CONFIG.FT_TRANSFER_GAS : CONFIG.SEND_NEAR_GAS
+        );
     }
 
     async getEstimatedTotalNearAmount({ amount }) {
-        return new BN(amount)
-            .add(new BN(await this.getEstimatedTotalFees()))
-            .toString();
+        return new BN(amount).add(new BN(await this.getEstimatedTotalFees())).toString();
     }
 
     async isAccountUnregistered({ contractName, accountId }) {
-        return (await this.constructor.checkRegistration({ contractName, accountId })) === false;
+        return (
+            (await this.constructor.checkRegistration({ contractName, accountId })) ===
+            false
+        );
     }
 
     async isStorageDepositRequired({ accountId, contractName }) {
@@ -174,13 +184,15 @@ export default class FungibleTokens {
         return account.signAndSendTransaction({
             receiverId: contractName,
             actions: [
-                ...(isRegistrationRequired ? [
-                    functionCall(
-                        'register_account',
-                        { account_id: receiverId },
-                        CONFIG.FT_REGISTRATION_DEPOSIT_GAS
-                    ),
-                ] : []),
+                ...(isRegistrationRequired
+                    ? [
+                          functionCall(
+                              'register_account',
+                              { account_id: receiverId },
+                              CONFIG.FT_REGISTRATION_DEPOSIT_GAS
+                          ),
+                      ]
+                    : []),
                 functionCall(
                     'ft_transfer',
                     {
@@ -240,7 +252,7 @@ export default class FungibleTokens {
                 'near_withdraw',
                 { amount: parseNearAmount(amount) },
                 CONFIG.FT_STORAGE_DEPOSIT_GAS,
-                CONFIG.TOKEN_TRANSFER_DEPOSIT,
+                CONFIG.TOKEN_TRANSFER_DEPOSIT
             )
         );
 
@@ -269,7 +281,7 @@ export default class FungibleTokens {
                     'storage_deposit',
                     {},
                     CONFIG.FT_STORAGE_DEPOSIT_GAS,
-                    CONFIG.FT_MINIMUM_STORAGE_BALANCE,
+                    CONFIG.FT_MINIMUM_STORAGE_BALANCE
                 )
             );
         }

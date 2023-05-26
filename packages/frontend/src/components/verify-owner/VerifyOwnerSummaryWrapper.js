@@ -12,7 +12,7 @@ export default ({
     onClickCancel,
     onClickApprove,
     signing,
-    isValidCallbackUrl
+    isValidCallbackUrl,
 }) => {
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
     const accountUrlReferrer = useSelector(selectAccountUrlReferrer);

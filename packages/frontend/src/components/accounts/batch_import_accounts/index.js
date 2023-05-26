@@ -1,15 +1,17 @@
 import { decryptAccountData } from '@near-wallet-selector/account-export';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useImmerReducer } from 'use-immer';
 
-
 import ShieldIcon from '../../../images/icon-shield.svg';
 import ImportArrow from '../../../images/import-arrow.svg';
 import { selectAccountUrlReferrer } from '../../../redux/slices/account';
-import { selectAvailableAccounts, selectAvailableAccountsIsLoading } from '../../../redux/slices/availableAccounts';
+import {
+    selectAvailableAccounts,
+    selectAvailableAccountsIsLoading,
+} from '../../../redux/slices/availableAccounts';
 import getWalletURL from '../../../utils/getWalletURL';
 import FormButton from '../../common/FormButton';
 import FormButtonGroup from '../../common/FormButtonGroup';
@@ -36,8 +38,8 @@ const CustomContainer = styled.div`
     }
 
     .screen-descripton {
-      margin-top: 40px;
-      margin-bottom: 56px;
+        margin-top: 40px;
+        margin-bottom: 56px;
     }
 `;
 
@@ -51,21 +53,21 @@ const PublicKeyFormContainer = styled.div`
     label {
         text-align: left;
         display: flex;
-        background-color: #F5FAFF;
+        background-color: #f5faff;
         margin: 25px -25px 0 -25px;
         padding: 15px 25px;
         line-height: 1.5;
 
         > div {
             > div {
-                border-color: #0081F1;
+                border-color: #0081f1;
             }
         }
 
         > span {
             margin-left: 10px;
             word-break: break-word;
-            color: #006ADC;
+            color: #006adc;
         }
 
         b {
@@ -97,7 +99,7 @@ export const IMPORT_STATUS = {
     PENDING: 'pending',
     SUCCESS: 'success',
     UP_NEXT: 'waiting',
-    FAILED: 'error'
+    FAILED: 'error',
 };
 
 const EnterPublicKeyForm = ({ onCancel, onPublicKey }) => {
@@ -111,21 +113,22 @@ const EnterPublicKeyForm = ({ onCancel, onPublicKey }) => {
     }, [value]);
 
     return (
-        <Modal
-            isOpen
-            disableClose
-            modalSize='md'
-            style={{ maxWidth: '496px' }}
-        >
+        <Modal isOpen disableClose modalSize='md' style={{ maxWidth: '496px' }}>
             <PublicKeyFormContainer>
                 <MyNearWalletLogo />
-                <Title><Translate id='batchImportAccounts.enterKeyForm.title' /></Title>
-                <Description><Translate id='batchImportAccounts.enterKeyForm.desc' /></Description>
+                <Title>
+                    <Translate id='batchImportAccounts.enterKeyForm.title' />
+                </Title>
+                <Description>
+                    <Translate id='batchImportAccounts.enterKeyForm.desc' />
+                </Description>
                 <Translate>
                     {({ translate }) => (
                         <>
                             <input
-                                placeholder={translate('batchImportAccounts.enterKeyForm.placeholder')}
+                                placeholder={translate(
+                                    'batchImportAccounts.enterKeyForm.placeholder'
+                                )}
                                 onChange={handleInputChange}
                                 value={value}
                                 autoCapitalize='off'
@@ -138,12 +141,11 @@ const EnterPublicKeyForm = ({ onCancel, onPublicKey }) => {
                 <FormButton
                     disabled={value.length === 0}
                     type='submit'
-                    onClick={handleSubmit}>
+                    onClick={handleSubmit}
+                >
                     <Translate id='batchImportAccounts.enterKeyForm.confirmCaption' />
                 </FormButton>
-                <FormButton
-                    className='link'
-                    onClick={onCancel}>
+                <FormButton className='link' onClick={onCancel}>
                     <Translate id='button.cancel' />
                 </FormButton>
             </PublicKeyFormContainer>
@@ -161,20 +163,39 @@ const ImportAccounts = ({ accountsData, onCancel }) => {
             status: null,
             key,
             ledgerHdPath,
-        })
-        ),
+        })),
     });
 
-    const currentAccount = useMemo(() => state.accounts.find((account) => account.status === IMPORT_STATUS.PENDING), [state.accounts]);
-    const accountsApproved = useMemo(() => state.accounts.filter((account) => account.status === IMPORT_STATUS.SUCCESS), [state.accounts]);
-    const completed = useMemo(() => state.accounts.every((account) => account.status === IMPORT_STATUS.SUCCESS || account.status === IMPORT_STATUS.FAILED), [state.accounts]);
-    const showSuccessScreen = useMemo(() => completed && state.accounts.some((account) => account.status === IMPORT_STATUS.SUCCESS), [completed, state.accounts]);
+    const currentAccount = useMemo(
+        () => state.accounts.find((account) => account.status === IMPORT_STATUS.PENDING),
+        [state.accounts]
+    );
+    const accountsApproved = useMemo(
+        () =>
+            state.accounts.filter((account) => account.status === IMPORT_STATUS.SUCCESS),
+        [state.accounts]
+    );
+    const completed = useMemo(
+        () =>
+            state.accounts.every(
+                (account) =>
+                    account.status === IMPORT_STATUS.SUCCESS ||
+                    account.status === IMPORT_STATUS.FAILED
+            ),
+        [state.accounts]
+    );
+    const showSuccessScreen = useMemo(
+        () =>
+            completed &&
+            state.accounts.some((account) => account.status === IMPORT_STATUS.SUCCESS),
+        [completed, state.accounts]
+    );
 
     useEffect(() => {
         if (!currentAccount) {
-            dispatch({type: ACTIONS.REMOVE_ACCOUNTS, accounts: availableAccounts});
+            dispatch({ type: ACTIONS.REMOVE_ACCOUNTS, accounts: availableAccounts });
         }
-    },[availableAccounts, currentAccount]);
+    }, [availableAccounts, currentAccount]);
 
     if (showSuccessScreen) {
         return <BatchImportAccountsSuccessScreen accounts={accountsApproved} />;
@@ -182,21 +203,24 @@ const ImportAccounts = ({ accountsData, onCancel }) => {
 
     return (
         <>
-            <Container className="small-centered border ledger-theme">
+            <Container className='small-centered border ledger-theme'>
                 <CustomContainer>
-                    <img src={ImportArrow} alt="ImportArrow" />
+                    <img src={ImportArrow} alt='ImportArrow' />
                     <div className='screen-descripton'>
                         <h3>
-                            <Translate id="batchImportAccounts.importScreen.title" data={{ noOfAccounts: state.accounts.length }}/>
-                            {accountUrlReferrer || <Translate id="sign.unknownApp" />}
+                            <Translate
+                                id='batchImportAccounts.importScreen.title'
+                                data={{ noOfAccounts: state.accounts.length }}
+                            />
+                            {accountUrlReferrer || <Translate id='sign.unknownApp' />}
                         </h3>
                         <br />
                         <br />
-                        <Translate id="batchImportAccounts.importScreen.desc"/>
+                        <Translate id='batchImportAccounts.importScreen.desc' />
                     </div>
-                    <div className="title">
+                    <div className='title'>
                         {accountsApproved.length}/{state.accounts.length}{' '}
-                        <Translate id="signInLedger.modal.accountsApproved" />
+                        <Translate id='signInLedger.modal.accountsApproved' />
                     </div>
                     <AccountListImport accounts={state.accounts} />
                     <div style={{ borderTop: '2px solid #f5f5f5' }} />
@@ -209,10 +233,10 @@ const ImportAccounts = ({ accountsData, onCancel }) => {
                             <Translate id='button.cancel' />
                         </FormButton>
                         <FormButton
-                            onClick={() =>
-                                dispatch({ type: ACTIONS.BEGIN_IMPORT })
+                            onClick={() => dispatch({ type: ACTIONS.BEGIN_IMPORT })}
+                            disabled={
+                                availableAccountsIsLoading || state.accounts.length === 0
                             }
-                            disabled={availableAccountsIsLoading || state.accounts.length === 0}
                         >
                             <Translate id='button.beginImport' />
                         </FormButton>
@@ -223,12 +247,8 @@ const ImportAccounts = ({ accountsData, onCancel }) => {
                 state.urlConfirmed ? (
                     <AccountImportModal
                         account={currentAccount}
-                        onSuccess={() =>
-                            dispatch({ type: ACTIONS.SET_CURRENT_DONE })
-                        }
-                        onFail={() =>
-                            dispatch({ type: ACTIONS.SET_CURRENT_FAILED })
-                        }
+                        onSuccess={() => dispatch({ type: ACTIONS.SET_CURRENT_DONE })}
+                        onFail={() => dispatch({ type: ACTIONS.SET_CURRENT_FAILED })}
                     />
                 ) : (
                     <Modal
@@ -239,11 +259,7 @@ const ImportAccounts = ({ accountsData, onCancel }) => {
                         disableClose
                     >
                         <ModalContainer>
-                            <img
-                                src={ShieldIcon}
-                                alt='SHIELD'
-                                className='top-icon'
-                            />
+                            <img src={ShieldIcon} alt='SHIELD' className='top-icon' />
                             <h3>
                                 <Translate id='batchImportAccounts.confirmUrlModal.title' />
                             </h3>
@@ -256,9 +272,7 @@ const ImportAccounts = ({ accountsData, onCancel }) => {
                                 <span className='wallet-url'>{getWalletURL()}</span>
                             </div>
                             <FormButton
-                                onClick={() =>
-                                    dispatch({ type: ACTIONS.CONFIRM_URL })
-                                }
+                                onClick={() => dispatch({ type: ACTIONS.CONFIRM_URL })}
                                 style={{ marginTop: 48 }}
                             >
                                 <Translate id='button.looksGood' />
@@ -279,22 +293,16 @@ const BatchImportAccounts = ({ onCancel }) => {
             ciphertext: location.hash?.substring(1),
             secretKey: publicKey,
         });
-        setAccountsData(accounts.map(({ accountId, privateKey }) => [accountId, privateKey, null]));
+        setAccountsData(
+            accounts.map(({ accountId, privateKey }) => [accountId, privateKey, null])
+        );
     }, []);
 
     if (!accountsData) {
-        return (
-            <EnterPublicKeyForm
-                onCancel={onCancel}
-                onPublicKey={handlePublicKey} />
-        );
+        return <EnterPublicKeyForm onCancel={onCancel} onPublicKey={handlePublicKey} />;
     }
 
-    return (
-        <ImportAccounts
-            accountsData={accountsData}
-            onCancel={onCancel} />
-    );
+    return <ImportAccounts accountsData={accountsData} onCancel={onCancel} />;
 };
 
 export default BatchImportAccounts;

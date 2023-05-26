@@ -1,4 +1,8 @@
-import { keyAccountConfirmed, keyStakingAccountSelected, keyReleaseNotesModalClosed } from './wallet';
+import {
+    keyAccountConfirmed,
+    keyStakingAccountSelected,
+    keyReleaseNotesModalClosed,
+} from './wallet';
 
 export const setAccountConfirmed = (accountId, confirmed) => {
     localStorage.setItem(keyAccountConfirmed(accountId), confirmed);

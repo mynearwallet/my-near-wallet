@@ -15,19 +15,20 @@ import refreshAccountOwner from '../../sharedThunks/refreshAccountOwner';
 
 const SLICE_NAME = 'ledger';
 
-export const LEDGER_HD_PATH_PREFIX = '44\'/397\'/0\'/0\'/';
+// eslint-disable-next-line quotes
+export const LEDGER_HD_PATH_PREFIX = "44'/397'/0'/0'/";
 
 export const LEDGER_MODAL_STATUS = {
     CONFIRM_PUBLIC_KEY: 'confirm-public-key',
     CONFIRM_ACCOUNTS: 'confirm-accounts',
     ENTER_ACCOUNTID: 'enter-accountId',
-    SUCCESS: 'success'
+    SUCCESS: 'success',
 };
 
 export const CONNECT_MODAL_TYPE = {
     CONNECT: 'connect',
     CONNECTION_ERROR: 'connection-error',
-    DISCONNECTED: 'disconnected'
+    DISCONNECTED: 'disconnected',
 };
 
 const initialState = {
@@ -37,14 +38,18 @@ const initialState = {
         available: false,
         disconnected: false,
         modal: {},
-        ...initialStatusState
-    }
+        ...initialStatusState,
+    },
 };
 
 const handleShowConnectModal = createAsyncThunk(
     `${SLICE_NAME}/handleConnectLedger`,
     async (_, { dispatch }) => {
-        dispatch(ledgerSlice.actions.setLedgerConnectionModalType({ type: CONNECT_MODAL_TYPE.CONNECT }));
+        dispatch(
+            ledgerSlice.actions.setLedgerConnectionModalType({
+                type: CONNECT_MODAL_TYPE.CONNECT,
+            })
+        );
     }
 );
 
@@ -55,14 +60,22 @@ const handleConnectLedger = createAsyncThunk(
             await ledgerManager.initialize(() => dispatch(handleDisconnectLedger()));
             const { available } = ledgerManager;
             dispatch(ledgerSlice.actions.setLedgerConnectionStatus({ available }));
-            dispatch(showCustomAlert({
-                success: true,
-                messageCodeHeader: 'connectLedger.ledgerConnected',
-                messageCode: 'connectLedger.youMayNow',
-            }));
-            dispatch(ledgerSlice.actions.setLedgerConnectionModalType({ type: undefined }));
+            dispatch(
+                showCustomAlert({
+                    success: true,
+                    messageCodeHeader: 'connectLedger.ledgerConnected',
+                    messageCode: 'connectLedger.youMayNow',
+                })
+            );
+            dispatch(
+                ledgerSlice.actions.setLedgerConnectionModalType({ type: undefined })
+            );
         } catch (error) {
-            dispatch(ledgerSlice.actions.setLedgerConnectionModalType({ type: CONNECT_MODAL_TYPE.CONNECTION_ERROR }));
+            dispatch(
+                ledgerSlice.actions.setLedgerConnectionModalType({
+                    type: CONNECT_MODAL_TYPE.CONNECTION_ERROR,
+                })
+            );
             throw error;
         }
     },
@@ -74,13 +87,19 @@ const handleDisconnectLedger = createAsyncThunk(
     async (_, { dispatch }) => {
         dispatch(ledgerSlice.actions.setLedgerConnectionStatus({ available: false }));
         dispatch(ledgerSlice.actions.setLedgerDisconnect({ disconnected: true }));
-        dispatch(ledgerSlice.actions.setLedgerConnectionModalType({ type: CONNECT_MODAL_TYPE.DISCONNECTED }));
+        dispatch(
+            ledgerSlice.actions.setLedgerConnectionModalType({
+                type: CONNECT_MODAL_TYPE.DISCONNECTED,
+            })
+        );
 
-        dispatch(showCustomAlert({
-            success: false,
-            messageCodeHeader: 'warning',
-            messageCode: 'errors.ledger.disconnected',
-        }));
+        dispatch(
+            showCustomAlert({
+                success: false,
+                messageCodeHeader: 'warning',
+                messageCode: 'errors.ledger.disconnected',
+            })
+        );
     }
 );
 
@@ -92,13 +111,13 @@ const getLedgerAccountIds = createAsyncThunk(
 
 const addLedgerAccountId = createAsyncThunk(
     `${SLICE_NAME}/addLedgerAccountId`,
-    async ({ accountId}) => await wallet.addLedgerAccountId({ accountId }),
+    async ({ accountId }) => await wallet.addLedgerAccountId({ accountId }),
     showAlertToolkit()
 );
 
 const saveAndSelectLedgerAccounts = createAsyncThunk(
     `${SLICE_NAME}/saveAndSelectLedgerAccounts`,
-    async ({ accounts}) => await wallet.saveAndSelectLedgerAccounts({ accounts }),
+    async ({ accounts }) => await wallet.saveAndSelectLedgerAccounts({ accounts }),
     showAlertToolkit()
 );
 
@@ -109,13 +128,19 @@ const signInWithLedgerAddAndSaveAccounts = createAsyncThunk(
             try {
                 setLedgerHdPath({ accountId, path });
                 await dispatch(addLedgerAccountId({ accountId })).unwrap();
-                dispatch(ledgerSlice.actions.setLedgerTxSigned({ status: false, accountId }));
+                dispatch(
+                    ledgerSlice.actions.setLedgerTxSigned({ status: false, accountId })
+                );
             } catch (e) {
                 console.warn('Error importing Ledger-based account', accountId, e);
                 // NOTE: We still continue importing other accounts
             }
         }
-        return dispatch(saveAndSelectLedgerAccounts({ accounts: selectLedgerSignInWithLedger(getState()) }));
+        return dispatch(
+            saveAndSelectLedgerAccounts({
+                accounts: selectLedgerSignInWithLedger(getState()),
+            })
+        );
     }
 );
 
@@ -154,7 +179,10 @@ const ledgerSlice = createSlice({
             if (!Object.keys(signInWithLedger || {}).length) {
                 return;
             }
-            if (signInWithLedger[payload.accountId].status === 'confirm' && payload.status) {
+            if (
+                signInWithLedger[payload.accountId].status === 'confirm' &&
+                payload.status
+            ) {
                 set(state, ['signInWithLedger', payload.accountId, 'status'], 'pending');
             }
         },
@@ -183,12 +211,16 @@ const ledgerSlice = createSlice({
         },
         setLedgerConnectionModalType(state, { payload: { type } }) {
             set(state, ['connection', 'modal', 'type'], type);
-        }
+        },
     },
-    extraReducers: ((builder) => {
+    extraReducers: (builder) => {
         // getLedgerAccountIds
         builder.addCase(getLedgerAccountIds.pending, (state) => {
-            set(state, ['signInWithLedgerStatus'], LEDGER_MODAL_STATUS.CONFIRM_PUBLIC_KEY);
+            set(
+                state,
+                ['signInWithLedgerStatus'],
+                LEDGER_MODAL_STATUS.CONFIRM_PUBLIC_KEY
+            );
         });
         builder.addCase(getLedgerAccountIds.fulfilled, (state, { payload }) => {
             unset(state, ['txSigned']);
@@ -198,27 +230,82 @@ const ledgerSlice = createSlice({
             );
         });
         builder.addCase(getLedgerAccountIds.rejected, (state, { error }) => {
-            const noAccounts = error.message === 'No accounts were found.' && !CONFIG.HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL;
+            const noAccounts =
+                error.message === 'No accounts were found.' &&
+                !CONFIG.HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL;
 
-            set(state, ['signInWithLedgerStatus'], noAccounts ? LEDGER_MODAL_STATUS.ENTER_ACCOUNTID : undefined);
+            set(
+                state,
+                ['signInWithLedgerStatus'],
+                noAccounts ? LEDGER_MODAL_STATUS.ENTER_ACCOUNTID : undefined
+            );
             unset(state, ['signInWithLedger']);
             unset(state, ['txSigned']);
         });
         // addLedgerAccountId
-        builder.addCase(addLedgerAccountId.pending, (state, { payload, meta: { arg: { accountId } } }) => {
-            set(state, ['signInWithLedgerStatus'], LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS);
-            set(state, ['signInWithLedger', accountId, 'status'], 'confirm');
-        });
-        builder.addCase(addLedgerAccountId.fulfilled, (state, { payload, meta: { arg: { accountId } } }) => {
-            set(state, ['signInWithLedgerStatus'], LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS);
-            set(state, ['signInWithLedger', accountId, 'status'], 'success');
-        });
-        builder.addCase(addLedgerAccountId.rejected, (state, { error, meta: { arg: { accountId } } }) => {
-            set(state, ['signInWithLedgerStatus'], LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS);
+        builder.addCase(
+            addLedgerAccountId.pending,
+            (
+                state,
+                {
+                    payload,
+                    meta: {
+                        arg: { accountId },
+                    },
+                }
+            ) => {
+                set(
+                    state,
+                    ['signInWithLedgerStatus'],
+                    LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS
+                );
+                set(state, ['signInWithLedger', accountId, 'status'], 'confirm');
+            }
+        );
+        builder.addCase(
+            addLedgerAccountId.fulfilled,
+            (
+                state,
+                {
+                    payload,
+                    meta: {
+                        arg: { accountId },
+                    },
+                }
+            ) => {
+                set(
+                    state,
+                    ['signInWithLedgerStatus'],
+                    LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS
+                );
+                set(state, ['signInWithLedger', accountId, 'status'], 'success');
+            }
+        );
+        builder.addCase(
+            addLedgerAccountId.rejected,
+            (
+                state,
+                {
+                    error,
+                    meta: {
+                        arg: { accountId },
+                    },
+                }
+            ) => {
+                set(
+                    state,
+                    ['signInWithLedgerStatus'],
+                    LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS
+                );
 
-            const transportError = error?.name === 'TransportStatusError';
-            set(state, ['signInWithLedger', accountId, 'status'], transportError ? 'rejected' : 'error');
-        });
+                const transportError = error?.name === 'TransportStatusError';
+                set(
+                    state,
+                    ['signInWithLedger', accountId, 'status'],
+                    transportError ? 'rejected' : 'error'
+                );
+            }
+        );
         // refreshAccountOwner
         builder.addCase(refreshAccountOwner.fulfilled, (state, { payload }) => {
             set(state, ['hasLedger'], payload.ledger.hasLedger);
@@ -233,7 +320,11 @@ const ledgerSlice = createSlice({
         });
         // matcher to handle closing modal automatically
         builder.addMatcher(
-            ({ type, ready, error }) => ready || error || type.endsWith('/rejected') || type.endsWith('/fulfilled'),
+            ({ type, ready, error }) =>
+                ready ||
+                error ||
+                type.endsWith('/rejected') ||
+                type.endsWith('/fulfilled'),
             (state, { type }) => {
                 const { modal } = current(state);
                 if (modal.show && type === modal.action) {
@@ -245,14 +336,14 @@ const ledgerSlice = createSlice({
         handleAsyncThunkStatus({
             asyncThunk: signInWithLedger,
             buildStatusPath: () => [],
-            builder
+            builder,
         });
         handleAsyncThunkStatus({
             asyncThunk: handleConnectLedger,
             buildStatusPath: () => ['connection'],
-            builder
+            builder,
         });
-    })
+    },
 });
 
 export default ledgerSlice;
@@ -263,33 +354,69 @@ export const actions = {
     signInWithLedger,
     checkAndHideLedgerModal,
     signInWithLedgerAddAndSaveAccounts,
-    ...ledgerSlice.actions
+    ...ledgerSlice.actions,
 };
 export const reducer = ledgerSlice.reducer;
 
 // Top level selectors
 export const selectLedgerSlice = (state) => state[SLICE_NAME];
 
-export const selectLedgerTxSigned = createSelector(selectLedgerSlice, (ledger) => ledger.txSigned);
+export const selectLedgerTxSigned = createSelector(
+    selectLedgerSlice,
+    (ledger) => ledger.txSigned
+);
 
-export const selectLedgerModal = createSelector(selectLedgerSlice, (ledger) => ledger.modal || {});
+export const selectLedgerModal = createSelector(
+    selectLedgerSlice,
+    (ledger) => ledger.modal || {}
+);
 
-export const selectLedgerModalShow = createSelector(selectLedgerModal, (modal) => modal.show || false);
+export const selectLedgerModalShow = createSelector(
+    selectLedgerModal,
+    (modal) => modal.show || false
+);
 
-export const selectLedgerHasLedger = createSelector(selectLedgerSlice, (ledger) => ledger.hasLedger);
+export const selectLedgerHasLedger = createSelector(
+    selectLedgerSlice,
+    (ledger) => ledger.hasLedger
+);
 
-export const selectLedgerSignInWithLedger = createSelector(selectLedgerSlice, (ledger) => ledger.signInWithLedger || {});
+export const selectLedgerSignInWithLedger = createSelector(
+    selectLedgerSlice,
+    (ledger) => ledger.signInWithLedger || {}
+);
 
-export const selectLedgerSignInWithLedgerStatus = createSelector(selectLedgerSlice, (ledger) => ledger.signInWithLedgerStatus);
+export const selectLedgerSignInWithLedgerStatus = createSelector(
+    selectLedgerSlice,
+    (ledger) => ledger.signInWithLedgerStatus
+);
 
-const selectLedgerConnection = createSelector(selectLedgerSlice, (ledger) => ledger.connection);
+const selectLedgerConnection = createSelector(
+    selectLedgerSlice,
+    (ledger) => ledger.connection
+);
 
-export const selectLedgerConnectionAvailable= createSelector(selectLedgerConnection, (connection) => connection.available);
+export const selectLedgerConnectionAvailable = createSelector(
+    selectLedgerConnection,
+    (connection) => connection.available
+);
 
-export const selectLedgerConnectionModalType = createSelector(selectLedgerConnection, (connection) => connection.modal.type);
+export const selectLedgerConnectionModalType = createSelector(
+    selectLedgerConnection,
+    (connection) => connection.modal.type
+);
 
-export const selectLedgerConnectionStatus = createSelector(selectLedgerConnection, (connection) => connection.status);
+export const selectLedgerConnectionStatus = createSelector(
+    selectLedgerConnection,
+    (connection) => connection.status
+);
 
-export const selectLedgerConnectionStatusLoading = createSelector(selectLedgerConnectionStatus, (status) => status.loading);
+export const selectLedgerConnectionStatusLoading = createSelector(
+    selectLedgerConnectionStatus,
+    (status) => status.loading
+);
 
-export const selectLedgerConnectionStatusError = createSelector(selectLedgerConnectionStatus, (status) => status.error);
+export const selectLedgerConnectionStatusError = createSelector(
+    selectLedgerConnectionStatus,
+    (status) => status.error
+);

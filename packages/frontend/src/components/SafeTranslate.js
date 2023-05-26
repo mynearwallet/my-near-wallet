@@ -29,12 +29,8 @@ function processDataValue(value) {
 export default function SafeTranslate({ children, ...origProps }) {
     const props = {
         ...origProps,
-        data: processDataValue(origProps.data)
+        data: processDataValue(origProps.data),
     };
 
-    return (
-        <Translate {...props}>
-            {children}
-        </Translate>
-    );
+    return <Translate {...props}>{children}</Translate>;
 }

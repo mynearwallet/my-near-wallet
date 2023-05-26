@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
         width: 5px;
         height: 5px;
         margin: 4px;
-        background-color: #F0F0F1;
+        background-color: #f0f0f1;
         border-radius: 50%;
         animation: loading 0.8s infinite alternate;
 
@@ -29,10 +29,10 @@ const StyledContainer = styled.div`
 
     @keyframes loading {
         0% {
-            background-color: #8FCDFF;
+            background-color: #8fcdff;
         }
         100% {
-            background-color: #F0F0F1;
+            background-color: #f0f0f1;
         }
     }
 `;

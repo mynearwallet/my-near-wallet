@@ -6,14 +6,14 @@ import {
     switchAccount,
     getAccountBalance,
     redirectTo,
-    redirectToApp
+    redirectToApp,
 } from '../../../redux/actions/account';
 import {
     selectAccountLocalStorageAccountId,
     selectAccountUrlReferrer,
     selectAccountAccountsBalances,
     selectAccountExists,
-    selectAccountUrlPrivateShard
+    selectAccountUrlPrivateShard,
 } from '../../../redux/slices/account';
 import { selectAvailableAccounts } from '../../../redux/slices/availableAccounts';
 import { isUrlNotJavascriptProtocol } from '../../../utils/helper-api';
@@ -25,16 +25,16 @@ export default ({
     contractIdUrl,
     onClickNext,
     failureUrl,
-    successUrl
+    successUrl,
 }) => {
-
     const dispatch = useDispatch();
 
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
     const availableAccounts = useSelector(selectAvailableAccounts);
     const accountAccountsBalances = useSelector(selectAccountAccountsBalances);
     const accountUrlReferrer = useSelector(selectAccountUrlReferrer);
-    const failureAndSuccessUrlsAreValid = isUrlNotJavascriptProtocol(failureUrl) && isUrlNotJavascriptProtocol(successUrl);
+    const failureAndSuccessUrlsAreValid =
+        isUrlNotJavascriptProtocol(failureUrl) && isUrlNotJavascriptProtocol(successUrl);
     const accountExists = useSelector(selectAccountExists);
     const privateShardInfo = useSelector(selectAccountUrlPrivateShard);
 

@@ -32,7 +32,7 @@ const { setCreateFromImplicitSuccess } = createFromImplicitActions;
 const StyledContainer = styled(Container)`
     h2 {
         b {
-            color: #3F4045;
+            color: #3f4045;
         }
     }
     button {
@@ -89,17 +89,24 @@ class SetupImplicit extends Component {
         moonpayAvailable: false,
         moonpaySignedURL: null,
         creatingAccount: false,
-        claimMyAccount: false
-    }
+        claimMyAccount: false,
+    };
 
     pollAccountBalanceHandle = null;
 
     handleContinue = async () => {
         const { dispatch, newAccountId, implicitAccountId, recoveryMethod } = this.props;
         this.setState({ creatingAccount: true });
-        await Mixpanel.withTracking('CA Create account from implicit',
+        await Mixpanel.withTracking(
+            'CA Create account from implicit',
             async () => {
-                await dispatch(createAccountFromImplicit({ accountId: newAccountId, implicitAccountId, recoveryMethod })).unwrap();
+                await dispatch(
+                    createAccountFromImplicit({
+                        accountId: newAccountId,
+                        implicitAccountId,
+                        recoveryMethod,
+                    })
+                ).unwrap();
             },
             () => {
                 this.setState({ creatingAccount: false });
@@ -107,15 +114,19 @@ class SetupImplicit extends Component {
         );
         dispatch(setCreateFromImplicitSuccess(true));
         dispatch(redirectTo('/'));
-    }
+    };
 
     checkMoonPay = async () => {
         const { implicitAccountId } = this.props;
-        await Mixpanel.withTracking('CA Check Moonpay available',
+        await Mixpanel.withTracking(
+            'CA Check Moonpay available',
             async () => {
                 const moonpayAvailable = await isMoonpayAvailable();
                 if (moonpayAvailable) {
-                    const moonpaySignedURL = await getSignedUrl(implicitAccountId, window.location.href);
+                    const moonpaySignedURL = await getSignedUrl(
+                        implicitAccountId,
+                        window.location.href
+                    );
                     this.setState({ moonpayAvailable, moonpaySignedURL });
                 }
             },
@@ -124,29 +135,34 @@ class SetupImplicit extends Component {
                 console.warn('Error checking Moonpay', e);
             }
         );
-    }
+    };
 
     checkBalance = async () => {
         const { implicitAccountId } = this.props;
         const { accountFunded } = this.state;
 
         if (!accountFunded) {
-            await Mixpanel.withTracking('CA Check balance from implicit',
+            await Mixpanel.withTracking(
+                'CA Check balance from implicit',
                 async () => {
                     try {
                         const account = wallet.getAccountBasic(implicitAccountId);
                         const state = await account.state();
-                        if (new BN(state.amount).gte(new BN(CONFIG.MIN_BALANCE_TO_CREATE))) {
+                        if (
+                            new BN(state.amount).gte(new BN(CONFIG.MIN_BALANCE_TO_CREATE))
+                        ) {
                             Mixpanel.track('CA Check balance from implicit: sufficient');
                             this.setState({
                                 balance: state.amount,
                                 whereToBuy: false,
-                                accountFunded: true
+                                accountFunded: true,
                             });
                             window.scrollTo(0, 0);
                             return;
                         } else {
-                            Mixpanel.track('CA Check balance from implicit: insufficient');
+                            Mixpanel.track(
+                                'CA Check balance from implicit: insufficient'
+                            );
                         }
                     } catch (e) {
                         if (e.message.includes('does not exist while viewing')) {
@@ -161,33 +177,35 @@ class SetupImplicit extends Component {
                 }
             );
         }
-
-    }
+    };
 
     startPollingAccountBalance = () => {
         const handleCheckBalance = async () => {
-            await this.checkBalance().catch(() => { });
+            await this.checkBalance().catch(() => {});
             if (this.pollAccountBalanceHandle) {
-                this.pollAccountBalanceHandle = setTimeout(() => handleCheckBalance(), 3000);
+                this.pollAccountBalanceHandle = setTimeout(
+                    () => handleCheckBalance(),
+                    3000
+                );
             }
         };
         this.pollAccountBalanceHandle = setTimeout(() => handleCheckBalance(), 3000);
-    }
+    };
 
     stopPollingAccountBalance = () => {
         clearTimeout(this.pollAccountBalanceHandle);
         this.pollAccountBalanceHandle = null;
-    }
+    };
 
     componentDidMount = () => {
         // TODO: Check if account has already been created and if so, navigate to dashboard
         this.startPollingAccountBalance();
         this.checkMoonPay();
-    }
+    };
 
     componentWillUnmount = () => {
         this.stopPollingAccountBalance();
-    }
+    };
 
     handleClaimAccount = () => {
         const { dispatch, newAccountId, activeAccountId } = this.props;
@@ -196,7 +214,7 @@ class SetupImplicit extends Component {
             return;
         }
         this.setState({ claimMyAccount: true });
-    }
+    };
 
     render() {
         const {
@@ -206,17 +224,26 @@ class SetupImplicit extends Component {
             moonpaySignedURL,
             balance,
             claimMyAccount,
-            creatingAccount
+            creatingAccount,
         } = this.state;
 
-        const { implicitAccountId, newAccountId, mainLoader, nearTokenFiatValueUSD } = this.props;
+        const { implicitAccountId, newAccountId, mainLoader, nearTokenFiatValueUSD } =
+            this.props;
 
         if (accountFunded) {
             return (
-                <StyledContainer className='small-centered funded' >
-                    <h1><Translate id='account.createImplicit.post.title' /></h1>
-                    <h2><Translate id='account.createImplicit.post.descOne' /></h2>
-                    <h2><b><Translate id='account.createImplicit.post.descTwo' /></b></h2>
+                <StyledContainer className='small-centered funded'>
+                    <h1>
+                        <Translate id='account.createImplicit.post.title' />
+                    </h1>
+                    <h2>
+                        <Translate id='account.createImplicit.post.descOne' />
+                    </h2>
+                    <h2>
+                        <b>
+                            <Translate id='account.createImplicit.post.descTwo' />
+                        </b>
+                    </h2>
                     {!creatingAccount && (
                         <AccountFunded
                             fundingAddress={implicitAccountId}
@@ -226,14 +253,14 @@ class SetupImplicit extends Component {
                     )}
                     <FormButton
                         onClick={this.handleClaimAccount}
-                        trackingId="CA implicit click claim my account"
+                        trackingId='CA implicit click claim my account'
                         disabled={creatingAccount}
                     >
                         <Translate id='button.claimMyAccount' />
                     </FormButton>
                     {claimMyAccount && (
                         <AccountFundedModal
-                            onClose={() => { }}
+                            onClose={() => {}}
                             open={claimMyAccount}
                             implicitAccountId={implicitAccountId}
                             accountId={newAccountId}
@@ -247,18 +274,25 @@ class SetupImplicit extends Component {
 
         return (
             <StyledContainer className='small-centered funded'>
-                <h1><Translate id='account.createImplicit.pre.title' /></h1>
+                <h1>
+                    <Translate id='account.createImplicit.pre.title' />
+                </h1>
                 <h2>
                     <SafeTranslate
                         id='account.createImplicit.pre.descOne'
-                        data={{ amount: getNearAndFiatValue(CONFIG.MIN_BALANCE_TO_CREATE, nearTokenFiatValueUSD) }}
+                        data={{
+                            amount: getNearAndFiatValue(
+                                CONFIG.MIN_BALANCE_TO_CREATE,
+                                nearTokenFiatValueUSD
+                            ),
+                        }}
                     />
                 </h2>
                 <FormButton
                     onClick={() => this.setState({ whereToBuy: true })}
                     color='link'
                     className='where-to-buy-link'
-                    trackingId="CA Click where to buy button"
+                    trackingId='CA Click where to buy button'
                 >
                     <Translate id='account.createImplicit.pre.whereToBuy.button' />
                 </FormButton>
@@ -274,9 +308,7 @@ class SetupImplicit extends Component {
                 {moonpayAvailable && (
                     <>
                         <Divider />
-                        <FundWithMoonpay
-                            moonpaySignedURL={moonpaySignedURL}
-                        />
+                        <FundWithMoonpay moonpaySignedURL={moonpaySignedURL} />
                     </>
                 )}
                 {whereToBuy && (
@@ -290,19 +322,23 @@ class SetupImplicit extends Component {
     }
 }
 
-const mapStateToProps = (state, { match: { params: { accountId, implicitAccountId, recoveryMethod } } }) => ({
+const mapStateToProps = (
+    state,
+    {
+        match: {
+            params: { accountId, implicitAccountId, recoveryMethod },
+        },
+    }
+) => ({
     ...selectAccountSlice(state),
     activeAccountId: selectAccountId(state),
     newAccountId: accountId,
     implicitAccountId,
     recoveryMethod,
     mainLoader: selectStatusMainLoader(state),
-    nearTokenFiatValueUSD: selectNearTokenFiatValueUSD(state)
+    nearTokenFiatValueUSD: selectNearTokenFiatValueUSD(state),
 });
 
-const SetupImplicitWithRouter = connect(
-    mapStateToProps
-)(withRouter(SetupImplicit));
+const SetupImplicitWithRouter = connect(mapStateToProps)(withRouter(SetupImplicit));
 
 export default SetupImplicitWithRouter;
-

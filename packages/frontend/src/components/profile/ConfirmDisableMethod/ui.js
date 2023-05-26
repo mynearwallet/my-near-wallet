@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const Title = styled.h3`
-     margin: 15px 0;
-     font-size: 18px;
-     font-weight: 700;
+    margin: 15px 0;
+    font-size: 18px;
+    font-weight: 700;
 `;
 
 export const Description = styled.p`

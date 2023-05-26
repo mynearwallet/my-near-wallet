@@ -4,9 +4,8 @@ import { createSelector } from 'reselect';
 const getlanguagesList = (state) => state.localize.languages;
 
 function getCurrentLanguage() {
-    const getlanguage = createSelector(
-        getlanguagesList,
-        (languages) => languages.find((language) => language.active)
+    const getlanguage = createSelector(getlanguagesList, (languages) =>
+        languages.find((language) => language.active)
     );
     const currentLanguage = useSelector(getlanguage);
 

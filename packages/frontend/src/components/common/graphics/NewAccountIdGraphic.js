@@ -5,8 +5,8 @@ import StarIcon from '../../svg/StarIcon.js';
 
 const IdGraphic = styled.div`
     position: relative;
-    background-color: #C8F6E0;
-    color: #005A46;
+    background-color: #c8f6e0;
+    color: #005a46;
     padding: 15px;
     border-radius: 8px;
     margin: 20px 0;
@@ -39,9 +39,9 @@ const IdGraphic = styled.div`
 export default ({ accountId }) => {
     return (
         <IdGraphic className='id-graphic'>
-            <StarIcon color='#80E8F8'/>
-            <StarIcon color='#ECE750'/>
-            <StarIcon/>
+            <StarIcon color='#80E8F8' />
+            <StarIcon color='#ECE750' />
+            <StarIcon />
             {accountId}
         </IdGraphic>
     );

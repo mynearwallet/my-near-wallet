@@ -20,9 +20,9 @@ const StyledContainer = styled(Container)`
     }
 
     .export-private-key-icon {
-       margin-right: 12px;
-       width: 20px;
-       height: 19px;
+        margin-right: 12px;
+        width: 20px;
+        height: 19px;
     }
 `;
 
@@ -31,11 +31,12 @@ export default ({ secretKey }) => {
 
     return (
         <StyledContainer>
-            <FormButton 
-                color='gray-blue'
-                onClick={() => setShowExportKeyModal(true)}
-            >
-                <img src={ExportPrivateKeyImage} className='export-private-key-icon' alt='export-private-key-icon' />
+            <FormButton color='gray-blue' onClick={() => setShowExportKeyModal(true)}>
+                <img
+                    src={ExportPrivateKeyImage}
+                    className='export-private-key-icon'
+                    alt='export-private-key-icon'
+                />
                 <Translate id='exportPrivateKey.button' />
             </FormButton>
             {showExportKeyModal && (

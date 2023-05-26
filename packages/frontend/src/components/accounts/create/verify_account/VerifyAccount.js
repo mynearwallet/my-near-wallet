@@ -42,7 +42,7 @@ export default ({
     showOptionAlreadyUsedModal,
     onCloseOptionAlreadyUsedModal,
     showFundWithCreditCardOption,
-    fundedAccountAvailable
+    fundedAccountAvailable,
 }) => {
     const [showWhereToBuyModal, setShowWhereToBuyModal] = useState(false);
 
@@ -66,19 +66,29 @@ export default ({
     return (
         <>
             <StyledContainer className='small-centered border'>
-                <form onSubmit={(e) => {
-                    handleContinue();
-                    e.preventDefault();
-                }}>
+                <form
+                    onSubmit={(e) => {
+                        handleContinue();
+                        e.preventDefault();
+                    }}
+                >
                     {fundedAccountAvailable ? (
                         <>
-                            <h1><Translate id='verifyAccount.title' /></h1>
-                            <h2><Translate id='verifyAccount.desc' /></h2>
+                            <h1>
+                                <Translate id='verifyAccount.title' />
+                            </h1>
+                            <h2>
+                                <Translate id='verifyAccount.desc' />
+                            </h2>
                         </>
                     ) : (
                         <>
-                            <h1><Translate id='verifyAccount.titleNoFunding' /></h1>
-                            <h2><Translate id='verifyAccount.descNoFunding' /></h2>
+                            <h1>
+                                <Translate id='verifyAccount.titleNoFunding' />
+                            </h1>
+                            <h2>
+                                <Translate id='verifyAccount.descNoFunding' />
+                            </h2>
                         </>
                     )}
                     <FormButton
@@ -86,7 +96,7 @@ export default ({
                         type='button'
                         color='blue'
                         className='link underline'
-                        trackingId="CA Click where to buy button"
+                        trackingId='CA Click where to buy button'
                     >
                         <Translate id='account.createImplicit.pre.whereToBuy.button' />
                     </FormButton>
@@ -147,7 +157,9 @@ export default ({
                         <Translate id='button.continue' />
                     </FormButton>
                 </form>
-                <div className='recaptcha-disclaimer'><Translate id='reCAPTCHA.disclaimer' /></div>
+                <div className='recaptcha-disclaimer'>
+                    <Translate id='reCAPTCHA.disclaimer' />
+                </div>
             </StyledContainer>
             {showWhereToBuyModal && (
                 <WhereToBuyNearModal

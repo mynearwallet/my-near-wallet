@@ -22,16 +22,23 @@ const StyledContainer = styled(Container)`
 export default () => {
     return (
         <StyledContainer className='small-centered border'>
-            <h1><Translate id='createAccount.setupPassphrase.sharedPassphrase.tite' /></h1>
-            <h2><Translate id='createAccount.setupPassphrase.sharedPassphrase.desc' data={{ numberOfAccounts: '2' }}/></h2>
-            <h2><Translate id='createAccount.setupPassphrase.sharedPassphrase.descTwo' /></h2>
+            <h1>
+                <Translate id='createAccount.setupPassphrase.sharedPassphrase.tite' />
+            </h1>
+            <h2>
+                <Translate
+                    id='createAccount.setupPassphrase.sharedPassphrase.desc'
+                    data={{ numberOfAccounts: '2' }}
+                />
+            </h2>
+            <h2>
+                <Translate id='createAccount.setupPassphrase.sharedPassphrase.descTwo' />
+            </h2>
             <SharedPassphraseList
                 newAccount='someNewAccount.near'
                 sharedAccounts={['account1.near', 'account2.near']}
             />
-            <FormButton
-                onClick={() => { }}
-            >
+            <FormButton onClick={() => {}}>
                 <Translate id='button.acceptAndContinue' />
             </FormButton>
         </StyledContainer>

@@ -1,14 +1,7 @@
-import {
-    createEntityAdapter,
-    createSlice,
-    createAsyncThunk
-} from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 
-import { 
-    getTransactions,
-    transactionExtraInfo
-} from '../../../utils/explorer-api';
+import { getTransactions, transactionExtraInfo } from '../../../utils/explorer-api';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 
@@ -20,12 +13,12 @@ const transactionsAdapter = createEntityAdapter({
 });
 
 const initialState = {
-    byAccountId: {}
+    byAccountId: {},
 };
 
 const initialAccountIdState = {
     ...initialStatusState,
-    ...transactionsAdapter.getInitialState()
+    ...transactionsAdapter.getInitialState(),
 };
 
 const fetchTransactions = createAsyncThunk(
@@ -33,7 +26,9 @@ const fetchTransactions = createAsyncThunk(
     async ({ accountId }, { dispatch, getState }) => {
         const transactions = await getTransactions({ accountId });
 
-        const { actions: { setTransactions, updateTransactions } } = transactionsSlice;
+        const {
+            actions: { setTransactions, updateTransactions },
+        } = transactionsSlice;
 
         selectTransactionsByAccountIdTotal(getState(), { accountId })
             ? dispatch(updateTransactions({ transactions, accountId }))
@@ -52,8 +47,18 @@ const fetchTransactionStatus = createAsyncThunk(
             status = 'notAvailable';
         }
         const checkStatus = ['SuccessValue', 'Failure'].includes(status);
-        const { actions: { updateTransactionStatus } } = transactionsSlice;
-        dispatch(updateTransactionStatus({ status, checkStatus, accountId, hash, hash_with_index }));
+        const {
+            actions: { updateTransactionStatus },
+        } = transactionsSlice;
+        dispatch(
+            updateTransactionStatus({
+                status,
+                checkStatus,
+                accountId,
+                hash,
+                hash_with_index,
+            })
+        );
     }
 );
 
@@ -61,23 +66,33 @@ const transactionsSlice = createSlice({
     name: SLICE_NAME,
     initialState,
     reducers: {
-        setTransactions(state, { payload: { accountId, transactions }}) {
+        setTransactions(state, { payload: { accountId, transactions } }) {
             transactionsAdapter.setAll(state.byAccountId[accountId], transactions);
         },
-        updateTransactions(state, { payload: { accountId, transactions }}) {
+        updateTransactions(state, { payload: { accountId, transactions } }) {
             transactionsAdapter.upsertMany(state.byAccountId[accountId], transactions);
         },
-        updateTransactionStatus(state, { payload: { status, checkStatus, accountId, hash_with_index }}) {
-            transactionsAdapter.updateOne(state.byAccountId[accountId], { id: hash_with_index, changes: { status, checkStatus } });
+        updateTransactionStatus(
+            state,
+            { payload: { status, checkStatus, accountId, hash_with_index } }
+        ) {
+            transactionsAdapter.updateOne(state.byAccountId[accountId], {
+                id: hash_with_index,
+                changes: { status, checkStatus },
+            });
         },
     },
-    extraReducers: ((builder) => {
+    extraReducers: (builder) => {
         handleAsyncThunkStatus({
             asyncThunk: fetchTransactions,
-            buildStatusPath: ({ meta: { arg: { accountId }}}) => ['byAccountId', accountId],
-            builder
+            buildStatusPath: ({
+                meta: {
+                    arg: { accountId },
+                },
+            }) => ['byAccountId', accountId],
+            builder,
         });
-    })
+    },
 });
 
 export default transactionsSlice;
@@ -85,27 +100,37 @@ export default transactionsSlice;
 export const actions = {
     fetchTransactions,
     fetchTransactionStatus,
-    ...transactionsSlice.actions
+    ...transactionsSlice.actions,
 };
-
 
 // entity adapter selectors
 export const {
     selectAll: selectTransactionsByAccountId,
-    selectTotal: selectTransactionsByAccountIdTotal
+    selectTotal: selectTransactionsByAccountIdTotal,
 } = transactionsAdapter.getSelectors((state, { accountId }) => ({
     ...initialAccountIdState,
-    ...state.transactions.byAccountId[accountId]
+    ...state.transactions.byAccountId[accountId],
 }));
 
-export const selectTransactionsOneByIdentity = (state, { accountId, id }) => transactionsAdapter.getSelectors().selectById({
-    ...initialAccountIdState,
-    ...state.transactions.byAccountId[accountId]
-}, id);
+export const selectTransactionsOneByIdentity = (state, { accountId, id }) =>
+    transactionsAdapter.getSelectors().selectById(
+        {
+            ...initialAccountIdState,
+            ...state.transactions.byAccountId[accountId],
+        },
+        id
+    );
 
 // status selectors
-export const selectTransactionsObject = (state, { accountId }) => state[SLICE_NAME].byAccountId[accountId] || {};
+export const selectTransactionsObject = (state, { accountId }) =>
+    state[SLICE_NAME].byAccountId[accountId] || {};
 
-export const selectTransactionsStatus = createSelector([selectTransactionsObject], (transactions) => transactions.status || initialStatusState);
+export const selectTransactionsStatus = createSelector(
+    [selectTransactionsObject],
+    (transactions) => transactions.status || initialStatusState
+);
 
-export const selectTransactionsLoading = createSelector(selectTransactionsStatus, (status) => status.loading || initialStatusState.loading);
+export const selectTransactionsLoading = createSelector(
+    selectTransactionsStatus,
+    (status) => status.loading || initialStatusState.loading
+);

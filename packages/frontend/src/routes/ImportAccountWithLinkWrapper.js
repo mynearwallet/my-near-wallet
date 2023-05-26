@@ -10,7 +10,7 @@ import {
     recoverAccountSeedPhrase,
     refreshAccount,
     clearAccountState,
-    redirectToApp
+    redirectToApp,
 } from '../redux/actions/account';
 import { showCustomAlert, clearGlobalAlert } from '../redux/actions/status';
 import { selectAccountId } from '../redux/slices/account';
@@ -58,15 +58,24 @@ const ImportAccountWithLinkWrapper = () => {
                 importingAccount={importingAccount}
                 onClickAccount={async ({ accountId, action }) => {
                     if (action === 'import') {
-                        await Mixpanel.withTracking('IE Recover with link',
+                        await Mixpanel.withTracking(
+                            'IE Recover with link',
                             async () => {
                                 if (isZeroBalanceAccount) {
-                                    await dispatch(importZeroBalanceAccountPhrase(seedPhrase));
+                                    await dispatch(
+                                        importZeroBalanceAccountPhrase(seedPhrase)
+                                    );
                                     dispatch(setZeroBalanceAccountImportMethod('phrase'));
                                 } else {
                                     const shouldCreateFullAccessKey = false;
                                     setImportingAccount(accountId);
-                                    await dispatch(recoverAccountSeedPhrase(seedPhrase, accountId, shouldCreateFullAccessKey));
+                                    await dispatch(
+                                        recoverAccountSeedPhrase(
+                                            seedPhrase,
+                                            accountId,
+                                            shouldCreateFullAccessKey
+                                        )
+                                    );
                                     await dispatch(refreshAccount());
                                     dispatch(clearAccountState());
                                 }
@@ -74,12 +83,15 @@ const ImportAccountWithLinkWrapper = () => {
                                 dispatch(redirectToApp());
                             },
                             (e) => {
-                                dispatch(showCustomAlert({
-                                    success: false,
-                                    messageCodeHeader: 'error',
-                                    messageCode: 'walletErrorCodes.recoverAccountLink.error',
-                                    errorMessage: e.message
-                                }));
+                                dispatch(
+                                    showCustomAlert({
+                                        success: false,
+                                        messageCodeHeader: 'error',
+                                        messageCode:
+                                            'walletErrorCodes.recoverAccountLink.error',
+                                        errorMessage: e.message,
+                                    })
+                                );
                                 throw e;
                             },
                             () => {

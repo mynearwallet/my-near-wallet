@@ -84,13 +84,13 @@ export default function Preview({
 
     return (
         <StyledContainer>
-            <div className="header">
+            <div className='header'>
                 <BackArrowButton onClick={onClickGoBack} />
                 <h4>
-                    <Translate id="swap.reviewInfo" />
+                    <Translate id='swap.reviewInfo' />
                 </h4>
             </div>
-            <div className="flexCenterColumn">
+            <div className='flexCenterColumn'>
                 <h1
                     style={{
                         fontSize: `${
@@ -117,19 +117,19 @@ export default function Preview({
                 amountTokenTo={amountTokenTo}
             />
             <FormButton
-                color="blue width100"
+                color='blue width100'
                 disabled={swappingToken === true}
                 sending={swappingToken === true}
-                sendingString="swapping"
-                data-test-id="swapPageStartSwapButton"
+                sendingString='swapping'
+                data-test-id='swapPageStartSwapButton'
                 onClick={handleSwap}
             >
-                <Translate id="swap.confirm" />
+                <Translate id='swap.confirm' />
             </FormButton>
 
-            <div className="flexCenterButton">
-                <FormButton color="gray link" onClick={onClickGoBack}>
-                    <Translate id="button.cancel" />
+            <div className='flexCenterButton'>
+                <FormButton color='gray link' onClick={onClickGoBack}>
+                    <Translate id='button.cancel' />
                 </FormButton>
             </div>
         </StyledContainer>

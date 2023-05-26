@@ -7,11 +7,19 @@ import { selectTokensFiatValueUSD } from '../redux/slices/tokenFiatValues';
 import { selectTokensWithMetadataForAccountId } from '../redux/slices/tokens';
 import compare from '../utils/compare';
 
-export const useFungibleTokensIncludingNEAR = function ({ showTokensWithZeroBalance = false, includeNearContractName = false } = {}) {
-    const NEARAsTokenWithMetadata = useSelector((state) => selectNEARAsTokenWithMetadata(state, {includeNearContractName}));
+export const useFungibleTokensIncludingNEAR = function ({
+    showTokensWithZeroBalance = false,
+    includeNearContractName = false,
+} = {}) {
+    const NEARAsTokenWithMetadata = useSelector((state) =>
+        selectNEARAsTokenWithMetadata(state, { includeNearContractName })
+    );
     const accountId = useSelector(selectActiveAccountId);
     const fungibleTokens = useSelector((state) =>
-        selectTokensWithMetadataForAccountId(state, { accountId, showTokensWithZeroBalance })
+        selectTokensWithMetadataForAccountId(state, {
+            accountId,
+            showTokensWithZeroBalance,
+        })
     );
 
     const fungibleTokenPrices = useSelector(selectTokensFiatValueUSD);
@@ -20,17 +28,17 @@ export const useFungibleTokensIncludingNEAR = function ({ showTokensWithZeroBala
         if (ft.fiatValueMetadata?.usd) {
             fiatValueMetadata = ft.fiatValueMetadata;
         } else {
-            fiatValueMetadata = fungibleTokenPrices[ft.onChainFTMetadata.symbol] ?
-                {...fungibleTokenPrices[ft.onChainFTMetadata.symbol]} :
-                {...fungibleTokenPrices[ft.contractName]};
+            fiatValueMetadata = fungibleTokenPrices[ft.onChainFTMetadata.symbol]
+                ? { ...fungibleTokenPrices[ft.onChainFTMetadata.symbol] }
+                : { ...fungibleTokenPrices[ft.contractName] };
         }
         return { ...ft, fiatValueMetadata };
     });
     const sortingOrder = {
         [CONFIG.USN_CONTRACT]: 1,
-        [CONFIG.NEAR_TOKEN_ID]: 2
+        [CONFIG.NEAR_TOKEN_ID]: 2,
     };
-    fungibleTokensWithPrices.sort(compare({key: 'contractName', sortingOrder}));
+    fungibleTokensWithPrices.sort(compare({ key: 'contractName', sortingOrder }));
 
     return [NEARAsTokenWithMetadata, ...fungibleTokensWithPrices];
 };

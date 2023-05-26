@@ -14,7 +14,9 @@ import NextStepModal from './NextStepModal';
 
 const SetupLedgerSuccess = (props) => {
     const [nextStep, setNextStep] = useState('');
-    const removingkeys = useSelector((state) => selectActionsPending(state, { types: ['REMOVE_NON_LEDGER_ACCESS_KEYS'] }));
+    const removingkeys = useSelector((state) =>
+        selectActionsPending(state, { types: ['REMOVE_NON_LEDGER_ACCESS_KEYS'] })
+    );
     const hasLedger = useSelector(selectLedgerHasLedger);
 
     const handleConfirm = async () => {
@@ -37,20 +39,27 @@ const SetupLedgerSuccess = (props) => {
 
     return (
         <Container className='small-centered ledger-theme'>
-            <h1><Translate id='setupLedgerSuccess.header'/></h1>
-            <HardwareDeviceIcon/>
+            <h1>
+                <Translate id='setupLedgerSuccess.header' />
+            </h1>
+            <HardwareDeviceIcon />
             <h2>
-                <Translate id='setupLedgerSuccess.one'/><br/>
-                <div className='color-red' style={{ marginTop: '10px' }}><Translate id='setupLedgerSuccess.two'/></div>
+                <Translate id='setupLedgerSuccess.one' />
+                <br />
+                <div className='color-red' style={{ marginTop: '10px' }}>
+                    <Translate id='setupLedgerSuccess.two' />
+                </div>
             </h2>
             <FormButton
                 sending={removingkeys}
                 onClick={() => setNextStep('remove')}
                 className='remove-all-keys'
             >
-                <Translate id='setupLedgerSuccess.primaryCta'/>
+                <Translate id='setupLedgerSuccess.primaryCta' />
             </FormButton>
-            <button className='link' onClick={() => setNextStep('keep')}><Translate id='setupLedgerSuccess.secondaryCta'/></button>
+            <button className='link' onClick={() => setNextStep('keep')}>
+                <Translate id='setupLedgerSuccess.secondaryCta' />
+            </button>
             {nextStep && (
                 <NextStepModal
                     nextStep={nextStep}
@@ -65,11 +74,11 @@ const SetupLedgerSuccess = (props) => {
 
 const mapDispatchToProps = {
     removeNonLedgerAccessKeys,
-    redirectTo
+    redirectTo,
 };
 
 const mapStateToProps = (state) => ({
-    ...selectAccountSlice(state)
+    ...selectAccountSlice(state),
 });
 
 const SetupLedgerSuccessWithRouter = connect(

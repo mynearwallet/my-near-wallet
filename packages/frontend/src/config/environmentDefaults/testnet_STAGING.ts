@@ -51,5 +51,5 @@ export default {
     USN_CONTRACT: 'usdn.testnet',
     USDT_CONTRACT: 'usdt.fakes.testnet',
     HAPI_PROTOCOL_ADDRESS: 'proxy.contracts.sergei24.testnet',
-    CALIMERO_URL: 'https://app.calimero.network'
+    CALIMERO_URL: 'https://app.calimero.network',
 };

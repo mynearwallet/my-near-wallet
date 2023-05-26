@@ -28,14 +28,13 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    authorizedAppsKeys,
-    onClickDeAuthorizeKey,
-    deAuthorizingKey
-}) => {
+export default ({ authorizedAppsKeys, onClickDeAuthorizeKey, deAuthorizingKey }) => {
     return (
         <StyledContainer className='medium centered'>
-            <h1><Translate id='profile.authorizedApps.title' /> ({authorizedAppsKeys?.length})</h1>
+            <h1>
+                <Translate id='profile.authorizedApps.title' /> (
+                {authorizedAppsKeys?.length})
+            </h1>
             <div className='access-keys'>
                 {authorizedAppsKeys?.map((appKeyData, i) => (
                     <AuthorizedApp
@@ -49,7 +48,7 @@ export default ({
             {authorizedAppsKeys?.length === 0 && (
                 <>
                     <Translate id='fullAccessKeys.noKeys' />
-                    <br/>
+                    <br />
                     <FormButton linkTo={CONFIG.EXPLORE_APPS_URL}>
                         <Translate id='exploreApps.exploreApps' />
                     </FormButton>

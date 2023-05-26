@@ -11,11 +11,10 @@ import LockIcon from '../svg/LockIcon';
 import Disable2FAModal from '../wallet-migration/Disable2FA';
 import FormButton from './FormButton';
 
-
 const Container = styled.div`
-    border: 2px solid #DC1F26;
+    border: 2px solid #dc1f26;
     border-radius: 16px;
-    background-color: #FFFCFC;
+    background-color: #fffcfc;
     display: flex;
     align-items: flex-start;
     flex-direction: row;
@@ -35,9 +34,8 @@ const Container = styled.div`
         width: 1000px;
     }
 
-
     .alert-container {
-        background-color: #FFEFEF;
+        background-color: #ffefef;
         border-radius: 50%;
         padding: 9px;
         margin-right: 16px;
@@ -50,21 +48,20 @@ const Container = styled.div`
             width: 25px;
             height: 25px;
         }
-     
     }
-    
+
     .content {
         margin-right: 20px;
     }
 
     .title {
         font-weight: 700;
-        color: #DC1F25;
+        color: #dc1f25;
     }
 
     .desc {
         margin-top: 10px;
-        color: #DC1F25;
+        color: #dc1f25;
     }
 
     && {
@@ -85,7 +82,7 @@ const Container = styled.div`
             :hover {
                 > svg {
                     path {
-                        stroke: #E5484D;
+                        stroke: #e5484d;
                     }
                 }
             }
@@ -109,7 +106,10 @@ export default function TwoFactorDisableBanner() {
     const [showDisable2FAModal, setShowDisable2FAModal] = useState(false);
 
     const account = useSelector(selectAccountSlice);
-    const loadedAccounts = useMemo(() => Object.keys(account.accounts ?? {}), [account.accounts]);
+    const loadedAccounts = useMemo(
+        () => Object.keys(account.accounts ?? {}),
+        [account.accounts]
+    );
 
     const showModal = () => setShowDisable2FAModal(true);
     const hideModal = () => setShowDisable2FAModal(false);
@@ -125,7 +125,15 @@ export default function TwoFactorDisableBanner() {
                 accounts.map(getAccountWithAccessKeysAndType)
             );
 
-            setAccounts(accountsKeyTypes.reduce(((acc, { accountId, keyType }) => keyType === WalletClass.KEY_TYPES.MULTISIG ? [...acc, accountId] : acc), []));
+            setAccounts(
+                accountsKeyTypes.reduce(
+                    (acc, { accountId, keyType }) =>
+                        keyType === WalletClass.KEY_TYPES.MULTISIG
+                            ? [...acc, accountId]
+                            : acc,
+                    []
+                )
+            );
         };
         if (loadedAccounts.length > 0 && accounts.sort() !== loadedAccounts.sort()) {
             update2faAccounts();
@@ -144,33 +152,24 @@ export default function TwoFactorDisableBanner() {
             </div>
             <div className='content'>
                 <h4 className='title'>
-                    { accountsCount }
-                    {' '}
-                    {
-                        accountsCount > 1
-                            ? <Translate id='twoFactorDisbleBanner.titlePlural' />
-                            : <Translate id='twoFactorDisbleBanner.titleSingular' />
-                    }
+                    {accountsCount}{' '}
+                    {accountsCount > 1 ? (
+                        <Translate id='twoFactorDisbleBanner.titlePlural' />
+                    ) : (
+                        <Translate id='twoFactorDisbleBanner.titleSingular' />
+                    )}
                 </h4>
                 <div className='desc'>
                     <Translate id='twoFactorDisbleBanner.desc' />
                 </div>
             </div>
-            <FormButton
-                onClick={showModal}
-                color='red'
-            >
+            <FormButton onClick={showModal} color='red'>
                 <LockIcon color='#FEF2F2' />
                 <Translate id='twoFactorDisbleBanner.button' />
             </FormButton>
-            {
-                showDisable2FAModal && (
-                    <Disable2FAModal
-                        onClose={hideModal}
-                        handleSetActiveView={hideModal}
-                    />
-                )
-            }
+            {showDisable2FAModal && (
+                <Disable2FAModal onClose={hideModal} handleSetActiveView={hideModal} />
+            )}
         </Container>
     );
-};
+}
