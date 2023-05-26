@@ -20,21 +20,24 @@ const QRCodeButton = styled(FormButton)`
     }
 `;
 
-const MobileSharing = ({
-    mobileSharingLink
-}) => {
+const MobileSharing = ({ mobileSharingLink }) => {
     const [showMobileSharingModal, setShowMobileSharingModal] = useState(false);
     return (
         <>
-            <hr/>
-            <h2><SmartPhoneIcon/><Translate id='mobileDeviceAccess.title'/></h2>
-            <div className='sub-heading'><Translate id='mobileDeviceAccess.showCode.desc'/></div>
+            <hr />
+            <h2>
+                <SmartPhoneIcon />
+                <Translate id='mobileDeviceAccess.title' />
+            </h2>
+            <div className='sub-heading'>
+                <Translate id='mobileDeviceAccess.showCode.desc' />
+            </div>
             <QRCodeButton
                 color='gray-blue'
                 onClick={() => setShowMobileSharingModal(true)}
             >
-                <QRCodeIcon/>
-                <Translate id='mobileDeviceAccess.showCode.button'/>
+                <QRCodeIcon />
+                <Translate id='mobileDeviceAccess.showCode.button' />
             </QRCodeButton>
             {showMobileSharingModal && (
                 <MobileSharingModal

@@ -17,7 +17,7 @@ const StyledContainer = styled.form`
     }
 
     .input-sub-label {
-        color: #A2A2A8;
+        color: #a2a2a8;
     }
 
     .risk-scoring-warning + .input-sub-label {
@@ -36,24 +36,28 @@ const EnterReceiver = ({
     localAlert,
     clearLocalAlert,
     onClickContinue,
-    isMobile
+    isMobile,
 }) => {
     const [isImplicitAccount, setIsImplicitAccount] = useState(false);
-    const hasAccountValidationError = localAlert && localAlert.show && !localAlert.success;
+    const hasAccountValidationError =
+        localAlert && localAlert.show && !localAlert.success;
     const validAccountId = hasAccountValidationError ? null : receiverId;
 
     // localAlert comes as {} object when no result is available
     // or as { show: false, success: false, message: 'ACTION_TYPE.pending' }
-    let isEmptyAlert = !localAlert || localAlert.show === undefined || localAlert.show === false;
+    let isEmptyAlert =
+        !localAlert || localAlert.show === undefined || localAlert.show === false;
     isEmptyAlert = isImplicitAccount ? false : isEmptyAlert;
 
-    const { isRSWarned, isRSIgnored, setIsRSIgnored, isRSFinished } = useRiskScoringCheck(validAccountId);
+    const { isRSWarned, isRSIgnored, setIsRSIgnored, isRSFinished } =
+        useRiskScoringCheck(validAccountId);
     const hasRiskScoreValidationError = isRSWarned && !isRSIgnored;
     const isBlockedByRiskScoring = hasRiskScoreValidationError || !isRSFinished;
 
     const isLoading = !isRSFinished || isEmptyAlert;
     const isSuccess = !isLoading && localAlert?.success && !isBlockedByRiskScoring;
-    const isProblem = !isLoading && hasAccountValidationError || hasRiskScoreValidationError;
+    const isProblem =
+        (!isLoading && hasAccountValidationError) || hasRiskScoreValidationError;
 
     return (
         <StyledContainer
@@ -87,7 +91,12 @@ const EnterReceiver = ({
                 isSuccess={isSuccess}
                 isProblem={isProblem}
             />
-            {isRSWarned && <RiscScoringForm isIgnored={isRSIgnored} setIsRSIgnored={setIsRSIgnored} />}
+            {isRSWarned && (
+                <RiscScoringForm
+                    isIgnored={isRSIgnored}
+                    setIsRSIgnored={setIsRSIgnored}
+                />
+            )}
             <div className='input-sub-label'>
                 <Translate id='input.accountId.subLabel' />
             </div>
@@ -96,7 +105,7 @@ const EnterReceiver = ({
                 <FormButton
                     type='submit'
                     disabled={isLoading || isProblem}
-                    data-test-id="sendMoneyPageSubmitAccountIdButton"
+                    data-test-id='sendMoneyPageSubmitAccountIdButton'
                 >
                     <Translate id='button.continue' />
                 </FormButton>

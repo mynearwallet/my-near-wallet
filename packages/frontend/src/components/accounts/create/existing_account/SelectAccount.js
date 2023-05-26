@@ -28,15 +28,24 @@ export default ({
     onSignInToDifferentAccount,
     onClickNext,
     onClickCancel,
-    hasAllRequiredParams
+    hasAllRequiredParams,
 }) => {
     const activeAccountIdIsImplicit = useSelector(selectActiveAccountIdIsImplicitAccount);
 
     return (
         <StyledContainer className='small-centered border'>
-            <h1><Translate id='existingAccount.selectAccount.title' /></h1>
-            <h2><Translate id='existingAccount.selectAccount.desc' data={{ amount: formatNearAmount(CONFIG.MIN_BALANCE_TO_CREATE) }} /></h2>
-            <h2><Translate id='existingAccount.selectAccount.descTwo' /></h2>
+            <h1>
+                <Translate id='existingAccount.selectAccount.title' />
+            </h1>
+            <h2>
+                <Translate
+                    id='existingAccount.selectAccount.desc'
+                    data={{ amount: formatNearAmount(CONFIG.MIN_BALANCE_TO_CREATE) }}
+                />
+            </h2>
+            <h2>
+                <Translate id='existingAccount.selectAccount.descTwo' />
+            </h2>
             <AccountSelector
                 signedInAccountId={signedInAccountId}
                 availableAccounts={availableAccounts}
@@ -48,13 +57,18 @@ export default ({
             />
             <FormButtonGroup>
                 {!activeAccountIdIsImplicit ? (
-                    <FormButton onClick={onClickCancel} color="gray-blue">
-                        <Translate id="button.cancel" />
+                    <FormButton onClick={onClickCancel} color='gray-blue'>
+                        <Translate id='button.cancel' />
                     </FormButton>
                 ) : null}
                 <FormButton
                     onClick={onClickNext}
-                    disabled={!hasAllRequiredParams || !new BN(signedInAccountAvailableBalance).gte(new BN(CONFIG.MIN_BALANCE_TO_CREATE))}
+                    disabled={
+                        !hasAllRequiredParams ||
+                        !new BN(signedInAccountAvailableBalance).gte(
+                            new BN(CONFIG.MIN_BALANCE_TO_CREATE)
+                        )
+                    }
                 >
                     <Translate id='button.next' />
                 </FormButton>

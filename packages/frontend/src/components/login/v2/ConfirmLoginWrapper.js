@@ -6,7 +6,7 @@ import { allowLogin } from '../../../redux/actions/account';
 import {
     selectAccountLocalStorageAccountId,
     selectAccountUrlPrivateShard,
-    selectAccountUrlReferrer
+    selectAccountUrlReferrer,
 } from '../../../redux/slices/account';
 import { isUrlNotJavascriptProtocol } from '../../../utils/helper-api';
 import ConfirmLogin from './ConfirmLogin';
@@ -17,7 +17,7 @@ export default ({
     contractIdUrl,
     onClickCancel,
     publicKey,
-    successUrl
+    successUrl,
 }) => {
     const dispatch = useDispatch();
 
@@ -34,7 +34,9 @@ export default ({
             publicKey={publicKey}
             contractId={contractId}
             onClickCancel={onClickCancel}
-            onClickConnect={() => Mixpanel.withTracking('LOGIN', () => dispatch(allowLogin()))}
+            onClickConnect={() =>
+                Mixpanel.withTracking('LOGIN', () => dispatch(allowLogin()))
+            }
             contractIdUrl={contractIdUrl}
             successUrlIsValid={successUrlIsValid}
             privateShardInfo={privateShardInfo}

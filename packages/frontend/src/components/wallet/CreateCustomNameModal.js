@@ -25,11 +25,7 @@ const Container = styled.div`
     }
 `;
 
-export default ({
-    accountId,
-    isOpen,
-    onClose
-}) => {
+export default ({ accountId, isOpen, onClose }) => {
     return (
         <Modal
             id='near-drop-success-modal'
@@ -38,11 +34,19 @@ export default ({
             modalSize='sm'
         >
             <Container>
-                <NewAccountIdGraphic accountId={accountId}/>
-                <h3><Translate id='account.createImplicitAccount.createCustomNameModal.title'/></h3>
-                <p><Translate id='account.createImplicitAccount.createCustomNameModal.desc'/></p>
-                <FormButton onClick={onClose} linkTo='/create'><Translate id='button.addACustomAddress'/></FormButton>
-                <FormButton className='link' onClick={onClose}><Translate id='button.skipThisForNow'/></FormButton>
+                <NewAccountIdGraphic accountId={accountId} />
+                <h3>
+                    <Translate id='account.createImplicitAccount.createCustomNameModal.title' />
+                </h3>
+                <p>
+                    <Translate id='account.createImplicitAccount.createCustomNameModal.desc' />
+                </p>
+                <FormButton onClick={onClose} linkTo='/create'>
+                    <Translate id='button.addACustomAddress' />
+                </FormButton>
+                <FormButton className='link' onClick={onClose}>
+                    <Translate id='button.skipThisForNow' />
+                </FormButton>
             </Container>
         </Modal>
     );

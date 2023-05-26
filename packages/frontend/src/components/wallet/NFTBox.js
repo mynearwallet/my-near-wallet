@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import CONFIG from '../../config';
 import { redirectTo } from '../../redux/actions/account';
 import isDataURL from '../../utils/isDataURL';
-import {NFTMedia} from '../nft/NFTMedia';
+import { NFTMedia } from '../nft/NFTMedia';
 import DefaultTokenIcon from '../svg/DefaultTokenIcon';
 import LoadMoreButtonWrapper from './LoadMoreButtonWrapper';
 const StyledContainer = styled.div`
@@ -44,7 +44,8 @@ const StyledContainer = styled.div`
         justify-content: center;
         overflow: hidden;
 
-        img, svg {
+        img,
+        svg {
             height: 32px;
             width: 32px;
         }
@@ -62,8 +63,8 @@ const StyledContainer = styled.div`
         }
 
         span {
-            color: #72727A;
-            background-color: #F0F0F1;
+            color: #72727a;
+            background-color: #f0f0f1;
             font-size: 14px;
             font-weight: 600;
             min-width: 26px;
@@ -110,11 +111,12 @@ const StyledContainer = styled.div`
         span {
             font-size: 14px;
             line-height: 150%;
-            color: #A2A2A8;
+            color: #a2a2a8;
         }
     }
 
-    .nft img, .nft video {
+    .nft img,
+    .nft video {
         width: 100%;
         margin-bottom: 10px;
         cursor: pointer;
@@ -126,7 +128,7 @@ const NFTBox = ({ tokenDetails }) => {
         contractName,
         contractMetadata: { icon, name },
         ownedTokensMetadata,
-        numberByContractName
+        numberByContractName,
     } = tokenDetails;
     const dispatch = useDispatch();
 
@@ -134,14 +136,17 @@ const NFTBox = ({ tokenDetails }) => {
         <StyledContainer className='nft-box'>
             <div className='nft-header'>
                 <div className='symbol'>
-                    {icon && isDataURL(icon) ?
+                    {icon && isDataURL(icon) ? (
                         <img src={icon} alt={name} />
-                        :
+                    ) : (
                         <DefaultTokenIcon />
-                    }
+                    )}
                 </div>
                 <div className='desc'>
-                    <a href={`${CONFIG.EXPLORER_URL}/accounts/${contractName}`} title={name} target='_blank'
+                    <a
+                        href={`${CONFIG.EXPLORER_URL}/accounts/${contractName}`}
+                        title={name}
+                        target='_blank'
                         rel='noopener noreferrer'
                     >
                         {name}
@@ -149,21 +154,33 @@ const NFTBox = ({ tokenDetails }) => {
                     <span>{numberByContractName}</span>
                 </div>
             </div>
-            {
-                ownedTokensMetadata && (
-                    <div className='tokens'>
-                        {ownedTokensMetadata.map(({ token_id, metadata: { mediaUrl, title } }, index) => {
+            {ownedTokensMetadata && (
+                <div className='tokens'>
+                    {ownedTokensMetadata.map(
+                        ({ token_id, metadata: { mediaUrl, title } }, index) => {
                             return (
-                                <div className='nft' key={token_id}
-                                    onClick={() => dispatch(redirectTo(`/nft-detail/${contractName}/${token_id}`))}
+                                <div
+                                    className='nft'
+                                    key={token_id}
+                                    onClick={() =>
+                                        dispatch(
+                                            redirectTo(
+                                                `/nft-detail/${contractName}/${token_id}`
+                                            )
+                                        )
+                                    }
                                 >
-                                    <NFTMedia mediaUrl={mediaUrl} autoPlay={ index === 0}/>
+                                    <NFTMedia
+                                        mediaUrl={mediaUrl}
+                                        autoPlay={index === 0}
+                                    />
                                     <b className='title'>{title}</b>
                                 </div>
                             );
-                        })}
-                    </div>
-                )}
+                        }
+                    )}
+                </div>
+            )}
             <LoadMoreButtonWrapper contractName={contractName} />
         </StyledContainer>
     );

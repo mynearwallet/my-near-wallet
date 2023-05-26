@@ -7,7 +7,7 @@ import { redirectTo } from '../redux/actions/account';
 import {
     selectAccountUrlCallbackUrl,
     selectAccountUrlMessage,
-    selectAccountUrlMeta
+    selectAccountUrlMeta,
 } from '../redux/slices/account';
 import {
     handleAuthorizationRequestConfirmed,
@@ -22,7 +22,7 @@ import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
 const buildRedirectUrl = (accountUrlCallbackUrl, meta, signedRequest, error) => {
     if (!error) {
-        return addQueryParams(accountUrlCallbackUrl, {...signedRequest, meta});
+        return addQueryParams(accountUrlCallbackUrl, { ...signedRequest, meta });
     }
     return addQueryParams(accountUrlCallbackUrl, {
         meta,
@@ -44,7 +44,12 @@ const VerifyOwnerWrapper = () => {
     useEffect(() => {
         if (verifyOwnerStatus === VERIFY_OWNER_STATUS.COMPLETED) {
             if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                window.location.href = buildRedirectUrl(accountUrlCallbackUrl, accountUrlMeta, signedRequest, verifyOwnerError);
+                window.location.href = buildRedirectUrl(
+                    accountUrlCallbackUrl,
+                    accountUrlMeta,
+                    signedRequest,
+                    verifyOwnerError
+                );
             } else {
                 dispatch(redirectTo('/'));
             }

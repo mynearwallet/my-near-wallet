@@ -11,14 +11,17 @@ const Authorize = ({
     setConfirmedPath,
     handleSignIn,
     signingIn,
-    handleCancel
+    handleCancel,
 }) => {
     return (
         <>
             <LedgerImageCircle />
-            <h1><Translate id='signInLedger.header' /></h1>
+            <h1>
+                <Translate id='signInLedger.header' />
+            </h1>
             <Translate id='signInLedger.one' />
-            <br /><br />
+            <br />
+            <br />
             <LedgerHdPaths
                 confirmedPath={confirmedPath}
                 setConfirmedPath={(path) => {

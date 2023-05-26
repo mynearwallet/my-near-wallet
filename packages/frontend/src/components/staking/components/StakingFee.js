@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import Tooltip from '../../common/Tooltip';
 
 const Container = styled.div`
-    background-color: #FFF0DE;
-    color: #A15600;
+    background-color: #fff0de;
+    color: #a15600;
     font-weight: 600;
     border-radius: 4px;
     padding: 10px;
@@ -25,7 +25,7 @@ const Container = styled.div`
         :hover {
             svg {
                 path {
-                    stroke: #A15600;
+                    stroke: #a15600;
                 }
             }
         }
@@ -38,11 +38,10 @@ const Container = styled.div`
 `;
 
 export default function StakingFee({ fee }) {
-    
     return (
         <Container>
             <Translate id='staking.validator.fee' />
-            <Tooltip translate='staking.validator.desc'/>
+            <Tooltip translate='staking.validator.desc' />
             <span className='fee'>{fee}%</span>
         </Container>
     );

@@ -11,12 +11,15 @@ import {
     redirectTo,
     checkIsNew,
     fundCreateAccountLedger,
-    getLedgerPublicKey
+    getLedgerPublicKey,
 } from '../../../redux/actions/account';
 import { showCustomAlert } from '../../../redux/actions/status';
 import { selectAccountHas2fa, selectAccountSlice } from '../../../redux/slices/account';
 import { createNewAccount } from '../../../redux/slices/account/createAccountThunks';
-import { actions as ledgerActions, LEDGER_HD_PATH_PREFIX } from '../../../redux/slices/ledger';
+import {
+    actions as ledgerActions,
+    LEDGER_HD_PATH_PREFIX,
+} from '../../../redux/slices/ledger';
 import { actions as linkdropActions } from '../../../redux/slices/linkdrop';
 import { selectStatusMainLoader } from '../../../redux/slices/status';
 import { setLedgerHdPath } from '../../../utils/localStorage';
@@ -35,7 +38,8 @@ const { setLinkdropAmount } = linkdropActions;
 
 // FIXME: Use `debug` npm package so we can keep some debug logging around but not spam the console everywhere
 const ENABLE_DEBUG_LOGGING = false;
-const debugLog = (...args) => ENABLE_DEBUG_LOGGING && console.log('SetupLedger:', ...args);
+const debugLog = (...args) =>
+    ENABLE_DEBUG_LOGGING && console.log('SetupLedger:', ...args);
 
 const SetupLedger = (props) => {
     const [showInstructions, setShowInstructions] = useState(false);
@@ -48,11 +52,16 @@ const SetupLedger = (props) => {
 
     const recaptchaRef = useRef(null);
     const fundingOptions = parseFundingOptions(props.location.search);
-    const shouldRenderRecaptcha = !fundingOptions && CONFIG.RECAPTCHA_CHALLENGE_API_KEY && isNewAccount && !ENABLE_IDENTITY_VERIFIED_ACCOUNT;
+    const shouldRenderRecaptcha =
+        !fundingOptions &&
+        CONFIG.RECAPTCHA_CHALLENGE_API_KEY &&
+        isNewAccount &&
+        !ENABLE_IDENTITY_VERIFIED_ACCOUNT;
 
     const accountHas2fa = useSelector(selectAccountHas2fa);
     // disable the Continue button if a user has 2fa enabled, or we don't know yet if it's disabled/enabled
-    const accountMightHave2fa = !isNewAccount && (accountHas2fa || accountHas2fa === undefined);
+    const accountMightHave2fa =
+        !isNewAccount && (accountHas2fa || accountHas2fa === undefined);
 
     useEffect(() => {
         const performNewAccountCheck = async () => {
@@ -71,13 +80,11 @@ const SetupLedger = (props) => {
     };
 
     const handleClick = async () => {
-        const {
-            dispatch,
-            accountId,
-        } = props;
+        const { dispatch, accountId } = props;
 
         setConnect(true);
-        await Mixpanel.withTracking('SR-Ledger Connect ledger',
+        await Mixpanel.withTracking(
+            'SR-Ledger Connect ledger',
             async () => {
                 if (isNewAccount) {
                     let publicKey;
@@ -92,20 +99,36 @@ const SetupLedger = (props) => {
                         setLedgerHdPath({ accountId, path: ledgerHdPath });
 
                         // COIN-OP VERIFY ACCOUNT
-                        if (CONFIG.DISABLE_CREATE_ACCOUNT && ENABLE_IDENTITY_VERIFIED_ACCOUNT && !fundingOptions) {
+                        if (
+                            CONFIG.DISABLE_CREATE_ACCOUNT &&
+                            ENABLE_IDENTITY_VERIFIED_ACCOUNT &&
+                            !fundingOptions
+                        ) {
                             await dispatch(fundCreateAccountLedger(accountId, publicKey));
                             Mixpanel.track('SR-Ledger Fund create account ledger');
                             return;
                         }
 
                         // IMPLICIT ACCOUNT
-                        if (CONFIG.DISABLE_CREATE_ACCOUNT && !fundingOptions && !recaptchaToken) {
+                        if (
+                            CONFIG.DISABLE_CREATE_ACCOUNT &&
+                            !fundingOptions &&
+                            !recaptchaToken
+                        ) {
                             await dispatch(fundCreateAccountLedger(accountId, publicKey));
                             Mixpanel.track('SR-Ledger Fund create account ledger');
                             return;
                         }
 
-                        await dispatch(createNewAccount({ accountId, fundingOptions, recoveryMethod: 'ledger', publicKey, recaptchaToken })).unwrap();
+                        await dispatch(
+                            createNewAccount({
+                                accountId,
+                                fundingOptions,
+                                recoveryMethod: 'ledger',
+                                publicKey,
+                                recaptchaToken,
+                            })
+                        ).unwrap();
                         if (fundingOptions?.fundingAmount) {
                             setLinkdropAmount(fundingOptions.fundingAmount);
                         }
@@ -113,33 +136,46 @@ const SetupLedger = (props) => {
                         Mixpanel.track('SR-Ledger Create new account ledger');
                     } catch (err) {
                         if (isRetryableRecaptchaError(err)) {
-                            Mixpanel.track('Funded account creation failed due to invalid / expired reCaptcha response from user');
+                            Mixpanel.track(
+                                'Funded account creation failed due to invalid / expired reCaptcha response from user'
+                            );
                             recaptchaRef.current.reset();
 
-                            dispatch(showCustomAlert({
-                                success: false,
-                                messageCodeHeader: 'error',
-                                messageCode: 'walletErrorCodes.invalidRecaptchaCode',
-                                errorMessage: err.message
-                            }));
+                            dispatch(
+                                showCustomAlert({
+                                    success: false,
+                                    messageCodeHeader: 'error',
+                                    messageCode: 'walletErrorCodes.invalidRecaptchaCode',
+                                    errorMessage: err.message,
+                                })
+                            );
                         } else if (err.code === 'NotEnoughBalance') {
-                            Mixpanel.track('SR-Ledger NotEnoughBalance creating funded account');
+                            Mixpanel.track(
+                                'SR-Ledger NotEnoughBalance creating funded account'
+                            );
                             dispatch(fundCreateAccountLedger(accountId, publicKey));
-                        } else if (err.message.includes('The Ledger client is unavailable.')) {
-                            dispatch(showCustomAlert({
-                                success: false,
-                                messageCodeHeader: 'error',
-                                messageCode: 'walletErrorCodes.connectLedger.noClient',
-                                errorMessage: err.message
-                            }));
+                        } else if (
+                            err.message.includes('The Ledger client is unavailable.')
+                        ) {
+                            dispatch(
+                                showCustomAlert({
+                                    success: false,
+                                    messageCodeHeader: 'error',
+                                    messageCode:
+                                        'walletErrorCodes.connectLedger.noClient',
+                                    errorMessage: err.message,
+                                })
+                            );
                         } else {
                             recaptchaRef?.current?.reset();
 
-                            dispatch(showCustomAlert({
-                                errorMessage: err.message,
-                                success: false,
-                                messageCodeHeader: 'error',
-                            }));
+                            dispatch(
+                                showCustomAlert({
+                                    errorMessage: err.message,
+                                    success: false,
+                                    messageCodeHeader: 'error',
+                                })
+                            );
                         }
 
                         return;
@@ -176,16 +212,23 @@ const SetupLedger = (props) => {
             {props.localAlert && !props.localAlert.success && (
                 <GlobalAlert
                     globalAlert={{
-                        messageCode: `errors.ledger.${props.localAlert.id}`
+                        messageCode: `errors.ledger.${props.localAlert.id}`,
                     }}
                     closeIcon={false}
                 />
             )}
-            <h1><Translate id='setupLedger.header' /></h1>
+            <h1>
+                <Translate id='setupLedger.header' />
+            </h1>
             <LedgerIcon />
             <h2>
                 <Translate id='setupLedger.one' />
-                &nbsp;<Translate id='setupLedger.two' /> <span className='link underline' onClick={openShowInstructions}><Translate id='setupLedger.twoLink' /></span>.
+                &nbsp;
+                <Translate id='setupLedger.two' />{' '}
+                <span className='link underline' onClick={openShowInstructions}>
+                    <Translate id='setupLedger.twoLink' />
+                </span>
+                .
             </h2>
             <LedgerHdPaths
                 confirmedPath={confirmedPath}
@@ -194,23 +237,28 @@ const SetupLedger = (props) => {
                     Mixpanel.track('SR-Ledger Setup set custom HD path');
                 }}
             />
-            {
-                shouldRenderRecaptcha && (
-                    <Recaptcha
-                        ref={recaptchaRef}
-                        onChange={(token) => {
-                            debugLog('onChange from recaptcha - setting token in state', token);
-                            setRecaptchaToken(token);
-                        }}
-                        onFundAccountCreation={handleClick}
-                    />
-                )
-            }
+            {shouldRenderRecaptcha && (
+                <Recaptcha
+                    ref={recaptchaRef}
+                    onChange={(token) => {
+                        debugLog(
+                            'onChange from recaptcha - setting token in state',
+                            token
+                        );
+                        setRecaptchaToken(token);
+                    }}
+                    onFundAccountCreation={handleClick}
+                />
+            )}
             <FormButton
                 onClick={handleClick}
                 sending={connect && props.mainLoader}
                 sendingString='button.connecting'
-                disabled={(!recaptchaToken && shouldRenderRecaptcha) || isNewAccount === null || accountMightHave2fa}
+                disabled={
+                    (!recaptchaToken && shouldRenderRecaptcha) ||
+                    isNewAccount === null ||
+                    accountMightHave2fa
+                }
             >
                 <Translate id={`button.${connect !== 'fail' ? 'continue' : 'retry'}`} />
             </FormButton>
@@ -221,9 +269,12 @@ const SetupLedger = (props) => {
             >
                 <Translate id='button.cancel' />
             </FormButton>
-            {showInstructions &&
-                <InstructionsModal open={showInstructions} onClose={closeShowInstructions} />
-            }
+            {showInstructions && (
+                <InstructionsModal
+                    open={showInstructions}
+                    onClose={closeShowInstructions}
+                />
+            )}
         </Container>
     );
 };
@@ -231,7 +282,7 @@ const SetupLedger = (props) => {
 const mapStateToProps = (state, { match }) => ({
     ...selectAccountSlice(state),
     accountId: match.params.accountId,
-    mainLoader: selectStatusMainLoader(state)
+    mainLoader: selectStatusMainLoader(state),
 });
 
 const SetupLedgerWithRouter = connect(mapStateToProps)(SetupLedger);

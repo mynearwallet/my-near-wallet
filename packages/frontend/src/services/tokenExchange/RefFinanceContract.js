@@ -14,15 +14,8 @@ const refConfig = {
     errorRegExp: /[A-Z][0-9]+: ?[a-zA-Z0-9_$\- ]+/,
     contractId: CONFIG.REF_FINANCE_CONTRACT,
     indexerAddress: CONFIG.REF_FINANCE_API_ENDPOINT,
-    viewMethods: [
-        'get_number_of_pools',
-        'get_pools',
-        'get_pool',
-        'get_return',
-    ],
-    changeMethods: [
-        'swap',
-    ],
+    viewMethods: ['get_number_of_pools', 'get_pools', 'get_pool', 'get_return'],
+    changeMethods: ['swap'],
     gasLimit: {
         swap: '180000000000000',
     },
@@ -33,7 +26,7 @@ const refConfig = {
         // If we try to get more than +-1600 items at one point we
         // obtain a error: FunctionCallError(HostError(GasLimitExceeded))
         maxRequestAmount: 1000,
-    }
+    },
 };
 
 const DEV_CONTRACT_ID_REGEXP = /dev-[0-9]+-[0-9]+/;
@@ -49,14 +42,15 @@ class RefFinanceContract {
             totalNumberOfPools <= maxRequestAmount
                 ? 1
                 : Math.floor(totalNumberOfPools / maxRequestAmount);
-        const remaningNumberOfPools = totalNumberOfPools - numberOfRequests * maxRequestAmount;
+        const remaningNumberOfPools =
+            totalNumberOfPools - numberOfRequests * maxRequestAmount;
 
         if (remaningNumberOfPools) {
             numberOfRequests += 1;
         }
 
         for (let req = 1; req <= numberOfRequests; req++) {
-            let startPoolsIndex = (req * maxRequestAmount) - maxRequestAmount;
+            let startPoolsIndex = req * maxRequestAmount - maxRequestAmount;
             let poolsAmountLimit = maxRequestAmount;
 
             if (req === numberOfRequests && remaningNumberOfPools) {
@@ -151,8 +145,8 @@ class RefFinanceContract {
                     }),
                 },
                 refConfig.gasLimit.swap,
-                CONFIG.TOKEN_TRANSFER_DEPOSIT,
-            ),
+                CONFIG.TOKEN_TRANSFER_DEPOSIT
+            )
         );
 
         return actions;
@@ -187,8 +181,9 @@ class RefFinanceContract {
                 return;
             }
 
-            const { token_account_ids, shares_total_supply, amounts  } = pool;
-            const hasLiquidity = parseInt(shares_total_supply) > 0 && !amounts.includes('0');
+            const { token_account_ids, shares_total_supply, amounts } = pool;
+            const hasLiquidity =
+                parseInt(shares_total_supply) > 0 && !amounts.includes('0');
             let mainKey = '';
 
             try {
@@ -230,11 +225,7 @@ class RefFinanceContract {
     }
 
     async _newContract(account) {
-        return new nearApi.Contract(
-            account,
-            refConfig.contractId,
-            refConfig
-        );
+        return new nearApi.Contract(account, refConfig.contractId, refConfig);
     }
 }
 

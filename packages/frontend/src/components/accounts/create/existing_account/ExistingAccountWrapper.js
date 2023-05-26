@@ -8,21 +8,21 @@ import { Mixpanel } from '../../../../mixpanel';
 import {
     switchAccount,
     getAccountBalance,
-    redirectTo
+    redirectTo,
 } from '../../../../redux/actions/account';
 import { showCustomAlert } from '../../../../redux/actions/status';
-import { selectAccountAccountsBalances, selectAccountLocalStorageAccountId, selectBalance } from '../../../../redux/slices/account';
+import {
+    selectAccountAccountsBalances,
+    selectAccountLocalStorageAccountId,
+    selectBalance,
+} from '../../../../redux/slices/account';
 import { createNewAccountWithCurrentActiveAccount } from '../../../../redux/slices/account/createAccountThunks';
 import { selectAvailableAccounts } from '../../../../redux/slices/availableAccounts';
-import {
-    actions as ledgerActions
-} from '../../../../redux/slices/ledger';
+import { actions as ledgerActions } from '../../../../redux/slices/ledger';
 import FundNewAccount from './FundNewAccount';
 import SelectAccount from './SelectAccount';
 
-const {
-    checkAndHideLedgerModal
-} = ledgerActions;
+const { checkAndHideLedgerModal } = ledgerActions;
 
 const ExistingAccountWrapper = ({ history }) => {
     const dispatch = useDispatch();
@@ -45,23 +45,29 @@ const ExistingAccountWrapper = ({ history }) => {
         return (
             <FundNewAccount
                 onClickApprove={async () => {
-                    await Mixpanel.withTracking('CA Create account from existing account',
+                    await Mixpanel.withTracking(
+                        'CA Create account from existing account',
                         async () => {
                             setCreatingNewAccount(true);
-                            await dispatch(createNewAccountWithCurrentActiveAccount({
-                                newAccountId: accountId,
-                                implicitAccountId,
-                                newInitialBalance: CONFIG.MIN_BALANCE_TO_CREATE,
-                                recoveryMethod
-                            })).unwrap();
+                            await dispatch(
+                                createNewAccountWithCurrentActiveAccount({
+                                    newAccountId: accountId,
+                                    implicitAccountId,
+                                    newInitialBalance: CONFIG.MIN_BALANCE_TO_CREATE,
+                                    recoveryMethod,
+                                })
+                            ).unwrap();
                         },
                         (e) => {
-                            dispatch(showCustomAlert({
-                                success: false,
-                                messageCodeHeader: 'error',
-                                messageCode: 'walletErrorCodes.createNewAccount.error',
-                                errorMessage: e.message
-                            }));
+                            dispatch(
+                                showCustomAlert({
+                                    success: false,
+                                    messageCodeHeader: 'error',
+                                    messageCode:
+                                        'walletErrorCodes.createNewAccount.error',
+                                    errorMessage: e.message,
+                                })
+                            );
                             setCreatingNewAccount(false);
                             throw e;
                         },
@@ -91,7 +97,17 @@ const ExistingAccountWrapper = ({ history }) => {
             getAccountBalance={(accountId) => dispatch(getAccountBalance(accountId))}
             onSelectAccount={(accountId) => dispatch(switchAccount({ accountId }))}
             onSignInToDifferentAccount={() =>
-                dispatch(redirectTo(`/recover-account?fundWithExistingAccount=${encodeURIComponent(JSON.stringify({ accountId, implicitAccountId, recoveryMethod }))}`))
+                dispatch(
+                    redirectTo(
+                        `/recover-account?fundWithExistingAccount=${encodeURIComponent(
+                            JSON.stringify({
+                                accountId,
+                                implicitAccountId,
+                                recoveryMethod,
+                            })
+                        )}`
+                    )
+                )
             }
             onClickNext={() => {
                 setFundingAccountId(signedInAccountId);

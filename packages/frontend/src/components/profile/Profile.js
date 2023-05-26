@@ -14,7 +14,7 @@ import {
     refreshAccount,
     transferAllFromLockup,
     getProfileStakingDetails,
-    getBalance
+    getBalance,
 } from '../../redux/actions/account';
 import { selectProfileBalance } from '../../redux/reducers/selectors/balance';
 import {
@@ -26,7 +26,10 @@ import {
     selectAccountExists,
 } from '../../redux/slices/account';
 import { selectAllAccountsHasLockup } from '../../redux/slices/allAccounts';
-import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId } from '../../redux/slices/recoveryMethods';
+import {
+    actions as recoveryMethodsActions,
+    selectRecoveryMethodsByAccountId,
+} from '../../redux/slices/recoveryMethods';
 import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
 import isMobile from '../../utils/isMobile';
 import WalletClass, { wallet } from '../../utils/wallet';
@@ -71,9 +74,12 @@ const Profile = ({ match }) => {
     const [secretKey, setSecretKey] = useState(null);
 
     const userRecoveryMethods = useSelector((state) =>
-        selectRecoveryMethodsByAccountId(state, { accountId: account.accountId }));
+        selectRecoveryMethodsByAccountId(state, { accountId: account.accountId })
+    );
 
-    const twoFactor = has2fa && userRecoveryMethods &&
+    const twoFactor =
+        has2fa &&
+        userRecoveryMethods &&
         userRecoveryMethods.filter((m) => m.kind.includes('2fa'))[0];
 
     useEffect(() => {
@@ -116,20 +122,22 @@ const Profile = ({ match }) => {
         if (userRecoveryMethods) {
             let id = Mixpanel.get_distinct_id();
             Mixpanel.identify(id);
-            Mixpanel.people.set_once({ create_date: new Date().toString(), });
+            Mixpanel.people.set_once({ create_date: new Date().toString() });
             Mixpanel.people.set({
                 relogin_date: new Date().toString(),
-                enabled_2FA: account.has2fa
+                enabled_2FA: account.has2fa,
             });
             Mixpanel.alias(accountId);
             userRecoveryMethods.forEach((method) =>
-                Mixpanel.people.set({ ['recovery_with_' + method.kind]: true }));
+                Mixpanel.people.set({ ['recovery_with_' + method.kind]: true })
+            );
         }
     }, [userRecoveryMethods]);
 
     useEffect(() => {
         wallet.getLocalKeyPair(accountId).then(async (keyPair) => {
-            const isFullAccessKey = keyPair && await wallet.isFullAccessKey(accountId, keyPair);
+            const isFullAccessKey =
+                keyPair && (await wallet.isFullAccessKey(accountId, keyPair));
             setSecretKey(isFullAccessKey ? keyPair.toString() : null);
         });
     }, [userRecoveryMethods]);
@@ -141,7 +149,7 @@ const Profile = ({ match }) => {
             Mixpanel.people.set({
                 create_2FA_at: twoFactor.createdAt,
                 enable_2FA_kind: twoFactor.kind,
-                enabled_2FA: twoFactor.confirmed
+                enabled_2FA: twoFactor.confirmed,
             });
         }
     }, [twoFactor]);
@@ -158,10 +166,13 @@ const Profile = ({ match }) => {
     };
 
     const MINIMUM_AVAILABLE_TO_TRANSFER = new BN('10000000000000000000000');
-    const hasUnlockedBalance = hasLockup && Boolean(
-        new BN(profileBalance.lockupBalance.unlocked.availableToTransfer)
-            .gte(MINIMUM_AVAILABLE_TO_TRANSFER)
-    );
+    const hasUnlockedBalance =
+        hasLockup &&
+        Boolean(
+            new BN(profileBalance.lockupBalance.unlocked.availableToTransfer).gte(
+                MINIMUM_AVAILABLE_TO_TRANSFER
+            )
+        );
 
     const onDisableBrickedAccountComplete = () => setIsBrickedAccount(false);
 
@@ -169,7 +180,9 @@ const Profile = ({ match }) => {
         <StyledContainer>
             {isOwner && hasUnlockedBalance && (
                 <LockupAvailTransfer
-                    available={profileBalance.lockupBalance.unlocked.availableToTransfer || '0'}
+                    available={
+                        profileBalance.lockupBalance.unlocked.availableToTransfer || '0'
+                    }
                     onTransfer={handleTransferFromLockup}
                     sending={transferring}
                     tokenFiatValue={nearTokenFiatValueUSD}
@@ -184,7 +197,10 @@ const Profile = ({ match }) => {
                             theme='light-blue'
                         />
                     )}
-                    <h2><UserIcon /><Translate id='profile.pageTitle.default' /></h2>
+                    <h2>
+                        <UserIcon />
+                        <Translate id='profile.pageTitle.default' />
+                    </h2>
                     {profileBalance ? (
                         <BalanceContainer
                             account={account}
@@ -246,25 +262,26 @@ const Profile = ({ match }) => {
                                         <TwoFactorAuth
                                             twoFactor={twoFactor}
                                             isBrickedAccount={isBrickedAccount}
-                                            onDisableBrickedAccountComplete={onDisableBrickedAccountComplete}
+                                            onDisableBrickedAccountComplete={
+                                                onDisableBrickedAccountComplete
+                                            }
                                         />
                                     </>
                                 ) : (
-                                    <SkeletonLoading
-                                        height='80px'
-                                        show={true}
-                                    />
+                                    <SkeletonLoading height='80px' show={true} />
                                 )}
                             </>
                         )}
                         <>
                             <hr />
-                            {secretKey ? <ExportKeyWrapper secretKey={secretKey} /> : null}
+                            {secretKey ? (
+                                <ExportKeyWrapper secretKey={secretKey} />
+                            ) : null}
                             <RemoveAccountWrapper />
                         </>
-                        {!CONFIG.IS_MAINNET && !account.ledgerKey && !isMobile() &&
+                        {!CONFIG.IS_MAINNET && !account.ledgerKey && !isMobile() && (
                             <MobileSharingWrapper />
-                        }
+                        )}
                     </div>
                 )}
                 {accountExists === false && !accountIdFromUrl && (

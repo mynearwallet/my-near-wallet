@@ -19,26 +19,27 @@ const StyledContainer = styled.div`
         margin-left: 10px;
         font-size: 14px;
         font-weight: 600;
-        color:${({disable}) => (!disable ? '#24272a' : '#b7b7b7')};
+        color: ${({ disable }) => (!disable ? '#24272a' : '#b7b7b7')};
     }
 `;
 
-const Swap = ({ disable, onClick, linkTo , history, symbol}) => {
+const Swap = ({ disable, onClick, linkTo, history, symbol }) => {
     return (
         <>
-        <StyledContainer 
-            disable={disable} 
-            onClick={(e) => {
-                onClick && !disable && onClick(e);
-                linkTo && history.push(linkTo);
-                
-            }}
-        >
-            <SwapIconTwoArrows color={!disable ? '#000' : '#b7b7b7'}/>
-            <div className='swap'>
-                <div><Translate id='tokenBox.swapTo'/> {!symbol ? 'NEAR' : 'USN'}</div>
-            </div>
-        </StyledContainer>
+            <StyledContainer
+                disable={disable}
+                onClick={(e) => {
+                    onClick && !disable && onClick(e);
+                    linkTo && history.push(linkTo);
+                }}
+            >
+                <SwapIconTwoArrows color={!disable ? '#000' : '#b7b7b7'} />
+                <div className='swap'>
+                    <div>
+                        <Translate id='tokenBox.swapTo' /> {!symbol ? 'NEAR' : 'USN'}
+                    </div>
+                </div>
+            </StyledContainer>
         </>
     );
 };

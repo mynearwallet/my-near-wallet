@@ -2,49 +2,50 @@ import styled from 'styled-components';
 
 export default styled.div`
     &&& {
-        h3, .desc {
+        h3,
+        .desc {
             text-align: center;
         }
-    
+
         h3 {
             color: black;
             word-break: break-all;
             line-height: 150%;
         }
-    
+
         .desc {
-            color: #72727A;
+            color: #72727a;
             line-height: 150%;
             margin: 15px 0 30px 0;
-    
+
             b {
-                color: #3F4045;
+                color: #3f4045;
             }
         }
 
         &.full-access {
             .desc {
                 b {
-                    color: #FC5B5B;
+                    color: #fc5b5b;
                 }
             }
         }
-    
+
         &.confirm-login {
             .desc {
                 margin-bottom: 50px;
             }
         }
-    
+
         .button-group {
             margin-top: 30px;
         }
-    
+
         .swap-graphic {
             margin: 0 auto 35px auto;
             display: block;
         }
-    
+
         .alert-banner {
             margin: 55px 0 -15px 0;
 

@@ -26,7 +26,8 @@ const StyledContainer = styled(Container)`
 
     &&& {
         > button {
-            &.black, &.gray-gray {
+            &.black,
+            &.gray-gray {
                 width: 100%;
                 background-color: #272729;
                 display: flex;
@@ -39,7 +40,7 @@ const StyledContainer = styled(Container)`
                     height: auto;
                     margin: 0 0 0 10px;
                 }
-                
+
                 img {
                     width: 105px;
                     height: auto;
@@ -58,13 +59,15 @@ export default ({
     implicitAccountId,
     formattedMinDeposit,
     moonpayIsAvailable,
-    moonpaySignedUrl
+    moonpaySignedUrl,
 }) => {
     const [showWhereToBuyModal, setShowWhereToBuyModal] = useState(false);
     return (
         <>
             <StyledContainer className='border small-centered'>
-                <h3><Translate id='account.createImplicitAccount.title' /></h3>
+                <h3>
+                    <Translate id='account.createImplicitAccount.title' />
+                </h3>
                 <FormButton
                     linkTo={buildUtorgPayLink(implicitAccountId)}
                     color='black'
@@ -72,7 +75,7 @@ export default ({
                     sendingString='button.loading'
                 >
                     <Translate id='buyNear.buyWith' />
-                    <img src={UtorgLogo} alt='utorg'/>
+                    <img src={UtorgLogo} alt='utorg' />
                 </FormButton>
                 <FormButton
                     disabled={!moonpayIsAvailable}
@@ -93,11 +96,25 @@ export default ({
                         </>
                     )}
                 </FormButton>
-                <h3 className='bottom'><Translate id='account.createImplicitAccount.orSendNear' data={{ amount: formattedMinDeposit }} /></h3>
-                <Translate id='account.createImplicitAccount.sendFrom' />&nbsp;
-                <FormButton onClick={() => setShowWhereToBuyModal(true)} className='link underline'><Translate id='account.createImplicitAccount.exchange' /></FormButton>,<br />
+                <h3 className='bottom'>
+                    <Translate
+                        id='account.createImplicitAccount.orSendNear'
+                        data={{ amount: formattedMinDeposit }}
+                    />
+                </h3>
+                <Translate id='account.createImplicitAccount.sendFrom' />
+                &nbsp;
+                <FormButton
+                    onClick={() => setShowWhereToBuyModal(true)}
+                    className='link underline'
+                >
+                    <Translate id='account.createImplicitAccount.exchange' />
+                </FormButton>
+                ,<br />
                 <Translate id='account.createImplicitAccount.orAskFriend' />
-                <div className='address-title'><Translate id='receivePage.addressTitle' /></div>
+                <div className='address-title'>
+                    <Translate id='receivePage.addressTitle' />
+                </div>
                 <YourAddress address={implicitAccountId} />
             </StyledContainer>
             {showWhereToBuyModal && (

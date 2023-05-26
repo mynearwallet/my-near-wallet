@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import GlobeIcon from '../../svg/GlobeIcon';
 
 const StyledContainer = styled.a`
-    border: 1px solid #D6EDFF;
-    background-color: #F0F9FF;
+    border: 1px solid #d6edff;
+    background-color: #f0f9ff;
     color: #005497;
     padding: 6px 12px;
     border-radius: 40px;
@@ -22,8 +22,13 @@ const StyledContainer = styled.a`
 `;
 
 export default ({ appReferrer, contractIdUrl }) => (
-    <StyledContainer className='connect-with-application' href={contractIdUrl} target='_blank' rel='noreferrer'>
-        <GlobeIcon/>
+    <StyledContainer
+        className='connect-with-application'
+        href={contractIdUrl}
+        target='_blank'
+        rel='noreferrer'
+    >
+        <GlobeIcon />
         {appReferrer || <Translate id='sign.unknownApp' />}
     </StyledContainer>
 );

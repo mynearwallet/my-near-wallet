@@ -61,15 +61,12 @@ export default function Success({ onClickContinue = noop, onClickGoToExplorer })
     };
 
     return (
-        <StyledContainer className="buttons-bottom">
+        <StyledContainer className='buttons-bottom'>
             {success ? (
                 <>
                     <AvatarSuccessIcon />
-                    <StyledHeader data-test-id="swapPageSuccessMessage">
-                        <SafeTranslate
-                            id="swap.successTitle"
-                            data={successData}
-                        />
+                    <StyledHeader data-test-id='swapPageSuccessMessage'>
+                        <SafeTranslate id='swap.successTitle' data={successData} />
                     </StyledHeader>
                 </>
             ) : (
@@ -77,25 +74,25 @@ export default function Success({ onClickContinue = noop, onClickGoToExplorer })
                     <FailIcon />
                     <StyledHeader>
                         <FailTitle>
-                            <SafeTranslate id="swap.failTitle" />
+                            <SafeTranslate id='swap.failTitle' />
                         </FailTitle>
                         {failReason && (
-                            <Reason className="font-monospace">{failReason}</Reason>
+                            <Reason className='font-monospace'>{failReason}</Reason>
                         )}
                     </StyledHeader>
                 </>
             )}
             <ButtonsWrapper>
                 <FormButton
-                    data-test-id="swapPageContinueAfterSwapButton"
+                    data-test-id='swapPageContinueAfterSwapButton'
                     onClick={onClickContinue}
                 >
-                    <Translate id="button.continue" />
+                    <Translate id='button.continue' />
                 </FormButton>
 
                 {swapHash && (
-                    <FormButton color="gray-gray" onClick={onClickGoToExplorer}>
-                        <Translate id="button.viewOnExplorer" />
+                    <FormButton color='gray-gray' onClick={onClickGoToExplorer}>
+                        <Translate id='button.viewOnExplorer' />
                     </FormButton>
                 )}
             </ButtonsWrapper>

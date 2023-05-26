@@ -18,19 +18,18 @@ const Container = styled.div`
     }
 
     .near-balance {
-        color: #0072CE;
+        color: #0072ce;
         font-weight: 600;
-        border: 1px solid #D6EDFF;
+        border: 1px solid #d6edff;
         border-radius: 4px;
         padding: 6px 15px;
-        background-color: #F0F9FF;
+        background-color: #f0f9ff;
         margin: 30px 0;
     }
 
     .desc {
-        color: #72727A;
+        color: #72727a;
     }
-
 `;
 
 const LinkDropSuccessModal = ({ onClose, linkdropAmount }) => {
@@ -42,16 +41,18 @@ const LinkDropSuccessModal = ({ onClose, linkdropAmount }) => {
             onClose={onClose}
             modalSize='sm'
             closeButton={true}
-            data-test-id="linkDropSuccessModal"
+            data-test-id='linkDropSuccessModal'
         >
             <Container>
-                <NearGiftIcons/>
-                <h3><Translate id='linkdropLanding.modal.title'/></h3>
+                <NearGiftIcons />
+                <h3>
+                    <Translate id='linkdropLanding.modal.title' />
+                </h3>
                 <div className='near-balance'>
-                    <Balance amount={linkdropAmount}/>
+                    <Balance amount={linkdropAmount} />
                 </div>
                 <div className='desc'>
-                    <Translate id='linkdropLanding.modal.desc'/>
+                    <Translate id='linkdropLanding.modal.desc' />
                 </div>
             </Container>
         </Modal>

@@ -31,8 +31,8 @@ const StyledContainer = styled.div`
         }
 
         &.no-account {
-            background-color: #F0F0F1;
-            color: #72727A;
+            background-color: #f0f0f1;
+            color: #72727a;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -60,17 +60,16 @@ export default ({
     getAccountBalance,
     onSelectAccount,
     onSignInToDifferentAccount,
-    showBalanceInUSD
+    showBalanceInUSD,
 }) => {
-
     if (!signedInAccountId && onSignInToDifferentAccount) {
         return (
             <StyledContainer className='no-account pg-20 brs-8'>
                 <UserIconColor />
-                <div><Translate id='accountSelector.noAccountDesc' /></div>
-                <FormButton
-                    onClick={onSignInToDifferentAccount}
-                >
+                <div>
+                    <Translate id='accountSelector.noAccountDesc' />
+                </div>
+                <FormButton onClick={onSignInToDifferentAccount}>
                     <Translate id='button.importAccount' />
                 </FormButton>
             </StyledContainer>
@@ -81,34 +80,39 @@ export default ({
             <div className='accounts'>
                 <Account
                     accountId={signedInAccountId}
-                    balance={accountsBalances && accountsBalances[signedInAccountId]?.balanceAvailable}
+                    balance={
+                        accountsBalances &&
+                        accountsBalances[signedInAccountId]?.balanceAvailable
+                    }
                     active={true}
                     showBalanceInUSD={showBalanceInUSD}
                     onToggleShowBalance={() => getAccountBalance(signedInAccountId, true)}
                 />
-                {availableAccounts.filter((a) => a !== signedInAccountId).map((accountId) => (
-                    <Account
-                        key={accountId}
-                        accountId={accountId}
-                        balance={accountsBalances && accountsBalances[accountId]?.balanceAvailable}
-                        onSelectAccount={() => {
-                            onSelectAccount(accountId);
-                            getAccountBalance(accountId, true);
-                        }}
-                        onToggleShowBalance={() => getAccountBalance(accountId, true)}
-                        showBalanceInUSD={showBalanceInUSD}
-                    />
-                ))}
+                {availableAccounts
+                    .filter((a) => a !== signedInAccountId)
+                    .map((accountId) => (
+                        <Account
+                            key={accountId}
+                            accountId={accountId}
+                            balance={
+                                accountsBalances &&
+                                accountsBalances[accountId]?.balanceAvailable
+                            }
+                            onSelectAccount={() => {
+                                onSelectAccount(accountId);
+                                getAccountBalance(accountId, true);
+                            }}
+                            onToggleShowBalance={() => getAccountBalance(accountId, true)}
+                            showBalanceInUSD={showBalanceInUSD}
+                        />
+                    ))}
             </div>
             {onSignInToDifferentAccount && (
-                <FormButton
-                    onClick={onSignInToDifferentAccount}
-                    color='gray-blue'
-                >
+                <FormButton onClick={onSignInToDifferentAccount} color='gray-blue'>
                     <ImportIcon />
                     <Translate id='accountSelector.signInButton' />
                 </FormButton>
             )}
-        </StyledContainer >
+        </StyledContainer>
     );
 };

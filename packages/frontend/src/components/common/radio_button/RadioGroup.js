@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-
     .radio-wrapper {
         margin-bottom: 10px;
 
@@ -11,7 +10,6 @@ const Container = styled.div`
             margin-bottom: 0;
         }
     }
-
 `;
 
 export default class RadioGroup extends Component {
@@ -21,8 +19,8 @@ export default class RadioGroup extends Component {
             radioGroup: {
                 name,
                 selectedValue,
-                onChange
-            }
+                onChange,
+            },
         };
     }
 
@@ -37,10 +35,10 @@ export default class RadioGroup extends Component {
 }
 
 RadioGroup.childContextTypes = {
-    radioGroup: PropTypes.object
+    radioGroup: PropTypes.object,
 };
 
 RadioGroup.defaultProps = {
     name: '',
-    selectedValue: ''
+    selectedValue: '',
 };

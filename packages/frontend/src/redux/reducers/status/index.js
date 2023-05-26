@@ -57,29 +57,29 @@ const alertReducer = (state, { error, ready, payload, meta, type }) => {
             typeof ready === 'undefined' && type !== 'SHOW_CUSTOM_ALERT'
                 ? undefined
                 : {
-                    success:
+                      success:
                           typeof ready === 'undefined'
                               ? typeof payload?.success === 'undefined'
                                   ? !error
                                   : meta.alert.success
                               : ready
-                                  ? !error
-                                  : undefined,
-                    pending:
+                              ? !error
+                              : undefined,
+                      pending:
                           typeof ready === 'undefined'
                               ? undefined
                               : !meta?.alert?.ignoreMainLoader && !ready,
-                    errorType: payload?.type,
-                    errorMessage:
+                      errorType: payload?.type,
+                      errorMessage:
                           (error && payload?.message) ||
                           (type === 'SHOW_CUSTOM_ALERT' && payload.errorMessage) ||
                           undefined,
-                    data: {
-                        ...meta?.data,
-                        ...payload?.data,
-                        ...payload,
-                    },
-                },
+                      data: {
+                          ...meta?.data,
+                          ...payload?.data,
+                          ...payload,
+                      },
+                  },
     };
 
     return {
@@ -89,51 +89,51 @@ const alertReducer = (state, { error, ready, payload, meta, type }) => {
             typeof ready === 'undefined'
                 ? state.mainLoader
                 : Object.keys(actionStatus).reduce(
-                    (x, action) => actionStatus[action]?.pending || x,
-                    false
-                ),
+                      (x, action) => actionStatus[action]?.pending || x,
+                      false
+                  ),
         globalAlert: {
             ...state.globalAlert,
             [type]:
                 meta?.alert?.showAlert || payload?.data?.showAlert
                     ? {
-                        show:
+                          show:
                               typeof ready === 'undefined'
                                   ? true
                                   : ready &&
                                     ((meta?.alert?.onlyError && error) ||
                                         (meta?.alert?.onlySuccess && !error)),
-                        messageCodeHeader: meta?.alert?.messageCodeHeader || undefined,
-                        messageCode:
+                          messageCodeHeader: meta?.alert?.messageCodeHeader || undefined,
+                          messageCode:
                               payload?.messageCode ||
                               (error
                                   ? payload?.type !== 'UntypedError'
                                       ? `reduxActions.${payload?.type}`
                                       : `reduxActions.${type}.error`
                                   : `reduxActions.${type}.success`),
-                        console:
+                          console:
                               (error ||
                                   (type === 'SHOW_CUSTOM_ALERT' &&
                                       payload.errorMessage)) &&
                               (meta.alert?.console || payload.data?.console),
-                    }
+                      }
                     : undefined,
         },
         localAlert:
             typeof ready === 'undefined'
                 ? state.localAlert
                 : meta?.alert?.localAlert
-                    ? {
-                        show:
+                ? {
+                      show:
                           ready &&
                           ((meta?.alert?.onlyError && error) ||
                               (meta?.alert?.onlySuccess && !error)),
-                        success: ready && !error,
-                        messageCode: `reduxActions.${type}.${
+                      success: ready && !error,
+                      messageCode: `reduxActions.${type}.${
                           ready ? (error ? 'error' : 'success') : 'pending'
                       }`,
-                    }
-                    : state.localAlert,
+                  }
+                : state.localAlert,
     };
 };
 
@@ -150,16 +150,16 @@ const clearReducer = handleActions(
             globalAlert: !payload
                 ? {}
                 : Object.keys(state.globalAlert).reduce(
-                    (x, type) => ({
-                        ...x,
-                        ...(type !== payload
-                            ? {
-                                [type]: state.globalAlert[type],
-                            }
-                            : undefined),
-                    }),
-                    {}
-                ),
+                      (x, type) => ({
+                          ...x,
+                          ...(type !== payload
+                              ? {
+                                    [type]: state.globalAlert[type],
+                                }
+                              : undefined),
+                      }),
+                      {}
+                  ),
         }),
         // Not sure why this is here but it causes an app initialization error after updating parcel to v2
         // [makeAccountActive]: () => {

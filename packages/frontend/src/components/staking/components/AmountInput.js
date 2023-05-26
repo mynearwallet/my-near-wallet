@@ -6,7 +6,8 @@ import Balance from '../../common/balance/Balance';
 
 const Container = styled.div`
     input {
-        color: ${(props) => props.status === '#ff585d' ? props.status : '#24272A'} !important;
+        color: ${(props) =>
+            props.status === '#ff585d' ? props.status : '#24272A'} !important;
     }
 
     .available-balance {
@@ -14,7 +15,7 @@ const Container = styled.div`
         margin-top: 15px;
         display: flex;
         justify-content: space-between;
-        color: ${(props) => props.status === '#ff585d' ? props.status : ''};
+        color: ${(props) => (props.status === '#ff585d' ? props.status : '')};
 
         .balance {
             text-align: right;
@@ -23,8 +24,16 @@ const Container = styled.div`
 `;
 
 export default function AmountInput({
-    value, onChange, valid, disabled, insufficientBalance,
-    availableBalance, availableClick = null, action, stakeFromAccount, inputTestId
+    value,
+    onChange,
+    valid,
+    disabled,
+    insufficientBalance,
+    availableBalance,
+    availableClick = null,
+    action,
+    stakeFromAccount,
+    inputTestId,
 }) {
     let validationStatus;
     if (valid) {
@@ -35,9 +44,9 @@ export default function AmountInput({
 
     return (
         <Container status={validationStatus} hasValue={value.length}>
-            <input 
+            <input
                 disabled={disabled}
-                type='number' 
+                type='number'
                 autoFocus
                 placeholder='0'
                 value={value}
@@ -46,7 +55,8 @@ export default function AmountInput({
                 data-test-id={inputTestId}
             />
             <div className='available-balance' onClick={availableClick}>
-                <Translate id={`staking.${action}.input.availableBalance`} /><Balance amount={availableBalance} showBalanceInUSD={false}/>
+                <Translate id={`staking.${action}.input.availableBalance`} />
+                <Balance amount={availableBalance} showBalanceInUSD={false} />
             </div>
         </Container>
     );

@@ -11,7 +11,7 @@ const CustomContainer = styled(Container)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #25282A;
+    color: #25282a;
     text-align: center;
 
     .title {
@@ -25,7 +25,7 @@ const CustomContainer = styled(Container)`
     }
 
     && .text {
-        color: #72727A;
+        color: #72727a;
         margin-top: 24px;
     }
 
@@ -49,14 +49,14 @@ const CustomContainer = styled(Container)`
 
     .fees {
         width: 100%;
-        border: 1px solid #F0F0F1;
+        border: 1px solid #f0f0f1;
         padding: 15px;
         border-radius: 8px;
         margin-top: 30px;
-        color: #72727A;
+        color: #72727a;
 
         b {
-            color: #25282A;
+            color: #25282a;
         }
 
         .fees-line {
@@ -66,7 +66,7 @@ const CustomContainer = styled(Container)`
             margin-top: 12px;
 
             .tgas {
-                color: #00C08B;
+                color: #00c08b;
                 position: relative;
 
                 :after {
@@ -83,24 +83,38 @@ const CustomContainer = styled(Container)`
     }
 `;
 
-const SignTransferRetry = ({ handleRetry, handleCancel, gasLimit, submittingTransaction }) => (
+const SignTransferRetry = ({
+    handleRetry,
+    handleCancel,
+    gasLimit,
+    submittingTransaction,
+}) => (
     <CustomContainer className='small-centered border'>
         <div className='icon'>
             <img src={RetryImage} alt='Retry' />
         </div>
         <div className='title'>
-            <h2><Translate id='sign.retry.title' /></h2>
+            <h2>
+                <Translate id='sign.retry.title' />
+            </h2>
         </div>
         <div className='text'>
             <Translate id='sign.retry.text' />
-            <br/><br/>
-            <a href='https://docs.near.org/docs/concepts/gas' target='_blank' rel='noreferrer'>
+            <br />
+            <br />
+            <a
+                href='https://docs.near.org/docs/concepts/gas'
+                target='_blank'
+                rel='noreferrer'
+            >
                 <Translate id='sign.retry.link' />
             </a>
         </div>
         <div className='fees'>
             <div className='fees-line'>
-                <b><Translate id='sign.networkFees' /></b>
+                <b>
+                    <Translate id='sign.networkFees' />
+                </b>
             </div>
             <div className='fees-line'>
                 <Translate id='sign.estimatedFees' />
@@ -108,9 +122,7 @@ const SignTransferRetry = ({ handleRetry, handleCancel, gasLimit, submittingTran
             </div>
             <div className='fees-line'>
                 <Translate id='sign.feeLimit' />
-                <div className='tgas'>
-                    {gasLimit} Tgas
-                </div>
+                <div className='tgas'>{gasLimit} Tgas</div>
             </div>
         </div>
         <div className='buttons'>

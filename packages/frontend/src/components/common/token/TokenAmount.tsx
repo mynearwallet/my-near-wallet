@@ -59,15 +59,15 @@ const TokenAmount: FC<TokenAmountProps> = ({
                 {balance ? (
                     balancePrefix + formatAmount(balance, onChainFTMetadata?.decimals)
                 ) : (
-                    <span className="dots" />
+                    <span className='dots' />
                 )}
-                <span className="currency">
+                <span className='currency'>
                     {withSymbol ? ` ${onChainFTMetadata?.symbol}` : null}
                 </span>
             </div>
 
             {showFiatAmount ? (
-                <div className="fiat-amount">
+                <div className='fiat-amount'>
                     <FiatBalance
                         amount={balance}
                         nearTokenFiatValueUSD={fiatValueMetadata?.usd}

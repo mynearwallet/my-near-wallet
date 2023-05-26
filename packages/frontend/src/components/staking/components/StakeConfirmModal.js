@@ -72,7 +72,7 @@ const Container = styled.div`
 
     .divider {
         width: 100%;
-        border-top: 1px solid #F2F2F2;
+        border-top: 1px solid #f2f2f2;
         position: relative;
         margin-bottom: 40px;
         max-width: 400px;
@@ -87,10 +87,20 @@ const Container = styled.div`
             z-index: 1;
         }
     }
-
 `;
 
-const StakeConfirmModal = ({ open, onClose, onConfirm, validator, amount, loading, title, disclaimer, label, sendingString }) => {
+const StakeConfirmModal = ({
+    open,
+    onClose,
+    onConfirm,
+    validator,
+    amount,
+    loading,
+    title,
+    disclaimer,
+    label,
+    sendingString,
+}) => {
     return (
         <Modal
             id='stake-confirm-modal'
@@ -99,29 +109,41 @@ const StakeConfirmModal = ({ open, onClose, onConfirm, validator, amount, loadin
             closeButton='desktop'
         >
             <Container>
-                <h2><Translate id={title}/></h2>
+                <h2>
+                    <Translate id={title} />
+                </h2>
                 <Textfit mode='single' max={40} className='amount'>
-                    <Balance amount={amount} className='stake-amount'/>
+                    <Balance amount={amount} className='stake-amount' />
                 </Textfit>
-                {label && <div className='divider'><div><Translate id={label}/></div></div>}
-                <ValidatorBox 
+                {label && (
+                    <div className='divider'>
+                        <div>
+                            <Translate id={label} />
+                        </div>
+                    </div>
+                )}
+                <ValidatorBox
                     validator={validator}
                     clickable={false}
                     amount={validator.staked}
                 />
-                {disclaimer && <div className='ledger-disclaimer'><Translate id={disclaimer}/></div>}
-                <FormButton 
+                {disclaimer && (
+                    <div className='ledger-disclaimer'>
+                        <Translate id={disclaimer} />
+                    </div>
+                )}
+                <FormButton
                     disabled={loading}
                     sending={loading}
                     color='green'
                     onClick={onConfirm}
                     sendingString={`button.${sendingString}`}
-                    data-test-id="confirmStakeOnModalButton"
+                    data-test-id='confirmStakeOnModalButton'
                 >
-                    <Translate id='button.confirm'/>
+                    <Translate id='button.confirm' />
                 </FormButton>
                 <FormButton disabled={loading} color='link red' id='close-button'>
-                    <Translate id='button.cancel'/>
+                    <Translate id='button.cancel' />
                 </FormButton>
             </Container>
         </Modal>

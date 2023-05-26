@@ -1,24 +1,26 @@
 // @ts-check
-const nearApi = require("near-api-js");
+const nearApi = require('near-api-js');
 
-const { test, expect } = require("../playwrightWithFixtures");
-const { CONTRACT } = require("../constants");
-const { HomePage } = require("../register/models/Home");
-const { SwapPage } = require("./models/Swap");
-const { getResultMessageRegExp, removeStringBrakes } = require("./utils");
+const { CONTRACT } = require('../constants');
+const { test, expect } = require('../playwrightWithFixtures');
+const { HomePage } = require('../register/models/Home');
 const {
     NEAR_DEPOSIT_FEE,
     NEAR_WITHDRAW_FEE,
     TRANSACTIONS_LOADING_DELAY,
-} = require("./constants");
+} = require('./constants');
+const { SwapPage } = require('./models/Swap');
+const { getResultMessageRegExp, removeStringBrakes } = require('./utils');
 
-const { utils: { format } } = nearApi;
+const {
+    utils: { format },
+} = nearApi;
 const { describe, beforeAll, afterAll } = test;
 const { TESTNET } = CONTRACT;
 
-test.setTimeout(180_000)
+test.setTimeout(180_000);
 
-describe("Swap NEAR with wrapped NEAR", () => {
+describe('Swap NEAR with wrapped NEAR', () => {
     const swapAmount = 1;
     const waitAfterSwapWhileBalancesLoading = 20_000;
     // Limit on amount decimals because we don't know the exact transaction fees
@@ -52,7 +54,7 @@ describe("Swap NEAR with wrapped NEAR", () => {
         await account.delete();
     });
 
-    test("should swap NEAR for wrapped NEAR", async () => {
+    test('should swap NEAR for wrapped NEAR', async () => {
         await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
         await swapPage.navigate();
 
@@ -90,7 +92,9 @@ describe("Swap NEAR with wrapped NEAR", () => {
         const nearBalanceAfter = await account.getUpdatedBalance();
         const spentInSwap = swapAmount + NEAR_DEPOSIT_FEE;
         const formattedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
-        const formattedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
+        const formattedTotalBefore = Number(
+            format.formatNearAmount(nearBalanceBefore.total)
+        );
 
         expect(Number(formattedTotalAfter)).toBeCloseTo(
             formattedTotalBefore - spentInSwap,
@@ -104,7 +108,7 @@ describe("Swap NEAR with wrapped NEAR", () => {
         await swapPage.clickOnContinueAfterSwapButton();
     });
 
-    test("should swap wrapped NEAR for NEAR", async () => {
+    test('should swap wrapped NEAR for NEAR', async () => {
         await swapPage.fillForm({
             inId: TESTNET.wNEAR.id,
             inAmount: swapAmount,

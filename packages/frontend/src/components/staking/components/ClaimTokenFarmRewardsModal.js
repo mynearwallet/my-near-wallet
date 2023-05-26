@@ -16,12 +16,12 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background: #FAFAFA;
+    background: #fafafa;
 
     h2 {
         font-size: 16px;
         font-weight: 500;
-        color: #72727A !important;
+        color: #72727a !important;
         padding: 51px 8px 8px 8px;
     }
 
@@ -59,12 +59,12 @@ const Container = styled.div`
 
     .divider {
         width: 100%;
-        border-top: 1px solid #F2F2F2;
+        border-top: 1px solid #f2f2f2;
         position: relative;
         margin: 50px 0px;
 
         div {
-            background-color: #FAFAFA;
+            background-color: #fafafa;
             padding: 0 10px;
             position: absolute;
             top: 50%;
@@ -85,8 +85,8 @@ const Container = styled.div`
         }
 
         .gray {
-            background: #F0F0F1;
-            color: #0072CE;
+            background: #f0f0f1;
+            color: #0072ce;
             border-width: 0px;
         }
     }
@@ -100,7 +100,7 @@ const Container = styled.div`
         font-weight: 500;
         text-align: left;
         color: #995200;
-        background: #FFECD6;
+        background: #ffecd6;
         border-radius: 4px;
         > span {
             margin-left: 10px;
@@ -108,15 +108,19 @@ const Container = styled.div`
     }
 `;
 
-const ClaimTokenFarmRewardsModal = ({ open, onClose, onConfirm, validator, loading, title, label, farm }) => {
+const ClaimTokenFarmRewardsModal = ({
+    open,
+    onClose,
+    onConfirm,
+    validator,
+    loading,
+    title,
+    label,
+    farm,
+}) => {
     const NEARAsTokenWithMetadata = useSelector(selectNEARAsTokenWithMetadata);
-    const { 
-        onChainFTMetadata,
-        fiatValueMetadata,
-        balance,
-        contractName,
-        isWhiteListed
-    } = farm;
+    const { onChainFTMetadata, fiatValueMetadata, balance, contractName, isWhiteListed } =
+        farm;
     return (
         <Modal
             id='stake-confirm-modal'
@@ -126,18 +130,28 @@ const ClaimTokenFarmRewardsModal = ({ open, onClose, onConfirm, validator, loadi
             modalSize='sm'
         >
             <Container>
-                <h2><Translate id={title}/></h2>
+                <h2>
+                    <Translate id={title} />
+                </h2>
                 <Textfit mode='single' max={40} className='amount'>
                     <TokenAmount
                         token={{
-                            balance, onChainFTMetadata, fiatValueMetadata
+                            balance,
+                            onChainFTMetadata,
+                            fiatValueMetadata,
                         }}
-                        className="stake-amount"
+                        className='stake-amount'
                         withSymbol={true}
                         showFiatAmount={false}
                     />
                 </Textfit>
-                {label && <div className='divider'><div><Translate id={label}/></div></div>}
+                {label && (
+                    <div className='divider'>
+                        <div>
+                            <Translate id={label} />
+                        </div>
+                    </div>
+                )}
                 <TokenStakeRewards
                     earnedToken={{
                         onChainFTMetadata,
@@ -152,27 +166,31 @@ const ClaimTokenFarmRewardsModal = ({ open, onClose, onConfirm, validator, loadi
                 />
                 {!isWhiteListed ? (
                     <div style={{ padding: '0px 17px' }}>
-                        <div className="token-whitelist-disclaimer">
+                        <div className='token-whitelist-disclaimer'>
                             <AlertTriangleIcon />
                             <span>
-                                <Translate id="staking.validator.notWhitelistedTokenWarning" />
+                                <Translate id='staking.validator.notWhitelistedTokenWarning' />
                             </span>
                         </div>
                     </div>
                 ) : null}
                 <div className='action-buttons'>
-                    <FormButton disabled={loading} color='gray action-button' id='close-button'>
-                        <Translate id='button.cancel'/>
+                    <FormButton
+                        disabled={loading}
+                        color='gray action-button'
+                        id='close-button'
+                    >
+                        <Translate id='button.cancel' />
                     </FormButton>
-                    <FormButton 
+                    <FormButton
                         disabled={loading}
                         sending={loading}
                         sendingString='staking.validator.claiming'
                         onClick={() => onConfirm(contractName)}
                         color='blue action-button'
-                        data-test-id="confirmStakeOnModalButton"
+                        data-test-id='confirmStakeOnModalButton'
                     >
-                        <Translate id='button.confirm'/>
+                        <Translate id='button.confirm' />
                     </FormButton>
                 </div>
             </Container>

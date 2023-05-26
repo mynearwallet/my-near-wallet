@@ -15,11 +15,11 @@ const StyledInput = styled.input`
     }
 
     ::placeholder {
-        color: #CCCCCC;
+        color: #cccccc;
     }
 
     &.error {
-        color: #FC5B5B;
+        color: #fc5b5b;
     }
 `;
 
@@ -41,7 +41,7 @@ const getFontSize = (charLength) => {
     return fontSize;
 };
 
-const AmountInput = ({ value, onChange, error, autoFocus = true, maxLength = 18}) => {
+const AmountInput = ({ value, onChange, error, autoFocus = true, maxLength = 18 }) => {
     return (
         <StyledInput
             className={error ? 'error' : ''}
@@ -49,13 +49,13 @@ const AmountInput = ({ value, onChange, error, autoFocus = true, maxLength = 18}
             type='number'
             step='any'
             placeholder='0'
-            data-test-id="sendMoneyAmountInput"
+            data-test-id='sendMoneyAmountInput'
             value={value}
             onChange={(event) => {
                 const { value, maxLength } = event.target;
 
                 if (maxLength && value.length > maxLength) {
-                    return false; 
+                    return false;
                 }
 
                 onChange(event);
@@ -66,4 +66,4 @@ const AmountInput = ({ value, onChange, error, autoFocus = true, maxLength = 18}
     );
 };
 
-export default AmountInput; 
+export default AmountInput;

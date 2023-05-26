@@ -11,12 +11,16 @@ import {
     refreshAccount,
     checkIsNew,
     handleCreateAccountWithSeedPhrase,
-    fundCreateAccount
+    fundCreateAccount,
 } from '../../redux/actions/account';
 import { clearGlobalAlert, showCustomAlert } from '../../redux/actions/status';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { actions as linkdropActions } from '../../redux/slices/linkdrop';
-import { actions as recoveryMethodsActions, selectRecoveryMethodsByAccountId, selectRecoveryMethodsLoading } from '../../redux/slices/recoveryMethods';
+import {
+    actions as recoveryMethodsActions,
+    selectRecoveryMethodsByAccountId,
+    selectRecoveryMethodsLoading,
+} from '../../redux/slices/recoveryMethods';
 import { selectStatusMainLoader } from '../../redux/slices/status';
 import copyText from '../../utils/copyText';
 import isMobile from '../../utils/isMobile';
@@ -34,10 +38,11 @@ const { fetchRecoveryMethods } = recoveryMethodsActions;
 // FIXME: Use `debug` npm package so we can keep some debug logging around but not spam the console everywhere
 const ENABLE_DEBUG_LOGGING = false;
 
-const debugLog = (...args) => ENABLE_DEBUG_LOGGING && console.log('SetupSeedPhrase:', ...args);
+const debugLog = (...args) =>
+    ENABLE_DEBUG_LOGGING && console.log('SetupSeedPhrase:', ...args);
 
 class SetupSeedPhrase extends Component {
-    recaptchaRef = null
+    recaptchaRef = null;
 
     state = {
         seedPhrase: '',
@@ -47,12 +52,12 @@ class SetupSeedPhrase extends Component {
         successSnackbar: false,
         submitting: false,
         recaptchaToken: null,
-        isNewAccount: false
-    }
+        isNewAccount: false,
+    };
 
     componentDidMount = async () => {
         this.refreshData();
-    }
+    };
 
     refreshData = async () => {
         const { accountId, fetchRecoveryMethods, checkIsNew } = this.props;
@@ -77,9 +82,9 @@ class SetupSeedPhrase extends Component {
             enterWord: '',
             localAlert: null,
             recoveryKeyPair,
-            isNewAccount
+            isNewAccount,
         }));
-    }
+    };
 
     handleChangeWord = (value) => {
         if (value.match(/[^a-zA-Z]/)) {
@@ -88,20 +93,16 @@ class SetupSeedPhrase extends Component {
 
         this.setState(() => ({
             enterWord: value.trim().toLowerCase(),
-            localAlert: null
+            localAlert: null,
         }));
-    }
+    };
 
     handleStartOver = () => {
-        const {
-            history,
-            location,
-            accountId,
-        } = this.props;
+        const { history, location, accountId } = this.props;
 
         this.refreshData();
         history.push(`/setup-seed-phrase/${accountId}/phrase${location.search}`);
-    }
+    };
 
     handleVerifyPhrase = () => {
         const { seedPhrase, enterWord, wordId, submitting } = this.state;
@@ -112,10 +113,12 @@ class SetupSeedPhrase extends Component {
                 localAlert: {
                     success: false,
                     messageCode: 'account.verifySeedPhrase.error',
-                    show: true
-                }
+                    show: true,
+                },
             }));
-            Mixpanel.track('SR-SP Verify fail', { error: 'word is not matched the phrase' });
+            Mixpanel.track('SR-SP Verify fail', {
+                error: 'word is not matched the phrase',
+            });
             return false;
         }
 
@@ -123,7 +126,7 @@ class SetupSeedPhrase extends Component {
             this.setState({ submitting: true }, this.handleSetupSeedPhrase);
         }
         Mixpanel.track('SR-SP Verify finish');
-    }
+    };
 
     handleSetupSeedPhrase = async () => {
         debugLog('handleSetupSeedPhrase()');
@@ -134,7 +137,7 @@ class SetupSeedPhrase extends Component {
             fundCreateAccount,
             showCustomAlert,
             location,
-            setLinkdropAmount
+            setLinkdropAmount,
         } = this.props;
         const { recoveryKeyPair, recaptchaToken } = this.state;
 
@@ -144,15 +147,22 @@ class SetupSeedPhrase extends Component {
         if (!this.state.isNewAccount && !isTrial) {
             debugLog('handleSetupSeedPhrase()/existing account');
 
-            await Mixpanel.withTracking('SR-SP Setup for existing account',
+            await Mixpanel.withTracking(
+                'SR-SP Setup for existing account',
                 async () => await handleAddAccessKeySeedPhrase(accountId, recoveryKeyPair)
             );
             return;
         }
 
-        await Mixpanel.withTracking('SR-SP Setup for new account',
+        await Mixpanel.withTracking(
+            'SR-SP Setup for new account',
             async () => {
-                await handleCreateAccountWithSeedPhrase(accountId, recoveryKeyPair, fundingOptions, recaptchaToken);
+                await handleCreateAccountWithSeedPhrase(
+                    accountId,
+                    recoveryKeyPair,
+                    fundingOptions,
+                    recaptchaToken
+                );
                 if (fundingOptions?.fundingAmount) {
                     setLinkdropAmount(fundingOptions.fundingAmount);
                 }
@@ -163,13 +173,15 @@ class SetupSeedPhrase extends Component {
                 this.setState({ submitting: false });
 
                 if (isRetryableRecaptchaError(err)) {
-                    Mixpanel.track('Funded account creation failed due to invalid / expired reCaptcha response from user');
+                    Mixpanel.track(
+                        'Funded account creation failed due to invalid / expired reCaptcha response from user'
+                    );
                     this.recaptchaRef.reset();
                     showCustomAlert({
                         success: false,
                         messageCodeHeader: 'error',
                         messageCode: 'walletErrorCodes.invalidRecaptchaCode',
-                        errorMessage: err.message
+                        errorMessage: err.message,
                     });
                 } else if (err.code === 'NotEnoughBalance') {
                     Mixpanel.track('SR-SP NotEnoughBalance creating funded account');
@@ -178,25 +190,27 @@ class SetupSeedPhrase extends Component {
                     showCustomAlert({
                         errorMessage: err.message,
                         success: false,
-                        messageCodeHeader: 'error'
+                        messageCodeHeader: 'error',
                     });
                 }
             }
         );
-    }
+    };
 
     handleCopyPhrase = () => {
         Mixpanel.track('SR-SP Copy seed phrase');
         if (navigator.share && isMobile()) {
-            navigator.share({
-                text: this.state.seedPhrase
-            }).catch((err) => {
-                debugLog(err.message);
-            });
+            navigator
+                .share({
+                    text: this.state.seedPhrase,
+                })
+                .catch((err) => {
+                    debugLog(err.message);
+                });
         } else {
             this.handleCopyDesktop();
         }
-    }
+    };
 
     handleCopyDesktop = () => {
         copyText(document.getElementById('seed-phrase'));
@@ -205,26 +219,37 @@ class SetupSeedPhrase extends Component {
                 this.setState({ successSnackbar: false });
             }, snackbarDuration);
         });
-    }
+    };
 
     handleRecaptchaChange = (recaptchaToken) => {
         debugLog('handleRecaptchaChange()', recaptchaToken);
         this.setState({ recaptchaToken });
-    }
+    };
 
     handleOnSubmit = (e) => {
         this.handleVerifyPhrase();
         e.preventDefault();
-    }
+    };
 
     handleSubmitPasswordStep = (password) => {
         console.log(password);
-    }
+    };
 
     render() {
-        const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } = this.props;
-        const hasSeedPhraseRecovery = recoveryMethodsLoader || recoveryMethods.filter((m) => m.kind === 'phrase').length > 0;
-        const { seedPhrase, enterWord, wordId, submitting, localAlert, isNewAccount, successSnackbar } = this.state;
+        const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } =
+            this.props;
+        const hasSeedPhraseRecovery =
+            recoveryMethodsLoader ||
+            recoveryMethods.filter((m) => m.kind === 'phrase').length > 0;
+        const {
+            seedPhrase,
+            enterWord,
+            wordId,
+            submitting,
+            localAlert,
+            isNewAccount,
+            successSnackbar,
+        } = this.state;
 
         return (
             <Translate>
@@ -235,17 +260,27 @@ class SetupSeedPhrase extends Component {
                             path={'/setup-seed-phrase/:accountId/phrase'}
                             render={() => (
                                 <Container className='small-centered border'>
-                                    <h1><Translate id='setupSeedPhrase.pageTitle'/></h1>
-                                    <h2><Translate id='setupSeedPhrase.pageText'/></h2>
+                                    <h1>
+                                        <Translate id='setupSeedPhrase.pageTitle' />
+                                    </h1>
+                                    <h2>
+                                        <Translate id='setupSeedPhrase.pageText' />
+                                    </h2>
                                     <SetupSeedPhraseForm
                                         seedPhrase={seedPhrase}
                                         handleCopyPhrase={this.handleCopyPhrase}
                                         hasSeedPhraseRecovery={hasSeedPhraseRecovery}
                                         refreshData={this.refreshData}
-                                        onClickContinue={() => history.push(`/setup-seed-phrase/${accountId}/verify${location.search}`)}
+                                        onClickContinue={() =>
+                                            history.push(
+                                                `/setup-seed-phrase/${accountId}/verify${location.search}`
+                                            )
+                                        }
                                         onClickCancel={() => {
                                             if (isNewAccount) {
-                                                history.push(`/set-recovery/${accountId}${location.search}`);
+                                                history.push(
+                                                    `/set-recovery/${accountId}${location.search}`
+                                                );
                                             } else {
                                                 history.push('/profile');
                                             }
@@ -263,21 +298,31 @@ class SetupSeedPhrase extends Component {
                                         onSubmit={this.handleOnSubmit}
                                         autoComplete='off'
                                     >
-                                        <h1><Translate id='setupSeedPhraseVerify.pageTitle'/></h1>
-                                        <h2><Translate id='setupSeedPhraseVerify.pageText'/></h2>
+                                        <h1>
+                                            <Translate id='setupSeedPhraseVerify.pageTitle' />
+                                        </h1>
+                                        <h2>
+                                            <Translate id='setupSeedPhraseVerify.pageText' />
+                                        </h2>
                                         <SetupSeedPhraseVerify
                                             enterWord={enterWord}
                                             wordId={wordId}
                                             handleChangeWord={this.handleChangeWord}
                                             handleStartOver={this.handleStartOver}
-                                            mainLoader={this.props.mainLoader || submitting}
+                                            mainLoader={
+                                                this.props.mainLoader || submitting
+                                            }
                                             localAlert={localAlert}
                                             globalAlert={this.props.globalAlert}
                                             onRecaptchaChange={this.handleRecaptchaChange}
-                                            ref={(ref) => this.recaptchaRef = ref}
+                                            ref={(ref) => (this.recaptchaRef = ref)}
                                             isNewAccount={isNewAccount}
                                             onSubmit={this.handleOnSubmit}
-                                            isLinkDrop={parseFundingOptions(this.props.location.search) !== null}
+                                            isLinkDrop={
+                                                parseFundingOptions(
+                                                    this.props.location.search
+                                                ) !== null
+                                            }
                                             hasSeedPhraseRecovery={hasSeedPhraseRecovery}
                                         />
                                     </form>
@@ -292,10 +337,15 @@ class SetupSeedPhrase extends Component {
                                         onSubmit={this.handleSubmitPasswordStep}
                                         autoComplete='off'
                                     >
-                                        <h1><Translate id='setupPasswordProtection.pageTitle'/></h1>
-                                        <h2><Translate id='setupPasswordProtection.pageText'/></h2>
+                                        <h1>
+                                            <Translate id='setupPasswordProtection.pageTitle' />
+                                        </h1>
+                                        <h2>
+                                            <Translate id='setupPasswordProtection.pageText' />
+                                        </h2>
                                         <SetPasswordForm
-                                            onSubmit={this.handleSubmitPasswordStep} />
+                                            onSubmit={this.handleSubmitPasswordStep}
+                                        />
                                     </form>
                                 </Container>
                             )}
@@ -322,7 +372,7 @@ const mapDispatchToProps = {
     fundCreateAccount,
     fetchRecoveryMethods,
     showCustomAlert,
-    setLinkdropAmount
+    setLinkdropAmount,
 };
 
 const mapStateToProps = (state, { match }) => {
@@ -333,7 +383,7 @@ const mapStateToProps = (state, { match }) => {
         accountId,
         recoveryMethods: selectRecoveryMethodsByAccountId(state, { accountId }),
         mainLoader: selectStatusMainLoader(state),
-        recoveryMethodsLoader: selectRecoveryMethodsLoading(state, { accountId })
+        recoveryMethodsLoader: selectRecoveryMethodsLoading(state, { accountId }),
     };
 };
 

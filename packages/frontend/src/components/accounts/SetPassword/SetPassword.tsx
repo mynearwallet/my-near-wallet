@@ -9,8 +9,8 @@ import { Confirm, Enter } from './ui';
 import Input from './ui/Input';
 
 type SetPasswordProps = {
-    onChange: (value: string|null) => void;
-}
+    onChange: (value: string | null) => void;
+};
 
 const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
     const { t } = useTranslation();
@@ -42,11 +42,13 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
         onChange(pass);
     }, []);
 
-
-    const handleChangePassword = useCallback((value: string) => {
-        setPassword(value);
-        handleCommonChange(value, confirmPassValue);
-    }, [confirmPassValue]);
+    const handleChangePassword = useCallback(
+        (value: string) => {
+            setPassword(value);
+            handleCommonChange(value, confirmPassValue);
+        },
+        [confirmPassValue]
+    );
 
     const handlePasswordFocus = useCallback(() => {
         setPassFocused(true);
@@ -57,10 +59,13 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
         handleCommonChange(password, confirmPassValue);
     }, [password, confirmPassValue]);
 
-    const handleChangeConfirmPassword = useCallback((value: string) => {
-        setConfirmPassValue(value);
-        handleCommonChange(password, value);
-    }, [password]);
+    const handleChangeConfirmPassword = useCallback(
+        (value: string) => {
+            setConfirmPassValue(value);
+            handleCommonChange(password, value);
+        },
+        [password]
+    );
 
     const handleConfirmBlur = useCallback(() => {
         handleCommonChange(password, confirmPassValue);
@@ -72,7 +77,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
         <>
             <Enter>
                 <Input
-                    error={lengthError ? t('setupPasswordProtection.lengthError'): ''}
+                    error={lengthError ? t('setupPasswordProtection.lengthError') : ''}
                     placeholder={t('setupPasswordProtection.enter')}
                     value={password}
                     onChange={currentTargetValue(handleChangePassword)}
@@ -83,15 +88,18 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
 
             <Confirm>
                 <Input
-                    error={shouldShowConfirmError ? t('setupPasswordProtection.matchError'): ''}
+                    error={
+                        shouldShowConfirmError
+                            ? t('setupPasswordProtection.matchError')
+                            : ''
+                    }
                     placeholder={t('setupPasswordProtection.confirm')}
                     value={confirmPassValue}
                     onChange={currentTargetValue(handleChangeConfirmPassword)}
                     onBlur={handleConfirmBlur}
                 />
             </Confirm>
-            <ComplexityBlock
-                complexity={validatePassword(password, MIN_PASS_LEN)} />
+            <ComplexityBlock complexity={validatePassword(password, MIN_PASS_LEN)} />
         </>
     );
 };

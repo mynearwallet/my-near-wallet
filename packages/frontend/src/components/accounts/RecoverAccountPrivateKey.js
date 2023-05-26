@@ -122,16 +122,16 @@ const RecoverAccountPrivateKey = () => {
     };
 
     return (
-        <StyledContainer className="small-centered border">
+        <StyledContainer className='small-centered border'>
             <h1>
-                <Translate id="recoverPrivateKey.pageTitle" />
+                <Translate id='recoverPrivateKey.pageTitle' />
             </h1>
             <h2>
-                <Translate id="recoverPrivateKey.pageText" />
+                <Translate id='recoverPrivateKey.pageText' />
             </h2>
-            <form onSubmit={handleSubmit} autoComplete="off">
+            <form onSubmit={handleSubmit} autoComplete='off'>
                 <h4>
-                    <Translate id="recoverPrivateKey.privateKeyInput.title" />
+                    <Translate id='recoverPrivateKey.privateKeyInput.title' />
                 </h4>
                 <input
                     value={privateKey}
@@ -143,22 +143,22 @@ const RecoverAccountPrivateKey = () => {
                         { success: localAlert && localAlert.success },
                         { problem: localAlert && localAlert.success === false },
                     ])}
-                    placeholder="ed25519:abc123..."
+                    placeholder='ed25519:abc123...'
                     disabled={recoveringAccount}
-                    data-test-id="privateKeyRecoveryInput"
+                    data-test-id='privateKeyRecoveryInput'
                     required
-                    tabIndex="2"
-                    autoCapitalize="off"
+                    tabIndex='2'
+                    autoCapitalize='off'
                 />
                 <FormButton
-                    type="submit"
-                    color="blue"
+                    type='submit'
+                    color='blue'
                     disabled={recoveringAccount}
                     sending={recoveringAccount}
-                    sendingString="button.recovering"
-                    data-test-id="privateKeyRecoverySubmitButton"
+                    sendingString='button.recovering'
+                    data-test-id='privateKeyRecoverySubmitButton'
                 >
-                    <Translate id="button.findMyAccount" />
+                    <Translate id='button.findMyAccount' />
                 </FormButton>
             </form>
         </StyledContainer>

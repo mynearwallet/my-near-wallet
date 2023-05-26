@@ -26,11 +26,7 @@ const Container = styled.div`
     }
 `;
 
-export function ZeroBalanceAccountImportedModal ({
-    importMethod,
-    onClose,
-    accountId
-}) {
+export function ZeroBalanceAccountImportedModal({ importMethod, onClose, accountId }) {
     return (
         <Modal
             id='zero-balance-account-imported-modal'
@@ -39,12 +35,22 @@ export function ZeroBalanceAccountImportedModal ({
             modalSize='sm'
         >
             <Container>
-                <h3><Translate id='account.recoverAccount.zeroBalance.success.title'/></h3>
-                <p><Translate id={`account.recoverAccount.zeroBalance.success.${importMethod}`}/></p>
+                <h3>
+                    <Translate id='account.recoverAccount.zeroBalance.success.title' />
+                </h3>
+                <p>
+                    <Translate
+                        id={`account.recoverAccount.zeroBalance.success.${importMethod}`}
+                    />
+                </p>
                 {accountId}
-                <p><Translate id='account.recoverAccount.zeroBalance.success.desc'/></p>
-                <FormButton onClick={onClose}><Translate id='button.dismiss'/></FormButton>
+                <p>
+                    <Translate id='account.recoverAccount.zeroBalance.success.desc' />
+                </p>
+                <FormButton onClick={onClose}>
+                    <Translate id='button.dismiss' />
+                </FormButton>
             </Container>
         </Modal>
     );
-};
+}

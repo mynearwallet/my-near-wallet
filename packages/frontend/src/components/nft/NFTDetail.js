@@ -17,17 +17,18 @@ const StyledContainer = styled(Container)`
         max-width: 429px;
         position: relative;
 
-        video,img {
+        video,
+        img {
             width: 100%;
             max-width: 429px;
             margin-bottom: 83px;
 
-            filter: drop-shadow(0px 100px 80px rgba(0, 0, 0, 0.07)) 
-            drop-shadow(0px 41.7776px 33.4221px rgba(0, 0, 0, 0.0503198)) 
-            drop-shadow(0px 22.3363px 17.869px rgba(0, 0, 0, 0.0417275)) 
-            drop-shadow(0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035)) 
-            drop-shadow(0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725)) 
-            drop-shadow(0px 2.76726px 2.21381px rgba(0, 0, 0, 0.0196802));
+            filter: drop-shadow(0px 100px 80px rgba(0, 0, 0, 0.07))
+                drop-shadow(0px 41.7776px 33.4221px rgba(0, 0, 0, 0.0503198))
+                drop-shadow(0px 22.3363px 17.869px rgba(0, 0, 0, 0.0417275))
+                drop-shadow(0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035))
+                drop-shadow(0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725))
+                drop-shadow(0px 2.76726px 2.21381px rgba(0, 0, 0, 0.0196802));
         }
 
         .desc {
@@ -51,12 +52,11 @@ const StyledContainer = styled(Container)`
             display: flex;
             align-items: center;
             letter-spacing: 0.115em;
-            color: #A2A2A8;
+            color: #a2a2a8;
         }
 
         .inner {
-            
-            display: flex;         
+            display: flex;
             align-items: center;
             word-break: break-all;
             span {
@@ -86,7 +86,6 @@ const StyledContainer = styled(Container)`
         top: -12px;
         left: -78px;
     }
-
 `;
 
 const UserIcon = styled.div`
@@ -97,7 +96,7 @@ const UserIcon = styled.div`
     background-color: #f8f8f8;
     text-align: center;
     margin: 0 12px 0 0;
-    
+
     svg {
         width: 26px;
         height: 26px;
@@ -112,8 +111,10 @@ const UserIcon = styled.div`
 export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
     const [transferNftDetail, setTransferNftDetail] = useState();
 
-    const transferMax = new BN((parseInt(CONFIG.NFT_TRANSFER_GAS, 10) + CONFIG.TOKEN_TRANSFER_DEPOSIT).toString());
-    const hasSufficientBalance = (new BN(nearBalance)).gte(transferMax);
+    const transferMax = new BN(
+        (parseInt(CONFIG.NFT_TRANSFER_GAS, 10) + CONFIG.TOKEN_TRANSFER_DEPOSIT).toString()
+    );
+    const hasSufficientBalance = new BN(nearBalance).gte(transferMax);
 
     return (
         <StyledContainer className='medium centered'>
@@ -122,37 +123,36 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                     <BackArrowButton
                         onClick={() => history.goBack()}
                         className='back-btn'
-                    >
-                    </BackArrowButton>
+                    ></BackArrowButton>
 
-                    <NFTMedia mediaUrl={nft.metadata.mediaUrl}/>
+                    <NFTMedia mediaUrl={nft.metadata.mediaUrl} />
 
-                    <h1 className="title">{nft.metadata.title}</h1>
-                    <p className="desc">{nft.metadata.description}</p>
+                    <h1 className='title'>{nft.metadata.title}</h1>
+                    <p className='desc'>{nft.metadata.description}</p>
 
                     <div className='owner'>
-                        <p><Translate id='NFTDetail.owner'/></p>
+                        <p>
+                            <Translate id='NFTDetail.owner' />
+                        </p>
 
                         <div className='inner'>
                             <UserIcon>
                                 <UserIconGrey color='#9a9a9a' />
                             </UserIcon>
-                            <span>
-                                { ownerId }
-                            </span>
+                            <span>{ownerId}</span>
                         </div>
                     </div>
 
-                    {(ownerId === accountId) && (
+                    {ownerId === accountId && (
                         <FormButton
                             className='transfer-btn'
                             color='gray-gray'
-                            data-test-id="nft-transfer-button"
+                            data-test-id='nft-transfer-button'
                             disabled={!hasSufficientBalance}
                             onClick={() => setTransferNftDetail(nft)}
                         >
-                            <SendIcon/>
-                            <Translate id='NFTDetail.transfer'/>
+                            <SendIcon />
+                            <Translate id='NFTDetail.transfer' />
                         </FormButton>
                     )}
                     {transferNftDetail && (

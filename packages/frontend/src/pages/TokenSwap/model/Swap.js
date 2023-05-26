@@ -101,23 +101,26 @@ export function SwapProvider({ children }) {
     const isMounted = useIsMounted();
     const [swapState, dispatchSwapAction] = useReducer(swapReducer, initialState);
 
-    const dispatchIfMounted = useCallback((type, payload) => {
-        if (isMounted()) {
-            dispatchSwapAction({ type, payload });
-        } else if (type === ACTION.SET_COMPLETED_SWAP_STATE) {
-            const { success, tokenIn, tokenOut } = payload;
+    const dispatchIfMounted = useCallback(
+        (type, payload) => {
+            if (isMounted()) {
+                dispatchSwapAction({ type, payload });
+            } else if (type === ACTION.SET_COMPLETED_SWAP_STATE) {
+                const { success, tokenIn, tokenOut } = payload;
 
-            dispatch(
-                showCustomAlert({
-                    success,
-                    messageCodeHeader: success ? 'swap.success' : 'swap.error',
-                    // @note is there a different way to show custom data
-                    // instead of 'errorMessage' key?
-                    errorMessage: `${tokenIn} to ${tokenOut}`,
-                })
-            );
-        }
-    }, [isMounted]);
+                dispatch(
+                    showCustomAlert({
+                        success,
+                        messageCodeHeader: success ? 'swap.success' : 'swap.error',
+                        // @note is there a different way to show custom data
+                        // instead of 'errorMessage' key?
+                        errorMessage: `${tokenIn} to ${tokenOut}`,
+                    })
+                );
+            }
+        },
+        [isMounted]
+    );
 
     const events = useMemo(
         () => ({
@@ -166,9 +169,5 @@ export function SwapProvider({ children }) {
 
     const contextValue = useMemo(() => ({ swapState, events }), [swapState]);
 
-    return (
-        <SwapContext.Provider value={contextValue}>
-            {children}
-        </SwapContext.Provider>
-    );
+    return <SwapContext.Provider value={contextValue}>{children}</SwapContext.Provider>;
 }

@@ -29,9 +29,15 @@ export default () => {
     const [recoveryOption, setRecoveryOption] = useState('newPhrase');
     return (
         <StyledContainer className='small-centered border'>
-            <h1><Translate id='createAccount.setupPassphrase.generatePassphrase.tite' /></h1>
-            <h2><Translate id='createAccount.setupPassphrase.generatePassphrase.desc' /></h2>
-            <h2><Translate id='createAccount.setupPassphrase.generatePassphrase.descTwo' /></h2>
+            <h1>
+                <Translate id='createAccount.setupPassphrase.generatePassphrase.tite' />
+            </h1>
+            <h2>
+                <Translate id='createAccount.setupPassphrase.generatePassphrase.desc' />
+            </h2>
+            <h2>
+                <Translate id='createAccount.setupPassphrase.generatePassphrase.descTwo' />
+            </h2>
             <RecoveryOption
                 onClick={() => setRecoveryOption('newPhrase')}
                 option='newPhrase'
@@ -42,9 +48,7 @@ export default () => {
                 option='existingPhrase'
                 active={recoveryOption}
             />
-            <FormButton
-                onClick={() => {}}
-            >
+            <FormButton onClick={() => {}}>
                 <Translate id='button.continue' />
             </FormButton>
         </StyledContainer>

@@ -9,13 +9,13 @@ import FormButton from '../../../common/FormButton';
 import LedgerImageCircle from '../../../svg/LedgerImageCircle';
 
 const EnterAccountId = ({
-    handleAdditionalAccountId, 
-    handleChange, 
-    checkAccountAvailable, 
-    mainLoader, 
-    stateAccountId, 
+    handleAdditionalAccountId,
+    handleChange,
+    checkAccountAvailable,
+    mainLoader,
+    stateAccountId,
     loader,
-    clearSignInWithLedgerModalState
+    clearSignInWithLedgerModalState,
 }) => {
     const dispatch = useDispatch();
 
@@ -24,9 +24,12 @@ const EnterAccountId = ({
     return (
         <>
             <LedgerImageCircle />
-            <h1><Translate id='enterAccountNameLedgerModal.header'/></h1>
-            <Translate id='enterAccountNameLedgerModal.one'/>
-            <br /><br />
+            <h1>
+                <Translate id='enterAccountNameLedgerModal.header' />
+            </h1>
+            <Translate id='enterAccountNameLedgerModal.one' />
+            <br />
+            <br />
             <AccountFormAccountId
                 mainLoader={mainLoader}
                 handleChange={handleChange}
@@ -42,14 +45,14 @@ const EnterAccountId = ({
                     disabled={mainLoader || !status?.localAlert?.success}
                     sending={loader}
                 >
-                    <Translate id='button.confirm'/>
+                    <Translate id='button.confirm' />
                 </FormButton>
 
                 <FormButton
                     onClick={clearSignInWithLedgerModalState}
                     className='gray link'
                 >
-                    <Translate id='button.cancel'/>
+                    <Translate id='button.cancel' />
                 </FormButton>
             </div>
         </>

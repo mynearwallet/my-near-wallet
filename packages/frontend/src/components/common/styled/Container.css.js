@@ -19,12 +19,13 @@ const Container = styled.div`
         width: 1000px;
     }
 
-    &.small-centered, &.xs-centered {
+    &.small-centered,
+    &.xs-centered {
         max-width: 500px;
 
         @media (min-width: 768px) {
             &.border {
-                border: 1px solid #F0F0F1;
+                border: 1px solid #f0f0f1;
                 border-radius: 16px;
                 padding: 40px;
                 margin-top: 40px;
@@ -41,7 +42,8 @@ const Container = styled.div`
                 margin: 10px 0;
             }
 
-            h1, h2 {
+            h1,
+            h2 {
                 text-align: center !important;
             }
         }
@@ -63,7 +65,7 @@ const Container = styled.div`
                 flex: 1.5;
                 margin-right: 40px;
             }
-    
+
             .right {
                 flex: 1;
                 max-width: 365px;
@@ -71,12 +73,12 @@ const Container = styled.div`
         }
     }
 
-
-    .sub-title, h2 {
+    .sub-title,
+    h2 {
         line-height: 150%;
         margin: 25px 0;
         font-size: 16px;
-        color: #72727A;
+        color: #72727a;
         font-weight: 400;
     }
 
@@ -102,11 +104,11 @@ const Container = styled.div`
         &&& {
             button {
                 margin-top: 25px;
-    
+
                 &.blue {
                     width: 100%;
                 }
-    
+
                 &.remove-all-keys {
                     min-height: 56px;
                     height: auto;
@@ -121,7 +123,6 @@ const Container = styled.div`
             > button {
                 display: block;
                 width: 100%;
-
             }
 
             .link {

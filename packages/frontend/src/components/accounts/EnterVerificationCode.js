@@ -10,13 +10,13 @@ import { Recaptcha } from '../Recaptcha';
 
 // FIXME: Use `debug` npm package so we can keep some debug logging around but not spam the console everywhere
 const ENABLE_DEBUG_LOGGING = false;
-const debugLog = (...args) => ENABLE_DEBUG_LOGGING && console.log('EnterVerificationCode:', ...args);
+const debugLog = (...args) =>
+    ENABLE_DEBUG_LOGGING && console.log('EnterVerificationCode:', ...args);
 
 const StyledContainer = styled(Container)`
-
     h2 {
         span {
-            color: #72727A;
+            color: #72727a;
             font-weight: 600;
         }
     }
@@ -50,7 +50,7 @@ const StyledContainer = styled(Container)`
 
         div {
             :first-of-type {
-                color: #3F4045;
+                color: #3f4045;
                 margin-bottom: 10px;
             }
 
@@ -68,10 +68,11 @@ const StyledContainer = styled(Container)`
         }
     }
 
-    .recaptcha-failed-box, .recaptcha-widget {
+    .recaptcha-failed-box,
+    .recaptcha-widget {
         margin-top: 20px;
     }
- 
+
     .recaptcha-disclaimer {
         margin-top: 30px;
     }
@@ -90,7 +91,7 @@ const EnterVerificationCode = ({
     onRecaptchaChange,
     isLinkDrop,
     skipRecaptcha,
-    showRecaptchaDisclaimer
+    showRecaptchaDisclaimer,
 }) => {
     debugLog('Rendering', { isNewAccount });
 
@@ -122,28 +123,44 @@ const EnterVerificationCode = ({
         }
     };
 
-    const shouldRenderRecaptcha = !skipRecaptcha && !isLinkDrop && CONFIG.RECAPTCHA_CHALLENGE_API_KEY && isNewAccount;
+    const shouldRenderRecaptcha =
+        !skipRecaptcha &&
+        !isLinkDrop &&
+        CONFIG.RECAPTCHA_CHALLENGE_API_KEY &&
+        isNewAccount;
 
     return (
         <StyledContainer className='small-centered border'>
-            <form
-                onSubmit={handleOnSubmit}
-                autoComplete='off'
-            >
-                <h1><Translate id='setRecoveryConfirm.title'/></h1>
+            <form onSubmit={handleOnSubmit} autoComplete='off'>
+                <h1>
+                    <Translate id='setRecoveryConfirm.title' />
+                </h1>
                 <h2>
-                    <Translate id='setRecoveryConfirm.pageText'/>
-                    <Translate id={useEmail ? 'setRecoveryConfirm.email' : 'setRecoveryConfirm.phone'}/>: <span>{useEmail ? email : phoneNumber}</span>
+                    <Translate id='setRecoveryConfirm.pageText' />
+                    <Translate
+                        id={
+                            useEmail
+                                ? 'setRecoveryConfirm.email'
+                                : 'setRecoveryConfirm.phone'
+                        }
+                    />
+                    : <span>{useEmail ? email : phoneNumber}</span>
                 </h2>
-                <h4 className='small'><Translate id='setRecoveryConfirm.inputHeader'/></h4>
+                <h4 className='small'>
+                    <Translate id='setRecoveryConfirm.inputHeader' />
+                </h4>
                 <Translate>
                     {({ translate }) => (
                         <div className={error ? 'problem' : ''}>
                             <input
                                 type='number'
                                 pattern='[0-9]*'
-                                placeholder={translate('setRecoveryConfirm.inputPlaceholder')}
-                                aria-label={translate('setRecoveryConfirm.inputPlaceholder')}
+                                placeholder={translate(
+                                    'setRecoveryConfirm.inputPlaceholder'
+                                )}
+                                aria-label={translate(
+                                    'setRecoveryConfirm.inputPlaceholder'
+                                )}
                                 value={code}
                                 disabled={verifyingCode}
                                 onChange={(e) => {
@@ -155,48 +172,69 @@ const EnterVerificationCode = ({
                         </div>
                     )}
                 </Translate>
-                {
-                    shouldRenderRecaptcha && (
-                        <Recaptcha
-                            ref={recaptchaRef}
-                            onChange={(token) => {
-                                debugLog('onChange from recaptcha - setting token in state', token);
-                                setRecaptchaToken(token);
-                                onRecaptchaChange(token);
-                            }}
-                            onFundAccountCreation={handleOnSubmit}
-                        />
-                    )
-                }
+                {shouldRenderRecaptcha && (
+                    <Recaptcha
+                        ref={recaptchaRef}
+                        onChange={(token) => {
+                            debugLog(
+                                'onChange from recaptcha - setting token in state',
+                                token
+                            );
+                            setRecaptchaToken(token);
+                            onRecaptchaChange(token);
+                        }}
+                        onFundAccountCreation={handleOnSubmit}
+                    />
+                )}
                 <FormButton
                     color='blue'
                     type='submit'
-                    disabled={code.length !== 6 || verifyingCode || (!recaptchaToken && shouldRenderRecaptcha)}
+                    disabled={
+                        code.length !== 6 ||
+                        verifyingCode ||
+                        (!recaptchaToken && shouldRenderRecaptcha)
+                    }
                     sending={verifyingCode}
-                    sendingString={isNewAccount ? 'button.creatingAccount' : 'button.verifying'}
+                    sendingString={
+                        isNewAccount ? 'button.creatingAccount' : 'button.verifying'
+                    }
                 >
-                    <Translate id='button.verifyCodeEnable'/>
+                    <Translate id='button.verifyCodeEnable' />
                 </FormButton>
-                <FormButton
-                    className='link red'
-                    onClick={onGoBack}
-                >
-                    <Translate id='button.cancel'/>
+                <FormButton className='link red' onClick={onGoBack}>
+                    <Translate id='button.cancel' />
                 </FormButton>
             </form>
 
             <div className='resend'>
-                <div><Translate id='setRecoveryConfirm.didNotReceive'/></div>
                 <div>
-                    <span onClick={!reSending ? onResend : () => {}} className='link'><Translate id={`setRecoveryConfirm.${!reSending ? 'resendCode' : 'resending'}`}/></span>
-                    &nbsp;<Translate id='setRecoveryConfirm.or'/>&nbsp;<span onClick={onGoBack} className='link'>
-                        <Translate id='setRecoveryConfirm.sendToDifferent'/> <Translate id={`setRecoveryConfirm.${useEmail ? 'email' : 'phone'}`}/></span>
+                    <Translate id='setRecoveryConfirm.didNotReceive' />
+                </div>
+                <div>
+                    <span onClick={!reSending ? onResend : () => {}} className='link'>
+                        <Translate
+                            id={`setRecoveryConfirm.${
+                                !reSending ? 'resendCode' : 'resending'
+                            }`}
+                        />
+                    </span>
+                    &nbsp;
+                    <Translate id='setRecoveryConfirm.or' />
+                    &nbsp;
+                    <span onClick={onGoBack} className='link'>
+                        <Translate id='setRecoveryConfirm.sendToDifferent' />{' '}
+                        <Translate
+                            id={`setRecoveryConfirm.${useEmail ? 'email' : 'phone'}`}
+                        />
+                    </span>
                 </div>
             </div>
 
-            {showRecaptchaDisclaimer &&
-                <div className='recaptcha-disclaimer'><Translate id='reCAPTCHA.disclaimer'/></div>
-            }
+            {showRecaptchaDisclaimer && (
+                <div className='recaptcha-disclaimer'>
+                    <Translate id='reCAPTCHA.disclaimer' />
+                </div>
+            )}
         </StyledContainer>
     );
 };
@@ -206,7 +244,7 @@ EnterVerificationCode.propTypes = {
     phoneNumber: PropTypes.string,
     option: PropTypes.string.isRequired,
     onGoBack: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired
+    onConfirm: PropTypes.func.isRequired,
 };
 
 export default EnterVerificationCode;

@@ -1,9 +1,9 @@
 class SetRecoveryOptionPage {
     recoveryOptions = {
-        ledger: "ledger",
-        email: "email",
-        phone: "phone",
-        seedPhrase: "phrase",
+        ledger: 'ledger',
+        email: 'email',
+        phone: 'phone',
+        seedPhrase: 'phrase',
     };
     constructor(page) {
         this.page = page;
@@ -49,7 +49,7 @@ class SetRecoveryOptionPage {
         return await this.page.$(this.getSeedPhraseSelector());
     }
     async submitRecoveryOption() {
-        await this.page.click(`data-test-id=submitSelectedRecoveryOption`);
+        await this.page.click('data-test-id=submitSelectedRecoveryOption');
     }
 }
 module.exports = { SetRecoveryOptionPage };

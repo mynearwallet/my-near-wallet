@@ -64,7 +64,7 @@ const SignTransferMultipleAccounts = ({
                 <Translate id='sign.multipleAccountsError.title' />
             </h2>
         </div>
-        <div className='text' >
+        <div className='text'>
             <SafeTranslate
                 id='sign.multipleAccountsError.body'
                 data={{ signCallbackUrl, signTransactionSignerId }}

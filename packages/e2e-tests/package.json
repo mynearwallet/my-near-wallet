@@ -32,5 +32,9 @@
     "e2e:swap-nep141-nep141": "npx playwright test ./swap/nep141-with-nep141.spec.js --project=Desktop_Chromium",
     "e2e:debug": "PWDEBUG=1 npx playwright test",
     "e2e:ui": "npx playwright test --ui --headed"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "eslint-config-prettier": "^8.8.0"
   }
 }

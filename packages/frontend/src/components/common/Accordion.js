@@ -22,7 +22,9 @@ const Accordion = ({ className, trigger, children, transition = '250' }) => {
     useEffect(() => {
         const el = document.getElementById(trigger);
         el.addEventListener('click', handleClick);
-        const contentHeight = document.getElementById(`${trigger}-wrapper`).getBoundingClientRect().height;
+        const contentHeight = document
+            .getElementById(`${trigger}-wrapper`)
+            .getBoundingClientRect().height;
         const toggles = document.getElementsByClassName(`${trigger}-toggle`);
         setContentHeight(contentHeight);
 
@@ -36,7 +38,6 @@ const Accordion = ({ className, trigger, children, transition = '250' }) => {
                 toggle.removeEventListener('click', handleClick);
             }
         };
-
     }, [open]);
 
     const handleClick = () => {
@@ -45,7 +46,7 @@ const Accordion = ({ className, trigger, children, transition = '250' }) => {
         const container = document.getElementById(`${trigger}-container`);
         if (!open) {
             el.classList.add('open');
-            setTimeout(() => container.style.overflow = 'visible', 250);
+            setTimeout(() => (container.style.overflow = 'visible'), 250);
         } else {
             container.style.overflow = 'hidden';
             el.classList.remove('open');
@@ -59,9 +60,7 @@ const Accordion = ({ className, trigger, children, transition = '250' }) => {
             transition={transition}
             className={classNames([className, open ? 'open' : ''])}
         >
-            <div id={`${trigger}-wrapper`}>
-                {children}
-            </div>
+            <div id={`${trigger}-wrapper`}>{children}</div>
         </Container>
     );
 };

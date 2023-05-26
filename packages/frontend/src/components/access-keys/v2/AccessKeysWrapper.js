@@ -47,10 +47,14 @@ export default ({ type }) => {
                 fullAccessKeys={fullAccessKeys}
                 onClickDeAuthorizeKey={(publicKey) => deAuthorizeKey(publicKey)}
                 userInputAccountId={userInputAccountId}
-                setUserInputAccountId={(userInputAccountId) => setUserInputAccountId(userInputAccountId)}
+                setUserInputAccountId={(userInputAccountId) =>
+                    setUserInputAccountId(userInputAccountId)
+                }
                 accountId={accountId}
                 confirmDeAuthorizeKey={confirmDeAuthorizeKey}
-                setConfirmDeAuthorizeKey={(publicKey) => setConfirmDeAuthorizeKey(publicKey)}
+                setConfirmDeAuthorizeKey={(publicKey) =>
+                    setConfirmDeAuthorizeKey(publicKey)
+                }
                 deAuthorizingKey={deAuthorizingKey}
             />
         );

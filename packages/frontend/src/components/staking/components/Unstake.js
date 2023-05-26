@@ -6,22 +6,29 @@ import ListWrapper from './ListWrapper';
 import ValidatorBox from './ValidatorBox';
 
 export default function Unstake({ currentValidators }) {
-
     return (
         <>
-            <h1><Translate id='staking.validators.title' /></h1>
-            <h2><Translate id={'staking.validators.desc.unstake'} /></h2>
-            <h3><Translate id='staking.staking.currentValidators' /></h3>
+            <h1>
+                <Translate id='staking.validators.title' />
+            </h1>
+            <h2>
+                <Translate id={'staking.validators.desc.unstake'} />
+            </h2>
+            <h3>
+                <Translate id='staking.staking.currentValidators' />
+            </h3>
             <ListWrapper>
-                {currentValidators.filter((v) => !new BN(v.staked).isZero()).map((validator, i) => (
-                    <ValidatorBox
-                        key={i}
-                        validator={validator}
-                        amount={validator.staked}
-                        stakeAction='unstake'
-                        showBalanceInUSD={false}
-                    />
-                ))}
+                {currentValidators
+                    .filter((v) => !new BN(v.staked).isZero())
+                    .map((validator, i) => (
+                        <ValidatorBox
+                            key={i}
+                            validator={validator}
+                            amount={validator.staked}
+                            stakeAction='unstake'
+                            showBalanceInUSD={false}
+                        />
+                    ))}
             </ListWrapper>
         </>
     );

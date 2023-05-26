@@ -46,9 +46,6 @@ jobs:
     name: StackHawk
     runs-on: ubuntu-20.04
     environment: ${{ inputs.environment }}
-    defaults:
-      run:
-        working-directory: packages/frontend
     env:
       NEAR_WALLET_ENV: ${{ inputs.near_wallet_env }}
     steps:
@@ -60,8 +57,10 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test
-      - run: yarn bundle --distDir=dist/${{ inputs.environment }}
-      - run: yarn start &
+      - working-directory: ./packages/frontend
+        run: yarn bundle --distDir=dist/${{ inputs.environment }}
+      - working-directory: ./packages/frontend
+        run: yarn start &
 
       - name: Run HawkScan
         uses: stackhawk/hawkscan-action@v2.0.0

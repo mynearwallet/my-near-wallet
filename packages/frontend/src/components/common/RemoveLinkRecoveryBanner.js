@@ -5,9 +5,11 @@ import Banner from './Banner';
 
 const StyledBanner = styled.div`
     .banner-container {
-        background-color: #FEF2F2;
-        .title, .desc, a {
-            color: #DC1F25;
+        background-color: #fef2f2;
+        .title,
+        .desc,
+        a {
+            color: #dc1f25;
         }
     }
 
@@ -29,4 +31,4 @@ export default function RemoveLinkRecoveryBanner() {
             />
         </StyledBanner>
     );
-};
+}

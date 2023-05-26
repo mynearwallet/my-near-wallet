@@ -5,7 +5,7 @@ const Style = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 20px 15px;
-    color: #72727A;
+    color: #72727a;
 
     &.information {
         color: #272729;
@@ -25,7 +25,8 @@ const Style = styled.div`
         margin-top: 2px;
     }
 
-    .icon, .amount {
+    .icon,
+    .amount {
         display: flex;
         align-items: center;
         color: #272729;
@@ -44,7 +45,8 @@ const Style = styled.div`
             width: 32px;
         }
 
-        img, svg {
+        img,
+        svg {
             height: 32px;
             width: 32px;
         }
@@ -52,18 +54,19 @@ const Style = styled.div`
 
     .receiver {
         font-weight: 600;
-        background-color: #F0F0F1;
+        background-color: #f0f0f1;
         padding: 10px 18px;
         border-radius: 40px;
     }
 
-    .time, .status {
-        color: #3F4045;
+    .time,
+    .status {
+        color: #3f4045;
     }
 
     &.stand-alone {
         border-radius: 8px;
-        background-color: #FAFAFA;
+        background-color: #fafafa;
     }
 `;
 

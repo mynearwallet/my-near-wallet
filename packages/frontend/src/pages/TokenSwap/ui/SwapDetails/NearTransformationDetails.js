@@ -5,10 +5,7 @@ import CONFIG from '../../../../config';
 import { parseTokenAmount } from '../../../../utils/amounts';
 import { useSwapData } from '../../model/Swap';
 
-export default function NearTransformationDetails({
-    minAmountOut,
-    estimatedFee,
-}) {
+export default function NearTransformationDetails({ minAmountOut, estimatedFee }) {
     const {
         swapState: { tokenOut },
     } = useSwapData();

@@ -14,9 +14,9 @@ const cutDecimalsIfPossible = (amount, decimals) => {
 
     return firstDecimalIndex
         ? `${strAmount.slice(0, decimalPointIndex)}.${strAmount.slice(
-            firstDecimalIndex,
-            firstDecimalIndex + decimals
-        )}`
+              firstDecimalIndex,
+              firstDecimalIndex + decimals
+          )}`
         : strAmount;
 };
 
@@ -33,19 +33,19 @@ function getResultMessageRegExp({
         VISIBLE_DECIMALS - acceptableInputDifference
     );
     const expectedToAmount = cutDecimalsIfPossible(
-      toAmount,
-      VISIBLE_DECIMALS - acceptableOutputDifference
+        toAmount,
+        VISIBLE_DECIMALS - acceptableOutputDifference
     );
 
     return new RegExp(
         `You swapped ${expectedFromAmount}\\d* ${fromSymbol}[ ]{1,}to ${expectedToAmount}\\d* ${toSymbol}`,
         'im'
     );
-};
+}
 
 function removeStringBrakes(str) {
     return str.replace(/\r?\n|\r/g, ' ');
-};
+}
 
 function withoutLastChars(str, amountToRemove) {
     return amountToRemove ? str.slice(0, -amountToRemove) : str;

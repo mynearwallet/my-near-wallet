@@ -1,7 +1,6 @@
-Signing transactions
-===
+# Signing transactions
 
-Signing a transaction or series of transactions on NEAR Wallet involves constructing the transaction and then using `near-api-js` to redirect the user to the wallet. Once the user approves (or denies) the transaction, they will be redirected to the original url or a pre-specified url. 
+Signing a transaction or series of transactions on NEAR Wallet involves constructing the transaction and then using `near-api-js` to redirect the user to the wallet. Once the user approves (or denies) the transaction, they will be redirected to the original url or a pre-specified url.
 
 ## Steps
 
@@ -10,6 +9,7 @@ Signing a transaction or series of transactions on NEAR Wallet involves construc
 3. [Wallet redirect and callback](#Wallet-redirect-and-callback)
 
 ## Construct a transaction
+
 At a high level, constructing a transaction is done by calling `createTransaction` from `near-api-js`:
 
 ```javascript=
@@ -44,6 +44,7 @@ walletConnection.requestSignTransactions({
     transactions: [transaction],
 });
 ```
+
 More information on setting up a connection to NEAR [here](https://docs.near.org/docs/tutorials/create-transactions#setting-up-a-connection-to-near).
 
 `requestSignTransactions` takes in an `options` argument of type `RequestSignTransactionsOptions`:
@@ -59,9 +60,9 @@ RequestSignTransactionsOptions {
 }
 ```
 
-* The `transactions` property is required and it's a list of transactions that can be created using the method [above](#Construct-a-transaction).
-* `callbackUrl` is optional and will default to the current url `window.location.href` when not provided.
-* `meta` is optional and can include any information that we'd like forwarded to the `callbackUrl` by the wallet as the `meta` search param.
+-   The `transactions` property is required and it's a list of transactions that can be created using the method [above](#Construct-a-transaction).
+-   `callbackUrl` is optional and will default to the current url `window.location.href` when not provided.
+-   `meta` is optional and can include any information that we'd like forwarded to the `callbackUrl` by the wallet as the `meta` search param.
 
 ## Wallet URL API
 
@@ -74,6 +75,7 @@ The `/sign` path of the wallet recognizes the following url parameters:
 | `meta`         | Any data the integrator wants passed to the `callbackUrl`                                                        |
 
 ### Serializing transactions in [borsh](https://borsh.io/)
+
 A transaction is serialized using [borsh](https://borsh.io/) as follows:
 
 ```javascript=
@@ -126,7 +128,6 @@ const serializedEncodedTx = serializedTx.toString('base64'); // -> "CwAAAHNlbmRl
 
 The resulting string can then be added to the url as a param with `encodeURIComponent`.
 
-
 ### Example usage of wallet URL API
 
 ```
@@ -138,14 +139,14 @@ GET https://wallet.near.org/sign?transactions=CwAAAHNlbmRlci5uZWFyAGT3V2lh0VAA%2
 For each transaction in the batch, the wallet will create a new transaction based on the `receiverId` and the `actions` that are sent in and sign and send them using the account that the user selects as the `signerId` and signer of the transaction. The account that will be signing and sending the transaction once approved will always be displayed in the **From** section.
 
 ## Wallet redirect and callback
-The user will be presented with a request to sign the transaction(s) that were passed in in the wallet UI: 
+
+The user will be presented with a request to sign the transaction(s) that were passed in in the wallet UI:
 
 <img src="./assets/sign-transaction-request.png" width="500">
 
-
 Once the user allows or denies the transaction, they will be redirected to `callbackUrl` with the following parameters:
 
-* `transactionHashes`: a comma seperated string of the transaction hashes of the approved transactions if successful.
-* `meta`: the meta search param that was passed by the original URL.
-* `errorCode`: The eror code (if any) encountered when signing the transaction.
-* `errorMessage`: The error message for the error encountered when signing.
+-   `transactionHashes`: a comma seperated string of the transaction hashes of the approved transactions if successful.
+-   `meta`: the meta search param that was passed by the original URL.
+-   `errorCode`: The eror code (if any) encountered when signing the transaction.
+-   `errorMessage`: The error message for the error encountered when signing.

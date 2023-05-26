@@ -21,7 +21,8 @@ const Container = styled.div`
         text-align: center;
     }
 
-    ul, li {
+    ul,
+    li {
         color: #0072ce;
     }
 
@@ -52,46 +53,62 @@ const Container = styled.div`
         cursor: pointer;
         margin-top: 20px;
         display: flex;
-        color: #A1A1A9;
+        color: #a1a1a9;
         max-width: 450px;
 
         > span {
             margin-left: 8px;
         }
     }
-
 `;
 
-const TermsModal = ({ open, onClose, termsChecked, privacyChecked, handleTermsChange, handlePrivacyChange, handleFinishSetup, loading }) => {
+const TermsModal = ({
+    open,
+    onClose,
+    termsChecked,
+    privacyChecked,
+    handleTermsChange,
+    handlePrivacyChange,
+    handleFinishSetup,
+    loading,
+}) => {
     return (
-        <Modal
-            id='terms-modal'
-            isOpen={open}
-            onClose={onClose}
-            disableClose={true}
-        >
+        <Modal id='terms-modal' isOpen={open} onClose={onClose} disableClose={true}>
             <Container>
-                <h2><Translate id='createAccount.terms.title'/></h2>
-                <div className='sub-title'><Translate id='createAccount.terms.desc'/></div>
+                <h2>
+                    <Translate id='createAccount.terms.title' />
+                </h2>
+                <div className='sub-title'>
+                    <Translate id='createAccount.terms.desc' />
+                </div>
                 <ul>
-                    <li><a href='/terms' rel='noopener noreferrer' target='_blank'><Translate id='createAccount.terms.termsLink'/></a></li>
-                    <li><a href='/privacy' rel='noopener noreferrer' target='_blank'><Translate id='createAccount.terms.privacyLink'/></a></li>
+                    <li>
+                        <a href='/terms' rel='noopener noreferrer' target='_blank'>
+                            <Translate id='createAccount.terms.termsLink' />
+                        </a>
+                    </li>
+                    <li>
+                        <a href='/privacy' rel='noopener noreferrer' target='_blank'>
+                            <Translate id='createAccount.terms.privacyLink' />
+                        </a>
+                    </li>
                 </ul>
                 <label>
-                    <Checkbox
-                        checked={termsChecked}
-                        onChange={handleTermsChange}
-                    />
-                    <span><Translate id='createAccount.terms.termsCheck'/></span>
+                    <Checkbox checked={termsChecked} onChange={handleTermsChange} />
+                    <span>
+                        <Translate id='createAccount.terms.termsCheck' />
+                    </span>
                 </label>
                 <label>
-                    <Checkbox
-                        checked={privacyChecked}
-                        onChange={handlePrivacyChange}
-                    />
-                    <span><Translate id='createAccount.terms.privacyCheck'/></span>
+                    <Checkbox checked={privacyChecked} onChange={handlePrivacyChange} />
+                    <span>
+                        <Translate id='createAccount.terms.privacyCheck' />
+                    </span>
                 </label>
-                <FormButton disabled={!termsChecked || !privacyChecked} onClick={handleFinishSetup}>
+                <FormButton
+                    disabled={!termsChecked || !privacyChecked}
+                    onClick={handleFinishSetup}
+                >
                     <Translate id='createAccount.terms.agreeBtn' />
                 </FormButton>
                 <FormButton color='link red' onClick={onClose}>

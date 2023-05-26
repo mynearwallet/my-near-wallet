@@ -21,7 +21,7 @@ const Container = styled.div`
     height: 70px;
     position: relative;
     padding: 0 14px;
-    border-bottom: 1px solid #F0F0F1;
+    border-bottom: 1px solid #f0f0f1;
     transition: 300ms;
 
     ::-webkit-scrollbar {
@@ -53,8 +53,9 @@ const Container = styled.div`
 
     .nav-links {
         margin: 0 -14px;
-        background-color: #FAFAFA;
-        a, .nav-button {
+        background-color: #fafafa;
+        a,
+        .nav-button {
             padding: 17px 14px;
             border-top: 1px solid #efefef;
             width: 100%;
@@ -84,7 +85,7 @@ const Collapsed = styled.div`
 
     .user-icon {
         .background {
-            fill: #E5E5E6;
+            fill: #e5e5e6;
         }
     }
 `;
@@ -103,13 +104,13 @@ const Lang = styled.div`
     margin: 0 -14px;
 
     &.mobile-lang {
-        background-color: #FAFAFA;
+        background-color: #fafafa;
         border-bottom: 1px solid #efefef;
     }
 
     &:after {
         content: '';
-        border-color: #72727A;
+        border-color: #72727a;
         border-style: solid;
         border-width: 2px 2px 0 0;
         display: inline-block;
@@ -137,7 +138,7 @@ const Lang = styled.div`
         appearance: none;
         background: transparent url(${languagesIcon}) no-repeat 0px center / 24px 24px;
         border: 0;
-        color: #72727A;
+        color: #72727a;
         cursor: pointer;
         height: 32px;
         outline: none;
@@ -148,7 +149,7 @@ const Lang = styled.div`
         text-indent: 54px;
     }
 
-    &.mobile-lang .lang-selector  {
+    &.mobile-lang .lang-selector {
         text-indent: 32px;
 
         &:active,
@@ -165,7 +166,6 @@ const Lang = styled.div`
 
 class MobileContainer extends Component {
     render() {
-
         const {
             account,
             handleSelectAccount,
@@ -175,7 +175,7 @@ class MobileContainer extends Component {
             showNavLinks,
             flowLimitationMainMenu,
             flowLimitationSubMenu,
-            refreshBalance
+            refreshBalance,
         } = this.props;
 
         return (
@@ -185,12 +185,18 @@ class MobileContainer extends Component {
                     {showNavLinks && (
                         <>
                             <UserAccount
-                                accountId={account.accountId || account.localStorage?.accountId}
+                                accountId={
+                                    account.accountId || account.localStorage?.accountId
+                                }
                                 onClick={toggleMenu}
                                 withIcon={false}
                                 flowLimitationSubMenu={flowLimitationSubMenu}
                             />
-                            <UserIcon background={true} color='#A2A2A8' onClick={!flowLimitationSubMenu ? toggleMenu : null}/>
+                            <UserIcon
+                                background={true}
+                                color='#A2A2A8'
+                                onClick={!flowLimitationSubMenu ? toggleMenu : null}
+                            />
                         </>
                     )}
                     {!showNavLinks && (
@@ -202,11 +208,13 @@ class MobileContainer extends Component {
                 {menuOpen && (
                     <>
                         <NavLinks />
-                        <Lang className="mobile-lang">
+                        <Lang className='mobile-lang'>
                             <LanguageToggle />
                         </Lang>
                         <LowerSection>
-                            <h6><Translate id='link.switchAccount' /></h6>
+                            <h6>
+                                <Translate id='link.switchAccount' />
+                            </h6>
                             <AccountSelector
                                 signedInAccountId={account.localStorage?.accountId}
                                 availableAccounts={availableAccounts}

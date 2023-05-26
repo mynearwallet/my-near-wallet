@@ -815,19 +815,19 @@
             "title": "Chave Privada"
         }
     },
+    "recoverPrivateKey": {
+        "pageText": "Digite a chave privada associada à conta.",
+        "pageTitle": "Recuperar usando a Chave Privada",
+        "privateKeyInput": {
+            "title": "Chave Privada"
+        }
+    },
     "recoverSeedPhrase": {
         "pageText": "Digite a frase-semente de backup associada à conta.",
         "pageTitle": "Recuperar usando Frase-semente",
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "Frase-semente (12 palavras)"
-        }
-    },
-    "recoverPrivateKey": {
-        "pageText": "Digite a chave privada associada à conta.",
-        "pageTitle": "Recuperar usando a Chave Privada",
-        "privateKeyInput": {
-            "title": "Chave Privada"
         }
     },
     "recoverWithLink": {
@@ -1559,11 +1559,11 @@
         "promptTwoFactor": {
             "userCancelled": "Código 2FA não foi verificado corretamente."
         },
-        "recoverAccountSeedPhrase": {
-            "errorInvalidSeedPhrase": "Nenhuma conta foi encontrada para essa frase-semente."
-        },
         "recoverAccountPrivateKey": {
             "errorPKNotValid": "A chave privada fornecida não é válida. Por favor, verifique a sua chave privada e tente novamente."
+        },
+        "recoverAccountSeedPhrase": {
+            "errorInvalidSeedPhrase": "Nenhuma conta foi encontrada para essa frase-semente."
         },
         "recoveryMethods": {
             "lastMethod": "Não foi possível deletar seu último método de recuperação. A menos que você tenha habilitado a Ledger, você precisa manter pelo menos um método de recuperação ativo para garantir a capacidade de recuperação de sua conta.",

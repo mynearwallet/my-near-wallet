@@ -11,7 +11,10 @@ import SignTransactionSummaryWrapper from '../components/sign/v2/SignTransaction
 import { Mixpanel } from '../mixpanel';
 import { switchAccount, redirectTo } from '../redux/actions/account';
 import { selectAccountId, selectAccountUrlPrivateShard } from '../redux/slices/account';
-import { selectAvailableAccounts, selectAvailableAccountsIsLoading } from '../redux/slices/availableAccounts';
+import {
+    selectAvailableAccounts,
+    selectAvailableAccountsIsLoading,
+} from '../redux/slices/availableAccounts';
 import {
     handleSignTransactions,
     selectSignFeesGasLimitIncludingGasChanges,
@@ -23,7 +26,7 @@ import {
     selectSignErrorMessage,
     selectSignTransactionHashes,
     selectSignTransactions,
-    selectSignTransactionsBatchIsValid
+    selectSignTransactionsBatchIsValid,
 } from '../redux/slices/sign';
 import { addQueryParams } from '../utils/addQueryParams';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
@@ -36,12 +39,14 @@ const SignWrapper = () => {
         TRANSACTION_DETAILS: 1,
         INSUFFICIENT_NETWORK_FEE: 2,
         ACCOUNT_NOT_FOUND: 3,
-        MULTIPLE_ACCOUNTS_IN_BATCH: 4
+        MULTIPLE_ACCOUNTS_IN_BATCH: 4,
     };
 
     const [currentDisplay, setCurrentDisplay] = useState(DISPLAY.TRANSACTION_SUMMARY);
 
-    const signFeesGasLimitIncludingGasChanges = useSelector(selectSignFeesGasLimitIncludingGasChanges);
+    const signFeesGasLimitIncludingGasChanges = useSelector(
+        selectSignFeesGasLimitIncludingGasChanges
+    );
     const signStatus = useSelector(selectSignStatus);
     const signCallbackUrl = useSelector(selectSignCallbackUrl);
     const signMeta = useSelector(selectSignMeta);
@@ -57,32 +62,38 @@ const SignWrapper = () => {
 
     const isValidCallbackUrl = isUrlNotJavascriptProtocol(signCallbackUrl);
     const signerId = transactions.length && transactions[0].signerId;
-    const signGasFee = new BN(signFeesGasLimitIncludingGasChanges).div(new BN('1000000000000')).toString();
+    const signGasFee = new BN(signFeesGasLimitIncludingGasChanges)
+        .div(new BN('1000000000000'))
+        .toString();
     const submittingTransaction = signStatus === SIGN_STATUS.IN_PROGRESS;
     const isSignerValid = accountId === signerId;
 
     useEffect(() => {
         if (!transactionBatchisValid) {
             setCurrentDisplay(DISPLAY.MULTIPLE_ACCOUNTS_IN_BATCH);
-        } else if (signerId && !availableAccountsIsLoading && !availableAccounts.some(
-            (accountId) => accountId === signerId
-        )) {
+        } else if (
+            signerId &&
+            !availableAccountsIsLoading &&
+            !availableAccounts.some((accountId) => accountId === signerId)
+        ) {
             setCurrentDisplay(DISPLAY.ACCOUNT_NOT_FOUND);
         } else {
             setCurrentDisplay(DISPLAY.TRANSACTION_SUMMARY);
         }
-    },[signerId, transactionBatchisValid, availableAccounts, accountId, availableAccountsIsLoading]);
+    }, [
+        signerId,
+        transactionBatchisValid,
+        availableAccounts,
+        accountId,
+        availableAccountsIsLoading,
+    ]);
 
     useEffect(() => {
         if (
             !isSignerValid &&
-                availableAccounts.some(
-                    (accountId) => accountId === signerId
-                )
+            availableAccounts.some((accountId) => accountId === signerId)
         ) {
-            dispatch(
-                switchAccount({ accountId: signerId })
-            );
+            dispatch(switchAccount({ accountId: signerId }));
         }
     }, [signerId, availableAccounts, accountId]);
 
@@ -95,7 +106,7 @@ const SignWrapper = () => {
             if (signCallbackUrl && !!transactionHashes.length && isValidCallbackUrl) {
                 window.location.href = addQueryParams(signCallbackUrl, {
                     signMeta,
-                    transactionHashes: transactionHashes.join(',')
+                    transactionHashes: transactionHashes.join(','),
                 });
             } else {
                 dispatch(redirectTo('/'));
@@ -113,9 +124,9 @@ const SignWrapper = () => {
             const encounter = addQueryParams(signCallbackUrl, {
                 signMeta,
                 errorCode: encodeURIComponent('userRejected'),
-                errorMessage: encodeURIComponent('User rejected transaction')
+                errorMessage: encodeURIComponent('User rejected transaction'),
             });
-            window.location.href= encounter;
+            window.location.href = encounter;
             return;
         }
 
@@ -125,13 +136,17 @@ const SignWrapper = () => {
                 window.location.href = addQueryParams(signCallbackUrl, {
                     signMeta,
                     errorCode: encodeURIComponent('userRejected'),
-                    errorMessage: encodeURIComponent('User rejected transaction')
+                    errorMessage: encodeURIComponent('User rejected transaction'),
                 });
             } else {
                 window.location.href = addQueryParams(signCallbackUrl, {
                     signMeta,
-                    errorCode: encodeURIComponent(signErrorName) || encodeURIComponent('unknownError'),
-                    errorMessage: encodeURIComponent(signErrorMessage.substring(0, 100)) || encodeURIComponent('Unknown error')
+                    errorCode:
+                        encodeURIComponent(signErrorName) ||
+                        encodeURIComponent('unknownError'),
+                    errorMessage:
+                        encodeURIComponent(signErrorMessage.substring(0, 100)) ||
+                        encodeURIComponent('Unknown error'),
                 });
             }
         } else {
@@ -141,9 +156,7 @@ const SignWrapper = () => {
 
     // potentially malicious callback URL found
     if (!isValidCallbackUrl) {
-        return (
-            <SignTransferInvalid />
-        );
+        return <SignTransferInvalid />;
     }
 
     if (currentDisplay === DISPLAY.INSUFFICIENT_NETWORK_FEE) {

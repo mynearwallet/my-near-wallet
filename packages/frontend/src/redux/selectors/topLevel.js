@@ -15,12 +15,11 @@ const selectAccountState = createSelector(
     (accounts, activeAccountId) => accounts[activeAccountId] || {}
 );
 
-export const selectSliceByAccountId = (sliceName, initialState) => createSelector(
-    selectAccountState, 
-    (accountState) => accountState[sliceName] || initialState
-);
+export const selectSliceByAccountId = (sliceName, initialState) =>
+    createSelector(
+        selectAccountState,
+        (accountState) => accountState[sliceName] || initialState
+    );
 
-export const selectSliceFromShared = (sliceName, initialState) => createSelector(
-    selectShared, 
-    (shared) => shared[sliceName] || initialState
-);
+export const selectSliceFromShared = (sliceName, initialState) =>
+    createSelector(selectShared, (shared) => shared[sliceName] || initialState);

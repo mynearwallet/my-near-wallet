@@ -1,9 +1,4 @@
-import React, {
-    FC,
-    ComponentPropsWithoutRef,
-    useCallback,
-    useState
-} from 'react';
+import React, { FC, ComponentPropsWithoutRef, useCallback, useState } from 'react';
 
 import EyeIcon from '../EyeIcon';
 import {
@@ -14,12 +9,11 @@ import {
     ErrorTextWrapper,
 } from './ui';
 
-
 type InputProps = ComponentPropsWithoutRef<'input'> & {
     valid?: boolean;
     error?: string;
     placeholder?: string;
-}
+};
 
 const Input: FC<InputProps> = (props) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -35,14 +29,13 @@ const Input: FC<InputProps> = (props) => {
                     {...props}
                     placeholder={props.placeholder}
                     error={Boolean(props.error)}
-                    type={showPassword ? 'text': 'password'} />
+                    type={showPassword ? 'text' : 'password'}
+                />
                 <IconClickArea onClick={handleEyeClick}>
-                    <EyeIcon open={showPassword} fill='#9ba1a6'/>
+                    <EyeIcon open={showPassword} fill='#9ba1a6' />
                 </IconClickArea>
             </InputContent>
-            <ErrorTextWrapper show={Boolean(props.error)}>
-                {props.error}
-            </ErrorTextWrapper>
+            <ErrorTextWrapper show={Boolean(props.error)}>{props.error}</ErrorTextWrapper>
         </Wrapper>
     );
 };

@@ -112,110 +112,110 @@ const RecoverAccount = ({ locationSearch, isMobile }) => {
             <VerifyWalletDomainBanner />
             <StyledContainer>
                 <h1>
-                    <Translate id="recoverAccount.pageTitle" />
+                    <Translate id='recoverAccount.pageTitle' />
                 </h1>
                 <h2>
-                    <Translate id="recoverAccount.pageText" />
+                    <Translate id='recoverAccount.pageText' />
                 </h2>
                 <Options>
                     <Option>
                         <Header icon={EmailIcon}>
-                            <Translate id="recoverAccount.email.title" />
+                            <Translate id='recoverAccount.email.title' />
                         </Header>
                         <P>
-                            <Translate id="recoverAccount.email.desc" />{' '}
+                            <Translate id='recoverAccount.email.desc' />{' '}
                             <span>
-                                <Translate id="recoverAccount.email.subject" />
+                                <Translate id='recoverAccount.email.subject' />
                             </span>
                         </P>
                         <P>
-                            <Translate id="recoverAccount.actionRequired" />
+                            <Translate id='recoverAccount.actionRequired' />
                         </P>
                         <P>
-                            <Translate id="recoverAccount.cannotResend" />
+                            <Translate id='recoverAccount.cannotResend' />
                         </P>
                     </Option>
                     <Option>
                         <Header icon={PhoneIcon}>
-                            <Translate id="recoverAccount.phone.title" />
+                            <Translate id='recoverAccount.phone.title' />
                         </Header>
                         <P>
-                            <Translate id="recoverAccount.phone.desc" />{' '}
+                            <Translate id='recoverAccount.phone.desc' />{' '}
                             <span>
-                                <Translate id="recoverAccount.phone.number" />
+                                <Translate id='recoverAccount.phone.number' />
                             </span>
                         </P>
                         <P>
-                            <Translate id="recoverAccount.actionRequired" />
+                            <Translate id='recoverAccount.actionRequired' />
                         </P>
                         <P>
-                            <Translate id="recoverAccount.cannotResend" />
+                            <Translate id='recoverAccount.cannotResend' />
                         </P>
                     </Option>
                     <Option>
                         <Header icon={PhraseIcon}>
-                            <Translate id="recoverAccount.phrase.title" />
+                            <Translate id='recoverAccount.phrase.title' />
                         </Header>
                         <P>
-                            <Translate id="recoverAccount.phrase.desc" />
+                            <Translate id='recoverAccount.phrase.desc' />
                         </P>
                         <FormButton
-                            color="seafoam-blue"
+                            color='seafoam-blue'
                             linkTo={`/recover-seed-phrase${locationSearch}`}
                             onClick={() =>
                                 Mixpanel.track('IE Click seed phrase recovery button')
                             }
-                            data-test-id="recoverAccountWithPassphraseButton"
-                            id="IE Click seed phrase recovery button"
+                            data-test-id='recoverAccountWithPassphraseButton'
+                            id='IE Click seed phrase recovery button'
                         >
-                            <Translate id="button.recoverAccount" />
+                            <Translate id='button.recoverAccount' />
                         </FormButton>
                     </Option>
                     <Option>
                         <Header icon={HardwareDeviceIcon}>
-                            <Translate id="recoverAccount.ledger.title" />
+                            <Translate id='recoverAccount.ledger.title' />
                         </Header>
                         <P>
-                            <Translate id="recoverAccount.ledger.desc" />
+                            <Translate id='recoverAccount.ledger.desc' />
                         </P>
                         <FormButton
-                            color="seafoam-blue"
+                            color='seafoam-blue'
                             linkTo={`/sign-in-ledger${locationSearch}`}
                             onClick={() =>
                                 Mixpanel.track('IE Click ledger recovery button')
                             }
-                            id="IE Click ledger recovery button"
+                            id='IE Click ledger recovery button'
                         >
-                            <Translate id="button.signInLedger" />
+                            <Translate id='button.signInLedger' />
                         </FormButton>
                     </Option>
                     <Option>
                         <Header icon={KeyIcon}>
-                            <Translate id="recoverAccount.privateKey.title" />
+                            <Translate id='recoverAccount.privateKey.title' />
                         </Header>
                         <P>
-                            <Translate id="recoverAccount.privateKey.desc" />
+                            <Translate id='recoverAccount.privateKey.desc' />
                         </P>
                         <FormButton
-                            color="seafoam-blue"
+                            color='seafoam-blue'
                             linkTo={`/recover-private-key${locationSearch}`}
                             onClick={() =>
                                 Mixpanel.track('IE Click private key recovery button')
                             }
-                            data-test-id="recoverAccountWithPrivateKey"
-                            id="IE Click private key recovery button"
+                            data-test-id='recoverAccountWithPrivateKey'
+                            id='IE Click private key recovery button'
                         >
-                            <Translate id="button.recoverAccount" />
+                            <Translate id='button.recoverAccount' />
                         </FormButton>
                     </Option>
                     {!CONFIG.IS_MAINNET && isMobile && (
                         <Option>
-                            <Header className="no-background">
+                            <Header className='no-background'>
                                 <SmartPhoneIcon />
-                                <Translate id="mobileDeviceAccess.title" />
+                                <Translate id='mobileDeviceAccess.title' />
                             </Header>
                             <P>
-                                <Translate id="mobileDeviceAccess.importCode.desc" />
+                                <Translate id='mobileDeviceAccess.importCode.desc' />
                             </P>
                         </Option>
                     )}

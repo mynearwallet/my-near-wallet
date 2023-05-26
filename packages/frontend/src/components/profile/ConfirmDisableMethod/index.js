@@ -15,29 +15,30 @@ const ConfirmDisableMethod = ({
     isOpen,
     isProcessing,
     onClose,
-    onSubmit
+    onSubmit,
 }) => {
     const [value, setValue] = useState('');
-    const onChangeHandler = useCallback((e) => {
-        setValue(e.target.value);
-    }, [setValue]);
+    const onChangeHandler = useCallback(
+        (e) => {
+            setValue(e.target.value);
+        },
+        [setValue]
+    );
 
     const accountId = useSelector(selectAccountId);
     const accountIdConfirmed = accountId === value;
 
     return (
-        <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='sm'
-        >
+        <Modal isOpen={isOpen} onClose={onClose} modalSize='sm'>
             <Container>
                 <Title>{title}</Title>
                 <Description>{description}</Description>
                 <Translate>
                     {({ translate }) => (
                         <input
-                            placeholder={translate('recoveryMgmt.disableInputPlaceholder')}
+                            placeholder={translate(
+                                'recoveryMgmt.disableInputPlaceholder'
+                            )}
                             onChange={onChangeHandler}
                             value={value}
                             autoCapitalize='off'
@@ -56,9 +57,7 @@ const ConfirmDisableMethod = ({
                 >
                     <Translate id='button.disable' />
                 </FormButton>
-                <FormButton
-                    className='link'
-                    onClick={onClose}>
+                <FormButton className='link' onClick={onClose}>
                     <Translate id='button.cancel' />
                 </FormButton>
             </Container>

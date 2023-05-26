@@ -31,8 +31,8 @@ const IconWrapper = styled.span`
 `;
 
 const Notification: FC<{
-    type?: string,
-    children: ReactNode,
+    type?: string;
+    children: ReactNode;
 }> = ({ type, children }) => {
     const triangleColor = type === 'error' ? 'var(--mnw-color-error)' : '';
 

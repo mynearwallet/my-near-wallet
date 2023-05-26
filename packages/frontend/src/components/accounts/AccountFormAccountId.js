@@ -21,7 +21,7 @@ const InputWrapper = styled.div`
     input {
         margin-top: 0px !important;
     }
-    
+
     &.wrong-char {
         input {
             animation-duration: 0.4s;
@@ -54,8 +54,8 @@ class AccountFormAccountId extends Component {
     state = {
         accountId: this.props.defaultAccountId || '',
         invalidAccountIdLength: false,
-        wrongChar: false
-    }
+        wrongChar: false,
+    };
 
     checkAccountAvailabilityTimer = null;
     canvas = null;
@@ -68,13 +68,14 @@ class AccountFormAccountId extends Component {
         if (defaultAccountId) {
             this.handleChangeAccountId({ userValue: accountId });
         }
-    }
+    };
 
     updateSuffix = (userValue) => {
         if (userValue.match(this.props.pattern)) {
             return;
         }
-        const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+        const isSafari =
+            /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
         const width = this.getTextWidth(userValue, '16px Inter');
         const extraSpace = isSafari ? 21.5 : 22;
         this.suffix.current.style.left = width + extraSpace + 'px';
@@ -82,7 +83,7 @@ class AccountFormAccountId extends Component {
         if (userValue.length === 0) {
             this.suffix.current.style.visibility = 'hidden';
         }
-    }
+    };
 
     getTextWidth = (text, font) => {
         if (!this.canvas) {
@@ -92,7 +93,7 @@ class AccountFormAccountId extends Component {
         context.font = font;
         let metrics = context.measureText(text);
         return metrics.width;
-    }
+    };
 
     handleChangeAccountId = ({ userValue, el }) => {
         const { pattern, handleChange, type } = this.props;
@@ -110,18 +111,18 @@ class AccountFormAccountId extends Component {
                 el.style.animation = null;
             } else {
                 this.setState(() => ({
-                    wrongChar: true
+                    wrongChar: true,
                 }));
             }
             return false;
         } else {
             this.setState(() => ({
-                wrongChar: false
+                wrongChar: false,
             }));
         }
 
         this.setState(() => ({
-            accountId: accountId
+            accountId: accountId,
         }));
 
         handleChange(accountId);
@@ -130,20 +131,22 @@ class AccountFormAccountId extends Component {
 
         this.state.invalidAccountIdLength && this.handleAccountIdLengthState(accountId);
 
-        this.checkAccountAvailabilityTimer && clearTimeout(this.checkAccountAvailabilityTimer);
+        this.checkAccountAvailabilityTimer &&
+            clearTimeout(this.checkAccountAvailabilityTimer);
         this.checkAccountAvailabilityTimer = setTimeout(() => {
             this.handleCheckAvailability(accountId, type);
         }, ACCOUNT_CHECK_TIMEOUT);
-    }
+    };
 
     checkAccountIdLength = (accountId) => {
         const accountIdWithSuffix = `${accountId}.${CONFIG.ACCOUNT_ID_SUFFIX}`;
         return accountIdWithSuffix.length >= 2 && accountIdWithSuffix.length <= 64;
-    }
+    };
 
-    handleAccountIdLengthState = (accountId) => this.setState(() => ({
-        invalidAccountIdLength: !!accountId && !this.checkAccountIdLength(accountId)
-    }))
+    handleAccountIdLengthState = (accountId) =>
+        this.setState(() => ({
+            invalidAccountIdLength: !!accountId && !this.checkAccountIdLength(accountId),
+        }));
 
     handleCheckAvailability = (accountId, type) => {
         if (type === 'create') {
@@ -155,26 +158,37 @@ class AccountFormAccountId extends Component {
         if (this.isImplicitAccount(accountId)) {
             return true;
         }
-        if (!(type === 'create' && !this.handleAccountIdLengthState(accountId) && !this.checkAccountIdLength(accountId))) {
-            return this.props.checkAvailability(type === 'create' ? this.props.accountId : accountId);
+        if (
+            !(
+                type === 'create' &&
+                !this.handleAccountIdLengthState(accountId) &&
+                !this.checkAccountIdLength(accountId)
+            )
+        ) {
+            return this.props.checkAvailability(
+                type === 'create' ? this.props.accountId : accountId
+            );
         }
         return false;
-    }
+    };
 
-    isSameAccount = () => this.props.type !== 'create' && this.props.stateAccountId === this.state.accountId
+    isSameAccount = () =>
+        this.props.type !== 'create' &&
+        this.props.stateAccountId === this.state.accountId;
 
-    isImplicitAccount = (accountId) => this.props.type !== 'create' && accountId.length === 64
+    isImplicitAccount = (accountId) =>
+        this.props.type !== 'create' && accountId.length === 64;
 
     get loaderLocalAlert() {
         return {
-            messageCode: `account.create.checkingAvailablity.${this.props.type}`
+            messageCode: `account.create.checkingAvailablity.${this.props.type}`,
         };
     }
 
     get accountIdLengthLocalAlert() {
         return {
             success: false,
-            messageCode: 'account.create.errorInvalidAccountIdLength'
+            messageCode: 'account.create.errorInvalidAccountIdLength',
         };
     }
 
@@ -182,14 +196,14 @@ class AccountFormAccountId extends Component {
         return {
             success: false,
             show: true,
-            messageCode: 'account.available.errorSameAccount'
+            messageCode: 'account.available.errorSameAccount',
         };
     }
 
     get implicitAccountLocalAlert() {
         return {
             success: true,
-            messageCode: 'account.available.implicitAccount'
+            messageCode: 'account.available.implicitAccount',
         };
     }
 
@@ -216,12 +230,7 @@ class AccountFormAccountId extends Component {
     }
 
     render() {
-        const {
-            mainLoader,
-            autoFocus,
-            type,
-            disabled
-        } = this.props;
+        const { mainLoader, autoFocus, type, disabled } = this.props;
 
         const { accountId, wrongChar } = this.state;
 
@@ -233,14 +242,36 @@ class AccountFormAccountId extends Component {
             <>
                 <Translate>
                     {({ translate }) => (
-                        <InputWrapper className={classNames([type, {'success': success}, {'problem': problem}, {'wrong-char': wrongChar}])}>
+                        <InputWrapper
+                            className={classNames([
+                                type,
+                                { success: success },
+                                { problem: problem },
+                                { 'wrong-char': wrongChar },
+                            ])}
+                        >
                             <input
                                 name='accountId'
-                                data-test-id="createAccount.accountIdInput"
+                                data-test-id='createAccount.accountIdInput'
                                 value={accountId}
-                                onInput={(e) => type === 'create' && this.updateSuffix(e.target.value.trim())}
-                                onChange={(e) => this.handleChangeAccountId({ userValue: e.target.value.trim(), el: e.target })}
-                                placeholder={type === 'create' ? translate('createAccount.accountIdInput.placeholder', { data: CONFIG.ACCOUNT_ID_SUFFIX}) : translate('input.accountId.placeholder')}
+                                onInput={(e) =>
+                                    type === 'create' &&
+                                    this.updateSuffix(e.target.value.trim())
+                                }
+                                onChange={(e) =>
+                                    this.handleChangeAccountId({
+                                        userValue: e.target.value.trim(),
+                                        el: e.target,
+                                    })
+                                }
+                                placeholder={
+                                    type === 'create'
+                                        ? translate(
+                                              'createAccount.accountIdInput.placeholder',
+                                              { data: CONFIG.ACCOUNT_ID_SUFFIX }
+                                          )
+                                        : translate('input.accountId.placeholder')
+                                }
                                 required
                                 autoComplete='off'
                                 autoCorrect='off'
@@ -250,12 +281,24 @@ class AccountFormAccountId extends Component {
                                 autoFocus={autoFocus && accountId.length === 0}
                                 disabled={disabled}
                             />
-                            {type === 'create' && <span className='input-suffix' ref={this.suffix}>.{CONFIG.ACCOUNT_ID_SUFFIX}</span>}
-                            {type !== 'create' && <div className='input-sub-label'>{translate('input.accountId.subLabel')}</div>}
+                            {type === 'create' && (
+                                <span className='input-suffix' ref={this.suffix}>
+                                    .{CONFIG.ACCOUNT_ID_SUFFIX}
+                                </span>
+                            )}
+                            {type !== 'create' && (
+                                <div className='input-sub-label'>
+                                    {translate('input.accountId.subLabel')}
+                                </div>
+                            )}
                         </InputWrapper>
                     )}
                 </Translate>
-                <LocalAlertBox dots={mainLoader} localAlert={localAlert} accountId={this.props.accountId}/>
+                <LocalAlertBox
+                    dots={mainLoader}
+                    localAlert={localAlert}
+                    accountId={this.props.accountId}
+                />
             </>
         );
     }
@@ -266,13 +309,13 @@ AccountFormAccountId.propTypes = {
     handleChange: PropTypes.func.isRequired,
     checkAvailability: PropTypes.func.isRequired,
     defaultAccountId: PropTypes.string,
-    autoFocus: PropTypes.bool
+    autoFocus: PropTypes.bool,
 };
 
 AccountFormAccountId.defaultProps = {
     autoFocus: false,
     pattern: /[^a-zA-Z0-9._-]/,
-    type: 'check'
+    type: 'check',
 };
 
 export default AccountFormAccountId;

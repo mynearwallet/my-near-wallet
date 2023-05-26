@@ -71,7 +71,7 @@ const CustomContainer = styled(Container)`
                 position: relative;
 
                 :after {
-                    content: "";
+                    content: '';
                     position: absolute;
                     background: url(${ArrowUpImage}) center top no-repeat;
                     width: 16px;
@@ -90,35 +90,35 @@ const SignTransferAccountNotFound = ({
     submittingTransaction,
     signTransactionSignerId,
 }) => (
-    <CustomContainer className="small-centered">
-        <div className="icon">
-            <img src={AccountNotFound} alt="Retry" />
+    <CustomContainer className='small-centered'>
+        <div className='icon'>
+            <img src={AccountNotFound} alt='Retry' />
         </div>
-        <div className="title">
+        <div className='title'>
             <h2>
-                <Translate id="sign.accountNotFound.title" />
+                <Translate id='sign.accountNotFound.title' />
             </h2>
         </div>
-        <div className="text">
+        <div className='text'>
             <SafeTranslate
-                id="sign.accountNotFound.body"
+                id='sign.accountNotFound.body'
                 data={{ signCallbackUrl, signTransactionSignerId }}
             />
         </div>
-        <div className="buttons">
+        <div className='buttons'>
             <FormButton
                 onClick={handleCancel}
                 disabled={submittingTransaction}
-                color="gray-blue"
+                color='gray-blue'
             >
-                <Translate id="button.cancel" />
+                <Translate id='button.cancel' />
             </FormButton>
             <FormButton
-                linkTo="/recover-account"
+                linkTo='/recover-account'
                 disabled={submittingTransaction}
                 sending={submittingTransaction}
             >
-                <Translate id="button.importAccount" />
+                <Translate id='button.importAccount' />
             </FormButton>
         </div>
     </CustomContainer>

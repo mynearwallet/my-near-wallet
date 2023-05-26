@@ -24,7 +24,7 @@ export default ({
     publicKey,
     contractIdUrl,
     successUrlIsValid,
-    privateShardInfo
+    privateShardInfo,
 }) => {
     const [loggingIn, setLoggingIn] = useState(false);
     const [showGrantFullAccessModal, setShowGrantFullAccessModal] = useState(false);
@@ -44,7 +44,7 @@ export default ({
                 <LoginStyle className='confirm-login'>
                     <SwapGraphic className='swap-graphic' />
                     <h3>
-                        <Translate id='login.v2.connectConfirm.title'/>
+                        <Translate id='login.v2.connectConfirm.title' />
                         <div>{signedInAccountId}</div>
                     </h3>
                     <div className='desc'>
@@ -54,31 +54,42 @@ export default ({
                                     id='login.v2.connectConfirm.desc'
                                     data={{
                                         contractIdUrl: contractIdUrl,
-                                        appReferrer: appReferrer || translate('sign.unknownApp'),
-                                        accessType: translate(`login.v2.connectConfirm.${loginAccessType}`)
+                                        appReferrer:
+                                            appReferrer || translate('sign.unknownApp'),
+                                        accessType: translate(
+                                            `login.v2.connectConfirm.${loginAccessType}`
+                                        ),
                                     }}
                                 />
                             )}
                         </Translate>
                     </div>
-                    {   privateShardInfo &&  (
+                    {privateShardInfo && (
                         <div className='desc'>
-                            <ConnectWithPrivateShard privateShardInfo={privateShardInfo} />
+                            <ConnectWithPrivateShard
+                                privateShardInfo={privateShardInfo}
+                            />
                         </div>
                     )}
-                    {loginAccessType === LOGIN_ACCESS_TYPES.LIMITED_ACCESS
-                        ? <LimitedAccessUI />
-                        : <FullAccessUI />
-                    }
-                    {publicKey && loginAccessType === LOGIN_ACCESS_TYPES.LIMITED_ACCESS && !privateShardInfo &&
-                        <NetworkFeeAllowance contractId={contractId} contractIdUrl={contractIdUrl} />
-                    }
+                    {loginAccessType === LOGIN_ACCESS_TYPES.LIMITED_ACCESS ? (
+                        <LimitedAccessUI />
+                    ) : (
+                        <FullAccessUI />
+                    )}
+                    {publicKey &&
+                        loginAccessType === LOGIN_ACCESS_TYPES.LIMITED_ACCESS &&
+                        !privateShardInfo && (
+                            <NetworkFeeAllowance
+                                contractId={contractId}
+                                contractIdUrl={contractIdUrl}
+                            />
+                        )}
                     <FormButtonGroup>
                         <FormButton
                             onClick={onClickCancel}
                             color='gray-blue'
                             disabled={loggingIn}
-                            data-test-id="dapp-deny"
+                            data-test-id='dapp-deny'
                         >
                             <Translate id='button.cancel' />
                         </FormButton>
@@ -93,7 +104,7 @@ export default ({
                             disabled={loggingIn || !successUrlIsValid}
                             sending={loggingIn}
                             sendingString='button.connecting'
-                            data-test-id="dapp-grant"
+                            data-test-id='dapp-grant'
                         >
                             <Translate id='button.connect' />
                         </FormButton>
@@ -121,7 +132,10 @@ const LimitedAccessUI = () => (
         <PermissionItem translateId='login.v2.connectConfirm.permissions.viewAddress' />
         <PermissionItem translateId='login.v2.connectConfirm.permissions.viewBalance' />
         <PermissionItem translateId='login.v2.connectConfirm.permissions.callMethodsOnContract' />
-        <PermissionItem permitted={false} translateId='login.v2.connectConfirm.permissions.notTransferTokens' />
+        <PermissionItem
+            permitted={false}
+            translateId='login.v2.connectConfirm.permissions.notTransferTokens'
+        />
     </>
 );
 
@@ -135,9 +149,6 @@ const FullAccessUI = () => (
         <PermissionItem translateId='login.details.callFunctions' />
         <PermissionItem translateId='login.details.stakeAndUnstake' />
         <PermissionItem translateId='login.details.createAndDeleteAccessKeys' />
-        <AlertBanner
-            title='login.v2.connectConfirm.fullAccessWarning'
-            theme='warning'
-        />
+        <AlertBanner title='login.v2.connectConfirm.fullAccessWarning' theme='warning' />
     </>
 );

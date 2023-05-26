@@ -1,18 +1,18 @@
 const {
     connect,
     keyStores: { InMemoryKeyStore },
-} = require("near-api-js");
+} = require('near-api-js');
 
-const { getKeyPairFromSeedPhrase } = require("./helpers");
-const { walletNetwork } = require("./config");
+const { walletNetwork } = require('./config');
+const { getKeyPairFromSeedPhrase } = require('./helpers');
 
 class NearAPIJsConnection {
     static getDefaultConfig = () => ({
         networkId: walletNetwork,
-        nodeUrl: process.env.NODE_URL || "https://rpc.testnet.near.org",
-        walletUrl: process.env.WALLET_URL || "https://wallet.testnet.near.org",
+        nodeUrl: process.env.NODE_URL || 'https://rpc.testnet.near.org',
+        walletUrl: process.env.WALLET_URL || 'https://wallet.testnet.near.org',
         keyStore: new InMemoryKeyStore(),
-        helperUrl: process.env.HELPER_URL || "https://helper.testnet.near.org"
+        helperUrl: process.env.HELPER_URL || 'https://helper.testnet.near.org',
     });
 
     constructor(config = NearAPIJsConnection.getDefaultConfig()) {
@@ -32,7 +32,11 @@ class NearAPIJsConnection {
     }
 
     async setKeyPairFromSeedPhrase({ accountId, seedPhrase }) {
-        await this.config.keyStore.setKey(this.config.networkId, accountId, getKeyPairFromSeedPhrase(seedPhrase));
+        await this.config.keyStore.setKey(
+            this.config.networkId,
+            accountId,
+            getKeyPairFromSeedPhrase(seedPhrase)
+        );
     }
 }
 

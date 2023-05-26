@@ -14,15 +14,12 @@ import setLoading from './manageStatus/setLoading';
  */
 
 // TODO: consider to keying `status` by thunk typePrefix, this could be useful if we would need to track status of several thunks independently in one slice
-export default ({
-    asyncThunk,
-    buildStatusPath,
+export default ({ asyncThunk, buildStatusPath, builder }) =>
     builder
-}) => builder
-    .addMatcher(isPending(asyncThunk), setLoading(buildStatusPath))
-    .addMatcher(isPending(asyncThunk), clearError(buildStatusPath))
-    .addMatcher(isFulfilled(asyncThunk), clearLoading(buildStatusPath))
-    .addMatcher(isFulfilled(asyncThunk), clearError(buildStatusPath))
-    .addMatcher(isFulfilled(asyncThunk), setInitialized(buildStatusPath))
-    .addMatcher(isRejected(asyncThunk), clearLoading(buildStatusPath))
-    .addMatcher(isRejected(asyncThunk), setError(buildStatusPath));
+        .addMatcher(isPending(asyncThunk), setLoading(buildStatusPath))
+        .addMatcher(isPending(asyncThunk), clearError(buildStatusPath))
+        .addMatcher(isFulfilled(asyncThunk), clearLoading(buildStatusPath))
+        .addMatcher(isFulfilled(asyncThunk), clearError(buildStatusPath))
+        .addMatcher(isFulfilled(asyncThunk), setInitialized(buildStatusPath))
+        .addMatcher(isRejected(asyncThunk), clearLoading(buildStatusPath))
+        .addMatcher(isRejected(asyncThunk), setError(buildStatusPath));

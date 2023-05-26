@@ -7,7 +7,6 @@ import FormButton from '../../common/FormButton';
 import MoonPayIcon from '../../svg/MoonPayIcon';
 
 const Container = styled.div`
-
     button {
         &.black {
             background-color: #111618 !important;
@@ -21,15 +20,18 @@ const Container = styled.div`
 `;
 
 const FundWithMoonpay = ({ moonpaySignedURL }) => {
-
     return (
         <Container>
-            <h3><Translate id='account.createImplicit.pre.moonPay.title'/></h3>
-            <h2><Translate id='account.createImplicit.pre.moonPay.desc'/></h2>
+            <h3>
+                <Translate id='account.createImplicit.pre.moonPay.title' />
+            </h3>
+            <h2>
+                <Translate id='account.createImplicit.pre.moonPay.desc' />
+            </h2>
             <FormButton
                 linkTo='https://support.moonpay.com/'
                 className='link normal underline'
-                trackingId="CA Click Moonpay learn more"
+                trackingId='CA Click Moonpay learn more'
             >
                 <Translate id='button.learnMore' />
             </FormButton>
@@ -38,8 +40,8 @@ const FundWithMoonpay = ({ moonpaySignedURL }) => {
                 color='black'
                 onClick={() => Mixpanel.track('CA Click Fund with Moonpay')}
             >
-                <Translate id='account.createImplicit.pre.moonPay.buyWith'/>
-                <MoonPayIcon/>
+                <Translate id='account.createImplicit.pre.moonPay.buyWith' />
+                <MoonPayIcon />
             </FormButton>
         </Container>
     );

@@ -8,27 +8,27 @@ import {
     getAccessKeys,
     disableLedger,
     getLedgerKey,
-    addLedgerAccessKey
+    addLedgerAccessKey,
 } from '../../../redux/actions/account';
 import {
     selectAccountFullAccessKeys,
-    selectAccountSlice
+    selectAccountSlice,
 } from '../../../redux/slices/account';
 import {
     actions as recoveryMethodsActions,
-    selectRecoveryMethodsStatus
+    selectRecoveryMethodsStatus,
 } from '../../../redux/slices/recoveryMethods';
 import FormButton from '../../common/FormButton';
 import SkeletonLoading from '../../common/SkeletonLoading';
 import ConfirmDisable from '../ConfirmDisable';
-import {Authorized, Container, Device, MainTitle, Name} from './ui';
+import { Authorized, Container, Device, MainTitle, Name } from './ui';
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 
 const HardwareDevices = ({
     recoveryMethods,
     hasLedger,
     ledgerIsConnected,
-    hasLedgerButNotConnected
+    hasLedgerButNotConnected,
 }) => {
     const [disabling, setDisabling] = useState(false);
     const [confirmDisable, setConfirmDisable] = useState(false);
@@ -37,29 +37,34 @@ const HardwareDevices = ({
     const account = useSelector(selectAccountSlice);
     const { accountId } = account;
     let userRecoveryMethods = recoveryMethods || [];
-    const recoveryKeys = userRecoveryMethods.filter((method) =>
-        method.kind !== 'ledger').map((key) => key.publicKey);
+    const recoveryKeys = userRecoveryMethods
+        .filter((method) => method.kind !== 'ledger')
+        .map((key) => key.publicKey);
 
     const keys = useSelector(selectAccountFullAccessKeys);
     const publicKeys = keys.map((key) => key.public_key);
     const hasOtherMethods = publicKeys.some((key) => recoveryKeys.includes(key));
 
     const loadingStatus = useSelector((state) =>
-        selectRecoveryMethodsStatus(state, { accountId }));
+        selectRecoveryMethodsStatus(state, { accountId })
+    );
 
     const handleConfirmDisable = async () => {
-        await Mixpanel.withTracking('SR-Ledger Handle confirm disable',
+        await Mixpanel.withTracking(
+            'SR-Ledger Handle confirm disable',
             async () => {
                 setDisabling(true);
                 await dispatch(disableLedger());
             },
-            () => { },
+            () => {},
             async () => {
                 await dispatch(getAccessKeys());
                 await dispatch(getLedgerKey());
-                await dispatch(fetchRecoveryMethods({
-                    accountId
-                }));
+                await dispatch(
+                    fetchRecoveryMethods({
+                        accountId,
+                    })
+                );
                 setDisabling(false);
                 setConfirmDisable(false);
             }
@@ -67,15 +72,15 @@ const HardwareDevices = ({
     };
 
     const handleConnectLedger = async () => {
-        await Mixpanel.withTracking('SR-Ledger Reconnect ledger',
-            async () => {
-                await dispatch(addLedgerAccessKey());
-                await dispatch(getLedgerKey());
-                await dispatch(fetchRecoveryMethods({
-                    accountId
-                }));
-            }
-        );
+        await Mixpanel.withTracking('SR-Ledger Reconnect ledger', async () => {
+            await dispatch(addLedgerAccessKey());
+            await dispatch(getLedgerKey());
+            await dispatch(
+                fetchRecoveryMethods({
+                    accountId,
+                })
+            );
+        });
     };
 
     const getActionButton = () => {
@@ -84,14 +89,14 @@ const HardwareDevices = ({
                 <FormButton
                     disabled={!hasOtherMethods}
                     color='gray-red'
-                    onClick={() => setConfirmDisable(true)}>
+                    onClick={() => setConfirmDisable(true)}
+                >
                     <Translate id='button.disable' />
                 </FormButton>
             );
         } else if (hasLedgerButNotConnected) {
             return (
-                <FormButton color='blue'
-                    onClick={handleConnectLedger}>
+                <FormButton color='blue' onClick={handleConnectLedger}>
                     <Translate id='button.connect' />
                 </FormButton>
             );
@@ -100,7 +105,8 @@ const HardwareDevices = ({
                 <FormButton
                     linkTo={`/setup-ledger/${account.accountId}`}
                     color='blue'
-                    trackingId="SR-Ledger Click enable button">
+                    trackingId='SR-Ledger Click enable button'
+                >
                     <Translate id='button.enable' />
                 </FormButton>
             );
@@ -108,12 +114,7 @@ const HardwareDevices = ({
     };
 
     if (!loadingStatus.isInitialized) {
-        return (
-            <SkeletonLoading
-                height='138px'
-                show={true}
-            />
-        );
+        return <SkeletonLoading height='138px' show={true} />;
     }
 
     return (
@@ -143,9 +144,11 @@ const HardwareDevices = ({
                             <Translate id='hardwareDevices.ledger.connect' />
                         </div>
                     )}
-                    {!hasLedger &&
-                        <i><Translate id='hardwareDevices.desc' /></i>
-                    }
+                    {!hasLedger && (
+                        <i>
+                            <Translate id='hardwareDevices.desc' />
+                        </i>
+                    )}
                 </>
             ) : (
                 <ConfirmDisable

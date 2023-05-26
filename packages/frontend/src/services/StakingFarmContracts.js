@@ -1,7 +1,12 @@
 import { Account, Connection } from 'near-api-js';
 
 import CONFIG from '../config';
-import { FARMING_VALIDATOR_VERSION, getValidationVersion, MAINNET, TESTNET } from '../utils/constants';
+import {
+    FARMING_VALIDATOR_VERSION,
+    getValidationVersion,
+    MAINNET,
+    TESTNET,
+} from '../utils/constants';
 
 // Staking Farm Contract
 // https://github.com/referencedev/staking-farm/
@@ -14,24 +19,20 @@ export default class StakingFarmContracts {
                 type: 'JsonRpcProvider',
                 args: { url: CONFIG.NODE_URL + '/' },
             },
-            signer: {}
+            signer: {},
         }),
         'dontcare'
     );
 
     static getFarms({ contractName, from_index, limit }) {
-        return this.viewFunctionAccount.viewFunction(
-            contractName,
-            'get_farms',
-            { from_index, limit }
-        );
+        return this.viewFunctionAccount.viewFunction(contractName, 'get_farms', {
+            from_index,
+            limit,
+        });
     }
 
     static getPoolSummary({ contractName }) {
-        return this.viewFunctionAccount.viewFunction(
-            contractName,
-            'get_pool_summary'
-        );
+        return this.viewFunctionAccount.viewFunction(contractName, 'get_pool_summary');
     }
 
     static getUnclaimedRewards({ contractName, account_id, farm_id }) {
@@ -42,11 +43,24 @@ export default class StakingFarmContracts {
         );
     }
 
-    static getFarmListWithUnclaimedRewards = async ({ contractName, account_id, from_index, limit }) => {
-        const farms = await StakingFarmContracts.getFarms({ contractName, from_index, limit });
+    static getFarmListWithUnclaimedRewards = async ({
+        contractName,
+        account_id,
+        from_index,
+        limit,
+    }) => {
+        const farms = await StakingFarmContracts.getFarms({
+            contractName,
+            from_index,
+            limit,
+        });
         return Promise.all(
             farms.map(({ token_id, farm_id, active }) =>
-                StakingFarmContracts.getUnclaimedRewards({ contractName, account_id, farm_id })
+                StakingFarmContracts.getUnclaimedRewards({
+                    contractName,
+                    account_id,
+                    farm_id,
+                })
                     .catch(() => '0')
                     .then((balance) => ({
                         token_id,
@@ -56,7 +70,7 @@ export default class StakingFarmContracts {
                     }))
             )
         );
-    }
+    };
 
     static isFarmingValidator(accountId) {
         return (
@@ -82,8 +96,7 @@ export default class StakingFarmContracts {
                 limit,
             }).then(
                 (farmListWithBalance) =>
-                    farmListWithBalance.filter(({ balance }) => +balance > 0)
-                        .length > 0
+                    farmListWithBalance.filter(({ balance }) => +balance > 0).length > 0
             )
         );
     };

@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
 import assign from 'lodash.assign';
 
-import { 
+import {
     WALLET_INITIAL_DEPOSIT_URL,
     WALLET_LOGIN_URL,
     WALLET_SIGN_URL,
-    WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS
+    WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS,
 } from '../../../utils/wallet';
 import { getBalance } from '../../actions/account';
 
@@ -16,47 +16,57 @@ const initialState = {
     subMenu: false,
     accountPages: false,
     accountData: false,
-    accountBalance: false
+    accountBalance: false,
 };
 
 const handleFlowLimitation = createAsyncThunk(
     `${SLICE_NAME}/handleFlowLimitation`,
     async (_, thunkAPI) => {
-        const { actions: { setFlowLimitation } } = flowLimitationSlice;
+        const {
+            actions: { setFlowLimitation },
+        } = flowLimitationSlice;
         const { dispatch, getState } = thunkAPI;
         const { pathname } = getState().router.location;
 
         // Disallow account switching on account creation/recovery pages
-        const disableAccountSwitching = WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS.some((url) => pathname.includes(url));
+        const disableAccountSwitching = WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS.some((url) =>
+            pathname.includes(url)
+        );
         dispatch(setFlowLimitation({ subMenu: disableAccountSwitching }));
 
         const { redirect_url } = getState().account.url;
         const redirectUrl = redirect_url || pathname;
 
         if (redirectUrl.includes(WALLET_LOGIN_URL)) {
-            dispatch(setFlowLimitation({
-                mainMenu: true,
-                subMenu: false,
-                accountPages: false,
-                accountData: true,
-                accountBalance: true
-            }));
+            dispatch(
+                setFlowLimitation({
+                    mainMenu: true,
+                    subMenu: false,
+                    accountPages: false,
+                    accountData: true,
+                    accountBalance: true,
+                })
+            );
         } else if (redirectUrl === `/${WALLET_SIGN_URL}`) {
-            dispatch(setFlowLimitation({
-                mainMenu: true,
-                subMenu: true,
-                accountPages: true,
-                accountData: true,
-                accountBalance: false
-            }));
+            dispatch(
+                setFlowLimitation({
+                    mainMenu: true,
+                    subMenu: true,
+                    accountPages: true,
+                    accountData: true,
+                    accountBalance: false,
+                })
+            );
         } else if (redirectUrl.includes(WALLET_INITIAL_DEPOSIT_URL)) {
-            dispatch(setFlowLimitation({
-                mainMenu: true,
-                subMenu: true,
-                accountPages: true,
-                accountData: true,
-                accountBalance: false
-            }));
+            dispatch(
+                setFlowLimitation({
+                    mainMenu: true,
+                    subMenu: true,
+                    accountPages: true,
+                    accountData: true,
+                    accountBalance: false,
+                })
+            );
         }
     }
 );
@@ -65,7 +75,9 @@ const handleClearflowLimitation = createAsyncThunk(
     `${SLICE_NAME}/handleClearflowLimitation`,
     async (_, thunkAPI) => {
         const { dispatch } = thunkAPI;
-        const { actions: { clearFlowLimitation } } = flowLimitationSlice;
+        const {
+            actions: { clearFlowLimitation },
+        } = flowLimitationSlice;
 
         dispatch(getBalance());
         dispatch(clearFlowLimitation());
@@ -81,8 +93,8 @@ const flowLimitationSlice = createSlice({
         },
         clearFlowLimitation(state) {
             assign(state, initialState);
-        }
-    }
+        },
+    },
 });
 
 export default flowLimitationSlice;
@@ -90,9 +102,9 @@ export default flowLimitationSlice;
 export const actions = {
     handleFlowLimitation,
     handleClearflowLimitation,
-    ...flowLimitationSlice.actions
+    ...flowLimitationSlice.actions,
 };
-export const reducer = flowLimitationSlice.reducer; 
+export const reducer = flowLimitationSlice.reducer;
 
 // Top level selectors
 const selectFlowLimitationSlice = (state) => state[SLICE_NAME];

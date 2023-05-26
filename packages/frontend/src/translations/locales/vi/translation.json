@@ -754,19 +754,19 @@
             "title": "Khóa riêng"
         }
     },
+    "recoverPrivateKey": {
+        "pageText": "Vui lòng nhập khóa riêng liên kết với tài khoản.",
+        "pageTitle": "Khôi phục bằng Khóa Riêng",
+        "privateKeyInput": {
+            "title": "Khóa riêng"
+        }
+    },
     "recoverSeedPhrase": {
         "pageText": "Nhập cụm từ khôi phục dự phòng được liên kết với tài khoản.",
         "pageTitle": "Khôi phục bằng cách sử dụng Cụm từ khôi phục",
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "Cụm từ khôi phục (12 từ)"
-        }
-    },
-    "recoverPrivateKey": {
-        "pageText": "Vui lòng nhập khóa riêng liên kết với tài khoản.",
-        "pageTitle": "Khôi phục bằng Khóa Riêng",
-        "privateKeyInput": {
-            "title": "Khóa riêng"
         }
     },
     "recoverWithLink": {
@@ -1416,11 +1416,11 @@
         "promptTwoFactor": {
             "userCancelled": "Mã 2FA không được xác minh chính xác."
         },
-        "recoverAccountSeedPhrase": {
-            "errorInvalidSeedPhrase": "Không có tài khoản nào được tìm thấy cho cụm từ khôi phục này."
-        },
         "recoverAccountPrivateKey": {
             "errorPKNotValid": "Khóa riêng được cung cấp không hợp lệ. Vui lòng kiểm tra lại khóa riêng và thử lại."
+        },
+        "recoverAccountSeedPhrase": {
+            "errorInvalidSeedPhrase": "Không có tài khoản nào được tìm thấy cho cụm từ khôi phục này."
         },
         "recoveryMethods": {
             "lastMethod": "Không thể xóa phương thức khôi phục cuối cùng của bạn. Trừ khi bạn đã bật Ledger, bạn cần duy trì hoạt động ít nhất một phương thức khôi phục để đảm bảo khả năng khôi phục của tài khoản của bạn.",

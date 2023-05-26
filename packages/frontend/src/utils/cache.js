@@ -1,11 +1,7 @@
 export default class Cache {
     static CACHE_DB_NAME = 'Cache';
 
-    constructor(
-        version = 1,
-        storeName = 'unknown',
-        indexName = 'unknown'
-    ) {
+    constructor(version = 1, storeName = 'unknown', indexName = 'unknown') {
         this.dbVersion = version;
         this.dbPromise = null;
         this.storeName = storeName;
