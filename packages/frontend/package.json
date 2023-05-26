@@ -16,11 +16,10 @@
         "dev": "yarn && cross-env NEAR_WALLET_ENV=testnet REACT_APP_USE_TESTINGLOCKUP=true yarn start",
         "sentry": "node ci/sentry-send-release.js",
         "test": "jest",
-        "lint": "eslint --ext .js --ext .jsx .",
         "fix": "eslint --ext .js --ext .jsx . --fix",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "storybook build",
-        "prepush": "concurrently \"yarn run test\" \"yarn lint\"",
+        "prepush": "concurrently \"yarn run test\"",
         "precommit": "node .githooks/format-json-script.mjs",
         "preinstall": "npx only-allow yarn"
     },

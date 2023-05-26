@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "cd packages/frontend && yarn install --frozen-lockfile && yarn lint",
+    "lint": "yarn install --frozen-lockfile && eslint .",
     "pre-build": "cd packages/frontend && yarn install --frozen-lockfile && yarn pre-build",
     "build": "cd packages/frontend && yarn install --frozen-lockfile && yarn build",
     "storybook": "cd packages/frontend && yarn storybook",
