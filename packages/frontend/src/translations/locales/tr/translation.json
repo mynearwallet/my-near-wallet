@@ -796,19 +796,19 @@
             "title": "Özel Anahtar"
         }
     },
+    "recoverPrivateKey": {
+        "pageText": "Hesapla ilişkili olan özel anahtarı girin.",
+        "pageTitle": "Özel Anahtar ile Kurtarma Yap",
+        "privateKeyInput": {
+            "title": "Özel Anahtar"
+        }
+    },
     "recoverSeedPhrase": {
         "pageText": "Hesapla ilişkilendirilmiş olan anahtar kelimelerinizi giriniz.",
         "pageTitle": "Anahtar Kelimeleri kullanarak kurtar",
         "seedPhraseInput": {
             "placeholder": "kelime dizinini doğru giriniz...",
             "title": "Anahtar Kelime (12 Kelime)"
-        }
-    },
-    "recoverPrivateKey": {
-        "pageText": "Hesapla ilişkili olan özel anahtarı girin.",
-        "pageTitle": "Özel Anahtar ile Kurtarma Yap",
-        "privateKeyInput": {
-            "title": "Özel Anahtar"
         }
     },
     "recoverWithLink": {
@@ -1527,11 +1527,11 @@
         "promptTwoFactor": {
             "userCancelled": "2FA kodu doğru bir şekilde doğrulanmadı."
         },
-        "recoverAccountSeedPhrase": {
-            "errorInvalidSeedPhrase": "Bu Anahtar Kelime için hesap bulunamadı."
-        },
         "recoverAccountPrivateKey": {
             "errorPKNotValid": "Sağlanan özel anahtar geçerli değil. Lütfen özel anahtarınızı kontrol edin ve tekrar deneyin."
+        },
+        "recoverAccountSeedPhrase": {
+            "errorInvalidSeedPhrase": "Bu Anahtar Kelime için hesap bulunamadı."
         },
         "recoveryMethods": {
             "lastMethod": "Son kurtarma yönteminizi silemezsiniz. Ledger'i etkinleştirmedikçe, hesabınızın kurtarılabilirliğini sağlamak için en az bir kurtarma yöntemini etkin tutmanız gerekir.",
