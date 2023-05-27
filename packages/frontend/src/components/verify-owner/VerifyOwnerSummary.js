@@ -36,6 +36,7 @@ export default ({
     signing,
     message,
     isValidCallbackUrl,
+    disableApprove,
 }) => {
     return (
         <StyledContainer className='small-centered border brs-8 bsw-l'>
@@ -53,8 +54,9 @@ export default ({
                     <Translate id='button.cancel' />
                 </FormButton>
                 <FormButton
+                    data-test-id='approve-verify-owner'
                     onClick={onClickApprove}
-                    disabled={signing || !isValidCallbackUrl}
+                    disabled={signing || !isValidCallbackUrl || disableApprove}
                     sending={signing}
                 >
                     <Translate id='button.approve' />
