@@ -57,6 +57,7 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
 
             if (signed.signed.publicKey.toString() !== publicKey.toString()) {
                 throw new Error(
+                    // eslint-disable-next-line quotes
                     "The key used for signing and the public key used inside the data message do not match. Can't create a verified response."
                 );
             }
