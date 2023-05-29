@@ -111,7 +111,7 @@ const theme = {};
 const PATH_PREFIX = CONFIG.PUBLIC_URL;
 
 // TODO: https://mnw.atlassian.net/browse/MNW-98
-const WEB3AUTH_FEATURE_ENABLED = false;
+const WEB3AUTH_FEATURE_ENABLED = true;
 
 const Container = styled.div`
     min-height: 100vh;

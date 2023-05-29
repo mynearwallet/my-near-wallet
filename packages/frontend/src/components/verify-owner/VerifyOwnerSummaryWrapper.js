@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     selectAccountUrlReferrer,
     selectAccountLocalStorageAccountId,
+    selectAccountId,
 } from '../../redux/slices/account';
 import VerifyOwnerSummary from './VerifyOwnerSummary';
 
@@ -16,6 +17,8 @@ export default ({
 }) => {
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
     const accountUrlReferrer = useSelector(selectAccountUrlReferrer);
+    const accountId = useSelector(selectAccountId);
+    const disableApprove = !accountId;
 
     return (
         <VerifyOwnerSummary
@@ -26,6 +29,7 @@ export default ({
             message={message}
             signing={signing}
             isValidCallbackUrl={isValidCallbackUrl}
+            disableApprove={disableApprove}
         />
     );
 };

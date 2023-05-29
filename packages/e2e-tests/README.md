@@ -16,7 +16,10 @@ Setup
 2. Start frontend
     * `cd packages/frontend`
     * `yarn dev`
-3. Run in e2e-tests directory
+3. Start guestbook
+    * `cd packages/guestbook`
+    * `yarn dev`
+4. Run in e2e-tests directory
     * `yarn && yarn run e2e` or 
     * `yarn && yarn run e2e:debug` to run in [debug mode](https://playwright.dev/docs/debug#run-in-debug-mode) or
     * `yarn && yarn run e2e:ui` to run in [UI mode](https://playwright.dev/docs/test-ui-mode)
