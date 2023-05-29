@@ -55,6 +55,13 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
             const encoded = JSON.stringify(data);
             const signed = await wallet.signMessage(encoded, accountId);
 
+            if (signed.signed.publicKey.toString() !== publicKey.toString()) {
+                throw new Error(
+                    // eslint-disable-next-line quotes
+                    "The key used for signing and the public key used inside the data message do not match. Can't create a verified response."
+                );
+            }
+
             return {
                 ...data,
                 signature: Buffer.from(signed.signed.signature).toString('base64'),
