@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="guestbook-dev" type="js.build_tools.npm">
-    <package-json value="$PROJECT_DIR$/packages/guestbook/package.json" />
+  <configuration default="false" name="e2e:ui" type="js.build_tools.npm" nameIsGenerated="true">
+    <package-json value="$PROJECT_DIR$/packages/e2e-tests/package.json" />
     <command value="run" />
     <scripts>
-      <script value="dev" />
+      <script value="e2e:ui" />
     </scripts>
     <node-interpreter value="project" />
     <envs />
