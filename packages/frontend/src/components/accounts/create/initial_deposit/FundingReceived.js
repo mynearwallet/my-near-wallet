@@ -12,30 +12,30 @@ const StyledContainer = styled(Container)`
         h2 {
             margin-bottom: 40px;
         }
-    
+
         .checkbox-wrapper {
-            border: 1px solid #F0F0F1;
-            background-color: #FAFAFA;
+            border: 1px solid #f0f0f1;
+            background-color: #fafafa;
             border-radius: 8px;
             padding: 15px;
             margin-top: 50px;
-    
+
             > div {
                 font-weight: 700;
                 margin-bottom: 25px;
-                color: #3F4045;
+                color: #3f4045;
             }
-    
+
             label {
                 cursor: pointer;
                 > span {
                     margin-left: 15px;
                     font-size: 14px;
-                    color: #72727A;
+                    color: #72727a;
                 }
             }
         }
-    
+
         > button {
             width: 100%;
             margin-top: 45px;
@@ -43,21 +43,17 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    initialDeposit,
-    accountId,
-    onClaimAccount,
-    claimingAccount
-}) => {
+export default ({ initialDeposit, accountId, onClaimAccount, claimingAccount }) => {
     const [newAddressApproved, setNewAddressApproved] = useState(false);
     return (
         <StyledContainer className='small-centered border'>
-            <h1><Translate id='initialDeposit.claimAccount.title' /></h1>
-            <h2><Translate id='initialDeposit.claimAccount.desc' /></h2>
-            <AccountFunded
-                initialDeposit={initialDeposit}
-                accountId={accountId}
-            />
+            <h1>
+                <Translate id='initialDeposit.claimAccount.title' />
+            </h1>
+            <h2>
+                <Translate id='initialDeposit.claimAccount.desc' />
+            </h2>
+            <AccountFunded initialDeposit={initialDeposit} accountId={accountId} />
             <div className='checkbox-wrapper'>
                 <div>
                     <Translate id='initialDeposit.claimAccount.disclaimer.desc' />
@@ -67,7 +63,9 @@ export default ({
                         checked={newAddressApproved}
                         onChange={(e) => setNewAddressApproved(e.target.checked)}
                     />
-                    <span><Translate id='initialDeposit.claimAccount.disclaimer.checkBox' /></span>
+                    <span>
+                        <Translate id='initialDeposit.claimAccount.disclaimer.checkBox' />
+                    </span>
                 </label>
             </div>
             <FormButton

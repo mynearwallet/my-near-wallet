@@ -8,12 +8,12 @@ import Status from './entry_types/Status';
 import Token from './entry_types/Token';
 
 const StyledContainer = styled.div`
-    background-color: #FAFAFA;
-    border: 1px solid #F0F0F1;
+    background-color: #fafafa;
+    border: 1px solid #f0f0f1;
     border-radius: 8px;
 
     > div {
-        border-bottom: 1px solid #F0F0F1;
+        border-bottom: 1px solid #f0f0f1;
 
         :last-of-type {
             border-bottom: 0;
@@ -24,13 +24,9 @@ const StyledContainer = styled.div`
 const prefixTXEntryTitleId = (key) => `sendV2.TXEntry.title.${key}`;
 
 const Receipt = ({ status, token, network_fees, receiver_id, block_timestamp }) => {
-    
     return (
         <StyledContainer>
-            <Status
-                translateIdTitle={prefixTXEntryTitleId('status')}
-                status={status}
-            />
+            <Status translateIdTitle={prefixTXEntryTitleId('status')} status={status} />
             <Token
                 translateIdTitle={prefixTXEntryTitleId('token')}
                 symbol={token.symbol}

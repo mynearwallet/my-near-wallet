@@ -30,7 +30,9 @@ export const selectVerifyOwnerError = createSelector(
     (verifyOwner) => verifyOwner.error
 );
 
-export const handleAuthorizationRequestRejected = createAction('handleAuthorizationRequestRejected');
+export const handleAuthorizationRequestRejected = createAction(
+    'handleAuthorizationRequestRejected'
+);
 
 export const handleAuthorizationRequestConfirmed = createAsyncThunk(
     `${SLICE_NAME}/handleAuthorizationRequestConfirmed`,
@@ -38,23 +40,32 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
         const { dispatch, getState } = thunkAPI;
         try {
             const accountId = selectAccountId(getState());
-            const blockInfo = await wallet.connection.provider.block({ finality: 'final' });
+            const blockInfo = await wallet.connection.provider.block({
+                finality: 'final',
+            });
             const publicKey = await wallet.getPublicKey(accountId);
             const data = {
                 accountId,
                 message,
                 blockId: blockInfo.header.hash,
                 publicKey: Buffer.from(publicKey.data).toString('base64'),
-                keyType: publicKey.keyType
+                keyType: publicKey.keyType,
             };
 
             const encoded = JSON.stringify(data);
             const signed = await wallet.signMessage(encoded, accountId);
 
+            if (signed.signed.publicKey.toString() !== publicKey.toString()) {
+                throw new Error(
+                    // eslint-disable-next-line quotes
+                    "The key used for signing and the public key used inside the data message do not match. Can't create a verified response."
+                );
+            }
+
             return {
                 ...data,
                 signature: Buffer.from(signed.signed.signature).toString('base64'),
-                keyType: signed.signed.publicKey.keyType
+                keyType: signed.signed.publicKey.keyType,
             };
         } catch (error) {
             dispatch(
@@ -71,10 +82,7 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
     {
         condition: (_, thunkAPI) => {
             const { getState } = thunkAPI;
-            if (
-                selectVerifyOwnerStatus(getState()) ===
-                VERIFY_OWNER_STATUS.IN_PROGRESS
-            ) {
+            if (selectVerifyOwnerStatus(getState()) === VERIFY_OWNER_STATUS.IN_PROGRESS) {
                 return false;
             }
         },

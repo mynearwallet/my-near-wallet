@@ -10,23 +10,26 @@ const ConfirmDisable = ({
     accountId,
     isDisable,
     component,
-    twoFactorKind
+    twoFactorKind,
 }) => {
     const [username, setUsername] = useState('');
 
     const isTwoFactorPhone = component === 'twoFactor' && twoFactorKind === '2fa-phone';
 
     return (
-        <Container onSubmit={(e) => {
-            onConfirmDisable();
-            e.preventDefault();
-        }}>
+        <Container
+            onSubmit={(e) => {
+                onConfirmDisable();
+                e.preventDefault();
+            }}
+        >
             <div>
-                <Translate id={`${component}.disable.title`}/>
+                <Translate id={`${component}.disable.title`} />
             </div>
             <div>
                 <Translate
-                    id={`${component}.disable.${isTwoFactorPhone ? 'phoneDesc' : 'desc'}`}/>
+                    id={`${component}.disable.${isTwoFactorPhone ? 'phoneDesc' : 'desc'}`}
+                />
             </div>
             <Translate>
                 {({ translate }) => (
@@ -45,16 +48,12 @@ const ConfirmDisable = ({
                     type='submit'
                     color='red small'
                     sending={isDisable}
-                    disabled={(username !== accountId) || isDisable}
+                    disabled={username !== accountId || isDisable}
                 >
-                    <Translate id={`${component}.disable.disable`}/>
+                    <Translate id={`${component}.disable.disable`} />
                 </FormButton>
-                <FormButton
-                    onClick={onKeepEnabled}
-                    color='link'
-                    type='button'
-                >
-                    <Translate id={`${component}.disable.keep`}/>
+                <FormButton onClick={onKeepEnabled} color='link' type='button'>
+                    <Translate id={`${component}.disable.keep`} />
                 </FormButton>
             </div>
         </Container>

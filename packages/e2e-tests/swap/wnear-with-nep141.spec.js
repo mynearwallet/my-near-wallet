@@ -1,26 +1,32 @@
 // @ts-check
-const nearApi = require("near-api-js");
+const nearApi = require('near-api-js');
 
-const { test, expect } = require("../playwrightWithFixtures");
-const { CONTRACT } = require("../constants");
-const { formatAmount } = require("../utils/amount");
-const { HomePage } = require("../register/models/Home");
-const { SwapPage } = require("./models/Swap");
-const { getResultMessageRegExp, removeStringBrakes, withoutLastChars } = require("./utils");
+const { CONTRACT } = require('../constants');
+const { test, expect } = require('../playwrightWithFixtures');
+const { HomePage } = require('../register/models/Home');
+const { formatAmount } = require('../utils/amount');
 const {
     NEAR_DEPOSIT_FEE,
     SWAP_FEE,
     NEP141_TOKENS,
     TRANSACTIONS_LOADING_DELAY,
-} = require("./constants");
+} = require('./constants');
+const { SwapPage } = require('./models/Swap');
+const {
+    getResultMessageRegExp,
+    removeStringBrakes,
+    withoutLastChars,
+} = require('./utils');
 
-const { utils: { format } } = nearApi;
+const {
+    utils: { format },
+} = nearApi;
 const { describe, beforeAll, afterAll } = test;
 const { TESTNET } = CONTRACT;
 
-test.setTimeout(140_000)
+test.setTimeout(140_000);
 
-describe("Swap wrapped NEAR with NEP141", () => {
+describe('Swap wrapped NEAR with NEP141', () => {
     const swapAmount = 0.5;
     const waitAfterSwapWhileBalancesLoading = 20_000;
     // Limit on amount decimals because we don't know the exact transaction fees
@@ -46,9 +52,9 @@ describe("Swap wrapped NEAR with NEP141", () => {
     afterAll(async () => {
         await homePage.close();
         await swapPage.close();
-        try{
+        try {
             await account.delete();
-        }catch(err){
+        } catch (err) {
             // allow account deletion to be failed.
         }
     });
@@ -103,7 +109,9 @@ describe("Swap wrapped NEAR with NEP141", () => {
         nearBalanceBefore = await account.getUpdatedBalance();
         parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
         const wNearBalanceBefore = await account.getTokenBalance(TESTNET.wNEAR.id);
-        const wNearFormattedBalanceBefore = Number(formatAmount(wNearBalanceBefore, TESTNET.wNEAR.decimals));
+        const wNearFormattedBalanceBefore = Number(
+            formatAmount(wNearBalanceBefore, TESTNET.wNEAR.decimals)
+        );
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
@@ -126,7 +134,9 @@ describe("Swap wrapped NEAR with NEP141", () => {
         nearBalanceAfter = await account.getUpdatedBalance();
         parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
         const wNearBalanceAfter = await account.getTokenBalance(TESTNET.wNEAR.id);
-        const wNearFormattedBalanceAfter = Number(formatAmount(wNearBalanceAfter, TESTNET.wNEAR.decimals));
+        const wNearFormattedBalanceAfter = Number(
+            formatAmount(wNearBalanceAfter, TESTNET.wNEAR.decimals)
+        );
 
         expect(Number(parsedTotalAfter)).toBeCloseTo(
             parsedTotalBefore - SWAP_FEE,
@@ -142,7 +152,9 @@ describe("Swap wrapped NEAR with NEP141", () => {
 
         tokenBalanceAfterFirstSwap = formatAmount(tokenBalance, token.decimals);
 
-        expect(tokenBalanceAfterFirstSwap).toMatch(new RegExp(withoutLastChars(outAmount, 1)));
+        expect(tokenBalanceAfterFirstSwap).toMatch(
+            new RegExp(withoutLastChars(outAmount, 1))
+        );
 
         await swapPage.clickOnContinueAfterSwapButton();
     });
@@ -161,7 +173,9 @@ describe("Swap wrapped NEAR with NEP141", () => {
         expect(Number(wNearOutAmount) > 0).toBeTruthy();
 
         const wNearBalanceBefore = await account.getTokenBalance(TESTNET.wNEAR.id);
-        const wNearFormattedBalanceBefore = Number(formatAmount(wNearBalanceBefore, TESTNET.wNEAR.decimals));
+        const wNearFormattedBalanceBefore = Number(
+            formatAmount(wNearBalanceBefore, TESTNET.wNEAR.decimals)
+        );
 
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
@@ -181,7 +195,9 @@ describe("Swap wrapped NEAR with NEP141", () => {
         );
 
         const wNearBalanceAfter = await account.getTokenBalance(TESTNET.wNEAR.id);
-        const wNearFormattedBalanceAfter = Number(formatAmount(wNearBalanceAfter, TESTNET.wNEAR.decimals));
+        const wNearFormattedBalanceAfter = Number(
+            formatAmount(wNearBalanceAfter, TESTNET.wNEAR.decimals)
+        );
 
         expect(Number(wNearFormattedBalanceAfter)).toBeCloseTo(
             wNearFormattedBalanceBefore + Number(wNearOutAmount),

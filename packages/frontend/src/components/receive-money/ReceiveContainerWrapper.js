@@ -12,12 +12,7 @@ const ReceiveContainerWrapper = () => {
 
     //TODO: Add support for receiver in URL
 
-    return (
-        <ReceiveContainer
-            accountId={accountId}
-            availableBalance={availableBalance}
-        />
-    );
+    return <ReceiveContainer accountId={accountId} availableBalance={availableBalance} />;
 };
 
 export default ReceiveContainerWrapper;

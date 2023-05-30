@@ -967,6 +967,13 @@
             "title": "私钥"
         }
     },
+    "recoverPrivateKey": {
+        "pageText": "请输入与该账户关联的私钥。",
+        "pageTitle": "使用私钥进行恢复",
+        "privateKeyInput": {
+            "title": "私钥"
+        }
+    },
     "recoverSeedPhrase": {
         "couldNotFindAccountModal": {
             "buttonImport": "仍然导入",
@@ -981,13 +988,6 @@
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "助记词（12 个单词）"
-        }
-    },
-    "recoverPrivateKey": {
-        "pageText": "请输入与该账户关联的私钥。",
-        "pageTitle": "使用私钥进行恢复",
-        "privateKeyInput": {
-            "title": "私钥"
         }
     },
     "recoverWithLink": {
@@ -1801,13 +1801,13 @@
         "recoverAccountLink": {
             "error": "导入账户失败，请重试或联系服务支持。"
         },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "提供的私钥无效。请检查您的私钥并重试。"
+        },
         "recoverAccountSeedPhrase": {
             "errorInvalidSeedPhrase": "助记词无效",
             "errorNotAbleToImportAccount": "导入账户失败。请重试，或联系客服获得帮助。",
             "errorSeedPhraseNotValid": "助记词无效，请检查后重试。"
-        },
-        "recoverAccountPrivateKey": {
-            "errorPKNotValid": "提供的私钥无效。请检查您的私钥并重试。"
         },
         "recoveryMethods": {
             "lastMethod": "无法删除最后一个恢复方式。除非你添加了 Ledger，你需要保留至少一种账户恢复方式。",

@@ -6,7 +6,7 @@ export const Container = styled(Card)`
     i {
         margin-top: 16px;
         display: block;
-        color: #A1A1A9;
+        color: #a1a1a9;
         font-style: normal;
     }
 

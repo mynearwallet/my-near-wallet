@@ -11,7 +11,7 @@ const StyledContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-around;
-    border: 1px solid #F0F0F1;
+    border: 1px solid #f0f0f1;
     border-radius: 8px;
     overflow: hidden;
 
@@ -20,8 +20,8 @@ const StyledContainer = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #F0F0F1;
-        color: #A2A2A8;
+        background-color: #f0f0f1;
+        color: #a2a2a8;
         font-weight: 600;
         padding: 15px;
         cursor: pointer;
@@ -37,7 +37,7 @@ const StyledContainer = styled.div`
 
         &.active {
             background-color: white;
-            color: #0072CE;
+            color: #0072ce;
             cursor: default;
         }
     }
@@ -64,19 +64,27 @@ const TabSelector = () => {
 
     return (
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
-            <div 
+            <div
                 role='button'
                 className={pathname.includes(sendMoneyRoute) ? 'active' : ''}
-                onClick={!pathname.includes(sendMoneyRoute) ? () => dispatch(redirectTo(sendMoneyRoute)) : null}
+                onClick={
+                    !pathname.includes(sendMoneyRoute)
+                        ? () => dispatch(redirectTo(sendMoneyRoute))
+                        : null
+                }
             >
-                <Translate id='button.send'/>
+                <Translate id='button.send' />
             </div>
             <div
                 role='button'
                 className={pathname.includes(receiveMoneyRoute) ? 'active' : ''}
-                onClick={!pathname.includes(receiveMoneyRoute) ? () => dispatch(redirectTo(receiveMoneyRoute)) : null}
+                onClick={
+                    !pathname.includes(receiveMoneyRoute)
+                        ? () => dispatch(redirectTo(receiveMoneyRoute))
+                        : null
+                }
             >
-                <Translate id='button.receive'/>
+                <Translate id='button.receive' />
             </div>
         </StyledContainer>
     );

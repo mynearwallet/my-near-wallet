@@ -28,7 +28,7 @@ const StyledContainer = styled.div`
         display: flex;
         align-items: center;
         justify-content: space-between;
-        color: #72727A;
+        color: #72727a;
 
         @media (max-width: 767px) {
             font-size: 12px;
@@ -39,7 +39,7 @@ const StyledContainer = styled.div`
 function filterTokens(tokens, searchSubstring) {
     return tokens.filter((token) => {
         if (!searchSubstring) {
-            return true; 
+            return true;
         }
 
         return token.onChainFTMetadata?.symbol
@@ -56,17 +56,22 @@ const SelectToken = ({
     balanceLabelId = 'sendV2.selectAsset.asssetListBalanceTitle',
 }) => {
     const [searchValue, setSearchValue] = useState('');
-    const [filteredFungibleTokens, setFilteredFungibleTokens] = useState(() => filterTokens(fungibleTokens));
+    const [filteredFungibleTokens, setFilteredFungibleTokens] = useState(() =>
+        filterTokens(fungibleTokens)
+    );
     const currentLanguage = getCurrentLanguage();
 
-    const throttledSetFilteredTokens = useCallback(throttle(
-        (tokens, searchSubstring) => {
-            const filteredTokens = filterTokens(tokens, searchSubstring);
-            setFilteredFungibleTokens(filteredTokens);
-        },
-        500,
-        { leading: false, trailing: true }
-    ), []);
+    const throttledSetFilteredTokens = useCallback(
+        throttle(
+            (tokens, searchSubstring) => {
+                const filteredTokens = filterTokens(tokens, searchSubstring);
+                setFilteredFungibleTokens(filteredTokens);
+            },
+            500,
+            { leading: false, trailing: true }
+        ),
+        []
+    );
 
     useEffect(() => {
         throttledSetFilteredTokens(fungibleTokens, searchValue);
@@ -75,13 +80,15 @@ const SelectToken = ({
     return (
         <StyledContainer>
             <div className='header'>
-                <BackArrowButton onClick={onClickGoBack}/>
-                <Translate id='sendV2.selectAsset.title'/>
+                <BackArrowButton onClick={onClickGoBack} />
+                <Translate id='sendV2.selectAsset.title' />
             </div>
             <Translate>
                 {({ translate }) => (
                     <input
-                        placeholder={translate('sendV2.selectAsset.assetInputPlaceholder')}
+                        placeholder={translate(
+                            'sendV2.selectAsset.assetInputPlaceholder'
+                        )}
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
                         autoFocus={isMobile ? false : true}
@@ -89,10 +96,18 @@ const SelectToken = ({
                 )}
             </Translate>
             <div className='list-header'>
-                <span><Translate id='sendV2.selectAsset.assetListNameTitle'/></span>
-                <span><Translate id={balanceLabelId} /></span>
+                <span>
+                    <Translate id='sendV2.selectAsset.assetListNameTitle' />
+                </span>
+                <span>
+                    <Translate id={balanceLabelId} />
+                </span>
             </div>
-            <Tokens tokens={filteredFungibleTokens} onClick={onSelectToken} currentLanguage={currentLanguage}/>
+            <Tokens
+                tokens={filteredFungibleTokens}
+                onClick={onSelectToken}
+                currentLanguage={currentLanguage}
+            />
         </StyledContainer>
     );
 };

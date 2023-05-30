@@ -8,7 +8,7 @@ const Status = ({ status, translate }) => {
     return (
         <StyledContainer>
             <Translate id={translate} />
-            <TXStatus status={status}/>
+            <TXStatus status={status} />
         </StyledContainer>
     );
 };

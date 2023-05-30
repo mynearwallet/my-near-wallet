@@ -8,14 +8,14 @@ const StyledButton = styled.button`
     align-items: center;
     justify-content: space-between;
     padding: 0;
-    background-color: #F0F0F1;
+    background-color: #f0f0f1;
     border: none;
     border-radius: 4px;
     transition: 100ms;
-    color: #72727A;
+    color: #72727a;
 
     :hover {
-        background-color: #E5E5E6;
+        background-color: #e5e5e6;
 
         .chevron-wrapper {
             border-color: #dbdbdb;
@@ -31,7 +31,7 @@ const StyledButton = styled.button`
     }
 
     .chevron-wrapper {
-        border-left: 1px solid #E5E5E6;
+        border-left: 1px solid #e5e5e6;
         height: 32px;
         width: 32px;
         display: flex;
@@ -44,7 +44,7 @@ const StyledButton = styled.button`
             width: 10px;
             height: 10px;
             transform: rotate(90deg);
-        }   
+        }
     }
 
     &.open {
@@ -60,7 +60,7 @@ export default ({ children, id, className }) => (
     <StyledButton id={id} className={className}>
         <div className='children'>{children}</div>
         <div className='chevron-wrapper'>
-            <ChevronIcon color='#72727A'/>
+            <ChevronIcon color='#72727A' />
         </div>
     </StyledButton>
 );

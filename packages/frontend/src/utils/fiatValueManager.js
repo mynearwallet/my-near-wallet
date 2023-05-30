@@ -30,7 +30,7 @@ function wrapNodeCacheForDataloader(cache) {
 
         clear: (...args) => {
             return cache.flushAll(...args);
-        }
+        },
     };
 }
 
@@ -46,8 +46,8 @@ export default class FiatValueManager {
                             query: {
                                 ids: tokenIds.join(','),
                                 vs_currencies: 'usd,eur,cny',
-                                include_last_updated_at: true
-                            }
+                                include_last_updated_at: true,
+                            },
                         })
                     );
                     return tokenIds.map((id) => tokenFiatValues[id]);
@@ -62,7 +62,9 @@ export default class FiatValueManager {
             {
                 /* 0 checkperiod means we only purge values from the cache on attempting to read an expired value
                 Which allows us to avoid having to call `.close()` on the cache to allow node to exit cleanly */
-                cacheMap: wrapNodeCacheForDataloader(new Cache({ stdTTL: 30, checkperiod: 0, useClones: false }))
+                cacheMap: wrapNodeCacheForDataloader(
+                    new Cache({ stdTTL: 30, checkperiod: 0, useClones: false })
+                ),
             }
         );
         this.refFinanceDataLoader = new DataLoader(
@@ -79,10 +81,12 @@ export default class FiatValueManager {
                 }
             },
             {
-                cacheMap: wrapNodeCacheForDataloader(new Cache({ stdTTL: 30, checkperiod: 0, useClones: false }))
+                cacheMap: wrapNodeCacheForDataloader(
+                    new Cache({ stdTTL: 30, checkperiod: 0, useClones: false })
+                ),
             }
         );
-    };
+    }
 
     async fetchCoinGeckoPrices(tokens = ['near', 'usn']) {
         const byTokenName = {};
@@ -92,27 +96,32 @@ export default class FiatValueManager {
             byTokenName[name] = prices[ndx];
         });
         return byTokenName;
-    };
+    }
 
     async fetchRefFinancePrices(dummyToken = ['near']) {
         const [prices] = await this.refFinanceDataLoader.loadMany(dummyToken);
         const last_updated_at = Date.now() / 1000;
         const formattedValues = Object.keys(prices).reduce((acc, curr) => {
-            return ({
+            return {
                 ...acc,
                 [curr]: {
                     usd: +Number(prices[curr]?.price).toFixed(2) || null,
-                    last_updated_at
-                }
-            });
+                    last_updated_at,
+                },
+            };
         }, {});
-        return {...formattedValues, near: formattedValues[`wrap.${CONFIG.ACCOUNT_ID_SUFFIX}`]};
-    };
+        return {
+            ...formattedValues,
+            near: formattedValues[`wrap.${CONFIG.ACCOUNT_ID_SUFFIX}`],
+        };
+    }
 
     async fetchTokenWhiteList(accountId) {
         try {
             const account = wallet.getAccountBasic(accountId);
-            const contract = new Contract(account, CONFIG.REF_FINANCE_CONTRACT, {viewMethods: ['get_whitelisted_tokens']});
+            const contract = new Contract(account, CONFIG.REF_FINANCE_CONTRACT, {
+                viewMethods: ['get_whitelisted_tokens'],
+            });
             const whiteListedTokens = await contract.get_whitelisted_tokens();
 
             return whiteListedTokens;
@@ -120,5 +129,5 @@ export default class FiatValueManager {
             console.error(`Failed to fetch whitelisted tokens: ${error}`);
             return [];
         }
-    };
+    }
 }

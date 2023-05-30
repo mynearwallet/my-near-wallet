@@ -9,7 +9,7 @@ import Tooltip from './Tooltip';
 
 const Container = styled.div`
     color: white;
-    background-color: #0072CE;
+    background-color: #0072ce;
     position: fixed;
     padding: 10px;
     top: 0;
@@ -46,7 +46,7 @@ const Container = styled.div`
     }
 
     &.staging-banner {
-        background-color: #F6C98E;
+        background-color: #f6c98e;
         color: #452500;
 
         .tooltip {
@@ -65,9 +65,14 @@ const Container = styled.div`
 `;
 
 const NetworkBanner = ({ account }) => {
-
     useEffect(() => {
-        Mixpanel.register({network_id: CONFIG.IS_MAINNET ? 'mainnet' : CONFIG.NETWORK_ID === 'default' ? 'testnet': CONFIG.NETWORK_ID});
+        Mixpanel.register({
+            network_id: CONFIG.IS_MAINNET
+                ? 'mainnet'
+                : CONFIG.NETWORK_ID === 'default'
+                ? 'testnet'
+                : CONFIG.NETWORK_ID,
+        });
         setBannerHeight();
         window.addEventListener('resize', setBannerHeight);
         return () => {
@@ -76,8 +81,10 @@ const NetworkBanner = ({ account }) => {
     }, [account]);
 
     const setBannerHeight = () => {
-        const banner =  document.getElementById('top-banner');
-        const bannerHeight = banner ? banner.getBoundingClientRect().top + banner.offsetHeight : 0;
+        const banner = document.getElementById('top-banner');
+        const bannerHeight = banner
+            ? banner.getBoundingClientRect().top + banner.offsetHeight
+            : 0;
         const app = document.getElementById('app-container');
         const navContainer = document.getElementById('nav-container');
         navContainer.style.top = bannerHeight ? `${bannerHeight}px` : 0;
@@ -89,19 +96,30 @@ const NetworkBanner = ({ account }) => {
             <Container id='top-banner'>
                 <Translate id='networkBanner.title' />
                 <span className='network-link'>
-                    (<a href={`${CONFIG.NODE_URL}/status`} target='_blank' rel='noopener noreferrer'>
-                        {CONFIG.NODE_URL.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]}
-                    </a>)
+                    (
+                    <a
+                        href={`${CONFIG.NODE_URL}/status`}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                    >
+                        {
+                            CONFIG.NODE_URL.replace(
+                                /^(?:https?:\/\/)?(?:www\.)?/i,
+                                ''
+                            ).split('/')[0]
+                        }
+                    </a>
+                    )
                 </span>
-                <Tooltip translate='networkBanner.desc' modalOnly={true}/>
+                <Tooltip translate='networkBanner.desc' modalOnly={true} />
             </Container>
         );
     } else if (CONFIG.SHOW_PRERELEASE_WARNING) {
         return (
             <Container id='top-banner' className='staging-banner'>
-                <AlertTriangleIcon color='#A15600'/>
+                <AlertTriangleIcon color='#A15600' />
                 <Translate id='stagingBanner.title' />
-                <Tooltip translate='stagingBanner.desc' modalOnly={true}/>
+                <Tooltip translate='stagingBanner.desc' modalOnly={true} />
             </Container>
         );
     } else {

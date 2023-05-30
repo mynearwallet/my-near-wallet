@@ -11,7 +11,7 @@ import {
     initTwoFactor,
     verifyTwoFactor,
     deployMultisig,
-    redirectToApp
+    redirectToApp,
 } from '../../../redux/actions/account';
 import { clearGlobalAlert } from '../../../redux/actions/status';
 import { selectAccountHas2fa, selectAccountId } from '../../../redux/slices/account';
@@ -28,17 +28,14 @@ import SafeTranslate from '../../SafeTranslate';
 import EnterVerificationCode from '../EnterVerificationCode';
 import TwoFactorOption from './TwoFactorOption';
 
-const {
-    parseNearAmount
-} = utils.format;
+const { parseNearAmount } = utils.format;
 
 const StyledContainer = styled(Container)`
-
     h4 {
         margin-top: 40px;
 
         span {
-            color: #FF585D;
+            color: #ff585d;
         }
     }
 
@@ -62,7 +59,7 @@ const StyledContainer = styled(Container)`
     label {
         display: flex;
         align-items: center;
-        border: 1px solid #F0F0F1;
+        border: 1px solid #f0f0f1;
         border-radius: 8px;
         padding: 15px;
         margin-top: 50px;
@@ -71,7 +68,7 @@ const StyledContainer = styled(Container)`
         > span {
             margin-left: 15px;
             font-style: italic;
-            color: #72727A;
+            color: #72727a;
             font-size: 12px;
             font-weight: 500;
         }
@@ -79,7 +76,6 @@ const StyledContainer = styled(Container)`
 `;
 
 export function EnableTwoFactor(props) {
-
     const dispatch = useDispatch();
     const has2fa = useSelector(selectAccountHas2fa);
     const accountId = useSelector(selectAccountId);
@@ -93,14 +89,18 @@ export function EnableTwoFactor(props) {
     const [twoFactorAmountApproved, setTwoFactorAmountApproved] = useState(false);
     const recoveryMethods = useRecoveryMethods(accountId);
     const loading = status.mainLoader;
-    const pendingTwoFactorAction = useSelector((state) => selectActionsPending(state, { types: ['INIT_TWO_FACTOR', 'DEPLOY_MULTISIG'] }));
-    const reSending = useSelector((state) => selectActionsPending(state, { types: ['INIT_TWO_FACTOR'] }));
+    const pendingTwoFactorAction = useSelector((state) =>
+        selectActionsPending(state, { types: ['INIT_TWO_FACTOR', 'DEPLOY_MULTISIG'] })
+    );
+    const reSending = useSelector((state) =>
+        selectActionsPending(state, { types: ['INIT_TWO_FACTOR'] })
+    );
 
     const multiSigMinAmountRaw = parseNearAmount(CONFIG.MULTISIG_MIN_AMOUNT);
 
     const method = {
         kind: '2fa-email',
-        detail: email
+        detail: email,
     };
 
     useEffect(() => {
@@ -109,19 +109,20 @@ export function EnableTwoFactor(props) {
         if (email) {
             setEmail(email.detail);
         }
-
     }, [recoveryMethods]);
 
     const handleNext = async () => {
         if (!initiated && !loading && !has2fa && isValidInput()) {
             let response;
-            Mixpanel.track('2FA Click continue button', {option: option});
-            await Mixpanel.withTracking('2FA Initialize two factor',
-                async () => response = await dispatch(initTwoFactor(accountId, method)),
+            Mixpanel.track('2FA Click continue button', { option: option });
+            await Mixpanel.withTracking(
+                '2FA Initialize two factor',
+                async () => (response = await dispatch(initTwoFactor(accountId, method))),
                 () => {},
                 async () => {
                     if (response && response.confirmed) {
-                        await Mixpanel.withTracking('2FA Deploy multisig',
+                        await Mixpanel.withTracking(
+                            '2FA Deploy multisig',
                             async () => await handleDeployMultisig()
                         );
                     } else {
@@ -139,13 +140,11 @@ export function EnableTwoFactor(props) {
 
     const handleConfirm = async (securityCode) => {
         if (initiated && securityCode.length === 6) {
-            await Mixpanel.withTracking('2FA Verify',
-                async () => {
-                    await dispatch(verifyTwoFactor(securityCode));
-                    await dispatch(clearGlobalAlert());
-                    await handleDeployMultisig();
-                }
-            );
+            await Mixpanel.withTracking('2FA Verify', async () => {
+                await dispatch(verifyTwoFactor(securityCode));
+                await dispatch(clearGlobalAlert());
+                await handleDeployMultisig();
+            });
         }
     };
 
@@ -173,18 +172,30 @@ export function EnableTwoFactor(props) {
             <StyledContainer className='small-centered border'>
                 <AlertBanner
                     title='twoFactor.alertBanner.title'
-                    data={getNearAndFiatValue(multiSigMinAmountRaw, nearTokenFiatValueUSD)}
+                    data={getNearAndFiatValue(
+                        multiSigMinAmountRaw,
+                        nearTokenFiatValueUSD
+                    )}
                     button='twoFactor.alertBanner.button'
                     theme='alert'
                     linkTo='https://docs.near.org/docs/concepts/storage-staking'
                 />
-                <form onSubmit={(e) => {
-                    handleNext();
-                    e.preventDefault();
-                }}>
-                    <h1><Translate id='twoFactor.enable' /></h1>
-                    <h2><Translate id='twoFactor.subHeader' /></h2>
-                    <h4><Translate id='twoFactor.select' /><span>*</span></h4>
+                <form
+                    onSubmit={(e) => {
+                        handleNext();
+                        e.preventDefault();
+                    }}
+                >
+                    <h1>
+                        <Translate id='twoFactor.enable' />
+                    </h1>
+                    <h2>
+                        <Translate id='twoFactor.subHeader' />
+                    </h2>
+                    <h4>
+                        <Translate id='twoFactor.select' />
+                        <span>*</span>
+                    </h4>
                     <TwoFactorOption
                         onClick={() => setOption('email')}
                         option='email'
@@ -194,7 +205,9 @@ export function EnableTwoFactor(props) {
                             {({ translate }) => (
                                 <input
                                     type='email'
-                                    placeholder={translate('setupRecovery.emailPlaceholder')}
+                                    placeholder={translate(
+                                        'setupRecovery.emailPlaceholder'
+                                    )}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     tabIndex='1'
@@ -208,11 +221,28 @@ export function EnableTwoFactor(props) {
                             checked={twoFactorAmountApproved}
                             onChange={(e) => setTwoFactorAmountApproved(e.target.checked)}
                         />
-                        <span><SafeTranslate id='twoFactor.checkBox' data={{ amount: getNearAndFiatValue(multiSigMinAmountRaw, nearTokenFiatValueUSD) }}/></span>
+                        <span>
+                            <SafeTranslate
+                                id='twoFactor.checkBox'
+                                data={{
+                                    amount: getNearAndFiatValue(
+                                        multiSigMinAmountRaw,
+                                        nearTokenFiatValueUSD
+                                    ),
+                                }}
+                            />
+                        </span>
                     </label>
                     <FormButton
                         color='blue'
-                        disabled={!isValidInput() || loading || has2fa || initiated || !twoFactorAmountApproved || accountHaveLedger}
+                        disabled={
+                            !isValidInput() ||
+                            loading ||
+                            has2fa ||
+                            initiated ||
+                            !twoFactorAmountApproved ||
+                            accountHaveLedger
+                        }
                         type='submit'
                         sending={pendingTwoFactorAction}
                         sendingString='button.enabling'
@@ -223,7 +253,7 @@ export function EnableTwoFactor(props) {
                         className='link'
                         type='button'
                         linkTo='/profile'
-                        trackingId="2FA Click skip button"
+                        trackingId='2FA Click skip button'
                     >
                         <Translate id='button.skip' />
                     </FormButton>

@@ -6,32 +6,19 @@ export class IndexerCache extends Cache {
     static INDEX_NAME = 'Kind';
 
     constructor() {
-        super(
-            IndexerCache.DB_VERSION,
-            IndexerCache.STORE_NAME,
-            IndexerCache.INDEX_NAME
-        );
+        super(IndexerCache.DB_VERSION, IndexerCache.STORE_NAME, IndexerCache.INDEX_NAME);
     }
 
     onCreateScheme = (open) => {
-        const store = open.result.createObjectStore(
-            IndexerCache.STORE_NAME,
-            {
-                keyPath: 'id',
-                autoIncrement: true
-            }
-        );
+        const store = open.result.createObjectStore(IndexerCache.STORE_NAME, {
+            keyPath: 'id',
+            autoIncrement: true,
+        });
 
-        store.createIndex(
-            IndexerCache.INDEX_NAME, [
-                'account.id',
-                'account.kind',
-            ],
-            {
-                unique: true
-            }
-        );
-    }
+        store.createIndex(IndexerCache.INDEX_NAME, ['account.id', 'account.kind'], {
+            unique: true,
+        });
+    };
 
     _getRecord(accountId, kind) {
         return new Promise(async (resolve, reject) => {
@@ -55,7 +42,7 @@ export class IndexerCache extends Cache {
                     id: accountId,
                     kind,
                 },
-                data
+                data,
             };
 
             const request = store.add(item, IDBCursor.primaryKey);
@@ -72,8 +59,7 @@ export class IndexerCache extends Cache {
 
                 if (cursor) {
                     const { account } = cursor.value;
-                    const isFound = account.id === accountId
-                        && account.kind === kind;
+                    const isFound = account.id === accountId && account.kind === kind;
 
                     if (isFound) {
                         const updatedData = cursor.value;
@@ -99,12 +85,7 @@ export class IndexerCache extends Cache {
      * The main idea is save the contract-helper from searching through the entire history of the blockchain.
      * Each next request, we send the last timestamp, while accumulating data on the client.
      */
-    async accumulate({
-        accountId,
-        kind,
-        updater,
-        timeoutNs
-    }) {
+    async accumulate({ accountId, kind, updater, timeoutNs }) {
         const record = await this._getRecord(accountId, kind);
 
         try {
@@ -112,7 +93,11 @@ export class IndexerCache extends Cache {
             const lastTimestamp = parseInt(record?.data?.timestamp || 0, 10);
 
             if (this._shouldUpdate(lastTimestamp, timeoutNs)) {
-                let { version, lastBlockTimestamp, list = [] } = await updater(lastTimestamp);
+                let {
+                    version,
+                    lastBlockTimestamp,
+                    list = [],
+                } = await updater(lastTimestamp);
 
                 const prev = record?.data?.list || [];
 
@@ -142,7 +127,7 @@ export class IndexerCache extends Cache {
                         accountId,
                         kind,
                         updater,
-                        timeoutNs
+                        timeoutNs,
                     });
                 }
 

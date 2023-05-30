@@ -4,7 +4,11 @@ import { selectAvailableBalance } from '../../slices/account';
 import { selectNearTokenFiatValueUSD } from '../../slices/tokenFiatValues';
 
 export default createSelector(
-    [selectAvailableBalance, selectNearTokenFiatValueUSD, (_, params) => params?.includeNearContractName],
+    [
+        selectAvailableBalance,
+        selectNearTokenFiatValueUSD,
+        (_, params) => params?.includeNearContractName,
+    ],
     (balanceAvailable, usd, includeNearContractName) => ({
         balance: balanceAvailable || '',
         contractName: includeNearContractName ? 'NEAR' : undefined,

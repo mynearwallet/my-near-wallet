@@ -10,7 +10,7 @@ import { selectAccountSlice } from '../../redux/slices/account';
 import copyText from '../../utils/copyText';
 import isMobile from '../../utils/isMobile';
 import Divider from '../common/Divider';
-import {Snackbar, snackbarDuration } from '../common/Snackbar';
+import { Snackbar, snackbarDuration } from '../common/Snackbar';
 import ProfileQRCode from '../profile/ProfileQRCode';
 
 const Container = styled.div`
@@ -21,7 +21,7 @@ const Container = styled.div`
     max-width: 450px;
     text-align: center;
     margin: 0 auto;
-    color: #25282A;
+    color: #25282a;
     padding: 20px 0 40px 0;
 
     .divider-container {
@@ -43,7 +43,6 @@ const Container = styled.div`
         .qr-code-container {
             margin-top: 35px;
         }
-
     }
 
     h1 {
@@ -77,7 +76,7 @@ const Address = styled.div`
 `;
 
 const CopyAddress = styled.div`
-    color: #0072CE;
+    color: #0072ce;
     font-size: 16px;
     position: absolute;
     right: 10px;
@@ -122,15 +121,17 @@ class ReceiveMoney extends Component {
     handleCopyAddress = () => {
         Mixpanel.track('RECEIVE Copy account address');
         if (navigator.share && this.props.isMobile) {
-            navigator.share({
-                url: this.props.account.accountId
-            }).catch((err) => {
-                console.log(err.message);
-            });
+            navigator
+                .share({
+                    url: this.props.account.accountId,
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
         } else {
             this.handleCopyDesktop();
         }
-    }
+    };
 
     handleCopyDesktop = () => {
         copyText(this.urlRef.current);
@@ -139,17 +140,12 @@ class ReceiveMoney extends Component {
                 this.setState({ successSnackbar: false });
             }, snackbarDuration);
         });
-    }
+    };
 
     render() {
+        const { successSnackbar } = this.state;
 
-        const {
-            successSnackbar
-        } = this.state;
-
-        const {
-            account
-        } = this.props;
+        const { account } = this.props;
 
         const accountId = account?.accountId || account.localStorage?.accountId;
 
@@ -161,22 +157,22 @@ class ReceiveMoney extends Component {
                             <h1>{translate('receivePage.addressTitle')}</h1>
                             <Address onClick={this.handleCopyAddress}>
                                 {accountId}
-                                <UrlAddress ref={this.urlRef}>
-                                    {accountId}
-                                </UrlAddress>
+                                <UrlAddress ref={this.urlRef}>{accountId}</UrlAddress>
                                 {navigator.share && isMobile() ? (
-                                    <MobileShare/>
+                                    <MobileShare />
                                 ) : (
-                                    <CopyAddress title={translate('receivePage.copyAddressLinkLong')}>
+                                    <CopyAddress
+                                        title={translate(
+                                            'receivePage.copyAddressLinkLong'
+                                        )}
+                                    >
                                         {translate('receivePage.copyAddressLinkShort')}
                                     </CopyAddress>
                                 )}
                             </Address>
-                            <Divider/>
-                            <h1>
-                                {translate('receivePage.qrCodeTitle')}
-                            </h1>
-                            <ProfileQRCode accountId={accountId}/>
+                            <Divider />
+                            <h1>{translate('receivePage.qrCodeTitle')}</h1>
+                            <ProfileQRCode accountId={accountId} />
                         </Container>
                         <Snackbar
                             theme='success'
@@ -192,9 +188,7 @@ class ReceiveMoney extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    account: selectAccountSlice(state)
+    account: selectAccountSlice(state),
 });
 
-export const ReceiveMoneyWithRouter = connect(
-    mapStateToProps
-)(withRouter(ReceiveMoney));
+export const ReceiveMoneyWithRouter = connect(mapStateToProps)(withRouter(ReceiveMoney));

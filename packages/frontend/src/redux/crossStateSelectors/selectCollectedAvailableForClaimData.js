@@ -2,7 +2,10 @@ import BN from 'bn.js';
 import { isEmpty, some } from 'lodash';
 import { createSelector } from 'reselect';
 
-import { selectStakingCurrentAccountAccountId, selectValidatorsFarmData } from '../slices/staking';
+import {
+    selectStakingCurrentAccountAccountId,
+    selectValidatorsFarmData,
+} from '../slices/staking';
 import {
     selectTokensFiatValueUSD,
     selectTokenWhiteList,
@@ -20,17 +23,22 @@ const collectFarmingData = (args) => {
             contractMetadataByContractId,
             tokenFiatValues,
             tokenWhitelist,
-            accountId
+            accountId,
         } = args;
-        const filteredFarms = Object.values(validatorsFarmData)
-            .reduce((acc, {farmRewards}) => [...acc, ...(farmRewards?.[accountId] || [])], []);
+        const filteredFarms = Object.values(validatorsFarmData).reduce(
+            (acc, { farmRewards }) => [...acc, ...(farmRewards?.[accountId] || [])],
+            []
+        );
 
-        const collectedBalance = filteredFarms.reduce((acc, farm) => ({
-            ...acc,
-            [farm.token_id]: new BN(acc[farm.token_id])
-                .add(new BN(farm.balance))
-                .toString()
-        }), {});
+        const collectedBalance = filteredFarms.reduce(
+            (acc, farm) => ({
+                ...acc,
+                [farm.token_id]: new BN(acc[farm.token_id])
+                    .add(new BN(farm.balance))
+                    .toString(),
+            }),
+            {}
+        );
 
         return Object.keys(collectedBalance).map((tokenId) => ({
             balance: collectedBalance[tokenId],
@@ -40,10 +48,7 @@ const collectFarmingData = (args) => {
             contractName: tokenId,
         }));
     } catch (error) {
-        console.error(
-            'Error during collecting available for claim data',
-            error
-        );
+        console.error('Error during collecting available for claim data', error);
         return [];
     }
 };
@@ -54,7 +59,7 @@ const selectCollectedAvailableForClaimData = createSelector(
         selectContractsMetadata,
         selectTokensFiatValueUSD,
         selectTokenWhiteList,
-        selectStakingCurrentAccountAccountId
+        selectStakingCurrentAccountAccountId,
     ],
     (
         validatorsFarmData,
@@ -68,7 +73,7 @@ const selectCollectedAvailableForClaimData = createSelector(
             contractMetadataByContractId,
             tokenFiatValues,
             tokenWhitelist,
-            accountId
+            accountId,
         });
     }
 );
@@ -79,7 +84,7 @@ export const selectCollectedAvailableForClaimDataByAccountId = createSelector(
         selectContractsMetadata,
         selectTokensFiatValueUSD,
         selectTokenWhiteList,
-        (state, accountId) => accountId
+        (state, accountId) => accountId,
     ],
     (
         validatorsFarmData,
@@ -93,15 +98,14 @@ export const selectCollectedAvailableForClaimDataByAccountId = createSelector(
             contractMetadataByContractId,
             tokenFiatValues,
             tokenWhitelist,
-            accountId
+            accountId,
         });
     }
 );
 
 export const selectHasAvailableForClaimForAccountId = createSelector(
     [selectCollectedAvailableForClaimDataByAccountId],
-    (farmData) =>
-        farmData.filter((tokenData) => +tokenData.balance > 0).length > 0
+    (farmData) => farmData.filter((tokenData) => +tokenData.balance > 0).length > 0
 );
 
 export default selectCollectedAvailableForClaimData;

@@ -19,7 +19,7 @@ function Modal({
     disableClose,
     mobileActionSheet = true,
     'data-test-id': testId,
-    style
+    style,
 }) {
     const background = React.createRef();
     const [fadeType, setFadeType] = useState(null);
@@ -43,8 +43,7 @@ function Modal({
             clearTimeout(fadeIn);
             body.style.removeProperty('overflow');
         };
-
-    },[]);
+    }, []);
 
     useEffect(() => {
         setFadeType('out');
@@ -56,9 +55,14 @@ function Modal({
     }, [isOpen]);
 
     const checkFullScreen = () => {
-        const modalHeight = document.getElementById('modal-container').getBoundingClientRect().height;
-        const clientHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-        if (Math.round(modalHeight / clientHeight * 100) > 90) {
+        const modalHeight = document
+            .getElementById('modal-container')
+            .getBoundingClientRect().height;
+        const clientHeight = Math.max(
+            document.documentElement.clientHeight || 0,
+            window.innerHeight || 0
+        );
+        if (Math.round((modalHeight / clientHeight) * 100) > 90) {
             setFullScreen('full-screen');
         }
     };
@@ -91,7 +95,14 @@ function Modal({
     return ReactDom.createPortal(
         <StyledModal
             id={id}
-            className={classNames(['modal-wrapper', `size-${modalSize}`, `fade-${fadeType}`, modalClass, fullScreen, { 'mobile-action-sheet' : mobileActionSheet }])}
+            className={classNames([
+                'modal-wrapper',
+                `size-${modalSize}`,
+                `fade-${fadeType}`,
+                modalClass,
+                fullScreen,
+                { 'mobile-action-sheet': mobileActionSheet },
+            ])}
             role='dialog'
             modalSize={modalSize}
             onTransitionEnd={transitionEnd}
@@ -99,12 +110,12 @@ function Modal({
             style={style}
         >
             <div id='modal-container' className='modal'>
-                {closeButton && 
-                    <CloseButton device={closeButton} onClick={handleClick}/>
-                }
+                {closeButton && (
+                    <CloseButton device={closeButton} onClick={handleClick} />
+                )}
                 {children}
             </div>
-            <div className='background' onMouseDown={handleClick} ref={background}/>
+            <div className='background' onMouseDown={handleClick} ref={background} />
         </StyledModal>,
         modalRoot
     );

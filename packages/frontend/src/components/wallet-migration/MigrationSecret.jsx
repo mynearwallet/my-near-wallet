@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -6,7 +6,6 @@ import IconSecurityLock from '../../images/wallet-migration/IconSecurityLock';
 import ClickToCopy from '../common/ClickToCopy';
 import FormButton from '../common/FormButton';
 import Modal from '../common/modal/Modal';
-
 
 const Container = styled.div`
     padding: 15px 0;
@@ -49,17 +48,12 @@ const StyledButton = styled(FormButton)`
     width: calc((100% - 16px) / 2);
     margin: 48px 0 0 !important;
 
-    &:last-child{
+    &:last-child {
         margin-left: 16px !important;
     }
 `;
 
-
-const MigrationSecret = ({
-    showMigrationPrompt,
-    showMigrateAccount,
-    secretKey
-}) => {
+const MigrationSecret = ({ showMigrationPrompt, showMigrateAccount, secretKey }) => {
     const [shouldContinueDisabled, setContinueDisabled] = useState(true);
 
     const setContinueEnable = useCallback(() => {
@@ -76,28 +70,25 @@ const MigrationSecret = ({
             style={{ maxWidth: '431px' }}
         >
             <Container>
-                <IconSecurityLock/>
+                <IconSecurityLock />
                 <h3 className='title'>
-                    <Translate id='walletMigration.migrationSecret.title'/>
+                    <Translate id='walletMigration.migrationSecret.title' />
                 </h3>
-                <p><Translate id='walletMigration.migrationSecret.desc'/></p>
-                <ClickToCopy
-                    copy={secretKey}
-                    onClick={setContinueEnable}>
-                    <TextSelectDisplay>
-                        {secretKey}
-                    </TextSelectDisplay>
+                <p>
+                    <Translate id='walletMigration.migrationSecret.desc' />
+                </p>
+                <ClickToCopy copy={secretKey} onClick={setContinueEnable}>
+                    <TextSelectDisplay>{secretKey}</TextSelectDisplay>
                 </ClickToCopy>
 
                 <ButtonsContainer>
-                    <StyledButton
-                        className='gray-blue'
-                        onClick={showMigrationPrompt}>
+                    <StyledButton className='gray-blue' onClick={showMigrationPrompt}>
                         <Translate id='button.cancel' />
                     </StyledButton>
                     <StyledButton
                         disabled={shouldContinueDisabled}
-                        onClick={showMigrateAccount}>
+                        onClick={showMigrateAccount}
+                    >
                         <Translate id='button.continue' />
                     </StyledButton>
                 </ButtonsContainer>
@@ -107,4 +98,3 @@ const MigrationSecret = ({
 };
 
 export default MigrationSecret;
-

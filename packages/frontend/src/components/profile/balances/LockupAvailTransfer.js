@@ -8,7 +8,7 @@ import SafeTranslate from '../../SafeTranslate';
 import GiftIcon from '../../svg/GiftIcon';
 
 const Container = styled.div`
-    background-color: #C8F6E0;
+    background-color: #c8f6e0;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@ const Container = styled.div`
 
     div {
         margin: 0 10px 0 20px;
-        color: #005A46;
+        color: #005a46;
         flex: 1;
     }
 
@@ -44,22 +44,23 @@ const Container = styled.div`
 
 const LockupAvailTransfer = ({ onTransfer, available, sending, tokenFiatValue }) => {
     return (
-        <Container className='lockup-avail-transfer'> 
-            <GiftIcon/>
+        <Container className='lockup-avail-transfer'>
+            <GiftIcon />
             <div>
                 <SafeTranslate
                     id='profile.lockupBanner.title'
                     data={{ amount: getNearAndFiatValue(available, tokenFiatValue) }}
                 />
             </div>
-            <FormButton color='green-dark border'
+            <FormButton
+                color='green-dark border'
                 disabled={sending}
                 sending={sending}
                 sendingString='button.transferring'
                 onClick={onTransfer}
-                data-test-id="lockupTransferToWalletButton"
+                data-test-id='lockupTransferToWalletButton'
             >
-                <Translate id='profile.lockupBanner.cta'/>
+                <Translate id='profile.lockupBanner.cta' />
             </FormButton>
         </Container>
     );

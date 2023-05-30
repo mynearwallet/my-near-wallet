@@ -17,7 +17,7 @@ const StyledContainer = styled.div`
             transform: translateY(calc(-50% + 10px));
         }
 
-        .react-phone-number-input__icon { 
+        .react-phone-number-input__icon {
             &:not(.react-phone-number-input__icon--international) {
                 margin-right: 5px;
             }
@@ -27,7 +27,7 @@ const StyledContainer = styled.div`
             svg {
                 display: none;
             }
-            
+
             background-image: url(${IntFlagIcon});
             background-repeat: no-repeat;
         }
@@ -53,14 +53,7 @@ const StyledContainer = styled.div`
     }
 `;
 
-export default ({
-    translateIdPlaceholder,
-    onChange,
-    onBlur,
-    value,
-    disabled
-}) => {
-
+export default ({ translateIdPlaceholder, onChange, onBlur, value, disabled }) => {
     return (
         <StyledContainer>
             <Translate>

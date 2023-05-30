@@ -3,14 +3,14 @@ import { differenceBy, uniqWith, isEqual } from 'lodash';
 import { IMPORT_STATUS } from '.';
 
 /**
- * @typedef {{ 
- *  accountId: string, 
+ * @typedef {{
+ *  accountId: string,
  *  status: "pending" | "success" | "waiting" | "error" | null ,
  *  key?: string,
  *  ledgerHdPath?: string,
  *  keyType?: string
  * }} account
- * 
+ *
  * @typedef {{accounts: account[], urlConfirmed: boolean}} state
  */
 
@@ -22,7 +22,7 @@ export const ACTIONS = {
     REMOVE_ACCOUNTS: 'REMOVE_ACCOUNTS',
     ADD_ACCOUNTS: 'ADD_ACCOUNTS',
     SET_CURRENT_FAILED_AND_END_PROCESS: 'SET_CURRENT_FAILED_AND_END_PROCESS',
-    RESTART_PROCESS: 'RESTART_PROCESS'
+    RESTART_PROCESS: 'RESTART_PROCESS',
 };
 
 /**
@@ -30,11 +30,10 @@ export const ACTIONS = {
  */
 const initialState = {
     accounts: [],
-    urlConfirmed: false
+    urlConfirmed: false,
 };
 
-
-/** 
+/**
  * @param {state} state
  * */
 const sequentialAccountImportReducer = (state = initialState, action) => {
@@ -52,7 +51,10 @@ const sequentialAccountImportReducer = (state = initialState, action) => {
         }
         case ACTIONS.ADD_ACCOUNTS: {
             if (state.accounts.every(({ status }) => status === null)) {
-                state.accounts = uniqWith(state.accounts.concat(action.accounts), isEqual);
+                state.accounts = uniqWith(
+                    state.accounts.concat(action.accounts),
+                    isEqual
+                );
             }
 
             return;
@@ -95,7 +97,7 @@ const sequentialAccountImportReducer = (state = initialState, action) => {
             );
             state.accounts[currentIndex].status = IMPORT_STATUS.FAILED;
             return;
-        };
+        }
         case ACTIONS.RESTART_PROCESS: {
             const [firstAccount, ...remainingAccounts] = state.accounts;
 
@@ -104,7 +106,7 @@ const sequentialAccountImportReducer = (state = initialState, action) => {
                 (account) => (account.status = IMPORT_STATUS.UP_NEXT)
             );
             return;
-        };
+        }
         case ACTIONS.CONFIRM_URL:
             state.urlConfirmed = true;
             return;

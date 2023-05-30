@@ -46,8 +46,7 @@ export const getPayMethods = ({
             icon: rainbow,
             name: 'Rainbow Bridge',
             link: 'https://rainbowbridge.app/transfer',
-            track: () =>
-                Mixpanel.track('Wallet Click Bridge with Rainbow Bridge'),
+            track: () => Mixpanel.track('Wallet Click Bridge with Rainbow Bridge'),
         },
         okex: {
             icon: okex,
@@ -74,7 +73,6 @@ export const getPayMethods = ({
             track: () => Mixpanel.track('Wallet Click Exchange with Kraken'),
         },
     };
-
 
     return paymentMethods;
 };

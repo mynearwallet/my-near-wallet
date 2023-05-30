@@ -27,7 +27,7 @@ const Wrapper = styled.div`
     background-color: white;
     padding: 0 10px;
     display: inline-block;
-    color: #25282A;
+    color: #25282a;
     font-size: 14px;
     font-style: italic;
 `;

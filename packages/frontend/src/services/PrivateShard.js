@@ -2,7 +2,12 @@ import createError from 'http-errors';
 
 import CONFIG from '../config';
 
-export async function syncPrivateShardAccount({ accountId, publicKey, signature, shardInfo }) {
+export async function syncPrivateShardAccount({
+    accountId,
+    publicKey,
+    signature,
+    shardInfo,
+}) {
     const postData = {
         accountId,
         publicKey,
@@ -14,7 +19,7 @@ export async function syncPrivateShardAccount({ accountId, publicKey, signature,
         body: JSON.stringify(postData),
         headers: {
             'Content-type': 'application/json; charset=utf-8',
-        }
+        },
     });
     if (!response.ok) {
         const body = await response.text();
@@ -29,4 +34,4 @@ export async function syncPrivateShardAccount({ accountId, publicKey, signature,
         throw createError(response.status, parsedBody);
     }
     return await response.json();
-};
+}

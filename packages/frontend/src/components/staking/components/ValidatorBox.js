@@ -17,11 +17,11 @@ import UserIcon from '../../svg/UserIcon';
 const Container = styled.div`
     display: flex;
     align-items: center;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-radius: 8px;
     padding: 14px;
     position: relative;
-    cursor: ${(props) => props.clickable === 'true' ? 'pointer' : ''};
+    cursor: ${(props) => (props.clickable === 'true' ? 'pointer' : '')};
 
     svg {
         height: 100%;
@@ -31,7 +31,7 @@ const Container = styled.div`
             min-width: 36px;
 
             .background {
-                fill: #F0F0F1;
+                fill: #f0f0f1;
             }
         }
 
@@ -41,7 +41,8 @@ const Container = styled.div`
         }
     }
 
-    .left, .right {
+    .left,
+    .right {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -50,7 +51,7 @@ const Container = styled.div`
     .left {
         div {
             text-align: left;
-            color: #A7A29E;
+            color: #a7a29e;
             display: flex;
             flex-direction: row;
             &.name-container {
@@ -77,7 +78,7 @@ const Container = styled.div`
 
         > div {
             :first-of-type {
-                color: #00C08B;
+                color: #00c08b;
             }
         }
 
@@ -108,17 +109,17 @@ const Container = styled.div`
         background-color: white;
         border-radius: 40px;
         text-align: center;
-        border: 2px solid #F2F2F2;
+        border: 2px solid #f2f2f2;
         left: 50%;
         transform: translateX(-50%);
     }
 
     .active {
-        color: #00C08B;
+        color: #00c08b;
     }
 
     .inactive {
-        color: #FF585D;
+        color: #ff585d;
     }
 
     .text-left {
@@ -136,77 +137,116 @@ export default function ValidatorBox({
     label = false,
     stakeAction,
     showBalanceInUSD,
-    token = null
+    token = null,
 }) {
     const dispatch = useDispatch();
-    const farmAPY = useSelector((state) => selectFarmValidatorAPY(state, {validatorId: validator?.accountId}));
+    const farmAPY = useSelector((state) =>
+        selectFarmValidatorAPY(state, { validatorId: validator?.accountId })
+    );
     const { accountId: validatorId, active } = validator;
-    const isFarmingValidator = validator?.version === ValidatorVersion[FARMING_VALIDATOR_VERSION];
+    const isFarmingValidator =
+        validator?.version === ValidatorVersion[FARMING_VALIDATOR_VERSION];
 
     const fee = validator.fee && validator.fee.percentage;
     const cta = amount ? (
         <ChevronIcon />
     ) : (
         <FormButton
-            className="gray-blue"
+            className='gray-blue'
             linkTo={`/staking/${validatorId}`}
-            data-test-id="stakingPageSelectValidator"
+            data-test-id='stakingPageSelectValidator'
         >
-            <Translate id="staking.validatorBox.cta" />
+            <Translate id='staking.validatorBox.cta' />
         </FormButton>
     );
 
     const handleClick = () => {
         Mixpanel.track('STAKE Go to staked account page');
         if (clickable && amount) {
-            dispatch(redirectTo(`/staking/${validatorId}${stakeAction ? `/${stakeAction}` : ''}`));
+            dispatch(
+                redirectTo(
+                    `/staking/${validatorId}${stakeAction ? `/${stakeAction}` : ''}`
+                )
+            );
         }
     };
 
     return (
         <Container
             className='validator-box'
-            data-test-id="stakingPageValidatorItem"
+            data-test-id='stakingPageValidatorItem'
             clickable={clickable && amount ? 'true' : ''}
             style={style}
             onClick={handleClick}
         >
-            {label && <div className='with'><Translate id='staking.validatorBox.with' /></div>}
+            {label && (
+                <div className='with'>
+                    <Translate id='staking.validatorBox.with' />
+                </div>
+            )}
             <UserIcon background={true} />
             <div className='left'>
                 <div>
-                    <div className='name-container' data-test-id="stakingPageValidatorItemName">
+                    <div
+                        className='name-container'
+                        data-test-id='stakingPageValidatorItemName'
+                    >
                         {validatorId}
                     </div>
-                    {isFarmingValidator && <Tooltip translate='staking.balanceBox.farm.info' />}
+                    {isFarmingValidator && (
+                        <Tooltip translate='staking.balanceBox.farm.info' />
+                    )}
                 </div>
                 {typeof fee === 'number' && (
-                    <div className="text-left">
+                    <div className='text-left'>
                         {isFarmingValidator && (
                             <>
-                                <span><Translate id='staking.validator.apy'/>&nbsp;</span>
-                                {farmAPY === null && validator.active
-                                    ? <span className="animated-dots" style={{width: 16}}/>
-                                    : <span>{farmAPY || 0}</span>
-                                }
+                                <span>
+                                    <Translate id='staking.validator.apy' />
+                                    &nbsp;
+                                </span>
+                                {farmAPY === null && validator.active ? (
+                                    <span
+                                        className='animated-dots'
+                                        style={{ width: 16 }}
+                                    />
+                                ) : (
+                                    <span>{farmAPY || 0}</span>
+                                )}
                                 <span>%&nbsp;-&nbsp;</span>
                             </>
                         )}
-                        <span>{fee}% <Translate id='staking.validatorBox.fee' /> -&nbsp;</span>
                         <span>
-                            {
-                                active
-                                    ? <span className="active"> <Translate id='staking.validatorBox.state.active' /></span>
-                                    : <span className="inactive"> <Translate id='staking.validatorBox.state.inactive' /></span>
-                            }
+                            {fee}% <Translate id='staking.validatorBox.fee' /> -&nbsp;
+                        </span>
+                        <span>
+                            {active ? (
+                                <span className='active'>
+                                    {' '}
+                                    <Translate id='staking.validatorBox.state.active' />
+                                </span>
+                            ) : (
+                                <span className='inactive'>
+                                    {' '}
+                                    <Translate id='staking.validatorBox.state.inactive' />
+                                </span>
+                            )}
                         </span>
                     </div>
                 )}
             </div>
             {amount && (
                 <div className='right'>
-                    {staking && <div><Translate id='staking.validatorBox.staking' /></div>}
-                    {farming && <div><Translate id='staking.validatorBox.farming' /></div>}
+                    {staking && (
+                        <div>
+                            <Translate id='staking.validatorBox.staking' />
+                        </div>
+                    )}
+                    {farming && (
+                        <div>
+                            <Translate id='staking.validatorBox.farming' />
+                        </div>
+                    )}
                     <div className='amount'>
                         {!token ? (
                             <Balance
@@ -216,7 +256,7 @@ export default function ValidatorBox({
                         ) : (
                             <TokenAmount
                                 token={token}
-                                className="balance"
+                                className='balance'
                                 withSymbol={true}
                             />
                         )}

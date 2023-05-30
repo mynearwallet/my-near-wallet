@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.form`
     &&& {
-        border: 2px solid #FF585D;
+        border: 2px solid #ff585d;
         border-radius: 8px;
         margin: -21px;
         padding: 15px 20px;
@@ -30,7 +30,7 @@ export const Container = styled.form`
             padding: 5px 15px;
             width: 155px;
         }
-    
+
         .link {
             color: #999;
             margin-left: 15px;

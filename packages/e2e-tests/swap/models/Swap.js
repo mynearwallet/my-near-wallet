@@ -1,7 +1,4 @@
-const {
-    AMOUNT_LOADING_DELAY,
-    TOKENS_LOADING_DELAY,
-} = require("../constants");
+const { AMOUNT_LOADING_DELAY, TOKENS_LOADING_DELAY } = require('../constants');
 
 class SwapPage {
     constructor(page) {
@@ -22,23 +19,16 @@ class SwapPage {
 
     async selectInputAsset(contractName) {
         await this.page.click('data-test-id=swapPageInputTokenSelector');
-        await this.page.click(
-            `data-test-id=token-selection-${contractName}`
-        );
+        await this.page.click(`data-test-id=token-selection-${contractName}`);
     }
 
     async selectOutputAsset(contractName) {
         await this.page.click('data-test-id=swapPageOutputTokenSelector');
-        await this.page.click(
-            `data-test-id=token-selection-${contractName}`
-        );
+        await this.page.click(`data-test-id=token-selection-${contractName}`);
     }
 
     async typeInputAmount(amount) {
-        await this.page.fill(
-            'data-test-id=swapPageInputAmountField',
-            amount.toString()
-        );
+        await this.page.fill('data-test-id=swapPageInputAmountField', amount.toString());
     }
 
     async getOutputInput() {
@@ -58,7 +48,7 @@ class SwapPage {
     }
 
     async waitResultMessageElement() {
-        return this.page.waitForSelector('data-test-id=swapPageSuccessMessage')
+        return this.page.waitForSelector('data-test-id=swapPageSuccessMessage');
     }
 
     async fillForm({ inId, inAmount, outId, initialDelay = TOKENS_LOADING_DELAY }) {

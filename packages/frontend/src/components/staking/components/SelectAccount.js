@@ -34,12 +34,12 @@ const Container = styled.div`
                 }
 
                 :first-of-type {
-                    color: #00C08B;
+                    color: #00c08b;
                 }
 
                 :last-of-type {
                     margin-top: 5px;
-                    color: #6E7073;
+                    color: #6e7073;
                 }
             }
         }
@@ -48,18 +48,24 @@ const Container = styled.div`
 
 export default function SelectAccount({ accounts, onChange, selectedAccount }) {
     return (
-        <RadioGroup onChange={accounts.length > 1 && accounts.every((account) => !!account.totalUnstaked) ? (e) => onChange(e) : null} selectedValue={selectedAccount}>
+        <RadioGroup
+            onChange={
+                accounts.length > 1 &&
+                accounts.every((account) => !!account.totalUnstaked)
+                    ? (e) => onChange(e)
+                    : null
+            }
+            selectedValue={selectedAccount}
+        >
             {accounts.map((account, i) => (
                 <RadioButton value={account.accountId} key={i}>
                     <Container>
-                        <div>
-                            {account.accountId}
-                        </div>
+                        <div>{account.accountId}</div>
                         <div>
                             <div>
                                 <Translate id='staking.staking.available' />
                                 <Balance
-                                    data-test-id="accountSelectAvailableBalance"
+                                    data-test-id='accountSelectAvailableBalance'
                                     amount={account.totalUnstaked}
                                     showBalanceInUSD={false}
                                 />
@@ -67,7 +73,7 @@ export default function SelectAccount({ accounts, onChange, selectedAccount }) {
                             <div>
                                 <Translate id='staking.staking.totalStaked' />
                                 <Balance
-                                    data-test-id="accountSelectStakedBalance"
+                                    data-test-id='accountSelectStakedBalance'
                                     amount={account.totalStaked}
                                     showBalanceInUSD={false}
                                 />

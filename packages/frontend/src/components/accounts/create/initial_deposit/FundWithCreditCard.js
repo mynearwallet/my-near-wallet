@@ -15,7 +15,7 @@ const StyledContainer = styled(Container)`
         h2 {
             margin-bottom: 40px;
         }
-    
+
         > button {
             &.black {
                 width: 100%;
@@ -30,7 +30,7 @@ const StyledContainer = styled(Container)`
                     height: auto;
                     margin: 0 0 0 10px;
                 }
-                
+
                 img {
                     width: 105px;
                     height: auto;
@@ -51,13 +51,20 @@ export default ({
     minDeposit,
     formattedMinDeposit,
     moonpaySignedUrl,
-    onClickCancel
+    onClickCancel,
 }) => {
     return (
         <>
             <StyledContainer className='small-centered border'>
-                <h1><Translate id='initialDeposit.creditCard.title' /></h1>
-                <h2><SafeTranslate id='initialDeposit.creditCard.desc' data={{ amount: formattedMinDeposit }}/></h2>
+                <h1>
+                    <Translate id='initialDeposit.creditCard.title' />
+                </h1>
+                <h2>
+                    <SafeTranslate
+                        id='initialDeposit.creditCard.desc'
+                        data={{ amount: formattedMinDeposit }}
+                    />
+                </h2>
                 <AccountNeedsFunding
                     fundingAddress={fundingAddress}
                     minDeposit={minDeposit}
@@ -67,22 +74,15 @@ export default ({
                     color='black'
                 >
                     <Translate id='button.fundWith' />
-                    <img src={UtorgLogo} alt='utorg'/>
+                    <img src={UtorgLogo} alt='utorg' />
                 </FormButton>
                 {moonpaySignedUrl && (
-                    <FormButton
-                        linkTo={moonpaySignedUrl}
-                        color='black'
-                    >
+                    <FormButton linkTo={moonpaySignedUrl} color='black'>
                         <Translate id='button.fundWith' />
                         <MoonPayIcon />
                     </FormButton>
                 )}
-                <FormButton
-                    onClick={onClickCancel}
-                    className='link'
-                    color='gray'
-                >
+                <FormButton onClick={onClickCancel} className='link' color='gray'>
                     <Translate id='button.cancel' />
                 </FormButton>
             </StyledContainer>

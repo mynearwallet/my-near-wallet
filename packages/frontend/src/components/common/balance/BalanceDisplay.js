@@ -6,11 +6,7 @@ import styled from 'styled-components';
 import CONFIG from '../../../config';
 import classNames from '../../../utils/classNames';
 import FiatBalance from './FiatBalance';
-import {
-    formatNearAmount,
-    showInYocto,
-    YOCTO_NEAR_THRESHOLD
-} from './helpers';
+import { formatNearAmount, showInYocto, YOCTO_NEAR_THRESHOLD } from './helpers';
 
 const StyledContainer = styled.div`
     white-space: nowrap;
@@ -25,27 +21,21 @@ const StyledContainer = styled.div`
             animation: link 1s steps(5, end) infinite;
 
             @keyframes link {
-                0%, 20% {
-                    color: rgba(0,0,0,0);
-                    text-shadow:
-                        .3em 0 0 rgba(0,0,0,0),
-                        .6em 0 0 rgba(0,0,0,0);
+                0%,
+                20% {
+                    color: rgba(0, 0, 0, 0);
+                    text-shadow: 0.3em 0 0 rgba(0, 0, 0, 0), 0.6em 0 0 rgba(0, 0, 0, 0);
                 }
                 40% {
                     color: #4a4f54;
-                    text-shadow:
-                        .3em 0 0 rgba(0,0,0,0),
-                        .6em 0 0 rgba(0,0,0,0);
+                    text-shadow: 0.3em 0 0 rgba(0, 0, 0, 0), 0.6em 0 0 rgba(0, 0, 0, 0);
                 }
                 60% {
-                    text-shadow:
-                        .3em 0 0 #4a4f54,
-                        .6em 0 0 rgba(0,0,0,0);
+                    text-shadow: 0.3em 0 0 #4a4f54, 0.6em 0 0 rgba(0, 0, 0, 0);
                 }
-                80%, 100% {
-                    text-shadow:
-                        .3em 0 0 #4a4f54,
-                        .6em 0 0 #4a4f54;
+                80%,
+                100% {
+                    text-shadow: 0.3em 0 0 #4a4f54, 0.6em 0 0 #4a4f54;
                 }
             }
         }
@@ -54,14 +44,14 @@ const StyledContainer = styled.div`
     &.subtract {
         .near-amount {
             :before {
-                content: '-'
+                content: '-';
             }
         }
     }
 
     &:not(.fiat-only) {
         .fiat-amount {
-            color: #72727A;
+            color: #72727a;
             font-weight: 400;
             margin-top: 2px;
             font-size: 13px;
@@ -81,9 +71,8 @@ const BalanceDisplay = ({
     showSymbolUSD,
     totalAmount,
     showGenericSymbol = false,
-    'data-test-id': testId
+    'data-test-id': testId,
 }) => {
-
     const amountToShow = amount && formatNearAmount(amount);
 
     const getSymbol = () => {
@@ -118,10 +107,16 @@ const BalanceDisplay = ({
         >
             {showBalanceInNEAR && (
                 <>
-                    {amount
-                        ? <div className='near-amount'>{amountToShow}{getSymbol()}</div>
-                        : <div className="dots tokensLoading"><Translate id='loadingNoDots'/></div>
-                    }
+                    {amount ? (
+                        <div className='near-amount'>
+                            {amountToShow}
+                            {getSymbol()}
+                        </div>
+                    ) : (
+                        <div className='dots tokensLoading'>
+                            <Translate id='loadingNoDots' />
+                        </div>
+                    )}
                 </>
             )}
             {showBalanceInUSD && (

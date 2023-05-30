@@ -8,13 +8,13 @@ const StyledContainer = styled.div`
     display: flex;
     align-items: center;
     padding: 15px;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-radius: 8px;
     cursor: pointer;
     transition: 100ms;
 
     :hover {
-        background-color: #F0F0F1;
+        background-color: #f0f0f1;
     }
 
     > div {
@@ -33,8 +33,8 @@ const SelectTokenButton = ({ token, onClick }) => {
     return (
         <StyledContainer
             onClick={onClick}
-            className="select-token-btn"
-            data-test-id="sendMoneyPageSelectTokenButton"
+            className='select-token-btn'
+            data-test-id='sendMoneyPageSelectTokenButton'
         >
             <Token
                 translateIdTitle='sendV2.selectTokenButtonTitle'

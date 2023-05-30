@@ -6,7 +6,7 @@ export const getMyNearWalletUrl = (https = true) => {
         [ENVIRONMENT.TESTNET]: 'testnet.',
         [ENVIRONMENT.MAINNET]: 'app.',
         [ENVIRONMENT.DEVELOPMENT]: 'testnet.',
-        [ENVIRONMENT.MAINNET_STAGING]: 'staging.'
+        [ENVIRONMENT.MAINNET_STAGING]: 'staging.',
     }[CONFIG.NEAR_WALLET_ENV];
 
     return `${https ? 'https://' : ''}${prefix || ''}mynearwallet.com`;

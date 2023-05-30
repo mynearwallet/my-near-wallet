@@ -29,38 +29,52 @@ const ImportAccounts = ({
     accountsError,
     accountsRejected,
     signInWithLedgerStatus,
-    handleContinue
+    handleContinue,
 }) => {
-    const animationScope = Math.min(Math.max((accountsApproved + accountsError + accountsRejected) - 1, 0), totalAccounts - 3);
+    const animationScope = Math.min(
+        Math.max(accountsApproved + accountsError + accountsRejected - 1, 0),
+        totalAccounts - 3
+    );
     const success = signInWithLedgerStatus === LEDGER_MODAL_STATUS.SUCCESS;
 
     return (
         <>
-            {success
-                ? (
-                    <>
-                        <LedgerSuccessIcon />
-                        <h1>{accountsApproved}/{totalAccounts} <Translate id='confirmLedgerModal.header.success' data={{ totalAccounts }} /></h1>
-                    </>
-                ) : (
-                    <>
-                        <LedgerImageCircle color='#D6EDFF' />
-                        <h1><Translate id='confirmLedgerModal.header.weFound' data={{ totalAccounts }} /></h1>
-                        <Translate id='confirmLedgerModal.two' />
-                    </>
-                )
-            }
-            
+            {success ? (
+                <>
+                    <LedgerSuccessIcon />
+                    <h1>
+                        {accountsApproved}/{totalAccounts}{' '}
+                        <Translate
+                            id='confirmLedgerModal.header.success'
+                            data={{ totalAccounts }}
+                        />
+                    </h1>
+                </>
+            ) : (
+                <>
+                    <LedgerImageCircle color='#D6EDFF' />
+                    <h1>
+                        <Translate
+                            id='confirmLedgerModal.header.weFound'
+                            data={{ totalAccounts }}
+                        />
+                    </h1>
+                    <Translate id='confirmLedgerModal.two' />
+                </>
+            )}
+
             <CustomContainer>
                 <div className='title'>
-                    {accountsApproved}/{totalAccounts} <Translate id='signInLedger.modal.accountsApproved'/>
+                    {accountsApproved}/{totalAccounts}{' '}
+                    <Translate id='signInLedger.modal.accountsApproved' />
                 </div>
-                <AccountListImport accounts={ledgerAccounts} animationScope={animationScope}/>
+                <AccountListImport
+                    accounts={ledgerAccounts}
+                    animationScope={animationScope}
+                />
                 {success && (
                     <div className='buttons-bottom-buttons'>
-                        <FormButton
-                            onClick={handleContinue}
-                        >
+                        <FormButton onClick={handleContinue}>
                             <Translate id='button.continue' />
                         </FormButton>
                     </div>

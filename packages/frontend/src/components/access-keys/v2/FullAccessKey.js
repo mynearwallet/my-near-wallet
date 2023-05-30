@@ -7,12 +7,12 @@ import FormButtonGroup from '../../common/FormButtonGroup';
 
 const Container = styled.div`
     &&& {
-        border: 2px solid #F0F0F0;
+        border: 2px solid #f0f0f0;
         border-radius: 8px;
         padding: 20px;
 
         .title {
-            color: #3F4045;
+            color: #3f4045;
             font-weight: 700;
             margin-bottom: 25px;
             display: flex;
@@ -33,9 +33,9 @@ const Container = styled.div`
         }
 
         .key {
-            color: #3F4045;
-            background-color: #FAFAFA;
-            border: 1px solid #F0F0F1;
+            color: #3f4045;
+            background-color: #fafafa;
+            border: 1px solid #f0f0f1;
             border-radius: 4px;
             padding: 8px;
             font-size: 12px;
@@ -56,16 +56,25 @@ export default ({
     setUserInputAccountId,
     accountId,
     confirmDeAuthorizeKey,
-    setConfirmDeAuthorizeKey
+    setConfirmDeAuthorizeKey,
 }) => {
     return (
         <Container className='authorized-app-box'>
             {confirmDeAuthorizeKey !== accessKey.public_key && (
                 <>
                     <div className='title'>
-                        <Translate id='authorizedApps.publicKey' /> {accessKey.meta.type === 'ledger' ? <>- <Translate id='hardwareDevices.ledger.title' /></> : ''}
+                        <Translate id='authorizedApps.publicKey' />{' '}
+                        {accessKey.meta.type === 'ledger' ? (
+                            <>
+                                - <Translate id='hardwareDevices.ledger.title' />
+                            </>
+                        ) : (
+                            ''
+                        )}
                         {setConfirmDeAuthorizeKey && (
-                            <FormButton color='gray-red' className='small'
+                            <FormButton
+                                color='gray-red'
+                                className='small'
                                 onClick={() => {
                                     setConfirmDeAuthorizeKey(accessKey.public_key);
                                     setUserInputAccountId('');
@@ -83,20 +92,30 @@ export default ({
             )}
             {confirmDeAuthorizeKey === accessKey.public_key && (
                 <>
-                    <div className='title disable'><Translate id='fullAccessKeys.deAuthorizeConfirm.title' /></div>
-                    <div className='desc'><Translate id='fullAccessKeys.deAuthorizeConfirm.desc' /></div>
+                    <div className='title disable'>
+                        <Translate id='fullAccessKeys.deAuthorizeConfirm.title' />
+                    </div>
+                    <div className='desc'>
+                        <Translate id='fullAccessKeys.deAuthorizeConfirm.desc' />
+                    </div>
                     <div className='key font-monospace'>{accessKey.public_key}</div>
-                    <form onSubmit={(e) => {
-                        onClickDeAuthorizeKey(accessKey.public_key);
-                        e.preventDefault();
-                    }} autoComplete='off'
+                    <form
+                        onSubmit={(e) => {
+                            onClickDeAuthorizeKey(accessKey.public_key);
+                            e.preventDefault();
+                        }}
+                        autoComplete='off'
                     >
                         <Translate>
                             {({ translate }) => (
                                 <input
-                                    placeholder={translate('recoveryMgmt.disableInputPlaceholder')}
+                                    placeholder={translate(
+                                        'recoveryMgmt.disableInputPlaceholder'
+                                    )}
                                     value={userInputAccountId}
-                                    onChange={(e) => setUserInputAccountId(e.target.value)}
+                                    onChange={(e) =>
+                                        setUserInputAccountId(e.target.value)
+                                    }
                                     autoComplete='off'
                                     spellCheck='false'
                                     disabled={deAuthorizing}
@@ -117,7 +136,9 @@ export default ({
                                 <Translate id='button.cancel' />
                             </FormButton>
                             <FormButton
-                                disabled={deAuthorizing || (userInputAccountId !== accountId)}
+                                disabled={
+                                    deAuthorizing || userInputAccountId !== accountId
+                                }
                                 sending={deAuthorizing}
                                 sendingString='button.deAuthorizing'
                                 color='red'

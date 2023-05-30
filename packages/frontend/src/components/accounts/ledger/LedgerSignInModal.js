@@ -19,7 +19,7 @@ const UserIcon = styled.div`
     background-color: #f8f8f8;
     text-align: center;
     margin: 0 12px 0 0;
-    
+
     svg {
         width: 26px;
         height: 26px;
@@ -53,7 +53,7 @@ const AnimateList = styled.div`
 
     .accountId {
         overflow: hidden;
-        
+
         > h3 {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -90,29 +90,25 @@ const AnimateList = styled.div`
             :after {
                 content: '.';
                 animation: dots 1s steps(5, end) infinite;
-            
+
                 @keyframes dots {
-                    0%, 20% {
-                        color: rgba(0,0,0,0);
-                        text-shadow:
-                            .3em 0 0 rgba(0,0,0,0),
-                            .6em 0 0 rgba(0,0,0,0);
+                    0%,
+                    20% {
+                        color: rgba(0, 0, 0, 0);
+                        text-shadow: 0.3em 0 0 rgba(0, 0, 0, 0),
+                            0.6em 0 0 rgba(0, 0, 0, 0);
                     }
                     40% {
                         color: #ae6816;
-                        text-shadow:
-                            .3em 0 0 rgba(0,0,0,0),
-                            .6em 0 0 rgba(0,0,0,0);
+                        text-shadow: 0.3em 0 0 rgba(0, 0, 0, 0),
+                            0.6em 0 0 rgba(0, 0, 0, 0);
                     }
                     60% {
-                        text-shadow:
-                            .3em 0 0 #ae6816,
-                            .6em 0 0 rgba(0,0,0,0);
+                        text-shadow: 0.3em 0 0 #ae6816, 0.6em 0 0 rgba(0, 0, 0, 0);
                     }
-                    80%, 100% {
-                        text-shadow:
-                            .3em 0 0 #ae6816,
-                            .6em 0 0 #ae6816;
+                    80%,
+                    100% {
+                        text-shadow: 0.3em 0 0 #ae6816, 0.6em 0 0 #ae6816;
                     }
                 }
             }
@@ -142,28 +138,30 @@ const AnimateList = styled.div`
     }
 `;
 
-const LedgerSignInModal = ({ 
-    open, 
-    onClose, 
-    ledgerAccounts, 
+const LedgerSignInModal = ({
+    open,
+    onClose,
+    ledgerAccounts,
     accountsApproved,
     accountsError,
     accountsRejected,
-    totalAccounts, 
-    txSigned, 
-    handleAdditionalAccountId, 
-    signInWithLedgerStatus, 
-    handleChange, 
-    checkAccountAvailable, 
-    localAlert, 
-    mainLoader, 
-    clearLocalAlert, 
-    stateAccountId, 
+    totalAccounts,
+    txSigned,
+    handleAdditionalAccountId,
+    signInWithLedgerStatus,
+    handleChange,
+    checkAccountAvailable,
+    localAlert,
+    mainLoader,
+    clearLocalAlert,
+    stateAccountId,
     loader,
-    clearSignInWithLedgerModalState
+    clearSignInWithLedgerModalState,
 }) => {
-    
-    const animationScope = Math.min(Math.max((accountsApproved + accountsError + accountsRejected) - 1, 0), totalAccounts - 3);
+    const animationScope = Math.min(
+        Math.max(accountsApproved + accountsError + accountsRejected - 1, 0),
+        totalAccounts - 3
+    );
 
     return (
         <Modal
@@ -173,37 +171,39 @@ const LedgerSignInModal = ({
             closeButton='desktop'
             modalSize='lg'
         >
-            <ModalTheme/>
+            <ModalTheme />
 
-            {signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_PUBLIC_KEY && (!txSigned
-                ? (
-                        <>
-                            <h2>
-                                <Translate id={'confirmLedgerModal.header.confirm'}/>
-                            </h2>
-                            <LedgerImage animate={true}/>
-                            <div>
-                                <H4><Translate id='signInLedger.modal.confirmPublicKey'/></H4>
-                            </div>
-                        </>        
-                )
-                : (
-                        <>
-                            <h2 className={'dots'}>
-                                <Translate id={'confirmLedgerModal.header.processing'}/>
-                            </h2>
-                            <LedgerImage animate={false}/>
-                        </>
-                )
-            )}
+            {signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_PUBLIC_KEY &&
+                (!txSigned ? (
+                    <>
+                        <h2>
+                            <Translate id={'confirmLedgerModal.header.confirm'} />
+                        </h2>
+                        <LedgerImage animate={true} />
+                        <div>
+                            <H4>
+                                <Translate id='signInLedger.modal.confirmPublicKey' />
+                            </H4>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <h2 className={'dots'}>
+                            <Translate id={'confirmLedgerModal.header.processing'} />
+                        </h2>
+                        <LedgerImage animate={false} />
+                    </>
+                ))}
             {signInWithLedgerStatus === LEDGER_MODAL_STATUS.ENTER_ACCOUNTID && (
                 <>
                     <h2>
-                        <Translate id='enterAccountNameLedgerModal.header'/>
+                        <Translate id='enterAccountNameLedgerModal.header' />
                     </h2>
-                    <LedgerImage animate={false}/>
+                    <LedgerImage animate={false} />
 
-                    <h4><Translate id='enterAccountNameLedgerModal.one'/></h4>
+                    <h4>
+                        <Translate id='enterAccountNameLedgerModal.one' />
+                    </h4>
                     <AccountFormAccountId
                         mainLoader={mainLoader}
                         handleChange={handleChange}
@@ -214,53 +214,61 @@ const LedgerSignInModal = ({
                         stateAccountId={stateAccountId}
                     />
 
-
                     <FormButton
                         onClick={handleAdditionalAccountId}
                         disabled={mainLoader || !localAlert?.success}
                         sending={loader}
                     >
-                        <Translate id='button.confirm'/>
+                        <Translate id='button.confirm' />
                     </FormButton>
 
                     <FormButton
                         onClick={clearSignInWithLedgerModalState}
                         className='link'
                     >
-                        <Translate id='button.cancel'/>
+                        <Translate id='button.cancel' />
                     </FormButton>
                 </>
             )}
             {signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS && (
                 <>
-                    <h2 className={txSigned? 'dots' : ''}>
-                        <Translate id={`confirmLedgerModal.header.${txSigned ? 'processing' : 'confirm'}`}/>
+                    <h2 className={txSigned ? 'dots' : ''}>
+                        <Translate
+                            id={`confirmLedgerModal.header.${
+                                txSigned ? 'processing' : 'confirm'
+                            }`}
+                        />
                     </h2>
-                    <LedgerImage animate={txSigned ? false : true}/>
+                    <LedgerImage animate={txSigned ? false : true} />
 
                     <CustomContainer>
                         <H4>
-                            <Translate id='signInLedger.modal.ledgerMustAdd'/>
+                            <Translate id='signInLedger.modal.ledgerMustAdd' />
                         </H4>
                         <div>
-                            {accountsApproved}/{totalAccounts} <Translate id='signInLedger.modal.accountsApproved'/>
+                            {accountsApproved}/{totalAccounts}{' '}
+                            <Translate id='signInLedger.modal.accountsApproved' />
                         </div>
                         <AnimateList animate={animationScope}>
                             {ledgerAccounts.map((account) => (
-                                <div key={account.accountId} className={`row ${account.status}`}>
+                                <div
+                                    key={account.accountId}
+                                    className={`row ${account.status}`}
+                                >
                                     <UserIcon>
                                         <UserIconGrey color='#9a9a9a' />
                                     </UserIcon>
                                     <div className='accountId'>
-                                        <h3>
-                                            {account.accountId}
-                                        </h3>
+                                        <h3>{account.accountId}</h3>
                                     </div>
                                     <div className='status'>
-                                        {account.status !== 'success' 
-                                            ? <Translate id={`signInLedger.modal.status.${account.status}`}/>
-                                            : <IconCheck color='#5ace84' stroke='3px' />
-                                        }
+                                        {account.status !== 'success' ? (
+                                            <Translate
+                                                id={`signInLedger.modal.status.${account.status}`}
+                                            />
+                                        ) : (
+                                            <IconCheck color='#5ace84' stroke='3px' />
+                                        )}
                                     </div>
                                 </div>
                             ))}

@@ -11,7 +11,7 @@ import TransferAmount from '../../../transfer/TransferAmount';
 const StyledContainer = styled(Container)`
     text-align: center;
     > div {
-        color: #A2A2A8;
+        color: #a2a2a8;
     }
     h3 {
         margin-top: 10px;
@@ -19,7 +19,8 @@ const StyledContainer = styled(Container)`
     .button-group {
         margin-top: 25px;
     }
-    > .transfer-amount, .estimated-fees {
+    > .transfer-amount,
+    .estimated-fees {
         margin-top: 30px;
     }
 `;
@@ -32,12 +33,16 @@ export default ({
     sender,
     receiver,
     creatingNewAccount,
-    hasAllRequiredParams
+    hasAllRequiredParams,
 }) => {
     return (
         <StyledContainer className='small-centered border'>
-            <div><Translate id='existingAccount.fundNewAccount.titleOne' /></div>
-            <h3><Translate id='existingAccount.fundNewAccount.titleTwo' /></h3>
+            <div>
+                <Translate id='existingAccount.fundNewAccount.titleOne' />
+            </div>
+            <h3>
+                <Translate id='existingAccount.fundNewAccount.titleTwo' />
+            </h3>
             <TransferAmount
                 transferAmount={transferAmount}
                 gasFeeAmount={gasFeeAmount}
@@ -45,9 +50,7 @@ export default ({
                 receiver={receiver}
                 receiverBalance='0'
             />
-            <EstimatedFees
-                gasFeeAmount={gasFeeAmount}
-            />
+            <EstimatedFees gasFeeAmount={gasFeeAmount} />
             <FormButtonGroup>
                 <FormButton
                     onClick={onClickCancel}

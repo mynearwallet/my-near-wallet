@@ -8,7 +8,7 @@ const Information = ({ className, translateIdTitle, informationValue, onClick })
     /* TODO: Handle long informationValue */
     return (
         <StyledContainer
-            className={classNames(['information' , className, { 'clickable' : onClick }])}
+            className={classNames(['information', className, { clickable: onClick }])}
             onClick={onClick}
         >
             <Translate id={translateIdTitle} />

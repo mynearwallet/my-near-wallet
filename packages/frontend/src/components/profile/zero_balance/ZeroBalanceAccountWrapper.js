@@ -8,13 +8,15 @@ import {
     selectAccountFullAccessKeys,
     selectAccountId,
     selectAccountHas2fa,
-    selectActiveAccountIdIsImplicitAccount
+    selectActiveAccountIdIsImplicitAccount,
 } from '../../../redux/slices/account';
 import { finishLocalSetupForZeroBalanceAccount } from '../../../redux/slices/account/createAccountThunks';
-import { actions as ledgerActions, selectLedgerConnectionAvailable } from '../../../redux/slices/ledger';
+import {
+    actions as ledgerActions,
+    selectLedgerConnectionAvailable,
+} from '../../../redux/slices/ledger';
 import { wallet } from '../../../utils/wallet';
 import { AddLedgerKeyModal } from './AddLedgerKeyModal';
-
 
 const { handleShowConnectModal } = ledgerActions;
 
@@ -29,12 +31,19 @@ export function ZeroBalanceAccountWrapper() {
     const accountExists = useSelector(selectAccountExists);
     const accountFullAccessKeys = useSelector(selectAccountFullAccessKeys);
     const accountHas2fa = useSelector(selectAccountHas2fa);
-    const activeAccountIdIsImplicitAccount = useSelector(selectActiveAccountIdIsImplicitAccount);
+    const activeAccountIdIsImplicitAccount = useSelector(
+        selectActiveAccountIdIsImplicitAccount
+    );
 
     const isLedgerKey = accountFullAccessKeys[0]?.meta.type === 'ledger';
 
     useEffect(() => {
-        if (accountExists && activeAccountIdIsImplicitAccount && accountFullAccessKeys.length === 1 && !accountHas2fa) {
+        if (
+            accountExists &&
+            activeAccountIdIsImplicitAccount &&
+            accountFullAccessKeys.length === 1 &&
+            !accountHas2fa
+        ) {
             if (isLedgerKey) {
                 handleCheckLedgerStatus();
             } else {
@@ -51,24 +60,31 @@ export function ZeroBalanceAccountWrapper() {
     };
 
     const handleAddLocalAccessKey = async (recoveryMethod) => {
-        const translationId = recoveryMethod === 'ledger' ? 'addLedgerKey' : 'addPhraseKey';
-        
+        const translationId =
+            recoveryMethod === 'ledger' ? 'addLedgerKey' : 'addPhraseKey';
+
         try {
-            await dispatch(finishLocalSetupForZeroBalanceAccount({
-                implicitAccountId: accountId,
-                recoveryMethod,
-            }));
-            dispatch(showCustomAlert({
-                success: true,
-                messageCodeHeader: `zeroBalance.${translationId}.success.header`,
-                messageCode: `zeroBalance.${translationId}.success.message`
-            }));
+            await dispatch(
+                finishLocalSetupForZeroBalanceAccount({
+                    implicitAccountId: accountId,
+                    recoveryMethod,
+                })
+            );
+            dispatch(
+                showCustomAlert({
+                    success: true,
+                    messageCodeHeader: `zeroBalance.${translationId}.success.header`,
+                    messageCode: `zeroBalance.${translationId}.success.message`,
+                })
+            );
         } catch (e) {
-            dispatch(showCustomAlert({
-                success: false,
-                messageCodeHeader: `zeroBalance.${translationId}.error.header`,
-                messageCode: `zeroBalance.${translationId}.error.message`,
-            }));
+            dispatch(
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: `zeroBalance.${translationId}.error.header`,
+                    messageCode: `zeroBalance.${translationId}.error.message`,
+                })
+            );
         }
 
         dispatch(refreshAccount());
@@ -94,4 +110,4 @@ export function ZeroBalanceAccountWrapper() {
         );
     }
     return null;
-};
+}

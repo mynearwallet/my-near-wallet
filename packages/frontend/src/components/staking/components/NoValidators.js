@@ -6,7 +6,7 @@ import FormButton from '../../common/FormButton';
 import NearCircleIcon from '../../svg/NearCircleIcon.js';
 
 const Container = styled.div`
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -23,7 +23,7 @@ const Container = styled.div`
         margin-top: 25px;
         max-width: 230px;
         text-align: center;
-        color: #B4B4B4;
+        color: #b4b4b4;
     }
 
     button {
@@ -36,13 +36,15 @@ const Container = styled.div`
 export default function NoValidators({ accountId }) {
     return (
         <Container className='no-validators'>
-            <NearCircleIcon/>
-            <div><Translate id='staking.noValidators.title' /></div>
+            <NearCircleIcon />
+            <div>
+                <Translate id='staking.noValidators.title' />
+            </div>
             <FormButton
                 disabled={!accountId}
-                className='gray-blue dark' 
+                className='gray-blue dark'
                 linkTo='/staking/validators'
-                trackingId="STAKE Click stake my tokens button : no validators"
+                trackingId='STAKE Click stake my tokens button : no validators'
             >
                 <Translate id='staking.staking.button' />
             </FormButton>

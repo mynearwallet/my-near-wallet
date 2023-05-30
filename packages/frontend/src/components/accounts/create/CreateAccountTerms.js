@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 const StyledContainer = styled.div`
-    color: #72727A;
+    color: #72727a;
     text-align: center;
     font-size: 12px;
     max-width: 350px;

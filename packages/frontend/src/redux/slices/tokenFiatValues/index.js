@@ -21,7 +21,7 @@ const fetchRefFinanceFiatValues = createAsyncThunk(
 );
 const fetchTokenFiatValues = createAsyncThunk(
     `${SLICE_NAME}/fetchTokenFiatValues`,
-    async (_, {dispatch, getState}) => {
+    async (_, { dispatch, getState }) => {
         return Promise.allSettled([
             dispatch(fetchCoinGeckoFiatValues(['near', 'usn', 'jumbo-exchange'])),
             dispatch(fetchRefFinanceFiatValues()),
@@ -34,7 +34,6 @@ const getTokenWhiteList = createAsyncThunk(
     async (account_id) => fiatValueManager.fetchTokenWhiteList(account_id)
 );
 
-
 const initialState = {
     ...initialStatusState,
     tokens: {},
@@ -43,7 +42,7 @@ const initialState = {
 const tokenFiatValuesSlice = createSlice({
     name: SLICE_NAME,
     initialState,
-    extraReducers: ((builder) => {
+    extraReducers: (builder) => {
         builder.addCase(getTokenWhiteList.fulfilled, (state, action) => {
             state.tokenWhiteList = action.payload;
         });
@@ -54,28 +53,30 @@ const tokenFiatValuesSlice = createSlice({
             ),
             (state, action) => {
                 mergeWith(state.tokens, action.payload, (previous, fetched) =>
-                        fetched?.last_updated_at > previous?.last_updated_at &&
-                        !isEqual(omit(fetched, 'last_updated_at'), omit(previous, 'last_updated_at'))
-                            ? fetched
-                            : previous
+                    fetched?.last_updated_at > previous?.last_updated_at &&
+                    !isEqual(
+                        omit(fetched, 'last_updated_at'),
+                        omit(previous, 'last_updated_at')
+                    )
+                        ? fetched
+                        : previous
                 );
             }
         );
         handleAsyncThunkStatus({
             asyncThunk: fetchTokenFiatValues,
             buildStatusPath: () => [],
-            builder
+            builder,
         });
-    })
-}
-);
+    },
+});
 
 export default tokenFiatValuesSlice;
 
 export const reducer = tokenFiatValuesSlice.reducer;
 export const actions = {
     fetchTokenFiatValues,
-    getTokenWhiteList
+    getTokenWhiteList,
 };
 
 // Future: Refactor to track loading state and error states _per token type_, when we actually support multiple tokens
@@ -83,8 +84,14 @@ export const selectFiatValueLoadingState = (state) => state.status.loading;
 export const selectFiatValueErrorState = (state) => state.status.error;
 
 export const selectAllTokenFiatValues = (state) => state[SLICE_NAME];
-export const selectNearTokenFiatData = createSelector(selectAllTokenFiatValues, ({ tokens }) => tokens.near || {});
-export const selectNearTokenFiatValueUSD = createSelector(selectNearTokenFiatData, (near) => near.usd);
+export const selectNearTokenFiatData = createSelector(
+    selectAllTokenFiatValues,
+    ({ tokens }) => tokens.near || {}
+);
+export const selectNearTokenFiatValueUSD = createSelector(
+    selectNearTokenFiatData,
+    (near) => near.usd
+);
 
 export const selectUSDNTokenFiatData = createSelector(
     selectAllTokenFiatValues,
@@ -95,5 +102,11 @@ export const selectUSDNTokenFiatValueUSD = createSelector(
     (usn) => usn.usd
 );
 
-export const selectTokensFiatValueUSD = createSelector(selectAllTokenFiatValues, ({ tokens }) => tokens || {});
-export const selectTokenWhiteList = createSelector(selectAllTokenFiatValues, ({tokenWhiteList}) => tokenWhiteList || []);
+export const selectTokensFiatValueUSD = createSelector(
+    selectAllTokenFiatValues,
+    ({ tokens }) => tokens || {}
+);
+export const selectTokenWhiteList = createSelector(
+    selectAllTokenFiatValues,
+    ({ tokenWhiteList }) => tokenWhiteList || []
+);

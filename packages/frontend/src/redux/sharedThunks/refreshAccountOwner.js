@@ -35,7 +35,9 @@ export default createAsyncThunk(
                         dispatch(makeAccountActive(nextAccountId));
                     }
                 } else {
-                    console.log(`NOTE: The account ${accountId} has no record on chain yet. Send NEAR to your account to begin using all features of the NEAR Wallet.`);
+                    console.log(
+                        `NOTE: The account ${accountId} has no record on chain yet. Send NEAR to your account to begin using all features of the NEAR Wallet.`
+                    );
                 }
 
                 // TODO: Make sure "problem creating" only shows for actual creation
@@ -43,22 +45,26 @@ export default createAsyncThunk(
                     resetAccount: {
                         reset: true,
                         preventClear: accountIdNotConfirmed,
-                        accountIdNotConfirmed: accountIdNotConfirmed ? accountId : ''
+                        accountIdNotConfirmed: accountIdNotConfirmed ? accountId : '',
                     },
                     globalAlertPreventClear: accountIdNotConfirmed || wallet.isEmpty(),
                     globalAlert: {
                         success: false,
-                        messageCode: 'account.create.errorAccountNotExist'
+                        messageCode: 'account.create.errorAccountNotExist',
                     },
-                    ...(!wallet.isEmpty() && !accountIdNotConfirmed && await wallet.loadAccount())
+                    ...(!wallet.isEmpty() &&
+                        !accountIdNotConfirmed &&
+                        (await wallet.loadAccount())),
                 };
             } else {
-                dispatch(showCustomAlert({
-                    success: false,
-                    messageCodeHeader: 'error',
-                    messageCode: 'walletErrorCodes.refreshAccountOwner.error',
-                    errorMessage: error.message
-                }));
+                dispatch(
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        messageCode: 'walletErrorCodes.refreshAccountOwner.error',
+                        errorMessage: error.message,
+                    })
+                );
             }
 
             throw error;

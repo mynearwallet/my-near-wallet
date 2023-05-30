@@ -28,21 +28,21 @@ const Container = styled.div`
         label {
             text-align: left;
             display: flex;
-            background-color: #F5FAFF;
+            background-color: #f5faff;
             margin: 25px -25px 0 -25px;
             padding: 15px 25px;
             line-height: 1.5;
 
             > div {
                 > div {
-                    border-color: #0081F1;
+                    border-color: #0081f1;
                 }
             }
 
             > span {
                 margin-left: 10px;
                 word-break: break-word;
-                color: #006ADC;
+                color: #006adc;
             }
 
             b {
@@ -57,27 +57,24 @@ const Container = styled.div`
     }
 `;
 
-export default ({
-    accountId,
-    isOpen,
-    onRemoveAccount,
-    onClose
-}) => {
-    const [removeAccountDisclaimerApproved, setRemoveAccountDisclaimerApproved] = useState(false);
+export default ({ accountId, isOpen, onRemoveAccount, onClose }) => {
+    const [removeAccountDisclaimerApproved, setRemoveAccountDisclaimerApproved] =
+        useState(false);
     return (
-        <Modal
-            id='remove-account-modal'
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='sm'
-        >
+        <Modal id='remove-account-modal' isOpen={isOpen} onClose={onClose} modalSize='sm'>
             <Container>
-                <h3><Translate id='removeAccount.title' /></h3>
-                <p><Translate id='removeAccount.desc' /></p>
+                <h3>
+                    <Translate id='removeAccount.title' />
+                </h3>
+                <p>
+                    <Translate id='removeAccount.desc' />
+                </p>
                 <label>
                     <Checkbox
                         checked={removeAccountDisclaimerApproved}
-                        onChange={(e) => setRemoveAccountDisclaimerApproved(e.target.checked)}
+                        onChange={(e) =>
+                            setRemoveAccountDisclaimerApproved(e.target.checked)
+                        }
                     />
                     <span>
                         <SafeTranslate
@@ -92,10 +89,7 @@ export default ({
                 >
                     <Translate id='button.removeAccount' />
                 </FormButton>
-                <FormButton
-                    className='link'
-                    onClick={onClose}
-                >
+                <FormButton className='link' onClick={onClose}>
                     <Translate id='button.cancel' />
                 </FormButton>
             </Container>

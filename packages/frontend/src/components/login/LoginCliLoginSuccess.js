@@ -19,11 +19,10 @@ const LoginCliLoginSuccessWrapper = styled('section')`
         padding: 16px;
     }
 
-    .title{
+    .title {
         margin-top: 16px;
     }
 `;
-
 
 const CustomImage = styled(Image)`
     width: 48px;

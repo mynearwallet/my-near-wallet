@@ -16,15 +16,21 @@ export const LevelWrapper = styled.div`
 `;
 
 export const Level = styled.div<{ level: number }>`
-    ${(props) => props.level === 1 && css`
-        background-color: #dc3d43;
-    `}
-    ${(props) => props.level === 2 && css`
-        background-color: #ffa01c;
-    `}
-    ${(props) => props.level === 3 && css`
-        background-color: #299764;
-    `}
+    ${(props) =>
+        props.level === 1 &&
+        css`
+            background-color: #dc3d43;
+        `}
+    ${(props) =>
+        props.level === 2 &&
+        css`
+            background-color: #ffa01c;
+        `}
+    ${(props) =>
+        props.level === 3 &&
+        css`
+            background-color: #299764;
+        `}
 
     border-radius: 4px;
     width: 90px;
@@ -36,6 +42,5 @@ export const Description = styled.div`
     font-weight: 500;
     font-size: 12px;
     line-height: 16px;
-    color: #7E868C;
+    color: #7e868c;
 `;
-

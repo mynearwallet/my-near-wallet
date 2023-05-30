@@ -13,7 +13,7 @@ const StyledContainer = styled.div`
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    color: #72727A;
+    color: #72727a;
     margin: 8px 0;
 
     > .details {
@@ -38,7 +38,7 @@ const StyledContainer = styled.div`
     }
 
     :hover {
-        background-color: #FAFAFA;
+        background-color: #fafafa;
 
         > svg {
             rect {
@@ -47,7 +47,8 @@ const StyledContainer = styled.div`
         }
     }
 
-    .account-id, .balance {
+    .account-id,
+    .balance {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -63,8 +64,8 @@ const StyledContainer = styled.div`
     }
 
     &.active {
-        border: 1px solid #8FCDFF;
-        background-color: #F0F9FF;
+        border: 1px solid #8fcdff;
+        background-color: #f0f9ff;
         cursor: default;
 
         .account-id {
@@ -72,12 +73,12 @@ const StyledContainer = styled.div`
         }
 
         .balance {
-            color: #0072CE;
+            color: #0072ce;
         }
 
         > svg {
             rect {
-                fill: #D6EDFF;
+                fill: #d6edff;
             }
         }
     }
@@ -90,7 +91,7 @@ export default ({
     defaultShowBalance,
     onSelectAccount,
     onToggleShowBalance = () => {},
-    showBalanceInUSD
+    showBalanceInUSD,
 }) => {
     const [showBalance, setShowBalance] = useState(defaultShowBalance);
     return (
@@ -98,19 +99,23 @@ export default ({
             <div className='details'>
                 <div className='account-id'>{accountId}</div>
                 <div className='balance'>
-                    {showBalance
-                        ? (
-                            <Balance
-                                amount={balance}
-                                showBalanceInUSD={showBalanceInUSD}
-                                showBalanceInNEAR={!showBalanceInUSD}
-                            />
-                        )
-                        : '••••••'
-                    }
+                    {showBalance ? (
+                        <Balance
+                            amount={balance}
+                            showBalanceInUSD={showBalanceInUSD}
+                            showBalanceInNEAR={!showBalanceInUSD}
+                        />
+                    ) : (
+                        '••••••'
+                    )}
                 </div>
             </div>
-            <ClickToCopy copy={accountId} className='copy' compact={true} onClick={(e) => e.stopPropagation()}>
+            <ClickToCopy
+                copy={accountId}
+                className='copy'
+                compact={true}
+                onClick={(e) => e.stopPropagation()}
+            >
                 <CopyIcon color='#2B9AF4' />
             </ClickToCopy>
             <EyeIcon

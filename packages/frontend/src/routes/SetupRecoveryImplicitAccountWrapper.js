@@ -28,10 +28,15 @@ const SetupRecoveryImplicitAccountWrapper = () => {
     }, []);
 
     const handleInititalizeEmailRecoveryLink = async () => {
-        const passPhrase = await wallet.initializeRecoveryMethodNewImplicitAccount({ kind: 'email', detail: email });
+        const passPhrase = await wallet.initializeRecoveryMethodNewImplicitAccount({
+            kind: 'email',
+            detail: email,
+        });
         const { publicKey, secretKey } = parseSeedPhrase(passPhrase);
         const recoveryKeyPair = KeyPair.fromString(secretKey);
-        const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString('hex');
+        const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString(
+            'hex'
+        );
 
         setRecoveryKeyPair(recoveryKeyPair);
         setImplicitAccountId(implicitAccountId);
@@ -71,30 +76,43 @@ const SetupRecoveryImplicitAccountWrapper = () => {
                 Mixpanel.track('SR Verify email code');
                 try {
                     setVerifyingEmailCode(true);
-                    await wallet.validateSecurityCodeNewImplicitAccount(implicitAccountId, { kind: 'email', detail: email }, securityCode, seedPhrasePublicKey);
+                    await wallet.validateSecurityCodeNewImplicitAccount(
+                        implicitAccountId,
+                        { kind: 'email', detail: email },
+                        securityCode,
+                        seedPhrasePublicKey
+                    );
                     await dispatch(saveAccount(implicitAccountId, recoveryKeyPair));
                 } catch (e) {
-                    dispatch(showCustomAlert({
-                        success: false,
-                        messageCodeHeader: 'error',
-                        messageCode: 'setupRecoveryMessageNewAccount.invalidCode',
-                        errorMessage: e.message
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            success: false,
+                            messageCodeHeader: 'error',
+                            messageCode: 'setupRecoveryMessageNewAccount.invalidCode',
+                            errorMessage: e.message,
+                        })
+                    );
                     throw e;
                 } finally {
                     setVerifyingEmailCode(false);
                 }
 
                 try {
-                    await wallet.importZeroBalanceAccount(implicitAccountId, recoveryKeyPair);
+                    await wallet.importZeroBalanceAccount(
+                        implicitAccountId,
+                        recoveryKeyPair
+                    );
                     dispatch(redirectTo('/'));
                 } catch (e) {
-                    dispatch(showCustomAlert({
-                        success: false,
-                        messageCodeHeader: 'error',
-                        messageCode: 'walletErrorCodes.recoverAccountSeedPhrase.errorNotAbleToImportAccount',
-                        errorMessage: e.message
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            success: false,
+                            messageCodeHeader: 'error',
+                            messageCode:
+                                'walletErrorCodes.recoverAccountSeedPhrase.errorNotAbleToImportAccount',
+                            errorMessage: e.message,
+                        })
+                    );
                 }
             }}
             onGoBack={() => setShowVerifyEmailCode(false)}
@@ -110,4 +128,3 @@ const SetupRecoveryImplicitAccountWrapper = () => {
 };
 
 export default SetupRecoveryImplicitAccountWrapper;
-

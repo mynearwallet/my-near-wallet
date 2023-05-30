@@ -3,15 +3,15 @@ type Handler<T> = (value: T) => void;
 type Target<T> = {
     target: T;
     currentTarget: T;
-}
+};
 
 type ValueEvent = {
     value: string;
-}
+};
 
 type CheckedEvent = {
-    checked: boolean
-}
+    checked: boolean;
+};
 
 type Evt<T> = (evt: Target<ValueEvent>) => T;
 
@@ -35,5 +35,6 @@ export function currentTargetValue(handler: Handler<any>, radix?: number): Evt<a
     };
 }
 
-export const currentTargetChecked = (handler: Handler<boolean>) =>
-    (evt: Target<CheckedEvent>) => handler(evt.currentTarget.checked);
+export const currentTargetChecked =
+    (handler: Handler<boolean>) => (evt: Target<CheckedEvent>) =>
+        handler(evt.currentTarget.checked);

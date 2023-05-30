@@ -7,12 +7,12 @@ import FormButton from '../../common/FormButton';
 
 const Container = styled.div`
     &&& {
-        border: 2px solid #F0F0F0;
+        border: 2px solid #f0f0f0;
         border-radius: 8px;
         padding: 20px;
 
         .title {
-            color: #3F4045;
+            color: #3f4045;
             font-weight: 600;
             margin-bottom: 25px;
             display: flex;
@@ -25,9 +25,9 @@ const Container = styled.div`
         }
 
         .key {
-            color: #3F4045;
-            background-color: #FAFAFA;
-            border: 1px solid #F0F0F1;
+            color: #3f4045;
+            background-color: #fafafa;
+            border: 1px solid #f0f0f1;
             border-radius: 4px;
             padding: 8px;
             font-size: 12px;
@@ -36,7 +36,7 @@ const Container = styled.div`
 
         hr {
             border-style: dashed !important;
-            border-color: #F0F0F0;
+            border-color: #f0f0f0;
             margin: 15px 0 !important;
         }
 
@@ -46,7 +46,7 @@ const Container = styled.div`
             justify-content: space-between;
             span {
                 :first-of-type {
-                    color: #72727A;
+                    color: #72727a;
                 }
                 :last-of-type {
                     color: #272729;
@@ -64,7 +64,9 @@ const AuthorizedApp = ({ app, onClick, deAuthorizing }) => {
             <div className='title'>
                 {app.access_key.permission.FunctionCall.receiver_id}
                 {onClick && (
-                    <FormButton color='gray-red' className='small'
+                    <FormButton
+                        color='gray-red'
+                        className='small'
                         onClick={onClick}
                         disabled={deAuthorizing}
                         sending={deAuthorizing}
@@ -75,10 +77,17 @@ const AuthorizedApp = ({ app, onClick, deAuthorizing }) => {
                 )}
             </div>
             <div className='key font-monospace'>{app.public_key}</div>
-            <hr/>
+            <hr />
             <div className='fee'>
-                <span><Translate id='authorizedApps.feeAllowance' /></span>
-                <span><Balance amount={app.access_key.permission.FunctionCall.allowance} showBalanceInUSD={false}/></span>
+                <span>
+                    <Translate id='authorizedApps.feeAllowance' />
+                </span>
+                <span>
+                    <Balance
+                        amount={app.access_key.permission.FunctionCall.allowance}
+                        showBalanceInUSD={false}
+                    />
+                </span>
             </div>
         </Container>
     );

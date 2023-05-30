@@ -40,7 +40,7 @@ const PrivateRoute = ({
                     return render(props);
                 }
 
-                return (<></>);
+                return <></>;
             }}
         />
     </>
@@ -48,7 +48,7 @@ const PrivateRoute = ({
 
 const mapStateToProps = (state) => ({
     account: selectAccountSlice(state),
-    localAlert: selectStatusLocalAlert(state)
+    localAlert: selectStatusLocalAlert(state),
 });
 
 export default withRouter(connect(mapStateToProps)(PrivateRoute));

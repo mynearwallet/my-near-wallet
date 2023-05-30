@@ -1,13 +1,13 @@
 import { KeyPair } from 'near-api-js';
 import { generateSeedPhrase } from 'near-seed-phrase';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Mixpanel } from '../../../../mixpanel/index';
 import ConfirmPassphrase from './ConfirmPassphrase';
 import SavePassphrase from './SavePassphrase';
 
 // TODO: Make this custom hook to re-use with future SetupPassphraseExistingAccount component
-const SetupPassphraseNewAccount =  ({ onConfirmPassphrase }) => {
+const SetupPassphraseNewAccount = ({ onConfirmPassphrase }) => {
     const [passPhrase, setPassPhrase] = useState('');
     const [recoveryKeyPair, setRecoveryKeyPair] = useState();
     const [implicitAccountId, setImplicitAccountId] = useState('');
@@ -21,8 +21,9 @@ const SetupPassphraseNewAccount =  ({ onConfirmPassphrase }) => {
     const generateAndSetPhrase = useCallback(() => {
         const { seedPhrase, secretKey } = generateSeedPhrase();
         const recoveryKeyPair = KeyPair.fromString(secretKey);
-        const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data)
-            .toString('hex');
+        const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString(
+            'hex'
+        );
 
         setPassPhrase(seedPhrase);
         setRecoveryKeyPair(recoveryKeyPair);

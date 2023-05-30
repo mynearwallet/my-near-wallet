@@ -10,12 +10,12 @@ import { createParameterSelector } from '../../selectors/topLevel';
 const SLICE_NAME = 'recoveryMethods';
 
 const initialState = {
-    byAccountId: {}
+    byAccountId: {},
 };
 
 const initialAccountIdState = {
     ...initialStatusState,
-    items: []
+    items: [],
 };
 
 const fetchRecoveryMethods = createAsyncThunk(
@@ -23,7 +23,9 @@ const fetchRecoveryMethods = createAsyncThunk(
     async ({ accountId }, thunkAPI) => {
         const { dispatch } = thunkAPI;
         const recoveryMethods = await wallet.getRecoveryMethods();
-        const { actions: { setRecoveryMethods } } = recoveryMethodsSlice;
+        const {
+            actions: { setRecoveryMethods },
+        } = recoveryMethodsSlice;
         dispatch(setRecoveryMethods({ recoveryMethods, accountId }));
     },
     {
@@ -32,7 +34,7 @@ const fetchRecoveryMethods = createAsyncThunk(
             if (selectRecoveryMethodsLoading(getState(), { accountId })) {
                 return false;
             }
-        }
+        },
     }
 );
 
@@ -43,22 +45,25 @@ const recoveryMethodsSlice = createSlice({
         setRecoveryMethods(state, { payload }) {
             const { recoveryMethods, accountId } = payload;
             set(state, ['byAccountId', accountId, 'items'], recoveryMethods);
-        }
+        },
     },
-    extraReducers: ((builder) => {
+    extraReducers: (builder) => {
         handleAsyncThunkStatus({
             asyncThunk: fetchRecoveryMethods,
-            buildStatusPath: ({ meta: { arg: { accountId } } }) => ['byAccountId', accountId],
-            builder
+            buildStatusPath: ({
+                meta: {
+                    arg: { accountId },
+                },
+            }) => ['byAccountId', accountId],
+            builder,
         });
-    })
-}
-);
+    },
+});
 
 export default recoveryMethodsSlice;
 export const actions = {
     fetchRecoveryMethods,
-    ...recoveryMethodsSlice.actions
+    ...recoveryMethodsSlice.actions,
 };
 
 const getAccountIdParam = createParameterSelector((params) => params.accountId);
@@ -70,7 +75,7 @@ export const selectRecoveryMethodsObjectByAccountId = createSelector(
     [selectRecoveryMethodsSlice, getAccountIdParam],
     (recoveryMethods, accountId) => ({
         ...initialAccountIdState,
-        ...recoveryMethods.byAccountId[accountId]
+        ...recoveryMethods.byAccountId[accountId],
     })
 );
 

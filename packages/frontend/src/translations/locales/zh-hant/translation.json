@@ -967,6 +967,13 @@
             "title": "私鑰"
         }
     },
+    "recoverPrivateKey": {
+        "pageText": "請輸入與該帳戶相關聯的私鑰。",
+        "pageTitle": "使用私鑰進行恢復",
+        "privateKeyInput": {
+            "title": "私鑰"
+        }
+    },
     "recoverSeedPhrase": {
         "couldNotFindAccountModal": {
             "buttonImport": "仍然導入",
@@ -981,13 +988,6 @@
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "助記詞（12 個單詞）"
-        }
-    },
-    "recoverPrivateKey": {
-        "pageText": "請輸入與該帳戶相關聯的私鑰。",
-        "pageTitle": "使用私鑰進行恢復",
-        "privateKeyInput": {
-            "title": "私鑰"
         }
     },
     "recoverWithLink": {
@@ -1801,13 +1801,13 @@
         "recoverAccountLink": {
             "error": "導入賬戶失敗，請重試或聯繫服務支持。"
         },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "提供的私鑰無效。請檢查您的私鑰並重試。"
+        },
         "recoverAccountSeedPhrase": {
             "errorInvalidSeedPhrase": "助記詞無效",
             "errorNotAbleToImportAccount": "導入賬戶失敗。請重試，或聯繫客服獲得幫助。",
             "errorSeedPhraseNotValid": "助記詞無效，請檢查後重試。"
-        },
-        "recoverAccountPrivateKey": {
-            "errorPKNotValid": "提供的私鑰無效。請檢查您的私鑰並重試。"
         },
         "recoveryMethods": {
             "lastMethod": "無法刪除最後一個恢復方式。除非你添加了 Ledger，你需要保留至少一種賬戶恢復方式。",

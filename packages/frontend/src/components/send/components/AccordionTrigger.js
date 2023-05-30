@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #F0F0F1;
+    background-color: #f0f0f1;
     padding: 10px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -24,7 +24,7 @@ const StyledContainer = styled.div`
     }
 
     &.open {
-        background-color: #FAFAFA;
+        background-color: #fafafa;
 
         > svg {
             transform: rotate(-90deg);
@@ -37,10 +37,10 @@ const AccordionTrigger = ({ id, onClick, translateIdTitle, translateData, open }
         <StyledContainer
             id={id}
             onClick={onClick}
-            className={classNames(['accordion-trigger' , open ? 'open' : ''])}
+            className={classNames(['accordion-trigger', open ? 'open' : ''])}
         >
             <SafeTranslate id={translateIdTitle} data={translateData} />
-            <ChevronIcon color='var(--mnw-color-1)'/>
+            <ChevronIcon color='var(--mnw-color-1)' />
         </StyledContainer>
     );
 };

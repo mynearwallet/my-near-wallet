@@ -1,10 +1,8 @@
-export type PasswordComplexity = 'none'|'week'|'average'|'strong';
+export type PasswordComplexity = 'none' | 'week' | 'average' | 'strong';
 
-export type Levels = 0|1|2|3;
+export type Levels = 0 | 1 | 2 | 3;
 
-export const getLevelsFromComplexity = (
-    complexity: PasswordComplexity
-): Levels => {
+export const getLevelsFromComplexity = (complexity: PasswordComplexity): Levels => {
     switch (complexity) {
         case 'none':
             return 0;

@@ -10,11 +10,11 @@ import { selectAccountId, selectAccountSlice } from '../../../redux/slices/accou
 import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsByAccountId,
-    selectRecoveryMethodsLoading
+    selectRecoveryMethodsLoading,
 } from '../../../redux/slices/recoveryMethods';
 import {
     selectActionsPending,
-    selectStatusMainLoader
+    selectStatusMainLoader,
 } from '../../../redux/slices/status';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
@@ -27,7 +27,7 @@ const StyledContainer = styled(Container)`
         margin-top: 50px !important;
         width: 100% !important;
     }
-    
+
     h4 {
         margin-top: 40px;
         font-weight: 600;
@@ -38,12 +38,11 @@ const StyledContainer = styled(Container)`
 `;
 
 class SetupRecoveryMethod extends Component {
-
     state = {
         option: this.props.router.location.method || 'phrase',
         recoverySeedPhrase: null,
-        settingUpNewAccount: false
-    }
+        settingUpNewAccount: false,
+    };
 
     async componentDidMount() {
         const { router } = this.props;
@@ -70,16 +69,12 @@ class SetupRecoveryMethod extends Component {
             this.props.getLedgerKey();
             this.props.get2faMethod();
         }
-    }
+    };
 
     handleNext = async () => {
         const { option } = this.state;
 
-        const {
-            accountId,
-            location,
-            redirectTo
-        } = this.props;
+        const { accountId, location, redirectTo } = this.props;
 
         if (option === 'phrase') {
             Mixpanel.track('SR-SP Select seed phrase');
@@ -88,22 +83,23 @@ class SetupRecoveryMethod extends Component {
             Mixpanel.track('SR-Ledger Select ledger');
             redirectTo(`/setup-ledger/${accountId}${location.search}`);
         }
-    }
+    };
 
     checkDisabled = (method) => {
         const { recoveryMethods } = this.props;
         let activeMethods = [];
         if (!!recoveryMethods.length) {
-            activeMethods = recoveryMethods.filter((method) =>
-                method.confirmed).map((method) => method.kind);
+            activeMethods = recoveryMethods
+                .filter((method) => method.confirmed)
+                .map((method) => method.kind);
         }
 
         return !this.checkNewAccount() && activeMethods.includes(method);
-    }
+    };
 
     checkNewAccount = () => {
         return this.props.accountId !== this.props.activeAccountId;
-    }
+    };
 
     render() {
         const { option } = this.state;
@@ -119,19 +115,25 @@ class SetupRecoveryMethod extends Component {
 
         return (
             <StyledContainer className='small-centered border'>
-                <form onSubmit={(e) => {
-                    this.handleNext();
-                    e.preventDefault();
-                }}>
-                    <h1><Translate id='setupRecovery.header' /></h1>
-                    <h2><Translate id='setupRecovery.subHeader' /></h2>
+                <form
+                    onSubmit={(e) => {
+                        this.handleNext();
+                        e.preventDefault();
+                    }}
+                >
+                    <h1>
+                        <Translate id='setupRecovery.header' />
+                    </h1>
+                    <h2>
+                        <Translate id='setupRecovery.subHeader' />
+                    </h2>
                     <RecoveryOption
                         onClick={() => this.setState({ option: 'phrase' })}
                         option='phrase'
                         active={option}
                         disabled={this.checkDisabled('phrase')}
                     />
-                    {(this.checkNewAccount() || !twoFactor) &&(
+                    {(this.checkNewAccount() || !twoFactor) && (
                         <RecoveryOption
                             onClick={() => this.setState({ option: 'ledger' })}
                             option='ledger'
@@ -145,7 +147,7 @@ class SetupRecoveryMethod extends Component {
                         disabled={mainLoader || recoveryMethodsLoader}
                         sending={continueSending}
                         trackingId='SR Click submit button'
-                        data-test-id="submitSelectedRecoveryOption"
+                        data-test-id='submitSelectedRecoveryOption'
                     >
                         <Translate id='button.continue' />
                     </FormButton>
@@ -156,12 +158,8 @@ class SetupRecoveryMethod extends Component {
 }
 
 const mapDispatchToProps = () => {
-    const {
-        initializeRecoveryMethod,
-        redirectTo,
-        getLedgerKey,
-        get2faMethod,
-    } = accountActions;
+    const { initializeRecoveryMethod, redirectTo, getLedgerKey, get2faMethod } =
+        accountActions;
 
     return {
         fetchRecoveryMethods,
@@ -184,7 +182,7 @@ const mapStateToProps = (state, { match }) => {
         mainLoader: selectStatusMainLoader(state),
         recoveryMethodsLoader: selectRecoveryMethodsLoading(state, { accountId }),
         continueSending: selectActionsPending(state, {
-            types: ['INITIALIZE_RECOVERY_METHOD', 'SETUP_RECOVERY_MESSAGE']
+            types: ['INITIALIZE_RECOVERY_METHOD', 'SETUP_RECOVERY_MESSAGE'],
         }),
     };
 };

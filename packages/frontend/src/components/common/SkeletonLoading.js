@@ -12,7 +12,7 @@ const Animation = styled.div`
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
     animation-name: skeletonShimmer;
-    animation-timing-function: cubic-bezier(.17,.67,.83,.67);
+    animation-timing-function: cubic-bezier(0.17, 0.67, 0.83, 0.67);
     background: #f4f4f4;
     background: linear-gradient(to right, #f4f4f4 0%, #efeded 50%, #f4f4f4 100%);
     background-size: 200% 100%;
@@ -22,27 +22,27 @@ const Animation = styled.div`
     height: 100%;
     position: absolute;
 
-    @keyframes skeletonShimmer{
-        0%{
-            background-position: 100% 0
+    @keyframes skeletonShimmer {
+        0% {
+            background-position: 100% 0;
         }
-        100%{
-            background-position: -100% 0
+        100% {
+            background-position: -100% 0;
         }
     }
 `;
 
 const SkeletonLoading = ({ height, padding, number = 1, show, className }) => {
     if (show) {
-        return (
-            Array(number).fill().map((_, i) => (
+        return Array(number)
+            .fill()
+            .map((_, i) => (
                 <div className={className} style={{ padding }} key={i}>
                     <Wrapper className='animation-wrapper' style={{ height }}>
-                        <Animation className='animation'/>
+                        <Animation className='animation' />
                     </Wrapper>
                 </div>
-            ))
-        );
+            ));
     }
     return null;
 };

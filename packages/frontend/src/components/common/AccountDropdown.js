@@ -10,13 +10,13 @@ import { shortenAccountId } from '../../utils/account';
 import classNames from '../../utils/classNames';
 import DropDown from '../common/DropDown';
 
-
 const Container = styled.div`
     .dropdown-container {
         width: 100%;
     }
 
-    .dropdown-title-wrapper, .dropdown-content {
+    .dropdown-title-wrapper,
+    .dropdown-content {
         border-radius: 4px;
     }
 
@@ -27,16 +27,16 @@ const Container = styled.div`
     .dropdown-title {
         font-size: 14px !important;
         font-weight: 600 !important;
-        color: #72727A;
+        color: #72727a;
     }
 
     .account-dropdown-toggle {
         padding: 15px;
         text-align: left;
-        border-bottom: 1px solid #F0F0F1;
+        border-bottom: 1px solid #f0f0f1;
         transition: 100ms;
         cursor: pointer;
-        color: #72727A;
+        color: #72727a;
         font-weight: 500;
 
         :last-of-type {
@@ -45,7 +45,7 @@ const Container = styled.div`
 
         :hover {
             background-color: #f9f9f9;
-            color: #3F4045;
+            color: #3f4045;
         }
     }
 
@@ -53,7 +53,7 @@ const Container = styled.div`
         text-align: left;
         margin-bottom: 8px;
         font-size: 13px;
-        color: #A2A2A8;
+        color: #a2a2a8;
     }
 `;
 
@@ -71,7 +71,11 @@ export default function AccountDropdown({ disabled, 'data-test-id': testId }) {
             data-test-id={testId}
         >
             <div className='account-dropdown-title'>
-                <Translate id={`selectAccountDropdown.${singleAccount ? 'account' : 'selectAccount'}`}/>
+                <Translate
+                    id={`selectAccountDropdown.${
+                        singleAccount ? 'account' : 'selectAccount'
+                    }`}
+                />
             </div>
             <DropDown
                 disabled={singleAccount || disabled}

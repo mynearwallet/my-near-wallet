@@ -3,7 +3,7 @@ import apollo42Icon from './media/apollo42.jpg';
 import arbitoorAggregatorIcon from './media/arbitoor-aggregator.jpg';
 import armoredKingdomIcon from './media/armored-kingdom.jpg';
 import astroStakersIcon from './media/astro-stakers.jpg';
-import astrodaoIcon from './media/astrodao.jpg'; 
+import astrodaoIcon from './media/astrodao.jpg';
 import burrowIcon from './media/burrow.svg';
 import collectNFTsSectionIcon from './media/collectNFTsSectionIcon.svg';
 import cryptoheroeIcon from './media/cryptoheroes.jpg';
@@ -28,38 +28,37 @@ import sweatEconomyIcon from './media/sweat-economy.jpg';
 import tamagoIcon from './media/tamago.jpg';
 import tonicDexIcon from './media/tonic-dex.jpg';
 
-
 export const trandingProjects = [
     {
         icon: refFinanceIcon,
         name: 'Ref Finance',
-        linkName: 'ref-finance'
+        linkName: 'ref-finance',
     },
     {
         icon: parasIcon,
         name: 'Paras',
-        linkName: 'paras'
+        linkName: 'paras',
     },
     {
         icon: burrowIcon,
         name: 'Burrow',
-        linkName: 'burrow'
+        linkName: 'burrow',
     },
     {
         icon: metapoolIcon,
         name: 'Meta Pool',
-        linkName: 'meta-pool'
+        linkName: 'meta-pool',
     },
     {
         icon: astrodaoIcon,
         name: 'Astro DAO',
-        linkName: 'astrodao'
+        linkName: 'astrodao',
     },
     {
         icon: rainbowbridgeIcon,
         name: 'Rainbow Bridge',
-        linkName: 'rainbow-bridge'
-    }
+        linkName: 'rainbow-bridge',
+    },
 ];
 
 export const exchangeSection = {
@@ -73,44 +72,44 @@ export const exchangeSection = {
             name: 'Ref Finance',
             linkName: 'ref-finance',
             category: 'AMM DEX',
-            info: 'Multi-purpose DeFi platform built on NEAR Protocol.'
+            info: 'Multi-purpose DeFi platform built on NEAR Protocol.',
         },
         {
             icon: tonicDexIcon,
             name: 'Tonic DEX',
             linkName: 'tonic-dex',
             category: 'Orderbook DEX',
-            info: 'Orderbook DEX on NEAR.'
+            info: 'Orderbook DEX on NEAR.',
         },
         {
             icon: jumboExchangeIcon,
             name: 'Jumbo Exchange',
             linkName: 'jumbo-exchange',
             category: 'AMM DEX',
-            info: 'UI/UX Friendly AMM built on NEAR.'
+            info: 'UI/UX Friendly AMM built on NEAR.',
         },
         {
             icon: arbitoorAggregatorIcon,
             name: 'Arbitoor Aggregator',
             linkName: 'arbitoor-aggregator',
             category: 'DEX Aggregator',
-            info: 'The Liquidity Aggregator and Swap Infrastructure for NEAR.'
+            info: 'The Liquidity Aggregator and Swap Infrastructure for NEAR.',
         },
         {
             icon: spinIcon,
             name: 'Spin',
             linkName: 'spin',
             category: 'Orderbook DEX',
-            info: 'DeFi derivatives infrastructure built on NEAR Protocol.'
+            info: 'DeFi derivatives infrastructure built on NEAR Protocol.',
         },
         {
             icon: rainbowbridgeIcon,
             name: 'Rainbow Bridge',
             linkName: 'rainbow-bridge',
             category: 'Cross-chain Bridge',
-            info: 'Transfer tokens between Ethereum and NEAR.'
+            info: 'Transfer tokens between Ethereum and NEAR.',
         },
-    ]
+    ],
 };
 
 export const startEarningSection = {
@@ -124,7 +123,7 @@ export const startEarningSection = {
             name: 'Burrow',
             linkName: 'burrow',
             category: 'Lending Protocol',
-            info: 'Borrow, Supply, Thrive.'
+            info: 'Borrow, Supply, Thrive.',
         },
 
         {
@@ -132,37 +131,37 @@ export const startEarningSection = {
             name: 'PembRock Finance',
             linkName: 'pembrock-finance',
             category: 'Leveraged yield farming',
-            info: 'Leveraged yield farming on NEAR.'
+            info: 'Leveraged yield farming on NEAR.',
         },
         {
             icon: metapoolIcon,
             name: 'Meta Pool',
             linkName: 'meta-pool',
             category: 'Liquid Staking',
-            info: 'Liquid Staking Protocol built on NEAR.'
+            info: 'Liquid Staking Protocol built on NEAR.',
         },
         {
             icon: linearProtocolIcon,
             name: 'LiNEAR Protocol',
             linkName: 'linear-protocol',
             category: 'Liquid Staking',
-            info: 'Your Journey of DeFi on NEAR Starts Here.'
+            info: 'Your Journey of DeFi on NEAR Starts Here.',
         },
         {
             icon: astroStakersIcon,
             name: 'Astro-Stakers',
             linkName: 'astro-stakers',
             category: 'Staking Provider',
-            info: 'Low-fee Community Staking Provider for NEAR Protocol.'
+            info: 'Low-fee Community Staking Provider for NEAR Protocol.',
         },
         {
             icon: dragonflyCapitalPartnersIcon,
             name: 'Dragonfly Capital Partners',
             linkName: 'dragonfly-capital-partners',
             category: 'Staking Provider',
-            info: 'Global from day one.'
+            info: 'Global from day one.',
         },
-    ]
+    ],
 };
 
 export const collectNFTsSection = {
@@ -176,44 +175,44 @@ export const collectNFTsSection = {
             name: 'Paras',
             linkName: 'paras',
             category: 'NFT Marketplace',
-            info: 'Create, Trade, and Collect Digital Collectibles.'
+            info: 'Create, Trade, and Collect Digital Collectibles.',
         },
         {
             icon: mintbaseIcon,
             name: 'Mintbase',
             linkName: 'mintbase',
             category: 'NFT Marketplace',
-            info: 'Digital assets minted and backed by you.'
+            info: 'Digital assets minted and backed by you.',
         },
         {
             icon: apollo42Icon,
             name: 'Apollo42',
             linkName: 'apollo42',
             category: 'NFT Marketplace',
-            info: 'Your journey to a new galaxy of digital cultures and collectibles.'
+            info: 'Your journey to a new galaxy of digital cultures and collectibles.',
         },
         {
             icon: tamagoIcon,
             name: 'Tamago',
             linkName: 'tamago',
             category: 'Audio Streaming platform',
-            info: 'Decentralized Audio Streaming platform built on the NEAR.'
+            info: 'Decentralized Audio Streaming platform built on the NEAR.',
         },
         {
             icon: nearnautsIcon,
             name: 'NEARNauts',
             linkName: 'nearnauts',
             category: 'NFT Collectibles',
-            info: 'A generative project on the NEAR Network.'
+            info: 'A generative project on the NEAR Network.',
         },
         {
             icon: antisocialApeClubIcon,
             name: 'Antisocial Ape Club',
             linkName: 'antisocial-ape-club',
             category: 'NFT Collectibles',
-            info: '3333 unique, randomly generated pixel art ape NFTs.'
+            info: '3333 unique, randomly generated pixel art ape NFTs.',
         },
-    ]
+    ],
 };
 
 export const playToEarnSection = {
@@ -227,42 +226,42 @@ export const playToEarnSection = {
             name: 'Metamon',
             linkName: 'metamon',
             category: 'Play to Earn',
-            info: 'Free-to-play Play-to-Earn online Battle Royale Game and Sci-Fi Franchise.'
+            info: 'Free-to-play Play-to-Earn online Battle Royale Game and Sci-Fi Franchise.',
         },
         {
             icon: cryptoheroeIcon,
             name: 'Crypto Hero',
             linkName: 'cryptoheroes',
             category: 'Play to Earn',
-            info: 'A blockchain game focused on PvE with a P2E raid system.'
+            info: 'A blockchain game focused on PvE with a P2E raid system.',
         },
         {
             icon: armoredKingdomIcon,
             name: 'Armored Kindom',
             linkName: 'armored-kingdom',
             category: 'Play to Earn',
-            info: 'A multi-media entertainment universe.'
+            info: 'A multi-media entertainment universe.',
         },
         {
             icon: galaxyOnlineIcon,
             name: 'Galaxy Online',
             linkName: 'galaxy-online',
             category: 'Play to Earn',
-            info: 'Epic MMO with blockchain-based game races.'
+            info: 'Epic MMO with blockchain-based game races.',
         },
         {
             icon: hashRushIcon,
             name: 'Hash Rush',
             linkName: 'hash-rush',
             category: 'Play to Earn',
-            info: 'Online sci-fi/fantasy RTS set in the fictional Hermeian galaxy.'
+            info: 'Online sci-fi/fantasy RTS set in the fictional Hermeian galaxy.',
         },
         {
             icon: sweatEconomyIcon,
             name: 'Sweat Economy',
             linkName: 'sweat-economy',
             category: 'Move to Earn',
-            info: 'Sweatcoin. Move to Earn. Walk into crypto.'
-        }
-    ]
+            info: 'Sweatcoin. Move to Earn. Walk into crypto.',
+        },
+    ],
 };

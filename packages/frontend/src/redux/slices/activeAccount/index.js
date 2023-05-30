@@ -5,7 +5,7 @@ import { createSelector } from 'reselect';
 const SLICE_NAME = 'activeAccount';
 
 const initialState = {
-    accountId: ''
+    accountId: '',
 };
 
 const activeAccountSlice = createSlice({

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 export default class ClickOutside extends Component {
-
     componentDidMount() {
         document.addEventListener('click', this.handleClickOutside);
     }
@@ -13,7 +12,7 @@ export default class ClickOutside extends Component {
 
     setWrapperRef = (node) => {
         this.wrapperRef = node;
-    }
+    };
 
     handleClickOutside = (e) => {
         const isOutside = this.wrapperRef && !this.wrapperRef.contains(e.target);
@@ -21,7 +20,7 @@ export default class ClickOutside extends Component {
         if (isOutside) {
             this.props.onClickOutside();
         }
-    }
+    };
 
     render() {
         return (
@@ -33,13 +32,10 @@ export default class ClickOutside extends Component {
 }
 
 ClickOutside.defaultProps = {
-    clickInside: true
+    clickInside: true,
 };
 
 ClickOutside.propTypes = {
     onClickOutside: PropTypes.func.isRequired,
-    children: PropTypes.oneOfType([
-        PropTypes.element,
-        PropTypes.array
-    ])
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.array]),
 };

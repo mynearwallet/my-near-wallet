@@ -80,7 +80,7 @@ const StyledContainer = styled.div`
 
 const StyledLogo = styled.div`
     svg {
-        width: 218px;    
+        width: 218px;
     }
 `;
 
@@ -98,12 +98,15 @@ const Footer = () => {
                             href='/terms'
                             rel='noopener noreferrer'
                             target='_blank'
-                            onClick={() => Mixpanel.track('Footer Click terms of service')}
+                            onClick={() =>
+                                Mixpanel.track('Footer Click terms of service')
+                            }
                         >
                             <Translate id='footer.termsOfService' />
                         </a>
                         <span className='color-brown-grey'>|</span>
-                        <a href='/privacy'
+                        <a
+                            href='/privacy'
                             rel='noopener noreferrer'
                             target='_blank'
                             onClick={() => Mixpanel.track('Footer Click privacy policy')}
@@ -114,7 +117,8 @@ const Footer = () => {
                 </div>
             </div>
             <div className='center'>
-                <Translate id='footer.desc' />&nbsp;
+                <Translate id='footer.desc' />
+                &nbsp;
                 <a
                     href='https://near.org'
                     rel='noopener noreferrer'
@@ -125,7 +129,8 @@ const Footer = () => {
                 </a>
             </div>
             <div className='right'>
-                <Translate id='footer.needHelp' /><br />
+                <Translate id='footer.needHelp' />
+                <br />
                 <a
                     href='https://discord.com/invite/Vj74PpQYsh'
                     rel='noopener noreferrer'

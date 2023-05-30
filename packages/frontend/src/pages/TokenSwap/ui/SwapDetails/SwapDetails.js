@@ -55,16 +55,16 @@ export default function SwapDetails() {
     return (
         <SwapDetailsWrapper className={`${isVisible ? 'visible' : ''}`}>
             <AccordionTitle
-                id="swapDetailsTitle"
+                id='swapDetailsTitle'
                 className={`${isActive ? 'active' : ''}`}
                 onClick={toggleDetailsView}
             >
                 1 {tokenOut?.onChainFTMetadata?.symbol}
                 {' = '}
                 {price} {tokenIn?.onChainFTMetadata?.symbol}
-                <ChevronIcon color="var(--mnw-color-1)" />
+                <ChevronIcon color='var(--mnw-color-1)' />
             </AccordionTitle>
-            <Accordion trigger="swapDetailsTitle" className="breakdown">
+            <Accordion trigger='swapDetailsTitle' className='breakdown'>
                 {isNearTransformation ? (
                     <NearTransformationDetails
                         minAmountOut={amountIn}

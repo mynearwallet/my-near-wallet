@@ -11,11 +11,11 @@ const Container = styled.div`
         @media (max-width: 1199px) {
             display: none;
         }
-    
+
         border-radius: 40px;
         margin: 0px 0px 0px 20px;
         display: flex;
-    
+
         button {
             &.dark-gray {
                 display: flex;
@@ -29,24 +29,24 @@ const Container = styled.div`
                 font-weight: 400;
                 margin: 0;
                 border-radius: 0;
-        
+
                 > svg {
                     margin: 0 8px 0 0;
                     min-width: 16px;
                     width: 16px;
                     height: 16px;
-        
+
                     path {
-                        stroke: #A2A2A8;
+                        stroke: #a2a2a8;
                     }
                 }
-        
+
                 :nth-of-type(1) {
                     border-top-left-radius: 40px;
                     border-bottom-left-radius: 40px;
-                    border-right: 1px solid #3F4045;
+                    border-right: 1px solid #3f4045;
                 }
-        
+
                 :nth-of-type(2) {
                     border-top-right-radius: 40px;
                     border-bottom-right-radius: 40px;
@@ -59,12 +59,12 @@ const Container = styled.div`
 const SendReceiveButtons = () => (
     <Container>
         <FormButton linkTo='/send-money' color='dark-gray' className='small'>
-            <SendIcon/>
-            <Translate id='button.send'/>
+            <SendIcon />
+            <Translate id='button.send' />
         </FormButton>
         <FormButton linkTo='receive-money' color='dark-gray' className='small'>
-            <DownArrowIcon/>
-            <Translate id='button.receive'/>
+            <DownArrowIcon />
+            <Translate id='button.receive' />
         </FormButton>
     </Container>
 );

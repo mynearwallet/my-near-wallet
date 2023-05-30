@@ -17,7 +17,7 @@ export default handleActions(
             ...state,
             signedRequest: undefined,
             status: VERIFY_OWNER_STATUS.COMPLETED,
-            error: new Error('User rejected')
+            error: new Error('User rejected'),
         }),
         [handleAuthorizationRequestConfirmed.pending]: (state) => ({
             ...state,
@@ -27,14 +27,14 @@ export default handleActions(
         [handleAuthorizationRequestConfirmed.rejected]: (state, { error }) => ({
             ...state,
             status: VERIFY_OWNER_STATUS.NEEDS_CONFIRMATION,
-            error
+            error,
         }),
         [handleAuthorizationRequestConfirmed.fulfilled]: (state, { payload }) => ({
             ...state,
             signedRequest: payload,
             status: VERIFY_OWNER_STATUS.COMPLETED,
-            error: undefined
-        })
+            error: undefined,
+        }),
     },
     initialState
 );

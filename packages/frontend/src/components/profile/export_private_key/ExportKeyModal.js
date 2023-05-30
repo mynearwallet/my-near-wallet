@@ -32,21 +32,21 @@ const Container = styled.div`
         label {
             text-align: left;
             display: flex;
-            background-color: #F5FAFF;
+            background-color: #f5faff;
             margin: 25px -25px 0 -25px;
             padding: 15px 25px;
             line-height: 1.5;
 
             > div {
                 > div {
-                    border-color: #0081F1;
+                    border-color: #0081f1;
                 }
             }
 
             > span {
                 margin-left: 10px;
                 word-break: break-word;
-                color: #006ADC;
+                color: #006adc;
             }
 
             b {
@@ -60,67 +60,62 @@ const Container = styled.div`
         }
 
         .link {
-          margin-top: 20px;
+            margin-top: 20px;
         }
 
         .text-select-display {
-          display: flex;
-          flex-direction: row;
-          align-items: flex-start;
-          padding: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
 
-          background: #272729;
-          border-radius: 8px;
+            background: #272729;
+            border-radius: 8px;
 
-          word-break: break-word;
-          text-align: left;
+            word-break: break-word;
+            text-align: left;
         }
 
         input.success {
-          background: url(${CheckMarkNoBorderIcon}) no-repeat right;
-          background-position: 97%;
+            background: url(${CheckMarkNoBorderIcon}) no-repeat right;
+            background-position: 97%;
         }
 
         form {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          > button {
-            margin-top: 32px;
             width: 100%;
-          }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            > button {
+                margin-top: 32px;
+                width: 100%;
+            }
 
-          .link {
-            margin-top: 20px;
-          }
+            .link {
+                margin-top: 20px;
+            }
         }
     }
 `;
 
 const VIEWS = {
     ACCOUNT_ID_CONFIRMATION: 'accountIdConfirmation',
-    VIEW_PRIVATE_KEY: 'viewPrivateKey'
+    VIEW_PRIVATE_KEY: 'viewPrivateKey',
 };
 
-export default ({
-    isOpen,
-    onClose,
-    secretKey
-}) => {
+export default ({ isOpen, onClose, secretKey }) => {
     const [currentView, setCurrentView] = useState(VIEWS.ACCOUNT_ID_CONFIRMATION);
 
     return (
-        <Modal
-            id='remove-account-modal'
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='sm'
-        >
+        <Modal id='remove-account-modal' isOpen={isOpen} onClose={onClose} modalSize='sm'>
             <Container>
-                <h3><Translate id='exportPrivateKey.title' /></h3>
-                <p><Translate id='exportPrivateKey.desc' /></p>
+                <h3>
+                    <Translate id='exportPrivateKey.title' />
+                </h3>
+                <p>
+                    <Translate id='exportPrivateKey.desc' />
+                </p>
                 <ExportKeyModalBody
                     currentView={currentView}
                     setCurrentView={setCurrentView}
@@ -140,16 +135,14 @@ const ExportKeyModalBody = ({ currentView, setCurrentView, onClose, secretKey })
             );
         case VIEWS.VIEW_PRIVATE_KEY:
             return (
-        <>
-          <ClickToCopy copy={secretKey}>
-              <div className='text-select-display'>
-                  {secretKey}
-              </div>
-          </ClickToCopy>
-          <FormButton onClick={onClose}>
-              <Translate id='button.dismiss' />
-          </FormButton>
-        </>
+                <>
+                    <ClickToCopy copy={secretKey}>
+                        <div className='text-select-display'>{secretKey}</div>
+                    </ClickToCopy>
+                    <FormButton onClick={onClose}>
+                        <Translate id='button.dismiss' />
+                    </FormButton>
+                </>
             );
     }
 };
@@ -161,7 +154,9 @@ const ConfirmationScreen = ({ setCurrentView, onClose }) => {
 
     return (
         <form onSubmit={() => setCurrentView(VIEWS.VIEW_PRIVATE_KEY)}>
-            <p><Translate id='exportPrivateKey.enterAccountAddress' /></p>
+            <p>
+                <Translate id='exportPrivateKey.enterAccountAddress' />
+            </p>
             <Translate>
                 {({ translate }) => (
                     <input
@@ -175,15 +170,10 @@ const ConfirmationScreen = ({ setCurrentView, onClose }) => {
                     />
                 )}
             </Translate>
-            <FormButton
-                disabled={!accountIdConfirmed}
-                type='submit'
-            >
+            <FormButton disabled={!accountIdConfirmed} type='submit'>
                 <Translate id='button.viewPrivateKey' />
             </FormButton>
-            <FormButton
-                className='link'
-                onClick={onClose}>
+            <FormButton className='link' onClick={onClose}>
                 <Translate id='button.cancel' />
             </FormButton>
         </form>

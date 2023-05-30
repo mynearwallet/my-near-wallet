@@ -10,7 +10,10 @@ import CONFIG from '../../../../config';
 import { Mixpanel } from '../../../../mixpanel';
 import { redirectTo, checkIsNew } from '../../../../redux/actions/account';
 import { showCustomAlert } from '../../../../redux/actions/status';
-import { addLocalKeyAndFinishSetup, createAccountFromImplicit } from '../../../../redux/slices/account/createAccountThunks';
+import {
+    addLocalKeyAndFinishSetup,
+    createAccountFromImplicit,
+} from '../../../../redux/slices/account/createAccountThunks';
 import { actions as createFromImplicitActions } from '../../../../redux/slices/createFromImplicit';
 import { actions as flowLimitationActions } from '../../../../redux/slices/flowLimitation';
 import { getSignedUrl } from '../../../../utils/moonpay';
@@ -43,24 +46,23 @@ const InitialDepositWrapper = ({ history }) => {
 
     useEffect(() => {
         const handleSetMoonpayURL = async () => {
-            const moonpaySignedUrl = await getSignedUrl(implicitAccountId, window.location.href);
+            const moonpaySignedUrl = await getSignedUrl(
+                implicitAccountId,
+                window.location.href
+            );
             setMoonpaySignedUrl(moonpaySignedUrl);
         };
         if (fundingMethod === 'creditCard') {
             handleSetMoonpayURL();
         }
-    }, [
-        fundingMethod,
-        implicitAccountId,
-        window.location.href
-    ]);
+    }, [fundingMethod, implicitAccountId, window.location.href]);
 
     useEffect(() => {
         dispatch(handleFlowLimitation());
     }, []);
 
     useRecursiveTimeout(async () => {
-        await checkFundingAddressBalance().catch(() => { });
+        await checkFundingAddressBalance().catch(() => {});
     }, 3000);
 
     const onClickCancel = () => {
@@ -69,19 +71,24 @@ const InitialDepositWrapper = ({ history }) => {
 
     const checkFundingAddressBalance = async () => {
         if (fundingNeeded) {
-            await Mixpanel.withTracking('CA Check balance from implicit',
+            await Mixpanel.withTracking(
+                'CA Check balance from implicit',
                 async () => {
                     try {
                         const account = wallet.getAccountBasic(implicitAccountId);
                         const state = await account.state();
-                        if (new BN(state.amount).gte(new BN(CONFIG.MIN_BALANCE_TO_CREATE))) {
+                        if (
+                            new BN(state.amount).gte(new BN(CONFIG.MIN_BALANCE_TO_CREATE))
+                        ) {
                             Mixpanel.track('CA Check balance from implicit: sufficient');
                             setFundingNeeded(false);
                             setInitialDeposit(state.amount);
                             return;
                         } else {
                             console.log('Insufficient funding amount');
-                            Mixpanel.track('CA Check balance from implicit: insufficient');
+                            Mixpanel.track(
+                                'CA Check balance from implicit: insufficient'
+                            );
                         }
                     } catch (e) {
                         if (e.message.includes('does not exist while viewing')) {
@@ -98,10 +105,17 @@ const InitialDepositWrapper = ({ history }) => {
     };
 
     const handleClaimAccount = async () => {
-        await Mixpanel.withTracking('CA Create account from implicit',
+        await Mixpanel.withTracking(
+            'CA Create account from implicit',
             async () => {
                 setClaimingAccount(true);
-                await dispatch(createAccountFromImplicit({ accountId, implicitAccountId, recoveryMethod })).unwrap();
+                await dispatch(
+                    createAccountFromImplicit({
+                        accountId,
+                        implicitAccountId,
+                        recoveryMethod,
+                    })
+                ).unwrap();
             },
             async (e) => {
                 console.warn(e);
@@ -109,43 +123,62 @@ const InitialDepositWrapper = ({ history }) => {
                 const isNewAccount = await checkIsNew(accountId);
                 if (isNewAccount) {
                     // No on-chain account exists; throw error on UI so that user can try again
-                    dispatch(showCustomAlert({
-                        success: false,
-                        messageCodeHeader: 'error',
-                        messageCode: 'walletErrorCodes.createNewAccount.error',
-                        errorMessage: e.message
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            success: false,
+                            messageCodeHeader: 'error',
+                            messageCode: 'walletErrorCodes.createNewAccount.error',
+                            errorMessage: e.message,
+                        })
+                    );
                     throw e;
                 }
 
                 // On-chain account exists; verify that it is owned by the current key
-                const accessKeys = await wallet.getAccessKeys(accountId) || [];
+                const accessKeys = (await wallet.getAccessKeys(accountId)) || [];
                 const publicKeys = accessKeys.map((key) => key.public_key);
-                const publicKey = new PublicKey({ keyType: KeyType.ED25519, data: Buffer.from(implicitAccountId, 'hex') });
-                const publicKeyExistsOnAccount = publicKeys.includes(publicKey.toString());
+                const publicKey = new PublicKey({
+                    keyType: KeyType.ED25519,
+                    data: Buffer.from(implicitAccountId, 'hex'),
+                });
+                const publicKeyExistsOnAccount = publicKeys.includes(
+                    publicKey.toString()
+                );
 
                 if (!publicKeyExistsOnAccount) {
                     // Someone else must've created the account (or a two-tabs-open situation)
-                    dispatch(showCustomAlert({
-                        success: false,
-                        messageCodeHeader: 'error',
-                        messageCode: 'walletErrorCodes.createNewAccount.accountExists.error',
-                        errorMessage: e.message
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            success: false,
+                            messageCodeHeader: 'error',
+                            messageCode:
+                                'walletErrorCodes.createNewAccount.accountExists.error',
+                            errorMessage: e.message,
+                        })
+                    );
                     throw e;
                 }
 
                 // Assume a transient error occurred, but that the account is on-chain and we can finish the creation process
                 try {
                     await wallet.saveAndMakeAccountActive(accountId);
-                    await dispatch(addLocalKeyAndFinishSetup({ accountId, recoveryMethod, publicKey })).unwrap();
+                    await dispatch(
+                        addLocalKeyAndFinishSetup({
+                            accountId,
+                            recoveryMethod,
+                            publicKey,
+                        })
+                    ).unwrap();
                 } catch (e) {
-                    dispatch(showCustomAlert({
-                        success: false,
-                        messageCodeHeader: 'error',
-                        messageCode: 'walletErrorCodes.createNewAccount.accountCreated.error',
-                        errorMessage: e.message
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            success: false,
+                            messageCodeHeader: 'error',
+                            messageCode:
+                                'walletErrorCodes.createNewAccount.accountCreated.error',
+                            errorMessage: e.message,
+                        })
+                    );
                     dispatch(redirectTo('/recover-account'));
                     throw e;
                 }

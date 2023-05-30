@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ClickToCopy from '../../common/ClickToCopy';
 
 const StyledContainer = styled.div`
-    border: 1px solid #F0F0F1;
+    border: 1px solid #f0f0f1;
     border-radius: 8px;
     max-width: 270px;
     margin: 0 auto;
@@ -25,9 +25,9 @@ const AccountIdQRCode = ({ accountId }) => {
             <ClickToCopy copy={accountId}>
                 <div className='qr-wrapper'>
                     <QRCode
-                        bgColor="#FFFFFF"
-                        fgColor="#24272a"
-                        level="Q"
+                        bgColor='#FFFFFF'
+                        fgColor='#24272a'
+                        level='Q'
                         style={{ width: '100%', height: '100%' }}
                         renderAs='svg'
                         value={`${accountId}`}

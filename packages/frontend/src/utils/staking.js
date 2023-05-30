@@ -8,10 +8,8 @@ import { wallet } from './wallet';
 
 const {
     utils: {
-        format: {
-            parseNearAmount
-        }
-    }
+        format: { parseNearAmount },
+    },
 } = nearApiJs;
 
 export const STAKING_AMOUNT_DEVIATION = parseNearAmount('0.00001');
@@ -55,7 +53,7 @@ export const stakingMethods = {
         'stake_all',
         'unstake',
         'withdraw',
-        'claim'
+        'claim',
     ],
 };
 
@@ -66,16 +64,21 @@ export const lockupMethods = {
         'get_owners_balance',
         'get_staking_pool_account_id',
         'get_known_deposited_balance',
-    ]
+    ],
 };
 
 export async function signAndSendTransaction(signAndSendTransactionOptions) {
-    return (await wallet.getAccount(wallet.accountId)).signAndSendTransaction(signAndSendTransactionOptions);
+    return (await wallet.getAccount(wallet.accountId)).signAndSendTransaction(
+        signAndSendTransactionOptions
+    );
 }
 
 export async function updateStakedBalance(validatorId, account_id, contract) {
     const lastStakedBalance = await contract.get_account_staked_balance({ account_id });
-    localStorage.setItem(STAKE_VALIDATOR_PREFIX + validatorId + account_id, lastStakedBalance);
+    localStorage.setItem(
+        STAKE_VALIDATOR_PREFIX + validatorId + account_id,
+        lastStakedBalance
+    );
 }
 
 export async function getStakingDeposits(accountId) {
@@ -109,17 +112,22 @@ export const calculateAPY = (poolSummary, tokenPrices) => {
     }
 
     try {
-        const farmsWithTokenPrices = activeFarms.filter((farm) => tokenPrices[farm.token_id]?.usd);
+        const farmsWithTokenPrices = activeFarms.filter(
+            (farm) => tokenPrices[farm.token_id]?.usd
+        );
         const totalStakedBalance = nearTo(poolSummary.total_staked_balance);
 
         const summaryAPY = farmsWithTokenPrices.reduce((acc, farm) => {
             const tokenPriceInUSD = +tokenPrices[farm.token_id].usd;
             const nearPriceInUSD = +tokenPrices[CONFIG.NEAR_TOKEN_ID].usd;
 
-            const rewardsPerSecond = farm.amount / ((farm.end_date - farm.start_date) * 1e9);
+            const rewardsPerSecond =
+                farm.amount / ((farm.end_date - farm.start_date) * 1e9);
             const rewardsPerSecondInUSD = rewardsPerSecond * tokenPriceInUSD;
             const totalStakedBalanceInUSD = totalStakedBalance * nearPriceInUSD;
-            const farmAPY = rewardsPerSecondInUSD * SECONDS_IN_YEAR / totalStakedBalanceInUSD * 100;
+            const farmAPY =
+                ((rewardsPerSecondInUSD * SECONDS_IN_YEAR) / totalStakedBalanceInUSD) *
+                100;
             return acc + farmAPY;
         }, 0);
 

@@ -987,6 +987,13 @@
             "title": "Private Key"
         }
     },
+    "recoverPrivateKey": {
+        "pageText": "Enter the private key associated with the account.",
+        "pageTitle": "Recover using Private Key",
+        "privateKeyInput": {
+            "title": "Private Key"
+        }
+    },
     "recoverSeedPhrase": {
         "couldNotFindAccountModal": {
             "buttonImport": "Import Anyway",
@@ -1001,13 +1008,6 @@
         "seedPhraseInput": {
             "placeholder": "correct horse battery staple...",
             "title": "Passphrase (12 words)"
-        }
-    },
-    "recoverPrivateKey": {
-        "pageText": "Enter the private key associated with the account.",
-        "pageTitle": "Recover using Private Key",
-        "privateKeyInput": {
-            "title": "Private Key"
         }
     },
     "recoverWithLink": {
@@ -1884,13 +1884,13 @@
         "recoverAccountLink": {
             "error": "Import of your account failed. Please try again or contact support for assistance."
         },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "The provided private key is not valid. Please check your private key and try again."
+        },
         "recoverAccountSeedPhrase": {
             "errorInvalidSeedPhrase": "No accounts were found for this passphrase.",
             "errorNotAbleToImportAccount": "Import of your account failed. Please try again or contact support for assistance.",
             "errorSeedPhraseNotValid": "The provided passphrase is not valid. Please check your passphrase and try again."
-        },
-        "recoverAccountPrivateKey": {
-            "errorPKNotValid": "The provided private key is not valid. Please check your private key and try again."
         },
         "recoveryMethods": {
             "lastMethod": "Cannot delete your last recovery method. Unless you have Ledger enabled, you need to keep at least one recovery method active to ensure recoverability of your account.",

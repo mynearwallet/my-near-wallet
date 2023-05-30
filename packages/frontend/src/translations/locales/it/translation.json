@@ -850,19 +850,19 @@
             "title": "Chiave Privata"
         }
     },
+    "recoverPrivateKey": {
+        "pageText": "Inserisci la chiave privata associata all'account.",
+        "pageTitle": "Recupera utilizzando la chiave privata.",
+        "privateKeyInput": {
+            "title": "Chiave Privata"
+        }
+    },
     "recoverSeedPhrase": {
         "pageText": "Immettere la passphrase di backup associata all'account.",
         "pageTitle": "Recupero usando Passphrase",
         "seedPhraseInput": {
             "placeholder": "corretto cavallo batteria graffa...",
             "title": "Passphrase (12 parole)"
-        }
-    },
-    "recoverPrivateKey": {
-        "pageText": "Inserisci la chiave privata associata all'account.",
-        "pageTitle": "Recupera utilizzando la chiave privata.",
-        "privateKeyInput": {
-            "title": "Chiave Privata"
         }
     },
     "recoverWithLink": {
@@ -1638,11 +1638,11 @@
         "recoverAccountLink": {
             "error": "Importazione del tuo account non riuscita. Riprova o contatta il supporto per assistenza."
         },
-        "recoverAccountSeedPhrase": {
-            "errorInvalidSeedPhrase": "Non sono stati trovati account per questa passphrase."
-        },
         "recoverAccountPrivateKey": {
             "errorPKNotValid": "La chiave privata fornita non è valida. Controlla la tua chiave privata e riprova."
+        },
+        "recoverAccountSeedPhrase": {
+            "errorInvalidSeedPhrase": "Non sono stati trovati account per questa passphrase."
         },
         "recoveryMethods": {
             "lastMethod": "Impossibile eliminare l'ultimo metodo di ripristino. A meno che tu non abbia abilitato Ledger, devi mantenere attivo almeno un metodo di recupero per garantire la recuperabilità del tuo account.",

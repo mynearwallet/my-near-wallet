@@ -13,10 +13,10 @@ const StyledContainer = styled.div`
     text-align: center;
 
     & h2 {
-        margin: 24px 0 0 0!important;
-        font-size: 20px!important;
+        margin: 24px 0 0 0 !important;
+        font-size: 20px !important;
         line-height: 26px;
-        align-self: center!important;
+        align-self: center !important;
     }
 
     & div {
@@ -31,8 +31,8 @@ const StyledBannerLink = styled(Link)`
     margin-top: 24px;
     width: 100%;
     height: 48px;
-    background: #FFFFFF;
-    border: 2px solid #FFFFFF;
+    background: #ffffff;
+    border: 2px solid #ffffff;
     border-radius: 50px;
     font-weight: 700;
     font-size: 16px;
@@ -48,11 +48,20 @@ const track = () => Mixpanel.track('Click Explore Apps on Banner Wallet Page');
 const ExploreNativeBanner = () => {
     return (
         <StyledContainer>
-            <img src={exploreAppsImg} alt="Explore Apps Banner" width="211" height="180"/>
-            <h2><Translate id='exploreApps.exploreNear'/></h2>
-            <div><Translate id='exploreApps.text'/></div>
-            <StyledBannerLink to="/explore" onClick={track}>
-                <Translate id='exploreApps.exploreApps'/>
+            <img
+                src={exploreAppsImg}
+                alt='Explore Apps Banner'
+                width='211'
+                height='180'
+            />
+            <h2>
+                <Translate id='exploreApps.exploreNear' />
+            </h2>
+            <div>
+                <Translate id='exploreApps.text' />
+            </div>
+            <StyledBannerLink to='/explore' onClick={track}>
+                <Translate id='exploreApps.exploreApps' />
             </StyledBannerLink>
         </StyledContainer>
     );

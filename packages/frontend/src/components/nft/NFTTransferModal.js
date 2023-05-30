@@ -30,7 +30,7 @@ const StyledContainer = styled.div`
         padding: 0;
 
         img {
-            width: 100%  ;
+            width: 100%;
             border-radius: 8px;
             margin: 16px 0;
         }
@@ -40,7 +40,7 @@ const StyledContainer = styled.div`
         }
 
         .confirm-txt {
-            margin-bottom: 4px; 
+            margin-bottom: 4px;
         }
 
         .confirm-img {
@@ -54,33 +54,33 @@ const StyledContainer = styled.div`
             position: relative;
             width: 100%;
             margin-top: 16px;
-            background: #FFFFFF;
-            box-shadow: 0px 45px 56px rgba(0, 0, 0, 0.07), 0px 10.0513px 12.5083px rgba(0, 0, 0, 0.0417275), 0px 2.99255px 3.72406px rgba(0, 0, 0, 0.0282725);
+            background: #ffffff;
+            box-shadow: 0px 45px 56px rgba(0, 0, 0, 0.07),
+                0px 10.0513px 12.5083px rgba(0, 0, 0, 0.0417275),
+                0px 2.99255px 3.72406px rgba(0, 0, 0, 0.0282725);
             border-radius: 8px;
 
             .from-box {
                 position: relative;
                 width: 100%;
                 height: 74px;
-                border-top: 1px solid #F0F0F1;
+                border-top: 1px solid #f0f0f1;
             }
 
             .to-box {
                 position: relative;
                 width: 100%;
                 height: 74px;
-                border-top: 1px solid #F0F0F1;
+                border-top: 1px solid #f0f0f1;
             }
-
         }
 
         .confirm-txt {
             font-size: 14px;
             line-height: 150%;
-            color: #72727A;
+            color: #72727a;
             margin-left: 16px;
         }
-
 
         .h-right {
             position: absolute;
@@ -106,7 +106,7 @@ const StyledContainer = styled.div`
             font-size: 20px;
             line-height: 130%;
             text-align: center;
-            color: #24272A;
+            color: #24272a;
         }
 
         .success {
@@ -115,7 +115,7 @@ const StyledContainer = styled.div`
                 font-size: 20px;
                 line-height: 150%;
                 text-align: center;
-                color: #3F4045;
+                color: #3f4045;
                 margin-bottom: 0px;
             }
         }
@@ -125,11 +125,11 @@ const StyledContainer = styled.div`
             font-size: 14px;
             line-height: 150%;
             text-align: center;
-            color: #72727A;
+            color: #72727a;
         }
 
         .next-btn {
-            margin-left: 44px  ;
+            margin-left: 44px;
         }
 
         .receiver-input {
@@ -140,7 +140,7 @@ const StyledContainer = styled.div`
             font-weight: 500;
             font-size: 14px;
             line-height: 150%;
-            color: #A2A2A8;
+            color: #a2a2a8;
         }
 
         .v-center {
@@ -150,7 +150,7 @@ const StyledContainer = styled.div`
         }
 
         .icon {
-            margin-bottom: 20px  ;
+            margin-bottom: 20px;
         }
 
         form {
@@ -160,7 +160,6 @@ const StyledContainer = styled.div`
         .full-width {
             width: 100%;
         }
-
 
         .modal-footer {
             display: flex;
@@ -177,7 +176,7 @@ const StyledContainer = styled.div`
                 &.link {
                     margin: 20px 35px;
                 }
-                
+
                 &.blue {
                     padding: 0 35px;
                 }
@@ -212,8 +211,11 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
     const { transferToken } = nftActions;
 
     const localAlert = useSelector(selectStatusLocalAlert);
-    const isEmptyAlert = isImplicitAccount ? false : !localAlert || localAlert.show === undefined || localAlert.show === false;
-    const hasAccountValidationError = localAlert && localAlert.show && !localAlert.success;
+    const isEmptyAlert = isImplicitAccount
+        ? false
+        : !localAlert || localAlert.show === undefined || localAlert.show === false;
+    const hasAccountValidationError =
+        localAlert && localAlert.show && !localAlert.success;
 
     // TODO: Add RiskScoring validation
     const isLoading = isEmptyAlert;
@@ -228,23 +230,27 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                 accountId: owner_id,
                 contractId: contract_id,
                 tokenId: token_id,
-                receiverId
+                receiverId,
             });
 
             setResult(res);
-            dispatch(transferToken({
-                accountId,
-                contractName: contract_id,
-                nft: { ...nft, owner_id: receiverId },
-            }));
+            dispatch(
+                transferToken({
+                    accountId,
+                    contractName: contract_id,
+                    nft: { ...nft, owner_id: receiverId },
+                })
+            );
             setViewType('success');
         } catch (err) {
-            dispatch(showCustomAlert({
-                success: false,
-                messageCodeHeader: 'error',
-                messageCode: 'walletErrorCodes.sendNonFungibleToken.error',
-                errorMessage: err.message,
-            }));
+            dispatch(
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    messageCode: 'walletErrorCodes.sendNonFungibleToken.error',
+                    errorMessage: err.message,
+                })
+            );
         } finally {
             setSending(false);
             dispatch(checkAndHideLedgerModal());
@@ -263,15 +269,21 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                 <StyledContainer>
                     <img className='transfer-img' src={nft.metadata.mediaUrl} alt='NFT' />
 
-                    <h3><Translate id='NFTTransfer.transferNft' /></h3>
-                    <p className='transfer-txt'><Translate id='NFTTransfer.enterReceiver' /></p>
+                    <h3>
+                        <Translate id='NFTTransfer.transferNft' />
+                    </h3>
+                    <p className='transfer-txt'>
+                        <Translate id='NFTTransfer.enterReceiver' />
+                    </p>
 
                     <form>
                         <div className='receiver-input'>
                             <ReceiverInputWithLabel
                                 receiverId={receiverId}
                                 handleChangeReceiverId={setReceiverId}
-                                checkAccountAvailable={(accountId) => dispatch(checkAccountAvailable(accountId))}
+                                checkAccountAvailable={(accountId) =>
+                                    dispatch(checkAccountAvailable(accountId))
+                                }
                                 localAlert={localAlert}
                                 autoFocus={!isMobile()}
                                 clearLocalAlert={() => dispatch(clearLocalAlert())}
@@ -294,7 +306,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                                 <FormButton
                                     className='next-btn'
                                     type='submit'
-                                    data-test-id="nft-transfer-next-1"
+                                    data-test-id='nft-transfer-next-1'
                                     disabled={isLoading || isProblem}
                                     onClick={() => setViewType('confirm')}
                                 >
@@ -308,7 +320,9 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
 
             {viewType === 'confirm' && (
                 <StyledContainer>
-                    <h3><Translate id='NFTTransfer.transferNft' /></h3>
+                    <h3>
+                        <Translate id='NFTTransfer.transferNft' />
+                    </h3>
 
                     <div className='confirm-nft-card'>
                         <div className='confirm-img'>
@@ -317,9 +331,11 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
 
                         <div className='line'></div>
                         <div className='from-box'>
-                            <span className='confirm-txt v-center'><Translate id='transfer.from' /></span>
+                            <span className='confirm-txt v-center'>
+                                <Translate id='transfer.from' />
+                            </span>
                             <span className='h-right v-center'>
-                                <span className="account-id" title={accountId}>
+                                <span className='account-id' title={accountId}>
                                     {shortenAccountId(accountId)}
                                 </span>
                                 <Balance amount={nearBalance} showBalanceInUSD={false} />
@@ -327,9 +343,11 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                         </div>
                         <div className='line'></div>
                         <div className='to-box'>
-                            <span className='confirm-txt v-center'><Translate id='transfer.to' /></span>
+                            <span className='confirm-txt v-center'>
+                                <Translate id='transfer.to' />
+                            </span>
                             <span
-                                className="h-right v-center account-id"
+                                className='h-right v-center account-id'
                                 title={receiverId}
                             >
                                 {shortReceiverId}
@@ -353,7 +371,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                                 <FormButton
                                     className='next-btn'
                                     type='submit'
-                                    data-test-id="nft-transfer-next-2"
+                                    data-test-id='nft-transfer-next-2'
                                     sending={sending}
                                     onClick={() => sendNFT(nft, receiverId)}
                                 >
@@ -371,12 +389,11 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                         <AvatarSuccessIcon />
                     </div>
                     <div className='success'>
-                        <p><Translate id='NFTTransfer.transactionComplete' /></p>
+                        <p>
+                            <Translate id='NFTTransfer.transactionComplete' />
+                        </p>
                         <p title={receiverId}>
-                            <SafeTranslate
-                                id='NFTTransfer.youSent'
-                                data={transferData}
-                            />
+                            <SafeTranslate id='NFTTransfer.youSent' data={transferData} />
                         </p>
                     </div>
 
@@ -393,7 +410,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                                 <FormButton
                                     className='next-btn'
                                     type='submit'
-                                    data-test-id="nft-transfer-next-3"
+                                    data-test-id='nft-transfer-next-3'
                                     linkTo='/?tab=collectibles'
                                 >
                                     <Translate id='NFTTransfer.continue' />

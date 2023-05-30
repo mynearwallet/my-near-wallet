@@ -17,7 +17,7 @@ const Container = styled.div`
         padding-top: 8px;
 
         h2 {
-            color: #25272A;
+            color: #25272a;
             align-self: center;
             margin: 15px 0;
             text-align: center;
@@ -26,12 +26,12 @@ const Container = styled.div`
 
         .desc {
             margin-bottom: 16px;
-            color: #25272A;
+            color: #25272a;
         }
 
         .id-graphic {
             background-color: white;
-            color: #25272A;
+            color: #25272a;
         }
     }
 `;
@@ -40,8 +40,8 @@ const StyledBannerLink = styled(Link)`
     margin-top: 24px;
     width: 100%;
     height: 48px;
-    background: #FFFFFF;
-    border: 2px solid #FFFFFF;
+    background: #ffffff;
+    border: 2px solid #ffffff;
     border-radius: 50px;
     font-weight: 700;
     font-size: 16px;
@@ -57,15 +57,15 @@ const track = () => Mixpanel.track('Click Add Custom Address on Banner Wallet Pa
 const CreateCustomNameLightBanner = () => {
     return (
         <Container>
-            <NewAccountIdGraphic accountId='satoshi.near'/>
+            <NewAccountIdGraphic accountId='satoshi.near' />
             <h2>
                 <Translate id='account.createImplicitAccount.createCustomNameModal.title' />
             </h2>
             <div className='desc'>
                 <Translate id='account.createImplicitAccount.createCustomNameModal.desc' />
             </div>
-            <StyledBannerLink to="/create" onClick={track}>
-                <Translate id='button.addACustomAddress'/>
+            <StyledBannerLink to='/create' onClick={track}>
+                <Translate id='button.addACustomAddress' />
             </StyledBannerLink>
         </Container>
     );

@@ -34,7 +34,7 @@ const TokenSwap = ({ history }) => {
     }, [accountId]);
 
     return (
-        <Container className="small-centered">
+        <Container className='small-centered'>
             <SwapProvider>
                 <SwapWrapper
                     history={history}
