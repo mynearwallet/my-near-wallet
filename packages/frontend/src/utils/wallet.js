@@ -684,35 +684,58 @@ export default class Wallet {
         return keyInfo;
     }
 
-    async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
+    async getLinkdropRequiredGas(fundingContract, fundingPubKey) {
         const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
-        await this.keyStore.setKey(
-            CONFIG.NETWORK_ID,
-            fundingContract,
-            nearApiJs.KeyPair.fromString(fundingKey)
-        );
+        try {
+            const key = await account.viewFunction(
+                fundingContract,
+                'get_drop_information',
+                { key: fundingPubKey }
+            );
+
+            if (key.required_gas) {
+                return key.required_gas;
+            } else {
+                const drop = await account.viewFunction(
+                    fundingContract,
+                    'get_drop_information',
+                    { key: fundingPubKey }
+                );
+                return drop.required_gas || CONFIG.LINKDROP_GAS;
+            }
+        } catch {
+            return CONFIG.LINKDROP_GAS;
+        }
+    }
+
+    async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
+        const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
+        const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
 
         const contract = new nearApiJs.Contract(account, fundingContract, {
             changeMethods: ['create_account_and_claim', 'claim'],
             sender: fundingContract,
         });
 
+        const fundingPubKey = fundingKeyPair.getPublicKey().toString();
+        const attachedGas = await this.getLinkdropRequiredGas(
+            fundingContract,
+            fundingPubKey
+        );
         await contract.create_account_and_claim(
             {
                 new_account_id: accountId,
                 new_public_key: publicKey.toString().replace('ed25519:', ''),
             },
-            CONFIG.LINKDROP_GAS
+            attachedGas
         );
     }
 
     async claimLinkdropToAccount(fundingContract, fundingKey) {
+        const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
         const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
-        await this.keyStore.setKey(
-            CONFIG.NETWORK_ID,
-            fundingContract,
-            nearApiJs.KeyPair.fromString(fundingKey)
-        );
+        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
 
         const accountId = this.accountId;
 
@@ -721,7 +744,12 @@ export default class Wallet {
             sender: fundingContract,
         });
 
-        await contract.claim({ account_id: accountId }, CONFIG.LINKDROP_GAS);
+        const fundingPubKey = fundingKeyPair.getPublicKey().toString();
+        const attachedGas = await this.getLinkdropRequiredGas(
+            fundingContract,
+            fundingPubKey
+        );
+        await contract.claim({ account_id: accountId }, attachedGas);
     }
 
     async saveAccountKeyPair({ accountId, recoveryKeyPair }) {
