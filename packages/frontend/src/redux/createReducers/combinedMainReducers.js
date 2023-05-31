@@ -13,6 +13,7 @@ import flowLimitationSlice from '../slices/flowLimitation';
 import importZeroBalanceAccountSlice from '../slices/importZeroBalanceAccount';
 import ledgerSlice from '../slices/ledger';
 import linkdropSlice from '../slices/linkdrop';
+import loginSlice from '../slices/login';
 import nftSlice from '../slices/nft';
 import recoveryMethodsSlice from '../slices/recoveryMethods';
 import security from '../slices/security';
@@ -43,4 +44,5 @@ export default (history) => ({
     [availableAccountsSlice.name]: availableAccountsSlice.reducer,
     [ledgerSlice.name]: ledgerSlice.reducer,
     [swapSlice.name]: swapSlice.reducer,
+    [loginSlice.name]: loginSlice.reducer,
 });

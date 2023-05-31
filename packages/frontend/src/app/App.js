@@ -19,6 +19,9 @@ import InitialDepositWrapper from '../components/accounts/create/initial_deposit
 import CreateAccountLanding from '../components/accounts/create/landing/CreateAccountLanding';
 import VerifyAccountWrapper from '../components/accounts/create/verify_account/VerifyAccountWrapper';
 import CreateAccountWithRouter from '../components/accounts/CreateAccount';
+import { AddEncryption } from '../components/accounts/Encryption/AddEncryption';
+import EncryptionModal from '../components/accounts/Encryption/EncryptionModal';
+import { LoginWallet } from '../components/accounts/Encryption/LoginWallet';
 import LedgerConfirmActionModal from '../components/accounts/ledger/LedgerConfirmActionModal';
 import LedgerConnectModal from '../components/accounts/ledger/LedgerConnectModal/LedgerConnectModalWrapper';
 import SetupLedgerWithRouter from '../components/accounts/ledger/SetupLedger';
@@ -64,6 +67,7 @@ import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
 import { actions as flowLimitationActions } from '../redux/slices/flowLimitation';
+import loginSlice, { login } from '../redux/slices/login';
 import { actions as tokenFiatValueActions } from '../redux/slices/tokenFiatValues';
 import CreateImplicitAccountWrapper from '../routes/CreateImplicitAccountWrapper';
 import ImportAccountWithLinkWrapper from '../routes/ImportAccountWithLinkWrapper';
@@ -262,6 +266,12 @@ class Routing extends Component {
         this.setState({ openTransferPopup: false });
     };
 
+    handleLogin = async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget.elements;
+        await this.props.loginToWallet(form.password.value);
+    };
+
     render() {
         const {
             search,
@@ -342,6 +352,8 @@ class Routing extends Component {
                                 }}
                             />
                         )}
+                        {/* Make sure 2FA is passed before showing the encrypt modal */}
+                        {!account.requestPending && <EncryptionModal />}
                         <Switch>
                             <Redirect
                                 from='//*'
@@ -350,6 +362,16 @@ class Routing extends Component {
                                     search: search,
                                 }}
                             />
+                            {/* need special treatment for root path '/' */}
+                            {![
+                                '/auto-import-secret-key',
+                                '/batch-import',
+                                '/login',
+                            ].includes(this.props.router.location.pathname) &&
+                                this.props.login.loginState === 'denied' && (
+                                    <Route path='*' render={() => <LoginWallet />} />
+                                )}
+                            <Route exact path='/login' component={LoginWallet} />
                             <GuestLandingRoute
                                 exact
                                 path='/'
@@ -420,6 +442,11 @@ class Routing extends Component {
                                 exact
                                 path='/setup-seed-phrase/:accountId/:step'
                                 component={SetupSeedPhraseWithRouter}
+                            />
+                            <Route
+                                exact
+                                path='/set-encryption'
+                                component={AddEncryption}
                             />
                             <Route
                                 exact
@@ -643,11 +670,13 @@ const mapDispatchToProps = {
     handleClearAlert,
     handleFlowLimitation,
     getTokenWhiteList,
+    loginToWallet: login,
 };
 
 const mapStateToProps = (state) => ({
     account: selectAccountSlice(state),
     router: getRouter(state),
+    login: state[loginSlice.name],
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withLocalize(Routing));

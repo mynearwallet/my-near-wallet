@@ -1,5 +1,6 @@
 import React from 'react';
 import { Translate } from 'react-localize-redux';
+import { useHistory } from 'react-router';
 import styled from 'styled-components';
 
 import CONFIG from '../../config';
@@ -9,6 +10,7 @@ import KeyIcon from '../../images/icon-recover-key.svg';
 import PhoneIcon from '../../images/icon-recover-phone.svg';
 import PhraseIcon from '../../images/icon-recover-seedphrase.svg';
 import { Mixpanel } from '../../mixpanel/index';
+import { hasEncryptedAccount } from '../../redux/slices/login';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
@@ -107,6 +109,7 @@ const P = styled.p`
 `;
 
 const RecoverAccount = ({ locationSearch, isMobile }) => {
+    const history = useHistory();
     return (
         <>
             <VerifyWalletDomainBanner />
@@ -161,10 +164,18 @@ const RecoverAccount = ({ locationSearch, isMobile }) => {
                         </P>
                         <FormButton
                             color='seafoam-blue'
-                            linkTo={`/recover-seed-phrase${locationSearch}`}
-                            onClick={() =>
-                                Mixpanel.track('IE Click seed phrase recovery button')
-                            }
+                            onClick={() => {
+                                Mixpanel.track('IE Click seed phrase recovery button');
+                                if (hasEncryptedAccount()) {
+                                    history.push('/login', {
+                                        next: `/recover-seed-phrase${locationSearch}`,
+                                        desc: 'Please enter your password again to import your account',
+                                        title: 'Import account',
+                                    });
+                                } else {
+                                    history.push(`/recover-seed-phrase${locationSearch}`);
+                                }
+                            }}
                             data-test-id='recoverAccountWithPassphraseButton'
                             id='IE Click seed phrase recovery button'
                         >
@@ -198,10 +209,18 @@ const RecoverAccount = ({ locationSearch, isMobile }) => {
                         </P>
                         <FormButton
                             color='seafoam-blue'
-                            linkTo={`/recover-private-key${locationSearch}`}
-                            onClick={() =>
-                                Mixpanel.track('IE Click private key recovery button')
-                            }
+                            onClick={() => {
+                                Mixpanel.track('IE Click private key recovery button');
+                                if (hasEncryptedAccount()) {
+                                    history.push('/login', {
+                                        next: `/recover-private-key${locationSearch}`,
+                                        desc: 'Please enter your password again to import your account',
+                                        title: 'Import account',
+                                    });
+                                } else {
+                                    history.push(`/recover-private-key${locationSearch}`);
+                                }
+                            }}
                             data-test-id='recoverAccountWithPrivateKey'
                             id='IE Click private key recovery button'
                         >

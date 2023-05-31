@@ -13,6 +13,7 @@ type InputProps = ComponentPropsWithoutRef<'input'> & {
     valid?: boolean;
     error?: string;
     placeholder?: string;
+    id?: string;
 };
 
 const Input: FC<InputProps> = (props) => {

@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 
 import FormButton from '../../common/FormButton';
 import SetPassword from '../SetPassword';
-import { WithoutPassword, PasswordForm, Submit } from './ui';
+import { PasswordForm, Submit } from './ui';
 
 type SetPasswordFormProps = {
     onSubmit: (password: string) => void;
+    disabled: boolean;
 };
 
-const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
+const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit, disabled }) => {
     const { t } = useTranslation();
     const [password, setPassword] = useState(null);
 
@@ -17,26 +18,20 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
         setPassword(value);
     }, []);
 
-    const handleClickNext = useCallback(() => {
-        if (password) {
-            onSubmit(password);
-        }
-    }, [password]);
-
     return (
         <>
             <PasswordForm>
-                <SetPassword onChange={handlePasswordChange} />
+                <SetPassword id='new_password' onChange={handlePasswordChange} />
             </PasswordForm>
             <Submit>
                 {/* @ts-ignore: prop error */}
-                <FormButton onClick={handleClickNext} disabled={password === null}>
+                <FormButton type='submit' disabled={disabled || password === null}>
                     {t('button.next')}
                 </FormButton>
             </Submit>
-            <WithoutPassword hide={password !== null}>
+            {/* <WithoutPassword hide={password !== null}>
                 {t('setupPasswordProtection.withoutPassword')}
-            </WithoutPassword>
+            </WithoutPassword> */}
         </>
     );
 };

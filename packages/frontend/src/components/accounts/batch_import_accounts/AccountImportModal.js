@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import refreshAccountOwner from '../../../redux/sharedThunks/refreshAccountOwner';
 import { selectAccountUrlReferrer } from '../../../redux/slices/account';
+import { selectNewPassword } from '../../../redux/slices/login';
 import { getEstimatedFees } from '../../../redux/slices/sign';
 import WalletClass, { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
@@ -23,6 +24,7 @@ const AccountImportModal = ({ account, onSuccess, onFail }) => {
     const [addingKey, setAddingKey] = useState(false);
     const [error, setError] = useState(false);
     const accountUrlReferrer = useSelector(selectAccountUrlReferrer);
+    const password = useSelector(selectNewPassword);
     const addFAKTransaction = useMemo(() => {
         try {
             return {
@@ -92,7 +94,8 @@ const AccountImportModal = ({ account, onSuccess, onFail }) => {
                 .addExistingAccountKeyToWalletKeyStore(
                     account.accountId,
                     keyPair,
-                    account.ledgerHdPath
+                    account.ledgerHdPath,
+                    password
                 )
                 .then(() => dispatch(refreshAccountOwner({})))
                 .then(onSuccess)

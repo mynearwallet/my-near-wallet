@@ -652,12 +652,29 @@ export const { addAccessKey, addAccessKeySeedPhrase, addShardAccessKey } = creat
 });
 
 export const { recoverAccountSeedPhrase } = createActions({
-    RECOVER_ACCOUNT_SEED_PHRASE: [wallet.recoverAccountSeedPhrase.bind(wallet), () => {}],
+    RECOVER_ACCOUNT_SEED_PHRASE: [
+        async (seedPhrase, accountId, shouldCreateFullAccessKey, password) => {
+            return wallet.recoverAccountSeedPhrase.bind(wallet)(
+                seedPhrase,
+                accountId,
+                shouldCreateFullAccessKey,
+                password
+            );
+        },
+        () => {},
+    ],
 });
 
 export const { recoverAccountSecretKey } = createActions({
     RECOVER_ACCOUNT_SECRET_KEY: [
-        wallet.recoverAccountSecretKey.bind(wallet),
+        async (secretKey, accountId, shouldCreateFullAccessKey, password) => {
+            return wallet.recoverAccountSecretKey.bind(wallet)(
+                secretKey,
+                accountId,
+                shouldCreateFullAccessKey,
+                password
+            );
+        },
         () => showAlert(),
     ],
 });

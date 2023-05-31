@@ -10,8 +10,10 @@ import { store } from '..';
 import CONFIG from '../config';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
+import { hasEncryptedAccount, isNewUser } from '../redux/slices/login';
 import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
+import { EncryptionDecryptionUtils } from './encryption';
 import { getAccountIds } from './helper-api';
 import { ledgerManager } from './ledgerManager';
 import {
@@ -105,10 +107,25 @@ export async function getKeyMeta(publicKey) {
 
 export default class Wallet {
     constructor(rpcInfo = null) {
-        this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
-            window.localStorage,
-            'nearlib:keystore:'
-        );
+        this.init(rpcInfo);
+    }
+
+    static KEY_TYPES = {
+        LEDGER: 'ledger',
+        MULTISIG: 'multisig',
+        FAK: 'fullAccessKey',
+        OTHER: 'other',
+    };
+
+    init(rpcInfo = null) {
+        if (!hasEncryptedAccount()) {
+            this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+                window.localStorage,
+                'nearlib:keystore:'
+            );
+        } else {
+            this.keyStore = new nearApiJs.keyStores.InMemoryKeyStore();
+        }
         this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
         this.inMemorySignerBasic = new nearApiJs.InMemorySigner(this.keyStore);
 
@@ -180,18 +197,21 @@ export default class Wallet {
         this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
     }
 
-    static KEY_TYPES = {
-        LEDGER: 'ledger',
-        MULTISIG: 'multisig',
-        FAK: 'fullAccessKey',
-        OTHER: 'other',
-    };
-
     async removeWalletAccount(accountId) {
         let walletAccounts = this.getAccountsLocalStorage();
         delete walletAccounts[accountId];
         setWalletAccounts(KEY_WALLET_ACCOUNTS, walletAccounts);
         await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
+        const encrypted = localStorage.getItem('NEAR_WALLET_ENCRYPTED');
+        if (encrypted) {
+            const encryptedParsed = JSON.parse(encrypted);
+            const removed = encryptedParsed.filter((e) => e.accountId !== accountId);
+            if (removed.length > 0) {
+                localStorage.setItem('NEAR_WALLET_ENCRYPTED', JSON.stringify(removed));
+            } else {
+                localStorage.removeItem('NEAR_WALLET_ENCRYPTED');
+            }
+        }
         removeActiveAccount(KEY_ACTIVE_ACCOUNT_ID);
         removeAccountConfirmed(accountId);
         return walletAccounts;
@@ -372,6 +392,50 @@ export default class Wallet {
         throw new Error('No matching key pair for public key');
     }
 
+    async checkPassword(password) {
+        const accountsRaw = localStorage.getItem('NEAR_WALLET_ENCRYPTED');
+        if (accountsRaw) {
+            const accounts = JSON.parse(accountsRaw);
+            if (accounts.length > 0) {
+                const { salt, payload } = accounts[0];
+                await EncryptionDecryptionUtils.decrypt(password, salt, payload);
+            }
+        }
+    }
+
+    async unlockWallet(password) {
+        const accountsRaw = localStorage.getItem('NEAR_WALLET_ENCRYPTED');
+        if (accountsRaw) {
+            const accounts = JSON.parse(accountsRaw);
+            const pairs = [];
+            await Promise.all(
+                accounts.map(async ({ accountId, salt, payload }) => {
+                    const decryptedData = await EncryptionDecryptionUtils.decrypt(
+                        password,
+                        salt,
+                        payload
+                    );
+                    pairs.push({
+                        accountId: accountId,
+                        privateKey: decryptedData.privateKey,
+                    });
+                })
+            );
+            await Promise.all(
+                pairs.map(async (pair) => {
+                    const currentKeypair = nearApiJs.KeyPair.fromString(pair.privateKey);
+                    await wallet.keyStore.setKey(
+                        CONFIG.NETWORK_ID,
+                        pair.accountId,
+                        currentKeypair
+                    );
+                })
+            );
+        } else {
+            throw new Error('No encrypted account found.');
+        }
+    }
+
     async getAccountKeyType(accountId) {
         const keypair = await wallet.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
         return this.getPublicKeyType(accountId, keypair.getPublicKey().toString());
@@ -405,7 +469,12 @@ export default class Wallet {
         );
     }
 
-    async addExistingAccountKeyToWalletKeyStore(accountId, keyPair, ledgerHdPath) {
+    async addExistingAccountKeyToWalletKeyStore(
+        accountId,
+        keyPair,
+        ledgerHdPath,
+        password
+    ) {
         const keyType = await this.getPublicKeyType(
             accountId,
             keyPair.getPublicKey().toString()
@@ -429,7 +498,7 @@ export default class Wallet {
                 );
 
                 await account.addKey(newKeyPair.getPublicKey());
-                await this.saveAccount(accountId, newKeyPair);
+                await this.saveAccount(accountId, newKeyPair, password);
 
                 if (!this.accountId) {
                     return this.makeAccountActive(accountId);
@@ -437,7 +506,7 @@ export default class Wallet {
                 return this.save();
             }
             case Wallet.KEY_TYPES.MULTISIG: {
-                await this.saveAccount(accountId, keyPair);
+                await this.saveAccount(accountId, keyPair, password);
                 if (!this.accountId) {
                     return this.makeAccountActive(accountId);
                 }
@@ -728,9 +797,40 @@ export default class Wallet {
         await this.keyStore.setKey(this.connection.networkId, accountId, recoveryKeyPair);
     }
 
-    async saveAccount(accountId, keyPair) {
+    async saveAccount(accountId, keyPair, password) {
         this.getAccountsLocalStorage();
-        await this.setKey(accountId, keyPair);
+        if ((isNewUser() || hasEncryptedAccount()) && !password) {
+            throw new Error('Invalid state, please try again');
+        }
+        if (password) {
+            const ori = localStorage.getItem('NEAR_WALLET_ENCRYPTED');
+            let oriParsed = [];
+            if (ori) {
+                oriParsed = JSON.parse(ori);
+            }
+            const encrypted = await EncryptionDecryptionUtils.encrypt(password, {
+                privateKey: keyPair.secretKey,
+            });
+            const existingIndex = oriParsed.find((e) => e.accountId === accountId);
+            if (existingIndex) {
+                oriParsed[existingIndex] = {
+                    accountId,
+                    salt: encrypted.salt,
+                    payload: encrypted.payload,
+                };
+            } else {
+                oriParsed.push({
+                    accountId,
+                    salt: encrypted.salt,
+                    payload: encrypted.payload,
+                });
+            }
+            localStorage.setItem('NEAR_WALLET_ENCRYPTED', JSON.stringify(oriParsed));
+            this.init();
+            await this.unlockWallet(password);
+        } else {
+            await this.setKey(accountId, keyPair);
+        }
         this.accounts[accountId] = true;
 
         // TODO: figure out better way to inject reducer
@@ -752,8 +852,8 @@ export default class Wallet {
         setAccountConfirmed(this.accountId, false);
     }
 
-    async importZeroBalanceAccount(accountId, keyPair) {
-        await this.saveAccount(accountId, keyPair);
+    async importZeroBalanceAccount(accountId, keyPair, password) {
+        await this.saveAccount(accountId, keyPair, password);
         this.makeAccountActive(accountId);
         setAccountConfirmed(this.accountId, true);
     }
@@ -1288,17 +1388,31 @@ export default class Wallet {
     async recoverAccountSeedPhrase(
         seedPhrase,
         accountId,
-        shouldCreateFullAccessKey = true
+        shouldCreateFullAccessKey = true,
+        password
     ) {
+        console.log(password, 'recoverAccountSeedphrase');
+        if ((isNewUser() || hasEncryptedAccount()) && !password) {
+            throw new Error('Invalid state, please try again');
+        }
         const { secretKey } = parseSeedPhrase(seedPhrase);
         return await this.recoverAccountSecretKey(
             secretKey,
             accountId,
-            shouldCreateFullAccessKey
+            shouldCreateFullAccessKey,
+            password
         );
     }
 
-    async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
+    async recoverAccountSecretKey(
+        secretKey,
+        accountId,
+        shouldCreateFullAccessKey,
+        password
+    ) {
+        if (password) {
+            await this.checkPassword(password);
+        }
         const keyPair = nearApiJs.KeyPair.fromString(secretKey);
         const publicKey = keyPair.publicKey.toString();
 
@@ -1402,7 +1516,7 @@ export default class Wallet {
         if (!!accountIdsSuccess.length) {
             await Promise.all(
                 accountIdsSuccess.map(async ({ accountId, newKeyPair }) => {
-                    await this.saveAccount(accountId, newKeyPair);
+                    await this.saveAccount(accountId, newKeyPair, password);
                 })
             );
 

@@ -10,6 +10,7 @@ import {
 import { wallet, setKeyMeta } from '../../../utils/wallet';
 import { getLedgerPublicKey } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
+import { selectNewPassword } from '../login';
 
 export const importZeroBalanceAccountLedger = createAsyncThunk(
     `${SLICE_NAME}/importZeroBalanceAccountLedger`,
@@ -62,11 +63,16 @@ export const importZeroBalanceAccountLedger = createAsyncThunk(
 
 export const importZeroBalanceAccountPhrase = createAsyncThunk(
     `${SLICE_NAME}/importZeroBalanceAccountPhrase`,
-    async (seedPhrase, { dispatch }) => {
+    async (seedPhrase, { dispatch, getState }) => {
         const recoveryKeyPair = getKeyPairFromSeedPhrase(seedPhrase);
         const implicitAccountId = getImplicitAccountIdFromSeedPhrase(seedPhrase);
+        const password = selectNewPassword(getState());
         try {
-            await wallet.importZeroBalanceAccount(implicitAccountId, recoveryKeyPair);
+            await wallet.importZeroBalanceAccount(
+                implicitAccountId,
+                recoveryKeyPair,
+                password
+            );
         } catch (e) {
             dispatch(
                 showCustomAlert({
@@ -83,13 +89,18 @@ export const importZeroBalanceAccountPhrase = createAsyncThunk(
 
 export const importZeroBalanceAccountPrivateKey = createAsyncThunk(
     `${SLICE_NAME}/importZeroBalanceAccountPrivateKey`,
-    async (secretKey, { dispatch }) => {
+    async (secretKey, { dispatch, getState }) => {
         const recoveryKeyPair = KeyPair.fromString(secretKey);
         const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString(
             'hex'
         );
+        const password = selectNewPassword(getState());
         try {
-            await wallet.importZeroBalanceAccount(implicitAccountId, recoveryKeyPair);
+            await wallet.importZeroBalanceAccount(
+                implicitAccountId,
+                recoveryKeyPair,
+                password
+            );
         } catch (e) {
             dispatch(
                 showCustomAlert({

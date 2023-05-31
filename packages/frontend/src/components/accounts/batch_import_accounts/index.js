@@ -1,7 +1,8 @@
 import { decryptAccountData } from '@near-wallet-selector/account-export';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Translate } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import styled from 'styled-components';
 import { useImmerReducer } from 'use-immer';
 
@@ -12,6 +13,12 @@ import {
     selectAvailableAccounts,
     selectAvailableAccountsIsLoading,
 } from '../../../redux/slices/availableAccounts';
+import {
+    clearPassword,
+    hasEncryptedAccount,
+    isNewUser,
+    selectNewPassword,
+} from '../../../redux/slices/login';
 import getWalletURL from '../../../utils/getWalletURL';
 import FormButton from '../../common/FormButton';
 import FormButtonGroup from '../../common/FormButtonGroup';
@@ -287,6 +294,9 @@ const ImportAccounts = ({ accountsData, onCancel }) => {
 
 const BatchImportAccounts = ({ onCancel }) => {
     const [accountsData, setAccountsData] = useState(null);
+    const password = useSelector(selectNewPassword);
+    const history = useHistory();
+    const dispatch = useDispatch();
 
     const handlePublicKey = useCallback((publicKey) => {
         const accounts = decryptAccountData({
@@ -296,6 +306,36 @@ const BatchImportAccounts = ({ onCancel }) => {
         setAccountsData(
             accounts.map(({ accountId, privateKey }) => [accountId, privateKey, null])
         );
+    }, []);
+
+    useEffect(() => {
+        if (!password) {
+            if (hasEncryptedAccount()) {
+                history.push(
+                    {
+                        pathname: '/login',
+                        hash: location.hash,
+                    },
+                    {
+                        next: `${location.pathname}`,
+                        desc: 'Please enter your password to import your account',
+                        title: 'Import account',
+                    }
+                );
+            } else if (isNewUser()) {
+                history.push({
+                    pathname: '/set-encryption',
+                    hash: location.hash,
+                    search: '?next=batch-import',
+                });
+            }
+        }
+    }, [password]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearPassword());
+        };
     }, []);
 
     if (!accountsData) {

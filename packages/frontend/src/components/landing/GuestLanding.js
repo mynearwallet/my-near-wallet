@@ -151,7 +151,7 @@ export function GuestLanding() {
                 </h3>
                 <div className='buttons'>
                     <FormButton
-                        linkTo='/create'
+                        linkTo='set-encryption?next=create'
                         trackingId='Click create account button'
                         data-test-id='landingPageCreateAccount'
                     >
@@ -162,7 +162,7 @@ export function GuestLanding() {
                     </span>
                     <FormButton
                         data-test-id='homePageImportAccountButton'
-                        linkTo='/recover-account'
+                        linkTo='set-encryption?next=recover-account'
                         className='link'
                         trackingId='Click import existing link'
                     >

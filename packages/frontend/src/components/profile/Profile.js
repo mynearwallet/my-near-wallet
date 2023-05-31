@@ -40,6 +40,7 @@ import CheckCircleIcon from '../svg/CheckCircleIcon';
 import LockIcon from '../svg/LockIcon';
 import UserIcon from '../svg/UserIcon';
 import { isAccountBricked } from '../wallet-migration/utils';
+import { AddPasswordButton } from './AddPasswordButton/AddPasswordButton';
 import AuthorizedApp from './authorized_apps/AuthorizedApp';
 import BalanceContainer from './balances/BalanceContainer';
 import LockupAvailTransfer from './balances/LockupAvailTransfer';
@@ -277,6 +278,7 @@ const Profile = ({ match }) => {
                             {secretKey ? (
                                 <ExportKeyWrapper secretKey={secretKey} />
                             ) : null}
+                            <AddPasswordButton />
                             <RemoveAccountWrapper />
                         </>
                         {!CONFIG.IS_MAINNET && !account.ledgerKey && !isMobile() && (

@@ -23,41 +23,57 @@ const StyledContainer = styled(Container)`
 
 const AutoImport = ({
     accountId,
-    recoveryFailed,
+    recoveryState,
     onClickRecoverWithSecretKey,
     onCancel,
-}) => (
-    <StyledContainer className='small-centered'>
-        {recoveryFailed ? (
-            <>
-                <h1>
+}) => {
+    const content = () => {
+        if (recoveryState === 'failed') {
+            return (
+                <>
+                    <h1>
+                        <SafeTranslate
+                            id={`importAccount.${
+                                accountId ? 'withIdFailed' : 'noIdFailed'
+                            }`}
+                            data={{ accountId: accountId }}
+                        />
+                    </h1>
+                    <FormButton onClick={() => onClickRecoverWithSecretKey()}>
+                        <Translate id='button.tryAgain' />
+                    </FormButton>
+                    {onCancel ? (
+                        <FormButton color='gray-blue' onClick={onCancel}>
+                            <Translate id='button.cancel' />
+                        </FormButton>
+                    ) : (
+                        <FormButton color='gray-blue' linkTo='/create'>
+                            <Translate id='button.createNewAccount' />
+                        </FormButton>
+                    )}
+                </>
+            );
+        } else if (recoveryState === 'pending') {
+            return (
+                <h1 className='animated-dots'>
                     <SafeTranslate
-                        id={`importAccount.${accountId ? 'withIdFailed' : 'noIdFailed'}`}
+                        id={`importAccount.${accountId ? 'withId' : 'noId'}`}
                         data={{ accountId: accountId }}
                     />
                 </h1>
-                <FormButton onClick={onClickRecoverWithSecretKey}>
-                    <Translate id='button.tryAgain' />
-                </FormButton>
-                {onCancel ? (
-                    <FormButton color='gray-blue' onClick={onCancel}>
-                        <Translate id='button.cancel' />
+            );
+        } else {
+            return (
+                <>
+                    <h1>Preparing import</h1>
+                    <FormButton onClick={onClickRecoverWithSecretKey}>
+                        Start import
                     </FormButton>
-                ) : (
-                    <FormButton color='gray-blue' linkTo='/create'>
-                        <Translate id='button.createNewAccount' />
-                    </FormButton>
-                )}
-            </>
-        ) : (
-            <h1 className='animated-dots'>
-                <SafeTranslate
-                    id={`importAccount.${accountId ? 'withId' : 'noId'}`}
-                    data={{ accountId: accountId }}
-                />
-            </h1>
-        )}
-    </StyledContainer>
-);
+                </>
+            );
+        }
+    };
+    return <StyledContainer className='small-centered'>{content()}</StyledContainer>;
+};
 
 export default AutoImport;

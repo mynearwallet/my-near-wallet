@@ -22,6 +22,7 @@ import {
 import { selectAccountSlice } from '../../redux/slices/account';
 import { actions as importZeroBalanceAccountActions } from '../../redux/slices/importZeroBalanceAccount';
 import { importZeroBalanceAccountPhrase } from '../../redux/slices/importZeroBalanceAccount/importAccountThunks';
+import { selectLoginSlice, clearPassword } from '../../redux/slices/login';
 import {
     selectActionsPending,
     selectStatusLocalAlert,
@@ -117,7 +118,12 @@ class RecoverAccountSeedPhrase extends Component {
             'IE-SP Recovery with seed phrase',
             async () => {
                 this.setState({ recoveringAccount: true });
-                await recoverAccountSeedPhrase(seedPhrase);
+                await recoverAccountSeedPhrase(
+                    seedPhrase,
+                    undefined,
+                    undefined,
+                    this.props.loginSlice.newPassword
+                );
                 await refreshAccount();
             },
             async (e) => {
@@ -157,6 +163,10 @@ class RecoverAccountSeedPhrase extends Component {
         }
         clearAccountState();
     };
+
+    componentWillUnmount() {
+        this.props.clearPassword();
+    }
 
     render() {
         const combinedState = {
@@ -202,6 +212,7 @@ const mapDispatchToProps = {
     showCustomAlert,
     importZeroBalanceAccountPhrase,
     setZeroBalanceAccountImportMethod,
+    clearPassword,
 };
 
 const mapStateToProps = (state, { match }) => ({
@@ -213,6 +224,7 @@ const mapStateToProps = (state, { match }) => ({
     findMyAccountSending: selectActionsPending(state, {
         types: ['RECOVER_ACCOUNT_SEED_PHRASE', 'REFRESH_ACCOUNT_OWNER'],
     }),
+    loginSlice: selectLoginSlice(state),
 });
 
 const RecoverAccountSeedPhraseWithRouter = connect(

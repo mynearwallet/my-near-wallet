@@ -61,7 +61,13 @@ export const ExportAccountSelectorContextProvider: React.FC<{
          * accounts: [{ accountId: "test.testnet", privateKey: "ed25519:..."}, ...]
          */
         const _modal = setupExportSelectorModal(_selector, {
-            accounts: [],
+            accounts: [
+                {
+                    accountId: 'hoemun.testnet',
+                    privateKey:
+                        'ed25519:31zA4T62zDwx2bUQANmu5s8AmtXLTYCzDbduYB2bTLjVpp4FS6mazz9CCUrT6Nc5Pa6gzuRc1sYV66Ka1mxBMABC',
+                },
+            ],
             onComplete: (completeProps) => {
                 console.log(
                     `${completeProps.accounts} exported to ${completeProps.walletName}`

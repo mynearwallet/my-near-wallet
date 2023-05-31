@@ -1,6 +1,6 @@
 import { KeyPair } from 'near-api-js';
 import { parse as parseQuery, stringify } from 'query-string';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
@@ -21,6 +21,7 @@ import {
 } from '../../redux/actions/status';
 import { actions as importZeroBalanceAccountActions } from '../../redux/slices/importZeroBalanceAccount';
 import { importZeroBalanceAccountPrivateKey } from '../../redux/slices/importZeroBalanceAccount/importAccountThunks';
+import { clearPassword, selectNewPassword } from '../../redux/slices/login';
 import { selectStatusLocalAlert } from '../../redux/slices/status';
 import classNames from '../../utils/classNames';
 import parseFundingOptions from '../../utils/parseFundingOptions';
@@ -55,6 +56,7 @@ const RecoverAccountPrivateKey = () => {
     const [recoveringAccount, setRecoveringAccount] = useState(false);
     const localAlert = useSelector(selectStatusLocalAlert);
     const location = useLocation();
+    const password = useSelector(selectNewPassword);
     const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
@@ -77,7 +79,9 @@ const RecoverAccountPrivateKey = () => {
             'IE-SP Recovery with private key',
             async () => {
                 setRecoveringAccount(true);
-                await dispatch(recoverAccountSecretKey(privateKey));
+                await dispatch(
+                    recoverAccountSecretKey(privateKey, undefined, undefined, password)
+                );
                 await dispatch(refreshAccount());
             },
             async (e) => {
@@ -120,6 +124,12 @@ const RecoverAccountPrivateKey = () => {
 
         dispatch(clearAccountState());
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearPassword());
+        };
+    }, []);
 
     return (
         <StyledContainer className='small-centered border'>

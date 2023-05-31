@@ -16,6 +16,7 @@ import {
 import { clearGlobalAlert, showCustomAlert } from '../../redux/actions/status';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { actions as linkdropActions } from '../../redux/slices/linkdrop';
+import { clearPassword } from '../../redux/slices/login';
 import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsByAccountId,
@@ -235,6 +236,10 @@ class SetupSeedPhrase extends Component {
         console.log(password);
     };
 
+    componentWillUnmount() {
+        this.props.clearPassword();
+    }
+
     render() {
         const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } =
             this.props;
@@ -373,6 +378,7 @@ const mapDispatchToProps = {
     fetchRecoveryMethods,
     showCustomAlert,
     setLinkdropAmount,
+    clearPassword,
 };
 
 const mapStateToProps = (state, { match }) => {

@@ -10,9 +10,10 @@ import Input from './ui/Input';
 
 type SetPasswordProps = {
     onChange: (value: string | null) => void;
+    id?: string;
 };
 
-const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
+const SetPassword: FC<SetPasswordProps> = ({ onChange, id }) => {
     const { t } = useTranslation();
     const [password, setPassword] = useState('');
     const [confirmPassValue, setConfirmPassValue] = useState('');
@@ -77,6 +78,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
         <>
             <Enter>
                 <Input
+                    id={id}
                     error={lengthError ? t('setupPasswordProtection.lengthError') : ''}
                     placeholder={t('setupPasswordProtection.enter')}
                     value={password}

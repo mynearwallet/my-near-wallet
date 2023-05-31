@@ -22,13 +22,17 @@ import {
 import { WalletError } from '../../../utils/walletError';
 import { finishAccountSetup } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
+import { selectNewPassword } from '../login';
 import { SLICE_NAME } from './';
 
 const { signInWithLedger } = ledgerActions;
 
 export const addLocalKeyAndFinishSetup = createAsyncThunk(
     `${SLICE_NAME}/addLocalKeyAndFinishSetup`,
-    async ({ accountId, recoveryMethod, publicKey, previousAccountId }, { dispatch }) => {
+    async (
+        { accountId, recoveryMethod, publicKey, previousAccountId },
+        { dispatch, getState }
+    ) => {
         if (recoveryMethod === 'ledger') {
             await wallet.addLedgerAccountId({ accountId });
             await wallet.postSignedJson('/account/ledgerKeyAdded', {
@@ -36,11 +40,12 @@ export const addLocalKeyAndFinishSetup = createAsyncThunk(
                 publicKey: publicKey.toString(),
             });
         } else {
+            const password = selectNewPassword(getState());
             const newKeyPair = KeyPair.fromRandom('ed25519');
             const newPublicKey = newKeyPair.publicKey;
             if (recoveryMethod !== 'phrase') {
                 await wallet.addNewAccessKeyToAccount(accountId, newPublicKey);
-                await wallet.saveAccount(accountId, newKeyPair);
+                await wallet.saveAccount(accountId, newKeyPair, password);
             } else {
                 const contractName = null;
                 const fullAccess = true;
@@ -55,7 +60,7 @@ export const addLocalKeyAndFinishSetup = createAsyncThunk(
                         newPublicKey,
                         fullAccess
                     );
-                    await wallet.saveAccount(accountId, newKeyPair);
+                    await wallet.saveAccount(accountId, newKeyPair, password);
                 } catch (error) {
                     if (previousAccountId) {
                         await wallet.saveAndMakeAccountActive(previousAccountId);
@@ -164,7 +169,8 @@ export const createNewAccount = createAsyncThunk(
             });
         }
 
-        await wallet.saveAndMakeAccountActive(accountId);
+        // await wallet.saveAndMakeAccountActive(accountId);
+        wallet.makeAccountActive(accountId);
         await dispatch(
             addLocalKeyAndFinishSetup({
                 accountId,
@@ -202,11 +208,12 @@ export const createAccountWithSeedPhrase = createAsyncThunk(
     `${SLICE_NAME}/createAccountWithSeedPhrase`,
     async (
         { accountId, recoveryKeyPair, fundingOptions = {}, recaptchaToken },
-        { dispatch }
+        { dispatch, getState }
     ) => {
+        const password = selectNewPassword(getState());
         const recoveryMethod = 'phrase';
         const previousAccountId = wallet.accountId;
-        await wallet.saveAccount(accountId, recoveryKeyPair);
+        await wallet.saveAccount(accountId, recoveryKeyPair, password);
         await dispatch(
             createNewAccount({
                 accountId,
@@ -300,7 +307,7 @@ export const finishLocalSetupForZeroBalanceAccount = createAsyncThunk(
 
 export const initiateSetupForZeroBalanceAccountPhrase = createAsyncThunk(
     `${SLICE_NAME}/initiateSetupForZeroBalanceAccountPhrase`,
-    async ({ implicitAccountId, recoveryKeyPair }, { dispatch }) => {
+    async ({ implicitAccountId, recoveryKeyPair }, { dispatch, getState }) => {
         try {
             try {
                 await sendJson(
@@ -323,7 +330,12 @@ export const initiateSetupForZeroBalanceAccountPhrase = createAsyncThunk(
                     );
                 }
             }
-            await wallet.importZeroBalanceAccount(implicitAccountId, recoveryKeyPair);
+            const password = selectNewPassword(getState());
+            await wallet.importZeroBalanceAccount(
+                implicitAccountId,
+                recoveryKeyPair,
+                password
+            );
         } catch (e) {
             dispatch(
                 showCustomAlert({
