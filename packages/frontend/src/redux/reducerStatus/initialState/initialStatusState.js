@@ -4,6 +4,6 @@ export default {
     status: {
         loading: false,
         error: initialErrorState,
-        isInitialized: false
-    }
+        isInitialized: false,
+    },
 };

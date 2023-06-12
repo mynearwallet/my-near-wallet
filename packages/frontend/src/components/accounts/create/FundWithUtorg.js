@@ -10,7 +10,6 @@ import { Mixpanel } from '../../../mixpanel';
 import FormButton from '../../common/FormButton';
 
 const Container = styled.div`
-
     button {
         &.black {
             background-color: #111618 !important;
@@ -26,7 +25,6 @@ const Container = styled.div`
     h3 {
         font-size: 20px !important;
     }
-
 `;
 
 export function buildUtorgPayLink(accountId, amount, amountFiat, currencyFiat) {
@@ -34,7 +32,7 @@ export function buildUtorgPayLink(accountId, amount, amountFiat, currencyFiat) {
         url: CONFIG.UTORG_ORDER_URL,
         query: {
             currency: 'NEAR',
-        }
+        },
     };
 
     if (accountId) {
@@ -53,12 +51,16 @@ export function buildUtorgPayLink(accountId, amount, amountFiat, currencyFiat) {
 const FundWithUtorg = ({ accountId, amount }) => {
     return (
         <Container>
-            <h3><Translate id='account.createImplicit.pre.utorg.title' /></h3>
-            <h2><Translate id='account.createImplicit.pre.utorg.desc' /></h2>
+            <h3>
+                <Translate id='account.createImplicit.pre.utorg.title' />
+            </h3>
+            <h2>
+                <Translate id='account.createImplicit.pre.utorg.desc' />
+            </h2>
             <FormButton
                 linkTo='https://utorg.pro/faq/'
                 className='link normal underline'
-                trackingId="CA Click Utorg learn more"
+                trackingId='CA Click Utorg learn more'
             >
                 <Translate id='button.learnMore' />
             </FormButton>

@@ -9,7 +9,7 @@ import EyeIcon from '../../svg/EyeIcon';
 
 const StyledContainer = styled.div`
     &&& {
-        border: 1px solid #F0F0F1;
+        border: 1px solid #f0f0f1;
         border-radius: 8px;
         max-width: 270px;
         margin: 0 auto;
@@ -50,11 +50,11 @@ const ImportOnMobileDeviceQRCode = ({ mobileSharingLink }) => {
     const [showCode, setShowCode] = useState(false);
     return (
         <StyledContainer>
-            <div className={classNames(['qr-wrapper', { 'show' : showCode }])}>
+            <div className={classNames(['qr-wrapper', { show: showCode }])}>
                 <QRCode
-                    bgColor="#FFFFFF"
-                    fgColor="#24272a"
-                    level="Q"
+                    bgColor='#FFFFFF'
+                    fgColor='#24272a'
+                    level='Q'
                     style={{ width: '100%', height: '100%' }}
                     renderAs='svg'
                     value={`${mobileSharingLink}`}
@@ -62,8 +62,8 @@ const ImportOnMobileDeviceQRCode = ({ mobileSharingLink }) => {
             </div>
             {!showCode && (
                 <FormButton onClick={() => setShowCode(true)}>
-                    <EyeIcon/>
-                    <Translate id='mobileDeviceAccess.showCode.modal.reveal'/>
+                    <EyeIcon />
+                    <Translate id='mobileDeviceAccess.showCode.modal.reveal' />
                 </FormButton>
             )}
         </StyledContainer>

@@ -1,13 +1,14 @@
-const { KeyPair } = require("near-api-js");
-const { parseSeedPhrase } = require("near-seed-phrase");
-const assert = require("assert");
-const { random } = require("lodash");
-const { BN } = require("bn.js");
-const bip39Light = require("bip39-light");
+const assert = require('assert');
+
+const bip39Light = require('bip39-light');
+const { BN } = require('bn.js');
 const sha256 = require('js-sha256');
+const { random } = require('lodash');
+const { KeyPair } = require('near-api-js');
+const { parseSeedPhrase } = require('near-seed-phrase');
 
 const generateNUniqueRandomNumbersInRange = ({ from, to }, n) => {
-    assert(n <= Math.abs(from - to) + 1, "Range needs to have at least N unique numbers");
+    assert(n <= Math.abs(from - to) + 1, 'Range needs to have at least N unique numbers');
     const nums = new Set();
     while (nums.size !== n) {
         nums.add(random(from, to));
@@ -28,7 +29,9 @@ function getTestAccountSeedPhrase(testAccountId) {
 }
 
 function getWorkerAccountId(workerIndex) {
-    return `w${workerIndex}-${Math.floor(Math.random() * 1000) % 1000}.${process.env.BANK_ACCOUNT}`;
+    return `w${workerIndex}-${Math.floor(Math.random() * 1000) % 1000}.${
+        process.env.BANK_ACCOUNT
+    }`;
 }
 
 function getWorkerAccountRegex(workerIndex) {
@@ -41,8 +44,8 @@ const bnSaturatingSub = (a, b) => {
 };
 
 const bnIsWithinUncertainty = (uncertaintyBn, bn1, bn2) => {
-    return bn1.sub(bn2).abs().lte(uncertaintyBn.abs())
-}
+    return bn1.sub(bn2).abs().lte(uncertaintyBn.abs());
+};
 
 module.exports = {
     generateNUniqueRandomNumbersInRange,
@@ -52,5 +55,5 @@ module.exports = {
     getWorkerAccountId,
     getWorkerAccountRegex,
     bnSaturatingSub,
-    bnIsWithinUncertainty
+    bnIsWithinUncertainty,
 };

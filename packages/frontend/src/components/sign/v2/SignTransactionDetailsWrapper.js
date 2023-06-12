@@ -5,10 +5,7 @@ import { selectAccountUrlPrivateShard } from '../../../redux/slices/account';
 import { selectSignTransactions } from '../../../redux/slices/sign';
 import SignTransactionDetails from './SignTransactionDetails';
 
-export default ({
-    onClickGoBack,
-    signGasFee
-}) => {
+export default ({ onClickGoBack, signGasFee }) => {
     const transactions = useSelector(selectSignTransactions);
     const privateShardInfo = useSelector(selectAccountUrlPrivateShard);
     return (

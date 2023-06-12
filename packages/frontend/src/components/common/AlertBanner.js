@@ -23,23 +23,24 @@ const Container = styled.div`
         }
 
         &.warning {
-            background-color: #FEF2F2;
-            color: #DC1F25;
+            background-color: #fef2f2;
+            color: #dc1f25;
             margin-bottom: 0;
 
             svg {
                 transform: rotate(0deg);
                 path {
-                    stroke: #DC1F25;
+                    stroke: #dc1f25;
                 }
             }
         }
 
         &.alert {
-            background-color: #FFF0DE;
-            color: #A15600;
+            background-color: #fff0de;
+            color: #a15600;
 
-            button, a {
+            button,
+            a {
                 &.link {
                     color: #452500 !important;
                 }
@@ -50,7 +51,7 @@ const Container = styled.div`
         }
 
         &.light-blue {
-            background-color: #F0F9FF;
+            background-color: #f0f9ff;
             color: #0072ce;
 
             svg {
@@ -59,9 +60,10 @@ const Container = styled.div`
                 }
             }
 
-            button, a {
+            button,
+            a {
                 &.link {
-                    color: #12345D !important;
+                    color: #12345d !important;
                 }
             }
         }
@@ -80,7 +82,8 @@ const Container = styled.div`
             line-height: 150%;
         }
 
-        button, a {
+        button,
+        a {
             &.link {
                 display: block;
                 text-transform: initial !important;
@@ -101,18 +104,24 @@ const Container = styled.div`
 export default function AlertBanner({ title, button, linkTo, data, theme, children }) {
     return (
         <Container className={classNames(['alert-banner', theme])}>
-            {theme !== 'warning'
-                ? <AlertRoundedIcon/>
-                : <AlertTriangleIcon/>
-            }      
+            {theme !== 'warning' ? <AlertRoundedIcon /> : <AlertTriangleIcon />}
             <div>
-                {title && <SafeTranslate id={title} data={{ data: data }}/>}
+                {title && <SafeTranslate id={title} data={{ data: data }} />}
                 {linkTo ? (
                     <>
                         {linkTo.includes('http') ? (
-                            <a target='_blank' rel='noreferrer' className='link' href={linkTo}><Translate id={button} /></a>
+                            <a
+                                target='_blank'
+                                rel='noreferrer'
+                                className='link'
+                                href={linkTo}
+                            >
+                                <Translate id={button} />
+                            </a>
                         ) : (
-                            <FormButton className='link' linkTo={linkTo}><Translate id={button} /></FormButton>
+                            <FormButton className='link' linkTo={linkTo}>
+                                <Translate id={button} />
+                            </FormButton>
                         )}
                     </>
                 ) : null}

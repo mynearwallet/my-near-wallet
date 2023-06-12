@@ -119,18 +119,20 @@ export function BuyNear({ history }) {
     }, [accountId]);
 
     const PayMethods = useMemo(
-        () => getPayMethods({
-            accountId,
-            transakPayUrl,
-            moonPayAvailable,
-            signedMoonPayUrl,
-            utorgPayUrl,
-        }),
+        () =>
+            getPayMethods({
+                accountId,
+                transakPayUrl,
+                moonPayAvailable,
+                signedMoonPayUrl,
+                utorgPayUrl,
+            }),
         [accountId, moonPayAvailable, signedMoonPayUrl, utorgPayUrl]
     );
 
     const checkMoonPay = async () => {
-        await Mixpanel.withTracking('Wallet Check Moonpay available',
+        await Mixpanel.withTracking(
+            'Wallet Check Moonpay available',
             async () => {
                 const moonPay = await isMoonpayAvailable();
                 setMoonPayAvailable(moonPay);
@@ -153,10 +155,14 @@ export function BuyNear({ history }) {
     return (
         <StyledContainer>
             <StyledHeader>
-                <BackArrowButton color="var(--mnw-color-1)" onClick={goBack} />
+                <BackArrowButton color='var(--mnw-color-1)' onClick={goBack} />
                 <div>
-                    <div className='title'><Translate id='buyNear.title' /></div>
-                    <h2 className='subTitle'><Translate id='buyNear.subTitle' /></h2>
+                    <div className='title'>
+                        <Translate id='buyNear.title' />
+                    </div>
+                    <h2 className='subTitle'>
+                        <Translate id='buyNear.subTitle' />
+                    </h2>
                 </div>
             </StyledHeader>
 
@@ -171,13 +177,19 @@ export function BuyNear({ history }) {
                     subTitle='buyNear.bridgeSubTitle'
                     actions={[PayMethods.rainbow]}
                 />
-                <FundingCard title='buyNear.supportedExchanges'
+                <FundingCard
+                    title='buyNear.supportedExchanges'
                     subTitle='buyNear.supportedSubTitle'
                     link={{
                         url: 'https://coinmarketcap.com/currencies/near-protocol/markets/',
-                        title: 'buyNear.coinMarketLink'
+                        title: 'buyNear.coinMarketLink',
                     }}
-                    actions={[PayMethods.okex, PayMethods.binance, PayMethods.huobi, PayMethods.kraken]}
+                    actions={[
+                        PayMethods.okex,
+                        PayMethods.binance,
+                        PayMethods.huobi,
+                        PayMethods.kraken,
+                    ]}
                 />
             </div>
         </StyledContainer>

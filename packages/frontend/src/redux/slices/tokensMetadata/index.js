@@ -8,7 +8,7 @@ import { createParameterSelector, selectSliceFromShared } from '../../selectors/
 const SLICE_NAME = 'tokensMetadata';
 
 const initialState = {
-    byContractName: {}
+    byContractName: {},
 };
 
 export async function getCachedContractMetadataOrFetch(contractName, state) {
@@ -26,8 +26,8 @@ export const tokensMetadataSlice = createSlice({
         setContractMetadata(state, { payload }) {
             const { metadata, contractName } = payload;
             set(state, ['byContractName', contractName], metadata);
-        }
-    }
+        },
+    },
 });
 
 export default tokensMetadataSlice;
@@ -37,9 +37,15 @@ const selectTokensMetadataSlice = selectSliceFromShared(SLICE_NAME, initialState
 
 const getContractNameParam = createParameterSelector((params) => params.contractName);
 
-export const selectContractsMetadata = createSelector(selectTokensMetadataSlice, ({ byContractName }) => byContractName);
+export const selectContractsMetadata = createSelector(
+    selectTokensMetadataSlice,
+    ({ byContractName }) => byContractName
+);
 
-export const selectContractsSymbols = createSelector(selectContractsMetadata, (contracts) => Object.values(contracts).map((metadata) => metadata.symbol));
+export const selectContractsSymbols = createSelector(
+    selectContractsMetadata,
+    (contracts) => Object.values(contracts).map((metadata) => metadata.symbol)
+);
 
 export const selectOneContractMetadata = createSelector(
     [selectContractsMetadata, getContractNameParam],

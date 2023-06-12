@@ -8,11 +8,11 @@ const Token = ({ symbol, icon, translateIdTitle, onClick }) => {
     /* TODO: Handle long Tokens */
     return (
         <StyledContainer className={onClick ? 'clickable' : ''} onClick={onClick}>
-            {translateIdTitle && 
-                <Translate id={translateIdTitle} />
-            }
+            {translateIdTitle && <Translate id={translateIdTitle} />}
             <div className='icon'>
-                <span><TokenIcon symbol={symbol} icon={icon}/></span>
+                <span>
+                    <TokenIcon symbol={symbol} icon={icon} />
+                </span>
                 {symbol}
             </div>
         </StyledContainer>

@@ -6,7 +6,7 @@ import CopyIcon from '../../svg/CopyIcon';
 const Container = styled.div`
     display: flex;
     align-items: center;
-    background-color: #F0F0F0;
+    background-color: #f0f0f0;
     padding: 4px 4px 4px 15px;
     border-radius: 40px;
     font-weight: 600;
@@ -35,12 +35,12 @@ const Container = styled.div`
     }
 `;
 
-const AccountId = ({ id,  'data-test-id': testId }) => {
+const AccountId = ({ id, 'data-test-id': testId }) => {
     return (
-        <Container data-test-id={testId}> 
+        <Container data-test-id={testId}>
             <span>{id}</span>
             <div>
-                <CopyIcon/>
+                <CopyIcon />
             </div>
         </Container>
     );

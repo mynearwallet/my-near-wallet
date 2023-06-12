@@ -271,28 +271,28 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
                     onClickGoBack={hideTokenSelection}
                     fungibleTokens={tokensToSelect}
                     onSelectToken={handleTokenSelect}
-                    balanceLabelId="available"
+                    balanceLabelId='available'
                 />
             ) : (
                 <>
                     <Header>
                         <BackArrowButton onClick={onGoBack} />
-                        <h4 className="title">
-                            <Translate id="swap.title" />
+                        <h4 className='title'>
+                            <Translate id='swap.title' />
                         </h4>
                     </Header>
                     <Input
                         value={amountIn}
                         onChange={handleInputAmountChange}
                         onSelectToken={selectTokenIn}
-                        labelId="swap.from"
+                        labelId='swap.from'
                         tokenSymbol={tokenIn?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenIn?.onChainFTMetadata?.icon}
                         tokenDecimals={tokenIn?.onChainFTMetadata?.decimals}
                         maxBalance={tokenIn?.balance}
                         setIsValidInput={setIsValidInput}
-                        inputTestId="swapPageInputAmountField"
-                        tokenSelectTestId="swapPageInputTokenSelector"
+                        inputTestId='swapPageInputAmountField'
+                        tokenSelectTestId='swapPageInputTokenSelector'
                         autoFocus
                     />
                     <SwapButtonWrapper>
@@ -301,14 +301,14 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
                     <Input
                         value={amountOut}
                         onSelectToken={selectTokenOut}
-                        labelId="swap.to"
+                        labelId='swap.to'
                         tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
                         tokenIcon={tokenOut?.onChainFTMetadata?.icon}
                         tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
                         maxBalance={tokenOut?.balance}
                         loading={loading}
-                        inputTestId="swapPageOutputAmountField"
-                        tokenSelectTestId="swapPageOutputTokenSelector"
+                        inputTestId='swapPageOutputAmountField'
+                        tokenSelectTestId='swapPageOutputTokenSelector'
                         disabled
                     />
                     <Footer>
@@ -324,22 +324,22 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
                         )}
 
                         {zeroAmountOut && (
-                            <Notification type="error">
-                                <Translate id="swap.inputTooLow" />
+                            <Notification type='error'>
+                                <Translate id='swap.inputTooLow' />
                             </Notification>
                         )}
 
                         <FormButton
                             disabled={!canSwap}
                             onClick={onClickReview}
-                            trackingId="Click Preview swap on Swap page"
-                            data-test-id="swapPageSwapPreviewStateButton"
+                            trackingId='Click Preview swap on Swap page'
+                            data-test-id='swapPageSwapPreviewStateButton'
                         >
-                            <Translate id="swap.review" />
+                            <Translate id='swap.review' />
                         </FormButton>
-                        <div className="cancel-button-wrapper">
-                            <FormButton color="link gray" onClick={onGoBack}>
-                                <Translate id="button.cancel" />
+                        <div className='cancel-button-wrapper'>
+                            <FormButton color='link gray' onClick={onGoBack}>
+                                <Translate id='button.cancel' />
                             </FormButton>
                         </div>
                     </Footer>

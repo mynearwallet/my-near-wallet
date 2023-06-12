@@ -2,14 +2,15 @@ import styled from 'styled-components';
 
 const Style = styled.div`
     border-radius: 8px;
-    color: #D5D4D8;
+    color: #d5d4d8;
     font-size: 14px;
     background-color: #111618;
 
     > div {
         padding: 15px;
 
-        &.status, &.amount {
+        &.status,
+        &.amount {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -23,10 +24,10 @@ const Style = styled.div`
                 align-items: center;
                 justify-content: space-between;
             }
-            
+
             :last-of-type {
                 color: white;
-                background-color: #3F4045;
+                background-color: #3f4045;
                 border-radius: 8px;
                 word-break: break-all;
                 padding: 15px;
@@ -43,7 +44,7 @@ const Style = styled.div`
             border-radius: 40px;
             font-size: 11px;
             padding: 6px 14px;
-            background-color: #FFDBB2;
+            background-color: #ffdbb2;
             color: #995200;
         }
     }
@@ -60,8 +61,8 @@ const Style = styled.div`
     &.funded {
         .status {
             span {
-                background-color: #90E9C5;
-                color: #005A46;
+                background-color: #90e9c5;
+                color: #005a46;
             }
         }
     }
@@ -70,14 +71,14 @@ const Style = styled.div`
         display: flex;
         align-items: center;
         font-size: 12px;
-        color: #8FCDFF;
+        color: #8fcdff;
 
         svg {
             margin-right: 4px;
             width: 16px;
 
             path {
-                stroke: #8FCDFF;
+                stroke: #8fcdff;
             }
         }
     }

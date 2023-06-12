@@ -37,11 +37,7 @@ const SwapFeeDetails = styled.div`
 
 const slippageMarks = [0.5, 1, 3];
 
-export default function FtSwapDetails({
-    minAmountOut,
-    swapFeeAmount,
-    estimatedFee,
-}) {
+export default function FtSwapDetails({ minAmountOut, swapFeeAmount, estimatedFee }) {
     const {
         swapState: { tokenIn, tokenOut, swapFee, priceImpactPercent, slippage },
         events: { setSlippage },
@@ -73,8 +69,7 @@ export default function FtSwapDetails({
                         <span>{swapFee} %</span>
                         {swapFeeAmount ? (
                             <span>
-                                / {swapFeeAmount}{' '}
-                                {tokenIn.onChainFTMetadata?.symbol}
+                                / {swapFeeAmount} {tokenIn.onChainFTMetadata?.symbol}
                             </span>
                         ) : (
                             ''
@@ -95,9 +90,9 @@ export default function FtSwapDetails({
                 />
             ) : null}
 
-            <StyledContainer className="detailsRow">
-                <Translate id="swap.minReceived" />
-                <Tooltip translate="swap.translateIdInfoTooltip.minimumReceived" />
+            <StyledContainer className='detailsRow'>
+                <Translate id='swap.minReceived' />
+                <Tooltip translate='swap.translateIdInfoTooltip.minimumReceived' />
 
                 <div className='amount'>
                     {minAmountOut || '-'} {tokenOut?.onChainFTMetadata?.symbol}

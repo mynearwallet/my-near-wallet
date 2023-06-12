@@ -19,28 +19,32 @@ const Container = styled.div`
         all: unset;
     }
 
-    a, .nav-button {
+    a,
+    .nav-button {
         display: flex;
         align-items: center;
         cursor: pointer;
         transition: 100ms;
-        color: #72727A;
+        color: #72727a;
         font-size: 15px;
         white-space: nowrap;
 
-        :hover, &.selected {
+        :hover,
+        &.selected {
             text-decoration: none;
             color: #272729;
 
             svg {
-                path, circle, line {
-                    stroke: #0072CE;
+                path,
+                circle,
+                line {
+                    stroke: #0072ce;
                 }
 
                 &.user-icon {
                     path {
-                        stroke: #0072CE;
-                        fill: #0072CE;
+                        stroke: #0072ce;
+                        fill: #0072ce;
 
                         :last-of-type {
                             fill: none;
@@ -50,7 +54,6 @@ const Container = styled.div`
             }
         }
     }
-
 
     svg {
         margin-right: 10px;
@@ -71,13 +74,13 @@ const Container = styled.div`
         height: 35px;
         padding: 5px 15px 5px 5px;
         border-radius: 20px;
-        background: #D6EDFF;
+        background: #d6edff;
         font-weight: 600;
         color: black;
         white-space: nowrap;
 
         :hover {
-            background: #0072CE;
+            background: #0072ce;
             color: white;
         }
 
@@ -98,7 +101,8 @@ const Container = styled.div`
         align-items: center;
         margin-left: 10px;
 
-        a, .nav-button {
+        a,
+        .nav-button {
             margin-left: 25px;
 
             &.account-details-link {
@@ -110,29 +114,50 @@ const Container = styled.div`
 
 const NavLinks = () => (
     <Container className='nav-links'>
-        <NavLink exact to='/' activeClassName='selected' onClick={() => Mixpanel.track('Click Wallet button on nav')}>
+        <NavLink
+            exact
+            to='/'
+            activeClassName='selected'
+            onClick={() => Mixpanel.track('Click Wallet button on nav')}
+        >
             <WalletIcon />
             <Translate id='link.wallet' />
         </NavLink>
-        <NavLink data-test-id='staking_navlink' to='/staking' activeClassName='selected'
-            onClick={() => Mixpanel.track('Click Staking button on nav')}>
+        <NavLink
+            data-test-id='staking_navlink'
+            to='/staking'
+            activeClassName='selected'
+            onClick={() => Mixpanel.track('Click Staking button on nav')}
+        >
             <VaultIcon />
             <Translate id='link.staking' />
         </NavLink>
-        <NavLink data-test-id='explore_navlink' to='/explore' activeClassName='selected'
-            onClick={() => Mixpanel.track('Click Explore button on nav')}>
+        <NavLink
+            data-test-id='explore_navlink'
+            to='/explore'
+            activeClassName='selected'
+            onClick={() => Mixpanel.track('Click Explore button on nav')}
+        >
             <ExploreIcon />
             <Translate id='link.explore' />
         </NavLink>
-        <NavLink to='/profile' className='account-details-link' activeClassName='selected'
-            onClick={() => Mixpanel.track('Click Account button on nav')}>
+        <NavLink
+            to='/profile'
+            className='account-details-link'
+            activeClassName='selected'
+            onClick={() => Mixpanel.track('Click Account button on nav')}
+        >
             <UserIcon />
             <Translate id='link.account' />
         </NavLink>
-        <button className={'nav-button'} rel='noopener noreferrer' onClick={() => {
-            GleapService.open();
-            Mixpanel.track('Click Support button on nav');
-        }}>
+        <button
+            className={'nav-button'}
+            rel='noopener noreferrer'
+            onClick={() => {
+                GleapService.open();
+                Mixpanel.track('Click Support button on nav');
+            }}
+        >
             <HelpIcon />
             <Translate id='link.support' />
         </button>

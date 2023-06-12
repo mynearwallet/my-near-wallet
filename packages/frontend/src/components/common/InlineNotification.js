@@ -19,8 +19,8 @@ const Container = styled.div`
     align-items: center;
 
     &.error-theme {
-        border-color: #FF585D;
-        color: #FF585D;
+        border-color: #ff585d;
+        color: #ff585d;
         background-color: rgba(255, 88, 93, 0.2);
 
         .theme-icon {
@@ -46,18 +46,12 @@ const Button = styled.div`
 
 class InlineNotification extends Component {
     render() {
-        const {
-            messageId,
-            buttonMsgId,
-            theme,
-            onClick,
-            show
-        } = this.props;
+        const { messageId, buttonMsgId, theme, onClick, show } = this.props;
 
         if (show) {
             return (
                 <Container className={`${theme}-theme`} onClick={onClick}>
-                    <Icon className='theme-icon'/>
+                    <Icon className='theme-icon' />
                     <Translate id={messageId} />
                     {onClick && buttonMsgId && (
                         <Button role='button'>

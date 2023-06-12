@@ -32,7 +32,8 @@ export const StyledContainer = styled(Container)`
         }
     }
 
-    .left, .right {
+    .left,
+    .right {
         .animation-wrapper {
             border-radius: 8px;
             overflow: hidden;
@@ -45,7 +46,7 @@ export const StyledContainer = styled(Container)`
                 margin: 50px 0px 30px 0px;
             }
         }
-        
+
         .animation-wrapper {
             margin-top: 50px;
             :last-of-type {
@@ -78,13 +79,13 @@ export const StyledContainer = styled(Container)`
     }
 
     hr {
-        border: 1px solid #F0F0F0;
+        border: 1px solid #f0f0f0;
         margin: 50px 0 40px 0;
     }
 
     .sub-heading {
         margin: 20px 0;
-        color: #72727A;
+        color: #72727a;
     }
 
     .auth-apps {

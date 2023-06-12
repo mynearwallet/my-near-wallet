@@ -15,12 +15,12 @@ export const SIGN_STATUS = {
     NEEDS_CONFIRMATION: 'needs-confirmation',
     RETRY_TRANSACTION: 'retry-tx',
     SUCCESS: 'success',
-    ERROR: 'error'
+    ERROR: 'error',
 };
 
 export const RETRY_TX_GAS = {
     DIFF: '100000000000',
-    MAX: '300000000000000'
+    MAX: '300000000000000',
 };
 
 export const updateSuccessHashes = createAction('updateSuccessHashes');
@@ -33,42 +33,47 @@ export const handleSignTransactions = createAsyncThunk(
         const retryingTx = !!selectSignRetryTransactions(getState()).length;
         const shardInfo = selectAccountUrlPrivateShard(getState());
 
-        const mixpanelName = `SIGN${retryingTx ? ' - RETRYRETRY WITH INCREASED GAS' : ''}`;
-        await Mixpanel.withTracking(mixpanelName,
-            async () => {
-                let transactions;
-                if (retryingTx) {
-                    transactions = selectSignRetryTransactions(getState());
-                } else {
-                    transactions = selectSignTransactions(getState());
+        const mixpanelName = `SIGN${
+            retryingTx ? ' - RETRYRETRY WITH INCREASED GAS' : ''
+        }`;
+        await Mixpanel.withTracking(mixpanelName, async () => {
+            let transactions;
+            if (retryingTx) {
+                transactions = selectSignRetryTransactions(getState());
+            } else {
+                transactions = selectSignTransactions(getState());
+            }
+
+            const accountId = selectAccountId(getState());
+
+            try {
+                const signingWallet = shardInfo ? new Wallet(shardInfo) : wallet;
+                transactionsHashes = await signingWallet.signAndSendTransactions(
+                    transactions,
+                    accountId
+                );
+                dispatch(updateSuccessHashes(transactionsHashes));
+            } catch (error) {
+                if (error.message.includes('TotalPrepaidGasExceeded')) {
+                    Mixpanel.track('SIGN - too much gas detected');
                 }
-                
-                const accountId = selectAccountId(getState());
 
-                try {
-                    const signingWallet = shardInfo ? new Wallet(shardInfo) : wallet;
-                    transactionsHashes = await signingWallet.signAndSendTransactions(transactions, accountId);
-                    dispatch(updateSuccessHashes(transactionsHashes));
-                } catch (error) {
-                    if (error.message.includes('TotalPrepaidGasExceeded')) {
-                        Mixpanel.track('SIGN - too much gas detected');
-                    }
-                    
-                    if (error.message.includes('Exceeded the prepaid gas')) {
-                        const successHashes = error?.data?.transactionHashes;
-                        dispatch(updateSuccessHashes(successHashes));
-                    }
+                if (error.message.includes('Exceeded the prepaid gas')) {
+                    const successHashes = error?.data?.transactionHashes;
+                    dispatch(updateSuccessHashes(successHashes));
+                }
 
-                    dispatch(showCustomAlert({
+                dispatch(
+                    showCustomAlert({
                         success: false,
                         messageCodeHeader: 'error',
                         messageCode: `reduxActions.${error.code}`,
-                        errorMessage: error.message
-                    }));
-                    throw error;
-                }
+                        errorMessage: error.message,
+                    })
+                );
+                throw error;
             }
-        );
+        });
         return selectSignSuccessHashesOnlyHash(getState());
     },
     {
@@ -77,7 +82,7 @@ export const handleSignTransactions = createAsyncThunk(
             if (selectSignStatus(getState()) === SIGN_STATUS.IN_PROGRESS) {
                 return false;
             }
-        }
+        },
     }
 );
 
@@ -94,7 +99,9 @@ export const removeSuccessTransactions = ({ transactions, successHashes }) => {
 };
 
 export const calculateGasForSuccessTransactions = ({ transactions, successHashes }) => {
-    const successHashesNonce = successHashes.map((successHash) => successHash.nonceString);
+    const successHashesNonce = successHashes.map(
+        (successHash) => successHash.nonceString
+    );
     let gasUsed = new BN('0');
 
     for (let { nonce, actions } of transactions) {
@@ -108,13 +115,13 @@ export const calculateGasForSuccessTransactions = ({ transactions, successHashes
 
 export const checkAbleToIncreaseGas = ({ transaction }) => {
     if (!transaction.actions) {
-        return false; 
+        return false;
     }
 
     return transaction.actions.some((a) => {
         // We can only increase gas for actions that are function calls and still have < RETRY_TX.GAS.MAX gas allocated
         if (!a || !a.functionCall) {
-            return false; 
+            return false;
         }
 
         return a.functionCall.gas.lt(new BN(RETRY_TX_GAS.MAX));
@@ -125,7 +132,7 @@ export const checkAbleToIncreaseGas = ({ transaction }) => {
 export const getFirstTransactionWithFunctionCallAction = ({ transactions }) => {
     return transactions.find((t) => {
         if (!t.actions) {
-            return false; 
+            return false;
         }
 
         return t.actions.some((a) => a && a.functionCall);
@@ -133,7 +140,9 @@ export const getFirstTransactionWithFunctionCallAction = ({ transactions }) => {
 };
 
 export const getEstimatedFees = (transactionsList) => {
-    const tx = increaseGasForFirstTransaction({ transactions: cloneDeep(transactionsList)});
+    const tx = increaseGasForFirstTransaction({
+        transactions: cloneDeep(transactionsList),
+    });
     return new BN(calculateGasLimit(tx.flatMap((t) => t.actions)));
 };
 
@@ -144,11 +153,12 @@ export const increaseGasForFirstTransaction = ({ transactions }) => {
         return transactions;
     }
 
-    const oneFunctionCallAction = transaction.actions.filter((a) => !!a.functionCall).length === 1;
+    const oneFunctionCallAction =
+        transaction.actions.filter((a) => !!a.functionCall).length === 1;
 
     // If there are multiple tx, we want to increase the gas, only for the first one, because it's possible that increasing gas for the other transactions will end with exceeded gas
     transaction.actions.forEach((a) => {
-        if (!(a.functionCall && a.functionCall.gas)) { 
+        if (!(a.functionCall && a.functionCall.gas)) {
             return false;
         }
 
@@ -169,10 +179,12 @@ export const increaseGasForFirstTransaction = ({ transactions }) => {
     return transactions;
 };
 
-export const calculateGasLimit = (actions) => actions
-    .filter((a) => Object.keys(a)[0] === 'functionCall')
-    .map((a) => a.functionCall.gas)
-    .reduce((totalGas, gas) => totalGas.add(gas), new BN(0)).toString();
+export const calculateGasLimit = (actions) =>
+    actions
+        .filter((a) => Object.keys(a)[0] === 'functionCall')
+        .map((a) => a.functionCall.gas)
+        .reduce((totalGas, gas) => totalGas.add(gas), new BN(0))
+        .toString();
 
 // Top level selectors
 export const selectSignSlice = (state) => state[SLICE_NAME];
@@ -186,7 +198,10 @@ export const selectSignTransactionsBatchIsValid = createSelector(
     [selectSignTransactions],
     (transactions) => {
         const firstSignerId = transactions.length && transactions[0].signerId;
-        return !transactions.length || transactions.every(({signerId}) => signerId === firstSignerId);
+        return (
+            !transactions.length ||
+            transactions.every(({ signerId }) => signerId === firstSignerId)
+        );
     }
 );
 
@@ -220,20 +235,11 @@ export const selectSignCallbackUrl = createSelector(
     (sign) => sign.callbackUrl
 );
 
-export const selectSignMeta = createSelector(
-    [selectSignSlice],
-    (sign) => sign.meta
-);
+export const selectSignMeta = createSelector([selectSignSlice], (sign) => sign.meta);
 
-export const selectSignStatus = createSelector(
-    [selectSignSlice],
-    (sign) => sign.status
-);
+export const selectSignStatus = createSelector([selectSignSlice], (sign) => sign.status);
 
-export const selectSignError = createSelector(
-    [selectSignSlice],
-    (sign) => sign.error
-);
+export const selectSignError = createSelector([selectSignSlice], (sign) => sign.error);
 
 export const selectSignErrorName = createSelector(
     [selectSignError],
@@ -256,8 +262,10 @@ export const selectSignFeesGasLimitIncludingGasChanges = createSelector(
         const transactionsToCalculate = !!retryTransactions.length
             ? retryTransactions
             : transactions;
-        
-        const tx = increaseGasForFirstTransaction({ transactions: cloneDeep(transactionsToCalculate)});
+
+        const tx = increaseGasForFirstTransaction({
+            transactions: cloneDeep(transactionsToCalculate),
+        });
         return new BN(calculateGasLimit(tx.flatMap((t) => t.actions))).add(gasUsed);
     }
 );

@@ -23,24 +23,24 @@ const StyledContainer = styled.div`
             color: #272729;
         }
         .fiat-amount {
-            color: #72727A;
+            color: #72727a;
             font-size: 16px;
         }
     }
 
     > .account {
         width: 100%;
-        border-top: 1px solid #F0F0F1;
+        border-top: 1px solid #f0f0f1;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 20px;
-        color: #72727A;
+        color: #72727a;
 
         > div {
             text-align: right;
             margin-left: 20px;
-            
+
             .account-id {
                 color: #272729;
                 font-weight: 600;
@@ -48,19 +48,14 @@ const StyledContainer = styled.div`
             }
 
             .balance {
-                color: #A2A2A8;
+                color: #a2a2a8;
                 margin-top: 5px;
             }
         }
     }
 `;
 
-export default ({ 
-    transferAmount,
-    sender,
-    receiver,
-    receiverBalance
-}) => {
+export default ({ transferAmount, sender, receiver, receiverBalance }) => {
     return (
         <StyledContainer className='transfer-amount brs-8 bsw-l'>
             <ArrowTransferIcon />
@@ -69,20 +64,14 @@ export default ({
                 <Translate id='transfer.from' />
                 <div>
                     <div className='account-id'>{sender}</div>
-                    <Balance
-                        amount={transferAmount}
-                        showBalanceInUSD={false}
-                    />
+                    <Balance amount={transferAmount} showBalanceInUSD={false} />
                 </div>
             </div>
             <div className='account'>
                 <Translate id='transfer.to' />
                 <div>
                     <div className='account-id'>{receiver}</div>
-                    <Balance
-                        amount={receiverBalance}
-                        showBalanceInUSD={false}
-                    />
+                    <Balance amount={receiverBalance} showBalanceInUSD={false} />
                 </div>
             </div>
         </StyledContainer>

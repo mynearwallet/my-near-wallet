@@ -5,12 +5,11 @@ const {
     keyStores: { InMemoryKeyStore },
     utils: {
         KeyPair,
-        format: { parseNearAmount }
-    }
+        format: { parseNearAmount },
+    },
 } = require('near-api-js');
 const { parseSeedPhrase } = require('near-seed-phrase');
 const { webkit } = require('playwright');
-
 
 const NETWORK_ID = 'default';
 const BANK_SEED_PHRASE = process.env.BANK_SEED_PHRASE;
@@ -23,7 +22,7 @@ const config = {
     networkId: NETWORK_ID,
     nodeUrl: process.env.NODE_URL || 'https://rpc.testnet.near.org',
     walletUrl: process.env.WALLET_URL || 'https://wallet.testnet.near.org',
-    keyStore: new InMemoryKeyStore()
+    keyStore: new InMemoryKeyStore(),
 };
 
 async function createIncident(accountId, error) {
@@ -35,33 +34,37 @@ async function createIncident(accountId, error) {
     await pd.post('/incidents', {
         data: {
             incident: {
-                type: "incident",
-                title: "wallet e2e-tests failure",
+                type: 'incident',
+                title: 'wallet e2e-tests failure',
                 service: {
-                    id: "PJ9TV6C", // wallet
-                    type: "service_reference"
+                    id: 'PJ9TV6C', // wallet
+                    type: 'service_reference',
                 },
                 assignments: [
                     {
                         assignee: {
-                            id: "PM9MK7I", // vlad@near.org
-                            type: "user_reference"
-                        }
-                    }
+                            id: 'PM9MK7I', // vlad@near.org
+                            type: 'user_reference',
+                        },
+                    },
                 ],
                 body: {
-                    type: "incident_body",
+                    type: 'incident_body',
                     details: `
 Wallet e2e-tests suite has failed. See https://dashboard.render.com/cron/crn-bvrt6tblc6ct62bdjmig/logs for details.
 Make sure that account recovery works well on https://wallet.near.org.
 
-${accountId ? `Test account to check https://explorer.near.org/accounts/${accountId}` : ''}
+${
+    accountId
+        ? `Test account to check https://explorer.near.org/accounts/${accountId}`
+        : ''
+}
 
 ${error.stack}
-                    `
-                }
+                    `,
+                },
             },
-        }
+        },
     });
 }
 
@@ -70,19 +73,27 @@ let lastTestAccountId;
 (async () => {
     const near = await connect(config);
     const { keyStore } = config;
-    const bankKeyPair = KeyPair.fromString((await parseSeedPhrase(BANK_SEED_PHRASE)).secretKey);
+    const bankKeyPair = KeyPair.fromString(
+        (await parseSeedPhrase(BANK_SEED_PHRASE)).secretKey
+    );
     await keyStore.setKey(NETWORK_ID, BANK_ACCOUNT, bankKeyPair);
     const bankAccount = await near.account(BANK_ACCOUNT);
 
     async function createTestAccount() {
-        const accountId = `test-account-${Date.now()}-${Math.floor(Math.random() * 1000) % 1000}.${bankAccount.accountId}`;
+        const accountId = `test-account-${Date.now()}-${
+            Math.floor(Math.random() * 1000) % 1000
+        }.${bankAccount.accountId}`;
         console.log('createTestAccount', accountId);
         const seedPhrase = `${accountId} ${TEST_ACCOUNT_SEED_PHRASE}`;
         const { secretKey } = await parseSeedPhrase(seedPhrase);
         // TODO: Use the same seed phrase for all accounts to test recovery not picking up deleted accounts
         const keyPair = KeyPair.fromString(secretKey);
         await keyStore.setKey(NETWORK_ID, accountId, keyPair);
-        await bankAccount.createAccount(accountId, keyPair.publicKey, parseNearAmount('1.0'));
+        await bankAccount.createAccount(
+            accountId,
+            keyPair.publicKey,
+            parseNearAmount('1.0')
+        );
         lastTestAccountId = accountId;
         return near.account(accountId);
     }
@@ -103,7 +114,7 @@ let lastTestAccountId;
         console.log('Removing', testAccount1.accountId);
         await testAccount1.deleteAccount(bankAccount.accountId);
     }
-})().catch(async e => {
+})().catch(async (e) => {
     console.error(e);
 
     if (ENABLE_ALERT) {

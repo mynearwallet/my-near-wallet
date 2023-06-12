@@ -19,7 +19,7 @@ const Container = styled.div`
     }
 
     .desc {
-        color: #72727A;
+        color: #72727a;
         font-size: 16px;
         margin: 20px 0 40px 0;
         max-width: 400px;
@@ -27,7 +27,7 @@ const Container = styled.div`
     }
 
     .alert-triangle {
-        background-color: #FEF2F2;
+        background-color: #fef2f2;
         border-radius: 50%;
         width: 60px;
         height: 60px;
@@ -54,12 +54,16 @@ export default ({ isOpen, onClose, kind }) => {
             modalSize='md'
         >
             <Container>
-                <div className='alert-triangle'><AlertTriangleIcon color='#DC1F25' /></div>
-                <h2><Translate id={`verifyAccount.modal.${kind}.title`} /></h2>
-                <div className='desc'><Translate id={`verifyAccount.modal.${kind}.desc`} /></div>
-                <FormButton
-                    onClick={onClose}
-                >
+                <div className='alert-triangle'>
+                    <AlertTriangleIcon color='#DC1F25' />
+                </div>
+                <h2>
+                    <Translate id={`verifyAccount.modal.${kind}.title`} />
+                </h2>
+                <div className='desc'>
+                    <Translate id={`verifyAccount.modal.${kind}.desc`} />
+                </div>
+                <FormButton onClick={onClose}>
                     <Translate id='button.gotIt' />
                 </FormButton>
             </Container>

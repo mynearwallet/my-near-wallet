@@ -102,7 +102,12 @@
         "recoverAccount": {
             "error": "Impossibile recuperare l'Account. Non sono stati trovati Account con questa passphrase.",
             "errorInvalidSeedPhrase": "Non sono stati trovati Account con questa passphrase.",
-            "success": "Il ripristino tramite passphrase è stato completato.<br/><b>${numerodegliAccount} account(s)</b> recuperati con successo.<br/>L'ultimo è stato impostato come attivo."
+            "success": "Il ripristino tramite passphrase è stato completato.<br/><b>${numerodegliAccount} account(s)</b> recuperati con successo.<br/>L'ultimo è stato impostato come attivo.",
+            "zeroBalance": {
+                "success": {
+                    "privateKey": "L'account seguente è stato importato con successo utilizzando la chiave privata fornita:"
+                }
+            }
         },
         "requestCode": {
             "error": "Impossibile inviare SMS con il codice.",
@@ -839,6 +844,17 @@
         "phrase": {
             "desc": "Assicurati di avere la tua frase di recupero di 12 parole, quindi fai clic di seguito per iniziare il processo di recupero.",
             "title": "Passphrase"
+        },
+        "privateKey": {
+            "desc": "Assicurati che la tua chiave privata inizi con ed25519, quindi fai clic di seguito per avviare il processo di recupero.",
+            "title": "Chiave Privata"
+        }
+    },
+    "recoverPrivateKey": {
+        "pageText": "Inserisci la chiave privata associata all'account.",
+        "pageTitle": "Recupera utilizzando la chiave privata.",
+        "privateKeyInput": {
+            "title": "Chiave Privata"
         }
     },
     "recoverSeedPhrase": {
@@ -1621,6 +1637,9 @@
         },
         "recoverAccountLink": {
             "error": "Importazione del tuo account non riuscita. Riprova o contatta il supporto per assistenza."
+        },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "La chiave privata fornita non è valida. Controlla la tua chiave privata e riprova."
         },
         "recoverAccountSeedPhrase": {
             "errorInvalidSeedPhrase": "Non sono stati trovati account per questa passphrase."

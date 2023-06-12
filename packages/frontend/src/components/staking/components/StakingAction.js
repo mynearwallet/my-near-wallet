@@ -21,9 +21,7 @@ import AmountInput from './AmountInput';
 import StakeConfirmModal from './StakeConfirmModal';
 import ValidatorBox from './ValidatorBox';
 
-const {
-    parseNearAmount, formatNearAmount
-} = utils.format;
+const { parseNearAmount, formatNearAmount } = utils.format;
 
 export default function StakingAction({
     match,
@@ -37,7 +35,7 @@ export default function StakingAction({
     stakeFromAccount,
     selectedValidator,
     currentValidators,
-    nearTokenFiatValueUSD
+    nearTokenFiatValueUSD,
 }) {
     const dispatch = useDispatch();
 
@@ -53,9 +51,19 @@ export default function StakingAction({
     const stake = action === 'stake' ? true : false;
     const displayAmount = useMax ? formatNearAmount(amount, 5).replace(/,/g, '') : amount;
     const availableToStake = availableBalance;
-    const invalidStakeActionAmount = new BN(useMax ? amount : parseNearAmount(amount)).sub(new BN(stake ? availableToStake : staked)).gt(new BN(STAKING_AMOUNT_DEVIATION)) || !isDecimalString(amount);
-    const stakeActionAllowed = hasStakeActionAmount && !invalidStakeActionAmount && !success && !validatorMightHaveFAK;
-    const stakeNotAllowed = !!selectedValidator && selectedValidator !== match.params.validator && !!currentValidators.length;
+    const invalidStakeActionAmount =
+        new BN(useMax ? amount : parseNearAmount(amount))
+            .sub(new BN(stake ? availableToStake : staked))
+            .gt(new BN(STAKING_AMOUNT_DEVIATION)) || !isDecimalString(amount);
+    const stakeActionAllowed =
+        hasStakeActionAmount &&
+        !invalidStakeActionAmount &&
+        !success &&
+        !validatorMightHaveFAK;
+    const stakeNotAllowed =
+        !!selectedValidator &&
+        selectedValidator !== match.params.validator &&
+        !!currentValidators.length;
 
     const validatorHasFAK = async (validator) => {
         const accessKeys = await wallet.getAccessKeys(validator);
@@ -68,26 +76,30 @@ export default function StakingAction({
 
             if (await validatorHasFAK(match.params.validator)) {
                 setValidatorMightHaveFAK(true);
-                dispatch(showCustomAlert({
-                    success: false,
-                    messageCodeHeader: 'error',
-                    messageCode: 'walletErrorCodes.staking.validatorHasFAK',
-                    errorMessage: 'Validator has full access key'
-                }));
+                dispatch(
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        messageCode: 'walletErrorCodes.staking.validatorHasFAK',
+                        errorMessage: 'Validator has full access key',
+                    })
+                );
             } else {
                 setConfirm(true);
             }
         } catch (error) {
             setValidatorMightHaveFAK(true);
-            dispatch(showCustomAlert({
-                success: false,
-                messageCodeHeader: 'error',
-                messageCode: 'walletErrorCodes.staking.unableToCheckFAK',
-                errorMessage: 'Not able to check full access key'
-            }));
+            dispatch(
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    messageCode: 'walletErrorCodes.staking.unableToCheckFAK',
+                    errorMessage: 'Not able to check full access key',
+                })
+            );
             throw error;
         } finally {
-            setCheckingValidator(false);  
+            setCheckingValidator(false);
         }
     };
 
@@ -104,7 +116,10 @@ export default function StakingAction({
     const onStakingAction = async () => {
         setLoadingStaking(true);
         let stakeActionAmount = amount;
-        const userInputAmountIsMax = new BN(parseNearAmount(amount)).sub(new BN(stake ? availableBalance : staked)).abs().lte(new BN(STAKING_AMOUNT_DEVIATION));
+        const userInputAmountIsMax = new BN(parseNearAmount(amount))
+            .sub(new BN(stake ? availableBalance : staked))
+            .abs()
+            .lte(new BN(STAKING_AMOUNT_DEVIATION));
 
         if (!stake) {
             if (!useMax && userInputAmountIsMax) {
@@ -165,43 +180,51 @@ export default function StakingAction({
             />
         );
     }
-    
+
     if (!success) {
         return (
             <div className='send-theme'>
-                <h1><Translate id={`staking.${action}.title`} /></h1>
-                <h2><Translate id={`staking.${action}.desc`} /></h2>
+                <h1>
+                    <Translate id={`staking.${action}.title`} />
+                </h1>
+                <h2>
+                    <Translate id={`staking.${action}.desc`} />
+                </h2>
                 <div className='amount-header-wrapper'>
-                    <h4><Translate id='staking.stake.amount' /></h4>
+                    <h4>
+                        <Translate id='staking.stake.amount' />
+                    </h4>
                     <FormButton
-                        className='small' 
+                        className='small'
                         color='light-blue'
                         onClick={handleSetMax}
-                        data-test-id="stakingPageUseMaxButton"
+                        data-test-id='stakingPageUseMaxButton'
                     >
-                        <Translate id="staking.stake.useMax" />
+                        <Translate id='staking.stake.useMax' />
                     </FormButton>
                 </div>
                 <AmountInput
                     action={action}
-                    value={displayAmount} 
+                    value={displayAmount}
                     onChange={handleOnChange}
                     valid={stakeActionAllowed}
                     availableBalance={stake ? availableBalance : staked}
                     availableClick={handleSetMax}
-                    insufficientBalance={invalidStakeActionAmount} 
+                    insufficientBalance={invalidStakeActionAmount}
                     disabled={loading || confirm}
                     stakeFromAccount={stakeFromAccount}
-                    inputTestId="stakingAmountInput"
+                    inputTestId='stakingAmountInput'
                 />
-                <ArrowCircleIcon color={stakeActionAllowed ? '#6AD1E3' : ''}/>
+                <ArrowCircleIcon color={stakeActionAllowed ? '#6AD1E3' : ''} />
                 <div className='header-button'>
-                    <h4><Translate id={`staking.${action}.stakeWith`} /></h4>
-                    <FormButton 
-                        className='small' 
+                    <h4>
+                        <Translate id={`staking.${action}.stakeWith`} />
+                    </h4>
+                    <FormButton
+                        className='small'
                         color='light-blue'
                         linkTo='/staking/validators'
-                        trackingId="STAKE Go to validators list page"
+                        trackingId='STAKE Go to validators list page'
                     >
                         <Translate id='button.edit' />
                     </FormButton>
@@ -216,10 +239,10 @@ export default function StakingAction({
                 <FormButton
                     sending={checkingValidator}
                     sendingString='staking.staking.checkingValidator'
-                    disabled={!stakeActionAllowed} 
+                    disabled={!stakeActionAllowed}
                     onClick={handleSubmitStake}
-                    trackingId="STAKE/UNSTAKE Click submit stake button"
-                    data-test-id="submitStakeButton"
+                    trackingId='STAKE/UNSTAKE Click submit stake button'
+                    data-test-id='submitStakeButton'
                 >
                     <Translate id={`staking.${action}.button`} />
                 </FormButton>
@@ -229,8 +252,8 @@ export default function StakingAction({
                         label={`staking.stake.${stake ? 'with' : 'from'}`}
                         validator={validator}
                         amount={useMax ? amount : toNear(amount)}
-                        open={confirm} 
-                        onConfirm={onStakingAction} 
+                        open={confirm}
+                        onConfirm={onStakingAction}
                         onClose={() => {
                             setConfirm(false);
                             Mixpanel.track('STAKE/UNSTAKE Close the modal');
@@ -245,12 +268,19 @@ export default function StakingAction({
     } else {
         return (
             <>
-                <TransferMoneyIcon/>
-                <h1><Translate id={`staking.${action}Success.title`} /></h1>
-                <div className='desc' data-test-id="stakingSuccessMessage">
+                <TransferMoneyIcon />
+                <h1>
+                    <Translate id={`staking.${action}Success.title`} />
+                </h1>
+                <div className='desc' data-test-id='stakingSuccessMessage'>
                     <SafeTranslate
                         id={`staking.${action}Success.desc`}
-                        data={{ amount: getNearAndFiatValue(parseNearAmount(displayAmount), nearTokenFiatValueUSD) }}
+                        data={{
+                            amount: getNearAndFiatValue(
+                                parseNearAmount(displayAmount),
+                                nearTokenFiatValueUSD
+                            ),
+                        }}
                     />
                 </div>
                 {validator && (
@@ -258,15 +288,17 @@ export default function StakingAction({
                         validator={validator}
                         amount={validator.staked}
                         clickable={false}
-                        style={{margin: '40px 0'}}
+                        style={{ margin: '40px 0' }}
                     />
                 )}
-                <div className='desc'><Translate id={`staking.${action}Success.descTwo`}/></div>
-                <FormButton 
-                    linkTo='/staking' 
+                <div className='desc'>
+                    <Translate id={`staking.${action}Success.descTwo`} />
+                </div>
+                <FormButton
+                    linkTo='/staking'
                     className='gray-blue'
-                    trackingId="STAKE/UNSTAKE Return to dashboard"
-                    data-test-id="returnToDashboardButton"
+                    trackingId='STAKE/UNSTAKE Return to dashboard'
+                    data-test-id='returnToDashboardButton'
                 >
                     <Translate id={`staking.${action}Success.button`} />
                 </FormButton>

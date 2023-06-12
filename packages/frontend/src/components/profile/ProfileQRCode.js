@@ -14,14 +14,16 @@ const CustomDiv = styled.div`
 const ProfileQRCode = ({ accountId }) => (
     <CustomDiv className='qr-code-container'>
         <QRCode
-            bgColor="#FFFFFF"
-            fgColor="#24272a"
-            level="Q"
+            bgColor='#FFFFFF'
+            fgColor='#24272a'
+            level='Q'
             style={{ width: '100%', height: '100%' }}
             renderAs='svg'
             value={`${accountId}`}
         />
-        <p><Translate id='profile.details.qrDesc' /></p>
+        <p>
+            <Translate id='profile.details.qrDesc' />
+        </p>
     </CustomDiv>
 );
 

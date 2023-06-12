@@ -19,7 +19,7 @@ export class TwoFactor extends Account2FA {
         super(wallet.connection, accountId, {
             storage: localStorage,
             helperUrl: CONFIG.ACCOUNT_HELPER_URL,
-            getCode: () => store.dispatch(promptTwoFactor(true)).payload.promise
+            getCode: () => store.dispatch(promptTwoFactor(true)).payload.promise,
         });
         this.wallet = wallet;
         this.has2fa = has2fa;
@@ -35,7 +35,9 @@ export class TwoFactor extends Account2FA {
 
     static async checkCanEnableTwoFactor(balance) {
         const availableBalance = new BN(balance.available);
-        const multisigMinAmount = new BN(nearApiJs.utils.format.parseNearAmount(CONFIG.MULTISIG_MIN_AMOUNT));
+        const multisigMinAmount = new BN(
+            nearApiJs.utils.format.parseNearAmount(CONFIG.MULTISIG_MIN_AMOUNT)
+        );
         return multisigMinAmount.lt(availableBalance);
     }
 
@@ -50,44 +52,59 @@ export class TwoFactor extends Account2FA {
         // additional check if the ledger is enabled, in case the user was able to omit disabled buttons
         const isLedgerEnabled = await this.wallet.isLedgerEnabled();
         if (isLedgerEnabled) {
-            throw new WalletError('Ledger Hardware Wallet is enabled', 'initTwoFactor.ledgerEnabled');
+            throw new WalletError(
+                'Ledger Hardware Wallet is enabled',
+                'initTwoFactor.ledgerEnabled'
+            );
         }
 
         // clear any previous requests in localStorage (for verifyTwoFactor)
         this.setRequest({ requestId: -1 });
         return await this.wallet.postSignedJson('/2fa/init', {
             accountId,
-            method
+            method,
         });
     }
 
     async getMultisigRequest() {
         const { requestId, accountId } = this.getRequest();
         return {
-            ...await this.viewFunction(this.accountId, 'get_request', { request_id: requestId }),
+            ...(await this.viewFunction(this.accountId, 'get_request', {
+                request_id: requestId,
+            })),
             request_id: requestId,
             account_id: accountId,
         };
     }
 
     async deployMultisig() {
-        const contractBytes = new Uint8Array(await (await fetch('/multisig.wasm')).arrayBuffer());
+        const contractBytes = new Uint8Array(
+            await (await fetch('/multisig.wasm')).arrayBuffer()
+        );
         await super.deployMultisig(contractBytes);
         this.has2fa = true;
     }
 
     async disableMultisig() {
-        const contractBytes = new Uint8Array(await (await fetch('/main.wasm')).arrayBuffer());
-        const stateCleanupContractBytes = new Uint8Array(await (await fetch('/state_cleanup.wasm')).arrayBuffer());
+        const contractBytes = new Uint8Array(
+            await (await fetch('/main.wasm')).arrayBuffer()
+        );
+        const stateCleanupContractBytes = new Uint8Array(
+            await (await fetch('/state_cleanup.wasm')).arrayBuffer()
+        );
         let result;
         try {
             result = await this.disable(contractBytes, stateCleanupContractBytes);
         } catch (e) {
             if (e.message.includes('too large to be viewed')) {
-                throw new Error('You must wait 15 minutes between each attempt to disable 2fa. Please try again in 15 minutes.');
+                throw new Error(
+                    'You must wait 15 minutes between each attempt to disable 2fa. Please try again in 15 minutes.'
+                );
             }
             if (e.message.includes('Request was cancelled.')) {
-                throw new Error('Request was cancelled. You must wait 15 minutes to attempt disabling 2fa again.');
+                throw new Error(
+                    'Request was cancelled. You must wait 15 minutes to attempt disabling 2fa again.'
+                );
             }
             throw new Error(e.message);
         }
@@ -98,7 +115,11 @@ export class TwoFactor extends Account2FA {
 
     static async disableMultisigWithFAK({ accountId, seedPhrase, cleanupState }) {
         const keyStore = new InMemoryKeyStore();
-        await keyStore.setKey(CONFIG.NETWORK_ID, accountId, KeyPair.fromString(parseSeedPhrase(seedPhrase).secretKey));
+        await keyStore.setKey(
+            CONFIG.NETWORK_ID,
+            accountId,
+            KeyPair.fromString(parseSeedPhrase(seedPhrase).secretKey)
+        );
         const connection = Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
             provider: {
@@ -108,16 +129,23 @@ export class TwoFactor extends Account2FA {
             signer: { type: 'InMemorySigner', keyStore },
         });
 
-        const emptyContractBytes = new Uint8Array(await (await fetch('/main.wasm')).arrayBuffer());
+        const emptyContractBytes = new Uint8Array(
+            await (await fetch('/main.wasm')).arrayBuffer()
+        );
         let cleanupContractBytes;
         if (cleanupState) {
-            cleanupContractBytes = new Uint8Array(await (await fetch('/state_cleanup.wasm')).arrayBuffer());
+            cleanupContractBytes = new Uint8Array(
+                await (await fetch('/state_cleanup.wasm')).arrayBuffer()
+            );
         }
 
         const account = new Account2FA(connection, accountId, {
             helperUrl: CONFIG.ACCOUNT_HELPER_URL,
         });
 
-        return await account.disableWithFAK({ contractBytes: emptyContractBytes, cleanupContractBytes });
+        return await account.disableWithFAK({
+            contractBytes: emptyContractBytes,
+            cleanupContractBytes,
+        });
     }
 }

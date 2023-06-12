@@ -16,7 +16,7 @@ const Container = styled.div`
     padding: 40px 0 30px 0;
 
     h2 {
-        color: #72727A !important;
+        color: #72727a !important;
         font-size: 16px !important;
         font-weight: 400 !important;
         line-height: 150%;
@@ -25,7 +25,7 @@ const Container = styled.div`
     }
 
     a {
-        border: 2px solid #F5F5F3;
+        border: 2px solid #f5f5f3;
         border-radius: 8px;
         width: 100%;
         display: flex;
@@ -36,8 +36,8 @@ const Container = styled.div`
         transition: 100ms;
 
         :hover {
-            border-color: #8FCDFF;
-            background-color: #F0F9FF;
+            border-color: #8fcdff;
+            background-color: #f0f9ff;
         }
 
         img {
@@ -56,22 +56,26 @@ const WhereToBuyNearModal = ({ open, onClose }) => {
             modalSize='md'
         >
             <Container>
-                <h1><Translate id='account.createImplicit.pre.whereToBuy.title'/></h1>
-                <h2><Translate id='account.createImplicit.pre.whereToBuy.desc'/></h2>
+                <h1>
+                    <Translate id='account.createImplicit.pre.whereToBuy.title' />
+                </h1>
+                <h2>
+                    <Translate id='account.createImplicit.pre.whereToBuy.desc' />
+                </h2>
                 <a href='https://www.binance.com/' target='_blank' rel='noreferrer'>
-                    <img src={BinanceLogo} alt='BINANCE'/>
+                    <img src={BinanceLogo} alt='BINANCE' />
                 </a>
                 <a href='https://www.huobi.com/' target='_blank' rel='noreferrer'>
-                    <img src={HuobiLogo} alt='HUOBI'/>
+                    <img src={HuobiLogo} alt='HUOBI' />
                 </a>
                 <a href='https://www.okex.com/' target='_blank' rel='noreferrer'>
-                    <img src={OkexLogo} alt='OKEX'/>
+                    <img src={OkexLogo} alt='OKEX' />
                 </a>
                 <a href='https://liquality.io/' target='_blank' rel='noreferrer'>
-                    <img src={LiqualityLogo} alt='LIQUALITY'/>
+                    <img src={LiqualityLogo} alt='LIQUALITY' />
                 </a>
                 <a href='https://www.okcoin.com/' target='_blank' rel='noreferrer'>
-                    <img src={OkCoinLogo} alt='OKCOIN'/>
+                    <img src={OkCoinLogo} alt='OKCOIN' />
                 </a>
             </Container>
         </Modal>

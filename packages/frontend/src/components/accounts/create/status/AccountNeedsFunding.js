@@ -6,27 +6,25 @@ import ClickToCopy from '../../../common/ClickToCopy';
 import CopyIcon from '../../../svg/CopyIcon';
 import StyledContainer from './Style.css';
 
-const AccountNeedsFunding = ({
-    accountId,
-    fundingAddress,
-    minDeposit
-}) => {
+const AccountNeedsFunding = ({ accountId, fundingAddress, minDeposit }) => {
     return (
         <StyledContainer>
             <div className='address'>
                 <div>
-                    <Translate id={`account.fundedStatus.${fundingAddress ? 'singleUse' : 'nearName'}`} /> 
+                    <Translate
+                        id={`account.fundedStatus.${
+                            fundingAddress ? 'singleUse' : 'nearName'
+                        }`}
+                    />
                     <ClickToCopy
                         copy={accountId || fundingAddress}
                         className='copy-funding-address'
                     >
-                        <CopyIcon/>
+                        <CopyIcon />
                         <Translate id='copy.title' />
                     </ClickToCopy>
                 </div>
-                <div>
-                    {accountId || fundingAddress}
-                </div>
+                <div>{accountId || fundingAddress}</div>
             </div>
             <div className='status'>
                 <Translate id='account.fundedStatus.status' />
@@ -37,9 +35,7 @@ const AccountNeedsFunding = ({
             <div className='amount'>
                 <Translate id='account.fundedStatus.minDeposit' />
                 <span>
-                    <Balance
-                        amount={minDeposit}
-                    />
+                    <Balance amount={minDeposit} />
                 </span>
             </div>
         </StyledContainer>

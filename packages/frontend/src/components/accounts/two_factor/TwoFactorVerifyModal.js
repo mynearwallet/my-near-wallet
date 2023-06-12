@@ -4,8 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Mixpanel } from '../../../mixpanel/index';
-import { resendTwoFactor, get2faMethod, getMultisigRequest } from '../../../redux/actions/account';
-import { selectAccountSlice, selectAccountMultisigRequest } from '../../../redux/slices/account';
+import {
+    resendTwoFactor,
+    get2faMethod,
+    getMultisigRequest,
+} from '../../../redux/actions/account';
+import {
+    selectAccountSlice,
+    selectAccountMultisigRequest,
+} from '../../../redux/slices/account';
 import { selectActionsPending, selectStatusSlice } from '../../../redux/slices/status';
 import getTranslationsFromMultisigRequest from '../../../utils/getTranslationsFromMultisigRequest';
 import { WalletError } from '../../../utils/walletError';
@@ -32,7 +39,7 @@ const StyledBannerContainer = styled.div`
             margin: 0px;
             word-break: break-word;
             @media (max-width: 450px) {
-                 border-radius: 4px;
+                border-radius: 4px;
             }
 
             > div {
@@ -47,24 +54,27 @@ const StyledBannerContainer = styled.div`
 `;
 
 const ActionDetailsBanner = ({ multisigRequest }) => {
-    const isAddingFullAccessKey = multisigRequest.actions.some(({ type, permission }) => type === 'AddKey' && !permission);
+    const isAddingFullAccessKey = multisigRequest.actions.some(
+        ({ type, permission }) => type === 'AddKey' && !permission
+    );
 
-    return  (
+    return (
         <StyledBannerContainer>
             <AlertBanner theme={isAddingFullAccessKey ? 'warning' : 'light-blue'}>
-                {getTranslationsFromMultisigRequest(multisigRequest).map(({ id, data }, index, arr) => (
-                    <React.Fragment key={JSON.stringify(data)}>
-                        <Translate id={id} data={data} />
-                        {index !== arr.length - 1 && <br />}
-                    </React.Fragment>
-                ))}
+                {getTranslationsFromMultisigRequest(multisigRequest).map(
+                    ({ id, data }, index, arr) => (
+                        <React.Fragment key={JSON.stringify(data)}>
+                            <Translate id={id} data={data} />
+                            {index !== arr.length - 1 && <br />}
+                        </React.Fragment>
+                    )
+                )}
             </AlertBanner>
         </StyledBannerContainer>
     );
 };
 
 const TwoFactorVerifyModal = ({ open, onClose }) => {
-
     const [method, setMethod] = useState();
     const [code, setCode] = useState('');
     const [resendCode, setResendCode] = useState();
@@ -72,7 +82,9 @@ const TwoFactorVerifyModal = ({ open, onClose }) => {
     const account = useSelector(selectAccountSlice);
     const multisigRequest = useSelector(selectAccountMultisigRequest);
     const status = useSelector(selectStatusSlice);
-    const loading = useSelector((state) => selectActionsPending(state, { types: ['VERIFY_TWO_FACTOR'] }));
+    const loading = useSelector((state) =>
+        selectActionsPending(state, { types: ['VERIFY_TWO_FACTOR'] })
+    );
 
     useEffect(() => {
         let isMounted = true;
@@ -85,9 +97,9 @@ const TwoFactorVerifyModal = ({ open, onClose }) => {
             handleGetTwoFactor();
             dispatch(getMultisigRequest());
         }
-        
+
         return () => {
-            isMounted = false; 
+            isMounted = false;
         };
     }, []);
 
@@ -103,12 +115,13 @@ const TwoFactorVerifyModal = ({ open, onClose }) => {
 
     const handleResendCode = async () => {
         setResendCode('resending');
-        await Mixpanel.withTracking('2FA Modal Resend code', 
+        await Mixpanel.withTracking(
+            '2FA Modal Resend code',
             async () => {
                 await dispatch(resendTwoFactor());
                 setResendCode('resent');
                 setTimeout(() => {
-                    setResendCode(); 
+                    setResendCode();
                 }, 3000);
             },
             (e) => {
@@ -119,15 +132,18 @@ const TwoFactorVerifyModal = ({ open, onClose }) => {
                 }
 
                 throw e;
-            },
+            }
         );
     };
-    
+
     const handleCancelClose = () => {
         Mixpanel.track('2FA Modal Cancel verification');
-        onClose(false, new WalletError('Request was cancelled.', 'promptTwoFactor.userCancelled'));
+        onClose(
+            false,
+            new WalletError('Request was cancelled.', 'promptTwoFactor.userCancelled')
+        );
     };
-    
+
     return (
         <Modal
             id='two-factor-verify-modal'
@@ -135,15 +151,26 @@ const TwoFactorVerifyModal = ({ open, onClose }) => {
             onClose={handleCancelClose}
             closeButton='desktop'
         >
-            <ModalTheme/>
-            <h2 className='title'><Translate id='twoFactor.verify.title'/></h2>
-            <p className='font-bw'><Translate id='twoFactor.verify.desc'/></p>
-            <p className='color-black font-bw' style={{ marginTop: '-10px', fontWeight: '500', height: '19px'}}>{method && method.detail}</p>
+            <ModalTheme />
+            <h2 className='title'>
+                <Translate id='twoFactor.verify.title' />
+            </h2>
+            <p className='font-bw'>
+                <Translate id='twoFactor.verify.desc' />
+            </p>
+            <p
+                className='color-black font-bw'
+                style={{ marginTop: '-10px', fontWeight: '500', height: '19px' }}
+            >
+                {method && method.detail}
+            </p>
             {multisigRequest && <ActionDetailsBanner multisigRequest={multisigRequest} />}
-            <Form onSubmit={(e) => {
-                handleVerifyCode();
-                e.preventDefault();
-            }}>
+            <Form
+                onSubmit={(e) => {
+                    handleVerifyCode();
+                    e.preventDefault();
+                }}
+            >
                 <TwoFactorVerifyInput
                     code={code}
                     onChange={handleChange}
@@ -152,11 +179,17 @@ const TwoFactorVerifyModal = ({ open, onClose }) => {
                     status={status}
                     resendCode={resendCode}
                 />
-                <FormButton type='submit' disabled={code.length !== 6 || loading} sending={loading}>
-                    <Translate id='button.verifyCode'/>
+                <FormButton
+                    type='submit'
+                    disabled={code.length !== 6 || loading}
+                    sending={loading}
+                >
+                    <Translate id='button.verifyCode' />
                 </FormButton>
             </Form>
-            <button onClick={handleCancelClose} className='link color-red'><Translate id='button.cancel'/></button>
+            <button onClick={handleCancelClose} className='link color-red'>
+                <Translate id='button.cancel' />
+            </button>
         </Modal>
     );
 };

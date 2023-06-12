@@ -35,7 +35,7 @@ const StyledCheckbox = styled.div`
     transition: all 150ms !important;
 
     ${HiddenCheckbox}:focus + & {
-        box-shadow: 0 0 0 2px #C8E3FC;
+        box-shadow: 0 0 0 2px #c8e3fc;
     }
 
     ${Icon} {
@@ -47,8 +47,8 @@ const Checkbox = ({ className, checked, ...props }) => (
     <CheckboxContainer className={className}>
         <HiddenCheckbox checked={checked} {...props} />
         <StyledCheckbox checked={checked}>
-            <Icon viewBox="0 0 24 24">
-                <polyline points="20 6 9 17 4 12" />
+            <Icon viewBox='0 0 24 24'>
+                <polyline points='20 6 9 17 4 12' />
             </Icon>
         </StyledCheckbox>
     </CheckboxContainer>

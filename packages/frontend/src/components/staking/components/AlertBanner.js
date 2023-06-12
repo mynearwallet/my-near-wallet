@@ -8,8 +8,8 @@ import SafeTranslate from '../../SafeTranslate';
 import AlertTriangleIcon from '../../svg/AlertTriangleIcon.js';
 
 const Container = styled.div`
-    background-color: #FFF0DE;
-    color: #A15600;
+    background-color: #fff0de;
+    color: #a15600;
     display: flex;
     padding: 20px;
     border-radius: 4px;
@@ -41,25 +41,41 @@ const Container = styled.div`
     }
 
     &.error {
-        background-color: #FADFDF;
-        color: #921C15;
+        background-color: #fadfdf;
+        color: #921c15;
 
         svg {
             path {
-                stroke: #921C15;
+                stroke: #921c15;
             }
         }
     }
-
 `;
 
-export default function AlertBanner({ title, button, linkTo, theme, titleData, 'data-test-id': testId, 'data-test-id-button': buttonTestId  }) {
+export default function AlertBanner({
+    title,
+    button,
+    linkTo,
+    theme,
+    titleData,
+    'data-test-id': testId,
+    'data-test-id-button': buttonTestId,
+}) {
     return (
         <Container className={classNames(['alert-banner', theme])} data-test-id={testId}>
-            <AlertTriangleIcon/>
+            <AlertTriangleIcon />
             <div>
-                <SafeTranslate id={title} data={{ data: titleData }}/>
-                {linkTo && button && <FormButton data-test-id={buttonTestId} className='link' linkTo={linkTo} trackingId="Click alert banner"><Translate id={button} /></FormButton>}
+                <SafeTranslate id={title} data={{ data: titleData }} />
+                {linkTo && button && (
+                    <FormButton
+                        data-test-id={buttonTestId}
+                        className='link'
+                        linkTo={linkTo}
+                        trackingId='Click alert banner'
+                    >
+                        <Translate id={button} />
+                    </FormButton>
+                )}
             </div>
         </Container>
     );

@@ -5,7 +5,7 @@ const StyledContainer = styled.div`
     &&& {
         display: flex;
         align-items: center;
-    
+
         > button {
             flex: 1;
 
@@ -16,12 +16,6 @@ const StyledContainer = styled.div`
     }
 `;
 
-export default ({
-    children
-}) => {
-    return (
-        <StyledContainer className='button-group'>
-            {children}
-        </StyledContainer>
-    );
+export default ({ children }) => {
+    return <StyledContainer className='button-group'>{children}</StyledContainer>;
 };

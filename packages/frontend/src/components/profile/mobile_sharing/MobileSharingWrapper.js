@@ -11,17 +11,20 @@ const MobileSharingWrapper = () => {
 
     useEffect(() => {
         async function updateMobileSharingLink() {
-            const localSecretKey = accountId && await wallet.getLocalSecretKey(accountId);
-            setMobileSharingLink(`${window.location.protocol}//${window.location.host}/auto-import-secret-key#${accountId}/${encodeURIComponent(localSecretKey)}`);
+            const localSecretKey =
+                accountId && (await wallet.getLocalSecretKey(accountId));
+            setMobileSharingLink(
+                `${window.location.protocol}//${
+                    window.location.host
+                }/auto-import-secret-key#${accountId}/${encodeURIComponent(
+                    localSecretKey
+                )}`
+            );
         }
         updateMobileSharingLink();
     }, [accountId]);
 
-    return (
-        <MobileSharing
-            mobileSharingLink={mobileSharingLink}
-        />
-    );
+    return <MobileSharing mobileSharingLink={mobileSharingLink} />;
 };
 
 export default MobileSharingWrapper;

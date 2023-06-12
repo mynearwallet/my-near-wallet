@@ -16,7 +16,6 @@ import SignTransaction from '../../sign/v2/SignTransaction';
 import SignTransactionDetails from '../../sign/v2/SignTransactionDetails';
 import { ModalContainer } from './styles';
 
-
 const AccountImportModal = ({ account, onSuccess, onFail }) => {
     const [keyType, setKeyType] = useState(null);
     const [accountBalance, setAccountBalance] = useState(null);
@@ -28,13 +27,21 @@ const AccountImportModal = ({ account, onSuccess, onFail }) => {
         try {
             return {
                 receiverId: account.accountId,
-                actions: [transactions.addKey(KeyPair.fromString(account.key), transactions.fullAccessKey())]
+                actions: [
+                    transactions.addKey(
+                        KeyPair.fromString(account.key),
+                        transactions.fullAccessKey()
+                    ),
+                ],
             };
         } catch (error) {
             return null;
         }
     }, [account]);
-    const estimatedAddFAKTransactionFees = useMemo(() => addFAKTransaction ? getEstimatedFees([addFAKTransaction]) : new BN('0') ,[addFAKTransaction]);
+    const estimatedAddFAKTransactionFees = useMemo(
+        () => (addFAKTransaction ? getEstimatedFees([addFAKTransaction]) : new BN('0')),
+        [addFAKTransaction]
+    );
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -43,32 +50,30 @@ const AccountImportModal = ({ account, onSuccess, onFail }) => {
         setShowTxDetails(false);
         setAddingKey(false);
         setError(false);
-  
+
         let keyPair;
-  
+
         try {
             keyPair = KeyPair.fromString(account.key).getPublicKey().toString();
         } catch (error) {
             setError(true);
             setKeyType(WalletClass.KEY_TYPES.OTHER);
         }
-  
+
         if (keyPair) {
             wallet
-                .getPublicKeyType(
-                    account.accountId,
-                    keyPair
-                )
-                .then(setKeyType).catch(() => {
+                .getPublicKeyType(account.accountId, keyPair)
+                .then(setKeyType)
+                .catch(() => {
                     setError(true);
                     setKeyType(WalletClass.KEY_TYPES.OTHER);
                 });
         }
-  
+
         wallet
             .getBalance(account.accountId)
             .then(({ available }) => setAccountBalance(available));
-    },[account]);
+    }, [account]);
 
     const addKeyToWalletKeyStore = useCallback(() => {
         setAddingKey(true);
@@ -121,26 +126,33 @@ const AccountImportModal = ({ account, onSuccess, onFail }) => {
                     <SignTransaction
                         sender={account.accountId}
                         availableBalance={accountBalance}
-                        estimatedFees={keyType === WalletClass.KEY_TYPES.FAK ? estimatedAddFAKTransactionFees : '0'}
+                        estimatedFees={
+                            keyType === WalletClass.KEY_TYPES.FAK
+                                ? estimatedAddFAKTransactionFees
+                                : '0'
+                        }
                         fromLabelId='batchImportAccounts.confirmImportModal.accountToImport'
                     />
                     {keyType === WalletClass.KEY_TYPES.FAK && (
-                        <FormButton className='link' onClick={() => setShowTxDetails(true)}>
+                        <FormButton
+                            className='link'
+                            onClick={() => setShowTxDetails(true)}
+                        >
                             <Translate id='batchImportAccounts.confirmImportModal.transactionDetails' />
                         </FormButton>
                     )}
-                    {error ? <div className='error-label'><Translate id='reduxActions.default.error' /></div> : null}
+                    {error ? (
+                        <div className='error-label'>
+                            <Translate id='reduxActions.default.error' />
+                        </div>
+                    ) : null}
                     <FormButtonGroup>
-                        <FormButton
-                            onClick={onFail}
-                            className='gray-blue'>
+                        <FormButton onClick={onFail} className='gray-blue'>
                             <Translate id='button.cancel' />
                         </FormButton>
                         <FormButton
                             onClick={addKeyToWalletKeyStore}
-                            disabled={
-                                !keyType || keyType === WalletClass.KEY_TYPES.OTHER
-                            }
+                            disabled={!keyType || keyType === WalletClass.KEY_TYPES.OTHER}
                             sending={addingKey}
                         >
                             <Translate id='button.approve' />

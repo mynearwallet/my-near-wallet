@@ -25,7 +25,7 @@ const RecoveryMethod = ({
                     <Title>{title}</Title>
                 </TitleWrapper>
                 <FormButton
-                    type="submit"
+                    type='submit'
                     color={methodEnabled ? 'gray-red small' : 'blue small'}
                     onClick={methodEnabled ? onDisable : onEnable}
                 >

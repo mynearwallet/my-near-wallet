@@ -16,17 +16,17 @@ const StyledContainer = styled(Container)`
     text-align: center;
 
     .near-balance {
-        color: #0072CE;
+        color: #0072ce;
         font-weight: 600;
-        border: 1px solid #D6EDFF;
+        border: 1px solid #d6edff;
         border-radius: 4px;
         padding: 6px 15px;
-        background-color: #F0F9FF;
+        background-color: #f0f9ff;
         margin: 30px 0;
     }
 
     .desc {
-        color: #72727A;
+        color: #72727a;
         margin-bottom: 40px;
     }
 
@@ -35,7 +35,7 @@ const StyledContainer = styled(Container)`
     }
 
     .or {
-        color: #A2A2A8;
+        color: #a2a2a8;
         margin: 20px 0 -6px 0;
     }
 
@@ -67,7 +67,7 @@ const NearDropLanding = ({
     history,
     claimingDrop,
     fundingAmount,
-    handleClaimNearDrop
+    handleClaimNearDrop,
 }) => {
     const params = parse(history.location.search);
     const redirectUrl = params.redirectUrl
@@ -81,14 +81,17 @@ const NearDropLanding = ({
                 <Translate id='linkdropLanding.title' />
             </h3>
             <div className='near-balance'>
-                <Balance data-test-id="linkdropBalanceAmount" amount={fundingAmount} />
+                <Balance data-test-id='linkdropBalanceAmount' amount={fundingAmount} />
             </div>
             <div className='desc'>
                 <Translate id='linkdropLanding.desc' />
             </div>
 
             {accountId ? (
-                <AccountDropdown disabled={claimingDrop} data-test-id="linkdropAccountDropdown" />
+                <AccountDropdown
+                    disabled={claimingDrop}
+                    data-test-id='linkdropAccountDropdown'
+                />
             ) : null}
 
             {accountId ? (
@@ -97,16 +100,16 @@ const NearDropLanding = ({
                     sending={claimingDrop}
                     disabled={mainLoader}
                     sendingString='linkdropLanding.claiming'
-                    data-test-id="linkdropClaimToExistingAccount"
+                    data-test-id='linkdropClaimToExistingAccount'
                 >
                     <Translate id='linkdropLanding.ctaAccount' />
                 </FormButton>
             ) : (
                 <FormButton
                     linkTo={`/recover-account?fundingOptions=${encodeURIComponent(
-                        JSON.stringify({ fundingContract, fundingKey, fundingAmount }),
+                        JSON.stringify({ fundingContract, fundingKey, fundingAmount })
                     )}${redirectUrl}`}
-                    data-test-id="linkdropLoginAndClaim"
+                    data-test-id='linkdropLoginAndClaim'
                 >
                     <Translate id='linkdropLanding.ctaLogin' />
                 </FormButton>
@@ -115,8 +118,8 @@ const NearDropLanding = ({
                 <Translate id='linkdropLanding.or' />
             </div>
             <FormButton
-                data-test-id="linkdropCreateAccountToClaim"
-                color="gray-blue"
+                data-test-id='linkdropCreateAccountToClaim'
+                color='gray-blue'
                 disabled={claimingDrop}
                 linkTo={`/create/${fundingContract}/${fundingKey}`}
             >

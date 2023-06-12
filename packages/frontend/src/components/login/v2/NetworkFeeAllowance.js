@@ -8,14 +8,14 @@ import ArrowUpRight from '../..//svg/ArrowUpRight';
 import Balance from '../../common/balance/Balance';
 
 const StyledContainer = styled.div`
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-radius: 8px;
     padding: 16px;
-    color: #72727A;
+    color: #72727a;
     margin: 50px 0 -20px 0;
 
     .contract-wrapper {
-        border-bottom: 1px solid #F0F0F1;
+        border-bottom: 1px solid #f0f0f1;
         padding-bottom: 16px;
         a {
             display: flex;
@@ -45,15 +45,17 @@ export default ({ contractId, contractIdUrl }) => (
         {contractId && (
             <div className='contract-wrapper'>
                 <div className='title'>Contract</div>
-                <a href={contractIdUrl} target='_blank' rel='noreferrer'>{contractId}<ArrowUpRight /></a>
+                <a href={contractIdUrl} target='_blank' rel='noreferrer'>
+                    {contractId}
+                    <ArrowUpRight />
+                </a>
             </div>
         )}
         <div>
-            <div className='title'><Translate id='login.v2.connectConfirm.feeAllowance.title' /></div>
-            <Balance
-                amount={CONFIG.ACCESS_KEY_FUNDING_AMOUNT}
-                showBalanceInUSD={false}
-            />
+            <div className='title'>
+                <Translate id='login.v2.connectConfirm.feeAllowance.title' />
+            </div>
+            <Balance amount={CONFIG.ACCESS_KEY_FUNDING_AMOUNT} showBalanceInUSD={false} />
         </div>
         <Translate
             id='login.v2.connectConfirm.feeAllowance.desc'

@@ -8,17 +8,12 @@ import {
     recoverAccountSecretKey,
     refreshAccount,
     redirectTo,
-    clearAccountState
+    clearAccountState,
 } from '../../../redux/actions/account';
 import { isUrlNotJavascriptProtocol } from '../../../utils/helper-api';
 import AutoImport from './AutoImport';
 
-
-const AutoImportWrapper = ({
-    secretKey,
-    accountId,
-    mixpanelImportType
-}) => {
+const AutoImportWrapper = ({ secretKey, accountId, mixpanelImportType }) => {
     const dispatch = useDispatch();
     const location = useSelector(getLocation);
     const URLParams = parse(location.search);
@@ -31,7 +26,8 @@ const AutoImportWrapper = ({
     }, []);
 
     const handleRecoverWithSecretKey = async () => {
-        await Mixpanel.withTracking(`IE-SP Recovery with ${mixpanelImportType} auto`,
+        await Mixpanel.withTracking(
+            `IE-SP Recovery with ${mixpanelImportType} auto`,
             async () => {
                 await dispatch(recoverAccountSecretKey(secretKey, accountId, false));
                 await dispatch(refreshAccount());

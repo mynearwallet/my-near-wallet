@@ -12,13 +12,13 @@ const Container = styled.div`
         right: 0;
         z-index: 1000;
         @media (max-width: 991px) {
-            bottom: ${(props) => props.open ? '0' : 'unset'};
+            bottom: ${(props) => (props.open ? '0' : 'unset')};
         }
 
         h6 {
             font-size: 13px;
             margin-bottom: 5px;
-            color: #72727A;
+            color: #72727a;
             font-weight: normal;
         }
 
@@ -37,7 +37,7 @@ export default ({
     flowLimitationSubMenu,
     refreshBalance,
     availableAccounts,
-    account
+    account,
 }) => {
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -65,7 +65,11 @@ export default ({
             return false;
         }
 
-        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || (!desktopMenu?.contains(e.target) && !mobileMenu?.contains(e.target))) {
+        if (
+            e.target.tagName === 'BUTTON' ||
+            e.target.tagName === 'A' ||
+            (!desktopMenu?.contains(e.target) && !mobileMenu?.contains(e.target))
+        ) {
             setMenuOpen(false);
         }
     }, []);
@@ -91,7 +95,7 @@ export default ({
                 handleSelectAccount={handleSelectAccount}
                 showNavLinks={showNavLinks}
                 flowLimitationMainMenu={flowLimitationMainMenu}
-                flowLimitationSubMenu={flowLimitationSubMenu}   
+                flowLimitationSubMenu={flowLimitationSubMenu}
                 refreshBalance={refreshBalance}
                 availableAccounts={availableAccounts}
                 account={account}
@@ -102,7 +106,7 @@ export default ({
                 handleSelectAccount={handleSelectAccount}
                 showNavLinks={showNavLinks}
                 flowLimitationMainMenu={flowLimitationMainMenu}
-                flowLimitationSubMenu={flowLimitationSubMenu}   
+                flowLimitationSubMenu={flowLimitationSubMenu}
                 refreshBalance={refreshBalance}
                 availableAccounts={availableAccounts}
                 account={account}

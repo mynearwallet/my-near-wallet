@@ -9,9 +9,7 @@ import { Mixpanel } from '../../mixpanel/index';
 import { checkAccountAvailable, redirectTo } from '../../redux/actions/account';
 import { clearLocalAlert, showCustomAlert } from '../../redux/actions/status';
 import { selectAccountId } from '../../redux/slices/account';
-import {
-    actions as ledgerActions
-} from '../../redux/slices/ledger';
+import { actions as ledgerActions } from '../../redux/slices/ledger';
 import { selectStatusLocalAlert } from '../../redux/slices/status';
 import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
 import { selectAllowedTokens } from '../../redux/slices/tokens';
@@ -22,9 +20,7 @@ import { formatErrorBalance } from '../common/balance/helpers';
 import SkeletonLoading from '../common/SkeletonLoading';
 import SendContainerV2, { VIEWS } from './SendContainerV2';
 
-const {
-    checkAndHideLedgerModal
-} = ledgerActions;
+const { checkAndHideLedgerModal } = ledgerActions;
 
 const { parseNearAmount, formatNearAmount } = utils.format;
 
@@ -55,7 +51,7 @@ const SendContainerWrapper = ({ match }) => {
     if (!sortedTokens.length) {
         return (
             <LoaderWrapper>
-                <SkeletonLoading height="6.375rem" show />
+                <SkeletonLoading height='6.375rem' show />
             </LoaderWrapper>
         );
     }
@@ -64,7 +60,9 @@ const SendContainerWrapper = ({ match }) => {
         <SendContainerV2
             accountId={accountId}
             redirectTo={(path) => dispatch(redirectTo(path))}
-            checkAccountAvailable={(accountId) => dispatch(checkAccountAvailable(accountId))}
+            checkAccountAvailable={(accountId) =>
+                dispatch(checkAccountAvailable(accountId))
+            }
             parseNearAmount={parseNearAmount}
             formatNearAmount={formatNearAmount}
             fungibleTokens={sortedTokens}
@@ -82,13 +80,14 @@ const SendContainerWrapper = ({ match }) => {
             handleSendToken={async (rawAmount, receiverId, contractName) => {
                 setSendingToken(true);
 
-                await Mixpanel.withTracking('SEND token',
+                await Mixpanel.withTracking(
+                    'SEND token',
                     async () => {
                         const result = await fungibleTokensService.transfer({
                             accountId,
                             amount: rawAmount,
                             receiverId,
-                            contractName
+                            contractName,
                         });
 
                         setTransactionHash(result.transaction.hash);
@@ -99,12 +98,14 @@ const SendContainerWrapper = ({ match }) => {
                         Mixpanel.people.set({ last_send_token: new Date().toString() });
                     },
                     (e) => {
-                        dispatch(showCustomAlert({
-                            success: false,
-                            messageCodeHeader: 'error',
-                            messageCode: 'walletErrorCodes.sendFungibleToken.error',
-                            errorMessage: formatErrorBalance(e.message),
-                        }));
+                        dispatch(
+                            showCustomAlert({
+                                success: false,
+                                messageCodeHeader: 'error',
+                                messageCode: 'walletErrorCodes.sendFungibleToken.error',
+                                errorMessage: formatErrorBalance(e.message),
+                            })
+                        );
                         setSendingToken('failed');
                         return;
                     }
@@ -117,33 +118,37 @@ const SendContainerWrapper = ({ match }) => {
                     if (token.onChainFTMetadata?.symbol === 'NEAR') {
                         const [totalFees, totalNear] = await Promise.all([
                             fungibleTokensService.getEstimatedTotalFees(),
-                            fungibleTokensService.getEstimatedTotalNearAmount({ amount: rawAmount })
+                            fungibleTokensService.getEstimatedTotalNearAmount({
+                                amount: rawAmount,
+                            }),
                         ]);
 
                         setEstimatedTotalFees(totalFees);
                         setEstimatedTotalInNear(totalNear);
                     } else {
-                        const totalFees = await fungibleTokensService.getEstimatedTotalFees({
-                            accountId: receiverId,
-                            contractName: token.contractName,
-                        });
+                        const totalFees =
+                            await fungibleTokensService.getEstimatedTotalFees({
+                                accountId: receiverId,
+                                contractName: token.contractName,
+                            });
                         setEstimatedTotalFees(totalFees);
                     }
 
                     setActiveView(VIEWS.REVIEW);
                 } catch (e) {
-                    dispatch(showCustomAlert({
-                        errorMessage: e.message,
-                        success: false,
-                        messageCodeHeader: 'error',
-                    }));
+                    dispatch(
+                        showCustomAlert({
+                            errorMessage: e.message,
+                            success: false,
+                            messageCodeHeader: 'error',
+                        })
+                    );
                 }
             }}
             sendingToken={sendingToken}
             transactionHash={transactionHash}
         />
     );
-
 };
 
 export default SendContainerWrapper;

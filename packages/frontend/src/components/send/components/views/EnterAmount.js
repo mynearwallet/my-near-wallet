@@ -29,7 +29,7 @@ const StyledContainer = styled.form`
         .usd-amount {
             text-align: center;
             margin-bottom: 20px;
-            color: #A2A2A8;
+            color: #a2a2a8;
         }
 
         .select-token-btn {
@@ -42,7 +42,7 @@ const StyledContainer = styled.form`
     }
 `;
 
-const EnterAmount = ({ 
+const EnterAmount = ({
     amount,
     rawAmount,
     onChangeAmount,
@@ -54,12 +54,12 @@ const EnterAmount = ({
     selectedToken,
     onClickSelectToken,
     error,
-    isMobile
+    isMobile,
 }) => {
     const isBridgedToken = selectedToken?.onChainFTMetadata?.isBridged;
 
     return (
-        <StyledContainer 
+        <StyledContainer
             className='buttons-bottom'
             onSubmit={(e) => {
                 onContinue(e);
@@ -67,7 +67,7 @@ const EnterAmount = ({
             }}
             novalidate
         >
-            <TabSelector/>
+            <TabSelector />
             <div className='amount-input-wrapper'>
                 <AmountInput
                     value={amount}
@@ -78,7 +78,7 @@ const EnterAmount = ({
             </div>
             {selectedToken.onChainFTMetadata?.symbol === 'NEAR' && (
                 <div className='usd-amount'>
-                    <Balance amount={rawAmount} showBalanceInNEAR={false}/>
+                    <Balance amount={rawAmount} showBalanceInNEAR={false} />
                 </div>
             )}
             <FormButton
@@ -87,12 +87,9 @@ const EnterAmount = ({
                 color='light-blue'
                 className='small rounded'
             >
-                <Translate id='button.useMax'/>
+                <Translate id='button.useMax' />
             </FormButton>
-            <SelectTokenButton
-                token={selectedToken}
-                onClick={onClickSelectToken}
-            />
+            <SelectTokenButton token={selectedToken} onClick={onClickSelectToken} />
             <BalanceDetails
                 availableToSend={availableToSend}
                 selectedToken={selectedToken}
@@ -111,7 +108,7 @@ const EnterAmount = ({
                     disabled={!continueAllowed}
                     data-test-id='sendMoneyPageSubmitAmountButton'
                 >
-                    <Translate id='button.continue'/>
+                    <Translate id='button.continue' />
                 </FormButton>
                 <FormButton
                     type='button'
@@ -119,7 +116,7 @@ const EnterAmount = ({
                     className='link'
                     color='gray'
                 >
-                    <Translate id='button.cancel'/>
+                    <Translate id='button.cancel' />
                 </FormButton>
             </div>
         </StyledContainer>

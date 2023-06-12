@@ -9,8 +9,8 @@ const Container = styled.div`
     font-style: italic;
     padding: 10px 0 20px 0;
     font-size: 13px;
-    color: #A2A2A8;
-    
+    color: #a2a2a8;
+
     p {
         margin-bottom: 5px;
     }
@@ -22,19 +22,37 @@ const Container = styled.div`
 `;
 
 const AccountNote = () => (
-
     <Container>
-        <p><Translate id='createAccount.note.canContain'/></p>
+        <p>
+            <Translate id='createAccount.note.canContain' />
+        </p>
         <ul>
-            <li><Translate id='createAccount.note.lowercase'/></li>
-            <li><Translate id='createAccount.note.digits'/></li>
-            <li><Translate id='createAccount.note.separators'/></li>
+            <li>
+                <Translate id='createAccount.note.lowercase' />
+            </li>
+            <li>
+                <Translate id='createAccount.note.digits' />
+            </li>
+            <li>
+                <Translate id='createAccount.note.separators' />
+            </li>
         </ul>
-        <p><Translate id='createAccount.note.cannotContain'/></p>
+        <p>
+            <Translate id='createAccount.note.cannotContain' />
+        </p>
         <ul>
-            <li><Translate id='createAccount.note.characters'/></li>
-            <li><Translate id='createAccount.note.minCharacters'/></li>
-            <li><SafeTranslate id='createAccount.note.maxCharacters' data={{ accountSuffix: CONFIG.ACCOUNT_ID_SUFFIX }}/></li>
+            <li>
+                <Translate id='createAccount.note.characters' />
+            </li>
+            <li>
+                <Translate id='createAccount.note.minCharacters' />
+            </li>
+            <li>
+                <SafeTranslate
+                    id='createAccount.note.maxCharacters'
+                    data={{ accountSuffix: CONFIG.ACCOUNT_ID_SUFFIX }}
+                />
+            </li>
         </ul>
     </Container>
 );

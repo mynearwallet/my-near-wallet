@@ -4,7 +4,12 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { Mixpanel } from '../../mixpanel/index';
-import { checkLinkdropInfo, claimLinkdropToAccount, redirectTo, handleRefreshUrl } from '../../redux/actions/account';
+import {
+    checkLinkdropInfo,
+    claimLinkdropToAccount,
+    redirectTo,
+    handleRefreshUrl,
+} from '../../redux/actions/account';
 import { clearLocalAlert } from '../../redux/actions/status';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { actions as linkdropActions } from '../../redux/slices/linkdrop';
@@ -25,17 +30,17 @@ const StyledContainer = styled(Container)`
     text-align: center;
 
     .near-balance {
-        color: #0072CE;
+        color: #0072ce;
         font-weight: 600;
-        border: 1px solid #D6EDFF;
+        border: 1px solid #d6edff;
         border-radius: 4px;
         padding: 6px 15px;
-        background-color: #F0F9FF;
+        background-color: #f0f9ff;
         margin: 30px 0;
     }
 
     .desc {
-        color: #72727A;
+        color: #72727a;
         margin-bottom: 40px;
     }
 
@@ -44,7 +49,7 @@ const StyledContainer = styled(Container)`
     }
 
     .or {
-        color: #A2A2A8;
+        color: #a2a2a8;
         margin: 20px 0 -6px 0;
     }
 
@@ -95,10 +100,14 @@ class LinkdropLanding extends Component {
                 if (keyInfo?.trial_data?.exit === false) {
                     this.setState({ validNearDrop: false, loadingLinkDropInfo: false });
                 } else {
-                    this.setState({ keyInfo, validNearDrop: true, loadingLinkDropInfo: false });
+                    this.setState({
+                        keyInfo,
+                        validNearDrop: true,
+                        loadingLinkDropInfo: false,
+                    });
                 }
             },
-            () => this.setState({ validNearDrop: false, loadingLinkDropInfo: false }),
+            () => this.setState({ validNearDrop: false, loadingLinkDropInfo: false })
         );
     };
 
@@ -122,8 +131,14 @@ class LinkdropLanding extends Component {
     };
 
     render() {
-        const { fundingContract, fundingKey, accountId, mainLoader, history, claimingDrop } =
-            this.props;
+        const {
+            fundingContract,
+            fundingKey,
+            accountId,
+            mainLoader,
+            history,
+            claimingDrop,
+        } = this.props;
         const { keyInfo, validNearDrop, loadingLinkDropInfo } = this.state;
         const fundingAmount = keyInfo?.yoctoNEAR || '0';
         const isTrialDrop = keyInfo?.trial_data?.exit || false;
@@ -201,7 +216,7 @@ const mapStateToProps = (state, { match }) => ({
 
 const LinkdropLandingWithRouter = connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(LinkdropLanding);
 
 export default LinkdropLandingWithRouter;

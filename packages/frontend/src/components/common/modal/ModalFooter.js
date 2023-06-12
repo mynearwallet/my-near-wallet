@@ -5,16 +5,14 @@ const StyledContainer = styled.div`
     &&& {
         margin: 25px -25px -25px -25px;
         padding: 25px;
-        border-top: 1px solid #F0F0F1;
+        border-top: 1px solid #f0f0f1;
 
         > button {
             margin: 0;
-        }   
+        }
     }
 `;
 
 export default ({ children }) => (
-    <StyledContainer className='modal-footer'>
-        {children}
-    </StyledContainer>
+    <StyledContainer className='modal-footer'>{children}</StyledContainer>
 );

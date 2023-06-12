@@ -36,12 +36,13 @@ const TwoFactorVerifyInput = ({
     code,
     account,
     resendCode,
-    status
+    status,
 }) => {
-
     return (
         <Container>
-            <div className='color-black font-bw'><Translate id='twoFactor.verify.inputLabel'/></div>
+            <div className='color-black font-bw'>
+                <Translate id='twoFactor.verify.inputLabel' />
+            </div>
             <Translate>
                 {({ translate }) => (
                     <>
@@ -55,19 +56,34 @@ const TwoFactorVerifyInput = ({
                             onChange={(e) => onChange(e.target.value)}
                             autoFocus={true}
                         />
-                        {status.localAlert && status.localAlert.messageCode === 'reduxActions.VERIFY_TWO_FACTOR.error' && code.length > 0 && (
-                            <div style={{color: '#ff585d', marginTop: '5px'}}>
-                                {translate('setRecoveryConfirm.invalidCode')}
-                            </div>
-                        )}
+                        {status.localAlert &&
+                            status.localAlert.messageCode ===
+                                'reduxActions.VERIFY_TWO_FACTOR.error' &&
+                            code.length > 0 && (
+                                <div style={{ color: '#ff585d', marginTop: '5px' }}>
+                                    {translate('setRecoveryConfirm.invalidCode')}
+                                </div>
+                            )}
                     </>
                 )}
             </Translate>
             <div onClick={!resendCode ? onResend : null}>
-                <Translate id='twoFactor.verify.didntReceive'/>
-                {!resendCode && <span className='color-blue'><Translate id='twoFactor.verify.resend'/></span>}
-                {resendCode === 'resending' && <span><Translate id='twoFactor.verify.resending'/></span>}
-                {resendCode === 'resent' && <span className='color-green'><Translate id='twoFactor.verify.resent'/></span>}
+                <Translate id='twoFactor.verify.didntReceive' />
+                {!resendCode && (
+                    <span className='color-blue'>
+                        <Translate id='twoFactor.verify.resend' />
+                    </span>
+                )}
+                {resendCode === 'resending' && (
+                    <span>
+                        <Translate id='twoFactor.verify.resending' />
+                    </span>
+                )}
+                {resendCode === 'resent' && (
+                    <span className='color-green'>
+                        <Translate id='twoFactor.verify.resent' />
+                    </span>
+                )}
             </div>
         </Container>
     );

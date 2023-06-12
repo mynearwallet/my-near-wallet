@@ -16,7 +16,6 @@ const StyledContainer = styled(Container)`
     padding-top: 0;
     padding-bottom: 0;
 
-
     &&& {
         > button {
             width: 100%;
@@ -28,17 +27,17 @@ const StyledContainer = styled(Container)`
                 width: 22px;
                 height: 22px;
                 margin-right: 10px;
-            } 
+            }
 
             :hover {
                 > svg {
                     path {
-                        stroke: #E5484D;
+                        stroke: #e5484d;
                     }
                 }
             }
         }
-    }   
+    }
 `;
 
 export default () => {
@@ -47,10 +46,10 @@ export default () => {
     const accountId = useSelector(selectAccountId);
     return (
         <StyledContainer>
-            <FormButton 
+            <FormButton
                 color='red'
                 onClick={() => setShowRemoveAccountModal(true)}
-                style={{marginTop: 0}}
+                style={{ marginTop: 0 }}
             >
                 <RemoveAccountImage className='remove-account-icon' />
                 <Translate id='removeAccount.button' />
@@ -59,11 +58,17 @@ export default () => {
                 <RemoveAccountModal
                     onClose={() => setShowRemoveAccountModal(false)}
                     onRemoveAccount={async () => {
-                        const walletAccounts = await wallet.removeWalletAccount(accountId);
+                        const walletAccounts = await wallet.removeWalletAccount(
+                            accountId
+                        );
                         if (Object.keys(walletAccounts).length === 0) {
                             location.reload();
                         } else {
-                            dispatch(switchAccount({ accountId: Object.keys(walletAccounts)[0] }));
+                            dispatch(
+                                switchAccount({
+                                    accountId: Object.keys(walletAccounts)[0],
+                                })
+                            );
                         }
                         setShowRemoveAccountModal(false);
                     }}

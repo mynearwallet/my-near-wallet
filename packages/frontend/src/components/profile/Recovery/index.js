@@ -103,11 +103,11 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
         <>
             <h2>
                 <ShieldIcon />
-                <Translate id="profile.security.title" />
+                <Translate id='profile.security.title' />
             </h2>
             <h4>
-                <Translate id="profile.security.mostSecure" />
-                <Tooltip translate="profile.security.mostSecureDesc" icon="icon-lg" />
+                <Translate id='profile.security.mostSecure' />
+                <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
             </h4>
 
             {!twoFactor && (
@@ -134,16 +134,16 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
                 </RecoveryOption>
             )}
             <h4>
-                <Translate id="profile.security.lessSecure" />
-                <Tooltip translate="profile.security.lessSecureDesc" icon="icon-lg" />
+                <Translate id='profile.security.lessSecure' />
+                <Tooltip translate='profile.security.lessSecureDesc' icon='icon-lg' />
             </h4>
             <RecoveryOption>
                 <RecoveryMethod
-                    title={<Translate id="recoveryMgmt.methodTitle.phrase" />}
+                    title={<Translate id='recoveryMgmt.methodTitle.phrase' />}
                     description={
                         phraseMethod?.confirmed ? (
                             <>
-                                <Translate id="recoveryMgmt.enabled" />
+                                <Translate id='recoveryMgmt.enabled' />
                                 &nbsp;
                                 {formatCreatedAt(phraseMethod?.createdAt)}
                             </>
@@ -156,8 +156,8 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
                 />
                 {showPhraseDisabling && (
                     <ConfirmDisableMethod
-                        title={<Translate id="recoveryMgmt.disableTitle" />}
-                        description={<Translate id="recoveryMgmt.disableTextPhrase" />}
+                        title={<Translate id='recoveryMgmt.disableTitle' />}
+                        description={<Translate id='recoveryMgmt.disableTextPhrase' />}
                         isProcessing={isPhraseProcessing}
                         isOpen={showPhraseDisabling}
                         onClose={() => setPhraseDisabling(false)}
@@ -167,7 +167,7 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
             </RecoveryOption>
             {showDisabledModal && (
                 <Modal isOpen={showDisabledModal} onClose={handleModalClose}>
-                    <Translate id="recoveryMgmt.disableNotAllowed" />
+                    <Translate id='recoveryMgmt.disableNotAllowed' />
                 </Modal>
             )}
         </>

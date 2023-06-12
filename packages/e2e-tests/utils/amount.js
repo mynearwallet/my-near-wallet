@@ -1,4 +1,4 @@
-const Big = require("big.js");
+const Big = require('big.js');
 
 function formatAmount(amount, decimals) {
     return Big(amount).div(Big(10).pow(decimals)).toFixed();

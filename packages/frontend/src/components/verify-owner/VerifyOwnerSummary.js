@@ -8,7 +8,7 @@ import Container from '../common/styled/Container.css';
 import VerifyOwner from './VerifyOwner';
 
 const StyledContainer = styled(Container)`
-    background-color: ##F0F0F1;
+    background-color: ##f0f0f1;
     padding: 25px;
     &&& {
         > button {
@@ -35,7 +35,8 @@ export default ({
     accountUrlReferrer,
     signing,
     message,
-    isValidCallbackUrl
+    isValidCallbackUrl,
+    disableApprove,
 }) => {
     return (
         <StyledContainer className='small-centered border brs-8 bsw-l'>
@@ -53,8 +54,9 @@ export default ({
                     <Translate id='button.cancel' />
                 </FormButton>
                 <FormButton
+                    data-test-id='approve-verify-owner'
                     onClick={onClickApprove}
-                    disabled={signing || !isValidCallbackUrl}
+                    disabled={signing || !isValidCallbackUrl || disableApprove}
                     sending={signing}
                 >
                     <Translate id='button.approve' />

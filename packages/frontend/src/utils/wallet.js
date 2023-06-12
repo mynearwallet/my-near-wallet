@@ -8,11 +8,7 @@ import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { store } from '..';
 import CONFIG from '../config';
-import {
-    makeAccountActive,
-    redirectTo,
-    switchAccount
-} from '../redux/actions/account';
+import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
@@ -25,7 +21,7 @@ import {
     removeAccountConfirmed,
     getLedgerHDPath,
     removeLedgerHDPath,
-    setLedgerHdPath
+    setLedgerHdPath,
 } from './localStorage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
@@ -41,7 +37,7 @@ export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
     'fund-create-account',
     'verify-account',
     'initial-deposit',
-    'setup-ledger'
+    'setup-ledger',
 ];
 export const WALLET_LOGIN_URL = 'login';
 export const WALLET_SIGN_URL = 'sign';
@@ -62,16 +58,18 @@ export const ENABLE_IDENTITY_VERIFIED_ACCOUNT = true;
 // To disable coin-op 1.5: Set ENABLE_IDENTITY_VERIFIED_ACCOUNT to 'false'
 // TODO: Clean up all Coin-op 1.5 related code after test period
 
-
 const KEY_UNIQUE_PREFIX = '_4:';
 const KEY_WALLET_ACCOUNTS = KEY_UNIQUE_PREFIX + 'wallet:accounts_v2';
 export const KEY_ACTIVE_ACCOUNT_ID = KEY_UNIQUE_PREFIX + 'wallet:active_account_id_v2';
 const ACCOUNT_ID_REGEX = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
 export const RELEASE_NOTES_MODAL_VERSION = 'v0.01.2';
 
-export const keyAccountConfirmed = (accountId) => `wallet.account:${accountId}:${CONFIG.NETWORK_ID}:confirmed`;
-export const keyStakingAccountSelected = () => `wallet.account:${wallet.accountId}:${CONFIG.NETWORK_ID}:stakingAccount`;
-export const keyReleaseNotesModalClosed = (version) => `wallet.releaseNotesModal:${version}:closed`;
+export const keyAccountConfirmed = (accountId) =>
+    `wallet.account:${accountId}:${CONFIG.NETWORK_ID}:confirmed`;
+export const keyStakingAccountSelected = () =>
+    `wallet.account:${wallet.accountId}:${CONFIG.NETWORK_ID}:stakingAccount`;
+export const keyReleaseNotesModalClosed = (version) =>
+    `wallet.releaseNotesModal:${version}:closed`;
 
 const WALLET_METADATA_METHOD = '__wallet__metadata';
 
@@ -82,7 +80,7 @@ const {
     setLedgerTxSigned,
     showLedgerModal,
     handleShowConnectModal,
-    checkAndHideLedgerModal
+    checkAndHideLedgerModal,
 } = ledgerActions;
 
 export const convertPKForContract = (pk) => {
@@ -120,7 +118,7 @@ export default class Wallet {
             async getPublicKey(accountId, networkId) {
                 const ledgerKey = await wallet.getLedgerKey(accountId);
                 if (ledgerKey) {
-                    return  ledgerKey;
+                    return ledgerKey;
                 }
 
                 return await inMemorySigner.getPublicKey(accountId, networkId);
@@ -140,28 +138,30 @@ export default class Wallet {
                         );
                     }
                     const signature = await client.sign(message, path);
-                    await store.dispatch(setLedgerTxSigned({
-                        status: true,
-                        accountId
-                    }));
+                    await store.dispatch(
+                        setLedgerTxSigned({
+                            status: true,
+                            accountId,
+                        })
+                    );
                     const publicKey = await this.getPublicKey(accountId, networkId);
                     return {
                         signature,
-                        publicKey
+                        publicKey,
                     };
                 }
 
                 return inMemorySigner.signMessage(message, accountId, networkId);
-            }
+            },
         };
         let provider;
         if (rpcInfo) {
             const args = { url: rpcInfo.shardRpc + '/' };
             if (rpcInfo.shardApiToken) {
                 args.headers = {
-                    'x-api-key' : rpcInfo.shardApiToken
+                    'x-api-key': rpcInfo.shardApiToken,
                 };
-            };
+            }
             provider = new JsonRpcProvider({ type: 'JsonRpcProvider', ...args });
         } else {
             provider = { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } };
@@ -169,12 +169,12 @@ export default class Wallet {
         this.connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
             provider,
-            signer: this.signer
+            signer: this.signer,
         });
         this.connectionBasic = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
             provider,
-            signer: this.inMemorySignerBasic
+            signer: this.inMemorySignerBasic,
         });
         this.getAccountsLocalStorage();
         this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
@@ -184,7 +184,7 @@ export default class Wallet {
         LEDGER: 'ledger',
         MULTISIG: 'multisig',
         FAK: 'fullAccessKey',
-        OTHER: 'other'
+        OTHER: 'other',
     };
 
     async removeWalletAccount(accountId) {
@@ -198,15 +198,20 @@ export default class Wallet {
     }
 
     getAccountsLocalStorage() {
-        return this.accounts = JSON.parse(
+        return (this.accounts = JSON.parse(
             localStorage.getItem(KEY_WALLET_ACCOUNTS) || '{}'
-        );
+        ));
     }
 
     async getLocalAccessKey(accountId, accessKeys) {
-        const localPublicKey = await this.inMemorySigner.getPublicKey(accountId, CONFIG.NETWORK_ID);
-        return localPublicKey && accessKeys.find(({ public_key }) =>
-            public_key === localPublicKey.toString());
+        const localPublicKey = await this.inMemorySigner.getPublicKey(
+            accountId,
+            CONFIG.NETWORK_ID
+        );
+        return (
+            localPublicKey &&
+            accessKeys.find(({ public_key }) => public_key === localPublicKey.toString())
+        );
     }
 
     async getLocalSecretKey(accountId) {
@@ -231,12 +236,14 @@ export default class Wallet {
         const accessKeys = await this.getAccessKeys(accountId);
         if (accessKeys) {
             const localKey = await this.getLocalAccessKey(accountId, accessKeys);
-            const ledgerKey = accessKeys.find((accessKey) =>
-                accessKey.meta.type === 'ledger');
+            const ledgerKey = accessKeys.find(
+                (accessKey) => accessKey.meta.type === 'ledger'
+            );
 
             const localKeyIsNullOrNonMultisigLAK =
                 !localKey ||
-                (localKey.permission !== 'FullAccess' && !this.isMultisigKeyInfoView(accountId, localKey));
+                (localKey.permission !== 'FullAccess' &&
+                    !this.isMultisigKeyInfoView(accountId, localKey));
 
             if (ledgerKey && localKeyIsNullOrNonMultisigLAK) {
                 return PublicKey.from(ledgerKey.public_key);
@@ -256,8 +263,9 @@ export default class Wallet {
 
     isFullAccessKey(accountId, keypair) {
         return this.getAccessKeys(accountId).then((keys) => {
-            const key = keys.find(({ public_key }) =>
-                public_key === keypair.getPublicKey().toString());
+            const key = keys.find(
+                ({ public_key }) => public_key === keypair.getPublicKey().toString()
+            );
 
             return key?.access_key?.permission === 'FullAccess';
         });
@@ -293,7 +301,7 @@ export default class Wallet {
         if (!this.isEmpty()) {
             const accessKeys = limitedAccountData
                 ? []
-                : await this.getAccessKeys() || [];
+                : (await this.getAccessKeys()) || [];
             const ledgerKey = accessKeys.find((key) => key.meta.type === 'ledger');
             const account = await this.getAccount(this.accountId, limitedAccountData);
             const state = await account.state();
@@ -302,24 +310,25 @@ export default class Wallet {
                 ...state,
                 has2fa: !!account.has2fa,
                 balance: {
-                    available: ''
+                    available: '',
                 },
                 accountId: this.accountId,
                 accounts: this.accounts,
                 accessKeys,
-                authorizedApps: accessKeys.filter((it) => (
-                    it.access_key
-                    && it.access_key.permission.FunctionCall
-                    && it.access_key.permission.FunctionCall.receiver_id !== this.accountId
-                )),
-                fullAccessKeys: accessKeys.filter((it) => (
-                    it.access_key
-                    && it.access_key.permission === 'FullAccess'
-                )),
+                authorizedApps: accessKeys.filter(
+                    (it) =>
+                        it.access_key &&
+                        it.access_key.permission.FunctionCall &&
+                        it.access_key.permission.FunctionCall.receiver_id !==
+                            this.accountId
+                ),
+                fullAccessKeys: accessKeys.filter(
+                    (it) => it.access_key && it.access_key.permission === 'FullAccess'
+                ),
                 ledger: {
                     ledgerKey,
-                    hasLedger: !!ledgerKey
-                }
+                    hasLedger: !!ledgerKey,
+                },
             };
         }
     }
@@ -333,15 +342,19 @@ export default class Wallet {
         }
 
         const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
-        return Promise.all(accessKeys.map(async (accessKey) => ({
-            ...accessKey,
-            meta: await getKeyMeta(accessKey.public_key)
-        })));
+        return Promise.all(
+            accessKeys.map(async (accessKey) => ({
+                ...accessKey,
+                meta: await getKeyMeta(accessKey.public_key),
+            }))
+        );
     }
 
     async getPublicKeyType(accountId, publicKeyString) {
         const allKeys = await this.getAccessKeys(accountId);
-        const keyInfoView = allKeys.find(({public_key}) => public_key === publicKeyString);
+        const keyInfoView = allKeys.find(
+            ({ public_key }) => public_key === publicKeyString
+        );
 
         if (keyInfoView) {
             if (this.isFullAccessKeyInfoView(keyInfoView)) {
@@ -369,20 +382,27 @@ export default class Wallet {
     }
 
     isLedgerKeyInfoView(accountId, keyInfoView) {
-        const receiver_id = keyInfoView?.access_key?.permission?.FunctionCall?.receiver_id;
-        const method_names = keyInfoView?.access_key?.permission?.FunctionCall?.method_names;
+        const receiver_id =
+            keyInfoView?.access_key?.permission?.FunctionCall?.receiver_id;
+        const method_names =
+            keyInfoView?.access_key?.permission?.FunctionCall?.method_names;
         return receiver_id === accountId && isEqual(method_names, ['__wallet__metadata']);
     }
 
     isMultisigKeyInfoView(accountId, keyInfoView) {
-        const receiver_id = keyInfoView?.access_key?.permission?.FunctionCall?.receiver_id;
-        const method_names = keyInfoView?.access_key?.permission?.FunctionCall?.method_names;
-        return receiver_id === accountId && isEqual(method_names, [
-            'add_request',
-            'add_request_and_confirm',
-            'delete_request',
-            'confirm'
-        ]);
+        const receiver_id =
+            keyInfoView?.access_key?.permission?.FunctionCall?.receiver_id;
+        const method_names =
+            keyInfoView?.access_key?.permission?.FunctionCall?.method_names;
+        return (
+            receiver_id === accountId &&
+            isEqual(method_names, [
+                'add_request',
+                'add_request_and_confirm',
+                'delete_request',
+                'confirm',
+            ])
+        );
     }
 
     async addExistingAccountKeyToWalletKeyStore(accountId, keyPair, ledgerHdPath) {
@@ -426,11 +446,11 @@ export default class Wallet {
             case Wallet.KEY_TYPES.LEDGER: {
                 await this.saveAccount(accountId, keyPair);
                 if (ledgerHdPath) {
-                    setLedgerHdPath({accountId, path: ledgerHdPath});
+                    setLedgerHdPath({ accountId, path: ledgerHdPath });
                 }
-                await this.getLedgerPublicKey(ledgerHdPath)
-                    .then((publicKey) =>
-                        setKeyMeta(publicKey.toString(), {type: 'ledger'}));
+                await this.getLedgerPublicKey(ledgerHdPath).then((publicKey) =>
+                    setKeyMeta(publicKey.toString(), { type: 'ledger' })
+                );
 
                 if (!this.accountId) {
                     return this.makeAccountActive(accountId);
@@ -450,21 +470,30 @@ export default class Wallet {
         const accessKeys = await this.getAccessKeys();
         const localAccessKey = await this.getLocalAccessKey(this.accountId, accessKeys);
         const account = await this.getAccount(this.accountId);
-        const keysToRemove = accessKeys.filter(({
-            public_key,
-            access_key: { permission },
-            meta: { type }
-        }) => permission === 'FullAccess'
-            && type !== 'ledger'
-            && !(localAccessKey && public_key === localAccessKey.public_key));
+        const keysToRemove = accessKeys.filter(
+            ({ public_key, access_key: { permission }, meta: { type } }) =>
+                permission === 'FullAccess' &&
+                type !== 'ledger' &&
+                !(localAccessKey && public_key === localAccessKey.public_key)
+        );
 
         const WALLET_METADATA_METHOD = '__wallet__metadata';
         let newLocalKeyPair;
-        if (!localAccessKey || (!localAccessKey.access_key.permission.FunctionCall ||
-            !localAccessKey.access_key.permission.FunctionCall.method_names.includes(WALLET_METADATA_METHOD))) {
+        if (
+            !localAccessKey ||
+            !localAccessKey.access_key.permission.FunctionCall ||
+            !localAccessKey.access_key.permission.FunctionCall.method_names.includes(
+                WALLET_METADATA_METHOD
+            )
+        ) {
             // NOTE: This key isn't used to call actual contract method, just used to verify connection with account in private DB
             newLocalKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
-            await account.addKey(newLocalKeyPair.getPublicKey(), this.accountId, WALLET_METADATA_METHOD, '0');
+            await account.addKey(
+                newLocalKeyPair.getPublicKey(),
+                this.accountId,
+                WALLET_METADATA_METHOD,
+                '0'
+            );
         }
 
         for (const { public_key } of keysToRemove) {
@@ -475,11 +504,17 @@ export default class Wallet {
             if (localAccessKey) {
                 await account.deleteKey(localAccessKey.public_key);
             }
-            await this.keyStore.setKey(CONFIG.NETWORK_ID, this.accountId, newLocalKeyPair);
+            await this.keyStore.setKey(
+                CONFIG.NETWORK_ID,
+                this.accountId,
+                newLocalKeyPair
+            );
         }
 
         const recoveryMethods = await this.getRecoveryMethods();
-        const methodsToRemove = recoveryMethods.filter((method) => method.kind !== 'ledger');
+        const methodsToRemove = recoveryMethods.filter(
+            (method) => method.kind !== 'ledger'
+        );
         for (const recoveryMethod of methodsToRemove) {
             await this.deleteRecoveryMethod(recoveryMethod);
         }
@@ -506,7 +541,9 @@ export default class Wallet {
         // TODO: Is it even needed or is checked already both upstream/downstream?
         if (accountId.match(/.*[.@].*/)) {
             if (!accountId.endsWith(`.${CONFIG.ACCOUNT_ID_SUFFIX}`)) {
-                throw new Error('Characters `.` and `@` have special meaning and cannot be used as part of normal account name.');
+                throw new Error(
+                    'Characters `.` and `@` have special meaning and cannot be used as part of normal account name.'
+                );
             }
         }
 
@@ -521,25 +558,33 @@ export default class Wallet {
         return !(await this.accountExists(accountId));
     }
 
-    async sendIdentityVerificationMethodCode({ kind, identityKey, recaptchaToken, recaptchaAction }) {
+    async sendIdentityVerificationMethodCode({
+        kind,
+        identityKey,
+        recaptchaToken,
+        recaptchaAction,
+    }) {
         return await sendJson('POST', IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL, {
             kind,
             identityKey,
             recaptchaToken,
             recaptchaAction,
-            recaptchaSiteKey: CONFIG.RECAPTCHA_ENTERPRISE_SITE_KEY
+            recaptchaSiteKey: CONFIG.RECAPTCHA_ENTERPRISE_SITE_KEY,
         });
     }
 
     async checkFundedAccountAvailable() {
-        const { available } = await sendJson('GET', CONFIG.ACCOUNT_HELPER_URL + '/checkFundedAccountAvailable');
+        const { available } = await sendJson(
+            'GET',
+            CONFIG.ACCOUNT_HELPER_URL + '/checkFundedAccountAvailable'
+        );
         return available;
     }
     async createNewAccountWithNearContract({
         account,
         newAccountId,
         newPublicKey,
-        newInitialBalance
+        newInitialBalance,
     }) {
         const {
             status: { SuccessValue: createResultBase64 },
@@ -549,8 +594,7 @@ export default class Wallet {
             methodName: 'create_account',
             args: {
                 new_account_id: newAccountId,
-                new_public_key: newPublicKey.toString()
-                    .replace(/^ed25519:/, ''),
+                new_public_key: newPublicKey.toString().replace(/^ed25519:/, ''),
             },
             gas: CONFIG.LINKDROP_GAS,
             attachedDeposit: newInitialBalance,
@@ -572,7 +616,7 @@ export default class Wallet {
             account,
             newAccountId: accountId,
             newPublicKey: publicKey,
-            newInitialBalance: CONFIG.MIN_BALANCE_FOR_GAS
+            newInitialBalance: CONFIG.MIN_BALANCE_FOR_GAS,
         });
 
         if (this.accounts[fundingAccountId] || fundingAccountId.length !== 64) {
@@ -585,10 +629,15 @@ export default class Wallet {
             return;
         }
 
-        const [{ access_key: { permission }, public_key }] = accessKeys;
+        const [
+            {
+                access_key: { permission },
+                public_key,
+            },
+        ] = accessKeys;
         const implicitPublicKey = new PublicKey({
             keyType: KeyType.ED25519,
-            data: Buffer.from(fundingAccountId, 'hex')
+            data: Buffer.from(fundingAccountId, 'hex'),
         });
 
         if (permission !== 'FullAccess' || implicitPublicKey.toString() !== public_key) {
@@ -605,20 +654,23 @@ export default class Wallet {
 
         const contract = new nearApiJs.Contract(account, fundingContract, {
             viewMethods: ['get_key_balance', 'get_key_information'],
-            sender: fundingContract
+            sender: fundingContract,
         });
 
         const key = nearApiJs.KeyPair.fromString(fundingKey).publicKey.toString();
 
         let keyInfo = {
             required_gas: '100000000000000',
-            yoctoNEAR: '0'
+            yoctoNEAR: '0',
         };
 
         try {
             let returnedKeyInfo = await contract.get_key_information({ key });
 
-            if (Object.hasOwn(returnedKeyInfo, 'yoctoNEAR') && Object.hasOwn(returnedKeyInfo, 'required_gas')) {
+            if (
+                Object.hasOwn(returnedKeyInfo, 'yoctoNEAR') &&
+                Object.hasOwn(returnedKeyInfo, 'required_gas')
+            ) {
                 return returnedKeyInfo;
             }
 
@@ -632,41 +684,72 @@ export default class Wallet {
         return keyInfo;
     }
 
-    async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
+    async getLinkdropRequiredGas(fundingContract, fundingPubKey) {
         const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
-        await this.keyStore.setKey(
-            CONFIG.NETWORK_ID,
-            fundingContract,
-            nearApiJs.KeyPair.fromString(fundingKey)
-        );
+        try {
+            const key = await account.viewFunction(
+                fundingContract,
+                'get_drop_information',
+                { key: fundingPubKey }
+            );
+
+            if (key.required_gas) {
+                return key.required_gas;
+            } else {
+                const drop = await account.viewFunction(
+                    fundingContract,
+                    'get_drop_information',
+                    { key: fundingPubKey }
+                );
+                return drop.required_gas || CONFIG.LINKDROP_GAS;
+            }
+        } catch {
+            return CONFIG.LINKDROP_GAS;
+        }
+    }
+
+    async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
+        const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
+        const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
 
         const contract = new nearApiJs.Contract(account, fundingContract, {
             changeMethods: ['create_account_and_claim', 'claim'],
-            sender: fundingContract
+            sender: fundingContract,
         });
 
-        await contract.create_account_and_claim({
-            new_account_id: accountId,
-            new_public_key: publicKey.toString().replace('ed25519:', '')
-        }, CONFIG.LINKDROP_GAS);
+        const fundingPubKey = fundingKeyPair.getPublicKey().toString();
+        const attachedGas = await this.getLinkdropRequiredGas(
+            fundingContract,
+            fundingPubKey
+        );
+        await contract.create_account_and_claim(
+            {
+                new_account_id: accountId,
+                new_public_key: publicKey.toString().replace('ed25519:', ''),
+            },
+            attachedGas
+        );
     }
 
     async claimLinkdropToAccount(fundingContract, fundingKey) {
+        const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
         const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
-        await this.keyStore.setKey(
-            CONFIG.NETWORK_ID,
-            fundingContract,
-            nearApiJs.KeyPair.fromString(fundingKey)
-        );
+        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
 
         const accountId = this.accountId;
 
         const contract = new nearApiJs.Contract(account, fundingContract, {
             changeMethods: ['claim'],
-            sender: fundingContract
+            sender: fundingContract,
         });
 
-        await contract.claim({ account_id: accountId }, CONFIG.LINKDROP_GAS);
+        const fundingPubKey = fundingKeyPair.getPublicKey().toString();
+        const attachedGas = await this.getLinkdropRequiredGas(
+            fundingContract,
+            fundingPubKey
+        );
+        await contract.claim({ account_id: accountId }, attachedGas);
     }
 
     async saveAccountKeyPair({ accountId, recoveryKeyPair }) {
@@ -713,22 +796,35 @@ export default class Wallet {
      recovering a second account attempts to call this method with the currently logged in account and not the tempKeyStore
      ********************************/
     // TODO: Why is fullAccess needed? Everything without contractId should be full access.
-    async addAccessKey(accountId, contractId, publicKey, fullAccess = false, methodNames = '', recoveryKeyIsFAK) {
-        const account = recoveryKeyIsFAK ?
-            new nearApiJs.Account(this.connection, accountId) :
-            await this.getAccount(accountId);
+    async addAccessKey(
+        accountId,
+        contractId,
+        publicKey,
+        fullAccess = false,
+        methodNames = '',
+        recoveryKeyIsFAK
+    ) {
+        const account = recoveryKeyIsFAK
+            ? new nearApiJs.Account(this.connection, accountId)
+            : await this.getAccount(accountId);
 
         const has2fa = await TwoFactor.has2faEnabled(account);
         console.log('key being added to 2fa account ?', has2fa, account);
         try {
             // TODO: Why not always pass `fullAccess` explicitly when it's desired?
             // TODO: Alternatively require passing MULTISIG_CHANGE_METHODS from caller as `methodNames`
-            if (fullAccess || (!has2fa && accountId === contractId && !methodNames.length)) {
+            if (
+                fullAccess ||
+                (!has2fa && accountId === contractId && !methodNames.length)
+            ) {
                 console.log('adding full access key', publicKey.toString());
                 return await account.addKey(publicKey);
             } else {
-                const isMultisig = has2fa && !methodNames.length && accountId === contractId;
-                const finalMethodNames = isMultisig ? MULTISIG_CHANGE_METHODS : methodNames;
+                const isMultisig =
+                    has2fa && !methodNames.length && accountId === contractId;
+                const finalMethodNames = isMultisig
+                    ? MULTISIG_CHANGE_METHODS
+                    : methodNames;
 
                 return await account.addKey(
                     publicKey.toString(),
@@ -761,8 +857,9 @@ export default class Wallet {
 
         const ledgerPublicKey = await this.getLedgerPublicKey(path);
         const accessKeys = await this.getAccessKeys(accountId);
-        const accountHasLedgerKey = accessKeys.some((key) =>
-            key.public_key === ledgerPublicKey.toString());
+        const accountHasLedgerKey = accessKeys.some(
+            (key) => key.public_key === ledgerPublicKey.toString()
+        );
 
         await setKeyMeta(ledgerPublicKey, { type: 'ledger' });
 
@@ -771,7 +868,7 @@ export default class Wallet {
             await account.addKey(ledgerPublicKey);
             await this.postSignedJson('/account/ledgerKeyAdded', {
                 accountId,
-                publicKey: ledgerPublicKey.toString()
+                publicKey: ledgerPublicKey.toString(),
             });
         }
     }
@@ -779,17 +876,20 @@ export default class Wallet {
     async exportToLedgerWallet(path, accountId) {
         const ledgerPublicKey = await this.getLedgerPublicKey(path);
         const accessKeys = await this.getAccessKeys(accountId);
-        const accountHasLedgerKey = accessKeys.some((key) =>
-            key.public_key === ledgerPublicKey.toString());
+        const accountHasLedgerKey = accessKeys.some(
+            (key) => key.public_key === ledgerPublicKey.toString()
+        );
 
         if (!accountHasLedgerKey) {
             const account = await this.getAccount(accountId);
             const has2fa = await TwoFactor.has2faEnabled(account);
 
             if (has2fa) {
-                await store.dispatch(switchAccount({
-                    accountId: account.accountId
-                }));
+                await store.dispatch(
+                    switchAccount({
+                        accountId: account.accountId,
+                    })
+                );
             }
             await account.addKey(ledgerPublicKey);
         }
@@ -808,14 +908,19 @@ export default class Wallet {
 
         await this.deleteRecoveryMethod({
             kind: 'ledger',
-            publicKey: publicKey.toString()
+            publicKey: publicKey.toString(),
         });
         removeLedgerHDPath(this.accountId);
     }
 
     async addWalletMetadataAccessKeyIfNeeded(accountId, localAccessKey) {
-        if (!localAccessKey || (!localAccessKey.access_key.permission.FunctionCall ||
-            !localAccessKey.access_key.permission.FunctionCall.method_names.includes(WALLET_METADATA_METHOD))) {
+        if (
+            !localAccessKey ||
+            !localAccessKey.access_key.permission.FunctionCall ||
+            !localAccessKey.access_key.permission.FunctionCall.method_names.includes(
+                WALLET_METADATA_METHOD
+            )
+        ) {
             // NOTE: This key isn't used to call actual contract method, just used to verify connection with account in private DB
             const newLocalKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
             const account = await this.getAccount(accountId);
@@ -850,30 +955,33 @@ export default class Wallet {
             accountIds = await getAccountIds(publicKey);
         } catch (error) {
             if (error.name === 'AbortError') {
-                throw new WalletError(
-                    'Fetch aborted.',
-                    'getLedgerAccountIds.aborted'
-                );
+                throw new WalletError('Fetch aborted.', 'getLedgerAccountIds.aborted');
             }
             throw error;
         }
 
-        const checkedAccountIds = (await Promise.all(
-            accountIds
-                .map(async (accountId) => {
+        const checkedAccountIds = (
+            await Promise.all(
+                accountIds.map(async (accountId) => {
                     try {
                         const account = await this.getAccount(accountId);
                         const accountKeys = await account.getAccessKeys();
-                        return accountKeys.find(({ public_key }) =>
-                            public_key === publicKey.toString()) ? accountId : null;
+                        return accountKeys.find(
+                            ({ public_key }) => public_key === publicKey.toString()
+                        )
+                            ? accountId
+                            : null;
                     } catch (error) {
-                        if (error.toString().indexOf('does not exist while viewing') !== -1) {
+                        if (
+                            error.toString().indexOf('does not exist while viewing') !==
+                            -1
+                        ) {
                             return null;
                         }
                         throw error;
                     }
                 })
-        )
+            )
         )
             // todo: implicit boolean cast, maybe .filter((accountId) => Boolean(accountId)) ?
             .filter((accountId) => accountId);
@@ -893,7 +1001,10 @@ export default class Wallet {
             const accessKeys = await this.getAccessKeys(accountId);
             const localAccessKey = await this.getLocalAccessKey(accountId, accessKeys);
 
-            const newKeyPair = await this.addWalletMetadataAccessKeyIfNeeded(accountId, localAccessKey);
+            const newKeyPair = await this.addWalletMetadataAccessKeyIfNeeded(
+                accountId,
+                localAccessKey
+            );
             await this.setKey(accountId, newKeyPair);
         } catch (error) {
             if (error.name !== 'TransportStatusError') {
@@ -904,8 +1015,9 @@ export default class Wallet {
     }
 
     async saveAndSelectLedgerAccounts({ accounts }) {
-        const accountIds = Object.keys(accounts)
-            .filter((accountId) => accounts[accountId].status === 'success');
+        const accountIds = Object.keys(accounts).filter(
+            (accountId) => accounts[accountId].status === 'success'
+        );
 
         if (!accountIds.length) {
             throw new WalletError(
@@ -914,14 +1026,16 @@ export default class Wallet {
             );
         }
 
-        await Promise.all(accountIds.map(async (accountId) => {
-            await this.saveAccount(accountId);
-        }));
+        await Promise.all(
+            accountIds.map(async (accountId) => {
+                await this.saveAccount(accountId);
+            })
+        );
 
         store.dispatch(makeAccountActive(accountIds[accountIds.length - 1]));
 
         return {
-            numberOfAccounts: accountIds.length
+            numberOfAccounts: accountIds.length,
         };
     }
 
@@ -981,7 +1095,7 @@ export default class Wallet {
     async signatureFor(account) {
         const { accountId } = account;
         const block = await account.connection.provider.block({
-            finality: 'final'
+            finality: 'final',
         });
         const blockNumber = block.header.height.toString();
         const signer = account.inMemorySigner || account.connection.signer;
@@ -997,7 +1111,7 @@ export default class Wallet {
     async postSignedJson(path, options) {
         return await sendJson('POST', CONFIG.ACCOUNT_HELPER_URL + path, {
             ...options,
-            ...(await this.signatureFor(this))
+            ...(await this.signatureFor(this)),
         });
     }
 
@@ -1005,13 +1119,14 @@ export default class Wallet {
         const { seedPhrase } = generateSeedPhrase();
         const { secretKey } = parseSeedPhrase(seedPhrase);
         const recoveryKeyPair = nearApiJs.KeyPair.fromString(secretKey);
-        const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data)
-            .toString('hex');
+        const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString(
+            'hex'
+        );
 
         const body = {
             accountId: implicitAccountId,
             method,
-            seedPhrase
+            seedPhrase,
         };
         await sendJson(
             'POST',
@@ -1027,12 +1142,13 @@ export default class Wallet {
         const body = {
             accountId,
             method,
-            seedPhrase
+            seedPhrase,
         };
         if (isNew) {
             await sendJson(
                 'POST',
-                CONFIG.ACCOUNT_HELPER_URL + '/account/initializeRecoveryMethodForTempAccount',
+                CONFIG.ACCOUNT_HELPER_URL +
+                    '/account/initializeRecoveryMethodForTempAccount',
                 body
             );
         } else {
@@ -1048,12 +1164,16 @@ export default class Wallet {
         publicKey
     ) {
         try {
-            await sendJson('POST', CONFIG.ACCOUNT_HELPER_URL + '/account/validateSecurityCodeForTempAccount', {
-                accountId: implicitAccountId,
-                method,
-                publicKey,
-                securityCode,
-            });
+            await sendJson(
+                'POST',
+                CONFIG.ACCOUNT_HELPER_URL + '/account/validateSecurityCodeForTempAccount',
+                {
+                    accountId: implicitAccountId,
+                    method,
+                    publicKey,
+                    securityCode,
+                }
+            );
         } catch (e) {
             throw new WalletError(
                 'Invalid code',
@@ -1082,12 +1202,13 @@ export default class Wallet {
             if (isNew) {
                 await sendJson(
                     'POST',
-                    CONFIG.ACCOUNT_HELPER_URL + '/account/validateSecurityCodeForTempAccount',
+                    CONFIG.ACCOUNT_HELPER_URL +
+                        '/account/validateSecurityCodeForTempAccount',
                     {
                         ...body,
                         enterpriseRecaptchaToken,
                         recaptchaAction,
-                        recaptchaSiteKey: CONFIG.RECAPTCHA_ENTERPRISE_SITE_KEY
+                        recaptchaSiteKey: CONFIG.RECAPTCHA_ENTERPRISE_SITE_KEY,
                     }
                 );
             } else {
@@ -1103,11 +1224,17 @@ export default class Wallet {
 
     async getRecoveryMethods() {
         const { accountId } = this;
-        let recoveryMethods = await this.postSignedJson('/account/recoveryMethods', { accountId });
+        let recoveryMethods = await this.postSignedJson('/account/recoveryMethods', {
+            accountId,
+        });
         const accessKeys = await this.getAccessKeys();
         const publicKeys = accessKeys.map((key) => key.public_key);
-        const publicKeyMethods = recoveryMethods.filter(({ publicKey }) => publicKeys.includes(publicKey));
-        const twoFactorMethods = recoveryMethods.filter(({ kind }) => kind.indexOf('2fa-') === 0);
+        const publicKeyMethods = recoveryMethods.filter(({ publicKey }) =>
+            publicKeys.includes(publicKey)
+        );
+        const twoFactorMethods = recoveryMethods.filter(
+            ({ kind }) => kind.indexOf('2fa-') === 0
+        );
 
         return [...publicKeyMethods, ...twoFactorMethods];
     }
@@ -1132,9 +1259,11 @@ export default class Wallet {
             console.error(e);
             throw new WalletError(e.message, 'recoveryMethods.setupMethod');
         } finally {
-            await store.dispatch(redirectTo('/profile', {
-                globalAlertPreventClear: true
-            }));
+            await store.dispatch(
+                redirectTo('/profile', {
+                    globalAlertPreventClear: true,
+                })
+            );
         }
     }
 
@@ -1143,7 +1272,11 @@ export default class Wallet {
         const accountKeys = await account.getAccessKeys();
 
         if (!accountKeys.some((it) => it.public_key.endsWith(newPublicKey))) {
-            await this.addAccessKey(accountId, accountId, convertPKForContract(newPublicKey));
+            await this.addAccessKey(
+                accountId,
+                accountId,
+                convertPKForContract(newPublicKey)
+            );
         }
     }
 
@@ -1158,7 +1291,7 @@ export default class Wallet {
             await this.postSignedJson('/account/deleteRecoveryMethod', {
                 accountId: this.accountId,
                 kind,
-                publicKey
+                publicKey,
             });
         } else {
             throw new WalletError(
@@ -1226,92 +1359,101 @@ export default class Wallet {
         const connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
             provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
-            signer: new nearApiJs.InMemorySigner(tempKeyStore)
+            signer: new nearApiJs.InMemorySigner(tempKeyStore),
         });
 
         const connectionConstructor = this.connection;
 
         const accountIdsSuccess = [];
         const accountIdsError = [];
-        await Promise.all(accountIds.map(async (accountId, i) => {
-            if (!accountId || !accountId.length) {
-                return;
-            }
-            // temp account
-            this.connection = connection;
-            this.accountId = accountId;
-            let account = await this.getAccount(accountId);
-            let recoveryKeyIsFAK = false;
-            // check if recover access key is FAK and if so add key without 2FA
-            if (await TwoFactor.has2faEnabled(account)) {
-                const accessKeys = await account.getAccessKeys();
-                recoveryKeyIsFAK = accessKeys.find(({ public_key, access_key }) =>
-                    public_key === publicKey &&
-                    access_key.permission &&
-                    access_key.permission === 'FullAccess'
-                );
-                if (recoveryKeyIsFAK) {
-                    console.log('using FAK and regular Account instance to recover');
-                    shouldCreateFullAccessKey = false;
+        await Promise.all(
+            accountIds.map(async (accountId, i) => {
+                if (!accountId || !accountId.length) {
+                    return;
                 }
-            }
+                // temp account
+                this.connection = connection;
+                this.accountId = accountId;
+                let account = await this.getAccount(accountId);
+                let recoveryKeyIsFAK = false;
+                // check if recover access key is FAK and if so add key without 2FA
+                if (await TwoFactor.has2faEnabled(account)) {
+                    const accessKeys = await account.getAccessKeys();
+                    recoveryKeyIsFAK = accessKeys.find(
+                        ({ public_key, access_key }) =>
+                            public_key === publicKey &&
+                            access_key.permission &&
+                            access_key.permission === 'FullAccess'
+                    );
+                    if (recoveryKeyIsFAK) {
+                        console.log('using FAK and regular Account instance to recover');
+                        shouldCreateFullAccessKey = false;
+                    }
+                }
 
-            const keyPair = nearApiJs.KeyPair.fromString(secretKey);
-            await tempKeyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
-            account.keyStore = tempKeyStore;
+                const keyPair = nearApiJs.KeyPair.fromString(secretKey);
+                await tempKeyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
+                account.keyStore = tempKeyStore;
 
-            // todo WARNING, should be refactored: attempt to assign to const or readonly var
-            account.inMemorySigner = account.connection.signer = new nearApiJs.InMemorySigner(tempKeyStore);
+                // todo WARNING, should be refactored: attempt to assign to const or readonly var
+                account.inMemorySigner = account.connection.signer =
+                    new nearApiJs.InMemorySigner(tempKeyStore);
 
-            const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+                const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
 
-            try {
-                const methodNames = '';
-                await this.addAccessKey(
-                    accountId,
-                    accountId,
-                    newKeyPair.publicKey,
-                    shouldCreateFullAccessKey,
-                    methodNames,
-                    recoveryKeyIsFAK
-                );
-                accountIdsSuccess.push({
-                    accountId,
-                    newKeyPair
-                });
-            } catch (error) {
-                console.error(error);
-                accountIdsError.push({
-                    accountId,
-                    error
-                });
-            }
-        }));
+                try {
+                    const methodNames = '';
+                    await this.addAccessKey(
+                        accountId,
+                        accountId,
+                        newKeyPair.publicKey,
+                        shouldCreateFullAccessKey,
+                        methodNames,
+                        recoveryKeyIsFAK
+                    );
+                    accountIdsSuccess.push({
+                        accountId,
+                        newKeyPair,
+                    });
+                } catch (error) {
+                    console.error(error);
+                    accountIdsError.push({
+                        accountId,
+                        error,
+                    });
+                }
+            })
+        );
 
         this.connection = connectionConstructor;
 
         if (!!accountIdsSuccess.length) {
-            await Promise.all(accountIdsSuccess.map(async ({ accountId, newKeyPair }) => {
-                await this.saveAccount(accountId, newKeyPair);
-            }));
+            await Promise.all(
+                accountIdsSuccess.map(async ({ accountId, newKeyPair }) => {
+                    await this.saveAccount(accountId, newKeyPair);
+                })
+            );
 
             const accountId = accountIdsSuccess[accountIdsSuccess.length - 1].accountId;
             store.dispatch(makeAccountActive(accountId));
 
             return {
                 numberOfAccounts: accountIdsSuccess.length,
-                accountList: accountIdsSuccess.flatMap((accountId) =>
-                    accountId.account_id).join(', '),
+                accountList: accountIdsSuccess
+                    .flatMap((accountId) => accountId.account_id)
+                    .join(', '),
             };
         } else {
-            const lastAccount = accountIdsError.reverse().find((account) =>
-                account.error.type === 'LackBalanceForState');
+            const lastAccount = accountIdsError
+                .reverse()
+                .find((account) => account.error.type === 'LackBalanceForState');
 
             if (lastAccount) {
                 this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
-                store.dispatch(redirectTo(
-                    `/profile/${lastAccount.accountId}`,
-                    { globalAlertPreventClear: true })
+                store.dispatch(
+                    redirectTo(`/profile/${lastAccount.accountId}`, {
+                        globalAlertPreventClear: true,
+                    })
                 );
 
                 throw lastAccount.error;
@@ -1332,29 +1474,34 @@ export default class Wallet {
             const recreateTransaction = account.deployMultisig || true;
             if (recreateTransaction) {
                 try {
-                    ({ status, transaction } =
-                        await account.signAndSendTransaction({
-                            receiverId, actions
-                        }));
+                    ({ status, transaction } = await account.signAndSendTransaction({
+                        receiverId,
+                        actions,
+                    }));
                 } catch (error) {
                     if (error.message.includes('Exceeded the prepaid gas')) {
-                        throw new WalletError(error.message, error.code, { transactionHashes });
+                        throw new WalletError(error.message, error.code, {
+                            transactionHashes,
+                        });
                     }
 
                     throw error;
                 }
             } else {
                 // TODO: Maybe also only take receiverId and actions as with multisig path?
-                const [, signedTransaction] = await nearApiJs.transactions.signTransaction(
-                    receiverId,
-                    nonce,
-                    actions,
-                    blockHash,
-                    this.connection.signer,
-                    accountId,
-                    CONFIG.NETWORK_ID
-                );
-                ({ status, transaction } = await this.connection.provider.sendTransaction(signedTransaction));
+                const [, signedTransaction] =
+                    await nearApiJs.transactions.signTransaction(
+                        receiverId,
+                        nonce,
+                        actions,
+                        blockHash,
+                        this.connection.signer,
+                        accountId,
+                        CONFIG.NETWORK_ID
+                    );
+                ({ status, transaction } = await this.connection.provider.sendTransaction(
+                    signedTransaction
+                ));
             }
 
             // TODO: Shouldn't throw more specific errors on failure?
@@ -1365,7 +1512,7 @@ export default class Wallet {
             }
             transactionHashes.push({
                 hash: transaction.hash,
-                nonceString: nonce.toString()
+                nonceString: nonce.toString(),
             });
         }
 
@@ -1374,8 +1521,9 @@ export default class Wallet {
 
     dispatchShowLedgerModal(show) {
         const { actionStatus } = store.getState().status;
-        const actions = Object.keys(actionStatus)
-            .filter((action) => actionStatus[action]?.pending === true);
+        const actions = Object.keys(actionStatus).filter(
+            (action) => actionStatus[action]?.pending === true
+        );
         const action = actions.length ? actions[actions.length - 1] : false;
         store.dispatch(showLedgerModal({ show, action }));
     }
@@ -1383,10 +1531,14 @@ export default class Wallet {
     async signMessage(message, accountId = this.accountId) {
         const account = await this.getAccount(accountId);
         const signer = account.inMemorySigner || account.connection.signer;
-        const signed = await signer.signMessage(Buffer.from(message), accountId, CONFIG.NETWORK_ID);
+        const signed = await signer.signMessage(
+            Buffer.from(message),
+            accountId,
+            CONFIG.NETWORK_ID
+        );
         return {
             accountId,
-            signed
+            signed,
         };
     }
 

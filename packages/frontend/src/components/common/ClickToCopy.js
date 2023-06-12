@@ -14,8 +14,8 @@ const Container = styled.div`
         left: 50%;
         transform: translate(-50%, 0);
         text-align: center;
-        background-color: #8DECC6;
-        color: #005A46;
+        background-color: #8decc6;
+        color: #005a46;
         border-radius: 4px;
         padding: 6px 8px;
         font-size: 13px;
@@ -43,13 +43,20 @@ const Container = styled.div`
     }
 `;
 
-const ClickToCopy = ({ className, children, compact, copy, onClick, successTranslation = 'default' }) => {
+const ClickToCopy = ({
+    className,
+    children,
+    compact,
+    copy,
+    onClick,
+    successTranslation = 'default',
+}) => {
     const [show, setShow] = useState(false);
 
     const handleCopy = (e) => {
         Mixpanel.track('Click to copy text');
         setShow(true);
-        setTimeout (() => setShow(false), 2000);
+        setTimeout(() => setShow(false), 2000);
         const input = document.createElement('textarea');
         input.innerHTML = copy;
         document.body.appendChild(input);
@@ -70,13 +77,13 @@ const ClickToCopy = ({ className, children, compact, copy, onClick, successTrans
                     className={classNames([
                         className,
                         show ? 'show' : '',
-                        compact ? 'compact': ''
+                        compact ? 'compact' : '',
                     ])}
                     onClick={handleCopy}
                 >
                     {children}
                     <div className='copy-success'>
-                        <Translate id={`copy.${successTranslation}`}/>
+                        <Translate id={`copy.${successTranslation}`} />
                     </div>
                 </Container>
             )}

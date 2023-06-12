@@ -17,13 +17,15 @@ const initSentry = () => {
             return event;
         },
         beforeBreadcrumb(breadcrumb) {
-            if (breadcrumb.category === 'navigation' &&
+            if (
+                breadcrumb.category === 'navigation' &&
                 (breadcrumb.data.from.includes('recover-with-link') ||
-                    breadcrumb.data.to.includes('recover-with-link'))) {
+                    breadcrumb.data.to.includes('recover-with-link'))
+            ) {
                 delete breadcrumb.data;
             }
             return breadcrumb;
-        }
+        },
     });
 };
 

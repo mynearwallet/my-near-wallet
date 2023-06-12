@@ -1,4 +1,12 @@
-export const showAlert = ({ data, onlyError, onlySuccess, console = true, localAlert, messageCodeHeader, success } = {}) => ({
+export const showAlert = ({
+    data,
+    onlyError,
+    onlySuccess,
+    console = true,
+    localAlert,
+    messageCodeHeader,
+    success,
+} = {}) => ({
     alert: {
         showAlert: localAlert ? false : true,
         onlyError: onlySuccess ? false : true,
@@ -6,9 +14,9 @@ export const showAlert = ({ data, onlyError, onlySuccess, console = true, localA
         console,
         localAlert,
         messageCodeHeader,
-        success
+        success,
     },
-    data
+    data,
 });
 
 export const showAlertToolkit = (alertParams) => ({
@@ -16,6 +24,6 @@ export const showAlertToolkit = (alertParams) => ({
         message: error.message,
         type: error.type,
         messageCode: error.messageCode,
-        alertMeta: showAlert(alertParams)
-    })
+        alertMeta: showAlert(alertParams),
+    }),
 });

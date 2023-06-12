@@ -24,7 +24,7 @@ const StyledContainer = styled(Container)`
             font-size: 16px;
             position: relative;
             text-align: center;
-            background-color: #FAFAFA;
+            background-color: #fafafa;
             border-radius: 16px;
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
@@ -34,7 +34,7 @@ const StyledContainer = styled(Container)`
                 margin-top: -35px;
             }
 
-            .back-arrow-button { 
+            .back-arrow-button {
                 position: absolute;
                 left: 20px;
                 top: 50%;
@@ -43,8 +43,8 @@ const StyledContainer = styled(Container)`
         }
 
         .network-fees {
-            color: #72727A;
-            border-bottom: 1px solid #F0F0F1;
+            color: #72727a;
+            border-bottom: 1px solid #f0f0f1;
         }
 
         .title {
@@ -79,7 +79,7 @@ const StyledContainer = styled(Container)`
         }
         .arguments-wrapper {
             background-color: #272729;
-            color: #D5D4D8;
+            color: #d5d4d8;
             border-radius: 4px;
             margin-left: 25px;
 
@@ -95,12 +95,7 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    onClickGoBack,
-    transactions,
-    signGasFee,
-    privateShardInfo
-}) => {
+export default ({ onClickGoBack, transactions, signGasFee, privateShardInfo }) => {
     return (
         <StyledContainer className='small-centered border'>
             <div className='header'>
@@ -108,39 +103,46 @@ export default ({
                 <Translate id='sign.transactionDetails' />
             </div>
             <div className='network-fees'>
-                <div className='title'><Translate id='sign.networkFees' /></div>
+                <div className='title'>
+                    <Translate id='sign.networkFees' />
+                </div>
                 {privateShardInfo ? (
                     <div className='entry'>No fees</div>
                 ) : (
                     <>
                         <div className='entry'>
                             <Translate id='sign.estimatedFees' />
-                            <Balance
-                                amount={signGasFee}
-                                showBalanceInUSD={false}
-                            />
+                            <Balance amount={signGasFee} showBalanceInUSD={false} />
                         </div>
                         <div className='entry'>
                             <Translate id='sign.feeLimit' />
                             <div>{signGasFee} Tgas</div>
                         </div>
                     </>
-                ) }
+                )}
             </div>
 
             <div className='contract-details'>
-                <div className='title'><Translate id='sign.contractDetails' /></div>
+                <div className='title'>
+                    <Translate id='sign.contractDetails' />
+                </div>
                 {transactions.map(({ receiverId, actions }, i) => {
                     const sortedActions = [
                         ...actions.filter((a) => Object.keys(a)[0] === 'functionCall'),
-                        ...actions.filter((a) => Object.keys(a)[0] !== 'functionCall')
+                        ...actions.filter((a) => Object.keys(a)[0] !== 'functionCall'),
                     ];
 
                     return (
                         <div key={receiverId}>
                             <div className='entry'>
                                 <Translate id='sign.details.forContract' />
-                                <a href={`${CONFIG.EXPLORER_URL}/accounts/${receiverId}`} rel='noopener noreferrer' target='_blank'>{receiverId} <ArrowUpRight /></a>
+                                <a
+                                    href={`${CONFIG.EXPLORER_URL}/accounts/${receiverId}`}
+                                    rel='noopener noreferrer'
+                                    target='_blank'
+                                >
+                                    {receiverId} <ArrowUpRight />
+                                </a>
                             </div>
                             {sortedActions.map((action, i) => {
                                 const methodName = action.functionCall?.methodName || '';
@@ -149,7 +151,10 @@ export default ({
                                     <div key={methodName}>
                                         <div className='entry function'>
                                             <Translate id='sign.function' />
-                                            <DropdownButton id={uniqueMethodId} className='font-monospace'>
+                                            <DropdownButton
+                                                id={uniqueMethodId}
+                                                className='font-monospace'
+                                            >
                                                 {methodName}
                                             </DropdownButton>
                                         </div>
@@ -178,14 +183,17 @@ const ActionArguments = ({ actionKind, action }) => {
         try {
             return (
                 <pre>
-                    <Translate id='arguments' />:&nbsp;
-                    {JSON.stringify(JSON.parse(Buffer.from(action.args).toString()), null, 2)}
+                    <Translate id='arguments' />
+                    :&nbsp;
+                    {JSON.stringify(
+                        JSON.parse(Buffer.from(action.args).toString()),
+                        null,
+                        2
+                    )}
                 </pre>
             );
         } catch {
-            return (
-                <Translate id='sign.ActionWarrning.binaryData' />
-            );
+            return <Translate id='sign.ActionWarrning.binaryData' />;
         }
     } else {
         return (

@@ -5,27 +5,26 @@ import styled from 'styled-components';
 import classNames from '../../../utils/classNames';
 
 const Root = styled.div`
-  
     label {
         cursor: pointer;
         display: flex;
         align-items: center;
         padding: 15px;
-        border: 1px solid #F2F2F2;
+        border: 1px solid #f2f2f2;
         border-radius: 8px;
         overflow: hidden;
 
         :hover {
-            border-color: #E6E6E6;
+            border-color: #e6e6e6;
         }
     }
 
     .input-wrapper {
         :before {
-            content: "";
+            content: '';
             border-radius: 100%;
-            border: 2px solid #E4E4E4;
-            background-color: #FAFAFA;
+            border: 2px solid #e4e4e4;
+            background-color: #fafafa;
             width: 100%;
             height: 100%;
             position: absolute;
@@ -33,7 +32,7 @@ const Root = styled.div`
             z-index: 0;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
         }
 
         margin-right: 20px;
@@ -46,12 +45,12 @@ const Root = styled.div`
 
     &.checked {
         label {
-            border-color: #0072CE;
+            border-color: #0072ce;
         }
 
         .input-wrapper {
             :before {
-                background-color: #289AF3;
+                background-color: #289af3;
                 border-color: #0072ce;
             }
         }
@@ -83,16 +82,16 @@ const Input = styled.input`
     position: absolute;
     margin: 0;
     cursor: pointer;
-  
+
     :focus {
         outline: none;
     }
-  
+
     :checked {
-      & ~ ${Fill} {
-        transform: translate(-50%, -50%) scale(1);
-        background-color: white;
-      }
+        & ~ ${Fill} {
+            transform: translate(-50%, -50%) scale(1);
+            background-color: white;
+        }
     }
 `;
 
@@ -119,11 +118,9 @@ export default class RadioButton extends Component {
                             onChange={onChange}
                             className='radio-input'
                         />
-                        <Fill className='radio-fill'/>
+                        <Fill className='radio-fill' />
                     </div>
-                    <div className='radio-content'>
-                        {children}
-                    </div>
+                    <div className='radio-content'>{children}</div>
                 </label>
             </Root>
         );
@@ -131,10 +128,10 @@ export default class RadioButton extends Component {
 }
 
 RadioButton.contextTypes = {
-    radioGroup: PropTypes.object
+    radioGroup: PropTypes.object,
 };
 
 RadioButton.defaultProps = {
     onChange: () => {},
-    value: ''
+    value: '',
 };

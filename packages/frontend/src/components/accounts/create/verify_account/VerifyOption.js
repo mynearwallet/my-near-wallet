@@ -11,14 +11,14 @@ import PhoneIconOne from '../../../svg/PhoneIconOne';
 import UserIconColor from '../../../svg/UserIconColor';
 
 const Container = styled.div`
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-radius: 8px;
     padding: 15px;
     max-width: 500px;
     cursor: pointer;
     position: relative;
     margin-top: 20px;
-    border-left: 4px solid #FAFAFA;
+    border-left: 4px solid #fafafa;
     overflow: hidden;
 
     @media (max-width: 499px) {
@@ -35,18 +35,18 @@ const Container = styled.div`
         height: 23px;
         width: 23px;
         top: 29px;
-        border: 2px solid #E6E6E6;
+        border: 2px solid #e6e6e6;
         position: absolute;
         border-radius: 50%;
     }
 
     .title {
-        color: #3F4045;
+        color: #3f4045;
         font-weight: 600;
     }
 
-    .desc { 
-        color: #72727A;
+    .desc {
+        color: #72727a;
         max-width: 270px;
         margin-top: 5px;
 
@@ -70,15 +70,15 @@ const Container = styled.div`
     }
 
     &.active {
-        background-color: #F0F9FF;
+        background-color: #f0f9ff;
         cursor: default;
-        border-left: 4px solid #2B9AF4;
+        border-left: 4px solid #2b9af4;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
 
         :before {
-            background-color: #2B9AF4;
-            border-color: #2B9AF4;
+            background-color: #2b9af4;
+            border-color: #2b9af4;
         }
 
         :after {
@@ -104,7 +104,7 @@ const Container = styled.div`
 
         > hr {
             border: 0;
-            background-color: #D6EDFF;
+            background-color: #d6edff;
             height: 1px;
             margin: 20px -15px 0px -15px;
         }
@@ -132,7 +132,6 @@ const Header = styled.div`
 
     svg {
         width: 50px;
-
     }
 `;
 
@@ -147,7 +146,7 @@ const Icon = ({ option, color }) => {
         case 'manualDeposit':
             return <CoinDepositIcon color={color} />;
         case 'existingAccount':
-            return <UserIconColor color={color}/>;
+            return <UserIconColor color={color} />;
         default:
             return;
     }
@@ -161,13 +160,14 @@ const VerifyOption = ({
     disabled,
     error,
     translateIdTitle,
-    translateIdDesc
+    translateIdDesc,
 }) => {
-
     return (
         <Container
             onClick={!disabled && onClick}
-            className={classNames([{ active: isActive && !disabled, disabled, error: error }])}
+            className={classNames([
+                { active: isActive && !disabled, disabled, error: error },
+            ])}
         >
             <Header>
                 <div>
@@ -187,14 +187,11 @@ const VerifyOption = ({
 };
 
 VerifyOption.propTypes = {
-    children: PropTypes.oneOfType([
-        PropTypes.array,
-        PropTypes.object
-    ]),
+    children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     option: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
     isActive: PropTypes.bool.isRequired,
-    problem: PropTypes.bool
+    problem: PropTypes.bool,
 };
 
 export default VerifyOption;

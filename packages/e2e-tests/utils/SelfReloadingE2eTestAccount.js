@@ -1,17 +1,18 @@
-const { Connection, InMemorySigner, Account } = require("near-api-js");
-const assert = require("assert");
+const assert = require('assert');
 
-const { WALLET_NETWORK } = require("../constants");
-const E2eTestAccount = require("./E2eTestAccount");
-const nearApiJsConnection = require("./connectionSingleton");
-const SelfReloadingJSONRpcProvider = require("./SelfReloadingJSONRpcProvider");
+const { Connection, InMemorySigner, Account } = require('near-api-js');
+
+const { WALLET_NETWORK } = require('../constants');
+const nearApiJsConnection = require('./connectionSingleton');
+const E2eTestAccount = require('./E2eTestAccount');
+const SelfReloadingJSONRpcProvider = require('./SelfReloadingJSONRpcProvider');
 
 class SelfReloadingE2eTestAccount extends E2eTestAccount {
     constructor(...args) {
         const config = nearApiJsConnection.config;
         assert(
             config.networkId === WALLET_NETWORK.TESTNET,
-            "cannot instantiate non testnet instance of SelfReloadingE2eTestAccount"
+            'cannot instantiate non testnet instance of SelfReloadingE2eTestAccount'
         );
         super(...args);
     }

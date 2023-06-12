@@ -28,14 +28,14 @@ const CustomContainer = styled(Container)`
 `;
 
 const SignTransferInvalid = () => (
-    <CustomContainer className="small-centered">
-        <div className="title">
+    <CustomContainer className='small-centered'>
+        <div className='title'>
             <h2>
-                <Translate id="sign.invalidTransaction.title" />
+                <Translate id='sign.invalidTransaction.title' />
             </h2>
         </div>
-        <div className="text">
-            <Translate id="sign.invalidTransaction.body" />
+        <div className='text'>
+            <Translate id='sign.invalidTransaction.body' />
         </div>
     </CustomContainer>
 );

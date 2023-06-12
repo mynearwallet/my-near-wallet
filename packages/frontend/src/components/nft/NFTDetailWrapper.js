@@ -9,23 +9,24 @@ import {
 } from '../../redux/slices/nft';
 import { NFTDetail } from './NFTDetail';
 
-const NFTDetailWrapper = ({
-    match,
-    history
-}) => {
+const NFTDetailWrapper = ({ match, history }) => {
     const { contractId: contractName, tokenId } = match.params;
     const accountId = useSelector(selectAccountId);
-    const { balanceAvailable: nearBalance} = useSelector(selectBalance);
-    const nft = useSelector((state) => selectTokenForAccountForContractForTokenId(state, {
-        accountId,
-        contractName,
-        tokenId,
-    }));
+    const { balanceAvailable: nearBalance } = useSelector(selectBalance);
+    const nft = useSelector((state) =>
+        selectTokenForAccountForContractForTokenId(state, {
+            accountId,
+            contractName,
+            tokenId,
+        })
+    );
 
-    const transferredNft = useSelector((state) => selectTransferredTokenForContractForTokenId(state, {
-        contractName,
-        tokenId,
-    }));
+    const transferredNft = useSelector((state) =>
+        selectTransferredTokenForContractForTokenId(state, {
+            contractName,
+            tokenId,
+        })
+    );
 
     const dispatch = useDispatch();
     const { fetchNFT } = nftActions;
@@ -48,4 +49,3 @@ const NFTDetailWrapper = ({
 };
 
 export default NFTDetailWrapper;
-

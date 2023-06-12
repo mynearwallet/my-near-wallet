@@ -9,8 +9,8 @@ import NearCircleIcon from '../../svg/NearCircleIcon.js';
 
 const Container = styled.div`
     &&&& {
-        background-color: #FFF0DE;
-        color: #A15600;
+        background-color: #fff0de;
+        color: #a15600;
         border-radius: 4px;
         padding: 10px 16px 10px 10px;
         display: flex;
@@ -19,25 +19,26 @@ const Container = styled.div`
         margin-top: 10px;
         line-height: normal;
 
-    svg {
-        margin-right: 8px;
-    }
+        svg {
+            margin-right: 8px;
+        }
 
-    button {
-        width: auto !important;
-        height: auto !important;
-        margin: 0 0 0 auto !important;
-        text-transform: unset;
-        color: #452500;
-        font-size: 13px;
-        font-weigth: 400;
-        white-space: nowrap;
-
-        :hover, :focus {
+        button {
+            width: auto !important;
+            height: auto !important;
+            margin: 0 0 0 auto !important;
+            text-transform: unset;
             color: #452500;
+            font-size: 13px;
+            font-weigth: 400;
+            white-space: nowrap;
+
+            :hover,
+            :focus {
+                color: #452500;
+            }
         }
     }
-}
 `;
 
 const ModalContainer = styled.div`
@@ -63,10 +64,10 @@ const ModalContainer = styled.div`
 
 export default function StakingRewardsBanner() {
     const [info, setInfo] = useState(false);
-    
+
     return (
         <Container>
-            <AlertRoundedIcon/>
+            <AlertRoundedIcon />
             <Translate id='staking.balanceBox.unclaimed.unavailable.title' />
             <FormButton className='link' onClick={() => setInfo(true)}>
                 <Translate id='staking.balanceBox.unclaimed.unavailable.cta' />
@@ -79,8 +80,10 @@ export default function StakingRewardsBanner() {
                     closeButton='desktop'
                 >
                     <ModalContainer>
-                        <NearCircleIcon/>
-                        <h2><Translate id='staking.balanceBox.unclaimed.unavailable.modalTitle' /></h2>
+                        <NearCircleIcon />
+                        <h2>
+                            <Translate id='staking.balanceBox.unclaimed.unavailable.modalTitle' />
+                        </h2>
                         <p>
                             <Translate id='staking.balanceBox.unclaimed.unavailable.modalDescOne' />
                         </p>
@@ -88,7 +91,7 @@ export default function StakingRewardsBanner() {
                             <Translate id='staking.balanceBox.unclaimed.unavailable.modalDescTwo' />
                         </p>
                         <FormButton color='gray-white' id='close-button'>
-                            <Translate id='button.dismiss'/>
+                            <Translate id='button.dismiss' />
                         </FormButton>
                     </ModalContainer>
                 </Modal>

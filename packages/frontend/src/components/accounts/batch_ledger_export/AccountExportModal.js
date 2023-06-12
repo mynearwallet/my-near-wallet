@@ -4,7 +4,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { actions as ledgerActions, LEDGER_HD_PATH_PREFIX, selectLedgerConnectionAvailable } from '../../../redux/slices/ledger';
+import {
+    actions as ledgerActions,
+    LEDGER_HD_PATH_PREFIX,
+    selectLedgerConnectionAvailable,
+} from '../../../redux/slices/ledger';
 import { getEstimatedFees } from '../../../redux/slices/sign';
 import { setLedgerHdPath } from '../../../utils/localStorage';
 import WalletClass, { wallet } from '../../../utils/wallet';
@@ -18,7 +22,6 @@ import { ModalContainer } from './styles';
 
 const { checkAndHideLedgerModal, handleShowConnectModal } = ledgerActions;
 
-
 const AccountExportModal = ({ account, onSuccess, onFail }) => {
     const [accountBalance, setAccountBalance] = useState(null);
     const [showTxDetails, setShowTxDetails] = useState(false);
@@ -29,23 +32,31 @@ const AccountExportModal = ({ account, onSuccess, onFail }) => {
 
     const addFAKTransaction = {
         receiverId: account.accountId,
-        actions: [transactions.addKey(KeyPair.fromRandom('ed25519').getPublicKey(), transactions.fullAccessKey())]
+        actions: [
+            transactions.addKey(
+                KeyPair.fromRandom('ed25519').getPublicKey(),
+                transactions.fullAccessKey()
+            ),
+        ],
     };
 
-    const estimatedAddFAKTransactionFees = useMemo(() => addFAKTransaction ? getEstimatedFees([addFAKTransaction]) : new BN('0') ,[addFAKTransaction]);
+    const estimatedAddFAKTransactionFees = useMemo(
+        () => (addFAKTransaction ? getEstimatedFees([addFAKTransaction]) : new BN('0')),
+        [addFAKTransaction]
+    );
     const dispatch = useDispatch();
-  
+
     useEffect(() => {
         setAccountBalance(null);
         setShowTxDetails(false);
         setAddingKey(false);
         setError(false);
-  
+
         wallet
             .getBalance(account.accountId)
             .then(({ available }) => setAccountBalance(available));
-    },[account]);
-  
+    }, [account]);
+
     const addKeyToWalletKeyStore = useCallback(async () => {
         setAddingKey(true);
         setError(false);
@@ -54,7 +65,7 @@ const AccountExportModal = ({ account, onSuccess, onFail }) => {
             setAddingKey(false);
             return dispatch(handleShowConnectModal());
         }
-        
+
         try {
             const ledgerHdPath = `${LEDGER_HD_PATH_PREFIX}${path}'`;
             if (account.keyType === WalletClass.KEY_TYPES.MULTISIG) {
@@ -70,12 +81,12 @@ const AccountExportModal = ({ account, onSuccess, onFail }) => {
         }
         dispatch(checkAndHideLedgerModal());
     }, [path, account.accountId, ledgerConnectionAvailable]);
-  
+
     return (
         <Modal
             isOpen={account}
-            modalSize="md"
-            modalClass="slim"
+            modalSize='md'
+            modalClass='slim'
             onClose={() => {}}
             disableClose
         >
@@ -87,32 +98,38 @@ const AccountExportModal = ({ account, onSuccess, onFail }) => {
                 />
             ) : (
                 <ModalContainer>
-                    <h3 style={{padding: '6px 24px'}}>
-                        <Translate id="batchExportAccounts.confirmExportModal.title" />
+                    <h3 style={{ padding: '6px 24px' }}>
+                        <Translate id='batchExportAccounts.confirmExportModal.title' />
                     </h3>
-                    <HDPathSelect path={path} setPath={setPath} type="export" />
+                    <HDPathSelect path={path} setPath={setPath} type='export' />
                     <SignTransaction
                         sender={account.accountId}
                         availableBalance={accountBalance}
                         estimatedFees={estimatedAddFAKTransactionFees}
-                        fromLabelId="batchExportAccounts.confirmExportModal.accountToExport"
+                        fromLabelId='batchExportAccounts.confirmExportModal.accountToExport'
                     />
-                    <FormButton className="link" onClick={() => setShowTxDetails(true)}>
-                        <Translate id="batchExportAccounts.confirmExportModal.transactionDetails" />
+                    <FormButton className='link' onClick={() => setShowTxDetails(true)}>
+                        <Translate id='batchExportAccounts.confirmExportModal.transactionDetails' />
                     </FormButton>
-                    {error ? <div className='error-label'><Translate id="reduxActions.default.error" /></div> : null}
+                    {error ? (
+                        <div className='error-label'>
+                            <Translate id='reduxActions.default.error' />
+                        </div>
+                    ) : null}
                     <FormButtonGroup>
-                        <FormButton onClick={onFail} className="gray-blue">
-                            <Translate id="button.cancel" />
+                        <FormButton onClick={onFail} className='gray-blue'>
+                            <Translate id='button.cancel' />
                         </FormButton>
                         <FormButton
                             onClick={addKeyToWalletKeyStore}
                             disabled={
-                                !account.keyType || account.keyType === WalletClass.KEY_TYPES.OTHER || account.keyType === WalletClass.KEY_TYPES.LEDGER
+                                !account.keyType ||
+                                account.keyType === WalletClass.KEY_TYPES.OTHER ||
+                                account.keyType === WalletClass.KEY_TYPES.LEDGER
                             }
                             sending={addingKey}
                         >
-                            <Translate id="button.approve" />
+                            <Translate id='button.approve' />
                         </FormButton>
                     </FormButtonGroup>
                 </ModalContainer>

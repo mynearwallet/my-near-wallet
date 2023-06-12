@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Breakdown = styled.div`
-    background-color: #FAFAFA;
+    background-color: #fafafa;
     border-radius: 8px;
 
     > div {
@@ -11,11 +11,11 @@ const Breakdown = styled.div`
     }
 
     .breakdown {
-        background-color: #F0F0F1;
+        background-color: #f0f0f1;
 
         > div {
             > div {
-                border-bottom: 1px solid #E5E5E6;
+                border-bottom: 1px solid #e5e5e6;
 
                 :last-of-type {
                     border-bottom: 0;

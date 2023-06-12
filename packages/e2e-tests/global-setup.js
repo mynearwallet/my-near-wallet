@@ -1,5 +1,5 @@
-const testDapp = require("./testDapp/server");
-const { testDappPort } = require("./utils/config");
+const testDapp = require('./testDapp/server');
+const { testDappPort } = require('./utils/config');
 
 module.exports = async () => {
     const testDappServer = await testDapp.listen(testDappPort, () => {

@@ -10,14 +10,13 @@ import ChevronIcon from '../../svg/ChevronIcon';
 import AccountId from './AccountId';
 
 const Container = styled.div`
-
     @media (max-width: 767px) {
         margin: 0 -14px;
     }
 
     .border-box {
         @media (min-width: 768px) {
-            border: 2px solid #F0F0F0;
+            border: 2px solid #f0f0f0;
             border-radius: 8px;
         }
 
@@ -49,12 +48,14 @@ const Container = styled.div`
         font-weight: 600;
     }
 
-    .title, .total, .item {
+    .title,
+    .total,
+    .item {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 20px;
-        
+
         .balance {
             text-align: right;
         }
@@ -84,9 +85,9 @@ const Container = styled.div`
     }
 
     .item {
-        color: #72727A;
+        color: #72727a;
         border-bottom: 1px solid #f3f3f3;
-        background-color: #FAFAFA;
+        background-color: #fafafa;
         padding-left: 30px;
 
         span {
@@ -102,11 +103,9 @@ const Container = styled.div`
         }
 
         &.detail {
-
             &:first-of-type {
                 box-shadow: inset 0 5px 6px -5px #dedede;
             }
-
         }
 
         &.locked {
@@ -138,90 +137,260 @@ const BalanceContainer = ({ account, profileBalance, hasLockup, balanceForGas })
                 <>
                     <div className='border-box'>
                         <div className='title'>
-                            <h4><Translate id='profile.account.walletId'/></h4>
+                            <h4>
+                                <Translate id='profile.account.walletId' />
+                            </h4>
                             <ClickToCopy copy={account.accountId}>
-                                <AccountId id={account.accountId} data-test-id="ownerAccount.accountId"/>
+                                <AccountId
+                                    id={account.accountId}
+                                    data-test-id='ownerAccount.accountId'
+                                />
                             </ClickToCopy>
                         </div>
                         <div className='total'>
-                            <span><Translate id='profile.account.walletBalance'/></span>
-                            <Balance data-test-id="ownerAccount.total" amount={profileBalance.walletBalance.walletBalance}/>
+                            <span>
+                                <Translate id='profile.account.walletBalance' />
+                            </span>
+                            <Balance
+                                data-test-id='ownerAccount.total'
+                                amount={profileBalance.walletBalance.walletBalance}
+                            />
                         </div>
                         <div className='item first'>
-                            <span><Translate id='profile.account.reservedForStorage'/><Tooltip translate='minimumBalance'/></span>
-                            <span><Balance data-test-id="ownerAccount.reservedForStorage" amount={profileBalance.walletBalance.reservedForStorage}/></span>
+                            <span>
+                                <Translate id='profile.account.reservedForStorage' />
+                                <Tooltip translate='minimumBalance' />
+                            </span>
+                            <span>
+                                <Balance
+                                    data-test-id='ownerAccount.reservedForStorage'
+                                    amount={
+                                        profileBalance.walletBalance.reservedForStorage
+                                    }
+                                />
+                            </span>
                         </div>
                         <div className='item'>
-                            <span><Translate id='profile.account.reservedForTransactions'/><Tooltip translate='reservedForFeesInfo' data={balanceForGas}/></span>
-                            <span><Balance data-test-id="ownerAccount.reservedForTransactions" amount={profileBalance.walletBalance.reservedForTransactions}/></span>
+                            <span>
+                                <Translate id='profile.account.reservedForTransactions' />
+                                <Tooltip
+                                    translate='reservedForFeesInfo'
+                                    data={balanceForGas}
+                                />
+                            </span>
+                            <span>
+                                <Balance
+                                    data-test-id='ownerAccount.reservedForTransactions'
+                                    amount={
+                                        profileBalance.walletBalance
+                                            .reservedForTransactions
+                                    }
+                                />
+                            </span>
                         </div>
                         <div className='item'>
-                            <span><Translate id='profile.account.available'/><Tooltip translate='availableBalanceProfile'/></span>
-                            <span><Balance data-test-id="ownerAccount.available" amount={profileBalance.walletBalance.available}/></span>
+                            <span>
+                                <Translate id='profile.account.available' />
+                                <Tooltip translate='availableBalanceProfile' />
+                            </span>
+                            <span>
+                                <Balance
+                                    data-test-id='ownerAccount.available'
+                                    amount={profileBalance.walletBalance.available}
+                                />
+                            </span>
                         </div>
                         <div className='total button last' id='balance-1'>
-                            <span><Translate id='profile.account.staking'/><ChevronIcon color='#0072ce'/></span>
-                            <Balance data-test-id="ownerAccount.staking.total" amount={profileBalance.walletBalance.inStakingPools.sum}/>
+                            <span>
+                                <Translate id='profile.account.staking' />
+                                <ChevronIcon color='#0072ce' />
+                            </span>
+                            <Balance
+                                data-test-id='ownerAccount.staking.total'
+                                amount={profileBalance.walletBalance.inStakingPools.sum}
+                            />
                         </div>
                         <Accordion trigger='balance-1'>
                             <div className='item detail'>
-                                <span><Translate id='profile.account.staked'/><Tooltip translate='staking.balanceBox.staked.info'/></span>
-                                <span><Balance data-test-id="ownerAccount.staking.staked" amount={profileBalance.walletBalance.inStakingPools.staked}/></span>
+                                <span>
+                                    <Translate id='profile.account.staked' />
+                                    <Tooltip translate='staking.balanceBox.staked.info' />
+                                </span>
+                                <span>
+                                    <Balance
+                                        data-test-id='ownerAccount.staking.staked'
+                                        amount={
+                                            profileBalance.walletBalance.inStakingPools
+                                                .staked
+                                        }
+                                    />
+                                </span>
                             </div>
                             <div className='item detail'>
-                                <span><Translate id='profile.account.pendingRelease'/><Tooltip translate='staking.balanceBox.pending.info'/></span>
-                                <span><Balance data-test-id="ownerAccount.staking.pendingRelease" amount={profileBalance.walletBalance.inStakingPools.pendingRelease}/></span>
+                                <span>
+                                    <Translate id='profile.account.pendingRelease' />
+                                    <Tooltip translate='staking.balanceBox.pending.info' />
+                                </span>
+                                <span>
+                                    <Balance
+                                        data-test-id='ownerAccount.staking.pendingRelease'
+                                        amount={
+                                            profileBalance.walletBalance.inStakingPools
+                                                .pendingRelease
+                                        }
+                                    />
+                                </span>
                             </div>
                             <div className='item detail'>
-                                <span><Translate id='profile.account.availableToWithdraw'/><Tooltip translate='staking.balanceBox.available.info'/></span>
-                                <span><Balance data-test-id="ownerAccount.staking.availableToWithdraw" amount={profileBalance.walletBalance.inStakingPools.availableForWithdraw}/></span>
+                                <span>
+                                    <Translate id='profile.account.availableToWithdraw' />
+                                    <Tooltip translate='staking.balanceBox.available.info' />
+                                </span>
+                                <span>
+                                    <Balance
+                                        data-test-id='ownerAccount.staking.availableToWithdraw'
+                                        amount={
+                                            profileBalance.walletBalance.inStakingPools
+                                                .availableForWithdraw
+                                        }
+                                    />
+                                </span>
                             </div>
                         </Accordion>
                     </div>
                     {hasLockup && (
                         <div className='border-box'>
                             <div className='title last'>
-                                <h4><Translate id='profile.lockup.lockupId'/></h4>
+                                <h4>
+                                    <Translate id='profile.lockup.lockupId' />
+                                </h4>
                                 <ClickToCopy copy={profileBalance.lockupId}>
-                                    <AccountId id={profileBalance.lockupId} data-test-id="lockupAccount.accountId"/>
+                                    <AccountId
+                                        id={profileBalance.lockupId}
+                                        data-test-id='lockupAccount.accountId'
+                                    />
                                 </ClickToCopy>
                             </div>
                             <div className='total'>
-                                <span><Translate id='profile.lockup.lockupBalance'/></span>
-                                <Balance data-test-id="lockupAccount.total" amount={profileBalance.lockupBalance.lockupBalance}/>
+                                <span>
+                                    <Translate id='profile.lockup.lockupBalance' />
+                                </span>
+                                <Balance
+                                    data-test-id='lockupAccount.total'
+                                    amount={profileBalance.lockupBalance.lockupBalance}
+                                />
                             </div>
                             <div className='item first'>
-                                <span><Translate id='profile.account.reservedForStorage'/><Tooltip translate='minimumBalance'/></span>
-                                <span><Balance data-test-id="lockupAccount.reservedForStorage" amount={profileBalance.lockupBalance.reservedForStorage}/></span>
+                                <span>
+                                    <Translate id='profile.account.reservedForStorage' />
+                                    <Tooltip translate='minimumBalance' />
+                                </span>
+                                <span>
+                                    <Balance
+                                        data-test-id='lockupAccount.reservedForStorage'
+                                        amount={
+                                            profileBalance.lockupBalance
+                                                .reservedForStorage
+                                        }
+                                    />
+                                </span>
                             </div>
                             <div className='item'>
-                                <span><Translate id='profile.lockup.locked'/><Tooltip translate='lockedBalance'/></span>
-                                <span><Balance data-test-id="lockupAccount.locked" amount={profileBalance.lockupBalance.locked}/></span>
+                                <span>
+                                    <Translate id='profile.lockup.locked' />
+                                    <Tooltip translate='lockedBalance' />
+                                </span>
+                                <span>
+                                    <Balance
+                                        data-test-id='lockupAccount.locked'
+                                        amount={profileBalance.lockupBalance.locked}
+                                    />
+                                </span>
                             </div>
                             <div className='item'>
-                                <span><Translate id='profile.lockup.unlocked'/><Tooltip translate='unlockedBalance'/></span>
-                                <span><Balance data-test-id="lockupAccount.unlocked" amount={profileBalance.lockupBalance.unlocked.sum}/></span>
+                                <span>
+                                    <Translate id='profile.lockup.unlocked' />
+                                    <Tooltip translate='unlockedBalance' />
+                                </span>
+                                <span>
+                                    <Balance
+                                        data-test-id='lockupAccount.unlocked'
+                                        amount={profileBalance.lockupBalance.unlocked.sum}
+                                    />
+                                </span>
                             </div>
                             <div className='item locked'>
-                                <span><Translate id='profile.account.availableToTransfer'/><Tooltip translate='unlockedAvailTransfer'/></span>
-                                <span><Balance data-test-id="lockupAccount.availableToTransfer" amount={profileBalance.lockupBalance.unlocked.availableToTransfer}/></span>
+                                <span>
+                                    <Translate id='profile.account.availableToTransfer' />
+                                    <Tooltip translate='unlockedAvailTransfer' />
+                                </span>
+                                <span>
+                                    <Balance
+                                        data-test-id='lockupAccount.availableToTransfer'
+                                        amount={
+                                            profileBalance.lockupBalance.unlocked
+                                                .availableToTransfer
+                                        }
+                                    />
+                                </span>
                             </div>
                             <div className='total button last' id='balance-2'>
-                                <span><Translate id='profile.account.staking'/><ChevronIcon color='#0072ce'/></span>
-                                <Balance data-test-id="lockupAccount.staking.total" amount={profileBalance.lockupBalance.inStakingPools.sum}/>
+                                <span>
+                                    <Translate id='profile.account.staking' />
+                                    <ChevronIcon color='#0072ce' />
+                                </span>
+                                <Balance
+                                    data-test-id='lockupAccount.staking.total'
+                                    amount={
+                                        profileBalance.lockupBalance.inStakingPools.sum
+                                    }
+                                />
                             </div>
                             <Accordion trigger='balance-2'>
                                 <div className='item detail locked'>
-                                    <span><Translate id='profile.account.staked'/><Tooltip translate='staking.balanceBox.staked.info'/></span>
-                                    <span><Balance data-test-id="lockupAccount.staking.staked" amount={profileBalance.lockupBalance.inStakingPools.staked}/></span>
+                                    <span>
+                                        <Translate id='profile.account.staked' />
+                                        <Tooltip translate='staking.balanceBox.staked.info' />
+                                    </span>
+                                    <span>
+                                        <Balance
+                                            data-test-id='lockupAccount.staking.staked'
+                                            amount={
+                                                profileBalance.lockupBalance
+                                                    .inStakingPools.staked
+                                            }
+                                        />
+                                    </span>
                                 </div>
                                 <div className='item detail locked'>
-                                    <span><Translate id='profile.account.pendingRelease'/><Tooltip translate='staking.balanceBox.pending.info'/></span>
-                                    <span><Balance data-test-id="lockupAccount.staking.pendingRelease" amount={profileBalance.lockupBalance.inStakingPools.pendingRelease}/></span>
+                                    <span>
+                                        <Translate id='profile.account.pendingRelease' />
+                                        <Tooltip translate='staking.balanceBox.pending.info' />
+                                    </span>
+                                    <span>
+                                        <Balance
+                                            data-test-id='lockupAccount.staking.pendingRelease'
+                                            amount={
+                                                profileBalance.lockupBalance
+                                                    .inStakingPools.pendingRelease
+                                            }
+                                        />
+                                    </span>
                                 </div>
                                 <div className='item detail locked'>
-                                    <span><Translate id='profile.account.availableToWithdraw'/><Tooltip translate='staking.balanceBox.available.info'/></span>
-                                    <span><Balance data-test-id="lockupAccount.staking.availableToWithdraw" amount={profileBalance.lockupBalance.inStakingPools.availableForWithdraw}/></span>
+                                    <span>
+                                        <Translate id='profile.account.availableToWithdraw' />
+                                        <Tooltip translate='staking.balanceBox.available.info' />
+                                    </span>
+                                    <span>
+                                        <Balance
+                                            data-test-id='lockupAccount.staking.availableToWithdraw'
+                                            amount={
+                                                profileBalance.lockupBalance
+                                                    .inStakingPools.availableForWithdraw
+                                            }
+                                        />
+                                    </span>
                                 </div>
                             </Accordion>
                         </div>

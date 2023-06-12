@@ -28,22 +28,23 @@ export function AddLedgerKeyModal({
     isOpen,
     onClickAddLedgerKey,
     onClose,
-    finishingLedgerKeySetup
+    finishingLedgerKeySetup,
 }) {
     return (
-        <Modal
-            id='add-ledger-key-modal'
-            isOpen={isOpen}
-            onClose={onClose}
-            modalSize='sm'
-        >
+        <Modal id='add-ledger-key-modal' isOpen={isOpen} onClose={onClose} modalSize='sm'>
             <Container>
-                <h3><Translate id='zeroBalance.ledgerModal.title' /></h3>
-                {
-                    finishingLedgerKeySetup
-                        ? <p><Translate id='zeroBalance.ledgerModal.confirmOnLedger' /></p>
-                        : <p><Translate id='zeroBalance.ledgerModal.desc' /></p>
-                }
+                <h3>
+                    <Translate id='zeroBalance.ledgerModal.title' />
+                </h3>
+                {finishingLedgerKeySetup ? (
+                    <p>
+                        <Translate id='zeroBalance.ledgerModal.confirmOnLedger' />
+                    </p>
+                ) : (
+                    <p>
+                        <Translate id='zeroBalance.ledgerModal.desc' />
+                    </p>
+                )}
                 <FormButton
                     onClick={onClickAddLedgerKey}
                     sending={finishingLedgerKeySetup}
@@ -54,4 +55,4 @@ export function AddLedgerKeyModal({
             </Container>
         </Modal>
     );
-};
+}

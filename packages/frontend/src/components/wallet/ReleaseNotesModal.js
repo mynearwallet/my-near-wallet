@@ -15,7 +15,7 @@ import Modal from '../common/modal/Modal';
 const Header = styled.div`
     text-align: center;
     padding: 20px 0 50px;
-    
+
     > div {
         width: 100%;
         height: 53px;
@@ -24,15 +24,15 @@ const Header = styled.div`
     > h2 {
         font-weight: bold;
         font-size: 20px;
-        color: #24272A;
+        color: #24272a;
         padding: 60px 0 24px 0;
     }
     > span {
-        background-color: #F0F0F1;
+        background-color: #f0f0f1;
         padding: 10px 16px;
         border-radius: 4px;
-        color: #72727A;
-        
+        color: #72727a;
+
         font-family: 'IBM Plex Mono', monospace;
         font-style: normal;
         font-weight: 500;
@@ -63,7 +63,6 @@ const SubHeader = styled.div`
         height: 25px;
         margin-right: 12px;
         margin-top: -5px;
-        
     }
 `;
 
@@ -75,7 +74,7 @@ const Container = styled.div`
     }
 
     li {
-        color: #72727A;
+        color: #72727a;
         margin: 10px 0;
     }
 
@@ -102,52 +101,55 @@ const Container = styled.div`
 const ReleaseNotesModal = () => {
     const accountId = useSelector((state) => selectAccountId(state));
     const [open, setOpen] = useState(!getReleaseNotesClosed(RELEASE_NOTES_MODAL_VERSION));
-    
+
     const onClose = () => {
         setReleaseNotesClosed(RELEASE_NOTES_MODAL_VERSION);
         setOpen(false);
     };
-    
-    return (accountId && open)
-        ? (
-            <Modal
-                id='release-notes-modal'
-                isOpen={open}
-                onClose={onClose}
-                closeButton='true'
-            >
-                <Container>
-                    <Header icon={GiftBoxIcon}>
-                        <div />
-                        <h2><Translate id="releaseNotesModal.title" /></h2>
-                        <span>{RELEASE_NOTES_MODAL_VERSION}</span>
-                    </Header>
-                    <div className='text'><Translate id="releaseNotesModal.desc" /></div>
 
-                    <SubHeader icon={GiftBoxLineIcon}>
-                        <Translate id="releaseNotesModal.subTitle1" />
-                    </SubHeader>
-                    <ul>
-                        <li><Translate id="releaseNotesModal.subText1" /></li>
-                    </ul>
+    return accountId && open ? (
+        <Modal
+            id='release-notes-modal'
+            isOpen={open}
+            onClose={onClose}
+            closeButton='true'
+        >
+            <Container>
+                <Header icon={GiftBoxIcon}>
+                    <div />
+                    <h2>
+                        <Translate id='releaseNotesModal.title' />
+                    </h2>
+                    <span>{RELEASE_NOTES_MODAL_VERSION}</span>
+                </Header>
+                <div className='text'>
+                    <Translate id='releaseNotesModal.desc' />
+                </div>
 
-                    <SubHeader icon={StarsIcon}>
-                        <Translate id="releaseNotesModal.subTitle2" />
-                    </SubHeader>
-                    <ul>
-                        <li><Translate id="releaseNotesModal.subText2" /></li>
-                    </ul>
+                <SubHeader icon={GiftBoxLineIcon}>
+                    <Translate id='releaseNotesModal.subTitle1' />
+                </SubHeader>
+                <ul>
+                    <li>
+                        <Translate id='releaseNotesModal.subText1' />
+                    </li>
+                </ul>
 
-                    <FormButton 
-                        onClick={onClose}
-                        size='small'
-                    >
-                        <Translate id="button.continue" />
-                    </FormButton>
-                </Container>
-            </Modal>
-        )
-        : null;
+                <SubHeader icon={StarsIcon}>
+                    <Translate id='releaseNotesModal.subTitle2' />
+                </SubHeader>
+                <ul>
+                    <li>
+                        <Translate id='releaseNotesModal.subText2' />
+                    </li>
+                </ul>
+
+                <FormButton onClick={onClose} size='small'>
+                    <Translate id='button.continue' />
+                </FormButton>
+            </Container>
+        </Modal>
+    ) : null;
 };
 
 export default ReleaseNotesModal;

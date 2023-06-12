@@ -12,9 +12,8 @@ export default ({
     error,
     onChangeVerificationNumber,
     onBlur,
-    verificationNumber
+    verificationNumber,
 }) => {
-
     return (
         <VerifyOption
             onClick={onClick}

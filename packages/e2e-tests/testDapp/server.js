@@ -1,25 +1,31 @@
-const express = require("express");
-const path = require("path");
+const path = require('path');
 
-const { getDefaultConfig } = require("../utils/connectionSingleton");
+const express = require('express');
+
+const { getDefaultConfig } = require('../utils/connectionSingleton');
 
 const app = express();
 
 app.use(express.static(__dirname));
 
-app.get("/configData.json", function (req, res) {
+app.get('/configData.json', function (req, res) {
     res.json({
         DEFAULT_NEAR_CONFIG: getDefaultConfig(),
         BANK_ACCOUNT: process.env.BANK_ACCOUNT,
     });
 });
 
-app.get("/near-api-js.min.js", function (req, res) {
-    res.sendFile(path.join(__dirname, "../../frontend/node_modules/near-api-js/dist/near-api-js.min.js"));
+app.get('/near-api-js.min.js', function (req, res) {
+    res.sendFile(
+        path.join(
+            __dirname,
+            '../../frontend/node_modules/near-api-js/dist/near-api-js.min.js'
+        )
+    );
 });
 
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
 });
 
 module.exports = app;

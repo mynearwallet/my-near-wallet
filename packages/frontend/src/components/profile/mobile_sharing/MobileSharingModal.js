@@ -15,13 +15,13 @@ const StyledContainer = styled.div`
             color: #24272a;
         }
         .desc {
-            color: #72727A;
+            color: #72727a;
             font-size: 16px;
             margin: 40px auto;
             max-width: 400px;
             line-height: 150%;
         }
-    
+
         > button {
             width: 100%;
             max-width: 400px;
@@ -34,7 +34,7 @@ const StyledContainer = styled.div`
         flex-direction: column;
         align-items: center;
         color: #995200;
-        background-color: #FFECD6;
+        background-color: #ffecd6;
         font-size: 16px;
         line-height: 170%;
         padding: 30px;
@@ -46,7 +46,7 @@ const StyledContainer = styled.div`
         }
     }
     .alert-triangle {
-        background-color: #FFDBB2;
+        background-color: #ffdbb2;
         border-radius: 50%;
         width: 65px;
         height: 65px;
@@ -62,19 +62,21 @@ const StyledContainer = styled.div`
 
 const MobileSharingModal = ({ open, onClose, mobileSharingLink }) => {
     return (
-        <Modal
-            isOpen={open}
-            onClose={onClose}
-            closeButton='desktop'
-        >
+        <Modal isOpen={open} onClose={onClose} closeButton='desktop'>
             <StyledContainer>
-                <h2><Translate id='mobileDeviceAccess.showCode.modal.title'/></h2>
-                <div className='desc'><Translate id='mobileDeviceAccess.showCode.modal.desc'/></div>
-                <div className='disclaimer'>
-                    <div className='alert-triangle'><AlertTriangleIcon color='#995200'/></div>
-                    <Translate id='mobileDeviceAccess.showCode.modal.disclaimer'/>
+                <h2>
+                    <Translate id='mobileDeviceAccess.showCode.modal.title' />
+                </h2>
+                <div className='desc'>
+                    <Translate id='mobileDeviceAccess.showCode.modal.desc' />
                 </div>
-                <MobileSharingQRCode mobileSharingLink={mobileSharingLink}/>
+                <div className='disclaimer'>
+                    <div className='alert-triangle'>
+                        <AlertTriangleIcon color='#995200' />
+                    </div>
+                    <Translate id='mobileDeviceAccess.showCode.modal.disclaimer' />
+                </div>
+                <MobileSharingQRCode mobileSharingLink={mobileSharingLink} />
             </StyledContainer>
         </Modal>
     );

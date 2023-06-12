@@ -9,22 +9,26 @@ import Token from './entry_types/Token';
 
 const prefixTXEntryTitledId = (key) => `sendV2.TXEntry.title.${key}`;
 
-const TransactionDetails = ({ selectedToken, estimatedFeesInNear, estimatedTotalInNear, amount, onTokenClick }) => {
-
+const TransactionDetails = ({
+    selectedToken,
+    estimatedFeesInNear,
+    estimatedTotalInNear,
+    amount,
+    onTokenClick,
+}) => {
     const [open, setOpen] = useState(false);
 
     return (
-        <Breakdown className={classNames(['transaction-details-breakdown' , open ? 'open' : ''])}>
+        <Breakdown
+            className={classNames(['transaction-details-breakdown', open ? 'open' : ''])}
+        >
             <Token
                 translateIdTitle={prefixTXEntryTitledId('token')}
                 symbol={selectedToken.onChainFTMetadata?.symbol}
                 icon={selectedToken.onChainFTMetadata?.icon}
                 onClick={onTokenClick}
             />
-            <Accordion
-                trigger='transaction-details-breakdown'
-                className='breakdown'
-            >
+            <Accordion trigger='transaction-details-breakdown' className='breakdown'>
                 <Amount
                     /* Always show fees in NEAR */
                     translateIdTitle={prefixTXEntryTitledId('estimatedFees')}
@@ -32,24 +36,21 @@ const TransactionDetails = ({ selectedToken, estimatedFeesInNear, estimatedTotal
                     symbol='NEAR'
                     translateIdInfoTooltip='sendV2.translateIdInfoTooltip.estimatedFees'
                 />
-                {selectedToken.onChainFTMetadata?.symbol === 'NEAR' ?
-                    /* Show 'Estimated total' (amount + fees) when sending NEAR only */ (
-                        <Amount
-                            translateIdTitle={prefixTXEntryTitledId('estimatedTotal')}
-                            amount={estimatedTotalInNear}
-                            symbol='NEAR'
-                            translateIdInfoTooltip='sendV2.translateIdInfoTooltip.estimatedTotal'
-                        />
-                    )
-                    :
-                    /* Show 'Amount' when sending non-NEAR token only */ (
-                        <Amount
-                            translateIdTitle={prefixTXEntryTitledId('amount')}
-                            amount={amount}
-                            symbol={selectedToken.onChainFTMetadata?.symbol}
-                            decimals={selectedToken.onChainFTMetadata?.decimals}
-                        />
-                    )}
+                {selectedToken.onChainFTMetadata?.symbol === 'NEAR' ? (
+                    /* Show 'Estimated total' (amount + fees) when sending NEAR only */ <Amount
+                        translateIdTitle={prefixTXEntryTitledId('estimatedTotal')}
+                        amount={estimatedTotalInNear}
+                        symbol='NEAR'
+                        translateIdInfoTooltip='sendV2.translateIdInfoTooltip.estimatedTotal'
+                    />
+                ) : (
+                    /* Show 'Amount' when sending non-NEAR token only */ <Amount
+                        translateIdTitle={prefixTXEntryTitledId('amount')}
+                        amount={amount}
+                        symbol={selectedToken.onChainFTMetadata?.symbol}
+                        decimals={selectedToken.onChainFTMetadata?.decimals}
+                    />
+                )}
             </Accordion>
             <AccordionTrigger
                 id='transaction-details-breakdown'

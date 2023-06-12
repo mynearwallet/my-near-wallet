@@ -7,8 +7,8 @@ import classNames from '../../../utils/classNames';
 import EmailIcon from '../../svg/EmailIcon';
 
 const Container = styled.div`
-    background-color: #F8F8F8;
-    border: 2px solid #E6E6E6;
+    background-color: #f8f8f8;
+    border: 2px solid #e6e6e6;
     border-radius: 4px;
     padding: 15px;
     max-width: 500px;
@@ -25,17 +25,18 @@ const Container = styled.div`
     }
 
     &.active {
-        border-color: #0072CE;
+        border-color: #0072ce;
         background-color: white;
         cursor: default;
 
         :before {
-            background-color: #0072CE;
-            border-color: #0072CE;
+            background-color: #0072ce;
+            border-color: #0072ce;
         }
 
-        .icon, path {
-            stroke: #0072CE !important;
+        .icon,
+        path {
+            stroke: #0072ce !important;
         }
     }
     &.inputProblem {
@@ -59,7 +60,7 @@ const Container = styled.div`
             transform: translateY(calc(-50% + 10px));
         }
 
-        .react-phone-number-input__icon { 
+        .react-phone-number-input__icon {
             &:not(.react-phone-number-input__icon--international) {
                 margin-right: 5px;
             }
@@ -69,7 +70,7 @@ const Container = styled.div`
             svg {
                 display: none;
             }
-            
+
             background-image: url(${IntFlagIcon});
             background-repeat: no-repeat;
         }
@@ -105,7 +106,6 @@ const Header = styled.div`
         position: absolute;
         left: 0;
     }
-
 `;
 
 const Title = styled.div`
@@ -114,21 +114,19 @@ const Title = styled.div`
     font-weight: 500;
 `;
 
-const TwoFactorOption = ({
-    children,
-    option,
-    onClick,
-    active,
-    problem
-}) => {
-
+const TwoFactorOption = ({ children, option, onClick, active, problem }) => {
     active = active === option;
 
     return (
-        <Container onClick={onClick} className={classNames([{active: active, inputProblem: problem}])}>
+        <Container
+            onClick={onClick}
+            className={classNames([{ active: active, inputProblem: problem }])}
+        >
             <Header>
-                {option === 'email' ? <EmailIcon/> : null}
-                <Title><Translate id={`twoFactor.${option}`}/></Title>
+                {option === 'email' ? <EmailIcon /> : null}
+                <Title>
+                    <Translate id={`twoFactor.${option}`} />
+                </Title>
             </Header>
             {active && children}
         </Container>

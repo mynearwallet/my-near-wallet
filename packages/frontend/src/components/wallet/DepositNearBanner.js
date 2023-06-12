@@ -10,9 +10,9 @@ const StyledContainer = styled.div`
     @media (max-width: 991px) {
         margin-bottom: 40px;
     }
-    > div {        
+    > div {
         > div {
-            background-color: #F0F0F1;
+            background-color: #f0f0f1;
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -20,25 +20,25 @@ const StyledContainer = styled.div`
             cursor: pointer;
 
             :hover {
-                background-color: #ECECEC;
+                background-color: #ececec;
             }
-    
+
             > div {
                 margin-left: 15px;
-        
+
                 .banner-title {
                     color: #272729;
                     font-weight: 500;
                     font-size: 16px;
                 }
-        
+
                 .banner-desc {
                     margin-top: 5px;
-                    color: #72727A;
+                    color: #72727a;
                     line-height: 1.5;
                 }
             }
-    
+
             > svg {
                 min-width: 53px;
                 min-height: 53px;
@@ -53,11 +53,15 @@ export default () => {
     return (
         <StyledContainer className='deposit-near-banner'>
             <div>
-                <div onClick={() => dispatch(push({ pathname: '/buy' }))} >
+                <div onClick={() => dispatch(push({ pathname: '/buy' }))}>
                     <NearLogoAndPlusIcon />
                     <div>
-                        <div className='banner-title'><Translate id='wallet.depositNear.title' /></div>
-                        <div className='banner-desc'><Translate id='wallet.depositNear.desc' /></div>
+                        <div className='banner-title'>
+                            <Translate id='wallet.depositNear.title' />
+                        </div>
+                        <div className='banner-desc'>
+                            <Translate id='wallet.depositNear.desc' />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -116,10 +116,9 @@ class FungibleTokenExchange {
     async _swapNearToToken(params) {
         const { account, tokenOutId, amountIn } = params;
         const transactions = [];
-        const depositTransactions = await this._getDepositTransactions(
-            account,
-            [tokenOutId]
-        );
+        const depositTransactions = await this._getDepositTransactions(account, [
+            tokenOutId,
+        ]);
 
         if (depositTransactions) {
             transactions.push(...depositTransactions);
@@ -145,10 +144,9 @@ class FungibleTokenExchange {
     async _swapWNearToToken(params) {
         const { account, tokenOutId } = params;
         const transactions = [];
-        const depositTransactions = await this._getDepositTransactions(
-            account,
-            [tokenOutId]
-        );
+        const depositTransactions = await this._getDepositTransactions(account, [
+            tokenOutId,
+        ]);
 
         if (depositTransactions) {
             transactions.push(...depositTransactions);
@@ -167,10 +165,10 @@ class FungibleTokenExchange {
     async _swapTokenToNear(params) {
         const { account, tokenInId, minAmountOut } = params;
         const transactions = [];
-        const depositTransactions = await this._getDepositTransactions(
-            account,
-            [tokenInId, CONFIG.NEAR_TOKEN_ID]
-        );
+        const depositTransactions = await this._getDepositTransactions(account, [
+            tokenInId,
+            CONFIG.NEAR_TOKEN_ID,
+        ]);
 
         if (depositTransactions) {
             transactions.push(...depositTransactions);
@@ -199,10 +197,10 @@ class FungibleTokenExchange {
     async _swapTokenToWNear(params) {
         const { account, tokenInId, tokenOutId } = params;
         const transactions = [];
-        const depositTransactions = await this._getDepositTransactions(
-            account,
-            [tokenInId, tokenOutId]
-        );
+        const depositTransactions = await this._getDepositTransactions(account, [
+            tokenInId,
+            tokenOutId,
+        ]);
 
         if (depositTransactions) {
             transactions.push(...depositTransactions);
@@ -221,10 +219,10 @@ class FungibleTokenExchange {
     async _swapTokenToToken(params) {
         const { account, tokenInId, tokenOutId } = params;
         const transactions = [];
-        const depositTransactions = await this._getDepositTransactions(
-            account,
-            [tokenInId, tokenOutId]
-        );
+        const depositTransactions = await this._getDepositTransactions(account, [
+            tokenInId,
+            tokenOutId,
+        ]);
 
         if (depositTransactions) {
             transactions.push(...depositTransactions);
@@ -245,11 +243,9 @@ class FungibleTokenExchange {
         const { accountId } = account;
 
         for (const id of tokenIds) {
-            const tokenStorage = await account.viewFunction(
-                id,
-                'storage_balance_of',
-                { account_id: accountId }
-            );
+            const tokenStorage = await account.viewFunction(id, 'storage_balance_of', {
+                account_id: accountId,
+            });
 
             if (!tokenStorage) {
                 txs.push({

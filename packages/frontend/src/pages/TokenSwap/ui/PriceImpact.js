@@ -22,8 +22,8 @@ export default function PriceImpact({ percent = '-' }) {
         percent > PRICE_IMPACT_THRESHOLD.error
             ? 'error'
             : percent > PRICE_IMPACT_THRESHOLD.warning
-                ? 'warning'
-                : '';
+            ? 'warning'
+            : '';
 
     return (
         <PriceImpactWrapper className={className}>

@@ -25,16 +25,13 @@ export function NFTMedia({ mediaUrl, autoPlay = false }) {
                         type={`video/${mimeType}`}
                         onError={(e) => {
                             e.target.onerror = null;
-                            e.target.parentElement.setAttribute(
-                                'poster',
-                                FailedToLoad
-                            );
+                            e.target.parentElement.setAttribute('poster', FailedToLoad);
                         }}
                     />
                 </video>
             ) : (
                 <img
-                    alt="NFT"
+                    alt='NFT'
                     src={mediaUrl}
                     onError={(e) => {
                         e.target.onerror = null;

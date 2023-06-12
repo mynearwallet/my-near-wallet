@@ -107,7 +107,12 @@
         "recoverAccount": {
             "error": "Falha ao recuperar conta. Nenhuma conta foi encontrada para esta frase-semente.",
             "errorInvalidSeedPhrase": "Nenhuma conta foi encontrada para esta frase-semente.",
-            "success": "A recuperação usando a Frase-semente está completa.<br/><b>${numberOfAccounts} conta(s)</b> foram recuperadas com sucesso.<br/>A última é definida como ativa."
+            "success": "A recuperação usando a Frase-semente está completa.<br/><b>${numberOfAccounts} conta(s)</b> foram recuperadas com sucesso.<br/>A última é definida como ativa.",
+            "zeroBalance": {
+                "success": {
+                    "privateKey": "A conta a seguir foi importada com sucesso usando a chave privada fornecida:"
+                }
+            }
         },
         "requestCode": {
             "error": "Falha ao enviar SMS com o código.",
@@ -804,6 +809,17 @@
         "phrase": {
             "desc": "Certifique-se de que sua frase de recuperação contém 12 palavras e clique abaixo para iniciar o processo de recuperação.",
             "title": "Frase-semente"
+        },
+        "privateKey": {
+            "desc": "Verifique se a sua chave privada começa com 'ed25519' e, em seguida, clique abaixo para iniciar o processo de recuperação.",
+            "title": "Chave Privada"
+        }
+    },
+    "recoverPrivateKey": {
+        "pageText": "Digite a chave privada associada à conta.",
+        "pageTitle": "Recuperar usando a Chave Privada",
+        "privateKeyInput": {
+            "title": "Chave Privada"
         }
     },
     "recoverSeedPhrase": {
@@ -1542,6 +1558,9 @@
         },
         "promptTwoFactor": {
             "userCancelled": "Código 2FA não foi verificado corretamente."
+        },
+        "recoverAccountPrivateKey": {
+            "errorPKNotValid": "A chave privada fornecida não é válida. Por favor, verifique a sua chave privada e tente novamente."
         },
         "recoverAccountSeedPhrase": {
             "errorInvalidSeedPhrase": "Nenhuma conta foi encontrada para essa frase-semente."

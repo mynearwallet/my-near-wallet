@@ -22,14 +22,13 @@ const StyledLogo = styled('div')`
 
 const Logo = ({ link, mode }) => (
     <StyledLogo className='logo'>
-        {link
-            ? (
-                <Link to='/'>
-                    <MyNearWalletLogo mode={mode} />
-                </Link>
-            )
-            : <MyNearWalletLogo mode={mode} />
-        }
+        {link ? (
+            <Link to='/'>
+                <MyNearWalletLogo mode={mode} />
+            </Link>
+        ) : (
+            <MyNearWalletLogo mode={mode} />
+        )}
     </StyledLogo>
 );
 

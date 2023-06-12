@@ -15,7 +15,7 @@ const InputWrapper = styled.div`
     input {
         margin-top: 0px;
     }
-    
+
     &.wrong-char {
         input {
             animation-duration: 0.4s;
@@ -33,7 +33,8 @@ const InputWrapper = styled.div`
         }
     }
 
-    &.success, &.problem {
+    &.success,
+    &.problem {
         input {
             border: 0;
         }
@@ -68,7 +69,7 @@ const InputWrapper = styled.div`
 
     &.success {
         input {
-            color: #008D6A;
+            color: #008d6a;
             &:focus {
                 box-shadow: none;
             }
@@ -80,7 +81,7 @@ const InputWrapper = styled.div`
 
     &.problem {
         input {
-            color: #FC5B5B;
+            color: #fc5b5b;
             &:focus {
                 box-shadow: none;
             }
@@ -89,8 +90,8 @@ const InputWrapper = styled.div`
 `;
 class InputAccountId extends Component {
     state = {
-        wrongChar: false
-    }
+        wrongChar: false,
+    };
 
     checkAccountAvailabilityTimer = null;
     canvas = null;
@@ -103,11 +104,12 @@ class InputAccountId extends Component {
             this.handleChangeAccountId({ userValue: accountId });
             this.updatePrefix(accountId);
         }
-    }
+    };
 
     updatePrefix = (userValue) => {
         // FIX: Handle prefix placement for overflowing input (implicit accounts, etc.)
-        const isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+        const isSafari =
+            /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
         const width = this.getTextWidth(userValue, '16px Inter');
         const extraSpace = isSafari ? 22 : 23;
         this.prefix.current.style.right = width + extraSpace + 'px';
@@ -115,7 +117,7 @@ class InputAccountId extends Component {
         if (userValue.length === 0) {
             this.prefix.current.style.visibility = 'hidden';
         }
-    }
+    };
 
     getTextWidth = (text, font) => {
         if (!this.canvas) {
@@ -125,10 +127,11 @@ class InputAccountId extends Component {
         context.font = font;
         let metrics = context.measureText(text);
         return metrics.width;
-    }
+    };
 
     handleChangeAccountId = ({ userValue, el }) => {
-        const { handleChange, localAlert, clearLocalAlert, setIsImplicitAccount } = this.props;
+        const { handleChange, localAlert, clearLocalAlert, setIsImplicitAccount } =
+            this.props;
         const { wrongChar } = this.state;
         const pattern = /[^a-zA-Z0-9._-]/;
 
@@ -152,13 +155,15 @@ class InputAccountId extends Component {
 
         localAlert && clearLocalAlert();
 
-        this.checkAccountAvailabilityTimer && clearTimeout(this.checkAccountAvailabilityTimer);
+        this.checkAccountAvailabilityTimer &&
+            clearTimeout(this.checkAccountAvailabilityTimer);
         this.checkAccountAvailabilityTimer = setTimeout(() => {
             this.handleCheckAvailability(accountId);
         }, ACCOUNT_CHECK_TIMEOUT);
-    }
+    };
 
-    isImplicitAccount = (accountId) => accountId.length === 64 && !accountId.includes('.')
+    isImplicitAccount = (accountId) =>
+        accountId.length === 64 && !accountId.includes('.');
 
     handleCheckAvailability = async (accountId) => {
         const { checkAvailability, clearLocalAlert, setIsImplicitAccount } = this.props;
@@ -170,36 +175,45 @@ class InputAccountId extends Component {
         try {
             await checkAvailability(accountId);
         } catch (e) {
-            if (this.isImplicitAccount(accountId) && e.toString().includes('does not exist while viewing')) {
-                console.warn(`${accountId} does not exist. Assuming this is an implicit Account ID.`);
+            if (
+                this.isImplicitAccount(accountId) &&
+                e.toString().includes('does not exist while viewing')
+            ) {
+                console.warn(
+                    `${accountId} does not exist. Assuming this is an implicit Account ID.`
+                );
                 clearLocalAlert();
                 setIsImplicitAccount(true);
                 return;
             }
         }
-    }
+    };
 
     render() {
-        const {
-            disabled,
-            accountId,
-            onFocus,
-            onBlur,
-            autoFocus,
-            isSuccess,
-            isProblem,
-        } = this.props;
+        const { disabled, accountId, onFocus, onBlur, autoFocus, isSuccess, isProblem } =
+            this.props;
 
         const { wrongChar } = this.state;
 
         return (
             <Translate>
                 {({ translate }) => (
-                    <InputWrapper className={classNames([{ 'success': isSuccess }, { 'problem': isProblem }, { 'wrong-char': wrongChar }])}>
+                    <InputWrapper
+                        className={classNames([
+                            { success: isSuccess },
+                            { problem: isProblem },
+                            { 'wrong-char': wrongChar },
+                        ])}
+                    >
                         <input
                             value={accountId}
                             onInput={(e) => this.updatePrefix(e.target.value)}
-                            onChange={(e) => this.handleChangeAccountId({ userValue: e.target.value, el: e.target })}
+                            onChange={(e) =>
+                                this.handleChangeAccountId({
+                                    userValue: e.target.value,
+                                    el: e.target,
+                                })
+                            }
                             placeholder={translate('input.accountId.placeHolderAlt')}
                             required
                             autoComplete='off'
@@ -211,7 +225,7 @@ class InputAccountId extends Component {
                             autoFocus={autoFocus}
                             onBlur={onBlur}
                             onFocus={onFocus}
-                            data-test-id="sendMoneyPageAccountIdInput"
+                            data-test-id='sendMoneyPageAccountIdInput'
                         />
                         <span className='success-prefix' ref={this.prefix}>
                             <CheckCircleIcon color='#00C08B' />

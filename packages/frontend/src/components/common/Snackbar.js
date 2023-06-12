@@ -43,16 +43,15 @@ const Wrapper = styled.div`
     font-size: 16px;
     display: flex;
     align-items: center;
-    box-shadow: 0px 6px 8px 0px rgba(0,0,0,0.14);
+    box-shadow: 0px 6px 8px 0px rgba(0, 0, 0, 0.14);
 
     &.success-theme {
-        background-color: #8FD6BD;
+        background-color: #8fd6bd;
 
         .theme-icon {
             background: url(${successIcon}) center no-repeat;
         }
     }
-
 `;
 
 const Icon = styled.div`
@@ -79,7 +78,7 @@ class Snackbar extends Component {
         super(props);
 
         this.state = {
-            animate: false
+            animate: false,
         };
     }
 
@@ -96,23 +95,15 @@ class Snackbar extends Component {
     }
 
     render() {
-
-        const {
-            theme,
-            message,
-            show,
-            onHide
-        } = this.props;
+        const { theme, message, show, onHide } = this.props;
 
         if (show) {
             return (
                 <Container className={this.state.animate ? 'show' : ''}>
                     <Wrapper className={`${theme}-theme`}>
-                        <Icon className='theme-icon'/>
+                        <Icon className='theme-icon' />
                         {message}
-                        {onHide &&
-                            <HideButton onClick={onHide}/>
-                        }
+                        {onHide && <HideButton onClick={onHide} />}
                     </Wrapper>
                 </Container>
             );
@@ -126,10 +117,7 @@ const snackbarDuration = 5500;
 
 Snackbar.propTypes = {
     theme: PropTypes.string.isRequired,
-    message: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object
-    ]).isRequired,
+    message: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     show: PropTypes.bool.isRequired,
     onHide: PropTypes.func,
 };
