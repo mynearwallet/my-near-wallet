@@ -1,3 +1,4 @@
+// import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
@@ -743,6 +744,8 @@ export default class Wallet {
             changeMethods: ['claim'],
             sender: fundingContract,
         });
+
+        // getNearRpcClient(CONFIG.NETWORK_ID).broadcast_tx_commit({ }, {});
 
         const fundingPubKey = fundingKeyPair.getPublicKey().toString();
         const attachedGas = await this.getLinkdropRequiredGas(
