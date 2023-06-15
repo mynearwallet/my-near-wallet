@@ -1,4 +1,4 @@
-// import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
+import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
@@ -581,6 +581,7 @@ export default class Wallet {
         );
         return available;
     }
+
     async createNewAccountWithNearContract({
         account,
         newAccountId,
@@ -740,19 +741,44 @@ export default class Wallet {
 
         const accountId = this.accountId;
 
+        const fundingPubKey = fundingKeyPair.getPublicKey().toString();
+
+        const attachedGas = await this.getLinkdropRequiredGas(
+            fundingContract,
+            fundingPubKey
+        );
+
+        const [signedTransactionBytes] = await account.signTransaction(fundingContract, [
+            nearApiJs.transactions.functionCall(
+                'claim',
+                { account_id: accountId },
+                attachedGas,
+                0
+            ),
+        ]);
+
+        return await getNearRpcClient(CONFIG.NETWORK_ID).broadcast_tx_commit(
+            {
+                signed_transaction_base64:
+                    Buffer.from(signedTransactionBytes).toString('base64'), // use @near-js/transactions library to create signed transaction
+            },
+            {
+                requestOptions: {
+                    attempts: 1,
+                    initialTimeout: 60,
+                },
+            }
+        );
+
+        /*
         const contract = new nearApiJs.Contract(account, fundingContract, {
             changeMethods: ['claim'],
             sender: fundingContract,
         });
 
-        // getNearRpcClient(CONFIG.NETWORK_ID).broadcast_tx_commit({ }, {});
 
-        const fundingPubKey = fundingKeyPair.getPublicKey().toString();
-        const attachedGas = await this.getLinkdropRequiredGas(
-            fundingContract,
-            fundingPubKey
-        );
-        await contract.claim({ account_id: accountId }, attachedGas);
+
+        await contract.claim({ account_id: accountId }, attachedGas);*/
     }
 
     async saveAccountKeyPair({ accountId, recoveryKeyPair }) {
