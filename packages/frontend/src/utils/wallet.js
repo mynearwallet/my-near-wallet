@@ -1,3 +1,4 @@
+import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
@@ -580,6 +581,7 @@ export default class Wallet {
         );
         return available;
     }
+
     async createNewAccountWithNearContract({
         account,
         newAccountId,
@@ -711,45 +713,74 @@ export default class Wallet {
     async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
         const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
-        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
-
-        const contract = new nearApiJs.Contract(account, fundingContract, {
-            changeMethods: ['create_account_and_claim', 'claim'],
-            sender: fundingContract,
-        });
-
         const fundingPubKey = fundingKeyPair.getPublicKey().toString();
         const attachedGas = await this.getLinkdropRequiredGas(
             fundingContract,
             fundingPubKey
         );
-        await contract.create_account_and_claim(
+        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
+        const [, signedTx] = await account.signTransaction(fundingContract, [
+            nearApiJs.transactions.functionCall(
+                'create_account_and_claim',
+                {
+                    new_account_id: accountId,
+                    new_public_key: publicKey.toString().replace('ed25519:', ''),
+                },
+                attachedGas,
+                0
+            ),
+        ]);
+        return await getNearRpcClient(
+            CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
+        ).broadcast_tx_commit(
             {
-                new_account_id: accountId,
-                new_public_key: publicKey.toString().replace('ed25519:', ''),
+                signed_transaction_base64: Buffer.from(signedTx.encode()).toString(
+                    'base64'
+                ),
             },
-            attachedGas
+            {
+                requestOptions: {
+                    attempts: 1,
+                    initialTimeout: 30000,
+                },
+            }
         );
     }
 
     async claimLinkdropToAccount(fundingContract, fundingKey) {
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
         const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
-        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
-
         const accountId = this.accountId;
-
-        const contract = new nearApiJs.Contract(account, fundingContract, {
-            changeMethods: ['claim'],
-            sender: fundingContract,
-        });
-
         const fundingPubKey = fundingKeyPair.getPublicKey().toString();
         const attachedGas = await this.getLinkdropRequiredGas(
             fundingContract,
             fundingPubKey
         );
-        await contract.claim({ account_id: accountId }, attachedGas);
+
+        await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
+        const [, signedTx] = await account.signTransaction(fundingContract, [
+            nearApiJs.transactions.functionCall(
+                'claim',
+                { account_id: accountId },
+                attachedGas,
+                0
+            ),
+        ]);
+        return await getNearRpcClient(
+            CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
+        ).broadcast_tx_commit(
+            {
+                signed_transaction_base64: Buffer.from(signedTx.encode()).toString(
+                    'base64'
+                ),
+            },
+            {
+                requestOptions: {
+                    attempts: 1,
+                    initialTimeout: 30000,
+                },
+            }
+        );
     }
 
     async saveAccountKeyPair({ accountId, recoveryKeyPair }) {
