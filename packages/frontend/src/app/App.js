@@ -163,8 +163,15 @@ class Routing extends Component {
         ];
 
         const browserLanguage = getBrowserLocale(languages.map((l) => l.code));
-        const activeLang =
-            localStorage.getItem('languageCode') || browserLanguage || languages[0].code;
+
+        console.log('Browser Language', browserLanguage);
+
+        let storedLanguage = localStorage.getItem('languageCode'); // "undefined"
+        if (storedLanguage === 'undefined') {
+            storedLanguage = undefined;
+        }
+
+        const activeLang = storedLanguage ?? browserLanguage ?? languages[0].code;
 
         this.props.initialize({
             languages,
