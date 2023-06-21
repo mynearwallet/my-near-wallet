@@ -34,7 +34,7 @@
         "@near-wallet-selector/account-export": "^7.6.1",
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/browser": "^6.4.1",
-        "@meteorwallet/meteor-near-sdk": "3.2.0",
+        "@meteorwallet/meteor-near-sdk": "3.3.0",
         "big.js": "^6.2.1",
         "bip39-light": "^1.0.7",
         "connected-react-router": "^6.6.0",
