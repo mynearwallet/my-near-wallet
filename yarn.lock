@@ -2252,10 +2252,10 @@
     "@types/mdx" "^2.0.0"
     "@types/react" ">=16"
 
-"@meteorwallet/meteor-near-sdk@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/meteor-near-sdk/-/meteor-near-sdk-3.0.0.tgz#13e32fd0aeaf4d763aa4c29962a8c644a067bbff"
-  integrity sha512-cSczkzYEzJqRHUUZSJz0KpMoyGEZEsyUWdqEbA0ppHrpKOTy7C4HdUE9VccvSV4iYyRCn3W/vPiBnEQcOgY5tw==
+"@meteorwallet/meteor-near-sdk@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/meteor-near-sdk/-/meteor-near-sdk-3.2.0.tgz#523323e777adcceeb79550799860ac2856233c12"
+  integrity sha512-/U4LWc/h+PiK7rtiJdUe3uLu1LB11UHGgG1CKfb4Z2Sb/M7CeWk0FQ2lwkp416gmoBjgR57XqDBtEIVl+XpmTg==
 
 "@mischnic/json-sourcemap@^0.1.0":
   version "0.1.0"

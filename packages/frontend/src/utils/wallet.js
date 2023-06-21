@@ -732,19 +732,9 @@ export default class Wallet {
         ]);
         return await getNearRpcClient(
             CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
-        ).broadcast_tx_commit(
-            {
-                signed_transaction_base64: Buffer.from(signedTx.encode()).toString(
-                    'base64'
-                ),
-            },
-            {
-                requestOptions: {
-                    attempts: 1,
-                    initialTimeout: 30000,
-                },
-            }
-        );
+        ).custom_broadcast_tx_async_wait_all_receipts({
+            signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
+        });
     }
 
     async claimLinkdropToAccount(fundingContract, fundingKey) {
@@ -768,19 +758,10 @@ export default class Wallet {
         ]);
         return await getNearRpcClient(
             CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
-        ).broadcast_tx_commit(
-            {
-                signed_transaction_base64: Buffer.from(signedTx.encode()).toString(
-                    'base64'
-                ),
-            },
-            {
-                requestOptions: {
-                    attempts: 1,
-                    initialTimeout: 30000,
-                },
-            }
-        );
+        ).custom_broadcast_tx_async_wait_all_receipts({
+            signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
+            sender_account_id: fundingContract,
+        });
     }
 
     async saveAccountKeyPair({ accountId, recoveryKeyPair }) {
