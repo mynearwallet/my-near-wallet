@@ -734,6 +734,7 @@ export default class Wallet {
             CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
+            sender_account_id: fundingContract,
         });
     }
 
