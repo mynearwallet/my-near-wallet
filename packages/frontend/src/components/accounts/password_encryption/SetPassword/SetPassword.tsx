@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { currentTargetValue } from '../../../shared/lib/forms/selectors';
-import ComplexityBlock from '../ComplexityBlock';
-import { validatePassword } from '../ComplexityBlock/lib/complexity';
+import { currentTargetValue } from '../../../../shared/lib/forms/selectors';
+import ComplexityBlock from '../../ComplexityBlock';
+import { validatePassword } from '../../ComplexityBlock/lib/complexity';
 import { inLength, isEqual, MIN_PASS_LEN } from './lib/validation';
 import { Confirm, Enter } from './ui';
 import Input from './ui/Input';

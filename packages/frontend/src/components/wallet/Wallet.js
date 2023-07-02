@@ -1,11 +1,13 @@
 import React from 'react';
 import { Translate } from 'react-localize-redux';
+import { Link } from 'react-router-dom';
 import { Textfit } from 'react-textfit';
 import styled from 'styled-components';
 
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
 import classNames from '../../utils/classNames';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
+import AlertBanner from '../common/AlertBanner';
 import { getTotalBalanceInFiat } from '../common/balance/helpers';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
@@ -314,6 +316,18 @@ export function Wallet({
 
     return (
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
+            {/* TODO: Style and translate this */}
+            <AlertBanner theme={'warning'}>
+                You're recommended to set up a password for your account to better secure
+                your private keys or seedphrase.
+                <br />
+                <FormButton>
+                    <Link to='/set-password' className={'right'}>
+                        Set up password
+                    </Link>
+                </FormButton>
+            </AlertBanner>
+
             <div className='split'>
                 <div className='left'>
                     <div className='tab-selector'>

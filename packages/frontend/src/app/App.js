@@ -25,6 +25,7 @@ import SetupLedgerWithRouter from '../components/accounts/ledger/SetupLedger';
 import SetupLedgerSuccessWithRouter from '../components/accounts/ledger/SetupLedgerSuccess';
 import SignInLedgerWrapper from '../components/accounts/ledger/SignInLedgerWrapper';
 import LinkdropLandingWithRouter from '../components/accounts/LinkdropLanding';
+import { SetPasswordPage } from '../components/accounts/password_encryption/SetPasswordPage';
 import RecoverAccountPrivateKey from '../components/accounts/RecoverAccountPrivateKey';
 import RecoverAccountSeedPhraseWithRouter from '../components/accounts/RecoverAccountSeedPhrase';
 import RecoverAccountWrapper from '../components/accounts/RecoverAccountWrapper';
@@ -93,6 +94,7 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
+
 const { getTokenWhiteList } = tokenFiatValueActions;
 
 const {
@@ -365,6 +367,11 @@ class Routing extends Component {
                                 )}
                                 accountFound={accountFound}
                                 indexBySearchEngines={!accountFound}
+                            />
+                            <Route
+                                exact
+                                path={'/set-password'}
+                                render={() => <SetPasswordPage />}
                             />
                             <Route
                                 exact
