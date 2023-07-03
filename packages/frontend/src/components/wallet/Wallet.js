@@ -317,16 +317,17 @@ export function Wallet({
     return (
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
             {/* TODO: Style and translate this */}
-            <AlertBanner theme={'warning'}>
-                You're recommended to set up a password for your account to better secure
-                your private keys or seedphrase.
-                <br />
-                <FormButton>
-                    <Link to='/set-password' className={'right'}>
-                        Set up password
-                    </Link>
-                </FormButton>
-            </AlertBanner>
+            {
+                <AlertBanner theme={'warning'}>
+                    <Translate id='wallet.recommendToSetPassword' />
+                    <br />
+                    <FormButton>
+                        <Link to='/set-password' className={'right'}>
+                            <Translate id='wallet.setUpPasswordBtn' />
+                        </Link>
+                    </FormButton>
+                </AlertBanner>
+            }
 
             <div className='split'>
                 <div className='left'>

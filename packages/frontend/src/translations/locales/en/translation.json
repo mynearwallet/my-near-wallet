@@ -1326,6 +1326,8 @@
         "matchError": "Passwords do not match",
         "pageText": "You will use this to unlock your wallet.",
         "pageTitle": "Create a Password",
+        "passwordExist": "Password already exists",
+        "passwordExistDescription": "You have already secured your account with password.",
         "strong": "Strong password",
         "week": "Week password",
         "withoutPassword": "Continue without creating a password"
@@ -1828,7 +1830,10 @@
         "tokens": "Tokens",
         "totalBalance": "Total Balance",
         "totalBalanceTitle": "Total Balance",
-        "yourPortfolio": "Your Portfolio"
+        "yourPortfolio": "Your Portfolio",
+        "recommendToSetPassword": "You're recommended to set up a password for your account to better secure your private keys or seedphrase.",
+        "setUpPasswordBtn": "Set up password"
+
     },
     "walletErrorCodes": {
         "addAccessKey": {

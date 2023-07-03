@@ -24,7 +24,7 @@ export const getStakingAccountSelected = () => {
 };
 
 export const setReleaseNotesClosed = (version) => {
-    localStorage.setItem(keyReleaseNotesModalClosed(version), true);
+    localStorage.setItem(keyReleaseNotesModalClosed(version), String(true));
 };
 
 export const getReleaseNotesClosed = (version) => {
@@ -49,4 +49,18 @@ export const getLedgerHDPath = (accountId) => {
 
 export const removeLedgerHDPath = (accountId) => {
     localStorage.removeItem(`ledgerHdPath:${accountId}`);
+};
+
+export const setEncryptedData = (salt: string, encryptedData: string) => {
+    localStorage.setItem(
+        'ENCRYPTED_DATA',
+        JSON.stringify({
+            salt,
+            encryptedData,
+        })
+    );
+};
+
+export const getEncryptedData = () => {
+    return JSON.parse(localStorage.getItem('ENCRYPTED_DATA'));
 };
