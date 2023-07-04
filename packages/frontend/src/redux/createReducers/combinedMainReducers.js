@@ -3,6 +3,7 @@ import { localizeReducer } from 'react-localize-redux';
 
 import account from '../reducers/account';
 import allAccounts from '../reducers/allAccounts';
+import passwordEncryption from '../reducers/passwordEncryption';
 import sign from '../reducers/sign';
 import staking from '../reducers/staking';
 import status from '../reducers/status';
@@ -27,6 +28,7 @@ export default (history) => ({
     [tokenFiatValuesSlice.name]: tokenFiatValuesSlice.reducer,
     // account reducers
     allAccounts,
+    passwordEncryption,
     account,
     sign,
     staking,

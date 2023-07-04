@@ -1330,7 +1330,12 @@
         "passwordExistDescription": "You have already secured your account with password.",
         "strong": "Strong password",
         "week": "Week password",
-        "withoutPassword": "Continue without creating a password"
+        "withoutPassword": "Continue without creating a password",
+        "unlockWalletTitle": "Unlock Wallet",
+        "unlockWalletDescription": "Welcome back, web3 world awaits you. Enter your password to unlock your wallet.",
+        "unlockWalletInputPlaceholder": "Enter password",
+        "unlockWalletButton": "Unlock Wallet",
+        "invalidPassword": "Invalid Password"
     },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",
@@ -1826,14 +1831,13 @@
             "desc": "You’ll need NEAR tokens to perform transactions with your wallet.",
             "title": "Deposit NEAR"
         },
+        "recommendToSetPassword": "You're recommended to set up a password for your account to better secure your private keys or seedphrase.",
+        "setUpPasswordBtn": "Set up password",
         "status": "Status",
         "tokens": "Tokens",
         "totalBalance": "Total Balance",
         "totalBalanceTitle": "Total Balance",
-        "yourPortfolio": "Your Portfolio",
-        "recommendToSetPassword": "You're recommended to set up a password for your account to better secure your private keys or seedphrase.",
-        "setUpPasswordBtn": "Set up password"
-
+        "yourPortfolio": "Your Portfolio"
     },
     "walletErrorCodes": {
         "addAccessKey": {

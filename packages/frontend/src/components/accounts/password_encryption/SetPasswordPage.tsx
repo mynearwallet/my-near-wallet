@@ -3,7 +3,11 @@ import { Translate } from 'react-localize-redux';
 import { useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getEncryptedData, setEncryptedData } from '../../../utils/localStorage';
+import {
+    getEncryptedData,
+    retrieveAllAccountsPrivateKey,
+    setEncryptedData,
+} from '../../../utils/localStorage';
 import Container from '../../common/styled/Container.css';
 import SetPasswordForm from './SetPasswordForm';
 
@@ -13,8 +17,10 @@ export const SetPasswordPage: FC<void> = () => {
 
     const onSubmit = (password: string) => {
         const salt = uuidv4();
-        const encryptedData = salt + password;
-        setEncryptedData(salt, encryptedData);
+        const derivedPassword = password + salt;
+        const accounts = retrieveAllAccountsPrivateKey();
+        const encryptedData = JSON.stringify(accounts) + derivedPassword;
+        setEncryptedData({ salt, encryptedData });
         history.push('/');
     };
 

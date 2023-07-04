@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
 import classNames from '../../utils/classNames';
+import { getEncryptedData } from '../../utils/localStorage';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
 import AlertBanner from '../common/AlertBanner';
 import { getTotalBalanceInFiat } from '../common/balance/helpers';
@@ -313,11 +314,12 @@ export function Wallet({
 }) {
     const currentLanguage = getCurrentLanguage();
     const totalAmount = getTotalBalanceInFiat(fungibleTokensList, currentLanguage);
+    const isAccountEncrypted = !!getEncryptedData();
 
     return (
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
             {/* TODO: Style and translate this */}
-            {
+            {!isAccountEncrypted && (
                 <AlertBanner theme={'warning'}>
                     <Translate id='wallet.recommendToSetPassword' />
                     <br />
@@ -327,7 +329,7 @@ export function Wallet({
                         </Link>
                     </FormButton>
                 </AlertBanner>
-            }
+            )}
 
             <div className='split'>
                 <div className='left'>
