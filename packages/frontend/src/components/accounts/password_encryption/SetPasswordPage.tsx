@@ -15,6 +15,7 @@ export const SetPasswordPage: FC<void> = () => {
     const isEncrypted = !!getEncryptedData();
     const history = useHistory();
 
+    // TODO-password-encryption: Change this to the real encrypt function
     const onSubmit = (password: string) => {
         const salt = uuidv4();
         const derivedPassword = password + salt;

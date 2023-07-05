@@ -1322,6 +1322,7 @@
         "average": "Average password",
         "confirm": "Confirm Password",
         "enter": "Enter password",
+        "invalidPassword": "Invalid Password",
         "lengthError": "At least 8 characters",
         "matchError": "Passwords do not match",
         "pageText": "You will use this to unlock your wallet.",
@@ -1329,13 +1330,12 @@
         "passwordExist": "Password already exists",
         "passwordExistDescription": "You have already secured your account with password.",
         "strong": "Strong password",
-        "week": "Week password",
-        "withoutPassword": "Continue without creating a password",
-        "unlockWalletTitle": "Unlock Wallet",
+        "unlockWalletButton": "Unlock Wallet",
         "unlockWalletDescription": "Welcome back, web3 world awaits you. Enter your password to unlock your wallet.",
         "unlockWalletInputPlaceholder": "Enter password",
-        "unlockWalletButton": "Unlock Wallet",
-        "invalidPassword": "Invalid Password"
+        "unlockWalletTitle": "Unlock Wallet",
+        "week": "Week password",
+        "withoutPassword": "Continue without creating a password"
     },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",

@@ -1,8 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Route, withRouter, Redirect } from 'react-router-dom';
 
 import { selectAccountSlice } from '../../../redux/slices/account';
+import { selectDecryptedAccounts } from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
 import { selectStatusLocalAlert } from '../../../redux/slices/status';
 import { getEncryptedData } from '../../../utils/localStorage';
 import { KEY_ACTIVE_ACCOUNT_ID } from '../../../utils/wallet';
@@ -19,7 +20,7 @@ const PrivateRoute = ({
     ...rest
 }) => {
     const isAccountEncrypted = !!getEncryptedData();
-    const isAccountUnlocked = false;
+    const isAccountUnlocked = useSelector(selectDecryptedAccounts).length > 0;
 
     return (
         <>

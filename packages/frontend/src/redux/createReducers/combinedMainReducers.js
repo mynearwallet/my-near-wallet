@@ -3,7 +3,6 @@ import { localizeReducer } from 'react-localize-redux';
 
 import account from '../reducers/account';
 import allAccounts from '../reducers/allAccounts';
-import passwordEncryption from '../reducers/passwordEncryption';
 import sign from '../reducers/sign';
 import staking from '../reducers/staking';
 import status from '../reducers/status';
@@ -15,6 +14,7 @@ import importZeroBalanceAccountSlice from '../slices/importZeroBalanceAccount';
 import ledgerSlice from '../slices/ledger';
 import linkdropSlice from '../slices/linkdrop';
 import nftSlice from '../slices/nft';
+import passwordEncryptionSlice from '../slices/passwordEncryption/passwordEncryptionSlice';
 import recoveryMethodsSlice from '../slices/recoveryMethods';
 import security from '../slices/security';
 import swapSlice from '../slices/swap';
@@ -28,7 +28,6 @@ export default (history) => ({
     [tokenFiatValuesSlice.name]: tokenFiatValuesSlice.reducer,
     // account reducers
     allAccounts,
-    passwordEncryption,
     account,
     sign,
     staking,
@@ -45,4 +44,5 @@ export default (history) => ({
     [availableAccountsSlice.name]: availableAccountsSlice.reducer,
     [ledgerSlice.name]: ledgerSlice.reducer,
     [swapSlice.name]: swapSlice.reducer,
+    [passwordEncryptionSlice.name]: passwordEncryptionSlice.reducer,
 });

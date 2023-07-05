@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
 import { useDispatch } from 'react-redux';
 
-import { decrypt } from '../../../redux/actions/passwordEncryption';
-import { TDecryptedData } from '../../../redux/reducers/passwordEncryption';
+import passwordEncryptionSlice, {
+    TDecryptedData,
+} from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
 import { getEncryptedData, TEncryptedData } from '../../../utils/localStorage';
 import FormButton from '../../common/FormButton';
@@ -13,7 +14,7 @@ import Input from './SetPassword/ui/Input';
 import { Submit } from './SetPasswordForm/ui';
 
 type UnlockWalletPageProps = {
-    uponUnlock: (e) => void;
+    uponUnlock: () => void;
 };
 
 export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
@@ -22,25 +23,25 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
     const [errorMessage, setErrorMessage] = useState<string>(null);
     const dispatch = useDispatch();
 
-    // TODO: Change this to the real decrypt function
+    // TODO-password-encryption: Change this to the real decrypt function
     const unlockHandler = (encryptedData: TEncryptedData, password: string): boolean => {
         const { salt, encryptedData: encryptedDataString } = encryptedData;
         const decryptedData = encryptedDataString.replace(password + salt, '');
         try {
             const accounts: TDecryptedData = JSON.parse(decryptedData);
-            dispatch(decrypt(accounts));
+            dispatch(passwordEncryptionSlice.actions.decrypt(accounts));
             return true;
         } catch (e) {
             return false;
         }
     };
 
-    // TODO: Fix the logic here
+    // TODO-password-encryption:
     const handleClickNext = () => {
         const encryptedData = getEncryptedData();
         const decryption = unlockHandler(encryptedData, password);
         if (decryption) {
-            uponUnlock(password);
+            uponUnlock();
             setErrorMessage(null);
         } else {
             setErrorMessage(t('setupPasswordProtection.invalidPassword'));
