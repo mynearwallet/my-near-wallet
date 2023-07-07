@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {
     getEncryptedData,
+    removeAllAccountsPrivateKey,
     retrieveAllAccountsPrivateKey,
     setEncryptedData,
 } from '../../../utils/localStorage';
@@ -16,13 +17,19 @@ export const SetPasswordPage: FC<void> = () => {
     const history = useHistory();
 
     // TODO-password-encryption: Change this to the real encrypt function
+    // TODO-password-encryption: Maybe add another page to confirm if users' have really encrypted all their wallet
     const onSubmit = (password: string) => {
         const salt = uuidv4();
         const derivedPassword = password + salt;
-        const accounts = retrieveAllAccountsPrivateKey();
-        const encryptedData = JSON.stringify(accounts) + derivedPassword;
-        setEncryptedData({ salt, encryptedData });
-        history.push('/');
+        try {
+            const accounts = retrieveAllAccountsPrivateKey();
+            const encryptedData = JSON.stringify(accounts) + derivedPassword;
+            setEncryptedData({ salt, encryptedData });
+            history.push('/');
+            removeAllAccountsPrivateKey();
+        } catch (e) {
+            console.error('Something went wrong');
+        }
     };
 
     return (

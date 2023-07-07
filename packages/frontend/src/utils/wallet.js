@@ -23,6 +23,7 @@ import {
     getLedgerHDPath,
     removeLedgerHDPath,
     setLedgerHdPath,
+    getEncryptedData,
 } from './localStorage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
@@ -107,10 +108,13 @@ export async function getKeyMeta(publicKey) {
 
 export default class Wallet {
     constructor(rpcInfo = null) {
-        this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
-            window.localStorage,
-            KEY_STORE_PREFIX
-        );
+        this.isEncrypted = !!getEncryptedData();
+        this.keyStore = this.isEncrypted
+            ? new nearApiJs.keyStores.InMemoryKeyStore()
+            : new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+                  window.localStorage,
+                  KEY_STORE_PREFIX
+              );
         this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
         this.inMemorySignerBasic = new nearApiJs.InMemorySigner(this.keyStore);
 

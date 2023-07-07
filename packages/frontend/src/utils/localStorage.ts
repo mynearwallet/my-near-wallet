@@ -74,6 +74,16 @@ export const retrieveAllAccountsPrivateKey = (): TDecryptedAccount[] => {
     return items;
 };
 
+export const removeAllAccountsPrivateKey = () => {
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+
+        if (key.startsWith(KEY_STORE_PREFIX)) {
+            localStorage.removeItem(key);
+        }
+    }
+};
+
 export type TEncryptedData = {
     salt: string;
     encryptedData: string;

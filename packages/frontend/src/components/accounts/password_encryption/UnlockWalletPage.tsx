@@ -4,10 +4,11 @@ import { Translate } from 'react-localize-redux';
 import { useDispatch } from 'react-redux';
 
 import passwordEncryptionSlice, {
-    TDecryptedData,
+    TDecryptedData_Account,
 } from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
 import { getEncryptedData, TEncryptedData } from '../../../utils/localStorage';
+import { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
 import Input from './SetPassword/ui/Input';
@@ -26,12 +27,17 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
     // TODO-password-encryption: Change this to the real decrypt function
     const unlockHandler = (encryptedData: TEncryptedData, password: string): boolean => {
         const { salt, encryptedData: encryptedDataString } = encryptedData;
-        const decryptedData = encryptedDataString.replace(password + salt, '');
+        const decryptedAccounts = encryptedDataString.replace(password + salt, '');
         try {
-            const accounts: TDecryptedData = JSON.parse(decryptedData);
-            dispatch(passwordEncryptionSlice.actions.decrypt(accounts));
+            const parsedDecryptedAccounts: TDecryptedData_Account[] =
+                JSON.parse(decryptedAccounts);
+            dispatch(passwordEncryptionSlice.actions.decrypt(parsedDecryptedAccounts));
+            parsedDecryptedAccounts.forEach((account) => {
+                wallet.setKey(account.accountId, account.privateKey);
+            });
             return true;
         } catch (e) {
+            console.error(e);
             return false;
         }
     };
