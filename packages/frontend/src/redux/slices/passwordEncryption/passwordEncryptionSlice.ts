@@ -10,6 +10,7 @@ const selectPasswordEncryptionSlice = (state) => state[SLICE_NAME];
 const initialState: TDecryptedData = {
     decryptCheck: false,
     version: '1',
+    derivedPassword: undefined,
     accounts: [],
 };
 
@@ -21,7 +22,8 @@ const passwordEncryptionSlice = createSlice({
     initialState,
     reducers: {
         decrypt(state, { payload }) {
-            state.accounts = payload;
+            state.accounts = payload.accounts;
+            state.derivedPassword = payload.derivedPassword;
         },
     },
 });
@@ -33,6 +35,10 @@ export const selectDecryptedAccounts = createSelector(
     selectPasswordEncryptionSlice,
     ({ accounts }) => accounts
 );
+export const selectDerivedPassword = createSelector(
+    selectPasswordEncryptionSlice,
+    ({ derivedPassword }) => derivedPassword
+);
 export default passwordEncryptionSlice;
 
 /****************************/
@@ -42,6 +48,7 @@ export default passwordEncryptionSlice;
 export type TDecryptedData = {
     decryptCheck: boolean;
     version: string;
+    derivedPassword?: string;
     accounts: Array<TDecryptedData_Account>;
 };
 

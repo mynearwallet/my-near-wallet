@@ -2,6 +2,7 @@ import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
+import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
@@ -13,6 +14,7 @@ import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/a
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
+import { EncryptionDecryptionUtils } from './encryption';
 import { getAccountIds } from './helper-api';
 import { ledgerManager } from './ledgerManager';
 import {
@@ -24,6 +26,9 @@ import {
     removeLedgerHDPath,
     setLedgerHdPath,
     getEncryptedData,
+    retrieveAllAccountsPrivateKey,
+    setEncryptedData,
+    removeAllAccountsPrivateKey,
 } from './localStorage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
@@ -337,6 +342,22 @@ export default class Wallet {
                 },
             };
         }
+    }
+
+    async enableEncryption(password) {
+        const accounts = retrieveAllAccountsPrivateKey();
+        const derivedPassword = await EncryptionDecryptionUtils.generateHash(password);
+        const encryptedData = await EncryptionDecryptionUtils.encrypt(
+            derivedPassword,
+            accounts
+        );
+        setEncryptedData({
+            salt: encryptedData.salt,
+            encryptedData: encryptedData.payload,
+        });
+
+        removeAllAccountsPrivateKey();
+        this.keyStore = new InMemoryKeyStore();
     }
 
     // TODO: Figure out whether wallet should work with any account or current one.

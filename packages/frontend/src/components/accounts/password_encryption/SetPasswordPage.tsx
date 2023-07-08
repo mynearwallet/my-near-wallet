@@ -1,35 +1,23 @@
 import React, { FC } from 'react';
 import { Translate } from 'react-localize-redux';
-import { useHistory } from 'react-router';
-import { v4 as uuidv4 } from 'uuid';
 
-import {
-    getEncryptedData,
-    removeAllAccountsPrivateKey,
-    retrieveAllAccountsPrivateKey,
-    setEncryptedData,
-} from '../../../utils/localStorage';
+import { getEncryptedData } from '../../../utils/localStorage';
+import { wallet } from '../../../utils/wallet';
 import Container from '../../common/styled/Container.css';
 import SetPasswordForm from './SetPasswordForm';
 
-export const SetPasswordPage: FC<void> = () => {
+type SetPasswordPage = {
+    uponSetPassword: () => void;
+};
+
+export const SetPasswordPage: FC<SetPasswordPage> = ({ uponSetPassword }) => {
     const isEncrypted = !!getEncryptedData();
-    const history = useHistory();
 
     // TODO-password-encryption: Change this to the real encrypt function
     // TODO-password-encryption: Maybe add another page to confirm if users' have really encrypted all their wallet
     const onSubmit = (password: string) => {
-        const salt = uuidv4();
-        const derivedPassword = password + salt;
-        try {
-            const accounts = retrieveAllAccountsPrivateKey();
-            const encryptedData = JSON.stringify(accounts) + derivedPassword;
-            setEncryptedData({ salt, encryptedData });
-            history.push('/');
-            removeAllAccountsPrivateKey();
-        } catch (e) {
-            console.error('Something went wrong');
-        }
+        wallet.enableEncryption(password);
+        uponSetPassword();
     };
 
     return (
