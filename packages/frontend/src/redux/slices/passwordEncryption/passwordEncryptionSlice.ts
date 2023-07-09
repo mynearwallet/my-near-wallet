@@ -49,8 +49,8 @@ export type TDecryptedData = {
     derivedPassword?: string;
 };
 
-export type TDecryptedData_Account = {
-    accountId: string;
-    privateKey: string;
-    seedPhrase: string | null;
-};
+// export type TDecryptedData_Account = {
+//     accountId: string;
+//     privateKey: string;
+//     seedPhrase: string | null;
+// };

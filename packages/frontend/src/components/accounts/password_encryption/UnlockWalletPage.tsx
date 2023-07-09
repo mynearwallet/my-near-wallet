@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
 import { useDispatch } from 'react-redux';
 
+import passwordEncryptionSlice from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
 import { EncryptionDecryptionUtils } from '../../../utils/encryption';
 import { getEncryptedData } from '../../../utils/localStorage';
