@@ -3,9 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
 import { useDispatch } from 'react-redux';
 
-import passwordEncryptionSlice, {
-    TDecryptedData_Account,
-} from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
 import { EncryptionDecryptionUtils } from '../../../utils/encryption';
 import { getEncryptedData } from '../../../utils/localStorage';
@@ -45,7 +42,7 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
             // Step 3: Save the accounts in the redux store, but is this really necessary?
             dispatch(
                 passwordEncryptionSlice.actions.decrypt({
-                    accounts: decryptedAccounts.decryptedData as TDecryptedData_Account[],
+                    // accounts: decryptedAccounts.decryptedData as TDecryptedData_Account[],
                     derivedPassword,
                 })
             );

@@ -796,9 +796,36 @@ export default class Wallet {
     }
 
     async saveAccount(accountId, keyPair) {
-        this.getAccountsLocalStorage();
-        await this.setKey(accountId, keyPair);
-        this.accounts[accountId] = true;
+        if (keyPair) {
+            const localStorageEncryptedData = getEncryptedData();
+            if (localStorageEncryptedData) {
+                const { salt, encryptedData } = localStorageEncryptedData;
+                const derivedPassword =
+                    store.getState().passwordEncryption.derivedPassword;
+                const { decryptedData: decryptedAccounts } =
+                    await EncryptionDecryptionUtils.decrypt(
+                        derivedPassword,
+                        salt,
+                        encryptedData
+                    );
+                decryptedAccounts.push({
+                    accountId,
+                    privateKey: keyPair.secretKey,
+                });
+                const newEncryptedData = await EncryptionDecryptionUtils.encrypt(
+                    derivedPassword,
+                    decryptedAccounts
+                );
+                setEncryptedData({
+                    salt: newEncryptedData.salt,
+                    encryptedData: newEncryptedData.payload,
+                });
+            }
+
+            this.getAccountsLocalStorage();
+            await this.setKey(accountId, keyPair);
+            this.accounts[accountId] = true;
+        }
 
         // TODO: figure out better way to inject reducer
         store.addAccountReducer();

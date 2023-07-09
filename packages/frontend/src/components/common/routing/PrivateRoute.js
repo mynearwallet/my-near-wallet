@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Route, withRouter, Redirect } from 'react-router-dom';
 
 import { selectAccountSlice } from '../../../redux/slices/account';
-import { selectDecryptedAccounts } from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
+import { selectDerivedPassword } from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
 import { selectStatusLocalAlert } from '../../../redux/slices/status';
 import { getEncryptedData } from '../../../utils/localStorage';
 import { KEY_ACTIVE_ACCOUNT_ID } from '../../../utils/wallet';
+import { SetPasswordPage } from '../../accounts/password_encryption/SetPasswordPage';
 import { UnlockWalletPage } from '../../accounts/password_encryption/UnlockWalletPage';
 import NoIndexMetaTag from '../NoIndexMetaTag';
 
@@ -19,9 +20,9 @@ const PrivateRoute = ({
     indexBySearchEngines,
     ...rest
 }) => {
-    const isAccountEncrypted = !!getEncryptedData();
-    const isAccountUnlocked = useSelector(selectDecryptedAccounts).length > 0;
-
+    const hasAnyAccount = !!localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID);
+    const [isAccountEncrypted, setIsAccountEncrypted] = useState(!!getEncryptedData());
+    const isAccountUnlocked = !!useSelector(selectDerivedPassword);
     return (
         <>
             {!indexBySearchEngines && <NoIndexMetaTag />}
@@ -39,8 +40,18 @@ const PrivateRoute = ({
                         );
                     }
 
-                    // Step 2: Account exists and opted password encryption but not unlocked yet, need to prompt user to insert password
-                    if (isAccountEncrypted && !isAccountUnlocked) {
+                    // Step 1: This is a totally new account, redirect them to Setup Password
+                    if (!hasAnyAccount && !isAccountEncrypted) {
+                        return (
+                            <SetPasswordPage
+                                uponSetPassword={() => {
+                                    setIsAccountEncrypted(true);
+                                }}
+                            />
+                        );
+
+                        // Step 2: Account exists and opted password encryption but not unlocked yet, need to prompt user to insert password
+                    } else if (isAccountEncrypted && !isAccountUnlocked) {
                         return <UnlockWalletPage uponUnlock={() => {}} />;
                     }
 

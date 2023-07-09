@@ -11,7 +11,6 @@ const initialState: TDecryptedData = {
     decryptCheck: false,
     version: '1',
     derivedPassword: undefined,
-    accounts: [],
 };
 
 /****************************/
@@ -22,7 +21,6 @@ const passwordEncryptionSlice = createSlice({
     initialState,
     reducers: {
         decrypt(state, { payload }) {
-            state.accounts = payload.accounts;
             state.derivedPassword = payload.derivedPassword;
         },
     },
@@ -49,7 +47,6 @@ export type TDecryptedData = {
     decryptCheck: boolean;
     version: string;
     derivedPassword?: string;
-    accounts: Array<TDecryptedData_Account>;
 };
 
 export type TDecryptedData_Account = {
