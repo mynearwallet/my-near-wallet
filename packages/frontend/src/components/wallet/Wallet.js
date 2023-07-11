@@ -318,7 +318,8 @@ export function Wallet({
 }) {
     const currentLanguage = getCurrentLanguage();
     const totalAmount = getTotalBalanceInFiat(fungibleTokensList, currentLanguage);
-    const isAccountEncrypted = !!getEncryptedData();
+    const isAccountEncrypted =
+        !!getEncryptedData() && getEncryptedData().isEncryptionEnabled;
 
     return (
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>

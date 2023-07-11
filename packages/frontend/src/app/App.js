@@ -385,7 +385,7 @@ class Routing extends Component {
                                 path='/linkdrop/:fundingContract/:fundingKey'
                                 component={LinkdropLandingWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/create/:fundingContract/:fundingKey'
                                 component={CreateAccountWithRouter}

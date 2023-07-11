@@ -118,7 +118,7 @@ export default class Wallet {
     }
 
     init(rpcInfo = null) {
-        this.isEncrypted = !!getEncryptedData();
+        this.isEncrypted = !!getEncryptedData() && getEncryptedData().isEncryptionEnabled;
         this.keyStore = this.isEncrypted
             ? new nearApiJs.keyStores.InMemoryKeyStore()
             : new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
@@ -360,6 +360,7 @@ export default class Wallet {
         setEncryptedData({
             salt: encryptedData.salt,
             encryptedData: encryptedData.payload,
+            isEncryptionEnabled: true,
         });
 
         removeAllAccountsPrivateKey();

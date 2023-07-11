@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { Route, withRouter } from 'react-router-dom';
+import { Route, withRouter, Redirect } from 'react-router-dom';
 
 import { selectAccountSlice } from '../../../redux/slices/account';
 import { selectDerivedPassword } from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
@@ -13,7 +13,7 @@ import NoIndexMetaTag from '../NoIndexMetaTag';
 
 // PrivateRoute is for logged-in users only and will redirect to the guest landing page if there's no active account
 
-const PasswordProtectedRoute = ({
+const PrivateRoute = ({
     component: Component,
     render,
     account,
@@ -21,15 +21,27 @@ const PasswordProtectedRoute = ({
     ...rest
 }) => {
     const hasAnyAccount = !!localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID);
-    const [isAccountEncrypted, setIsAccountEncrypted] = useState(!!getEncryptedData());
+    const [isAccountEncrypted, setIsAccountEncrypted] = useState(
+        !!getEncryptedData() && getEncryptedData().isEncryptionEnabled
+    );
     const isAccountUnlocked = !!useSelector(selectDerivedPassword);
-
     return (
         <>
             {!indexBySearchEngines && <NoIndexMetaTag />}
             <Route
                 {...rest}
                 render={(props) => {
+                    // Step 1: Check if there's any account created/imported at all
+                    if (!localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID)) {
+                        return (
+                            <Redirect
+                                to={{
+                                    pathname: '/',
+                                }}
+                            />
+                        );
+                    }
+
                     // Step 1: This is a totally new account, redirect them to Setup Password
                     if (!hasAnyAccount && !isAccountEncrypted) {
                         return (
@@ -39,6 +51,7 @@ const PasswordProtectedRoute = ({
                                 }}
                             />
                         );
+
                         // Step 2: Account exists and opted password encryption but not unlocked yet, need to prompt user to insert password
                     } else if (isAccountEncrypted && !isAccountUnlocked) {
                         return <UnlockWalletPage uponUnlock={() => {}} />;
@@ -66,4 +79,4 @@ const mapStateToProps = (state) => ({
     localAlert: selectStatusLocalAlert(state),
 });
 
-export default withRouter(connect(mapStateToProps)(PasswordProtectedRoute));
+export default withRouter(connect(mapStateToProps)(PrivateRoute));
