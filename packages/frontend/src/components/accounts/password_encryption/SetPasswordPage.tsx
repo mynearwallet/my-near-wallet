@@ -13,7 +13,6 @@ type SetPasswordPage = {
 export const SetPasswordPage: FC<SetPasswordPage> = ({ uponSetPassword }) => {
     const isEncrypted = !!getEncryptedData();
 
-    // TODO-password-encryption: Change this to the real encrypt function
     // TODO-password-encryption: Maybe add another page to confirm if users' have really encrypted all their wallet
     const onSubmit = (password: string) => {
         wallet.enableEncryption(password);

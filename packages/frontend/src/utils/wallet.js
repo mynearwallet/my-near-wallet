@@ -12,6 +12,7 @@ import { store } from '..';
 import CONFIG from '../config';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
+import passwordEncryptionSlice from '../redux/slices/passwordEncryption/passwordEncryptionSlice';
 import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
 import { EncryptionDecryptionUtils } from './encryption';
@@ -113,6 +114,10 @@ export async function getKeyMeta(publicKey) {
 
 export default class Wallet {
     constructor(rpcInfo = null) {
+        this.init(rpcInfo);
+    }
+
+    init(rpcInfo = null) {
         this.isEncrypted = !!getEncryptedData();
         this.keyStore = this.isEncrypted
             ? new nearApiJs.keyStores.InMemoryKeyStore()
@@ -198,6 +203,7 @@ export default class Wallet {
         OTHER: 'other',
     };
 
+    // TODO-password-encryption: Need to add for passwordEncryption
     async removeWalletAccount(accountId) {
         let walletAccounts = this.getAccountsLocalStorage();
         delete walletAccounts[accountId];
@@ -358,6 +364,7 @@ export default class Wallet {
 
         removeAllAccountsPrivateKey();
         this.keyStore = new InMemoryKeyStore();
+        await this.unlockWallet(derivedPassword);
     }
 
     // TODO: Figure out whether wallet should work with any account or current one.
@@ -795,7 +802,38 @@ export default class Wallet {
         await this.keyStore.setKey(this.connection.networkId, accountId, recoveryKeyPair);
     }
 
+    // NOTE:
+    async unlockWallet(derivedPassword) {
+        // Step 1: Get encrypted data from local storage
+        const encryptedData = getEncryptedData();
+        const { salt, encryptedData: encryptedDataString } = encryptedData;
+
+        // Step 2: Hash and get derived password, then use it to decrypt the data
+        const decryptedAccounts = await EncryptionDecryptionUtils.decrypt(
+            derivedPassword,
+            salt,
+            encryptedDataString
+        );
+
+        // Step 3: Save the accounts in the redux store, but is this really necessary?
+        store.dispatch(
+            passwordEncryptionSlice.actions.decrypt({
+                derivedPassword,
+            })
+        );
+
+        // Step 4: Set the key to the wallet InMemoryKeystore for transaction signing
+        await Promise.all(
+            decryptedAccounts.decryptedData.map(
+                async (account) =>
+                    await this.setKey(account.accountId, account.privateKey)
+            )
+        );
+    }
+
     async saveAccount(accountId, keyPair) {
+        this.getAccountsLocalStorage();
+
         if (keyPair) {
             const localStorageEncryptedData = getEncryptedData();
             if (localStorageEncryptedData) {
@@ -820,12 +858,13 @@ export default class Wallet {
                     salt: newEncryptedData.salt,
                     encryptedData: newEncryptedData.payload,
                 });
+                this.init();
+                await this.unlockWallet(derivedPassword);
+            } else {
+                await this.setKey(accountId, keyPair);
             }
-
-            this.getAccountsLocalStorage();
-            await this.setKey(accountId, keyPair);
-            this.accounts[accountId] = true;
         }
+        this.accounts[accountId] = true;
 
         // TODO: figure out better way to inject reducer
         store.addAccountReducer();

@@ -36,6 +36,10 @@ const StyledContainer = styled(Container)`
         }
     }
 
+    .split {
+        margin-top: 20px;
+    }
+
     .coingecko {
         color: #b4b4b4;
         align-self: end;
@@ -320,14 +324,12 @@ export function Wallet({
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
             {/* TODO: Style and translate this */}
             {!isAccountEncrypted && (
-                <AlertBanner theme={'warning'}>
+                <AlertBanner theme={'warning'} className={'password-encryption-alert'}>
                     <Translate id='wallet.recommendToSetPassword' />
                     <br />
-                    <FormButton>
-                        <Link to='/set-password' className={'right'}>
-                            <Translate id='wallet.setUpPasswordBtn' />
-                        </Link>
-                    </FormButton>
+                    <Link to='/set-password' className={'right'}>
+                        <Translate id='wallet.setUpPasswordBtn' />
+                    </Link>
                 </AlertBanner>
             )}
 

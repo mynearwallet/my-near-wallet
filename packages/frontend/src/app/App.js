@@ -372,7 +372,13 @@ class Routing extends Component {
                             <Route
                                 exact
                                 path={'/set-password'}
-                                render={() => <SetPasswordPage />}
+                                render={() => (
+                                    <SetPasswordPage
+                                        uponSetPassword={() => {
+                                            this.props.history.push('/');
+                                        }}
+                                    />
+                                )}
                             />
                             <Route
                                 exact
@@ -476,7 +482,7 @@ class Routing extends Component {
                                 component={RecoverAccountWrapper}
                                 indexBySearchEngines={true}
                             />
-                            <PasswordProtectedRoute
+                            <Route
                                 exact
                                 path='/recover-seed-phrase/:accountId?/:seedPhrase?'
                                 component={RecoverAccountSeedPhraseWithRouter}
