@@ -75,7 +75,6 @@ async function encryptWithKey(key, dataObj) {
 
 const encrypt = async (cipherKey, dataObj) => {
     const salt = generateSalt();
-    console.log(salt);
     const passwordDerivedKey = await keyFromPassword(cipherKey, salt);
     const { iv, data } = await encryptWithKey(passwordDerivedKey, dataObj);
     return {

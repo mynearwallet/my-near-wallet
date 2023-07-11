@@ -25,7 +25,7 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
             const derivedPassword = await EncryptionDecryptionUtils.generateHash(
                 password
             );
-            wallet.unlockWallet(derivedPassword);
+            await wallet.unlockWallet(derivedPassword);
             uponUnlock();
         } catch (e) {
             console.error(e);
@@ -56,6 +56,9 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
                     error={errorMessage}
                 />
 
+                <br />
+                <br />
+                <br />
                 <Submit>
                     {/* @ts-ignore: prop error */}
                     <FormButton onClick={unlockHandler} disabled={!password}>
