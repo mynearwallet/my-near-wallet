@@ -400,7 +400,6 @@ class Routing extends Component {
                                         <CreateAccountLanding />
                                     )
                                 }
-                                // Logged in users always create a named account
                             />
                             <Route
                                 exact

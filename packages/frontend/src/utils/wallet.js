@@ -408,6 +408,7 @@ export default class Wallet {
     }
 
     async getAccountKeyType(accountId) {
+        console.log(wallet);
         const keypair = await wallet.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
         return this.getPublicKeyType(accountId, keypair.getPublicKey().toString());
     }
@@ -837,7 +838,10 @@ export default class Wallet {
 
         if (keyPair) {
             const localStorageEncryptedData = getEncryptedData();
-            if (localStorageEncryptedData) {
+            if (
+                localStorageEncryptedData &&
+                localStorageEncryptedData.isEncryptionEnabled
+            ) {
                 const { salt, encryptedData } = localStorageEncryptedData;
                 const derivedPassword =
                     store.getState().passwordEncryption.derivedPassword;
@@ -858,6 +862,7 @@ export default class Wallet {
                 setEncryptedData({
                     salt: newEncryptedData.salt,
                     encryptedData: newEncryptedData.payload,
+                    isEncryptionEnabled: true,
                 });
                 this.init();
                 await this.unlockWallet(derivedPassword);

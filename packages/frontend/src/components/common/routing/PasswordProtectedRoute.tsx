@@ -11,8 +11,7 @@ import { SetPasswordPage } from '../../accounts/password_encryption/SetPasswordP
 import { UnlockWalletPage } from '../../accounts/password_encryption/UnlockWalletPage';
 import NoIndexMetaTag from '../NoIndexMetaTag';
 
-// PrivateRoute is for logged-in users only and will redirect to the guest landing page if there's no active account
-
+// Password Protected Route for certain routes where users might not have an activated account, and we still want to set up password first
 const PasswordProtectedRoute = ({
     component: Component,
     render,
