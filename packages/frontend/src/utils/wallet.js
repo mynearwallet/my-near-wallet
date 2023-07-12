@@ -833,6 +833,29 @@ export default class Wallet {
         );
     }
 
+    async addEncryptedAccountToLocalStorage(accountId, keyPair) {
+        const localStorageEncryptedData = getEncryptedData();
+        const { salt, encryptedData } = localStorageEncryptedData;
+        const derivedPassword = store.getState().passwordEncryption.derivedPassword;
+        const { decryptedData: decryptedAccounts } =
+            await EncryptionDecryptionUtils.decrypt(derivedPassword, salt, encryptedData);
+        decryptedAccounts.push({
+            accountId,
+            privateKey: keyPair.secretKey,
+        });
+        const newEncryptedData = await EncryptionDecryptionUtils.encrypt(
+            derivedPassword,
+            decryptedAccounts
+        );
+        setEncryptedData({
+            salt: newEncryptedData.salt,
+            encryptedData: newEncryptedData.payload,
+            isEncryptionEnabled: true,
+        });
+        this.init();
+        await this.unlockWallet(derivedPassword);
+    }
+
     async saveAccount(accountId, keyPair) {
         this.getAccountsLocalStorage();
 
@@ -842,30 +865,7 @@ export default class Wallet {
                 localStorageEncryptedData &&
                 localStorageEncryptedData.isEncryptionEnabled
             ) {
-                const { salt, encryptedData } = localStorageEncryptedData;
-                const derivedPassword =
-                    store.getState().passwordEncryption.derivedPassword;
-                const { decryptedData: decryptedAccounts } =
-                    await EncryptionDecryptionUtils.decrypt(
-                        derivedPassword,
-                        salt,
-                        encryptedData
-                    );
-                decryptedAccounts.push({
-                    accountId,
-                    privateKey: keyPair.secretKey,
-                });
-                const newEncryptedData = await EncryptionDecryptionUtils.encrypt(
-                    derivedPassword,
-                    decryptedAccounts
-                );
-                setEncryptedData({
-                    salt: newEncryptedData.salt,
-                    encryptedData: newEncryptedData.payload,
-                    isEncryptionEnabled: true,
-                });
-                this.init();
-                await this.unlockWallet(derivedPassword);
+                await this.addEncryptedAccountToLocalStorage(accountId, keyPair);
             } else {
                 await this.setKey(accountId, keyPair);
             }
@@ -1032,7 +1032,7 @@ export default class Wallet {
                 WALLET_METADATA_METHOD
             )
         ) {
-            // NOTE: This key isn't used to call actual contract method, just used to verify connection with account in private DB
+            // NOTE: This key isn't used to sign transaction, just used to verify connection with account in private DB
             const newLocalKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
             const account = await this.getAccount(accountId);
             try {
@@ -1116,7 +1116,14 @@ export default class Wallet {
                 accountId,
                 localAccessKey
             );
-            await this.setKey(accountId, newKeyPair);
+
+            const isAccountEncrypted =
+                getEncryptedData() && getEncryptedData().isEncryptionEnabled;
+            if (isAccountEncrypted) {
+                await this.addEncryptedAccountToLocalStorage(accountId, newKeyPair);
+            } else {
+                await this.setKey(accountId, newKeyPair);
+            }
         } catch (error) {
             if (error.name !== 'TransportStatusError') {
                 throw new WalletError(error.message, 'addLedgerAccountId.errorRpc');

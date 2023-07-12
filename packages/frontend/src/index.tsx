@@ -27,10 +27,10 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
         reducer: rootReducer,
         preloadedState,
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware({ serializableCheck: false }).concat(
-                readyStatePromise,
-                routerMiddleware(history)
-            ),
+            getDefaultMiddleware({
+                serializableCheck: false,
+                immutableCheck: false,
+            }).concat(readyStatePromise, routerMiddleware(history)),
     });
 };
 
