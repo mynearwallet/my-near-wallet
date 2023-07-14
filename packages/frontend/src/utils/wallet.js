@@ -208,7 +208,15 @@ export default class Wallet {
         let walletAccounts = this.getAccountsLocalStorage();
         delete walletAccounts[accountId];
         setWalletAccounts(KEY_WALLET_ACCOUNTS, walletAccounts);
-        await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
+
+        const isEncrypted =
+            !!getEncryptedData() && getEncryptedData().isEncryptionEnabled;
+        if (isEncrypted) {
+            await this.updateEncryptedAccountList(accountId, 'remove');
+        } else {
+            await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
+        }
+
         removeActiveAccount(KEY_ACTIVE_ACCOUNT_ID);
         removeAccountConfirmed(accountId);
         return walletAccounts;
@@ -823,6 +831,7 @@ export default class Wallet {
                 derivedPassword,
             })
         );
+        // console.log('Decrypted localstorage with accounts', decryptedAccounts.decryptedData);
 
         // Step 4: Set the key to the wallet InMemoryKeystore for transaction signing
         await Promise.all(
@@ -833,18 +842,46 @@ export default class Wallet {
         );
     }
 
-    async addEncryptedAccountToLocalStorage(accountId, keyPair) {
+    async updateEncryptedAccountList(accountId, action = 'add', keyPair = null) {
+        // Step 1: Get encrypted data from local storage and decrypt it with password in redux store
         const localStorageEncryptedData = getEncryptedData();
         const { salt, encryptedData } = localStorageEncryptedData;
         const derivedPassword = store.getState().passwordEncryption.derivedPassword;
         const { decryptedData: decryptedAccounts } =
             await EncryptionDecryptionUtils.decrypt(derivedPassword, salt, encryptedData);
-        decryptedAccounts.push({
-            accountId,
-            privateKey: keyPair.secretKey,
-        });
+        // console.log('Updating encrypted account with action: ', action, ' and accountId: ', accountId,'. Current decrypted accounts: ', decryptedAccounts);
+
+        // Step 2: Based on the action, add or remove the account from the decrypted accounts list
+        const accountIndex = decryptedAccounts.findIndex(
+            (account) => account.accountId === accountId
+        );
+        if (action === 'add') {
+            if (accountIndex < 0) {
+                decryptedAccounts.push({
+                    accountId,
+                    privateKey: keyPair.secretKey,
+                });
+            } else {
+                decryptedAccounts[accountIndex] = {
+                    accountId,
+                    privateKey: keyPair.secretKey,
+                };
+            }
+        } else if (action === 'remove') {
+            decryptedAccounts.splice(accountIndex, 1);
+        }
+
+        // Step 3: Encrypt the new list of accounts and save it in local storage
         const newEncryptedData = await EncryptionDecryptionUtils.encrypt(
             derivedPassword,
+            decryptedAccounts
+        );
+        console.log(
+            'Updated encrypted account with action: ',
+            action,
+            ' and accountId: ',
+            accountId,
+            '. Current decrypted accounts: ',
             decryptedAccounts
         );
         setEncryptedData({
@@ -852,6 +889,8 @@ export default class Wallet {
             encryptedData: newEncryptedData.payload,
             isEncryptionEnabled: true,
         });
+
+        // Step 4: Reinit the wallet instance and unlock it to make sure we have the right key store with updated list of keys
         this.init();
         await this.unlockWallet(derivedPassword);
     }
@@ -865,7 +904,7 @@ export default class Wallet {
                 localStorageEncryptedData &&
                 localStorageEncryptedData.isEncryptionEnabled
             ) {
-                await this.addEncryptedAccountToLocalStorage(accountId, keyPair);
+                await this.updateEncryptedAccountList(accountId, 'add', keyPair);
             } else {
                 await this.setKey(accountId, keyPair);
             }
@@ -1120,7 +1159,7 @@ export default class Wallet {
             const isAccountEncrypted =
                 getEncryptedData() && getEncryptedData().isEncryptionEnabled;
             if (isAccountEncrypted) {
-                await this.addEncryptedAccountToLocalStorage(accountId, newKeyPair);
+                await this.updateEncryptedAccountList(accountId, 'add', newKeyPair);
             } else {
                 await this.setKey(accountId, newKeyPair);
             }
