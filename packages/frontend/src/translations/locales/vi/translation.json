@@ -1420,10 +1420,10 @@
         "balance": "Số dư",
         "balanceTitle": "Số dư NEAR",
         "dateAndTime": "Ngày & Giờ",
-        "status": "Trạng thái",
-        "tokens": "Token",
         "recommendToSetPassword": "Bạn nên thiết lập một mật khẩu cho tài khoản của mình để bảo vệ tốt hơn các khóa riêng tư hoặc cụm từ khóa.",
-        "setUpPasswordBtn": "Thiết lập mật khẩu"
+        "setUpPasswordBtn": "Thiết lập mật khẩu",
+        "status": "Trạng thái",
+        "tokens": "Token"
     },
     "walletErrorCodes": {
         "addAccessKey": {
