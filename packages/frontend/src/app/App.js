@@ -375,7 +375,7 @@ class Routing extends Component {
                                 render={() => (
                                     <SetPasswordPage
                                         uponSetPassword={() => {
-                                            this.props.history.push('/');
+                                            // this.props.history.push('/');
                                         }}
                                     />
                                 )}

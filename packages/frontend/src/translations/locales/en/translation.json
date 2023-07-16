@@ -1328,6 +1328,9 @@
         "pageText": "You will use this to unlock your wallet.",
         "pageTitle": "Create a Password",
         "passwordExist": "Password already exists",
+        "setPasswordSuccessfully": "Password Set Successfully",
+        "setPasswordSuccessfullyDescription": "Your accounts are now better protected by password encryption.",
+        "setPasswordSuccessfullyButton": "Back To Home",
         "passwordExistDescription": "You have already secured your account with password.",
         "strong": "Strong password",
         "unlockWalletButton": "Unlock Wallet",
@@ -1335,7 +1338,14 @@
         "unlockWalletInputPlaceholder": "Enter password",
         "unlockWalletTitle": "Unlock Wallet",
         "week": "Week password",
-        "withoutPassword": "Continue without creating a password"
+        "withoutPassword": "Continue without creating a password",
+        "disableModal": {
+            "title": "Disable Password Encryption",
+            "description": "Disabling password encryption expose your accounts to a bigger risk. Are you sure you want to continue?",
+            "instruction": "Insert your password here to confirm",
+            "disabledTitle": "Password Encryption Disabled",
+            "disabledDescription": "Password encryption is disabled successfully"
+        }
     },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",

@@ -358,7 +358,7 @@ export default class Wallet {
         }
     }
 
-    async enableEncryption(password) {
+    async enablePasswordEncryption(password) {
         const accounts = retrieveAllAccountsPrivateKey();
         const derivedPassword = await EncryptionDecryptionUtils.generateHash(password);
         const encryptedData = await EncryptionDecryptionUtils.encrypt(
@@ -374,6 +374,17 @@ export default class Wallet {
         removeAllAccountsPrivateKey();
         this.keyStore = new InMemoryKeyStore();
         await this.unlockWallet(derivedPassword);
+    }
+
+    async disablePasswordEncryption(password) {
+        this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+            window.localStorage,
+            KEY_STORE_PREFIX
+        );
+        const derivedPassword = await EncryptionDecryptionUtils.generateHash(password);
+
+        await this.unlockWallet(derivedPassword);
+        setEncryptedData(null);
     }
 
     // TODO: Figure out whether wallet should work with any account or current one.
@@ -812,10 +823,10 @@ export default class Wallet {
         await this.keyStore.setKey(this.connection.networkId, accountId, recoveryKeyPair);
     }
 
-    // NOTE:
     async unlockWallet(derivedPassword) {
         // Step 1: Get encrypted data from local storage
         const encryptedData = getEncryptedData();
+        console.log(encryptedData);
         const { salt, encryptedData: encryptedDataString } = encryptedData;
 
         // Step 2: Hash and get derived password, then use it to decrypt the data
