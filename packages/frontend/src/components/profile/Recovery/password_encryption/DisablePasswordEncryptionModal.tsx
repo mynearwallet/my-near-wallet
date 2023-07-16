@@ -58,7 +58,6 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
                     </Enter>
 
                     <Submit>
-                        {/* @ts-ignore: prop error */}
                         <FormButton
                             onClick={confirmDisablePasswordEncryption}
                             disabled={!inLength(password)}

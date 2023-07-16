@@ -1045,6 +1045,35 @@
         "secondaryCta": "Giữ các khóa hiện tại",
         "two": "Việc duy trì nhiều khóa và các phương pháp khôi phục (bao gồm cả các cụm từ khôi phục) sẽ làm tăng tính dễ bị xâm nhập cho tài khoản của bạn."
     },
+    "setupPasswordProtection": {
+        "average": "Mật khẩu trung bình",
+        "confirm": "Xác nhận mật khẩu",
+        "disableModal": {
+            "description": "Vô hiệu hóa mã hóa mật khẩu tiềm ẩn rủi ro lớn cho tài khoản của bạn. Bạn có chắc muốn tiếp tục?",
+            "disabledDescription": "Vô hiệu hóa mã hóa mật khẩu thành công",
+            "disabledTitle": "Vô hiệu hóa Mã hóa Mật khẩu",
+            "instruction": "Nhập mật khẩu của bạn vào đây để xác nhận",
+            "title": "Vô hiệu hóa Mã hóa Mật khẩu"
+        },
+        "enter": "Nhập mật khẩu",
+        "invalidPassword": "Mật khẩu không hợp lệ",
+        "lengthError": "Tối thiểu 8 ký tự",
+        "matchError": "Mật khẩu không khớp",
+        "pageText": "Bạn sẽ sử dụng nó để mở khóa ví của bạn.",
+        "pageTitle": "Tạo Mật khẩu",
+        "passwordExist": "Mật khẩu đã tồn tại",
+        "passwordExistDescription": "Bạn đã bảo vệ tài khoản của mình bằng mật khẩu.",
+        "setPasswordSuccessfully": "Đặt Mật khẩu Thành công",
+        "setPasswordSuccessfullyButton": "Quay Về Trang Chủ",
+        "setPasswordSuccessfullyDescription": "Tài khoản của bạn được bảo vệ tốt hơn bằng mã hóa mật khẩu.",
+        "strong": "Mật khẩu mạnh",
+        "unlockWalletButton": "Mở Khóa Ví",
+        "unlockWalletDescription": "Chào mừng trở lại, thế giới web3 đang chờ bạn. Nhập mật khẩu để mở khóa ví của bạn.",
+        "unlockWalletInputPlaceholder": "Nhập mật khẩu",
+        "unlockWalletTitle": "Mở Khóa Ví",
+        "week": "Mật khẩu yếu",
+        "withoutPassword": "Tiếp tục mà không tạo mật khẩu"
+    },
     "setupRecovery": {
         "advancedSecurity": "An toàn nhất (được đề xuất)",
         "advancedSecurityDesc": "Viết ra cụm từ khôi phục (12 từ), hoặc bảo mật tài khoản của bạn bằng thiết bị Ledger.",
@@ -1392,7 +1421,9 @@
         "balanceTitle": "Số dư NEAR",
         "dateAndTime": "Ngày & Giờ",
         "status": "Trạng thái",
-        "tokens": "Token"
+        "tokens": "Token",
+        "recommendToSetPassword": "Bạn nên thiết lập một mật khẩu cho tài khoản của mình để bảo vệ tốt hơn các khóa riêng tư hoặc cụm từ khóa.",
+        "setUpPasswordBtn": "Thiết lập mật khẩu"
     },
     "walletErrorCodes": {
         "addAccessKey": {

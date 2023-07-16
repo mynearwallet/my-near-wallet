@@ -1321,6 +1321,13 @@
     "setupPasswordProtection": {
         "average": "Average password",
         "confirm": "Confirm Password",
+        "disableModal": {
+            "description": "Disabling password encryption expose your accounts to a bigger risk. Are you sure you want to continue?",
+            "disabledDescription": "Password encryption is disabled successfully",
+            "disabledTitle": "Password Encryption Disabled",
+            "instruction": "Insert your password here to confirm",
+            "title": "Disable Password Encryption"
+        },
         "enter": "Enter password",
         "invalidPassword": "Invalid Password",
         "lengthError": "At least 8 characters",
@@ -1328,24 +1335,17 @@
         "pageText": "You will use this to unlock your wallet.",
         "pageTitle": "Create a Password",
         "passwordExist": "Password already exists",
-        "setPasswordSuccessfully": "Password Set Successfully",
-        "setPasswordSuccessfullyDescription": "Your accounts are now better protected by password encryption.",
-        "setPasswordSuccessfullyButton": "Back To Home",
         "passwordExistDescription": "You have already secured your account with password.",
+        "setPasswordSuccessfully": "Password Set Successfully",
+        "setPasswordSuccessfullyButton": "Back To Home",
+        "setPasswordSuccessfullyDescription": "Your accounts are now better protected by password encryption.",
         "strong": "Strong password",
         "unlockWalletButton": "Unlock Wallet",
         "unlockWalletDescription": "Welcome back, web3 world awaits you. Enter your password to unlock your wallet.",
         "unlockWalletInputPlaceholder": "Enter password",
         "unlockWalletTitle": "Unlock Wallet",
         "week": "Week password",
-        "withoutPassword": "Continue without creating a password",
-        "disableModal": {
-            "title": "Disable Password Encryption",
-            "description": "Disabling password encryption expose your accounts to a bigger risk. Are you sure you want to continue?",
-            "instruction": "Insert your password here to confirm",
-            "disabledTitle": "Password Encryption Disabled",
-            "disabledDescription": "Password encryption is disabled successfully"
-        }
+        "withoutPassword": "Continue without creating a password"
     },
     "setupRecovery": {
         "advancedSecurity": "Most Secure (Recommended)",
