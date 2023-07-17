@@ -11,6 +11,8 @@ import {
     selectRecoveryMethodsStatus,
 } from '../../../redux/slices/recoveryMethods';
 import { getEncryptedData } from '../../../utils/localStorage';
+import { Submit } from '../../accounts/password_encryption/SetPasswordForm/ui';
+import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
 import Tooltip from '../../common/Tooltip';
 import ShieldIcon from '../../svg/ShieldIcon';
@@ -103,6 +105,10 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
         setShowDisablePasswordModal(true);
     }, []);
 
+    const handleChangePassword = () => {
+        history.push('/change-password');
+    };
+
     return (
         <>
             <h2>
@@ -131,7 +137,18 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
                             methodEnabled={isPasswordEncryptionEnabled}
                             onEnable={handleEnablePassword}
                             onDisable={handleDisablePassword}
-                        />
+                        >
+                            {isPasswordEncryptionEnabled ? (
+                                <Submit>
+                                    <FormButton
+                                        color={'white-blue'}
+                                        onClick={handleChangePassword}
+                                    >
+                                        Change Password
+                                    </FormButton>
+                                </Submit>
+                            ) : null}
+                        </RecoveryMethod>
                     )}
                 </Translate>
             </RecoveryOption>

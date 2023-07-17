@@ -42,7 +42,15 @@ const PasswordProtectedRoute = ({
                         );
                         // Step 2: Account exists and opted password encryption but not unlocked yet, need to prompt user to insert password
                     } else if (isAccountEncrypted && !isAccountUnlocked) {
-                        return <UnlockWalletPage uponUnlock={() => {}} />;
+                        return (
+                            <UnlockWalletPage
+                                titleId={'setupPasswordProtection.unlockWalletTitle'}
+                                descriptionId={
+                                    'setupPasswordProtection.unlockWalletDescription'
+                                }
+                                uponUnlock={() => {}}
+                            />
+                        );
                     }
 
                     // Step 3: <Route component> takes precedence over <Route render></Route>

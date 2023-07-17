@@ -85,13 +85,14 @@ export const removeAllAccountsPrivateKey = () => {
 };
 
 export type TEncryptedData = {
-    salt: string;
-    encryptedData: string;
-    isEncryptionEnabled: boolean;
+    encryptedAccounts?: string;
+    salt?: string;
+    isEncryptionEnabled?: boolean;
 };
 
 export const setEncryptedData = (payload: TEncryptedData) => {
-    localStorage.setItem('ENCRYPTED_DATA', JSON.stringify(payload));
+    const oriPayload = getEncryptedData();
+    localStorage.setItem('ENCRYPTED_DATA', JSON.stringify({ ...oriPayload, ...payload }));
 };
 
 export const getEncryptedData = (): TEncryptedData => {

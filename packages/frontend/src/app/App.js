@@ -25,6 +25,7 @@ import SetupLedgerWithRouter from '../components/accounts/ledger/SetupLedger';
 import SetupLedgerSuccessWithRouter from '../components/accounts/ledger/SetupLedgerSuccess';
 import SignInLedgerWrapper from '../components/accounts/ledger/SignInLedgerWrapper';
 import LinkdropLandingWithRouter from '../components/accounts/LinkdropLanding';
+import { ChangePasswordPage } from '../components/accounts/password_encryption/ChangePasswordPage';
 import { SetPasswordPage } from '../components/accounts/password_encryption/SetPasswordPage';
 import RecoverAccountPrivateKey from '../components/accounts/RecoverAccountPrivateKey';
 import RecoverAccountSeedPhraseWithRouter from '../components/accounts/RecoverAccountSeedPhrase';
@@ -379,6 +380,11 @@ class Routing extends Component {
                                         }}
                                     />
                                 )}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/change-password'
+                                component={ChangePasswordPage}
                             />
                             <Route
                                 exact

@@ -11,10 +11,16 @@ import Input from './SetPassword/ui/Input';
 import { Submit } from './SetPasswordForm/ui';
 
 type UnlockWalletPageProps = {
-    uponUnlock: () => void;
+    titleId: string;
+    descriptionId: string;
+    uponUnlock: (password: string) => void;
 };
 
-export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
+export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
+    uponUnlock,
+    titleId,
+    descriptionId,
+}) => {
     const { t } = useTranslation();
     const [password, setPassword] = useState<string>(null);
     const [errorMessage, setErrorMessage] = useState<string>(null);
@@ -26,7 +32,7 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
                 password
             );
             await wallet.unlockWallet(derivedPassword);
-            uponUnlock();
+            await uponUnlock(password);
         } catch (e) {
             console.error(e);
             setErrorMessage(t('setupPasswordProtection.invalidPassword'));
@@ -41,10 +47,10 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({ uponUnlock }) => {
         <Container className='small-centered border'>
             <div>
                 <h1>
-                    <Translate id='setupPasswordProtection.unlockWalletTitle' />
+                    <Translate id={titleId} />
                 </h1>
                 <h2>
-                    <Translate id='setupPasswordProtection.unlockWalletDescription' />
+                    <Translate id={descriptionId} />
                 </h2>
 
                 <Input

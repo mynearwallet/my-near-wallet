@@ -1328,6 +1328,14 @@
             "instruction": "Insert your password here to confirm",
             "title": "Disable Password Encryption"
         },
+        "changePassword": {
+            "step1Title": "Step 1/2: Confirm Old Password",
+            "step1Description": "Please confirm your current password to continue",
+            "step2Title": "Step 2/2: Set New Password",
+            "step2Description": "Set your new password here",
+            "completedTitle": "Password Updated Successfully",
+            "completedDescription": "You have updated your password successfully."
+        },
         "enter": "Enter password",
         "invalidPassword": "Invalid Password",
         "lengthError": "At least 8 characters",

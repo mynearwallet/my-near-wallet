@@ -29,10 +29,6 @@ const passwordEncryptionSlice = createSlice({
 /****************************/
 // Export statements
 /****************************/
-export const selectDecryptedAccounts = createSelector(
-    selectPasswordEncryptionSlice,
-    ({ accounts }) => accounts
-);
 export const selectDerivedPassword = createSelector(
     selectPasswordEncryptionSlice,
     ({ derivedPassword }) => derivedPassword

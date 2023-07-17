@@ -10,11 +10,20 @@ const RecoveryMethod = ({
     description,
     skeleton,
     methodEnabled,
-    canDisable,
     onEnable,
     onDisable,
+    children,
+}: {
+    title: string;
+    description?: string;
+    skeleton?: any;
+    methodEnabled: boolean;
+    onEnable: () => void;
+    onDisable: () => void;
+    children?: React.Component;
 }) => {
     if (skeleton) {
+        // @ts-ignore
         return <SkeletonLoading height={skeleton} show />;
     }
 
@@ -24,6 +33,7 @@ const RecoveryMethod = ({
                 <TitleWrapper>
                     <Title>{title}</Title>
                 </TitleWrapper>
+                {/*@ts-ignore*/}
                 <FormButton
                     type='submit'
                     color={methodEnabled ? 'gray-red small' : 'blue small'}
@@ -33,6 +43,7 @@ const RecoveryMethod = ({
                 </FormButton>
             </Main>
             {description && <Description>{description}</Description>}
+            {children}
         </Container>
     );
 };

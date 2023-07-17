@@ -1192,6 +1192,14 @@
             "instruction": "Onaylamak için şifrenizi buraya girin",
             "title": "Şifre Şifrelemesini Devre Dışı Bırak"
         },
+        "changePassword": {
+            "step1Title": "Крок 1/2: Підтвердіть Старий Пароль",
+            "step1Description": "Будь ласка, підтвердіть ваш поточний пароль, щоб продовжити",
+            "step2Title": "Крок 2/2: Встановіть Новий Пароль",
+            "step2Description": "Встановіть ваш новий пароль тут",
+            "completedTitle": "Пароль Успішно Оновлено",
+            "completedDescription": "Ви успішно оновили свій пароль."
+        },
         "enter": "Şifre girin",
         "invalidPassword": "Geçersiz Şifre",
         "lengthError": "En az 8 karakter",

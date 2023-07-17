@@ -10,17 +10,16 @@ import Container from '../../common/styled/Container.css';
 import SetPasswordForm from './SetPasswordForm';
 import { Submit } from './SetPasswordForm/ui';
 
-type SetPasswordPage = {
+type SetPasswordPageProps = {
     uponSetPassword: () => void;
 };
 
-export const SetPasswordPage: FC<SetPasswordPage> = ({ uponSetPassword }) => {
+export const SetPasswordPage: FC<SetPasswordPageProps> = ({ uponSetPassword }) => {
     const history = useHistory();
     const [isEncrypted, setIsEncrypted] = useState<boolean>(
         !!getEncryptedData() && getEncryptedData().isEncryptionEnabled
     );
 
-    // TODO-password-encryption: Maybe add another page to confirm if users' have really encrypted all their wallet
     const onSubmit = async (password: string) => {
         await wallet.enablePasswordEncryption(password);
         setIsEncrypted(!!getEncryptedData() && getEncryptedData().isEncryptionEnabled);

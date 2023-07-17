@@ -358,6 +358,39 @@ export default class Wallet {
         }
     }
 
+    async changeEncryptionPassword(oldPassword, newPassword) {
+        // Step 1: Get encrypted data from local storage
+        const encryptedData = getEncryptedData();
+        const { salt, encryptedAccounts: encryptedDataString } = encryptedData;
+
+        // Step 2: Hash and get derived password, then use it to decrypt the data
+        const oldDerivedPassword = await EncryptionDecryptionUtils.generateHash(
+            oldPassword
+        );
+        const decryptionOutcome = await EncryptionDecryptionUtils.decrypt(
+            oldDerivedPassword,
+            salt,
+            encryptedDataString
+        );
+
+        // Step 3: Encrypt the data with the new derived password
+        const newDerivedPassword = await EncryptionDecryptionUtils.generateHash(
+            newPassword
+        );
+        const newEncrypionOutcome = await EncryptionDecryptionUtils.encrypt(
+            newDerivedPassword,
+            decryptionOutcome.decryptedData
+        );
+
+        // Step 4: Save the new encrypted data to local storage and unlock wallet
+        setEncryptedData({
+            salt: newEncrypionOutcome.salt,
+            encryptedAccounts: newEncrypionOutcome.payload,
+            isEncryptionEnabled: true,
+        });
+        await this.unlockWallet(newDerivedPassword);
+    }
+
     async enablePasswordEncryption(password) {
         const accounts = retrieveAllAccountsPrivateKey();
         const derivedPassword = await EncryptionDecryptionUtils.generateHash(password);
@@ -367,7 +400,7 @@ export default class Wallet {
         );
         setEncryptedData({
             salt: encryptedData.salt,
-            encryptedData: encryptedData.payload,
+            encryptedAccounts: encryptedData.payload,
             isEncryptionEnabled: true,
         });
 
@@ -826,8 +859,7 @@ export default class Wallet {
     async unlockWallet(derivedPassword) {
         // Step 1: Get encrypted data from local storage
         const encryptedData = getEncryptedData();
-        console.log(encryptedData);
-        const { salt, encryptedData: encryptedDataString } = encryptedData;
+        const { salt, encryptedAccounts: encryptedDataString } = encryptedData;
 
         // Step 2: Hash and get derived password, then use it to decrypt the data
         const decryptedAccounts = await EncryptionDecryptionUtils.decrypt(
@@ -856,10 +888,14 @@ export default class Wallet {
     async updateEncryptedAccountList(accountId, action = 'add', keyPair = null) {
         // Step 1: Get encrypted data from local storage and decrypt it with password in redux store
         const localStorageEncryptedData = getEncryptedData();
-        const { salt, encryptedData } = localStorageEncryptedData;
+        const { salt, encryptedAccounts } = localStorageEncryptedData;
         const derivedPassword = store.getState().passwordEncryption.derivedPassword;
         const { decryptedData: decryptedAccounts } =
-            await EncryptionDecryptionUtils.decrypt(derivedPassword, salt, encryptedData);
+            await EncryptionDecryptionUtils.decrypt(
+                derivedPassword,
+                salt,
+                encryptedAccounts
+            );
         // console.log('Updating encrypted account with action: ', action, ' and accountId: ', accountId,'. Current decrypted accounts: ', decryptedAccounts);
 
         // Step 2: Based on the action, add or remove the account from the decrypted accounts list
@@ -887,17 +923,9 @@ export default class Wallet {
             derivedPassword,
             decryptedAccounts
         );
-        console.log(
-            'Updated encrypted account with action: ',
-            action,
-            ' and accountId: ',
-            accountId,
-            '. Current decrypted accounts: ',
-            decryptedAccounts
-        );
         setEncryptedData({
             salt: newEncryptedData.salt,
-            encryptedData: newEncryptedData.payload,
+            encryptedAccounts: newEncryptedData.payload,
             isEncryptionEnabled: true,
         });
 

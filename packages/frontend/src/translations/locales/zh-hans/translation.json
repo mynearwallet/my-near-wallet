@@ -1299,6 +1299,14 @@
             "instruction": "在此处输入您的密码以确认",
             "title": "禁用密码加密"
         },
+        "changePassword": {
+            "step1Title": "第1步: 确认旧密码",
+            "step1Description": "请确认您当前的密码以继续",
+            "step2Title": "第2步: 设置新密码",
+            "step2Description": "在这里设置您的新密码",
+            "completedTitle": "密码已成功更新",
+            "completedDescription": "您已成功更新密码。"
+        },
         "enter": "输入密码",
         "invalidPassword": "无效密码",
         "lengthError": "至少8个字符",

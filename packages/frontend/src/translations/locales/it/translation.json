@@ -1163,6 +1163,14 @@
             "instruction": "Inserisci qui la tua password per confermare",
             "title": "Disabilita la crittografia della password"
         },
+        "changePassword": {
+            "step1Title": "Step 1/2: Confirm Old Password",
+            "step1Description": "Please confirm your current password to continue",
+            "step2Title": "Step 2/2: Set New Password",
+            "step2Description": "Set your new password here",
+            "completedTitle": "Password Updated Successfully",
+            "completedDescription": "You have updated your password successfully."
+        },
         "enter": "Inserisci password",
         "invalidPassword": "Password non valida",
         "lengthError": "Almeno 8 caratteri",

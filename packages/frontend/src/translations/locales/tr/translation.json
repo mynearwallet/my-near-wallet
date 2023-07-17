@@ -1109,6 +1109,14 @@
             "instruction": "Onaylamak için şifrenizi buraya girin",
             "title": "Şifre Şifrelemesini Devre Dışı Bırak"
         },
+        "changePassword": {
+            "step1Title": "Adım 1/2: Eski Şifreyi Onayla",
+            "step1Description": "Devam etmek için mevcut şifrenizi onaylayın",
+            "step2Title": "Adım 2/2: Yeni Şifre Belirle",
+            "step2Description": "Yeni şifrenizi buraya belirleyin",
+            "completedTitle": "Şifre Başarıyla Güncellendi",
+            "completedDescription": "Şifrenizi başarıyla güncellediniz."
+        },
         "enter": "Şifre girin",
         "invalidPassword": "Geçersiz Şifre",
         "lengthError": "En az 8 karakter",

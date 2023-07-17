@@ -1055,6 +1055,14 @@
             "instruction": "Nhập mật khẩu của bạn vào đây để xác nhận",
             "title": "Vô hiệu hóa Mã hóa Mật khẩu"
         },
+        "changePassword": {
+            "step1Title": "Bước 1/2: Xác Nhận Mật Khẩu Cũ",
+            "step1Description": "Vui lòng xác nhận mật khẩu hiện tại của bạn để tiếp tục",
+            "step2Title": "Bước 2/2: Đặt Mật Khẩu Mới",
+            "step2Description": "Đặt mật khẩu mới của bạn ở đây",
+            "completedTitle": "Cập Nhật Mật Khẩu Thành Công",
+            "completedDescription": "Bạn đã cập nhật mật khẩu thành công."
+        },
         "enter": "Nhập mật khẩu",
         "invalidPassword": "Mật khẩu không hợp lệ",
         "lengthError": "Tối thiểu 8 ký tự",
