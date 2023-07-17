@@ -1291,6 +1291,14 @@
     },
     "setupPasswordProtection": {
         "average": "中等密碼",
+        "changePassword": {
+            "completedDescription": "您已成功更新密碼。",
+            "completedTitle": "密碼已成功更新",
+            "step1Description": "請確認您目前的密碼以繼續",
+            "step1Title": "第1步: 確認舊密碼",
+            "step2Description": "在這裡設置您的新密碼",
+            "step2Title": "第2步: 設置新密碼"
+        },
         "confirm": "確認密碼",
         "disableModal": {
             "description": "停用密碼加密會增加您的帳戶風險。您確定要繼續嗎？",
@@ -1298,14 +1306,6 @@
             "disabledTitle": "密碼加密已停用",
             "instruction": "在此處輸入您的密碼以進行確認",
             "title": "停用密碼加密"
-        },
-        "changePassword": {
-            "step1Title": "第1步: 確認舊密碼",
-            "step1Description": "請確認您目前的密碼以繼續",
-            "step2Title": "第2步: 設置新密碼",
-            "step2Description": "在這裡設置您的新密碼",
-            "completedTitle": "密碼已成功更新",
-            "completedDescription": "您已成功更新密碼。"
         },
         "enter": "輸入密碼",
         "invalidPassword": "無效密碼",

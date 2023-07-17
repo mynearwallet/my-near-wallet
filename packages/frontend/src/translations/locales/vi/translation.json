@@ -1047,6 +1047,14 @@
     },
     "setupPasswordProtection": {
         "average": "Mật khẩu trung bình",
+        "changePassword": {
+            "completedDescription": "Bạn đã cập nhật mật khẩu thành công.",
+            "completedTitle": "Cập Nhật Mật Khẩu Thành Công",
+            "step1Description": "Vui lòng xác nhận mật khẩu hiện tại của bạn để tiếp tục",
+            "step1Title": "Bước 1/2: Xác Nhận Mật Khẩu Cũ",
+            "step2Description": "Đặt mật khẩu mới của bạn ở đây",
+            "step2Title": "Bước 2/2: Đặt Mật Khẩu Mới"
+        },
         "confirm": "Xác nhận mật khẩu",
         "disableModal": {
             "description": "Vô hiệu hóa mã hóa mật khẩu tiềm ẩn rủi ro lớn cho tài khoản của bạn. Bạn có chắc muốn tiếp tục?",
@@ -1054,14 +1062,6 @@
             "disabledTitle": "Vô hiệu hóa Mã hóa Mật khẩu",
             "instruction": "Nhập mật khẩu của bạn vào đây để xác nhận",
             "title": "Vô hiệu hóa Mã hóa Mật khẩu"
-        },
-        "changePassword": {
-            "step1Title": "Bước 1/2: Xác Nhận Mật Khẩu Cũ",
-            "step1Description": "Vui lòng xác nhận mật khẩu hiện tại của bạn để tiếp tục",
-            "step2Title": "Bước 2/2: Đặt Mật Khẩu Mới",
-            "step2Description": "Đặt mật khẩu mới của bạn ở đây",
-            "completedTitle": "Cập Nhật Mật Khẩu Thành Công",
-            "completedDescription": "Bạn đã cập nhật mật khẩu thành công."
         },
         "enter": "Nhập mật khẩu",
         "invalidPassword": "Mật khẩu không hợp lệ",

@@ -1184,6 +1184,14 @@
     },
     "setupPasswordProtection": {
         "average": "Orta düzey şifre",
+        "changePassword": {
+            "completedDescription": "Ви успішно оновили свій пароль.",
+            "completedTitle": "Пароль Успішно Оновлено",
+            "step1Description": "Будь ласка, підтвердіть ваш поточний пароль, щоб продовжити",
+            "step1Title": "Крок 1/2: Підтвердіть Старий Пароль",
+            "step2Description": "Встановіть ваш новий пароль тут",
+            "step2Title": "Крок 2/2: Встановіть Новий Пароль"
+        },
         "confirm": "Şifreyi Onayla",
         "disableModal": {
             "description": "Şifre şifrelemesini devre dışı bırakmak hesaplarınızı daha büyük bir risk altında bırakır. Devam etmek istediğinize emin misiniz?",
@@ -1191,14 +1199,6 @@
             "disabledTitle": "Şifre Şifrelemesi Devre Dışı Bırakıldı",
             "instruction": "Onaylamak için şifrenizi buraya girin",
             "title": "Şifre Şifrelemesini Devre Dışı Bırak"
-        },
-        "changePassword": {
-            "step1Title": "Крок 1/2: Підтвердіть Старий Пароль",
-            "step1Description": "Будь ласка, підтвердіть ваш поточний пароль, щоб продовжити",
-            "step2Title": "Крок 2/2: Встановіть Новий Пароль",
-            "step2Description": "Встановіть ваш новий пароль тут",
-            "completedTitle": "Пароль Успішно Оновлено",
-            "completedDescription": "Ви успішно оновили свій пароль."
         },
         "enter": "Şifre girin",
         "invalidPassword": "Geçersiz Şifre",

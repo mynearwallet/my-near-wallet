@@ -1320,6 +1320,14 @@
     },
     "setupPasswordProtection": {
         "average": "Average password",
+        "changePassword": {
+            "completedDescription": "You have updated your password successfully.",
+            "completedTitle": "Password Updated Successfully",
+            "step1Description": "Please confirm your current password to continue",
+            "step1Title": "Step 1/2: Confirm Old Password",
+            "step2Description": "Set your new password here",
+            "step2Title": "Step 2/2: Set New Password"
+        },
         "confirm": "Confirm Password",
         "disableModal": {
             "description": "Disabling password encryption expose your accounts to a bigger risk. Are you sure you want to continue?",
@@ -1327,14 +1335,6 @@
             "disabledTitle": "Password Encryption Disabled",
             "instruction": "Insert your password here to confirm",
             "title": "Disable Password Encryption"
-        },
-        "changePassword": {
-            "step1Title": "Step 1/2: Confirm Old Password",
-            "step1Description": "Please confirm your current password to continue",
-            "step2Title": "Step 2/2: Set New Password",
-            "step2Description": "Set your new password here",
-            "completedTitle": "Password Updated Successfully",
-            "completedDescription": "You have updated your password successfully."
         },
         "enter": "Enter password",
         "invalidPassword": "Invalid Password",

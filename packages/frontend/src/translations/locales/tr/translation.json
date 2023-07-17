@@ -1101,6 +1101,14 @@
     },
     "setupPasswordProtection": {
         "average": "Orta düzey şifre",
+        "changePassword": {
+            "completedDescription": "Şifrenizi başarıyla güncellediniz.",
+            "completedTitle": "Şifre Başarıyla Güncellendi",
+            "step1Description": "Devam etmek için mevcut şifrenizi onaylayın",
+            "step1Title": "Adım 1/2: Eski Şifreyi Onayla",
+            "step2Description": "Yeni şifrenizi buraya belirleyin",
+            "step2Title": "Adım 2/2: Yeni Şifre Belirle"
+        },
         "confirm": "Şifreyi Onayla",
         "disableModal": {
             "description": "Şifre şifrelemesini devre dışı bırakmak hesaplarınızı daha büyük bir risk altında bırakır. Devam etmek istediğinize emin misiniz?",
@@ -1108,14 +1116,6 @@
             "disabledTitle": "Şifre Şifrelemesi Devre Dışı Bırakıldı",
             "instruction": "Onaylamak için şifrenizi buraya girin",
             "title": "Şifre Şifrelemesini Devre Dışı Bırak"
-        },
-        "changePassword": {
-            "step1Title": "Adım 1/2: Eski Şifreyi Onayla",
-            "step1Description": "Devam etmek için mevcut şifrenizi onaylayın",
-            "step2Title": "Adım 2/2: Yeni Şifre Belirle",
-            "step2Description": "Yeni şifrenizi buraya belirleyin",
-            "completedTitle": "Şifre Başarıyla Güncellendi",
-            "completedDescription": "Şifrenizi başarıyla güncellediniz."
         },
         "enter": "Şifre girin",
         "invalidPassword": "Geçersiz Şifre",

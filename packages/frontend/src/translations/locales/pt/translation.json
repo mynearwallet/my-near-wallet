@@ -1119,6 +1119,14 @@
     },
     "setupPasswordProtection": {
         "average": "Password media",
+        "changePassword": {
+            "completedDescription": "Você atualizou sua senha com sucesso.",
+            "completedTitle": "Senha Atualizada com Sucesso",
+            "step1Description": "Por favor, confirme sua senha atual para continuar",
+            "step1Title": "Passo 1/2: Confirmar Senha Antiga",
+            "step2Description": "Defina sua nova senha aqui",
+            "step2Title": "Passo 2/2: Definir Nova Senha"
+        },
         "confirm": "Conferma Password",
         "disableModal": {
             "description": "Disabilitare la crittografia della password espone i tuoi account a un rischio maggiore. Sei sicuro di voler continuare?",
@@ -1126,14 +1134,6 @@
             "disabledTitle": "Crittografia Password Disattivata",
             "instruction": "Inserisci qui la tua password per confermare",
             "title": "Disabilita la crittografia della password"
-        },
-        "changePassword": {
-            "step1Title": "Passo 1/2: Confirmar Senha Antiga",
-            "step1Description": "Por favor, confirme sua senha atual para continuar",
-            "step2Title": "Passo 2/2: Definir Nova Senha",
-            "step2Description": "Defina sua nova senha aqui",
-            "completedTitle": "Senha Atualizada com Sucesso",
-            "completedDescription": "Você atualizou sua senha com sucesso."
         },
         "enter": "Inserisci password",
         "invalidPassword": "Password non valida",
