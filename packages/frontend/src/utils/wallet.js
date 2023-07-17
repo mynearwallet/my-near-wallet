@@ -16,11 +16,8 @@ import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/pas
 import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
 import {
-    getStoredWalletData,
     removeAllAccountsPrivateKey,
     retrieveAllAccountsPrivateKey,
-    setEncryptedData,
-    setNewEncryptedData,
     storedWalletDataActions,
 } from './encryptedWalletData';
 import { getAccountIds } from './helper-api';
@@ -130,6 +127,12 @@ export default class Wallet {
                   KEY_STORE_PREFIX
               );
 
+        // Just to make sure we actually always remove the localstorage values
+        // if we are doing encrypted accounts
+        if (storedStatus.hasEncryptedData) {
+            removeAllAccountsPrivateKey();
+        }
+
         this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
         this.inMemorySignerBasic = new nearApiJs.InMemorySigner(this.keyStore);
 
@@ -215,9 +218,7 @@ export default class Wallet {
         delete walletAccounts[accountId];
         setWalletAccounts(KEY_WALLET_ACCOUNTS, walletAccounts);
 
-        const isEncrypted =
-            !!getStoredWalletData() && getStoredWalletData().isEncryptionEnabled;
-        if (isEncrypted) {
+        if (storedWalletDataActions.getStatus().hasEncryptedData) {
             await this.updateEncryptedAccountList(accountId, 'remove');
         } else {
             await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
@@ -371,7 +372,7 @@ export default class Wallet {
 
     async enablePasswordEncryption(password) {
         const accounts = retrieveAllAccountsPrivateKey();
-        await setNewEncryptedData({ password, accounts });
+        await storedWalletDataActions.setNewEncryptedData({ password, accounts });
 
         removeAllAccountsPrivateKey();
         this.keyStore = new InMemoryKeyStore();
@@ -383,10 +384,10 @@ export default class Wallet {
             window.localStorage,
             KEY_STORE_PREFIX
         );
-        // const derivedPassword = await EncryptionDecryptionUtils.generateHash(password);
 
         await this.unlockWallet(password);
-        setEncryptedData(null);
+        storedWalletDataActions.removeEncryptedData();
+        store.dispatch(passwordProtectedWallet.actions.updateStatus());
     }
 
     // TODO: Figure out whether wallet should work with any account or current one.
@@ -842,7 +843,7 @@ export default class Wallet {
     async updateEncryptedAccountList(accountId, action = 'add', keyPair = null) {
         // Step 1: Get encrypted data from memory storage (if we don't provide a password, it uses the data in memory)
         const sensitiveData = await storedWalletDataActions.getEncryptedData();
-        const decryptedAccounts = [...sensitiveData];
+        const decryptedAccounts = [...sensitiveData.accounts];
 
         // Step 2: Based on the action, add or remove the account from the decrypted accounts list
         const accountIndex = decryptedAccounts.findIndex(
@@ -888,11 +889,7 @@ export default class Wallet {
         this.getAccountsLocalStorage();
 
         if (keyPair) {
-            const localStorageEncryptedData = getStoredWalletData();
-            if (
-                localStorageEncryptedData &&
-                localStorageEncryptedData.isEncryptionEnabled
-            ) {
+            if (storedWalletDataActions.getStatus().hasEncryptedData) {
                 await this.updateEncryptedAccountList(accountId, 'add', keyPair);
             } else {
                 await this.setKey(accountId, keyPair);
@@ -1145,9 +1142,7 @@ export default class Wallet {
                 localAccessKey
             );
 
-            const isAccountEncrypted =
-                getStoredWalletData() && getStoredWalletData().isEncryptionEnabled;
-            if (isAccountEncrypted) {
+            if (storedWalletDataActions.getStatus().hasEncryptedData) {
                 await this.updateEncryptedAccountList(accountId, 'add', newKeyPair);
             } else {
                 await this.setKey(accountId, newKeyPair);

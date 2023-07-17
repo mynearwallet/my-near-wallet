@@ -276,6 +276,13 @@ async function changePassword(oldPassword, newPassword) {
     }
 }
 
+function removeEncryptedData() {
+    setStoredWalletData({});
+    memoryOnlyWalletData.mem = {
+        hasEncryptedData: false,
+    };
+}
+
 export const storedWalletDataActions = {
     initializeStoredWalletData,
     setNewEncryptedData,
@@ -284,4 +291,5 @@ export const storedWalletDataActions = {
     isPasswordGood,
     changePassword,
     getStatus: getStoredWalletDataStatus,
+    removeEncryptedData,
 };

@@ -27,6 +27,9 @@ const passwordProtectedWallet = createSlice({
     name: SLICE_NAME,
     initialState,
     reducers: {
+        updateStatus(state) {
+            state.dataStatus = storedWalletDataActions.getStatus();
+        },
         signIn(state) {
             state.isSignedIn = true;
             state.dataStatus = storedWalletDataActions.getStatus();

@@ -407,17 +407,17 @@ class Routing extends Component {
                                     )
                                 }
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/create'
                                 component={CreateAccountWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path={'/create-from/:fundingAccountId'}
                                 component={CreateAccountWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/set-recovery/:accountId/:fundingContract?/:fundingKey?'
                                 component={SetupRecoveryMethodWithRouter}
@@ -442,32 +442,32 @@ class Routing extends Component {
                                 path='/create-implicit-account'
                                 component={CreateImplicitAccountWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/setup-seed-phrase/:accountId/:step'
                                 component={SetupSeedPhraseWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/verify-account'
                                 component={VerifyAccountWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/initial-deposit'
                                 component={InitialDepositWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/fund-with-existing-account'
                                 component={ExistingAccountWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/fund-create-account/:accountId/:implicitAccountId/:recoveryMethod'
                                 component={SetupImplicitWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/setup-ledger/:accountId'
                                 component={SetupLedgerWithRouter}
@@ -487,7 +487,7 @@ class Routing extends Component {
                                 component={RecoverAccountWrapper}
                                 indexBySearchEngines={true}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/recover-seed-phrase/:accountId?/:seedPhrase?'
                                 component={RecoverAccountSeedPhraseWithRouter}
@@ -561,12 +561,12 @@ class Routing extends Component {
                                     />
                                 )}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/batch-ledger-export'
                                 component={BatchLedgerExport}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/sign-in-ledger'
                                 component={SignInLedgerWrapper}
@@ -603,7 +603,11 @@ class Routing extends Component {
                             />
                             <PrivateRoute exact path='/buy' component={BuyNear} />
                             <PrivateRoute exact path='/swap' component={TokenSwap} />
-                            <Route exact path='/profile/:accountId' component={Profile} />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/profile/:accountId'
+                                component={Profile}
+                            />
                             <PrivateRoute
                                 exact
                                 path='/profile/:accountId?'

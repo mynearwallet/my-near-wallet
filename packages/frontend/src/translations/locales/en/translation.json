@@ -1330,8 +1330,8 @@
         },
         "confirm": "Confirm Password",
         "disableModal": {
-            "description": "Disabling password encryption expose your accounts to a bigger risk. Are you sure you want to continue?",
-            "disabledDescription": "Password encryption is disabled successfully",
+            "description": "Disabling password encryption will expose your accounts to a bigger risk. Are you sure you want to continue?",
+            "disabledDescription": "Password encryption disabled successfully",
             "disabledTitle": "Password Encryption Disabled",
             "instruction": "Insert your password here to confirm",
             "title": "Disable Password Encryption"
@@ -1343,16 +1343,16 @@
         "pageText": "You will use this to unlock your wallet.",
         "pageTitle": "Create a Password",
         "passwordExist": "Password already exists",
-        "passwordExistDescription": "You have already secured your account with password.",
+        "passwordExistDescription": "You have already secured your account with a password.",
         "setPasswordSuccessfully": "Password Set Successfully",
         "setPasswordSuccessfullyButton": "Back To Home",
-        "setPasswordSuccessfullyDescription": "Your accounts are now better protected by password encryption.",
+        "setPasswordSuccessfullyDescription": "Your accounts are now protected by password encryption.",
         "strong": "Strong password",
         "unlockWalletButton": "Unlock Wallet",
-        "unlockWalletDescription": "Welcome back, web3 world awaits you. Enter your password to unlock your wallet.",
+        "unlockWalletDescription": "Welcome back, the web3 world awaits you. Enter your password to unlock your wallet.",
         "unlockWalletInputPlaceholder": "Enter password",
         "unlockWalletTitle": "Unlock Wallet",
-        "week": "Week password",
+        "week": "Weak password",
         "withoutPassword": "Continue without creating a password"
     },
     "setupRecovery": {
@@ -1849,7 +1849,7 @@
             "desc": "You’ll need NEAR tokens to perform transactions with your wallet.",
             "title": "Deposit NEAR"
         },
-        "recommendToSetPassword": "You're recommended to set up a password for your account to better secure your private keys or seedphrase.",
+        "recommendToSetPassword": "It is highly recommended to set up a password for your wallet to better secure your account keys and sensitive data.",
         "setUpPasswordBtn": "Set up password",
         "status": "Status",
         "tokens": "Tokens",

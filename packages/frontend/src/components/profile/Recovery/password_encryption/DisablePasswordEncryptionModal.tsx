@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { selectPasswordProtectionSlice } from '../../../../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import { currentTargetValue } from '../../../../shared/lib/forms/selectors';
+import { storedWalletDataActions } from '../../../../utils/encryptedWalletData';
 import { wallet } from '../../../../utils/wallet';
 import { inLength } from '../../../accounts/password_encryption/SetPassword/lib/validation';
 import { Enter } from '../../../accounts/password_encryption/SetPassword/ui';
@@ -33,7 +34,11 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
     );
 
     const confirmDisablePasswordEncryption = async () => {
-        await wallet.disablePasswordEncryption(password);
+        if (await storedWalletDataActions.isPasswordGood(password)) {
+            await wallet.disablePasswordEncryption(password);
+        } else {
+            // TODO - show error for incorrect password
+        }
     };
 
     return (

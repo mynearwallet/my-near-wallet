@@ -1,12 +1,13 @@
 import React from 'react';
 import { Translate } from 'react-localize-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Textfit } from 'react-textfit';
 import styled from 'styled-components';
 
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
+import { selectPasswordProtectionSlice } from '../../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import classNames from '../../utils/classNames';
-import { getStoredWalletData } from '../../utils/encryptedWalletData';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
 import AlertBanner from '../common/AlertBanner';
 import { getTotalBalanceInFiat } from '../common/balance/helpers';
@@ -318,13 +319,12 @@ export function Wallet({
 }) {
     const currentLanguage = getCurrentLanguage();
     const totalAmount = getTotalBalanceInFiat(fungibleTokensList, currentLanguage);
-    const isAccountEncrypted =
-        !!getStoredWalletData() && getStoredWalletData().isEncryptionEnabled;
+    const { dataStatus } = useSelector(selectPasswordProtectionSlice);
 
     return (
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
             {/* TODO: Style and translate this */}
-            {!isAccountEncrypted && (
+            {!dataStatus.hasEncryptedData && (
                 <AlertBanner theme={'warning'} className={'password-encryption-alert'}>
                     <Translate id='wallet.recommendToSetPassword' />
                     <br />

@@ -10,7 +10,7 @@ import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsStatus,
 } from '../../../redux/slices/recoveryMethods';
-import { getStoredWalletData } from '../../../utils/encryptedWalletData';
+import { storedWalletDataActions } from '../../../utils/encryptedWalletData';
 import { Submit } from '../../accounts/password_encryption/SetPasswordForm/ui';
 import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
@@ -53,7 +53,7 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
     const ledgerIsConnected = useSelector(selectAccountLedgerKey);
     const hasLedgerButNotConnected = hasLedger && !ledgerIsConnected;
     const isPasswordEncryptionEnabled =
-        !!getStoredWalletData() && getStoredWalletData().isEncryptionEnabled;
+        storedWalletDataActions.getStatus().hasEncryptedData;
 
     const phraseMethod = recoveryMethodsMap[RECOVERY_METHOD.PHRASE];
 
