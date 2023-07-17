@@ -1,8 +1,9 @@
 import { t } from 'i18next';
 import React, { FC, useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { selectPasswordProtectionSlice } from '../../../../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import { currentTargetValue } from '../../../../shared/lib/forms/selectors';
-import { getEncryptedData } from '../../../../utils/localStorage';
 import { wallet } from '../../../../utils/wallet';
 import { inLength } from '../../../accounts/password_encryption/SetPassword/lib/validation';
 import { Enter } from '../../../accounts/password_encryption/SetPassword/ui';
@@ -22,9 +23,7 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
     onClose,
 }) => {
     const [password, setPassword] = useState('');
-    const [isEncrypted, setIsEncrypted] = useState(
-        !!getEncryptedData() && getEncryptedData().isEncryptionEnabled
-    );
+    const { dataStatus } = useSelector(selectPasswordProtectionSlice);
 
     const handleChangePassword = useCallback(
         (value: string) => {
@@ -35,13 +34,12 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
 
     const confirmDisablePasswordEncryption = async () => {
         await wallet.disablePasswordEncryption(password);
-        setIsEncrypted(false);
     };
 
     return (
         // @ts-ignore
         <Modal isOpen={isOpen} onClose={onClose} modalSize={'lg'}>
-            {isEncrypted ? (
+            {dataStatus.hasEncryptedData ? (
                 <>
                     <h1>{t('setupPasswordProtection.disableModal.title')}</h1>
                     <p>{t('setupPasswordProtection.disableModal.description')}</p>
@@ -60,8 +58,10 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
                     <Submit>
                         {/* @ts-ignore: prop error */}
                         <FormButton
-                            onClick={confirmDisablePasswordEncryption}
-                            disabled={!inLength(password)}
+                            {...{
+                                onClick: confirmDisablePasswordEncryption,
+                                disabled: !inLength(password),
+                            }}
                         >
                             {t('button.confirm')}
                         </FormButton>

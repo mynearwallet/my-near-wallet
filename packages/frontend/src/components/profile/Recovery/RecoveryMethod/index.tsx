@@ -35,9 +35,11 @@ const RecoveryMethod = ({
                 </TitleWrapper>
                 {/*@ts-ignore*/}
                 <FormButton
-                    type='submit'
-                    color={methodEnabled ? 'gray-red small' : 'blue small'}
-                    onClick={methodEnabled ? onDisable : onEnable}
+                    {...{
+                        type: 'submit',
+                        color: methodEnabled ? 'gray-red small' : 'blue small',
+                        onClick: methodEnabled ? onDisable : onEnable,
+                    }}
                 >
                     <Translate id={methodEnabled ? 'button.disable' : 'button.enable'} />
                 </FormButton>

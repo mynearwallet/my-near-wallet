@@ -1,10 +1,8 @@
 import React, { FC, useState } from 'react';
 import { Translate } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 
-import { selectDerivedPassword } from '../../../redux/slices/passwordEncryption/passwordEncryptionSlice';
-import { EncryptionDecryptionUtils } from '../../../utils/encryption';
+import { storedWalletDataActions } from '../../../utils/encryptedWalletData';
 import { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
@@ -16,18 +14,13 @@ type ChangePasswordPageProps = {};
 
 export const ChangePasswordPage: FC<ChangePasswordPageProps> = () => {
     const history = useHistory();
-    const derivedPassword = useSelector(selectDerivedPassword);
 
     const [password, setPassword] = useState<string>('');
     const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(false);
     const [isCompleted, setIsCompleted] = useState<boolean>(false);
 
     const reinsertOldPasswordHandler = async (password) => {
-        const insertedDerivedPassword = await EncryptionDecryptionUtils.generateHash(
-            password
-        );
-
-        if (insertedDerivedPassword === derivedPassword) {
+        if (await storedWalletDataActions.isPasswordGood(password)) {
             setIsPasswordMatch(true);
             setPassword(password);
         }

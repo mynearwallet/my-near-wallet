@@ -1,29 +1,22 @@
 import { t } from 'i18next';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback } from 'react';
 import { Translate } from 'react-localize-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 
-import { getEncryptedData } from '../../../utils/localStorage';
+import { selectPasswordProtectionSlice } from '../../../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
 import SetPasswordForm from './SetPasswordForm';
 import { Submit } from './SetPasswordForm/ui';
 
-type SetPasswordPageProps = {
-    uponSetPassword: () => void;
-};
-
-export const SetPasswordPage: FC<SetPasswordPageProps> = ({ uponSetPassword }) => {
+export const SetPasswordPage: FC = () => {
     const history = useHistory();
-    const [isEncrypted, setIsEncrypted] = useState<boolean>(
-        !!getEncryptedData() && getEncryptedData().isEncryptionEnabled
-    );
+    const { dataStatus } = useSelector(selectPasswordProtectionSlice);
 
     const onSubmit = async (password: string) => {
         await wallet.enablePasswordEncryption(password);
-        setIsEncrypted(!!getEncryptedData() && getEncryptedData().isEncryptionEnabled);
-        uponSetPassword();
     };
 
     const handleClick = useCallback(() => {
@@ -32,7 +25,7 @@ export const SetPasswordPage: FC<SetPasswordPageProps> = ({ uponSetPassword }) =
 
     return (
         <Container className='small-centered border'>
-            {isEncrypted ? (
+            {dataStatus.hasEncryptedData ? (
                 <div>
                     <h1>
                         <Translate id='setupPasswordProtection.setPasswordSuccessfully' />

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
 
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
-import { EncryptionDecryptionUtils } from '../../../utils/encryption';
 import { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
@@ -13,13 +12,13 @@ import { Submit } from './SetPasswordForm/ui';
 type UnlockWalletPageProps = {
     titleId: string;
     descriptionId: string;
-    uponUnlock: (password: string) => void;
+    uponUnlock?: (password: string) => void;
 };
 
 export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
-    uponUnlock,
     titleId,
     descriptionId,
+    uponUnlock,
 }) => {
     const { t } = useTranslation();
     const [password, setPassword] = useState<string>(null);
@@ -28,11 +27,8 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
     const unlockHandler = async () => {
         try {
             setErrorMessage(null);
-            const derivedPassword = await EncryptionDecryptionUtils.generateHash(
-                password
-            );
-            await wallet.unlockWallet(derivedPassword);
-            await uponUnlock(password);
+            await wallet.unlockWallet(password);
+            uponUnlock?.(password);
         } catch (e) {
             console.error(e);
             setErrorMessage(t('setupPasswordProtection.invalidPassword'));

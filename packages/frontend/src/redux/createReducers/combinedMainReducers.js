@@ -14,7 +14,7 @@ import importZeroBalanceAccountSlice from '../slices/importZeroBalanceAccount';
 import ledgerSlice from '../slices/ledger';
 import linkdropSlice from '../slices/linkdrop';
 import nftSlice from '../slices/nft';
-import passwordEncryptionSlice from '../slices/passwordEncryption/passwordEncryptionSlice';
+import passwordProtectedWallet from '../slices/passwordProtectedWallet/passwordProtectedWallet';
 import recoveryMethodsSlice from '../slices/recoveryMethods';
 import security from '../slices/security';
 import swapSlice from '../slices/swap';
@@ -44,5 +44,5 @@ export default (history) => ({
     [availableAccountsSlice.name]: availableAccountsSlice.reducer,
     [ledgerSlice.name]: ledgerSlice.reducer,
     [swapSlice.name]: swapSlice.reducer,
-    [passwordEncryptionSlice.name]: passwordEncryptionSlice.reducer,
+    [passwordProtectedWallet.name]: passwordProtectedWallet.reducer,
 });
