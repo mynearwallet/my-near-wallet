@@ -24,6 +24,7 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
     onClose,
 }) => {
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
     const { dataStatus } = useSelector(selectPasswordProtectionSlice);
 
     const handleChangePassword = useCallback(
@@ -35,9 +36,10 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
 
     const confirmDisablePasswordEncryption = async () => {
         if (await storedWalletDataActions.isPasswordGood(password)) {
+            setError(null);
             await wallet.disablePasswordEncryption(password);
         } else {
-            // TODO - show error for incorrect password
+            setError(t('setupPasswordProtection.invalidPassword'));
         }
     };
 
@@ -56,6 +58,7 @@ export const DisablePasswordEncryptionModal: FC<DisablePasswordEncryptionModalPr
                         <Input
                             placeholder={t('setupPasswordProtection.enter')}
                             value={password}
+                            error={error}
                             onChange={currentTargetValue(handleChangePassword)}
                         />
                     </Enter>
