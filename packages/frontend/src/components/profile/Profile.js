@@ -43,6 +43,7 @@ import { isAccountBricked } from '../wallet-migration/utils';
 import AuthorizedApp from './authorized_apps/AuthorizedApp';
 import BalanceContainer from './balances/BalanceContainer';
 import LockupAvailTransfer from './balances/LockupAvailTransfer';
+import ExportLocalStorageWrapper from './export_local_storage/ExportLocalStorageWrapper';
 import ExportKeyWrapper from './export_private_key/ExportKeyWrapper';
 import MobileSharingWrapper from './mobile_sharing/MobileSharingWrapper';
 import { Recovery } from './Recovery';
@@ -277,6 +278,7 @@ const Profile = ({ match }) => {
                             {secretKey ? (
                                 <ExportKeyWrapper secretKey={secretKey} />
                             ) : null}
+                            <ExportLocalStorageWrapper />
                             <RemoveAccountWrapper />
                         </>
                         {!CONFIG.IS_MAINNET && !account.ledgerKey && !isMobile() && (

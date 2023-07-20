@@ -565,6 +565,12 @@
         "text": "Earn, mint, and play! Discover the ecosystem of NEAR applications.",
         "title": "What's on NEAR?"
     },
+    "exportLocalStorage": {
+        "button": "Export App Data",
+        "desc": "You can use this feature to migrate your app data to new device. All your settings including language, active accounts, private keys, or password will be preserved.<br /><br />",
+        "download": "Click to download the export file",
+        "title": "Export App Data"
+    },
     "exportPrivateKey": {
         "button": "Export Local Private Key",
         "desc": "Never share your private key! Anyone with access to it will also have full access to your account.<br /><br />",
