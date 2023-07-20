@@ -998,12 +998,12 @@
         }
     },
     "recoverExportFile": {
-        "pageText": "Upload the export file to import your account.",
-        "pageTitle": "Recover using Export File",
         "exportFileInput": {
             "placeholder": "MyNearWallet-export-xxxxxxxx.txt",
             "title": "Export File"
-        }
+        },
+        "pageText": "Upload the export file to import your account.",
+        "pageTitle": "Recover using Export File"
     },
     "recoverPrivateKey": {
         "pageText": "Enter the private key associated with the account.",
@@ -1899,11 +1899,11 @@
         "promptTwoFactor": {
             "userCancelled": "2FA code was not verified correctly."
         },
-        "recoverAccountLink": {
-            "error": "Import of your account failed. Please try again or contact support for assistance."
-        },
         "recoverAccountExportFile": {
             "errorExportFileNotValid": "The export file imported seems to be corrupted, are you sure you imported the right file?"
+        },
+        "recoverAccountLink": {
+            "error": "Import of your account failed. Please try again or contact support for assistance."
         },
         "recoverAccountPrivateKey": {
             "errorPKNotValid": "The provided private key is not valid. Please check your private key and try again."
