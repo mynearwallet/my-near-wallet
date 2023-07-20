@@ -25,6 +25,7 @@ import SetupLedgerWithRouter from '../components/accounts/ledger/SetupLedger';
 import SetupLedgerSuccessWithRouter from '../components/accounts/ledger/SetupLedgerSuccess';
 import SignInLedgerWrapper from '../components/accounts/ledger/SignInLedgerWrapper';
 import LinkdropLandingWithRouter from '../components/accounts/LinkdropLanding';
+import RecoverAccountExportFile from '../components/accounts/RecoverAccountExportFile';
 import RecoverAccountPrivateKey from '../components/accounts/RecoverAccountPrivateKey';
 import RecoverAccountSeedPhraseWithRouter from '../components/accounts/RecoverAccountSeedPhrase';
 import RecoverAccountWrapper from '../components/accounts/RecoverAccountWrapper';
@@ -482,6 +483,11 @@ class Routing extends Component {
                                 exact
                                 path='/recover-private-key'
                                 component={RecoverAccountPrivateKey}
+                            />
+                            <Route
+                                exact
+                                path='/recover-export-file'
+                                component={RecoverAccountExportFile}
                             />
                             <Route
                                 exact

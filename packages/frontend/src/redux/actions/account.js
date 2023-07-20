@@ -7,6 +7,7 @@ import { actions as activeAccountActions } from '../../redux/slices/activeAccoun
 import { syncPrivateShardAccount } from '../../services/PrivateShard';
 import { showAlert } from '../../utils/alerts';
 import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
+import { importData } from '../../utils/import-export';
 import { loadState, saveState, clearState } from '../../utils/sessionStorage';
 import { TwoFactor } from '../../utils/twoFactor';
 import Wallet, {
@@ -649,6 +650,10 @@ export const { addAccessKey, addAccessKeySeedPhrase, addShardAccessKey } = creat
         },
         (title) => showAlert({ title }),
     ],
+});
+
+export const { recoverAccountExportFile } = createActions({
+    RECOVER_ACCOUNT_EXPORT_FILE: [importData, () => {}],
 });
 
 export const { recoverAccountSeedPhrase } = createActions({

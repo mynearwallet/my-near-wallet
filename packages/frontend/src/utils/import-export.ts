@@ -1,15 +1,22 @@
 import { RELEASE_NOTES_MODAL_VERSION } from './wallet';
 
-// // This function will convert the version to number
-// // So that we can compare 2 different versions
-// function parseVersion(version: string): number {
-//     const [versions] = version.replace(/[^0-9.]/g, '');
+type BreakingChangeType = {
+    version: number;
+    patch: () => void;
+};
 
-//     return versions.reduce(
-//         (accumulator, currentValue) => accumulator * 100 + currentValue,
-//         0
-//     );
-// }
+// All breaking change that modified the local storage and cause old save file
+// not working should register their patches here!
+const BREAKING_CHANGES: BreakingChangeType[] = [];
+
+function parseVersion(version: string): number {
+    const versions = version.replace(/[^0-9.]/g, '').split('.');
+
+    return versions.reduce(
+        (accumulator, currentValue) => accumulator * 100 + parseInt(currentValue, 10),
+        0
+    );
+}
 
 export function exportData(): string {
     const data = {
@@ -20,4 +27,18 @@ export function exportData(): string {
     return btoa(encodeURIComponent(JSON.stringify(data)));
 }
 
-export function importData(importString: string): void {}
+export function importData(exportString: string): void {
+    const { version: exportVersion, localStorage: exportData } = JSON.parse(
+        decodeURIComponent(atob(exportString))
+    );
+
+    const version = parseVersion(exportVersion);
+
+    for (const [key, value] of Object.entries(exportData)) {
+        localStorage.setItem(key as string, value as string);
+    }
+
+    BREAKING_CHANGES.filter((x) => x.version > version)
+        .sort((x, y) => x.version - y.version)
+        .forEach((breakingChange: BreakingChangeType): void => breakingChange.patch());
+}

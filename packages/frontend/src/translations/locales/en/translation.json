@@ -973,6 +973,10 @@
             "subject": "\"Important: Near Wallet Recovery Email\".",
             "title": "Email"
         },
+        "exportFile": {
+            "desc": "Upload an export file from MyNearWallet to begin the recovery process.",
+            "title": "MyNearWallet Export File"
+        },
         "ledger": {
             "desc": "Make sure your ledger is connected securely, and that the NEAR app is open on the device.",
             "title": "Ledger"
@@ -991,6 +995,14 @@
         "privateKey": {
             "desc": "Make sure you have your private key started with ed25519, then click below to begin the recovery process.",
             "title": "Private Key"
+        }
+    },
+    "recoverExportFile": {
+        "pageText": "Upload the export file to import your account.",
+        "pageTitle": "Recover using Export File",
+        "exportFileInput": {
+            "placeholder": "MyNearWallet-export-xxxxxxxx.txt",
+            "title": "Export File"
         }
     },
     "recoverPrivateKey": {
@@ -1889,6 +1901,9 @@
         },
         "recoverAccountLink": {
             "error": "Import of your account failed. Please try again or contact support for assistance."
+        },
+        "recoverAccountExportFile": {
+            "errorExportFileNotValid": "The export file imported seems to be corrupted, are you sure you imported the right file?"
         },
         "recoverAccountPrivateKey": {
             "errorPKNotValid": "The provided private key is not valid. Please check your private key and try again."

@@ -208,6 +208,25 @@ const RecoverAccount = ({ locationSearch, isMobile }) => {
                             <Translate id='button.recoverAccount' />
                         </FormButton>
                     </Option>
+                    <Option>
+                        <Header icon={PhraseIcon}>
+                            <Translate id='recoverAccount.exportFile.title' />
+                        </Header>
+                        <P>
+                            <Translate id='recoverAccount.exportFile.desc' />
+                        </P>
+                        <FormButton
+                            color='seafoam-blue'
+                            linkTo={`/recover-export-file${locationSearch}`}
+                            onClick={() =>
+                                Mixpanel.track('IE Click export file recovery button')
+                            }
+                            data-test-id='recoverAccountWithExportFileButton'
+                            id='IE Click export file recovery button'
+                        >
+                            <Translate id='button.recoverAccount' />
+                        </FormButton>
+                    </Option>
                     {!CONFIG.IS_MAINNET && isMobile && (
                         <Option>
                             <Header className='no-background'>
