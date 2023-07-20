@@ -1,4 +1,4 @@
-// import { RELEASE_NOTES_MODAL_VERSION } from './wallet';
+import { RELEASE_NOTES_MODAL_VERSION } from './wallet';
 
 // // This function will convert the version to number
 // // So that we can compare 2 different versions
