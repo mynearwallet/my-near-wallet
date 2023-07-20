@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import CheckMarkNoBorderIcon from '../../../images/icon-check-no-border.svg';
-import { exportData } from '../../../utils/import-export';
+import { exportData } from '../../../utils/import-export-from-file';
 import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
 

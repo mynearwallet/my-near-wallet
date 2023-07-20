@@ -7,7 +7,7 @@ import { actions as activeAccountActions } from '../../redux/slices/activeAccoun
 import { syncPrivateShardAccount } from '../../services/PrivateShard';
 import { showAlert } from '../../utils/alerts';
 import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
-import { importData } from '../../utils/import-export';
+import { importData } from '../../utils/import-export-from-file';
 import { loadState, saveState, clearState } from '../../utils/sessionStorage';
 import { TwoFactor } from '../../utils/twoFactor';
 import Wallet, {
