@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import FormButton from '../../common/FormButton';
+import FormButton from '../../../common/FormButton';
 import SetPassword from '../SetPassword';
-import { WithoutPassword, PasswordForm, Submit } from './ui';
+import { PasswordForm, Submit } from './ui';
 
 type SetPasswordFormProps = {
     onSubmit: (password: string) => void;
@@ -34,9 +34,9 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
                     {t('button.next')}
                 </FormButton>
             </Submit>
-            <WithoutPassword hide={password !== null}>
-                {t('setupPasswordProtection.withoutPassword')}
-            </WithoutPassword>
+            {/*<WithoutPassword hide={false}>*/}
+            {/*    {t('setupPasswordProtection.withoutPassword')}*/}
+            {/*</WithoutPassword>*/}
         </>
     );
 };

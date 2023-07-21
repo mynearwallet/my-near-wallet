@@ -4,6 +4,8 @@ import CONFIG from '../../config';
 
 Gleap.disableConsoleLogOverwrite();
 Gleap.showFeedbackButton(false);
-Gleap.initialize(CONFIG.GLEAP_FRONTEND_API_KEY);
+if (!window?.location?.href?.includes('localhost')) {
+    Gleap.initialize(CONFIG.GLEAP_FRONTEND_API_KEY);
+}
 
 export { Gleap as GleapService };

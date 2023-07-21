@@ -1182,6 +1182,43 @@
         "secondaryCta": "Зберегти існуючі ключі",
         "two": "Використання кількох ключів та методів відновлення (включаючи менімонічні фрази) збільшує вразливість вашого облікового запису."
     },
+    "setupPasswordProtection": {
+        "average": "Orta düzey şifre",
+        "changePassword": {
+            "completedDescription": "Ви успішно оновили свій пароль.",
+            "completedTitle": "Пароль Успішно Оновлено",
+            "step1Description": "Будь ласка, підтвердіть ваш поточний пароль, щоб продовжити",
+            "step1Title": "Крок 1/2: Підтвердіть Старий Пароль",
+            "step2Description": "Встановіть ваш новий пароль тут",
+            "step2Title": "Крок 2/2: Встановіть Новий Пароль"
+        },
+        "confirm": "Şifreyi Onayla",
+        "disableModal": {
+            "description": "Şifre şifrelemesini devre dışı bırakmak hesaplarınızı daha büyük bir risk altında bırakır. Devam etmek istediğinize emin misiniz?",
+            "disabledDescription": "Şifre şifrelemesi başarıyla devre dışı bırakıldı",
+            "disabledTitle": "Şifre Şifrelemesi Devre Dışı Bırakıldı",
+            "instruction": "Onaylamak için şifrenizi buraya girin",
+            "title": "Şifre Şifrelemesini Devre Dışı Bırak"
+        },
+        "enter": "Şifre girin",
+        "invalidPassword": "Geçersiz Şifre",
+        "lengthError": "En az 8 karakter",
+        "matchError": "Şifreler eşleşmiyor",
+        "pageText": "Cüzdanınızı açmak için bunu kullanacaksınız.",
+        "pageTitle": "Bir Şifre Oluştur",
+        "passwordExist": "Şifre zaten mevcut",
+        "passwordExistDescription": "Hesabınızı zaten bir şifre ile güvence altına aldınız.",
+        "setPasswordSuccessfully": "Şifre Başarıyla Ayarlandı",
+        "setPasswordSuccessfullyButton": "Ana Sayfaya Dön",
+        "setPasswordSuccessfullyDescription": "Hesaplarınız artık şifreleme ile daha iyi korunmaktadır.",
+        "strong": "Güçlü şifre",
+        "unlockWalletButton": "Cüzdanı Aç",
+        "unlockWalletDescription": "Hoş geldiniz, web3 dünyası sizi bekliyor. Cüzdanınızı açmak için şifrenizi girin.",
+        "unlockWalletInputPlaceholder": "Şifre girin",
+        "unlockWalletTitle": "Cüzdanı Aç",
+        "week": "Zayıf şifre",
+        "withoutPassword": "Şifre oluşturmadan devam et"
+    },
     "setupRecovery": {
         "advancedSecurity": "Підвищена безпека (Recommended)",
         "advancedSecurityDesc": "Запишіть фразу з 12 слів і надійно зберігайте її.",
@@ -1639,6 +1676,8 @@
             "desc": "Вам знадобляться токени NEAR для здійснення транзакцій з вашим гаманцем.",
             "title": "Депозит NEAR"
         },
+        "recommendToSetPassword": "Рекомендується налаштувати пароль для вашого облікового запису, щоб краще захистити ваші приватні ключі або фразу відновлення.",
+        "setUpPasswordBtn": "Встановити пароль",
         "status": "Статус",
         "tokens": "Токени",
         "totalBalance": "Загальний баланс",
