@@ -83,11 +83,9 @@ class RecoverAccountExportFile extends Component {
 
             this.props.recoverAccountExportFile(exportString);
 
-            await this.props.refreshAccount();
-            this.props.clearGlobalAlert();
-            this.props.redirectToApp();
-
             Mixpanel.track('IE-SP Recovery with export file');
+
+            location.href = '/';
         } catch (err) {
             this.props.showCustomAlert({
                 success: false,
@@ -98,11 +96,11 @@ class RecoverAccountExportFile extends Component {
             });
 
             Mixpanel.track('IE-SP Recover export file not valid');
+
+            this.setState({ recoveringAccount: false });
+            this.props.clearAccountState();
             return false;
         }
-
-        this.setState({ recoveringAccount: false });
-        this.props.clearAccountState();
     };
 
     render() {
@@ -120,9 +118,9 @@ class RecoverAccountExportFile extends Component {
                     <Translate id='recoverExportFile.pageText' />
                 </h2>
                 <form
-                    onSubmit={(e) => {
-                        this.handleSubmit();
+                    onSubmit={async (e) => {
                         e.preventDefault();
+                        await this.handleSubmit();
                     }}
                     autoComplete='off'
                 >
