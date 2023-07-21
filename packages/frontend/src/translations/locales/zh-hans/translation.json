@@ -1289,6 +1289,43 @@
         "secondaryCta": "保留密钥",
         "two": "保留多个密钥增加了账户被盗的风险。"
     },
+    "setupPasswordProtection": {
+        "average": "中等密码",
+        "changePassword": {
+            "completedDescription": "您已成功更新密码。",
+            "completedTitle": "密码已成功更新",
+            "step1Description": "请确认您当前的密码以继续",
+            "step1Title": "第1步: 确认旧密码",
+            "step2Description": "在这里设置您的新密码",
+            "step2Title": "第2步: 设置新密码"
+        },
+        "confirm": "确认密码",
+        "disableModal": {
+            "description": "禁用密码加密会增加您的账户风险。您确定要继续吗？",
+            "disabledDescription": "密码加密已成功禁用",
+            "disabledTitle": "密码加密已禁用",
+            "instruction": "在此处输入您的密码以确认",
+            "title": "禁用密码加密"
+        },
+        "enter": "输入密码",
+        "invalidPassword": "无效密码",
+        "lengthError": "至少8个字符",
+        "matchError": "密码不匹配",
+        "pageText": "您将使用此密码来解锁您的钱包。",
+        "pageTitle": "创建密码",
+        "passwordExist": "密码已存在",
+        "passwordExistDescription": "您已使用密码保护您的账户。",
+        "setPasswordSuccessfully": "密码设置成功",
+        "setPasswordSuccessfullyButton": "返回首页",
+        "setPasswordSuccessfullyDescription": "通过密码加密，您的账户得到了更好的保护。",
+        "strong": "强密码",
+        "unlockWalletButton": "解锁钱包",
+        "unlockWalletDescription": "欢迎回来，Web3世界正在等待您。请输入您的密码以解锁您的钱包。",
+        "unlockWalletInputPlaceholder": "输入密码",
+        "unlockWalletTitle": "解锁钱包",
+        "week": "弱密码",
+        "withoutPassword": "继续而不创建密码"
+    },
     "setupRecovery": {
         "advancedSecurity": "高级安全",
         "advancedSecurityDesc": "记录 12 个单词组成的助记词，并安全保存。",
@@ -1750,6 +1787,8 @@
             "desc": "请充值 NEAR 通证后才能使用 NEAR 钱包。",
             "title": "充值 NEAR"
         },
+        "recommendToSetPassword": "建议为您的账户设置密码，以更好地保护您的私钥或助记词。",
+        "setUpPasswordBtn": "设置密码",
         "status": "状态",
         "tokens": "通证",
         "totalBalance": "总余额",

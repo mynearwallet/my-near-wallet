@@ -164,6 +164,8 @@ export const createNewAccount = createAsyncThunk(
             });
         }
 
+        // NOTE: wallet.saveAccount is being called multiple times here. But some of them are called
+        // without the keypair.
         await wallet.saveAndMakeAccountActive(accountId);
         await dispatch(
             addLocalKeyAndFinishSetup({

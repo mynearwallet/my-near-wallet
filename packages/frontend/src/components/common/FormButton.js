@@ -235,7 +235,7 @@ const CustomButton = styled.button`
             background-size: 14px 20px;
 
             :disabled {
-                color: e6e6e6;
+                color: #e6e6e6;
                 border-color: #e6e6e6;
                 background: #fff;
                 opacity: 1 !important;

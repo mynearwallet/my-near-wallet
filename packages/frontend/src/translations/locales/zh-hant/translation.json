@@ -1289,6 +1289,43 @@
         "secondaryCta": "保留密鑰",
         "two": "保留多個密鑰增加了賬戶被盜的風險。"
     },
+    "setupPasswordProtection": {
+        "average": "中等密碼",
+        "changePassword": {
+            "completedDescription": "您已成功更新密碼。",
+            "completedTitle": "密碼已成功更新",
+            "step1Description": "請確認您目前的密碼以繼續",
+            "step1Title": "第1步: 確認舊密碼",
+            "step2Description": "在這裡設置您的新密碼",
+            "step2Title": "第2步: 設置新密碼"
+        },
+        "confirm": "確認密碼",
+        "disableModal": {
+            "description": "停用密碼加密會增加您的帳戶風險。您確定要繼續嗎？",
+            "disabledDescription": "密碼加密已成功停用",
+            "disabledTitle": "密碼加密已停用",
+            "instruction": "在此處輸入您的密碼以進行確認",
+            "title": "停用密碼加密"
+        },
+        "enter": "輸入密碼",
+        "invalidPassword": "無效密碼",
+        "lengthError": "至少8個字元",
+        "matchError": "密碼不符",
+        "pageText": "您將使用此密碼來解鎖您的錢包。",
+        "pageTitle": "建立密碼",
+        "passwordExist": "密碼已存在",
+        "passwordExistDescription": "您已使用密碼保護您的帳戶。",
+        "setPasswordSuccessfully": "密碼設定成功",
+        "setPasswordSuccessfullyButton": "返回首頁",
+        "setPasswordSuccessfullyDescription": "透過密碼加密，您的帳戶得到了更好的保護。",
+        "strong": "強密碼",
+        "unlockWalletButton": "解鎖錢包",
+        "unlockWalletDescription": "歡迎回來，Web3世界正在等待您。請輸入您的密碼以解鎖您的錢包。",
+        "unlockWalletInputPlaceholder": "輸入密碼",
+        "unlockWalletTitle": "解鎖錢包",
+        "week": "弱密碼",
+        "withoutPassword": "繼續而不建立密碼"
+    },
     "setupRecovery": {
         "advancedSecurity": "高級安全",
         "advancedSecurityDesc": "記錄 12 個單詞組成的助記詞，並安全保存。",
@@ -1750,6 +1787,8 @@
             "desc": "請充值 NEAR 通證後才能使用 NEAR 錢包。",
             "title": "充值 NEAR"
         },
+        "recommendToSetPassword": "建議為您的帳戶設定密碼，以更好地保護您的私鑰或助記詞。",
+        "setUpPasswordBtn": "設定密碼",
         "status": "狀態",
         "tokens": "通證",
         "totalBalance": "總餘額",

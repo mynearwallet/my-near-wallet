@@ -1099,6 +1099,43 @@
         "secondaryCta": "Mevcut anahtarları koru",
         "two": "Birden çok şifre ve kurtarma yöntemini sürdürme (Anahtar Kelimeler dahil) hesabınızın güvenlik açığını artırır."
     },
+    "setupPasswordProtection": {
+        "average": "Orta düzey şifre",
+        "changePassword": {
+            "completedDescription": "Şifrenizi başarıyla güncellediniz.",
+            "completedTitle": "Şifre Başarıyla Güncellendi",
+            "step1Description": "Devam etmek için mevcut şifrenizi onaylayın",
+            "step1Title": "Adım 1/2: Eski Şifreyi Onayla",
+            "step2Description": "Yeni şifrenizi buraya belirleyin",
+            "step2Title": "Adım 2/2: Yeni Şifre Belirle"
+        },
+        "confirm": "Şifreyi Onayla",
+        "disableModal": {
+            "description": "Şifre şifrelemesini devre dışı bırakmak hesaplarınızı daha büyük bir risk altında bırakır. Devam etmek istediğinize emin misiniz?",
+            "disabledDescription": "Şifre şifrelemesi başarıyla devre dışı bırakıldı",
+            "disabledTitle": "Şifre Şifrelemesi Devre Dışı Bırakıldı",
+            "instruction": "Onaylamak için şifrenizi buraya girin",
+            "title": "Şifre Şifrelemesini Devre Dışı Bırak"
+        },
+        "enter": "Şifre girin",
+        "invalidPassword": "Geçersiz Şifre",
+        "lengthError": "En az 8 karakter",
+        "matchError": "Şifreler eşleşmiyor",
+        "pageText": "Cüzdanınızı açmak için bunu kullanacaksınız.",
+        "pageTitle": "Bir Şifre Oluştur",
+        "passwordExist": "Şifre zaten mevcut",
+        "passwordExistDescription": "Hesabınızı zaten bir şifre ile güvence altına aldınız.",
+        "setPasswordSuccessfully": "Şifre Başarıyla Ayarlandı",
+        "setPasswordSuccessfullyButton": "Ana Sayfaya Dön",
+        "setPasswordSuccessfullyDescription": "Hesaplarınız artık şifreleme ile daha iyi korunmaktadır.",
+        "strong": "Güçlü şifre",
+        "unlockWalletButton": "Cüzdanı Aç",
+        "unlockWalletDescription": "Hoş geldiniz, web3 dünyası sizi bekliyor. Cüzdanınızı açmak için şifrenizi girin.",
+        "unlockWalletInputPlaceholder": "Şifre girin",
+        "unlockWalletTitle": "Cüzdanı Aç",
+        "week": "Zayıf şifre",
+        "withoutPassword": "Şifre oluşturmadan devam et"
+    },
     "setupRecovery": {
         "advancedSecurity": "En Güvenli (Önerilen)",
         "advancedSecurityDesc": "12 kelimelik parolanızı yazın veya hesabınızı Ledger cihazınızla güvenceye alın.",
@@ -1488,7 +1525,8 @@
             "desc": "Cüzdanınızla işlem yapmak için NEAR tokenlerine ihtiyacınız olacak.",
             "title": "NEAR Yatır"
         },
-        "status": "Durum",
+        "recommendToSetPassword": "Hesabınızı daha iyi güvenli hale getirmek için şifre oluşturmanız önerilir.",
+        "setUpPasswordBtn": "Şifre oluştur",
         "tokens": "Tokenler",
         "totalBalance": "Toplam Bakiye",
         "totalBalanceTitle": "Toplam Bakiye",

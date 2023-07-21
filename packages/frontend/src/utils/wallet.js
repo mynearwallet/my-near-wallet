@@ -2,6 +2,7 @@ import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
+import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
@@ -11,8 +12,14 @@ import { store } from '..';
 import CONFIG from '../config';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
+import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
+import {
+    removeAllAccountsPrivateKey,
+    retrieveAllAccountsPrivateKey,
+    storedWalletDataActions,
+} from './encryptedWalletData';
 import { getAccountIds } from './helper-api';
 import { ledgerManager } from './ledgerManager';
 import {
@@ -60,6 +67,7 @@ export const ENABLE_IDENTITY_VERIFIED_ACCOUNT = true;
 // TODO: Clean up all Coin-op 1.5 related code after test period
 
 const KEY_UNIQUE_PREFIX = '_4:';
+export const KEY_STORE_PREFIX = 'nearlib:keystore:';
 const KEY_WALLET_ACCOUNTS = KEY_UNIQUE_PREFIX + 'wallet:accounts_v2';
 export const KEY_ACTIVE_ACCOUNT_ID = KEY_UNIQUE_PREFIX + 'wallet:active_account_id_v2';
 const ACCOUNT_ID_REGEX = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
@@ -106,15 +114,31 @@ export async function getKeyMeta(publicKey) {
 
 export default class Wallet {
     constructor(rpcInfo = null) {
-        this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
-            window.localStorage,
-            'nearlib:keystore:'
-        );
+        this.init(rpcInfo);
+    }
+
+    init(rpcInfo = null) {
+        const storedStatus = storedWalletDataActions.getStatus();
+
+        this.keyStore = storedStatus.hasEncryptedData
+            ? new nearApiJs.keyStores.InMemoryKeyStore()
+            : new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+                  window.localStorage,
+                  KEY_STORE_PREFIX
+              );
+
+        // Just to make sure we actually always remove the localstorage values
+        // if we are doing encrypted accounts
+        if (storedStatus.hasEncryptedData) {
+            removeAllAccountsPrivateKey();
+        }
+
         this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
         this.inMemorySignerBasic = new nearApiJs.InMemorySigner(this.keyStore);
 
         const inMemorySigner = this.inMemorySigner;
         const wallet = this;
+
         this.signer = {
             async getPublicKey(accountId, networkId) {
                 const ledgerKey = await wallet.getLedgerKey(accountId);
@@ -188,11 +212,18 @@ export default class Wallet {
         OTHER: 'other',
     };
 
+    // TODO-password-encryption: Need to add for passwordEncryption
     async removeWalletAccount(accountId) {
         let walletAccounts = this.getAccountsLocalStorage();
         delete walletAccounts[accountId];
         setWalletAccounts(KEY_WALLET_ACCOUNTS, walletAccounts);
-        await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
+
+        if (storedWalletDataActions.getStatus().hasEncryptedData) {
+            await this.updateEncryptedAccountList(accountId, 'remove');
+        } else {
+            await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
+        }
+
         removeActiveAccount(KEY_ACTIVE_ACCOUNT_ID);
         removeAccountConfirmed(accountId);
         return walletAccounts;
@@ -334,6 +365,31 @@ export default class Wallet {
         }
     }
 
+    async changeEncryptionPassword(oldPassword, newPassword) {
+        await storedWalletDataActions.changePassword(oldPassword, newPassword);
+        await this.unlockWallet();
+    }
+
+    async enablePasswordEncryption(password) {
+        const accounts = retrieveAllAccountsPrivateKey();
+        await storedWalletDataActions.setNewEncryptedData({ password, accounts });
+
+        removeAllAccountsPrivateKey();
+        this.keyStore = new InMemoryKeyStore();
+        await this.unlockWallet();
+    }
+
+    async disablePasswordEncryption(password) {
+        this.keyStore = new nearApiJs.keyStores.BrowserLocalStorageKeyStore(
+            window.localStorage,
+            KEY_STORE_PREFIX
+        );
+
+        await this.unlockWallet(password);
+        storedWalletDataActions.removeEncryptedData();
+        store.dispatch(passwordProtectedWallet.actions.updateStatus());
+    }
+
     // TODO: Figure out whether wallet should work with any account or current one.
     // Maybe make wallet account specific and switch whole Wallet?
     async getAccessKeys(accountId) {
@@ -374,6 +430,7 @@ export default class Wallet {
     }
 
     async getAccountKeyType(accountId) {
+        console.log(wallet);
         const keypair = await wallet.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
         return this.getPublicKeyType(accountId, keypair.getPublicKey().toString());
     }
@@ -769,9 +826,75 @@ export default class Wallet {
         await this.keyStore.setKey(this.connection.networkId, accountId, recoveryKeyPair);
     }
 
+    async unlockWallet(password = undefined) {
+        const sensitiveData = await storedWalletDataActions.getEncryptedData(password);
+
+        store.dispatch(passwordProtectedWallet.actions.signIn());
+
+        // Step 4: Set the key to the wallet InMemoryKeystore for transaction signing
+        await Promise.all(
+            sensitiveData.accounts.map(
+                async (account) =>
+                    await this.setKey(account.accountId, account.privateKey)
+            )
+        );
+    }
+
+    async updateEncryptedAccountList(accountId, action = 'add', keyPair = null) {
+        // Step 1: Get encrypted data from memory storage (if we don't provide a password, it uses the data in memory)
+        const sensitiveData = await storedWalletDataActions.getEncryptedData();
+        const decryptedAccounts = [...sensitiveData.accounts];
+
+        // Step 2: Based on the action, add or remove the account from the decrypted accounts list
+        const accountIndex = decryptedAccounts.findIndex(
+            (account) => account.accountId === accountId
+        );
+
+        if (action === 'add') {
+            if (accountIndex < 0) {
+                decryptedAccounts.push({
+                    accountId,
+                    privateKey: keyPair.secretKey,
+                });
+            } else {
+                decryptedAccounts[accountIndex] = {
+                    accountId,
+                    privateKey: keyPair.secretKey,
+                };
+            }
+        } else if (action === 'remove') {
+            decryptedAccounts.splice(accountIndex, 1);
+        }
+
+        /*// Step 3: Encrypt the new list of accounts and save it in local storage
+        const newEncryptedData = await EncryptionDecryptionUtils.encrypt(
+            derivedPassword,
+            decryptedAccounts
+        );
+        setEncryptedData({
+            salt: newEncryptedData.salt,
+            encryptedData: newEncryptedData.payload,
+            isEncryptionEnabled: true,
+        });*/
+        await storedWalletDataActions.updateEncryptedData({
+            accounts: decryptedAccounts,
+        });
+
+        // Step 4: Reinit the wallet instance and unlock it to make sure we have the right key store with updated list of keys
+        this.init();
+        await this.unlockWallet();
+    }
+
     async saveAccount(accountId, keyPair) {
         this.getAccountsLocalStorage();
-        await this.setKey(accountId, keyPair);
+
+        if (keyPair) {
+            if (storedWalletDataActions.getStatus().hasEncryptedData) {
+                await this.updateEncryptedAccountList(accountId, 'add', keyPair);
+            } else {
+                await this.setKey(accountId, keyPair);
+            }
+        }
         this.accounts[accountId] = true;
 
         // TODO: figure out better way to inject reducer
@@ -934,7 +1057,7 @@ export default class Wallet {
                 WALLET_METADATA_METHOD
             )
         ) {
-            // NOTE: This key isn't used to call actual contract method, just used to verify connection with account in private DB
+            // NOTE: This key isn't used to sign transaction, just used to verify connection with account in private DB
             const newLocalKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
             const account = await this.getAccount(accountId);
             try {
@@ -1018,7 +1141,12 @@ export default class Wallet {
                 accountId,
                 localAccessKey
             );
-            await this.setKey(accountId, newKeyPair);
+
+            if (storedWalletDataActions.getStatus().hasEncryptedData) {
+                await this.updateEncryptedAccountList(accountId, 'add', newKeyPair);
+            } else {
+                await this.setKey(accountId, newKeyPair);
+            }
         } catch (error) {
             if (error.name !== 'TransportStatusError') {
                 throw new WalletError(error.message, 'addLedgerAccountId.errorRpc');
