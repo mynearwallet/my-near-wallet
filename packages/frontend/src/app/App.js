@@ -25,6 +25,8 @@ import SetupLedgerWithRouter from '../components/accounts/ledger/SetupLedger';
 import SetupLedgerSuccessWithRouter from '../components/accounts/ledger/SetupLedgerSuccess';
 import SignInLedgerWrapper from '../components/accounts/ledger/SignInLedgerWrapper';
 import LinkdropLandingWithRouter from '../components/accounts/LinkdropLanding';
+import { ChangePasswordPage } from '../components/accounts/password_encryption/ChangePasswordPage';
+import { SetPasswordPage } from '../components/accounts/password_encryption/SetPasswordPage';
 import RecoverAccountExportFile from '../components/accounts/RecoverAccountExportFile';
 import RecoverAccountPrivateKey from '../components/accounts/RecoverAccountPrivateKey';
 import RecoverAccountSeedPhraseWithRouter from '../components/accounts/RecoverAccountSeedPhrase';
@@ -40,6 +42,7 @@ import Footer from '../components/common/Footer';
 import GlobalAlert from '../components/common/GlobalAlert';
 import GuestLandingRoute from '../components/common/GuestLandingRoute';
 import NetworkBanner from '../components/common/NetworkBanner';
+import PasswordProtectedRoute from '../components/common/routing/PasswordProtectedRoute';
 import PrivateRoute from '../components/common/routing/PrivateRoute';
 import PublicRoute from '../components/common/routing/PublicRoute';
 import Route from '../components/common/routing/Route';
@@ -94,6 +97,7 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
+
 const { getTokenWhiteList } = tokenFiatValueActions;
 
 const {
@@ -369,15 +373,31 @@ class Routing extends Component {
                             />
                             <Route
                                 exact
+                                path={'/set-password'}
+                                render={() => (
+                                    <SetPasswordPage
+                                        uponSetPassword={() => {
+                                            // this.props.history.push('/');
+                                        }}
+                                    />
+                                )}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/change-password'
+                                component={ChangePasswordPage}
+                            />
+                            <Route
+                                exact
                                 path='/linkdrop/:fundingContract/:fundingKey'
                                 component={LinkdropLandingWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/create/:fundingContract/:fundingKey'
                                 component={CreateAccountWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/create'
                                 render={(props) =>
@@ -387,19 +407,18 @@ class Routing extends Component {
                                         <CreateAccountLanding />
                                     )
                                 }
-                                // Logged in users always create a named account
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/create'
                                 component={CreateAccountWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path={'/create-from/:fundingAccountId'}
                                 component={CreateAccountWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/set-recovery/:accountId/:fundingContract?/:fundingKey?'
                                 component={SetupRecoveryMethodWithRouter}
@@ -424,32 +443,32 @@ class Routing extends Component {
                                 path='/create-implicit-account'
                                 component={CreateImplicitAccountWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/setup-seed-phrase/:accountId/:step'
                                 component={SetupSeedPhraseWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/verify-account'
                                 component={VerifyAccountWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/initial-deposit'
                                 component={InitialDepositWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/fund-with-existing-account'
                                 component={ExistingAccountWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/fund-create-account/:accountId/:implicitAccountId/:recoveryMethod'
                                 component={SetupImplicitWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/setup-ledger/:accountId'
                                 component={SetupLedgerWithRouter}
@@ -464,32 +483,32 @@ class Routing extends Component {
                                 path='/enable-two-factor'
                                 component={EnableTwoFactor}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 path='/recover-account'
                                 component={RecoverAccountWrapper}
                                 indexBySearchEngines={true}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/recover-seed-phrase/:accountId?/:seedPhrase?'
                                 component={RecoverAccountSeedPhraseWithRouter}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/recover-with-link/:accountId/:seedPhrase'
                                 component={ImportAccountWithLinkWrapper}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/recover-private-key'
                                 component={RecoverAccountPrivateKey}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/recover-export-file'
                                 component={RecoverAccountExportFile}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/auto-import-seed-phrase'
                                 render={({ location }) => {
@@ -514,7 +533,7 @@ class Routing extends Component {
                                     );
                                 }}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/auto-import-secret-key'
                                 render={({ location }) => {
@@ -539,7 +558,7 @@ class Routing extends Component {
                                     );
                                 }}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/batch-import'
                                 render={() => (
@@ -548,12 +567,12 @@ class Routing extends Component {
                                     />
                                 )}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/batch-ledger-export'
                                 component={BatchLedgerExport}
                             />
-                            <Route
+                            <PasswordProtectedRoute
                                 exact
                                 path='/sign-in-ledger'
                                 component={SignInLedgerWrapper}
@@ -590,7 +609,11 @@ class Routing extends Component {
                             />
                             <PrivateRoute exact path='/buy' component={BuyNear} />
                             <PrivateRoute exact path='/swap' component={TokenSwap} />
-                            <Route exact path='/profile/:accountId' component={Profile} />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/profile/:accountId'
+                                component={Profile}
+                            />
                             <PrivateRoute
                                 exact
                                 path='/profile/:accountId?'

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 
 import { Mixpanel } from '../../../mixpanel';
 import { deleteRecoveryMethod, redirectTo } from '../../../redux/actions/account';
@@ -9,6 +10,9 @@ import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsStatus,
 } from '../../../redux/slices/recoveryMethods';
+import { storedWalletDataActions } from '../../../utils/encryptedWalletData';
+import { Submit } from '../../accounts/password_encryption/SetPasswordForm/ui';
+import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
 import Tooltip from '../../common/Tooltip';
 import ShieldIcon from '../../svg/ShieldIcon';
@@ -17,6 +21,7 @@ import HardwareDevices from '../HardwareDevices';
 import { RecoveryOption } from '../ui';
 import { formatCreatedAt } from './lib/format';
 import { createUserRecoveryMethodsMap } from './lib/recovery-methods';
+import { DisablePasswordEncryptionModal } from './password_encryption/DisablePasswordEncryptionModal';
 import RecoveryMethod from './RecoveryMethod';
 
 const { fetchRecoveryMethods } = recoveryMethodsActions;
@@ -26,9 +31,6 @@ const RECOVERY_METHOD = {
     PHRASE: 'phrase',
 };
 
-// TODO https://mnw.atlassian.net/browse/MNW-213
-const SHOULD_SHOW_PASSWORD_PROTECTION = false;
-
 export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
     const [recoveryMethodsMap, setMethodsMap] = useState(
         createUserRecoveryMethodsMap(userRecoveryMethods)
@@ -37,6 +39,7 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
     const [showPhraseDisabling, setPhraseDisabling] = useState(false);
     const [isPhraseProcessing, setPhraseProcessing] = useState(false);
     const [showDisabledModal, setShowDisabledModal] = useState(false);
+    const [showDisablePasswordModal, setShowDisablePasswordModal] = useState(false);
 
     useEffect(() => {
         /** Cache list for easy access */
@@ -44,10 +47,13 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
     }, [userRecoveryMethods]);
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const hasLedger = Boolean(recoveryMethodsMap[RECOVERY_METHOD.LEDGER]);
     const ledgerIsConnected = useSelector(selectAccountLedgerKey);
     const hasLedgerButNotConnected = hasLedger && !ledgerIsConnected;
+    const isPasswordEncryptionEnabled =
+        storedWalletDataActions.getStatus().hasEncryptedData;
 
     const phraseMethod = recoveryMethodsMap[RECOVERY_METHOD.PHRASE];
 
@@ -92,12 +98,16 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
     }, []);
 
     const handleEnablePassword = useCallback(() => {
-        //  TODO https://mnw.atlassian.net/browse/MNW-213
+        history.push('/set-password');
     }, []);
 
     const handleDisablePassword = useCallback(() => {
-        // TODO https://mnw.atlassian.net/browse/MNW-213
+        setShowDisablePasswordModal(true);
     }, []);
+
+    const handleChangePassword = () => {
+        history.push('/change-password');
+    };
 
     return (
         <>
@@ -118,21 +128,30 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
                     hasLedgerButNotConnected={hasLedgerButNotConnected}
                 />
             )}
-            {SHOULD_SHOW_PASSWORD_PROTECTION && (
-                <RecoveryOption>
-                    <Translate>
-                        {({ translate }) => (
-                            <RecoveryMethod
-                                title={translate('passwordProtection.title')}
-                                description={translate('passwordProtection.description')}
-                                methodEnabled={false}
-                                onEnable={handleEnablePassword}
-                                onDisable={handleDisablePassword}
-                            />
-                        )}
-                    </Translate>
-                </RecoveryOption>
-            )}
+            <RecoveryOption>
+                <Translate>
+                    {({ translate }) => (
+                        <RecoveryMethod
+                            title={translate('passwordProtection.title')}
+                            description={translate('passwordProtection.description')}
+                            methodEnabled={isPasswordEncryptionEnabled}
+                            onEnable={handleEnablePassword}
+                            onDisable={handleDisablePassword}
+                        >
+                            {isPasswordEncryptionEnabled ? (
+                                <Submit>
+                                    <FormButton
+                                        color={'white-blue'}
+                                        onClick={handleChangePassword}
+                                    >
+                                        Change Password
+                                    </FormButton>
+                                </Submit>
+                            ) : null}
+                        </RecoveryMethod>
+                    )}
+                </Translate>
+            </RecoveryOption>
             <h4>
                 <Translate id='profile.security.lessSecure' />
                 <Tooltip translate='profile.security.lessSecureDesc' icon='icon-lg' />
@@ -169,6 +188,13 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
                 <Modal isOpen={showDisabledModal} onClose={handleModalClose}>
                     <Translate id='recoveryMgmt.disableNotAllowed' />
                 </Modal>
+            )}
+
+            {showDisablePasswordModal && (
+                <DisablePasswordEncryptionModal
+                    isOpen={showDisablePasswordModal}
+                    onClose={() => setShowDisablePasswordModal(false)}
+                />
             )}
         </>
     );

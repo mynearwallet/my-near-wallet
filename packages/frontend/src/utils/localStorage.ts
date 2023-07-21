@@ -1,7 +1,7 @@
 import {
     keyAccountConfirmed,
-    keyStakingAccountSelected,
     keyReleaseNotesModalClosed,
+    keyStakingAccountSelected,
 } from './wallet';
 
 export const setAccountConfirmed = (accountId, confirmed) => {
@@ -24,7 +24,7 @@ export const getStakingAccountSelected = () => {
 };
 
 export const setReleaseNotesClosed = (version) => {
-    localStorage.setItem(keyReleaseNotesModalClosed(version), true);
+    localStorage.setItem(keyReleaseNotesModalClosed(version), String(true));
 };
 
 export const getReleaseNotesClosed = (version) => {
