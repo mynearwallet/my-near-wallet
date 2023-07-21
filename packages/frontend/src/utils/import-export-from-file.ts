@@ -1,44 +1,124 @@
-import { RELEASE_NOTES_MODAL_VERSION } from './wallet';
+import nacl from 'tweetnacl';
+import { decodeUTF8, encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
-type BreakingChangeType = {
-    version: number;
-    patch: () => void;
-};
+import CONFIG from '../config';
+import {
+    ISensitiveData,
+    IDecryptedAccount,
+    storedWalletDataActions,
+} from './encryptedWalletData';
 
-// All breaking change that modified the local storage and cause old save file
-// not working should register their patches here!
-const BREAKING_CHANGES: BreakingChangeType[] = [];
-
-function parseVersion(version: string): number {
-    const versions = version.replace(/[^0-9.]/g, '').split('.');
-
-    return versions.reduce(
-        (accumulator, currentValue) => accumulator * 100 + parseInt(currentValue, 10),
-        0
-    );
+export enum EEncryptionMethod {
+    nearWalletSelectorAccountExport = 'nearWalletSelectorAccountExport',
+    jsonStringify = 'jsonStringify',
 }
 
-export function exportData(): string {
-    const data = {
-        version: RELEASE_NOTES_MODAL_VERSION,
-        localStorage,
+export interface IEncryptedAccounts {
+    encryptionMethod?: EEncryptionMethod;
+    encryptionSalt?: string;
+    payload: string;
+}
+
+export interface IUserPreferences {
+    [key: string]: string;
+}
+
+export interface IDataMigration {
+    exportFrom?: string;
+    version?: number;
+    accounts: IEncryptedAccounts;
+    userPreferences?: IUserPreferences;
+}
+
+export const EXPORTER_NAME: string = 'my-near-wallet';
+export const EXPORTER_VERSION: number = 1;
+
+export async function exportData(secretKey: string): Promise<string> {
+    // const { storedWalletDataActions } = await import('./encryptedWalletData');
+
+    const sensitiveData: ISensitiveData =
+        await storedWalletDataActions.getEncryptedData();
+
+    const decryptedAccounts: IDecryptedAccount[] = sensitiveData.accounts;
+
+    const accounts: IEncryptedAccounts = encryptAccounts(
+        decryptedAccounts,
+        // EEncryptionMethod.nearWalletSelectorAccountExport,
+        EEncryptionMethod.jsonStringify,
+        secretKey
+    );
+
+    const exportedData: IDataMigration = {
+        exportFrom: EXPORTER_NAME,
+        version: EXPORTER_VERSION,
+        accounts,
+        userPreferences: [
+            'languageCode',
+            '_4:wallet:accounts_v2',
+            '_4:wallet:active_account_id_v2',
+        ].reduce((object: IUserPreferences, key) => {
+            object[key] = localStorage.getItem(key);
+            return object;
+        }, {}),
     };
 
-    return btoa(encodeURIComponent(JSON.stringify(data)));
+    return JSON.stringify(exportedData);
 }
 
 export function importData(exportString: string): void {
-    const { version: exportVersion, localStorage: exportData } = JSON.parse(
-        decodeURIComponent(atob(exportString))
-    );
+    // TODO: importData
+    console.log(exportString);
+}
 
-    const version = parseVersion(exportVersion);
+function encryptAccounts(
+    accounts: IDecryptedAccount[],
+    method: EEncryptionMethod,
+    secretKey: string = '',
+    salt: string = ''
+): IEncryptedAccounts {
+    let payload;
 
-    for (const [key, value] of Object.entries(exportData)) {
-        localStorage.setItem(key as string, value as string);
+    switch (method) {
+        case EEncryptionMethod.nearWalletSelectorAccountExport:
+            if (!secretKey) {
+                throw new Error('Secret key is required');
+            }
+
+            try {
+                const keyUint8Array = decodeBase64(
+                    Buffer.from(secretKey).toString('base64')
+                );
+                const messageUint8Array = decodeUTF8(JSON.stringify(accounts));
+                const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+                const box = nacl.secretbox(messageUint8Array, nonce, keyUint8Array);
+                const fullMessage = new Uint8Array(nonce.length + box.length);
+                fullMessage.set(nonce);
+                fullMessage.set(box, nonce.length);
+
+                payload = encodeBase64(fullMessage);
+            } catch (e) {
+                throw new Error('Unable to encrypt account data');
+            }
+            break;
+        case EEncryptionMethod.jsonStringify:
+            if (CONFIG.IS_MAINNET) {
+                throw new Error(
+                    'Do not use jsonStringify method to secure main net accounts'
+                );
+            }
+
+            payload = JSON.stringify(accounts);
+            break;
     }
 
-    BREAKING_CHANGES.filter((x) => x.version > version)
-        .sort((x, y) => x.version - y.version)
-        .forEach((breakingChange: BreakingChangeType): void => breakingChange.patch());
+    return {
+        encryptionMethod: method,
+        encryptionSalt: salt,
+        payload,
+    };
 }
+
+export const generateSecretKey = (): string => {
+    const random = nacl.randomBytes(24);
+    return encodeBase64(random);
+};

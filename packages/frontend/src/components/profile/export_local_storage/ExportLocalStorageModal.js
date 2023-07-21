@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
@@ -96,25 +96,33 @@ const Container = styled.div`
     }
 `;
 
-function download() {
-    const element = document.createElement('a');
-    const exportString = exportData();
-
-    element.setAttribute(
-        'href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(exportString)
-    );
-    element.setAttribute('download', `MyNearWallet-export-${Date.now()}.txt`);
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
-}
-
 export default ({ isOpen, onClose }) => {
+    const [generatingExport, setGeneratingExport] = useState(false);
+
+    async function generateExport() {
+        const element = document.createElement('a');
+        const exportString = await exportData();
+
+        element.setAttribute(
+            'href',
+            'data:text/plain;charset=utf-8,' + encodeURIComponent(exportString)
+        );
+        element.setAttribute('download', `MyNearWallet-export-${Date.now()}.txt`);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
+    const download = useCallback(() => {
+        setGeneratingExport(true);
+
+        generateExport().catch(console.log).finally(setGeneratingExport(false));
+    }, []);
+
     return (
         <Modal id='remove-account-modal' isOpen={isOpen} onClose={onClose} modalSize='sm'>
             <Container>
@@ -124,10 +132,10 @@ export default ({ isOpen, onClose }) => {
                 <p>
                     <Translate id='exportLocalStorage.desc' />
                 </p>
-                <FormButton onClick={download}>
+                <FormButton onClick={download} disabled={generatingExport}>
                     <Translate id='exportLocalStorage.download' />
                 </FormButton>
-                <FormButton onClick={onClose}>
+                <FormButton onClick={onClose} disabled={generatingExport}>
                     <Translate id='button.dismiss' />
                 </FormButton>
             </Container>
