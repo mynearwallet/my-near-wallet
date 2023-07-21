@@ -1,7 +1,7 @@
 import { EncryptionDecryptionUtils } from './encryptionUtils';
 import { getPasswordHash } from './passwordHash';
 
-const KEY_STORE_PREFIX = '_4:';
+const KEY_STORE_PREFIX = 'nearlib:keystore:';
 const LOCAL_STORAGE_WALLET_DATA_KEY = 'MNW_WALLET_DATA';
 
 export enum EWalletDataError {
