@@ -81,11 +81,12 @@ class RecoverAccountExportFile extends Component {
                 fileReader.readAsText(exportFile);
             });
 
-            this.props.recoverAccountExportFile(exportString);
+            await this.props.recoverAccountExportFile(exportString);
+            await this.props.refreshAccount();
 
             Mixpanel.track('IE-SP Recovery with export file');
 
-            location.href = '/';
+            this.props.redirectToApp();
         } catch (err) {
             this.props.showCustomAlert({
                 success: false,

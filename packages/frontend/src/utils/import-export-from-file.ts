@@ -1,5 +1,5 @@
 import nacl from 'tweetnacl';
-import { decodeUTF8, encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { encodeUTF8, decodeUTF8, encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
 import CONFIG from '../config';
 import {
@@ -7,6 +7,7 @@ import {
     IDecryptedAccount,
     storedWalletDataActions,
 } from './encryptedWalletData';
+import { wallet } from './wallet';
 
 export enum EEncryptionMethod {
     nearWalletSelectorAccountExport = 'nearWalletSelectorAccountExport',
@@ -33,9 +34,12 @@ export interface IDataMigration {
 export const EXPORTER_NAME: string = 'my-near-wallet';
 export const EXPORTER_VERSION: number = 1;
 
-export async function exportData(secretKey: string): Promise<string> {
-    // const { storedWalletDataActions } = await import('./encryptedWalletData');
+export const generateSecretKey = (): string => {
+    const random = nacl.randomBytes(24);
+    return encodeBase64(random);
+};
 
+export async function exportData(secretKey: string): Promise<string> {
     const sensitiveData: ISensitiveData =
         await storedWalletDataActions.getEncryptedData();
 
@@ -65,18 +69,56 @@ export async function exportData(secretKey: string): Promise<string> {
     return JSON.stringify(exportedData);
 }
 
-export function importData(exportString: string): void {
-    // TODO: importData
-    console.log(exportString);
+export async function importData(exportString: string, secretKey: string): Promise<void> {
+    let exportedDataJson: IDataMigration | null = null;
+
+    try {
+        exportedDataJson = JSON.parse(exportString) as IDataMigration;
+    } catch (err) {
+        console.log(err);
+    }
+
+    const exportedData: IDataMigration = exportedDataJson || {
+        accounts: {
+            encryptionMethod: EEncryptionMethod.nearWalletSelectorAccountExport,
+            payload: exportString,
+        },
+    };
+
+    const accounts: IDecryptedAccount[] = decryptAccounts(
+        exportedData.accounts.payload,
+        exportedData.accounts.encryptionMethod,
+        secretKey,
+        exportedData.accounts.encryptionSalt
+    );
+
+    const recoverAccountPromises: Promise<any>[] = accounts.map(
+        (account: IDecryptedAccount) =>
+            wallet.recoverAccountSecretKey(account.privateKey, account.accountId)
+    );
+
+    // batch all recovery at once to save time
+    await Promise.all(recoverAccountPromises);
+
+    if (exportedData.userPreferences) {
+        for (const [key, value] of Object.entries(exportedData.userPreferences)) {
+            localStorage.setItem(key, value);
+        }
+    }
 }
 
 function encryptAccounts(
     accounts: IDecryptedAccount[],
     method: EEncryptionMethod,
     secretKey: string = '',
-    salt: string = ''
+    // eslint-disable-next-line
+    salt: string = '' // eslint-disable-line
 ): IEncryptedAccounts {
-    let payload;
+    const encryptedAccounts: IEncryptedAccounts = {
+        encryptionMethod: method,
+        encryptionSalt: salt,
+        payload: '',
+    };
 
     switch (method) {
         case EEncryptionMethod.nearWalletSelectorAccountExport:
@@ -95,7 +137,7 @@ function encryptAccounts(
                 fullMessage.set(nonce);
                 fullMessage.set(box, nonce.length);
 
-                payload = encodeBase64(fullMessage);
+                encryptedAccounts.payload = encodeBase64(fullMessage);
             } catch (e) {
                 throw new Error('Unable to encrypt account data');
             }
@@ -107,18 +149,59 @@ function encryptAccounts(
                 );
             }
 
-            payload = JSON.stringify(accounts);
+            encryptedAccounts.payload = JSON.stringify(accounts);
             break;
     }
 
-    return {
-        encryptionMethod: method,
-        encryptionSalt: salt,
-        payload,
-    };
+    return encryptedAccounts;
 }
 
-export const generateSecretKey = (): string => {
-    const random = nacl.randomBytes(24);
-    return encodeBase64(random);
-};
+function decryptAccounts(
+    accountsPayload: string,
+    method: EEncryptionMethod,
+    secretKey: string = '',
+    salt: string = '' // eslint-disable-line
+): IDecryptedAccount[] {
+    const accounts: IDecryptedAccount[] = [];
+
+    switch (method) {
+        case EEncryptionMethod.nearWalletSelectorAccountExport:
+            if (!secretKey) {
+                throw new Error('Secret key is required');
+            }
+            try {
+                const keyUint8Array = decodeBase64(
+                    Buffer.from(secretKey).toString('base64')
+                );
+                const messageWithNonceAsUint8Array = decodeBase64(accountsPayload);
+                const nonce = messageWithNonceAsUint8Array.slice(
+                    0,
+                    nacl.secretbox.nonceLength
+                );
+                const message = messageWithNonceAsUint8Array.slice(
+                    nacl.secretbox.nonceLength,
+                    accountsPayload.length
+                );
+                const decrypted = nacl.secretbox.open(message, nonce, keyUint8Array);
+                if (!decrypted) {
+                    throw new Error('Unable to decrypt account data');
+                }
+                const base64DecryptedMessage = encodeUTF8(decrypted);
+                JSON.parse(base64DecryptedMessage).forEach((account) =>
+                    accounts.push(account)
+                );
+            } catch {
+                throw new Error('Unable to decrypt account data');
+            }
+            break;
+        case EEncryptionMethod.jsonStringify:
+            try {
+                JSON.parse(accountsPayload).forEach((account) => accounts.push(account));
+            } catch {
+                throw new Error('Unable to decrypt account data');
+            }
+            break;
+    }
+
+    return accounts;
+}
