@@ -5,8 +5,10 @@ import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
 
 const RecoverAccountExportFileForm = ({
-    handleChange,
+    handleExportFileChange,
+    handleSecretKeyChange,
     exportFile,
+    secretKey,
     localAlert,
     recoveringAccount,
     findMyAccountSending,
@@ -19,11 +21,34 @@ const RecoverAccountExportFileForm = ({
 
         exportFileNameRef.current.value = exportFile.name;
 
-        handleChange(exportFile);
+        handleExportFileChange(exportFile);
     }
 
     return (
         <>
+            <h4>
+                <Translate id='recoverExportFile.secretKeyInput.title' />
+            </h4>
+            <Translate>
+                {({ translate }) => (
+                    <input
+                        value={secretKey}
+                        onChange={(e) => handleSecretKeyChange(e.target.value)}
+                        className={classNames([
+                            { success: localAlert && localAlert.success },
+                            { problem: localAlert && localAlert.success === false },
+                        ])}
+                        placeholder={translate(
+                            'recoverExportFile.secretKeyInput.placeholder'
+                        )}
+                        disabled={recoveringAccount}
+                        data-test-id='exportFileRecoverySecretKeyInput'
+                        required
+                        tabIndex='2'
+                        autoCapitalize='off'
+                    />
+                )}
+            </Translate>
             <h4>
                 <Translate id='recoverExportFile.exportFileInput.title' />
             </h4>
@@ -43,8 +68,7 @@ const RecoverAccountExportFileForm = ({
                         )}
                         disabled={recoveringAccount}
                         readOnly={true}
-                        data-test-id='exportFileRecoveryInput'
-                        tabIndex='2'
+                        data-test-id='exportFileRecoveryFileInput'
                         autoCapitalize='off'
                     />
                 )}
@@ -55,6 +79,7 @@ const RecoverAccountExportFileForm = ({
                 type='file'
                 accept='.txt'
                 required
+                tabIndex='3'
                 style={{ display: 'none' }}
             />
             <FormButton

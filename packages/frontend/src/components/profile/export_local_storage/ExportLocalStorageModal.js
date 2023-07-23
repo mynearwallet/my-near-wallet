@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import CheckMarkNoBorderIcon from '../../../images/icon-check-no-border.svg';
-import { exportData } from '../../../utils/import-export-from-file';
+import { generateSecretKey, exportData } from '../../../utils/import-export-from-file';
+import ClickToCopy from '../../common/ClickToCopy';
 import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
 
@@ -98,10 +99,11 @@ const Container = styled.div`
 
 export default ({ isOpen, onClose }) => {
     const [generatingExport, setGeneratingExport] = useState(false);
+    const secretKey = useMemo(() => generateSecretKey(), []);
 
     async function generateExport() {
         const element = document.createElement('a');
-        const exportString = await exportData();
+        const exportString = await exportData(secretKey);
 
         element.setAttribute(
             'href',
@@ -131,6 +133,15 @@ export default ({ isOpen, onClose }) => {
                 </h3>
                 <p>
                     <Translate id='exportLocalStorage.desc' />
+                </p>
+                <p>
+                    <Translate id='exportLocalStorage.step1' />
+                </p>
+                <ClickToCopy copy={secretKey}>
+                    <div className='text-select-display'>{secretKey}</div>
+                </ClickToCopy>
+                <p>
+                    <Translate id='exportLocalStorage.step2' />
                 </p>
                 <FormButton onClick={download} disabled={generatingExport}>
                     <Translate id='exportLocalStorage.download' />

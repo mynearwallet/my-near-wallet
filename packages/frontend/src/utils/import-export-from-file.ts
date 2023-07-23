@@ -47,8 +47,7 @@ export async function exportData(secretKey: string): Promise<string> {
 
     const accounts: IEncryptedAccounts = encryptAccounts(
         decryptedAccounts,
-        // EEncryptionMethod.nearWalletSelectorAccountExport,
-        EEncryptionMethod.jsonStringify,
+        EEncryptionMethod.nearWalletSelectorAccountExport,
         secretKey
     );
 
@@ -111,8 +110,7 @@ function encryptAccounts(
     accounts: IDecryptedAccount[],
     method: EEncryptionMethod,
     secretKey: string = '',
-    // eslint-disable-next-line
-    salt: string = '' // eslint-disable-line
+    salt: string = ''
 ): IEncryptedAccounts {
     const encryptedAccounts: IEncryptedAccounts = {
         encryptionMethod: method,

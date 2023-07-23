@@ -567,7 +567,9 @@
     },
     "exportLocalStorage": {
         "button": "Export App Data",
-        "desc": "You can use this feature to migrate your app data to new device. All your settings including language, active accounts, private keys, or password will be preserved.<br /><br />",
+        "desc": "You can use this feature to migrate your app data to new device. Your settings including language, active accounts, private keys will be preserved.",
+        "step1": "First, please copy the following secret key and save it to a safe place. You will need this key to decrypt the export file.",
+        "step2": "<br /><br />Then, click the following button to download the export file.",
         "download": "Click to download the export file",
         "title": "Export App Data"
     },
@@ -998,6 +1000,10 @@
         }
     },
     "recoverExportFile": {
+        "secretKeyInput": {
+            "placeholder": "A random generated string that you copied when exporting the file",
+            "title": "Secret Key"
+        },
         "exportFileInput": {
             "placeholder": "MyNearWallet-export-xxxxxxxx.txt",
             "title": "Export File"

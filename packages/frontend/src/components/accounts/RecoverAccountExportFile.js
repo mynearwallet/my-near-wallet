@@ -55,11 +55,12 @@ const StyledContainer = styled(Container)`
 class RecoverAccountExportFile extends Component {
     state = {
         exportFile: this.props.exportFile,
+        secretKey: this.props.secretKey,
         recoveringAccount: false,
         showCouldNotFindAccountModal: false,
     };
 
-    handleChange = (exportFile) => {
+    handleExportFileChange = (exportFile) => {
         this.setState(() => ({
             exportFile,
         }));
@@ -67,8 +68,16 @@ class RecoverAccountExportFile extends Component {
         this.props.clearLocalAlert();
     };
 
+    handleSecretKeyChange = (secretKey) => {
+        this.setState(() => ({
+            secretKey,
+        }));
+
+        this.props.clearLocalAlert();
+    };
+
     handleSubmit = async () => {
-        const { exportFile } = this.state;
+        const { exportFile, secretKey } = this.state;
 
         try {
             this.setState({ recoveringAccount: true });
@@ -81,7 +90,7 @@ class RecoverAccountExportFile extends Component {
                 fileReader.readAsText(exportFile);
             });
 
-            await this.props.recoverAccountExportFile(exportString);
+            await this.props.recoverAccountExportFile(exportString, secretKey);
             await this.props.refreshAccount();
 
             Mixpanel.track('IE-SP Recovery with export file');
@@ -127,7 +136,8 @@ class RecoverAccountExportFile extends Component {
                 >
                     <RecoverAccountExportFileForm
                         {...combinedState}
-                        handleChange={this.handleChange}
+                        handleExportFileChange={this.handleExportFileChange}
+                        handleSecretKeyChange={this.handleSecretKeyChange}
                     />
                 </form>
             </StyledContainer>
