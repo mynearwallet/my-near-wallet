@@ -1352,6 +1352,11 @@
         "unlockWalletDescription": "Welcome back, the web3 world awaits you. Enter your password to unlock your wallet.",
         "unlockWalletInputPlaceholder": "Enter password",
         "unlockWalletTitle": "Unlock Wallet",
+        "warn": {
+            "passwordManager": "I know that I shouldn't save the password in browser's password manager.",
+            "privateComputer": "If I am using this wallet in any public computer or environment that I feel not safe, I should immediately delete all browser history after using it.",
+            "recovery": "I know that the password can not be used to recover my accounts, I still need to keep my seed phrase or private key."
+        },
         "week": "Weak password",
         "withoutPassword": "Continue without creating a password"
     },
