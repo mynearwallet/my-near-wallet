@@ -22,8 +22,8 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
     const [recoveryWarnChecked, setRecoveryWarnChecked] = useState<boolean>(false);
     const [passwordManagerWarnChecked, setPasswordManagerWarnChecked] =
         useState<boolean>(false);
-    const [privateComputerWarnChecked, setPrivateComputerWarnChecked] =
-        useState<boolean>(false);
+    // const [privateComputerWarnChecked, setPrivateComputerWarnChecked] =
+    //     useState<boolean>(false);
     const [password, setPassword] = useState(null);
 
     const handlePasswordChange = useCallback((value) => {
@@ -37,10 +37,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
     }, [password]);
 
     const submitDisabled: boolean =
-        password === null ||
-        !recoveryWarnChecked ||
-        !passwordManagerWarnChecked ||
-        !privateComputerWarnChecked;
+        password === null || !recoveryWarnChecked || !passwordManagerWarnChecked;
 
     return (
         <>
@@ -67,7 +64,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
                             {t('setupPasswordProtection.warn.passwordManager')}
                         </CheckBoxLabel>
                     </CheckBoxContainer>
-                    <CheckBoxContainer>
+                    {/*<CheckBoxContainer>
                         <CheckBoxWrapper
                             onClick={() => setPrivateComputerWarnChecked((prev) => !prev)}
                         >
@@ -76,7 +73,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
                         <CheckBoxLabel>
                             {t('setupPasswordProtection.warn.privateComputer')}
                         </CheckBoxLabel>
-                    </CheckBoxContainer>
+                    </CheckBoxContainer>*/}
                 </CheckBoxGroup>
             </PasswordForm>
             <Submit>

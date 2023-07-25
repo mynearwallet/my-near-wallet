@@ -26,7 +26,7 @@ export const CheckBoxGroup = styled.div`
 export const CheckBoxContainer = styled.div`
     display: flex;
     flex-direction: row;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 `;
 
 export const CheckBoxWrapper = styled.div`
