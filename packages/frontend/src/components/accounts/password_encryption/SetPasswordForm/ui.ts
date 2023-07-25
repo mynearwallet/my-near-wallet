@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const PasswordForm = styled.div`
-    margin-bottom: 72px;
+    margin-bottom: 20px;
 `;
 
 export const WithoutPassword = styled.div<{ hide: boolean }>`
@@ -17,6 +17,25 @@ export const WithoutPassword = styled.div<{ hide: boolean }>`
     align-self: stretch;
     flex-grow: 0;
     cursor: pointer;
+`;
+
+export const CheckBoxGroup = styled.div`
+    margin-top: 30px;
+`;
+
+export const CheckBoxContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+`;
+
+export const CheckBoxWrapper = styled.div`
+    flex: none;
+    padding-right: 8px;
+`;
+
+export const CheckBoxLabel = styled.div`
+    flex: 1 1 0%;
 `;
 
 export const Submit = styled.div`
