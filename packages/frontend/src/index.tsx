@@ -38,8 +38,7 @@ export const store = setupStore({});
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
-// @ts-ignore TODO fake property
-store.addAccountReducer = () => {
+export const addAccountReducer = () => {
     store.replaceReducer(createRootReducer(history));
 };
 

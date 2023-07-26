@@ -1,14 +1,18 @@
 import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
+import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types.d.ts';
+import { KeyPairEd25519 } from '@near-js/crypto';
+import { SignedTransaction } from '@near-js/transactions';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
+import { Action } from 'near-api-js/lib/transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
-import { store } from '..';
+import { store, addAccountReducer } from '..';
 import CONFIG from '../config';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
@@ -21,6 +25,7 @@ import {
     storedWalletDataActions,
 } from './encryptedWalletData';
 import { getAccountIds } from './helper-api';
+import { ConnectionInfo } from './JsonRpcProvider/fetch_json';
 import { ledgerManager } from './ledgerManager';
 import {
     setAccountConfirmed,
@@ -92,6 +97,20 @@ const {
     checkAndHideLedgerModal,
 } = ledgerActions;
 
+class FundingAccount extends nearApiJs.Account {
+    async signButDontSendTransaction(
+        receiverId: string,
+        actions: Action[]
+    ): Promise<[Uint8Array, SignedTransaction]> {
+        return await this.signTransaction(receiverId, actions);
+    }
+}
+
+class LinkDropContract extends nearApiJs.Contract {
+    get_key_balance;
+    get_key_information;
+}
+
 export const convertPKForContract = (pk) => {
     if (typeof pk !== 'string') {
         pk = pk.toString();
@@ -113,6 +132,14 @@ export async function getKeyMeta(publicKey) {
 }
 
 export default class Wallet {
+    accountId;
+    accounts;
+    connection;
+    connectionIgnoringLedger;
+    keyStore;
+    signer;
+    signerIgnoringLedger;
+
     constructor(rpcInfo = null) {
         this.init(rpcInfo);
     }
@@ -180,13 +207,13 @@ export default class Wallet {
         };
         let provider;
         if (rpcInfo) {
-            const args = { url: rpcInfo.shardRpc + '/' };
+            const args: ConnectionInfo = { url: rpcInfo.shardRpc + '/' };
             if (rpcInfo.shardApiToken) {
                 args.headers = {
                     'x-api-key': rpcInfo.shardApiToken,
                 };
             }
-            provider = new JsonRpcProvider({ type: 'JsonRpcProvider', ...args });
+            provider = new JsonRpcProvider(args);
         } else {
             provider = { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } };
         }
@@ -213,7 +240,7 @@ export default class Wallet {
 
     // TODO-password-encryption: Need to add for passwordEncryption
     async removeWalletAccount(accountId) {
-        let walletAccounts = this.getAccountsLocalStorage();
+        const walletAccounts = this.getAccountsLocalStorage();
         delete walletAccounts[accountId];
         setWalletAccounts(KEY_WALLET_ACCOUNTS, walletAccounts);
 
@@ -391,8 +418,7 @@ export default class Wallet {
 
     // TODO: Figure out whether wallet should work with any account or current one.
     // Maybe make wallet account specific and switch whole Wallet?
-    async getAccessKeys(accountId) {
-        accountId = accountId || this.accountId;
+    async getAccessKeys(accountId = this.accountId) {
         if (!accountId) {
             return null;
         }
@@ -657,7 +683,9 @@ export default class Wallet {
             gas: CONFIG.LINKDROP_GAS,
             attachedDeposit: newInitialBalance,
         });
-        const createResult = JSON.parse(Buffer.from(createResultBase64, 'base64'));
+        const createResult = JSON.parse(
+            Buffer.from(createResultBase64, 'base64').toString()
+        );
         if (!createResult) {
             throw new WalletError(
                 'Creating account has failed',
@@ -710,32 +738,34 @@ export default class Wallet {
     async checkLinkdropInfo(fundingContract, fundingKey) {
         const account = await this.getAccount(fundingContract);
 
-        const contract = new nearApiJs.Contract(account, fundingContract, {
+        const contract = new LinkDropContract(account, fundingContract, {
+            changeMethods: [],
             viewMethods: ['get_key_balance', 'get_key_information'],
-            sender: fundingContract,
         });
 
-        const key = nearApiJs.KeyPair.fromString(fundingKey).publicKey.toString();
+        const key = (
+            nearApiJs.KeyPair.fromString(fundingKey) as KeyPairEd25519
+        ).publicKey.toString();
 
-        let keyInfo = {
+        const keyInfo = {
             required_gas: '100000000000000',
             yoctoNEAR: '0',
         };
 
         try {
-            let returnedKeyInfo = await contract.get_key_information({ key });
+            const returnedKeyInfo = await contract.get_key_information({ key });
 
             if (
-                Object.hasOwn(returnedKeyInfo, 'yoctoNEAR') &&
-                Object.hasOwn(returnedKeyInfo, 'required_gas')
+                returnedKeyInfo.hasOwnProperty('yoctoNEAR') &&
+                returnedKeyInfo.hasOwnProperty('required_gas')
             ) {
                 return returnedKeyInfo;
             }
 
-            let balance = await contract.get_key_balance({ key });
+            const balance = await contract.get_key_balance({ key });
             keyInfo.yoctoNEAR = balance;
         } catch (e) {
-            let balance = await contract.get_key_balance({ key });
+            const balance = await contract.get_key_balance({ key });
             keyInfo.yoctoNEAR = balance;
         }
 
@@ -771,7 +801,7 @@ export default class Wallet {
 
     async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
-        const account = new nearApiJs.Account(
+        const account = new FundingAccount(
             this.connectionIgnoringLedger,
             fundingContract
         );
@@ -781,7 +811,7 @@ export default class Wallet {
             fundingPubKey
         );
         await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
-        const [, signedTx] = await account.signTransaction(fundingContract, [
+        const [, signedTx] = await account.signButDontSendTransaction(fundingContract, [
             nearApiJs.transactions.functionCall(
                 'create_account_and_claim',
                 {
@@ -793,7 +823,7 @@ export default class Wallet {
             ),
         ]);
         return await getNearRpcClient(
-            CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
+            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
@@ -802,7 +832,7 @@ export default class Wallet {
 
     async claimLinkdropToAccount(fundingContract, fundingKey) {
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
-        const account = new nearApiJs.Account(
+        const account = new FundingAccount(
             this.connectionIgnoringLedger,
             fundingContract
         );
@@ -814,7 +844,7 @@ export default class Wallet {
         );
 
         await this.keyStore.setKey(CONFIG.NETWORK_ID, fundingContract, fundingKeyPair);
-        const [, signedTx] = await account.signTransaction(fundingContract, [
+        const [, signedTx] = await account.signButDontSendTransaction(fundingContract, [
             nearApiJs.transactions.functionCall(
                 'claim',
                 { account_id: accountId },
@@ -822,8 +852,9 @@ export default class Wallet {
                 0
             ),
         ]);
+
         return await getNearRpcClient(
-            CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
+            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
@@ -893,7 +924,7 @@ export default class Wallet {
         await this.unlockWallet();
     }
 
-    async saveAccount(accountId, keyPair) {
+    async saveAccount(accountId, keyPair = undefined) {
         this.getAccountsLocalStorage();
 
         if (keyPair) {
@@ -905,8 +936,7 @@ export default class Wallet {
         }
         this.accounts[accountId] = true;
 
-        // TODO: figure out better way to inject reducer
-        store.addAccountReducer();
+        addAccountReducer();
     }
 
     makeAccountActive(accountId) {
@@ -946,7 +976,7 @@ export default class Wallet {
         publicKey,
         fullAccess = false,
         methodNames = '',
-        recoveryKeyIsFAK
+        recoveryKeyIsFAK = false
     ) {
         const account = recoveryKeyIsFAK
             ? new nearApiJs.Account(this.connection, accountId)
@@ -1041,7 +1071,9 @@ export default class Wallet {
 
     async disableLedger() {
         const account = await this.getAccount(this.accountId);
-        const keyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+        const keyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
+            'ed25519'
+        ) as KeyPairEd25519;
         await account.addKey(keyPair.publicKey);
         await this.keyStore.setKey(CONFIG.NETWORK_ID, this.accountId, keyPair);
 
@@ -1267,7 +1299,9 @@ export default class Wallet {
     async initializeRecoveryMethodNewImplicitAccount(method) {
         const { seedPhrase } = generateSeedPhrase();
         const { secretKey } = parseSeedPhrase(seedPhrase);
-        const recoveryKeyPair = nearApiJs.KeyPair.fromString(secretKey);
+        const recoveryKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromString(
+            secretKey
+        ) as KeyPairEd25519;
         const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString(
             'hex'
         );
@@ -1373,7 +1407,7 @@ export default class Wallet {
 
     async getRecoveryMethods() {
         const { accountId } = this;
-        let recoveryMethods = await this.postSignedJson('/account/recoveryMethods', {
+        const recoveryMethods = await this.postSignedJson('/account/recoveryMethods', {
             accountId,
         });
         const accessKeys = await this.getAccessKeys();
@@ -1476,7 +1510,9 @@ export default class Wallet {
     }
 
     async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
-        const keyPair = nearApiJs.KeyPair.fromString(secretKey);
+        const keyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromString(
+            secretKey
+        ) as KeyPairEd25519;
         const publicKey = keyPair.publicKey.toString();
 
         const tempKeyStore = new nearApiJs.keyStores.InMemoryKeyStore();
@@ -1516,14 +1552,14 @@ export default class Wallet {
         const accountIdsSuccess = [];
         const accountIdsError = [];
         await Promise.all(
-            accountIds.map(async (accountId, i) => {
+            accountIds.map(async (accountId) => {
                 if (!accountId || !accountId.length) {
                     return;
                 }
                 // temp account
                 this.connection = connection;
                 this.accountId = accountId;
-                let account = await this.getAccount(accountId);
+                const account = await this.getAccount(accountId);
                 let recoveryKeyIsFAK = false;
                 // check if recover access key is FAK and if so add key without 2FA
                 if (await TwoFactor.has2faEnabled(account)) {
@@ -1548,7 +1584,9 @@ export default class Wallet {
                 account.signerIgnoringLedger = account.connection.signer =
                     new nearApiJs.InMemorySigner(tempKeyStore);
 
-                const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+                const newKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
+                    'ed25519'
+                ) as KeyPairEd25519;
 
                 try {
                     const methodNames = '';
@@ -1616,7 +1654,7 @@ export default class Wallet {
         const account = await this.getAccount(accountId);
 
         const transactionHashes = [];
-        for (let { receiverId, nonce, blockHash, actions } of transactions) {
+        for (const { receiverId, nonce, blockHash, actions } of transactions) {
             let status, transaction;
             // TODO: Decide whether we always want to be recreating transaction (vs only if it's invalid)
             // See https://github.com/near/near-wallet/issues/1856
