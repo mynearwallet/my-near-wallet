@@ -54,7 +54,7 @@ class ParcelBundler {
             defaultTargetOptions: {
                 shouldOptimize: !this.isDevelopment,
                 distDir: this.distDir,
-                sourceMaps: true,
+                sourceMaps: false,
             },
         };
     }
