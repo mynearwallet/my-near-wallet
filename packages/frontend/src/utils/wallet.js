@@ -133,10 +133,9 @@ export default class Wallet {
             removeAllAccountsPrivateKey();
         }
 
-        this.inMemorySigner = new nearApiJs.InMemorySigner(this.keyStore);
-        this.inMemorySignerBasic = new nearApiJs.InMemorySigner(this.keyStore);
+        this.signerIgnoringLedger = new nearApiJs.InMemorySigner(this.keyStore);
 
-        const inMemorySigner = this.inMemorySigner;
+        const signerIgnoringLedger = this.signerIgnoringLedger;
         const wallet = this;
 
         this.signer = {
@@ -146,7 +145,7 @@ export default class Wallet {
                     return ledgerKey;
                 }
 
-                return await inMemorySigner.getPublicKey(accountId, networkId);
+                return await signerIgnoringLedger.getPublicKey(accountId, networkId);
             },
             async signMessage(message, accountId, networkId) {
                 if (await wallet.getLedgerKey(accountId)) {
@@ -176,7 +175,7 @@ export default class Wallet {
                     };
                 }
 
-                return inMemorySigner.signMessage(message, accountId, networkId);
+                return signerIgnoringLedger.signMessage(message, accountId, networkId);
             },
         };
         let provider;
@@ -196,10 +195,10 @@ export default class Wallet {
             provider,
             signer: this.signer,
         });
-        this.connectionBasic = nearApiJs.Connection.fromConfig({
+        this.connectionIgnoringLedger = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
             provider,
-            signer: this.inMemorySignerBasic,
+            signer: this.signerIgnoringLedger,
         });
         this.getAccountsLocalStorage();
         this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
@@ -236,7 +235,7 @@ export default class Wallet {
     }
 
     async getLocalAccessKey(accountId, accessKeys) {
-        const localPublicKey = await this.inMemorySigner.getPublicKey(
+        const localPublicKey = await this.signerIgnoringLedger.getPublicKey(
             accountId,
             CONFIG.NETWORK_ID
         );
@@ -744,7 +743,10 @@ export default class Wallet {
     }
 
     async getLinkdropRequiredGas(fundingContract, fundingPubKey) {
-        const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+        const account = new nearApiJs.Account(
+            this.connectionIgnoringLedger,
+            fundingContract
+        );
         try {
             const key = await account.viewFunction(
                 fundingContract,
@@ -769,7 +771,10 @@ export default class Wallet {
 
     async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
-        const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+        const account = new nearApiJs.Account(
+            this.connectionIgnoringLedger,
+            fundingContract
+        );
         const fundingPubKey = fundingKeyPair.getPublicKey().toString();
         const attachedGas = await this.getLinkdropRequiredGas(
             fundingContract,
@@ -797,7 +802,10 @@ export default class Wallet {
 
     async claimLinkdropToAccount(fundingContract, fundingKey) {
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
-        const account = new nearApiJs.Account(this.connectionBasic, fundingContract);
+        const account = new nearApiJs.Account(
+            this.connectionIgnoringLedger,
+            fundingContract
+        );
         const accountId = this.accountId;
         const fundingPubKey = fundingKeyPair.getPublicKey().toString();
         const attachedGas = await this.getLinkdropRequiredGas(
@@ -1239,7 +1247,7 @@ export default class Wallet {
             finality: 'final',
         });
         const blockNumber = block.header.height.toString();
-        const signer = account.inMemorySigner || account.connection.signer;
+        const signer = account.signerIgnoringLedger || account.connection.signer;
         const signed = await signer.signMessage(
             Buffer.from(blockNumber),
             accountId,
@@ -1537,7 +1545,7 @@ export default class Wallet {
                 account.keyStore = tempKeyStore;
 
                 // todo WARNING, should be refactored: attempt to assign to const or readonly var
-                account.inMemorySigner = account.connection.signer =
+                account.signerIgnoringLedger = account.connection.signer =
                     new nearApiJs.InMemorySigner(tempKeyStore);
 
                 const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
@@ -1671,7 +1679,7 @@ export default class Wallet {
 
     async signMessage(message, accountId = this.accountId) {
         const account = await this.getAccount(accountId);
-        const signer = account.inMemorySigner || account.connection.signer;
+        const signer = account.signerIgnoringLedger || account.connection.signer;
         const signed = await signer.signMessage(
             Buffer.from(message),
             accountId,
@@ -1685,7 +1693,7 @@ export default class Wallet {
 
     async getPublicKey(accountId = this.accountId) {
         const account = await this.getAccount(accountId);
-        const signer = account.inMemorySigner || account.connection.signer;
+        const signer = account.signerIgnoringLedger || account.connection.signer;
         return signer.getPublicKey(accountId, CONFIG.NETWORK_ID);
     }
 }
