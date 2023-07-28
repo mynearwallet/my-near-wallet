@@ -1,14 +1,14 @@
 import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types.d.ts';
-import { KeyPairEd25519 } from '@near-js/crypto';
-import { SignedTransaction } from '@near-js/transactions';
+// import type { KeyPairEd25519 } from '@near-js/crypto';
+// import type { SignedTransaction } from '@near-js/transactions';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
-import { Action } from 'near-api-js/lib/transaction';
-import { PublicKey } from 'near-api-js/lib/utils';
+import { Action, SignedTransaction } from 'near-api-js/lib/transaction';
+import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
