@@ -6,7 +6,6 @@ import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
-import { JsonRpcProvider } from 'near-api-js/lib/providers';
 import { Action } from 'near-api-js/lib/transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
@@ -25,7 +24,6 @@ import {
     storedWalletDataActions,
 } from './encryptedWalletData';
 import { getAccountIds } from './helper-api';
-import { ConnectionInfo } from './JsonRpcProvider/fetch_json';
 import { ledgerManager } from './ledgerManager';
 import {
     setAccountConfirmed,
@@ -36,6 +34,8 @@ import {
     removeLedgerHDPath,
     setLedgerHdPath,
 } from './localStorage';
+import { ConnectionInfo } from './mnw-api-js/connection';
+import { RpcProvider } from './mnw-api-js/rpc-provider';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
 
@@ -213,9 +213,9 @@ export default class Wallet {
                     'x-api-key': rpcInfo.shardApiToken,
                 };
             }
-            provider = new JsonRpcProvider(args);
+            provider = new RpcProvider(args);
         } else {
-            provider = { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } };
+            provider = new RpcProvider({ url: CONFIG.NODE_URL + '/' });
         }
         this.connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
@@ -502,10 +502,7 @@ export default class Wallet {
                 const account = new nearApiJs.Account(
                     nearApiJs.Connection.fromConfig({
                         networkId: CONFIG.NETWORK_ID,
-                        provider: {
-                            type: 'JsonRpcProvider',
-                            args: { url: CONFIG.NODE_URL + '/' },
-                        },
+                        provider: new RpcProvider({ url: CONFIG.NODE_URL + '/' }),
                         signer: new nearApiJs.InMemorySigner(keyStore),
                     }),
                     accountId
@@ -1543,7 +1540,7 @@ export default class Wallet {
 
         const connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
-            provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
+            provider: new RpcProvider({ url: CONFIG.NODE_URL + '/' }),
             signer: new nearApiJs.InMemorySigner(tempKeyStore),
         });
 
