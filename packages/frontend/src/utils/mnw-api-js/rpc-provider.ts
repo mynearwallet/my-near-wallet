@@ -1,5 +1,7 @@
-import { JsonRpcProvider } from '@near-js/providers';
-import { TypedError } from '@near-js/types';
+// import { JsonRpcProvider } from '@near-js/providers';
+// import { TypedError } from '@near-js/types';
+
+import { JsonRpcProvider, TypedError } from 'near-api-js/lib/providers';
 
 import { RpcInfo, RpcRotator } from './rpc-list';
 

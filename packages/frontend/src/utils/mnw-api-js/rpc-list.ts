@@ -1,4 +1,4 @@
-import { TypedError } from '@near-js/types';
+import { TypedError } from 'near-api-js/lib/providers';
 
 export interface RpcInfo {
     name?: string;
