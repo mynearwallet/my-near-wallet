@@ -34,8 +34,7 @@ import {
     removeLedgerHDPath,
     setLedgerHdPath,
 } from './localStorage';
-import { ConnectionInfo } from './mnw-api-js/connection';
-import { RpcProvider } from './mnw-api-js/rpc-provider';
+import { ConnectionInfo, RpcProvider } from './mnw-api-js';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
 
