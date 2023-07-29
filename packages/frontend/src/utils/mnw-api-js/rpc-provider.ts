@@ -6,6 +6,8 @@ export class RpcProvider extends JsonRpcProvider {
     async sendJsonRpc<T>(method: string, params: object): Promise<T> {
         const rpcRotator: RpcRotator = new RpcRotator();
         const originalConnectionUrl: string = this.connection.url;
+        const originalHeaders: { [key: string]: string | number } =
+            this.connection.headers;
 
         let result: T = undefined;
 
@@ -17,6 +19,7 @@ export class RpcProvider extends JsonRpcProvider {
                     if (err instanceof TypedError && err.type === 'RetriesExceeded') {
                         const nextRpc: RpcInfo = rpcRotator.next(this.connection.url);
                         this.connection.url = nextRpc.url;
+                        this.connection.headers = {};
                     } else {
                         throw err;
                     }
@@ -24,10 +27,12 @@ export class RpcProvider extends JsonRpcProvider {
             } while (result === 'undefined');
         } catch (err) {
             this.connection.url = originalConnectionUrl;
+            this.connection.headers = originalHeaders;
             throw err;
         }
 
         this.connection.url = originalConnectionUrl;
+        this.connection.headers = originalHeaders;
         return result;
     }
 }
