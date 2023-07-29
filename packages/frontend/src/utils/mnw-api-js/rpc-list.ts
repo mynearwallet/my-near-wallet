@@ -79,11 +79,21 @@ export class RpcRotator {
 
     next(urlToRemove?: string): RpcInfo {
         if (urlToRemove) {
-            this._list = this._list.filter(
-                (rpcInfo: RpcInfo) => rpcInfo.url !== urlToRemove
-            );
+            this.removeUrlFromList(urlToRemove);
         }
 
+        return this.getRandomRpc();
+    }
+
+    setRpcList(rpcList: RpcInfo[]): void {
+        this._list = [...rpcList];
+    }
+
+    getRpcList(): RpcInfo[] {
+        return [...this._list];
+    }
+
+    protected getRandomRpc(): RpcInfo {
         if (this._list.length === 0) {
             throw new TypedError(
                 'All RPC providers have been tried.',
@@ -91,6 +101,10 @@ export class RpcRotator {
             );
         }
 
-        return this._list[0];
+        return this._list[Math.floor(Math.random() * this._list.length)];
+    }
+
+    protected removeUrlFromList(urlToRemove: string): void {
+        this._list = this._list.filter((rpcInfo: RpcInfo) => rpcInfo.url !== urlToRemove);
     }
 }
