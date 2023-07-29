@@ -5,16 +5,26 @@ import { wallet } from '../../../utils/wallet';
 import Card from '../../common/styled/Card.css';
 import { Header, HeaderTitle, HeaderButton, BodyText } from './ui';
 
-function rpcProviderReducer(prev: string, input: string): string {
-    const url: string = input.replace(/\/+$/, ''); // remove trailing slash
-    localStorage.setItem('defaultRpc', url);
-    wallet.init();
-    return url;
+function rpcProviderReducer(
+    state: string,
+    { type, input }: { type: string; input: string }
+): string {
+    switch (type) {
+        case 'update': {
+            const url: string = input.replace(/\/+$/, ''); // remove trailing slash
+            localStorage.setItem('defaultRpc', url);
+            wallet.init();
+            return url;
+            break;
+        }
+        default:
+            return state;
+    }
 }
 
 export function RpcSelector() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [rpcProvider, setRpcProvider] = React.useReducer(
+    const [rpcProvider, dispatchRpcProviderReducer] = React.useReducer(
         rpcProviderReducer,
         wallet.connection.provider.connection.url
     );
