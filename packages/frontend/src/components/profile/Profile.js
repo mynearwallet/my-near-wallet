@@ -47,6 +47,7 @@ import ExportKeyWrapper from './export_private_key/ExportKeyWrapper';
 import MobileSharingWrapper from './mobile_sharing/MobileSharingWrapper';
 import { Recovery } from './Recovery';
 import RemoveAccountWrapper from './remove_account/RemoveAccountWrapper';
+import { RpcSelector } from './Rpc';
 import TwoFactorAuth from './two_factor/TwoFactorAuth';
 import { StyledContainer } from './ui';
 import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrapper';
@@ -273,6 +274,8 @@ const Profile = ({ match }) => {
                             </>
                         )}
                         <>
+                            <hr />
+                            <RpcSelector />
                             <hr />
                             {secretKey ? (
                                 <ExportKeyWrapper secretKey={secretKey} />

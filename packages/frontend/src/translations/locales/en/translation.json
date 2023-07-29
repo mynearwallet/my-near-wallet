@@ -254,6 +254,7 @@
         "cancel": "Cancel",
         "cancelOperation": "Cancel Operation",
         "cancelTransfer": "Cancel Transfer",
+        "change": "Change",
         "claimAccount": "Claim Account",
         "claimMyAccount": "Claim My Account",
         "close": "Close",
@@ -1148,6 +1149,9 @@
         "button": "Go to Account",
         "desc": "We have updated our security measures to protect your account. Please enable a passphrase or Ledger recovery method and <a href=\"/profile\">disable all email and SMS recovery methods</a> to ensure your account is protected. <a href=\"https://near.org/blog/near-web-wallet-security-update/\" target=\"_blank\">Learn more</a>.",
         "title": "Important Security Update"
+    },
+    "rpcProvider": {
+        "title": "Default RPC Provider"
     },
     "reservedForFeesInfo": "Up to ${data} NEAR is reserved to cover the cost of transactions.",
     "riscScoring": {
