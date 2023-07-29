@@ -14,10 +14,10 @@ function rpcProviderReducer(prev: string, input: string): string {
 
 export function RpcSelector() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [rpcProvider, setRpcProvider] = React.useReducer<
-        string,
-        (string, string) => string
-    >(rpcProviderReducer, wallet.connection.provider.connection.url);
+    const [rpcProvider, setRpcProvider] = React.useReducer(
+        rpcProviderReducer,
+        wallet.connection.provider.connection.url
+    );
 
     return (
         <Card>
