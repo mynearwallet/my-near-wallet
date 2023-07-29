@@ -5,7 +5,7 @@ import { wallet } from '../../../utils/wallet';
 import Card from '../../common/styled/Card.css';
 import { Header, HeaderTitle, HeaderButton, BodyText } from './ui';
 
-function rpcProviderReducer(input: string): string {
+function rpcProviderReducer(prev: string, input: string): string {
     const url: string = input.replace(/\/+$/, ''); // remove trailing slash
     localStorage.setItem('defaultRpc', url);
     wallet.init();
@@ -14,10 +14,10 @@ function rpcProviderReducer(input: string): string {
 
 export function RpcSelector() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [rpcProvider, setRpcProvider] = React.useReducer<string>(
-        rpcProviderReducer,
-        wallet.connection.provider.connection.url
-    );
+    const [rpcProvider, setRpcProvider] = React.useReducer<
+        string,
+        (string, string) => string
+    >(rpcProviderReducer, wallet.connection.provider.connection.url);
 
     return (
         <Card>
