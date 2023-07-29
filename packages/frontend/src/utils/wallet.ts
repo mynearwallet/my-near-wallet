@@ -215,7 +215,9 @@ export default class Wallet {
             }
             provider = new RpcProvider(args);
         } else {
-            provider = new RpcProvider({ url: CONFIG.NODE_URL + '/' });
+            provider = new RpcProvider({
+                url: (localStorage.getItem('defaultRpc') ?? CONFIG.NODE_URL) + '/',
+            });
         }
         this.connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
@@ -500,11 +502,7 @@ export default class Wallet {
                 await keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
                 const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
                 const account = new nearApiJs.Account(
-                    nearApiJs.Connection.fromConfig({
-                        networkId: CONFIG.NETWORK_ID,
-                        provider: new RpcProvider({ url: CONFIG.NODE_URL + '/' }),
-                        signer: new nearApiJs.InMemorySigner(keyStore),
-                    }),
+                    this.connectionIgnoringLedger,
                     accountId
                 );
 
@@ -820,7 +818,8 @@ export default class Wallet {
             ),
         ]);
         return await getNearRpcClient(
-            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork
+            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork,
+            this.connection.provider.url
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
@@ -851,7 +850,8 @@ export default class Wallet {
         ]);
 
         return await getNearRpcClient(
-            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork
+            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork,
+            this.connection.provider.url
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
@@ -1540,7 +1540,9 @@ export default class Wallet {
 
         const connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
-            provider: new RpcProvider({ url: CONFIG.NODE_URL + '/' }),
+            provider: new RpcProvider({
+                url: (localStorage.getItem('defaultRpc') ?? CONFIG.NODE_URL) + '/',
+            }),
             signer: new nearApiJs.InMemorySigner(tempKeyStore),
         });
 
