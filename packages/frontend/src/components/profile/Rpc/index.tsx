@@ -11,8 +11,8 @@ export function RpcSelector() {
     );
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const setRpcProvider = React.useCallback(
-        (input: string): string => {
+    const setRpcProvider: (string) => void = React.useCallback(
+        (input: string): void => {
             const url: string = input.replace(/\/+$/, ''); // remove trailing slash
             localStorage.setItem('defaultRpc', url);
             wallet.init();
