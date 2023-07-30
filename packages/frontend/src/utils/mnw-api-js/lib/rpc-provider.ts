@@ -16,15 +16,15 @@ export class RpcProvider extends JsonRpcProvider {
                 try {
                     result = await super.sendJsonRpc<T>(method, params);
                 } catch (err) {
-                    if (err instanceof TypedError && err.type === 'RetriesExceeded') {
+                    if (err instanceof TypedError && err.type !== 'RetriesExceeded') {
+                        throw err;
+                    } else {
                         const nextRpc: RpcInfo = rpcRotator.next(this.connection.url);
                         this.connection.url = nextRpc.url;
                         this.connection.headers = {};
-                    } else {
-                        throw err;
                     }
                 }
-            } while (result === 'undefined');
+            } while (result === undefined);
         } catch (err) {
             this.connection.url = originalConnectionUrl;
             this.connection.headers = originalHeaders;

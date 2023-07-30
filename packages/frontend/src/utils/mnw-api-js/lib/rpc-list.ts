@@ -13,6 +13,11 @@ export const rpcList: RpcInfo[] = [
         website: 'https://docs.near.org/api/rpc/setup',
     },
     {
+        name: 'NEAR (Testnet)',
+        url: 'https://rpc.testnet.near.org',
+        website: 'https://docs.near.org/api/rpc/setup',
+    },
+    {
         name: 'Pagoda',
         url: 'https://near-mainnet.api.pagoda.co/rpc/v1',
         website: 'https://www.pagoda.co/console',
