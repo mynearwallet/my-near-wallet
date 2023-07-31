@@ -17,6 +17,8 @@ export class RpcProvider extends JsonRpcProvider {
                     result = await super.sendJsonRpc<T>(method, params);
                 } catch (err) {
                     if (err instanceof TypedError && err.type !== 'RetriesExceeded') {
+                        this.connection.url = originalConnectionUrl;
+                        this.connection.headers = originalHeaders;
                         throw err;
                     } else {
                         const nextRpc: RpcInfo = rpcRotator.next(this.connection.url);
