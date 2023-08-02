@@ -96,7 +96,7 @@ test('wrong RPC details should work as long as there is at least one correct (ne
     await checkConnection(rpcProvider);
 });
 
-test('wrong methods / params will not throw error instead of keeping on retry (new method)', async () => {
+test('wrong methods / params will throw error instead of keeping on retry (new method)', async () => {
     const rpcProvider = new RpcProvider(
         { url: 'https://wrong-url.com' },
         new RpcRotator([
