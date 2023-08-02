@@ -11,6 +11,7 @@
     "storybook": "cd packages/frontend && yarn storybook",
     "test": "cd packages/frontend && yarn install --frozen-lockfile && yarn test",
     "dev": "cd packages/frontend && yarn install --frozen-lockfile && yarn dev",
+    "dev:mainnet": "cd packages/frontend && yarn install --frozen-lockfile && yarn dev:mainnet",
     "test:e2e": "cd packages/e2e-tests && yarn e2e",
     "prepare": "husky install",
     "release": "lerna version --conventional-commits"
