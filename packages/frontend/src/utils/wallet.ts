@@ -823,7 +823,8 @@ export default class Wallet {
             ),
         ]);
         return await getNearRpcClient(
-            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork
+            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork,
+            this.connection.provider.connection.url
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
@@ -854,7 +855,8 @@ export default class Wallet {
         ]);
 
         return await getNearRpcClient(
-            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork
+            (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork,
+            this.connection.provider.connection.url
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
