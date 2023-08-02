@@ -1,6 +1,6 @@
 import { TypedError } from 'near-api-js/lib/providers';
 
-import { RpcOption } from ',/type';
+import { ConnectionInfo, RpcOption, RpcOptionValue, RpcProviderDetail } from ',/type';
 
 export const mainnetRpcOptionList: RpcOption[] = [
     {
@@ -83,13 +83,13 @@ export const mainnetRpcOptionList: RpcOption[] = [
 
 export const testnetRpcOptionList: RpcOption[] = [
     {
-        id: 'near',
+        id: 'near-testnet',
         defaultParams: {
             url: 'https://rpc.testnet.near.org',
         },
     },
     {
-        id: 'pagoda',
+        id: 'pagoda-testnet',
         defaultParams: {
             url: 'https://near-testnet.api.pagoda.co/rpc/v1',
         },
@@ -103,7 +103,7 @@ export const testnetRpcOptionList: RpcOption[] = [
         }),
     },
     {
-        id: 'infura',
+        id: 'infura-testnet',
         defaultParams: {
             url: 'https://near-testnet.infura.io/v3/API-KEY',
         },
@@ -114,7 +114,7 @@ export const testnetRpcOptionList: RpcOption[] = [
         }),
     },
     {
-        id: 'custom',
+        id: 'custom-testnet',
         userParams: ['url', 'headers'],
         generator: ({ url, headers }) => ({
             url,
@@ -123,42 +123,83 @@ export const testnetRpcOptionList: RpcOption[] = [
     },
 ];
 
+export const indexedRpcOptions: Record<string, RpcOption> = [
+    ...testnetRpcOptionList,
+    ...mainnetRpcOptionList,
+].reduce(
+    (
+        indexedRpcOptions: Record<string, RpcOption>,
+        rpcOption: RpcOption
+    ): Record<string, RpcOption> => {
+        indexedRpcOptions[rpcOption.id] = rpcOption;
+        return indexedRpcOptions;
+    },
+    {}
+);
+
 export class RpcRotator {
-    static readonly list: RpcInfo[] = [...rpcList];
-    protected _list: RpcInfo[];
-
-    constructor(rpcList: RpcInfo[] = RpcRotator.list) {
-        this._list = [...rpcList];
-    }
-
-    next(urlToRemove?: string): RpcInfo {
-        if (urlToRemove) {
-            this.removeUrlFromList(urlToRemove);
+    static getRpcOptionList(environment: 'mainnet' | 'testnet'): RpcOption[] {
+        if (environment === 'mainnet') {
+            return mainnetRpcOptionList;
+        } else if (environment === 'testnet') {
+            return testnetRpcOptionList;
         }
-
-        return this.getRandomRpc();
     }
 
-    setRpcList(rpcList: RpcInfo[]): void {
-        this._list = [...rpcList];
-    }
+    protected connections: ConnectionInfo[];
 
-    getRpcList(): RpcInfo[] {
-        return [...this._list];
-    }
-
-    protected getRandomRpc(): RpcInfo {
-        if (this._list.length === 0) {
+    constructor(rpcProviderDetails: RpcProviderDetail[]) {
+        if (rpcProviderDetails.length === 0) {
             throw new TypedError(
-                'All RPC providers have been tried.',
-                'AllProvidersTried'
+                'Need at least one rpc provider.',
+                'EmptyRpcProviderDetails'
             );
         }
 
-        return this._list[Math.floor(Math.random() * this._list.length)];
+        this.connections = rpcProviderDetails.reduce(
+            (
+                connections: ConnectionInfo[],
+                rpcProviderDetail: RpcProviderDetail
+            ): ConnectionInfo[] => {
+                const rpcOption: RpcOption = indexedRpcOptions[rpcProviderDetail.id];
+
+                if (rpcOption === undefined) {
+                    throw new TypedError(
+                        `Rpc Provider ${rpcProviderDetail.label} is invalid.`,
+                        'InvalidRpcProviderDetail'
+                    );
+                }
+
+                const data: RpcOptionValue = {
+                    url: rpcProviderDetail.data.url ?? rpcOption.defaultParams.url,
+                    apiKey:
+                        rpcProviderDetail.data.apiKey ?? rpcOption.defaultParams.apiKey,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...rpcOption.defaultParams.headers,
+                        ...rpcProviderDetail.data.headers,
+                    },
+                };
+
+                const connection: ConnectionInfo =
+                    rpcOption.generator === undefined
+                        ? {
+                              url: data.url,
+                              headers: data.headers,
+                          }
+                        : rpcOption.generator(data);
+
+                connections.push(connection);
+
+                return connections;
+            },
+            []
+        );
     }
 
-    protected removeUrlFromList(urlToRemove: string): void {
-        this._list = this._list.filter((rpcInfo: RpcInfo) => rpcInfo.url !== urlToRemove);
+    getConnection(id = 0): ConnectionInfo {
+        const index = id % this.connections.length;
+
+        return this.connections[index];
     }
 }

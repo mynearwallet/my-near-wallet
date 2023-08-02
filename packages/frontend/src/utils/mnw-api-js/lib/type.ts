@@ -21,3 +21,10 @@ export interface RpcOption {
     userParams?: RpcOptionKeyType[];
     generator?: (params: RpcOptionValue) => ConnectionInfo;
 }
+
+export interface RpcProviderDetail {
+    id: string;
+    label: string;
+    data: RpcOptionValue;
+    priority: number;
+}
