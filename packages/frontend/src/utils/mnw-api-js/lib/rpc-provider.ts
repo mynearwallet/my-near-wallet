@@ -17,30 +17,45 @@ export class RpcProvider extends JsonRpcProvider {
     readonly retryConfig: RpcRetryConfig;
 
     constructor(
-        connectionInfoOrUrl: string | ConnectionInfo,
-        rpcRotator?: RpcRotator,
-        retryConfig?: RpcRetryConfig
-    ) {
-        super(connectionInfoOrUrl);
-
-        this.rotator =
-            rpcRotator ??
-            new RpcRotator([
-                {
-                    id: 'custom',
-                    data: {
-                        url:
-                            (connectionInfoOrUrl as ConnectionInfo).url ??
-                            (connectionInfoOrUrl as string),
-                    },
-                },
-            ]);
-
-        this.retryConfig = retryConfig ?? {
+        rpcConfig: string | ConnectionInfo | RpcRotator,
+        retryConfig: RpcRetryConfig = {
             attempt: 5,
             wait: 100,
             waitExponentialBackoff: 1.1,
-        };
+        }
+    ) {
+        let rotator: RpcRotator;
+
+        switch (rpcConfig.constructor.name) {
+            case 'String':
+                rotator = new RpcRotator([
+                    {
+                        id: 'custom',
+                        data: {
+                            url: rpcConfig as string,
+                        },
+                    },
+                ]);
+                break;
+            case 'Object':
+                rotator = new RpcRotator([
+                    {
+                        id: 'custom',
+                        data: {
+                            url: (rpcConfig as ConnectionInfo).url,
+                            headers: (rpcConfig as ConnectionInfo).headers,
+                        },
+                    },
+                ]);
+                break;
+            case 'RpcRotator':
+                rotator = rpcConfig as RpcRotator;
+                break;
+        }
+
+        super(rotator.getConnection(0));
+        this.rotator = rotator;
+        this.retryConfig = retryConfig;
     }
 
     async sendJsonRpc<T>(method: string, params: object): Promise<T> {

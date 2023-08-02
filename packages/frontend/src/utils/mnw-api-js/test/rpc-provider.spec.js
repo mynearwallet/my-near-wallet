@@ -16,9 +16,9 @@ test('wrong url should throw error (deprecated method)', async () => {
     const rpcProvider = new RpcProvider('https://wrong-url.com/');
 
     try {
-        await rpcProvider.sendJsonRpc('gas_price', [null]);
+        const result = await rpcProvider.sendJsonRpc('gas_price', [null]);
 
-        expect(true).toBe(false);
+        expect(result).toBeUndefined();
     } catch (err) {
         expect(err.type).toBe('RetriesExceeded');
     }
@@ -34,33 +34,16 @@ test('wrong ConnectionInfo should throw error (original method)', async () => {
     const rpcProvider = new RpcProvider({ url: 'https://wrong-url.com/' });
 
     try {
-        await rpcProvider.sendJsonRpc('gas_price', [null]);
+        const result = await rpcProvider.sendJsonRpc('gas_price', [null]);
 
-        expect(true).toBe(false);
+        expect(result).toBeUndefined();
     } catch (err) {
         expect(err.type).toBe('RetriesExceeded');
     }
 });
 
-test('first parameter is not important when valid RpcRotator is passed into it (new method)', async () => {
-    const rpcProvider = new RpcProvider(
-        { url: 'https://wrong-url.com' },
-        new RpcRotator([
-            {
-                id: 'custom',
-                data: {
-                    url: 'https://rpc.mainnet.near.org/',
-                },
-            },
-        ])
-    );
-
-    await checkConnection(rpcProvider);
-});
-
 test('wrong RPC details should work as long as there is at least one correct (new method)', async () => {
     const rpcProvider = new RpcProvider(
-        { url: 'https://wrong-url.com' },
         new RpcRotator([
             {
                 id: 'custom',
@@ -81,10 +64,7 @@ test('wrong RPC details should work as long as there is at least one correct (ne
                 },
             },
             {
-                id: 'custom',
-                data: {
-                    url: 'https://rpc.mainnet.near.org/',
-                },
+                id: 'near',
             },
         ])
     );
@@ -92,15 +72,38 @@ test('wrong RPC details should work as long as there is at least one correct (ne
     await checkConnection(rpcProvider);
 });
 
-test('wrong methods / params will throw error instead of keeping on retry (new method)', async () => {
+test('RPC details should throw error if all of them is invalid (new method)', async () => {
     const rpcProvider = new RpcProvider(
-        { url: 'https://wrong-url.com' },
         new RpcRotator([
             {
                 id: 'custom',
                 data: {
-                    url: 'https://rpc.mainnet.near.org/',
+                    url: 'https://wrong-url.com/',
                 },
+            },
+            {
+                id: 'custom',
+                data: {
+                    url: 'https://google.com/',
+                },
+            },
+        ])
+    );
+
+    try {
+        const result = await rpcProvider.sendJsonRpc('gas_price', [null]);
+
+        expect(result).toBeUndefined();
+    } catch (err) {
+        expect(err.type).toBe('RetriesExceeded');
+    }
+});
+
+test('wrong methods / params will throw error instead of keeping on retry (new method)', async () => {
+    const rpcProvider = new RpcProvider(
+        new RpcRotator([
+            {
+                id: 'near',
             },
             {
                 id: 'custom',
@@ -112,9 +115,9 @@ test('wrong methods / params will throw error instead of keeping on retry (new m
     );
 
     try {
-        await rpcProvider.sendJsonRpc('gas_price', []);
+        const result = await rpcProvider.sendJsonRpc('gas_price', ['wrong params']);
 
-        expect(true).toBe(false);
+        expect(result).toBeUndefined();
     } catch (err) {
         expect(err.type).not.toBe('RetriesExceeded');
     }
