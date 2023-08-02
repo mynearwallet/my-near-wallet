@@ -14,6 +14,14 @@ Anyone who wish to edit this folder should follow the guideline mentioned below:
 
 - Everything not related to near blockchain should not be written in this folder.
 
+## Testing
+
+- Before you begin, make sure you have jest installed. `npm install -g jest`
+
+- First, go to the frontend folder. `cd packages/frontend`
+
+- Then, use this script to test: `jest ./src/utils/mnw-api-js`
+
 ## Todo
 
 - Set up this folder as a npm package
