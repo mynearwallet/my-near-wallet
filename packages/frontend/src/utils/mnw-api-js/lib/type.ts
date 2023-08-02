@@ -4,7 +4,7 @@ export interface ConnectionInfo {
     password?: string;
     allowInsecure?: boolean;
     timeout?: number;
-    headers?: { [key: string]: string | number };
+    headers?: { [key: string]: string };
 }
 
 export type RpcOptionKeyType = 'url' | 'apiKey' | 'headers';
@@ -24,7 +24,13 @@ export interface RpcOption {
 
 export interface RpcProviderDetail {
     id: string;
-    label: string;
+    label?: string;
     data: RpcOptionValue;
-    priority: number;
+    priority?: number;
+}
+
+export interface RpcRetryConfig {
+    attempt: number;
+    wait: number;
+    waitBackoff: number;
 }

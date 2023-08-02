@@ -1,6 +1,6 @@
 import { TypedError } from 'near-api-js/lib/providers';
 
-import { ConnectionInfo, RpcOption, RpcOptionValue, RpcProviderDetail } from ',/type';
+import { ConnectionInfo, RpcOption, RpcOptionValue, RpcProviderDetail } from './type';
 
 export const mainnetRpcOptionList: RpcOption[] = [
     {
