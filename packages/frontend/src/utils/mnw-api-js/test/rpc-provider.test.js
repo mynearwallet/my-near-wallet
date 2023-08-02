@@ -31,11 +31,7 @@ test('passing ConnectionInfo should work (original method)', async () => {
 });
 
 test('wrong ConnectionInfo should throw error (original method)', async () => {
-    const rpcProvider = new RpcProvider({ url: 'https://wrong-url.com/' }, undefined, {
-        attempt: 2,
-        wait: 100,
-        waitExponentialBackoff: 1.2,
-    });
+    const rpcProvider = new RpcProvider({ url: 'https://wrong-url.com/' });
 
     try {
         await rpcProvider.sendJsonRpc('gas_price', [null]);
