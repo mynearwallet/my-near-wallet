@@ -3,6 +3,7 @@ import {
     parseRpcError,
     getErrorTypeFromErrorMessage,
 } from 'near-api-js/lib/utils/rpc_errors';
+import fetch from 'node-fetch';
 
 import { RpcRotator } from './rpc-list';
 import { ConnectionInfo, RpcRetryConfig } from './type';
@@ -16,7 +17,7 @@ export class RpcProvider extends JsonRpcProvider {
     readonly retryConfig: RpcRetryConfig;
 
     constructor(
-        connectionInfoOrUrl?: string | ConnectionInfo,
+        connectionInfoOrUrl: string | ConnectionInfo,
         rpcRotator?: RpcRotator,
         retryConfig?: RpcRetryConfig
     ) {
@@ -36,9 +37,9 @@ export class RpcProvider extends JsonRpcProvider {
             ]);
 
         this.retryConfig = retryConfig ?? {
-            attempt: 12,
-            wait: 500,
-            waitBackoff: 1.5,
+            attempt: 5,
+            wait: 100,
+            waitExponentialBackoff: 1.1,
         };
     }
 
@@ -50,6 +51,8 @@ export class RpcProvider extends JsonRpcProvider {
             jsonrpc: '2.0',
         };
 
+        let stopRetry = false;
+
         for (
             let currentAttempt = 0;
             currentAttempt < this.retryConfig.attempt;
@@ -60,7 +63,10 @@ export class RpcProvider extends JsonRpcProvider {
                     await sleep(
                         Math.floor(
                             this.retryConfig.wait *
-                                Math.pow(this.retryConfig.waitBackoff, currentAttempt - 1)
+                                Math.pow(
+                                    this.retryConfig.waitExponentialBackoff,
+                                    currentAttempt - 1
+                                )
                         )
                     );
                 }
@@ -77,7 +83,7 @@ export class RpcProvider extends JsonRpcProvider {
                     continue;
                 }
 
-                const jsonResponse = await httpResponse.json();
+                const jsonResponse: any = await httpResponse.json();
 
                 if (jsonResponse.error) {
                     if (typeof jsonResponse.error.data === 'object') {
@@ -86,12 +92,14 @@ export class RpcProvider extends JsonRpcProvider {
                             typeof jsonResponse.error.data.error_type === 'string'
                         ) {
                             // if error data has error_message and error_type properties, we consider that node returned an error in the old format
+                            stopRetry = true;
                             throw new TypedError(
                                 jsonResponse.error.data.error_message,
                                 jsonResponse.error.data.error_type
                             );
                         }
 
+                        stopRetry = true;
                         throw parseRpcError(jsonResponse.error.data);
                     } else {
                         const errorMessage = `[${jsonResponse.error.code}] ${jsonResponse.error.message}: ${jsonResponse.error.data}`;
@@ -105,6 +113,7 @@ export class RpcProvider extends JsonRpcProvider {
                             throw new TypedError(errorMessage, 'TimeoutError');
                         }
 
+                        stopRetry = true;
                         throw new TypedError(
                             errorMessage,
                             getErrorTypeFromErrorMessage(jsonResponse.error.data)
@@ -116,7 +125,9 @@ export class RpcProvider extends JsonRpcProvider {
 
                 return result;
             } catch (err) {
-                console.log(err);
+                if (stopRetry) {
+                    throw err;
+                }
                 continue;
             }
         }

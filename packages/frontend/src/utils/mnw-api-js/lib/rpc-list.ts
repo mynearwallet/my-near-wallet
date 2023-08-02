@@ -171,13 +171,13 @@ export class RpcRotator {
                 }
 
                 const data: RpcOptionValue = {
-                    url: rpcProviderDetail.data.url ?? rpcOption.defaultParams.url,
+                    url: rpcProviderDetail.data?.url ?? rpcOption.defaultParams?.url,
                     apiKey:
-                        rpcProviderDetail.data.apiKey ?? rpcOption.defaultParams.apiKey,
+                        rpcProviderDetail.data?.apiKey ?? rpcOption.defaultParams?.apiKey,
                     headers: {
                         'Content-Type': 'application/json',
-                        ...rpcOption.defaultParams.headers,
-                        ...rpcProviderDetail.data.headers,
+                        ...rpcOption.defaultParams?.headers,
+                        ...rpcProviderDetail.data?.headers,
                     },
                 };
 

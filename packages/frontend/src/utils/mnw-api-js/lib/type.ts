@@ -32,5 +32,5 @@ export interface RpcProviderDetail {
 export interface RpcRetryConfig {
     attempt: number;
     wait: number;
-    waitBackoff: number;
+    waitExponentialBackoff: number;
 }
