@@ -25,7 +25,7 @@ export interface RpcOption {
 export interface RpcProviderDetail {
     id: string;
     label?: string;
-    data: RpcOptionValue;
+    data?: RpcOptionValue;
     priority?: number;
 }
 
