@@ -1,7 +1,5 @@
 import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types.d.ts';
-// import type { KeyPairEd25519 } from '@near-js/crypto';
-// import type { SignedTransaction } from '@near-js/transactions';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
