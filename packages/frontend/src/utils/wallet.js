@@ -1540,21 +1540,21 @@ export default class Wallet {
                 account.inMemorySigner = account.connection.signer =
                     new nearApiJs.InMemorySigner(tempKeyStore);
 
-                const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
+                // const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
 
                 try {
-                    const methodNames = '';
-                    await this.addAccessKey(
-                        accountId,
-                        accountId,
-                        newKeyPair.publicKey,
-                        shouldCreateFullAccessKey,
-                        methodNames,
-                        recoveryKeyIsFAK
-                    );
+                    // const methodNames = '';
+                    // await this.addAccessKey(
+                    //     accountId,
+                    //     accountId,
+                    //     newKeyPair.publicKey,
+                    //     shouldCreateFullAccessKey,
+                    //     methodNames,
+                    //     recoveryKeyIsFAK
+                    // );
                     accountIdsSuccess.push({
                         accountId,
-                        newKeyPair,
+                        keyPair,
                     });
                 } catch (error) {
                     console.error(error);
