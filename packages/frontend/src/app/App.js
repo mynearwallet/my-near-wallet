@@ -46,6 +46,7 @@ import PrivateRoute from '../components/common/routing/PrivateRoute';
 import PublicRoute from '../components/common/routing/PublicRoute';
 import Route from '../components/common/routing/Route';
 import Updater from '../components/common/Updater';
+import Connection from '../components/connection/Connection';
 import { ExploreContainer } from '../components/explore/ExploreContainer';
 import GlobalStyle from '../components/GlobalStyle';
 import LoginCliLoginSuccess from '../components/login/LoginCliLoginSuccess';
@@ -625,6 +626,7 @@ class Routing extends Component {
                                 path='/explore'
                                 component={ExploreContainer}
                             />
+                            <Route exact path='/connection' component={Connection} />
                             <Route
                                 exact
                                 path='/cli-login-success'
