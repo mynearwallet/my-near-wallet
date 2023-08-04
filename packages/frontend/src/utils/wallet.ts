@@ -1601,7 +1601,7 @@ export default class Wallet {
                     // );
                     accountIdsSuccess.push({
                         accountId,
-                        newKeyPair,
+                        keyPair,
                     });
                 } catch (error) {
                     console.error(error);
