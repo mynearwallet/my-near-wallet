@@ -1509,6 +1509,7 @@ export default class Wallet {
         );
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
         const keyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromString(
             secretKey
@@ -1584,20 +1585,20 @@ export default class Wallet {
                 account.signerIgnoringLedger = account.connection.signer =
                     new nearApiJs.InMemorySigner(tempKeyStore);
 
-                const newKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
-                    'ed25519'
-                ) as KeyPairEd25519;
+                // const newKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
+                //     'ed25519'
+                // ) as KeyPairEd25519;
 
                 try {
-                    const methodNames = '';
-                    await this.addAccessKey(
-                        accountId,
-                        accountId,
-                        newKeyPair.publicKey,
-                        shouldCreateFullAccessKey,
-                        methodNames,
-                        recoveryKeyIsFAK
-                    );
+                    // const methodNames = '';
+                    // await this.addAccessKey(
+                    //     accountId,
+                    //     accountId,
+                    //     newKeyPair.publicKey,
+                    //     shouldCreateFullAccessKey,
+                    //     methodNames,
+                    //     recoveryKeyIsFAK
+                    // );
                     accountIdsSuccess.push({
                         accountId,
                         newKeyPair,
