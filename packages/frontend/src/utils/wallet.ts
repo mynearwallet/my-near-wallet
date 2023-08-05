@@ -7,14 +7,9 @@ import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { Action, SignedTransaction } from 'near-api-js/lib/transaction';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
+import { ConnectionInfo } from 'near-api-js/lib/utils/web';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
-import { store, addAccountReducer } from '..';
-import CONFIG from '../config';
-import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
-import { actions as ledgerActions } from '../redux/slices/ledger';
-import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
-import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
 import {
     removeAllAccountsPrivateKey,
@@ -35,6 +30,12 @@ import {
 import { ConnectionInfo, RpcProvider } from './mnw-api-js';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
+import { store, addAccountReducer } from '..';
+import CONFIG from '../config';
+import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
+import { actions as ledgerActions } from '../redux/slices/ledger';
+import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
+import sendJson from '../tmp_fetch_send_json';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -1503,6 +1504,7 @@ export default class Wallet {
         );
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
         const keyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromString(
             secretKey
@@ -1580,23 +1582,23 @@ export default class Wallet {
                 account.signerIgnoringLedger = account.connection.signer =
                     new nearApiJs.InMemorySigner(tempKeyStore);
 
-                const newKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
-                    'ed25519'
-                ) as KeyPairEd25519;
+                // const newKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
+                //     'ed25519'
+                // ) as KeyPairEd25519;
 
                 try {
-                    const methodNames = '';
-                    await this.addAccessKey(
-                        accountId,
-                        accountId,
-                        newKeyPair.publicKey,
-                        shouldCreateFullAccessKey,
-                        methodNames,
-                        recoveryKeyIsFAK
-                    );
+                    // const methodNames = '';
+                    // await this.addAccessKey(
+                    //     accountId,
+                    //     accountId,
+                    //     newKeyPair.publicKey,
+                    //     shouldCreateFullAccessKey,
+                    //     methodNames,
+                    //     recoveryKeyIsFAK
+                    // );
                     accountIdsSuccess.push({
                         accountId,
-                        newKeyPair,
+                        keyPair,
                     });
                 } catch (error) {
                     console.error(error);
