@@ -32,6 +32,10 @@
         "not op_mini all"
     ],
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.4.2",
+        "@fortawesome/free-regular-svg-icons": "^6.4.2",
+        "@fortawesome/free-solid-svg-icons": "^6.4.2",
+        "@fortawesome/react-fontawesome": "^0.2.0",
         "@headlessui/react": "^1.7.16",
         "@ledgerhq/hw-transport-u2f": "^5.34.0",
         "@meteorwallet/meteor-near-sdk": "3.3.0",

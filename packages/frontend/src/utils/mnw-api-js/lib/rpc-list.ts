@@ -144,6 +144,8 @@ export class RpcRotator {
         } else if (environment === 'testnet') {
             return testnetRpcOptionList;
         }
+
+        return testnetRpcOptionList;
     }
 
     protected connections: ConnectionInfo[];

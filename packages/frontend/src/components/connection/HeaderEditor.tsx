@@ -1,3 +1,5 @@
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 interface IHeaderEditorParams {
@@ -5,68 +7,141 @@ interface IHeaderEditorParams {
     setHeaders: (
         action:
             | Record<string, string>
-            | ((prevState: Record<string, string>) => Record<string, string>)
+            | ((headerObjectsState: Record<string, string>) => Record<string, string>)
     ) => void;
 }
 
+interface IHeaderObject {
+    key: string;
+    value: string;
+    duplicateKey?: boolean;
+}
+
 export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditorParams) {
+    const [headerObjects, _setHeaderObjects] = React.useState<IHeaderObject[]>(
+        Object.keys(headers).map((headerKey) => ({
+            key: headerKey,
+            value: headers[headerKey],
+        }))
+    );
+
+    const setHeaderObjectKey = React.useCallback(
+        (index, newKey) => {
+            _setHeaderObjects((headerObjects) => {
+                headerObjects[index] = {
+                    key: newKey,
+                    value: headerObjects[index].value,
+                };
+
+                const keysCount: Record<string, number> = {};
+
+                headerObjects.forEach((headerObject) => {
+                    keysCount[headerObject.key] = keysCount[headerObject.key]
+                        ? keysCount[headerObject.key] + 1
+                        : 1;
+                });
+
+                headerObjects.forEach((headerObject) => {
+                    headerObject.duplicateKey = keysCount[headerObject.key] > 1;
+                });
+
+                return [...headerObjects];
+            });
+        },
+        [_setHeaderObjects]
+    );
+
+    const setHeaderObjectValue = React.useCallback(
+        (index, newValue) => {
+            _setHeaderObjects((headerObjects) => {
+                headerObjects[index].value = newValue;
+
+                return [...headerObjects];
+            });
+        },
+        [_setHeaderObjects]
+    );
+
+    const deleteHeaderObject = React.useCallback(
+        (index) => {
+            headerObjects.splice(index, 1);
+
+            _setHeaderObjects((headerObjects) => {
+                headerObjects.splice(index, 1);
+
+                return [...headerObjects];
+            });
+        },
+        [_setHeaderObjects]
+    );
+
+    const addHeaderObject = React.useCallback(() => {
+        _setHeaderObjects((headerObjects) => [
+            ...headerObjects,
+            {
+                key: '',
+                value: '',
+            },
+        ]);
+    }, [_setHeaderObjects]);
+
+    React.useEffect(() => {
+        const newHeaders: Record<string, string> = headerObjects.reduce(
+            (headers: Record<string, string>, { key, value }: IHeaderObject) => {
+                headers[key] = value;
+
+                return headers;
+            },
+            {} as Record<string, string>
+        );
+
+        setHeaders(newHeaders);
+    }, [headerObjects]);
+
     return (
         <>
-            <h4 className='text-md text-bold text-sky-950'>Headers</h4>
-            {Object.keys(headers).map((headerKey, index) => (
-                <div className='flex flex-row items-center' key={index.toString()}>
-                    <input
-                        type='text'
-                        className='flex-1'
-                        placeholder='x-api-key'
-                        value={headerKey}
-                        onChange={(e) => {
-                            const oldKey = headerKey;
-                            const newKey = e.target.value;
-
-                            const newHeaders = { ...headers };
-                            newHeaders[newKey] = newHeaders[oldKey];
-                            delete newHeaders[oldKey];
-
-                            setHeaders(newHeaders);
-                        }}
-                    />
-                    <input
-                        type='text'
-                        className='flex-1'
-                        placeholder='xxxxxxx-xxxxxxx-xxxxxxx'
-                        value={headers[headerKey]}
-                        onChange={(e) => {
-                            const newHeaders = { ...headers };
-                            newHeaders[headerKey] = e.target.value;
-
-                            setHeaders(newHeaders);
-                        }}
-                    />
-                    <button
-                        type='button'
-                        className='flex-initial rounded-full w-6 h-6 bg-red-500 text-white font-bold ml-6'
-                        onClick={() => {
-                            const newHeaders = { ...headers };
-                            delete newHeaders[headerKey];
-
-                            setHeaders(newHeaders);
-                        }}
-                    >
-                        &times;
-                    </button>
-                </div>
-            ))}
+            <h4 className='text-lg text-bold text-sky-950'>Headers</h4>
+            {headerObjects.map(
+                ({ key, value, duplicateKey }: IHeaderObject, index: number) => (
+                    <div key={index.toString()}>
+                        <div className='flex flex-row items-center mt-2'>
+                            <input
+                                type='text'
+                                className='flex-1 text-md border-gray-400 bg-gray-100 text-gray-800 rounded-md mr-2 px-2'
+                                placeholder='x-api-key'
+                                value={key}
+                                onChange={(e) =>
+                                    setHeaderObjectKey(index, e.target.value)
+                                }
+                            />
+                            <input
+                                type='text'
+                                className='flex-1 text-md border-gray-400 bg-gray-100 text-gray-800 rounded-md mr-2 px-2'
+                                placeholder='xxxxxxx-xxxxxxx-xxxxxxx'
+                                value={value}
+                                onChange={(e) =>
+                                    setHeaderObjectValue(index, e.target.value)
+                                }
+                            />
+                            <FontAwesomeIcon
+                                className='flex-initial text-gray-600 text-lg hover:text-gray-900 cursor-pointer'
+                                onClick={() => deleteHeaderObject(index)}
+                                icon={faTrashCan}
+                            />
+                        </div>
+                        {duplicateKey && (
+                            <div className='text-red-600 text-sm mt-1'>
+                                Duplicated key might cause unstable behavior
+                            </div>
+                        )}
+                    </div>
+                )
+            )}
             <button
                 type='button'
                 disabled={headers[''] !== undefined}
-                className='underline text-sky-600 hover:text-sky-700 text-md cursor-pointer disabled:text-gray-600 mt-2 disabled:cursor-not-allowed'
-                onClick={() =>
-                    setHeaders({
-                        ...headers,
-                        '': '',
-                    })
-                }
+                className='underline text-sky-600 hover:text-sky-700 text-lg cursor-pointer disabled:text-gray-600 mt-3 disabled:cursor-not-allowed'
+                onClick={addHeaderObject}
             >
                 Add new header
             </button>
