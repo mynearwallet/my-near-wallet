@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import Tooltip from './Tooltip';
 import CONFIG from '../../config';
 import { Mixpanel } from '../../mixpanel/index';
 import AlertTriangleIcon from '../svg/AlertTriangleIcon.js';
-import Tooltip from './Tooltip';
 
 const Container = styled.div`
     color: white;
@@ -15,7 +15,7 @@ const Container = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 40;
     display: flex;
     align-items: center;
     justify-content: center;

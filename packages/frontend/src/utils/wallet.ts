@@ -7,7 +7,6 @@ import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { Action, SignedTransaction } from 'near-api-js/lib/transaction';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
-import { ConnectionInfo } from 'near-api-js/lib/utils/web';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { decorateWithLockup } from './account-with-lockup';

@@ -1,3 +1,5 @@
+import { expect, test } from '@jest/globals';
+
 import { RpcProvider, RpcRotator } from '..';
 
 async function checkConnection(rpcProvider) {
