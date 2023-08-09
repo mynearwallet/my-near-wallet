@@ -100,11 +100,11 @@ export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditor
 
     return (
         <>
-            <h4 className='text-lg text-bold text-sky-950'>Headers</h4>
+            <h4 className='text-lg text-bold text-sky-950 mt-2'>Headers</h4>
             {headerObjects.map(
                 ({ key, value, duplicateKey }: IHeaderObject, index: number) => (
                     <div key={index.toString()}>
-                        <div className='flex flex-row items-center mt-2'>
+                        <div className='flex flex-row items-center'>
                             <input
                                 type='text'
                                 className='flex-1 text-md border-gray-400 bg-gray-100 text-gray-800 rounded-md mr-2 px-2'
@@ -140,7 +140,7 @@ export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditor
             <button
                 type='button'
                 disabled={headers[''] !== undefined}
-                className='underline text-sky-600 hover:text-sky-700 text-lg cursor-pointer disabled:text-gray-600 mt-3 disabled:cursor-not-allowed'
+                className='underline text-sky-600 hover:text-sky-700 text-md cursor-pointer disabled:text-gray-600 mt-1 disabled:cursor-not-allowed'
                 onClick={addHeaderObject}
             >
                 Add new header
