@@ -13,7 +13,8 @@ const rpcOptionList = RpcRotator.getRpcOptionList(
     CONFIG.NETWORK_ID.startsWith('mainnet') ? 'mainnet' : 'testnet'
 );
 
-export default function AddConnectionForm() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function AddConnectionForm({ saveConnection }) {
     const [currentRpcOption, setCurrentRpcOption] = React.useState<RpcOption>(
         rpcOptionList[0]
     );
