@@ -26,7 +26,7 @@ import {
     removeLedgerHDPath,
     setLedgerHdPath,
 } from './localStorage';
-import { ConnectionInfo, RpcProvider } from './mnw-api-js';
+import { ConnectionInfo, RpcProvider, RpcRotator } from './mnw-api-js';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
 import { store, addAccountReducer } from '..';
@@ -212,8 +212,32 @@ export default class Wallet {
             }
             provider = new RpcProvider(args);
         } else {
-            provider = new RpcProvider({
-                url: (localStorage.getItem('defaultRpc') ?? CONFIG.NODE_URL) + '/',
+            let connections;
+
+            try {
+                connections = JSON.parse(localStorage.getItem('connections'));
+            } catch {
+                connections = null;
+            }
+
+            if (!connections) {
+                connections = [
+                    {
+                        id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
+                            ? 'near'
+                            : 'near-testnet',
+                        label: 'Default Connection',
+                        priority: 10,
+                    },
+                ];
+            }
+
+            provider = new RpcProvider(new RpcRotator(connections), {
+                attempt: parseInt(localStorage.getItem('connection-attempt') ?? '5'),
+                wait: parseInt(localStorage.getItem('connection-wait') ?? '100'),
+                waitExponentialBackoff: parseFloat(
+                    localStorage.getItem('connection-wait-exponential-backoff') ?? '1.1'
+                ),
             });
         }
         this.connection = nearApiJs.Connection.fromConfig({
@@ -1538,9 +1562,7 @@ export default class Wallet {
 
         const connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
-            provider: new RpcProvider({
-                url: (localStorage.getItem('defaultRpc') ?? CONFIG.NODE_URL) + '/',
-            }),
+            provider: this.connection.provider,
             signer: new nearApiJs.InMemorySigner(tempKeyStore),
         });
 

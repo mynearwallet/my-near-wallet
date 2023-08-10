@@ -3,6 +3,7 @@ import React from 'react';
 import AddConnectionModal from './AddConnectionModal';
 import CONFIG from '../../config';
 import { RpcProviderDetail } from '../../utils/mnw-api-js';
+import { wallet } from '../../utils/wallet';
 
 export default function ConnectionComponent() {
     const [addConnectionModal, setAddConnectionModal] = React.useState<boolean>(false);
@@ -43,16 +44,19 @@ export default function ConnectionComponent() {
     const setAttempt = React.useCallback((value) => {
         localStorage.setItem('connection-attempt', value);
         _setAttempt(parseInt(value));
+        wallet.init();
     }, []);
 
     const setWait = React.useCallback((value) => {
         localStorage.setItem('connection-wait', value);
         _setWait(parseInt(value));
+        wallet.init();
     }, []);
 
     const setWaitExponentialBackoff = React.useCallback((value) => {
         localStorage.setItem('connection-wait-exponential-backoff', value);
         _setWaitExponentialBackoff(parseFloat(value));
+        wallet.init();
     }, []);
 
     const saveConnection = React.useCallback(
@@ -71,6 +75,7 @@ export default function ConnectionComponent() {
 
             _setConnections([...connections]);
             setAddConnectionModal(false);
+            wallet.init();
         },
         [connections, addConnectionIndex]
     );
@@ -82,6 +87,7 @@ export default function ConnectionComponent() {
             localStorage.setItem('connections', JSON.stringify(connections));
 
             _setConnections([...connections]);
+            wallet.init();
         },
         [connections]
     );
