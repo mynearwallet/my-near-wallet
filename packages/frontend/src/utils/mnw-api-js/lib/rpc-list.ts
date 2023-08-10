@@ -6,13 +6,13 @@ export const mainnetRpcOptionList: RpcOption[] = [
     {
         id: 'near',
         defaultParams: {
-            url: 'https://rpc.mainnet.near.org',
+            url: 'https://rpc.mainnet.near.org/',
         },
     },
     {
         id: 'pagoda',
         defaultParams: {
-            url: 'https://near-mainnet.api.pagoda.co/rpc/v1',
+            url: 'https://near-mainnet.api.pagoda.co/rpc/v1/',
         },
         userParams: ['apiKey'],
         generator: ({ url, headers, apiKey }) => ({
@@ -26,27 +26,24 @@ export const mainnetRpcOptionList: RpcOption[] = [
     {
         id: 'onerpc',
         defaultParams: {
-            url: 'https://1rpc.io/near',
+            url: 'https://1rpc.io/near/',
         },
     },
     {
         id: 'ankr',
         defaultParams: {
-            url: 'https://rpc.ankr.com/near',
+            url: 'https://rpc.ankr.com/near/',
         },
     },
     {
         id: 'getBlock',
         defaultParams: {
-            url: 'https://near.getblock.io/<api_key>/mainnet',
+            url: 'https://near.getblock.io/<api_key>/mainnet/',
         },
         userParams: ['apiKey'],
         generator: ({ url, headers, apiKey }) => ({
             url: url.replace('<api_key>', apiKey),
-            headers: {
-                ...headers,
-                'x-api-key': apiKey,
-            },
+            headers: headers,
         }),
     },
     {
@@ -63,7 +60,7 @@ export const mainnetRpcOptionList: RpcOption[] = [
     {
         id: 'nodeReal',
         defaultParams: {
-            url: 'https://open-platform.nodereal.io/API-KEY/near',
+            url: 'https://open-platform.nodereal.io/API-KEY/near/',
         },
         userParams: ['apiKey'],
         generator: ({ url, headers, apiKey }) => ({
@@ -85,13 +82,13 @@ export const testnetRpcOptionList: RpcOption[] = [
     {
         id: 'near-testnet',
         defaultParams: {
-            url: 'https://rpc.testnet.near.org',
+            url: 'https://rpc.testnet.near.org/',
         },
     },
     {
         id: 'pagoda-testnet',
         defaultParams: {
-            url: 'https://near-testnet.api.pagoda.co/rpc/v1',
+            url: 'https://near-testnet.api.pagoda.co/rpc/v1/',
         },
         userParams: ['apiKey'],
         generator: ({ url, headers, apiKey }) => ({

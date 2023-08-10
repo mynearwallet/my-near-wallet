@@ -25,55 +25,46 @@ export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditor
         }))
     );
 
-    const setHeaderObjectKey = React.useCallback(
-        (index, newKey) => {
-            _setHeaderObjects((headerObjects) => {
-                headerObjects[index] = {
-                    key: newKey,
-                    value: headerObjects[index].value,
-                };
+    const setHeaderObjectKey = React.useCallback((index, newKey) => {
+        _setHeaderObjects((headerObjects) => {
+            headerObjects[index] = {
+                key: newKey,
+                value: headerObjects[index].value,
+            };
 
-                const keysCount: Record<string, number> = {};
+            const keysCount: Record<string, number> = {};
 
-                headerObjects.forEach((headerObject) => {
-                    keysCount[headerObject.key] = keysCount[headerObject.key]
-                        ? keysCount[headerObject.key] + 1
-                        : 1;
-                });
-
-                headerObjects.forEach((headerObject) => {
-                    headerObject.duplicateKey = keysCount[headerObject.key] > 1;
-                });
-
-                return [...headerObjects];
+            headerObjects.forEach((headerObject) => {
+                keysCount[headerObject.key] = keysCount[headerObject.key]
+                    ? keysCount[headerObject.key] + 1
+                    : 1;
             });
-        },
-        [_setHeaderObjects]
-    );
 
-    const setHeaderObjectValue = React.useCallback(
-        (index, newValue) => {
-            _setHeaderObjects((headerObjects) => {
-                headerObjects[index].value = newValue;
-
-                return [...headerObjects];
+            headerObjects.forEach((headerObject) => {
+                headerObject.duplicateKey = keysCount[headerObject.key] > 1;
             });
-        },
-        [_setHeaderObjects]
-    );
 
-    const deleteHeaderObject = React.useCallback(
-        (index) => {
+            return [...headerObjects];
+        });
+    }, []);
+
+    const setHeaderObjectValue = React.useCallback((index, newValue) => {
+        _setHeaderObjects((headerObjects) => {
+            headerObjects[index].value = newValue;
+
+            return [...headerObjects];
+        });
+    }, []);
+
+    const deleteHeaderObject = React.useCallback((index) => {
+        headerObjects.splice(index, 1);
+
+        _setHeaderObjects((headerObjects) => {
             headerObjects.splice(index, 1);
 
-            _setHeaderObjects((headerObjects) => {
-                headerObjects.splice(index, 1);
-
-                return [...headerObjects];
-            });
-        },
-        [_setHeaderObjects]
-    );
+            return [...headerObjects];
+        });
+    }, []);
 
     const addHeaderObject = React.useCallback(() => {
         _setHeaderObjects((headerObjects) => [
@@ -83,7 +74,7 @@ export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditor
                 value: '',
             },
         ]);
-    }, [_setHeaderObjects]);
+    }, []);
 
     React.useEffect(() => {
         const newHeaders: Record<string, string> = headerObjects.reduce(

@@ -10,25 +10,36 @@ import {
 } from '../../utils/mnw-api-js';
 
 const rpcOptionList = RpcRotator.getRpcOptionList(
-    CONFIG.NETWORK_ID.startsWith('mainnet') ? 'mainnet' : 'testnet'
+    CONFIG.NEAR_WALLET_ENV.startsWith('mainnet') ? 'mainnet' : 'testnet'
 );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function AddConnectionForm({ saveConnection }) {
-    const [currentRpcOption, setCurrentRpcOption] = React.useState<RpcOption>(
-        rpcOptionList[0]
+export default function AddConnectionForm({ connection, saveConnection }) {
+    const [currentRpcOption, setCurrentRpcOption] = React.useState<RpcOption>(() => {
+        let currentRpcOption: RpcOption;
+
+        rpcOptionList.forEach((rpcOption) => {
+            if (rpcOption.id === connection.id) {
+                currentRpcOption = rpcOption;
+            }
+        });
+
+        return currentRpcOption;
+    });
+    const [url, setUrl] = React.useState<string>(connection.data?.url ?? '');
+    const [apiKey, setApiKey] = React.useState<string>(connection.data?.apiKey ?? '');
+    const [headers, setHeaders] = React.useState<Record<string, string>>(
+        connection.data?.headers ?? {}
     );
-    const [url, setUrl] = React.useState<string>('');
-    const [apiKey, setApiKey] = React.useState<string>('');
-    const [headers, setHeaders] = React.useState<Record<string, string>>({ '': '' });
-    const [label, setLabel] = React.useState<string>('');
-    const [priority, setPriority] = React.useState<number>(10);
+    const [label, setLabel] = React.useState<string>(connection.label ?? '');
+    const [priority, setPriority] = React.useState<number>(connection.priority ?? 10);
     const [testing, setTesting] = React.useState<boolean>(false);
     const [connectionError, setConnectionError] = React.useState<string>('');
 
     const rpcOptionPillList = React.useMemo(() => {
         return rpcOptionList.map((rpcOption) => (
             <div
+                key={rpcOption.id}
                 className={`text-md px-4 py-3 mt-3 mr-3 rounded-full ${
                     currentRpcOption === rpcOption
                         ? 'bg-sky-800 text-sky-100'
@@ -75,7 +86,7 @@ export default function AddConnectionForm({ saveConnection }) {
         rpcProvider
             .sendJsonRpc('gas_price', [null])
             .then(() => {
-                // success
+                saveConnection(rpcProviderDetail);
             })
             .catch((err) => setConnectionError(err.toString()))
             .finally(() => {
@@ -88,7 +99,7 @@ export default function AddConnectionForm({ saveConnection }) {
             <div className='mt-4 text-lg text-sky-700 font-bold'>
                 Step 1: Choose an RPC provider from the list.
             </div>
-            <div className='flex flex-row'>{rpcOptionPillList}</div>
+            <div className='flex flex-row flex-wrap'>{rpcOptionPillList}</div>
             <div className='mt-4 text-lg text-sky-700 font-bold'>
                 Step 2: Configure the RPC provider.
             </div>

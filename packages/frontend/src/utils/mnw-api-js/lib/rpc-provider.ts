@@ -101,7 +101,10 @@ export class RpcProvider extends JsonRpcProvider {
                 const jsonResponse: any = await httpResponse.json();
 
                 if (jsonResponse.error) {
-                    if (typeof jsonResponse.error.data === 'object') {
+                    if (
+                        jsonResponse.error.data &&
+                        typeof jsonResponse.error.data === 'object'
+                    ) {
                         if (
                             typeof jsonResponse.error.data.error_message === 'string' &&
                             typeof jsonResponse.error.data.error_type === 'string'
@@ -143,6 +146,7 @@ export class RpcProvider extends JsonRpcProvider {
                 if (stopRetry) {
                     throw err;
                 }
+                console.log(err);
                 continue;
             }
         }

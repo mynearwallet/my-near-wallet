@@ -3,7 +3,12 @@ import React from 'react';
 
 import AddConnectionForm from './AddConnectionForm';
 
-export default function AddConnectionModal({ open, onClose, saveConnection }) {
+export default function AddConnectionModal({
+    open,
+    onClose,
+    connection,
+    saveConnection,
+}) {
     return (
         <Transition appear show={open} as={React.Fragment}>
             <Dialog
@@ -47,7 +52,10 @@ export default function AddConnectionModal({ open, onClose, saveConnection }) {
                             >
                                 Add new RPC Provider
                             </Dialog.Title>
-                            <AddConnectionForm saveConnection={saveConnection} />
+                            <AddConnectionForm
+                                connection={connection}
+                                saveConnection={saveConnection}
+                            />
                         </div>
                     </Transition.Child>
                 </div>
