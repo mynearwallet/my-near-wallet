@@ -79,7 +79,7 @@
         "react-google-recaptcha": "^2.1.0",
         "react-google-recaptcha-v3-near": "^2.0.0",
         "react-helmet": "^6.1.0",
-        "react-i18next": "^11.18.6",
+        "react-i18next": "^12.0.0",
         "react-localize-redux": "^3.5.3",
         "react-phone-number-input": "2.3.11",
         "react-redux": "^8.0.5",
