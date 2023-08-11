@@ -377,6 +377,14 @@
         "two": "Follow the instructions on your device to confirm and grant access to each account you'd like to import."
     },
     "connecting": "Connecting",
+    "connection": {
+        "addRpcProvider": "Add RPC Provider",
+        "defaultConnection": "Default Connection",
+        "delete": "Delete",
+        "edit": "Edit",
+        "priority": "Priority",
+        "rpcProvider": "RPC Provider"
+    },
     "connectLedger": {
         "connectLedger": "Connect Ledger",
         "ledgerConnected": "Ledger Connected",
