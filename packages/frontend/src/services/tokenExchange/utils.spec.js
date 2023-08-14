@@ -1,6 +1,6 @@
-import { parseTokenAmount } from '../../utils/amounts';
 import * as constants from './constants';
 import * as utils from './utils';
+import { parseTokenAmount } from '../../utils/amounts';
 
 const token0 = {
     id: 'wrap.testnet',

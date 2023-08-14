@@ -1,5 +1,8 @@
 import React, { memo, useEffect } from 'react';
 
+import Preview from './Preview';
+import Success from './Success';
+import SwapForm from './SwapForm';
 import CONFIG from '../../../config';
 import useIsMounted from '../../../hooks/useIsMounted';
 import { Mixpanel } from '../../../mixpanel';
@@ -13,9 +16,6 @@ import { useSwapData, VIEW_STATE } from '../model/Swap';
 import { getMinAmountOut, getSwapCost } from '../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../utils/constants';
 import useSwap from '../utils/hooks/useSwap';
-import Preview from './Preview';
-import Success from './Success';
-import SwapForm from './SwapForm';
 
 export default memo(function SwapWrapper({ history, account, tokensConfig }) {
     const isMounted = useIsMounted();

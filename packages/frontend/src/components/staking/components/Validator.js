@@ -3,6 +3,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 
+import AlertBanner from './AlertBanner';
+import BalanceBox from './BalanceBox';
+import ClaimTokenFarmRewardsModal from './ClaimTokenFarmRewardsModal';
+import { FarmingAPY } from './FarmingAPY';
+import StakeConfirmModal from './StakeConfirmModal';
+import StakingFee from './StakingFee';
 import { Mixpanel } from '../../../mixpanel';
 import { redirectTo } from '../../../redux/actions/account';
 import { claimFarmRewards, getValidatorFarmData } from '../../../redux/actions/staking';
@@ -23,12 +29,6 @@ import StakingFarmContracts from '../../../services/StakingFarmContracts';
 import { FARMING_VALIDATOR_VERSION } from '../../../utils/constants';
 import FormButton from '../../common/FormButton';
 import SafeTranslate from '../../SafeTranslate';
-import AlertBanner from './AlertBanner';
-import BalanceBox from './BalanceBox';
-import ClaimTokenFarmRewardsModal from './ClaimTokenFarmRewardsModal';
-import { FarmingAPY } from './FarmingAPY';
-import StakeConfirmModal from './StakeConfirmModal';
-import StakingFee from './StakingFee';
 
 const renderFarmUi = ({
     farmList,

@@ -1,8 +1,8 @@
 // @ts-check
+const { NftPage } = require('./models/NftPage');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
 const NftAccountManager = require('../utils/NftAccountManager');
-const { NftPage } = require('./models/NftPage');
 
 const { describe, beforeAll, afterAll, beforeEach } = test;
 

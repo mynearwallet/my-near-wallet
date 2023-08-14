@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import VerifyOwnerSummary from './VerifyOwnerSummary';
 import {
     selectAccountUrlReferrer,
     selectAccountLocalStorageAccountId,
     selectAccountId,
 } from '../../redux/slices/account';
-import VerifyOwnerSummary from './VerifyOwnerSummary';
 
 export default ({
     message,

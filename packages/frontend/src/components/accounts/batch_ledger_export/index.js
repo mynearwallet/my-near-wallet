@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { useImmerReducer } from 'use-immer';
 
+import AccountExportModal from './AccountExportModal';
 import CONFIG from '../../../config';
 import { selectAvailableAccountsIsLoading } from '../../../redux/slices/availableAccounts';
 import WalletClass, { wallet } from '../../../utils/wallet';
@@ -19,7 +20,6 @@ import BatchImportAccountsSuccessScreen from '../batch_import_accounts/BatchImpo
 import reducer, {
     ACTIONS,
 } from '../batch_import_accounts/sequentialAccountImportReducer';
-import AccountExportModal from './AccountExportModal';
 
 const CustomContainer = styled.div`
     width: 100%;

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import SendContainerV2, { VIEWS } from './SendContainerV2';
 import CONFIG from '../../config';
 import useSortedTokens from '../../hooks/useSortedTokens';
 import { Mixpanel } from '../../mixpanel/index';
@@ -18,7 +19,6 @@ import isMobile from '../../utils/isMobile';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
 import { formatErrorBalance } from '../common/balance/helpers';
 import SkeletonLoading from '../common/SkeletonLoading';
-import SendContainerV2, { VIEWS } from './SendContainerV2';
 
 const { checkAndHideLedgerModal } = ledgerActions;
 

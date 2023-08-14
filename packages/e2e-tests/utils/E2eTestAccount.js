@@ -7,18 +7,18 @@ const {
 } = require('near-api-js');
 const { PublicKey } = require('near-api-js/lib/utils');
 
-const {
-    LOCKUP_CONFIGS: { FULLY_VESTED_CONFIG },
-    WALLET_NETWORK,
-    TEST_ACCOUNT_DEPOSIT_AMOUNT,
-} = require('../constants');
-const { fetchLockupContract } = require('../contracts');
 const nearApiJsConnection = require('./connectionSingleton');
 const {
     getKeyPairFromSeedPhrase,
     generateTestAccountId,
     getTestAccountSeedPhrase,
 } = require('./helpers');
+const {
+    LOCKUP_CONFIGS: { FULLY_VESTED_CONFIG },
+    WALLET_NETWORK,
+    TEST_ACCOUNT_DEPOSIT_AMOUNT,
+} = require('../constants');
+const { fetchLockupContract } = require('../contracts');
 
 const { createAccount, transfer, addKey, deployContract, functionCall, fullAccessKey } =
     transactions;

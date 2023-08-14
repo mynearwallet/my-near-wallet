@@ -3,6 +3,7 @@ const { BN } = require('bn.js');
 const { parseNearAmount, formatNearAmount } = require('near-api-js/lib/utils/format');
 const { KeyPairEd25519 } = require('near-api-js/lib/utils/key_pair');
 
+const { LinkDropPage } = require('./models/LinkDrop');
 const { WALLET_NETWORK, LINKDROP_ACCESS_KEY_ALLOWANCE } = require('../constants');
 const { test, expect } = require('../playwrightWithFixtures');
 const { CreateAccountPage } = require('../register/models/CreateAccount');
@@ -15,7 +16,6 @@ const { testDappURL } = require('../utils/config');
 const nearApiJsConnection = require('../utils/connectionSingleton');
 const E2eTestAccount = require('../utils/E2eTestAccount');
 const LinkdropAccountManager = require('../utils/LinkdropAccountManager');
-const { LinkDropPage } = require('./models/LinkDrop');
 
 const { describe, beforeAll, afterAll, beforeEach } = test;
 

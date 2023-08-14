@@ -4,6 +4,7 @@ const BN = require('bn.js');
 const nearApi = require('near-api-js');
 const { parseNearAmount } = require('near-api-js/lib/utils/format');
 
+const { SendMoneyPage } = require('./models/SendMoney');
 const { CONTRACT } = require('../constants');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
@@ -15,7 +16,6 @@ const {
     withoutLastChars,
 } = require('../swap/utils');
 const { formatAmount } = require('../utils/amount');
-const { SendMoneyPage } = require('./models/SendMoney');
 
 const { describe, beforeAll, afterEach, beforeEach, afterAll } = test;
 const { TESTNET } = CONTRACT;

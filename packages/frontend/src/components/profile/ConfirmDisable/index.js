@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Translate } from 'react-localize-redux';
 
-import FormButton from '../../common/FormButton';
 import { Container } from './ui';
+import FormButton from '../../common/FormButton';
 
 const ConfirmDisable = ({
     onConfirmDisable,
