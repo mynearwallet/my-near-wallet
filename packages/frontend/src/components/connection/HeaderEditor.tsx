@@ -1,6 +1,7 @@
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface IHeaderEditorParams {
     headers: Record<string, string>;
@@ -18,6 +19,8 @@ interface IHeaderObject {
 }
 
 export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditorParams) {
+    const { t } = useTranslation();
+
     const [headerObjects, _setHeaderObjects] = React.useState<IHeaderObject[]>(
         Object.keys(headers).map((headerKey) => ({
             key: headerKey,
@@ -91,7 +94,9 @@ export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditor
 
     return (
         <>
-            <h4 className='text-lg text-bold text-sky-950 mt-2'>Headers</h4>
+            <h4 className='text-lg text-bold text-sky-950 mt-2'>
+                {t('connection.headers')}
+            </h4>
             {headerObjects.map(
                 ({ key, value, duplicateKey }: IHeaderObject, index: number) => (
                     <div key={index.toString()}>
@@ -122,7 +127,7 @@ export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditor
                         </div>
                         {duplicateKey && (
                             <div className='text-red-600 text-sm mt-1'>
-                                Duplicated key might cause unstable behavior
+                                {t('connection.headerDuplicateKey')}
                             </div>
                         )}
                     </div>
@@ -134,7 +139,7 @@ export default function HeaderEditor({ headers = {}, setHeaders }: IHeaderEditor
                 className='underline text-sky-600 hover:text-sky-700 text-md cursor-pointer disabled:text-gray-600 mt-1 disabled:cursor-not-allowed'
                 onClick={addHeaderObject}
             >
-                Add new header
+                {t('connection.addNewHeader')}
             </button>
         </>
     );

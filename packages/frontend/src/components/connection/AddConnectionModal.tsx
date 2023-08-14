@@ -1,5 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AddConnectionForm from './AddConnectionForm';
 
@@ -9,6 +10,8 @@ export default function AddConnectionModal({
     connection,
     saveConnection,
 }) {
+    const { t } = useTranslation();
+
     return (
         <Transition appear show={open} as={React.Fragment}>
             <Dialog
@@ -50,7 +53,7 @@ export default function AddConnectionModal({
                                 as='h3'
                                 className='text-lg font-medium leading-6 text-gray-900'
                             >
-                                Add new RPC Provider
+                                {t('connection.addRpcProvider')}
                             </Dialog.Title>
                             <AddConnectionForm
                                 connection={connection}

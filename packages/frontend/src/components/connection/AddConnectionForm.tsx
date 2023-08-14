@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import HeaderEditor from './HeaderEditor';
 import CONFIG from '../../config';
@@ -15,6 +16,8 @@ const rpcOptionList = RpcRotator.getRpcOptionList(
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function AddConnectionForm({ connection, saveConnection }) {
+    const { t } = useTranslation();
+
     const [currentRpcOption, setCurrentRpcOption] = React.useState<RpcOption>(() => {
         let currentRpcOption: RpcOption;
 
@@ -53,7 +56,7 @@ export default function AddConnectionForm({ connection, saveConnection }) {
                     setCurrentRpcOption(rpcOption);
                 }}
             >
-                {rpcOption.id}
+                {t(`connection.rpcOption.${rpcOption.id}`)}
             </div>
         ));
     }, [currentRpcOption, setCurrentRpcOption]);
@@ -97,21 +100,23 @@ export default function AddConnectionForm({ connection, saveConnection }) {
     return (
         <>
             <div className='mt-4 text-lg text-sky-700 font-bold'>
-                Step 1: Choose an RPC provider from the list.
+                {t('connection.addRpcProviderModal.step1')}
             </div>
             <div className='flex flex-row flex-wrap'>{rpcOptionPillList}</div>
             <div className='mt-4 text-lg text-sky-700 font-bold'>
-                Step 2: Configure the RPC provider.
+                {t('connection.addRpcProviderModal.step2')}
             </div>
             {currentRpcOption.userParams === undefined && (
                 <div className='text-lg text-gray-600 mt-3'>
-                    This RPC Provider does not requires any config.
+                    {t('connection.addRpcProviderModal.noConfig')}
                 </div>
             )}
             {currentRpcOption.userParams &&
                 currentRpcOption.userParams.includes('url') && (
                     <>
-                        <h4 className='text-lg text-bold text-sky-950 mt-2'>URL</h4>
+                        <h4 className='text-lg text-bold text-sky-950 mt-2'>
+                            {t('connection.url')}
+                        </h4>
                         <input
                             type='text'
                             className='w-full text-md border-gray-400 bg-gray-100 text-gray-800 rounded-md px-2'
@@ -124,7 +129,9 @@ export default function AddConnectionForm({ connection, saveConnection }) {
             {currentRpcOption.userParams &&
                 currentRpcOption.userParams.includes('apiKey') && (
                     <>
-                        <h4 className='text-lg text-bold text-sky-950 mt-2'>Api Key</h4>
+                        <h4 className='text-lg text-bold text-sky-950 mt-2'>
+                            {t('connection.apiKey')}
+                        </h4>
                         <input
                             type='text'
                             className='w-full text-md border-gray-400 bg-gray-100 text-gray-800 rounded-md px-2'
@@ -139,12 +146,12 @@ export default function AddConnectionForm({ connection, saveConnection }) {
                     <HeaderEditor headers={headers} setHeaders={setHeaders} />
                 )}
             <div className='mt-4 text-lg text-sky-700 font-bold'>
-                Step 3: Name this connection and set priority
+                {t('connection.addRpcProviderModal.step3')}
             </div>
             <div className='grid grid-cols-2 gap-3 mt-2'>
                 <div>
                     <h4 className='text-lg text-bold text-sky-950 mt-2'>
-                        Connection Name
+                        {t('connection.addRpcProviderModal.connectionName')}
                     </h4>
                     <input
                         type='text'
@@ -156,7 +163,7 @@ export default function AddConnectionForm({ connection, saveConnection }) {
                 </div>
                 <div>
                     <h4 className='text-lg text-bold text-sky-950 mt-2'>
-                        Priority (lower means used first)
+                        {t('connection.addRpcProviderModal.priority')}
                     </h4>
                     <input
                         type='number'
@@ -168,7 +175,7 @@ export default function AddConnectionForm({ connection, saveConnection }) {
                 </div>
             </div>
             <div className='mt-4 text-lg text-sky-700 font-bold'>
-                Step 4: Test & save the connection
+                {t('connection.addRpcProviderModal.step4')}
             </div>
             <button
                 type='button'
@@ -177,7 +184,7 @@ export default function AddConnectionForm({ connection, saveConnection }) {
                     disabled:text-gray-800 disabled:bg-gray-200 disabled:cursor-wait'
                 onClick={testAndSaveConnection}
             >
-                Test & Save Connection
+                {t('connection.addRpcProviderModal.testSave')}
             </button>
             {connectionError && (
                 <div className='text-red-600 text-sm mt-1'>{connectionError}</div>

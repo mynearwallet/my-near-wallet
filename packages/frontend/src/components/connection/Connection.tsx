@@ -69,7 +69,7 @@ export default function ConnectionComponent() {
 
     return (
         <>
-            <div className='container mx-auto'>
+            <div className='container mx-auto max-w-3xl px-3 py-2'>
                 <div className='text-2xl font-bold text-gray-900'>
                     {t('connection.rpcProvider')}
                 </div>
@@ -77,7 +77,7 @@ export default function ConnectionComponent() {
                     connections.map((connection, index) => (
                         <div
                             key={index}
-                            className='h-28 w-full mt-4 bg-sky-100 border border-sky-800 rounded-xl px-5 py-3 flex flex-row'
+                            className='min-h-28 w-full mt-4 bg-sky-100 border border-sky-800 rounded-xl px-5 py-3 flex flex-row'
                         >
                             <div className='flex-1'>
                                 <div className='text-sky-800 text-xl'>
@@ -89,8 +89,26 @@ export default function ConnectionComponent() {
                                 <div className='mt-1'>
                                     {t('connection.priority')}: {connection.priority}
                                 </div>
+                                <button
+                                    type='button'
+                                    className='block sm:hidden w-full rounded-md bg-sky-800 text-sky-200 h-10 mt-2'
+                                    onClick={() => {
+                                        setAddConnectionIndex(index);
+                                        setAddConnectionModal(true);
+                                    }}
+                                >
+                                    {t('connection.edit')}
+                                </button>
+                                <button
+                                    type='button'
+                                    disabled={connections.length === 1}
+                                    className='block sm:hidden w-full rounded-md bg-red-800 text-red-200 h-10 mt-2 disabled:bg-gray-400 disabled:text-gray-800 disabled:cursor-not-allowed'
+                                    onClick={() => deleteConnection(index)}
+                                >
+                                    {t('connection.delete')}
+                                </button>
                             </div>
-                            <div className='flex-initial w-36'>
+                            <div className='hidden sm:block flex-initial w-36'>
                                 <button
                                     type='button'
                                     className='w-full rounded-md bg-sky-800 text-sky-200 h-10'

@@ -379,11 +379,41 @@
     "connecting": "Connecting",
     "connection": {
         "addRpcProvider": "Add RPC Provider",
+        "addRpcProviderModal": {
+            "connectionName": "Connection Name",
+            "noConfig": "This RPC Provider does not requires any config",
+            "priority": "Priority (lower means used first)",
+            "step1": "Step 1: Choose an RPC provider from the list",
+            "step2": "Step 2: Configure the RPC provider",
+            "step3": "Step 3: Name this connection and set priority",
+            "step4": "Step 4: Test & save the connection",
+            "testSave": "Test & Save Connection"
+        },
+        "addNewHeader": "Add New Header",
+        "apiKey": "Api Key",
+        "connection": "Connection",
         "defaultConnection": "Default Connection",
         "delete": "Delete",
         "edit": "Edit",
+        "headerDuplicateKey": "Duplicated key might cause unstable behavior",
+        "headers": "Headers",
         "priority": "Priority",
-        "rpcProvider": "RPC Provider"
+        "rpcProvider": "RPC Provider",
+        "rpcOption": {
+            "ankr": "Ankr",
+            "custom": "Custom",
+            "custom-testnet": "Custom",
+            "getBlock": "GetBlock",
+            "infura": "Infura",
+            "infura-testnet": "Infura (Testnet)",
+            "near": "NEAR",
+            "near-testnet": "NEAR (Testnet)",
+            "nodeReal": "NodeReal",
+            "onerpc": "1RPC",
+            "pagoda": "Pagoda",
+            "pagoda-testnet": "Pagoda (Testnet)"
+        },
+        "url": "URL"
     },
     "connectLedger": {
         "connectLedger": "Connect Ledger",
