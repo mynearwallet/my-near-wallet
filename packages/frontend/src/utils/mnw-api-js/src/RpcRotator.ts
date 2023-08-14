@@ -2,33 +2,33 @@ import { TypedError } from 'near-api-js/lib/providers';
 
 import { ConnectionInfo, RpcOption, RpcOptionValue, RpcProviderDetail } from './type';
 
-export const mainnetRpcOptionList: RpcOption[] = [
+const mainnetRpcOptionList: RpcOption[] = [
     {
         id: 'near',
         defaultParams: {
             url: 'https://rpc.mainnet.near.org/',
         },
     },
-    {
-        id: 'pagoda',
-        defaultParams: {
-            url: 'https://near-mainnet.api.pagoda.co/rpc/v1/',
-        },
-        userParams: ['apiKey'],
-        generator: ({ url, headers, apiKey }) => ({
-            url,
-            headers: {
-                ...headers,
-                'x-api-key': apiKey,
-            },
-        }),
-    },
-    {
-        id: 'onerpc',
-        defaultParams: {
-            url: 'https://1rpc.io/near/',
-        },
-    },
+    // {
+    //     id: 'pagoda',
+    //     defaultParams: {
+    //         url: 'https://near-mainnet.api.pagoda.co/rpc/v1/',
+    //     },
+    //     userParams: ['apiKey'],
+    //     generator: ({ url, headers, apiKey }) => ({
+    //         url,
+    //         headers: {
+    //             ...headers,
+    //             'x-api-key': apiKey,
+    //         },
+    //     }),
+    // },
+    // {
+    //     id: 'onerpc',
+    //     defaultParams: {
+    //         url: 'https://1rpc.io/near/',
+    //     },
+    // },
     {
         id: 'ankr',
         defaultParams: {
@@ -78,27 +78,27 @@ export const mainnetRpcOptionList: RpcOption[] = [
     },
 ];
 
-export const testnetRpcOptionList: RpcOption[] = [
+const testnetRpcOptionList: RpcOption[] = [
     {
         id: 'near-testnet',
         defaultParams: {
             url: 'https://rpc.testnet.near.org/',
         },
     },
-    {
-        id: 'pagoda-testnet',
-        defaultParams: {
-            url: 'https://near-testnet.api.pagoda.co/rpc/v1/',
-        },
-        userParams: ['apiKey'],
-        generator: ({ url, headers, apiKey }) => ({
-            url,
-            headers: {
-                ...headers,
-                'x-api-key': apiKey,
-            },
-        }),
-    },
+    // {
+    //     id: 'pagoda-testnet',
+    //     defaultParams: {
+    //         url: 'https://near-testnet.api.pagoda.co/rpc/v1/',
+    //     },
+    //     userParams: ['apiKey'],
+    //     generator: ({ url, headers, apiKey }) => ({
+    //         url,
+    //         headers: {
+    //             ...headers,
+    //             'x-api-key': apiKey,
+    //         },
+    //     }),
+    // },
     {
         id: 'infura-testnet',
         defaultParams: {
@@ -120,7 +120,7 @@ export const testnetRpcOptionList: RpcOption[] = [
     },
 ];
 
-export const indexedRpcOptions: Record<string, RpcOption> = [
+const indexedRpcOptions: Record<string, RpcOption> = [
     ...testnetRpcOptionList,
     ...mainnetRpcOptionList,
 ].reduce(

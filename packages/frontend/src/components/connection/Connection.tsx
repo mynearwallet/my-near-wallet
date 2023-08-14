@@ -70,7 +70,9 @@ export default function ConnectionComponent() {
     return (
         <>
             <div className='container mx-auto'>
-                <div className='text-2xl font-bold text-gray-900'>{t('rpcProvider')}</div>
+                <div className='text-2xl font-bold text-gray-900'>
+                    {t('connection.rpcProvider')}
+                </div>
                 {connections &&
                     connections.map((connection, index) => (
                         <div
@@ -82,10 +84,10 @@ export default function ConnectionComponent() {
                                     {connection.label}
                                 </div>
                                 <div className='mt-1'>
-                                    {t('rpcProvider')}: {connection.id}
+                                    {t('connection.rpcProvider')}: {connection.id}
                                 </div>
                                 <div className='mt-1'>
-                                    {t('priority')}: {connection.priority}
+                                    {t('connection.priority')}: {connection.priority}
                                 </div>
                             </div>
                             <div className='flex-initial w-36'>
@@ -97,7 +99,7 @@ export default function ConnectionComponent() {
                                         setAddConnectionModal(true);
                                     }}
                                 >
-                                    {t('edit')}
+                                    {t('connection.edit')}
                                 </button>
                                 <button
                                     type='button'
@@ -105,7 +107,7 @@ export default function ConnectionComponent() {
                                     className='w-full rounded-md bg-red-800 text-red-200 h-10 mt-2 disabled:bg-gray-400 disabled:text-gray-800 disabled:cursor-not-allowed'
                                     onClick={() => deleteConnection(index)}
                                 >
-                                    {t('delete')}
+                                    {t('connection.delete')}
                                 </button>
                             </div>
                         </div>
@@ -119,7 +121,7 @@ export default function ConnectionComponent() {
                     }}
                 >
                     <div className='w-full text-center text-sky-800 text-xl'>
-                        {t('addRpcProvider')}
+                        {t('connection.addRpcProvider')}
                     </div>
                 </div>
             </div>

@@ -5,8 +5,8 @@ import {
 } from 'near-api-js/lib/utils/rpc_errors';
 import fetch from 'node-fetch';
 
-import { RpcRotator } from './rpc-list';
 import { ConnectionInfo, RpcRetryConfig } from './type';
+import { RpcRotator } from '..';
 
 let nextId: number = 1234;
 

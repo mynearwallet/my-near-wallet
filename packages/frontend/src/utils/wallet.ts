@@ -26,7 +26,8 @@ import {
     removeLedgerHDPath,
     setLedgerHdPath,
 } from './localStorage';
-import { ConnectionInfo, RpcProvider, RpcRotator } from './mnw-api-js';
+import { ConnectionInfo, RpcProvider } from './mnw-api-js';
+import { ConnectionsStorage } from './storage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
 import { store, addAccountReducer } from '..';
@@ -212,33 +213,7 @@ export default class Wallet {
             }
             provider = new RpcProvider(args);
         } else {
-            let connections;
-
-            try {
-                connections = JSON.parse(localStorage.getItem('connections'));
-            } catch {
-                connections = null;
-            }
-
-            if (!connections) {
-                connections = [
-                    {
-                        id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
-                            ? 'near'
-                            : 'near-testnet',
-                        label: 'Default Connection',
-                        priority: 10,
-                    },
-                ];
-            }
-
-            provider = new RpcProvider(new RpcRotator(connections), {
-                attempt: parseInt(localStorage.getItem('connection-attempt') ?? '5'),
-                wait: parseInt(localStorage.getItem('connection-wait') ?? '100'),
-                waitExponentialBackoff: parseFloat(
-                    localStorage.getItem('connection-wait-exponential-backoff') ?? '1.1'
-                ),
-            });
+            provider = ConnectionsStorage.from(localStorage).createProvider();
         }
         this.connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
@@ -1619,7 +1594,7 @@ export default class Wallet {
                     // );
                     accountIdsSuccess.push({
                         accountId,
-                        keyPair,
+                        newKeyPair: keyPair,
                     });
                 } catch (error) {
                     console.error(error);

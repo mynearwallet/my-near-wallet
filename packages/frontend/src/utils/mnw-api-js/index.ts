@@ -1,3 +1,3 @@
-export * from './lib/rpc-list';
-export * from './lib/rpc-provider';
-export * from './lib/type';
+export * from './src/RpcProvider';
+export * from './src/RpcRotator';
+export * from './src/type';
