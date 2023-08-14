@@ -146,7 +146,6 @@ export class RpcProvider extends JsonRpcProvider {
                 if (stopRetry) {
                     throw err;
                 }
-                console.log(err);
                 continue;
             }
         }
