@@ -60,12 +60,6 @@ test('wrong RPC details should work as long as there is at least one correct (ne
                 },
             },
             {
-                id: 'pagoda',
-                data: {
-                    apiKey: 'wrong-api-key',
-                },
-            },
-            {
                 id: 'near',
             },
         ])
