@@ -378,6 +378,7 @@
     },
     "connecting": "Connecting",
     "connection": {
+        "addNewHeader": "Add New Header",
         "addRpcProvider": "Add RPC Provider",
         "addRpcProviderModal": {
             "connectionName": "Connection Name",
@@ -389,7 +390,6 @@
             "step4": "Step 4: Test & save the connection",
             "testSave": "Test & Save Connection"
         },
-        "addNewHeader": "Add New Header",
         "apiKey": "Api Key",
         "connection": "Connection",
         "defaultConnection": "Default Connection",
@@ -398,7 +398,6 @@
         "headerDuplicateKey": "Duplicated key might cause unstable behavior",
         "headers": "Headers",
         "priority": "Priority",
-        "rpcProvider": "RPC Provider",
         "rpcOption": {
             "ankr": "Ankr",
             "custom": "Custom",
@@ -413,6 +412,7 @@
             "pagoda": "Pagoda",
             "pagoda-testnet": "Pagoda (Testnet)"
         },
+        "rpcProvider": "RPC Provider",
         "url": "URL"
     },
     "connectLedger": {
