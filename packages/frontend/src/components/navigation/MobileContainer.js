@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import languagesIcon from '../../images/icon-languages.svg';
-import AccountSelector from '../accounts/account_selector/AccountSelector';
-import LanguageToggle from '../common/LangSwitcher';
-import UserIcon from '../svg/UserIcon';
 import AccessAccountBtn from './AccessAccountBtn';
+import ConnectionBtn from './ConnectionBtn';
 import CreateAccountBtn from './CreateAccountBtn';
 import Logo from './Logo';
 import NavLinks from './NavLinks';
 import UserAccount from './UserAccount';
+import languagesIcon from '../../images/icon-languages.svg';
+import AccountSelector from '../accounts/account_selector/AccountSelector';
+import LanguageToggle from '../common/LangSwitcher';
+import UserIcon from '../svg/UserIcon';
 
 const Container = styled.div`
     display: none;
@@ -225,6 +226,7 @@ class MobileContainer extends Component {
                             />
                             <AccessAccountBtn />
                             <CreateAccountBtn />
+                            <ConnectionBtn />
                         </LowerSection>
                     </>
                 )}

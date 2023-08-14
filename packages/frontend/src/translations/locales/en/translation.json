@@ -391,7 +391,7 @@
             "testSave": "Test & Save Connection"
         },
         "apiKey": "Api Key",
-        "connection": "Connection",
+        "changeRpcProvider": "Change RPC Provider",
         "defaultConnection": "Default Connection",
         "delete": "Delete",
         "edit": "Edit",
