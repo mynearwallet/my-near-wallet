@@ -40,7 +40,7 @@ import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsByAccountId,
 } from '../../redux/slices/recoveryMethods';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import isMobile from '../../utils/isMobile';
 import WalletClass, { wallet } from '../../utils/wallet';
 import AlertBanner from '../common/AlertBanner';

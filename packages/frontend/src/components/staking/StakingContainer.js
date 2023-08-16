@@ -28,7 +28,7 @@ import {
 import { selectLedgerHasLedger } from '../../redux/slices/ledger';
 import { selectStakingSlice } from '../../redux/slices/staking';
 import { selectStatusSlice } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import { FARMING_VALIDATOR_VERSION } from '../../utils/constants';
 import {
     setStakingAccountSelected,

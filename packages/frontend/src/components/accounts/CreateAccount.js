@@ -24,7 +24,7 @@ import {
     selectStatusLocalAlert,
     selectStatusMainLoader,
 } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import isMobile from '../../utils/isMobile';
 import { ENABLE_IDENTITY_VERIFIED_ACCOUNT } from '../../utils/wallet';
 import AccountNote from '../common/AccountNote';

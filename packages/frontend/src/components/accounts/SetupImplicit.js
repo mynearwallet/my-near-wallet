@@ -17,7 +17,7 @@ import { selectAccountId, selectAccountSlice } from '../../redux/slices/account'
 import { createAccountFromImplicit } from '../../redux/slices/account/createAccountThunks';
 import { actions as createFromImplicitActions } from '../../redux/slices/createFromImplicit';
 import { selectStatusMainLoader } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import { isMoonpayAvailable, getSignedUrl } from '../../utils/moonpay';
 import { wallet } from '../../utils/wallet';
 import { getNearAndFiatValue } from '../common/balance/helpers';

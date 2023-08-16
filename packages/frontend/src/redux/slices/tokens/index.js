@@ -15,10 +15,8 @@ import {
     selectSliceByAccountId,
 } from '../../selectors/topLevel';
 import { selectSetOfBlacklistedTokenNames } from '../security';
-import {
-    selectUSDNTokenFiatValueUSD,
-    selectTokensFiatValueUSD,
-} from '../tokenFiatValues';
+import { selectTokensFiatValueUSD } from '../tokenFiatValues';
+import { selectUSDNTokenFiatValueUSD } from '../tokenFiatValues/usd';
 import tokensMetadataSlice, {
     getCachedContractMetadataOrFetch,
     selectContractsMetadata,

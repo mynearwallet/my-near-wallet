@@ -12,7 +12,7 @@ import { clearLocalAlert, showCustomAlert } from '../../redux/actions/status';
 import { selectAccountId } from '../../redux/slices/account';
 import { actions as ledgerActions } from '../../redux/slices/ledger';
 import { selectStatusLocalAlert } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import { selectAllowedTokens } from '../../redux/slices/tokens';
 import { fungibleTokensService } from '../../services/FungibleTokens';
 import isMobile from '../../utils/isMobile';

@@ -18,7 +18,7 @@ import { clearGlobalAlert } from '../../../redux/actions/status';
 import { selectAccountHas2fa, selectAccountId } from '../../../redux/slices/account';
 import { selectLedgerHasLedger } from '../../../redux/slices/ledger';
 import { selectActionsPending, selectStatusSlice } from '../../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../../redux/slices/tokenFiatValues/near';
 import { validateEmail } from '../../../utils/account';
 import AlertBanner from '../../common/AlertBanner';
 import { getNearAndFiatValue } from '../../common/balance/helpers';
