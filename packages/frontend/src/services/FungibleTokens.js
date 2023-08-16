@@ -18,12 +18,18 @@ const {
     },
 } = nearApiJs;
 
+let _viewFunctionAccount;
+
 // Fungible Token Standard
 // https://github.com/near/NEPs/tree/master/specs/Standards/FungibleToken
 export default class FungibleTokens {
     // View functions are not signed, so do not require a real account!
     static get viewFunctionAccount() {
-        return wallet.getAccountBasic('dontcare');
+        if (!_viewFunctionAccount) {
+            _viewFunctionAccount = wallet.getAccountBasic('dontcare');
+        }
+
+        return _viewFunctionAccount;
     }
 
     static async checkRegistration({ contractName, accountId }) {
