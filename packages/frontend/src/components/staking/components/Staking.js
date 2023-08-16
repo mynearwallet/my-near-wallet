@@ -10,7 +10,7 @@ import SelectAccount from './SelectAccount';
 import ValidatorBox from './ValidatorBox';
 import selectCollectedAvailableForClaimData from '../../../redux/crossStateSelectors/selectCollectedAvailableForClaimData';
 import selectNEARAsTokenWithMetadata from '../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
-import { selectFarmValidatorDataIsLoading } from '../../../redux/slices/staking';
+import { selectFarmValidatorDataIsLoading } from '../../../redux/slices/staking/farmValidators';
 import FormButton from '../../common/FormButton';
 import SkeletonLoading from '../../common/SkeletonLoading';
 import Tooltip from '../../common/Tooltip';
