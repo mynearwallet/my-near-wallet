@@ -22,7 +22,9 @@ const {
 // https://github.com/near/NEPs/tree/master/specs/Standards/FungibleToken
 export default class FungibleTokens {
     // View functions are not signed, so do not require a real account!
-    static viewFunctionAccount = wallet.getAccountBasic('dontcare');
+    static get viewFunctionAccount() {
+        return wallet.getAccountBasic('dontcare');
+    }
 
     static async checkRegistration({ contractName, accountId }) {
         try {
