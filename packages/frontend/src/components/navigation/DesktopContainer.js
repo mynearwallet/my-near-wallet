@@ -65,6 +65,7 @@ const Lang = styled.div`
     }
 
     .lang-selector {
+        color: #72727a;
         appearance: none;
         background: transparent url(${languagesIcon}) no-repeat 5px center / 20px 20px;
         border: 0;
