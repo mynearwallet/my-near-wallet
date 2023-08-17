@@ -394,6 +394,7 @@
         "changeRpcProvider": "Change RPC Provider",
         "defaultConnection": "Default Connection",
         "delete": "Delete",
+        "dirty": "Your changes will only takes full effect after a page refresh, please click here in order to refresh the page.",
         "edit": "Edit",
         "headerDuplicateKey": "Duplicated key might cause unstable behavior",
         "headers": "Headers",

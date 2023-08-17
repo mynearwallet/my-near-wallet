@@ -11,6 +11,7 @@ const connectionStorage = ConnectionsStorage.from(localStorage);
 
 export default function ConnectionComponent() {
     const { t } = useTranslation();
+    const [isDirty, setIsDirty] = React.useState<boolean>(false);
     const [addConnectionModal, setAddConnectionModal] = React.useState<boolean>(false);
     const [addConnectionIndex, setAddConnectionIndex] = React.useState<number>(0);
     const [connections, _setConnections] = React.useState<RpcProviderDetail[]>(
@@ -33,6 +34,7 @@ export default function ConnectionComponent() {
 
             _setConnections([...connections]);
             setAddConnectionModal(false);
+            setIsDirty(true);
             wallet.init();
         },
         [connections, addConnectionIndex]
@@ -45,6 +47,7 @@ export default function ConnectionComponent() {
             connectionStorage.save(connections);
 
             _setConnections([...connections]);
+            setIsDirty(true);
             wallet.init();
         },
         [connections]
@@ -56,6 +59,14 @@ export default function ConnectionComponent() {
                 <div className='text-2xl font-bold text-gray-900'>
                     {t('connection.rpcProvider')}
                 </div>
+                {isDirty && (
+                    <div
+                        className='bg-rose-100 text-rose-600 text-md cursor-pointer p-4 mt-2 rounded-md'
+                        onClick={() => location.reload()}
+                    >
+                        {t('connection.dirty')}
+                    </div>
+                )}
                 {connections &&
                     connections.map((connection, index) => (
                         <div
