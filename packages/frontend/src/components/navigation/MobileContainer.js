@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import AccessAccountBtn from './AccessAccountBtn';
 import ConnectionBtn from './ConnectionBtn';
+import ConnectionIcon from './ConnectionIcon';
 import CreateAccountBtn from './CreateAccountBtn';
 import Logo from './Logo';
 import NavLinks from './NavLinks';
@@ -202,6 +203,7 @@ class MobileContainer extends Component {
                     )}
                     {!showNavLinks && (
                         <Lang>
+                            <ConnectionIcon />
                             <LanguageToggle />
                         </Lang>
                     )}

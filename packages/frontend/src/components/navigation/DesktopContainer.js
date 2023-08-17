@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+import ConnectionIcon from './ConnectionIcon';
 import ConnectLedger from './ConnectLedger';
 import DesktopMenu from './DesktopMenu';
 import Logo from './Logo';
@@ -105,8 +106,14 @@ class DesktopContainer extends Component {
         return (
             <Container>
                 <Logo link={!flowLimitationMainMenu} />
-                {showAllNavigationLinks && <NavLinks />}
+                {showAllNavigationLinks && (
+                    <>
+                        <NavLinks />
+                        <ConnectionIcon />
+                    </>
+                )}
                 <Lang>
+                    {!showAllNavigationLinks && <ConnectionIcon />}
                     <LanguageToggle />
                 </Lang>
                 <ConnectLedger />

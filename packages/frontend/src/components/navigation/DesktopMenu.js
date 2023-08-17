@@ -3,7 +3,6 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import AccessAccountBtn from './AccessAccountBtn';
-import ConnectionBtn from './ConnectionBtn';
 import CreateAccountBtn from './CreateAccountBtn';
 import AccountSelector from '../accounts/account_selector/AccountSelector';
 
@@ -53,7 +52,6 @@ const DesktopMenu = ({
                 />
                 <AccessAccountBtn />
                 <CreateAccountBtn />
-                <ConnectionBtn />
             </Menu>
         );
     }
