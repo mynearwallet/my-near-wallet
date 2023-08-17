@@ -1,4 +1,4 @@
-import { BaseStorage } from './BaseStorage';
+import { ObjectStorage } from './ObjectStorage';
 import CONFIG from '../../../config';
 import { RpcProvider, RpcProviderDetail, RpcRotator } from '../../mnw-api-js';
 
@@ -10,7 +10,7 @@ const defaultConnections = [
     },
 ];
 
-export class ConnectionsStorage extends BaseStorage<RpcProviderDetail[]> {
+export class ConnectionsStorage extends ObjectStorage<RpcProviderDetail[]> {
     storageKey: string = 'connections';
     default: RpcProviderDetail[] = defaultConnections;
 
