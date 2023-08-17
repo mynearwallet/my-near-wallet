@@ -4,35 +4,18 @@ import { useTranslation } from 'react-i18next';
 import AddConnectionModal from './AddConnectionModal';
 import CONFIG from '../../config';
 import { RpcProviderDetail } from '../../utils/mnw-api-js';
+import { ConnectionsStorage } from '../../utils/storage';
 import { wallet } from '../../utils/wallet';
+
+const connectionStorage = ConnectionsStorage.from(localStorage);
 
 export default function ConnectionComponent() {
     const { t } = useTranslation();
     const [addConnectionModal, setAddConnectionModal] = React.useState<boolean>(false);
     const [addConnectionIndex, setAddConnectionIndex] = React.useState<number>(0);
-    const [connections, _setConnections] = React.useState<RpcProviderDetail[]>(() => {
-        let connections;
-
-        try {
-            connections = JSON.parse(localStorage.getItem('connections'));
-        } catch {
-            connections = null;
-        }
-
-        if (connections) {
-            return connections;
-        }
-
-        return [
-            {
-                id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
-                    ? 'near'
-                    : 'near-testnet',
-                label: t('connection.defaultConnection'),
-                priority: 10,
-            },
-        ];
-    });
+    const [connections, _setConnections] = React.useState<RpcProviderDetail[]>(
+        connectionStorage.load()
+    );
 
     const saveConnection = React.useCallback(
         (newConnection: RpcProviderDetail) => {
@@ -46,7 +29,7 @@ export default function ConnectionComponent() {
                 (connectionA, connectionB) => connectionA.priority - connectionB.priority
             );
 
-            localStorage.setItem('connections', JSON.stringify(connections));
+            connectionStorage.save(connections);
 
             _setConnections([...connections]);
             setAddConnectionModal(false);
@@ -59,7 +42,7 @@ export default function ConnectionComponent() {
         (index) => {
             connections.splice(index, 1);
 
-            localStorage.setItem('connections', JSON.stringify(connections));
+            connectionStorage.save(connections);
 
             _setConnections([...connections]);
             wallet.init();
