@@ -51,6 +51,9 @@ export class RpcProvider extends JsonRpcProvider {
             case 'RpcRotator':
                 rotator = rpcConfig as RpcRotator;
                 break;
+            default:
+                throw 'Invalid rpcConfig type: ' + rpcConfig.constructor.name;
+                break;
         }
 
         super(rotator.getConnection(0));
