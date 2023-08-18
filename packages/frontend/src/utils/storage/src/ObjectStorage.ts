@@ -1,6 +1,6 @@
 import { BaseStorage } from './BaseStorage';
 
-export class ObjectStorage<DataType> extends BaseStorage<DataType> {
+export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
     public load(): DataType {
         if (!this.storageKey) {
             throw 'Storage key not defined';
