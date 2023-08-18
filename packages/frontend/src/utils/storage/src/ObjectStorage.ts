@@ -11,11 +11,15 @@ export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
 
             if (storedString) {
                 return JSON.parse(storedString) as DataType;
-            } else {
-                return this.default as DataType;
             }
         } catch {
+            // do nothing
+        }
+
+        if (this.default) {
             return this.default as DataType;
+        } else {
+            throw 'No default value';
         }
     }
 
