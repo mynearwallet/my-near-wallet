@@ -27,6 +27,52 @@ console.log(`Hello ${nameStorage.load()}!`);
 // Hello John!
 ```
 
+### For boolean value
+
+```typescript
+// Extends the ObjectStorage
+class TutorialStorage extends ObjectStorage<boolean> {
+    // The key for store and read data
+    protected storageKey: string = 'tutorial';
+    
+    // Optionally provide a default value
+    public default?: boolean = true;
+}
+
+const tutorialStorage = new TutorialStorageWithoutDefaults(localStorage);
+
+console.log(tutorialStorage.load());
+// true
+
+tutorialStorage.save(false);
+
+console.log(tutorialStorage.load());
+// false
+```
+
+### For number value
+
+```typescript
+// Extends the ObjectStorage
+class AgeStorage extends ObjectStorage<number> {
+    // The key for store and read data
+    protected storageKey: string = 'age';
+    
+    // Optionally provide a default value
+    public default?: number = 18;
+}
+
+const ageStorage = new AgeStorage(localStorage);
+
+console.log(ageStorage.load());
+// 18
+
+ageStorage.save(20);
+
+console.log(ageStorage.load());
+// 20
+```
+
 ### For object value
 
 ```typescript
