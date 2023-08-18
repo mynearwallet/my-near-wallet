@@ -54,3 +54,11 @@ nameStorage.save({ x: 3, y: 4 });
 console.log(locationStorage.load());
 // { x: 3, y: 4 }
 ```
+
+## Testing
+
+- Before you begin, make sure you have jest installed. `npm install -g jest`
+
+- First, go to the frontend folder. `cd packages/frontend`
+
+- Then, use this script to test: `jest ./src/utils/storage`
