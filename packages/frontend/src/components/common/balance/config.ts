@@ -1,0 +1,1 @@
+export const NEAR_FRACTIONAL_DIGITS = 5;

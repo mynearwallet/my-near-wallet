@@ -1,5 +1,7 @@
+import { expect, test } from '@jest/globals';
 import BN from 'bn.js';
 
+import { NEAR_FRACTIONAL_DIGITS } from './config';
 import { formatNearAmount, showInYocto, formatWithCommas } from './helpers';
 
 const contextZero = '0';
@@ -19,11 +21,17 @@ test('formatNearAmount when given new BN(0)', () => {
 });
 
 test('formatNearAmount when given tiny raw amount', () => {
-    expect(formatNearAmount(contextTiny)).toBe('< 0.00001');
+    const contextBoundaryTiny = '4' + '9'.repeat(23 - NEAR_FRACTIONAL_DIGITS);
+    const expectedValueTiny = '< 0.' + '0'.repeat(NEAR_FRACTIONAL_DIGITS - 1) + '1';
+
+    expect(formatNearAmount(contextBoundaryTiny)).toBe(expectedValueTiny);
 });
 
 test('formatNearAmount when given small raw amount', () => {
-    expect(formatNearAmount(contextSmall)).toBe('0.00001');
+    const contextBoundarySmall = '5' + '0'.repeat(23 - NEAR_FRACTIONAL_DIGITS);
+    const expectedValueSmall = '0.' + '0'.repeat(NEAR_FRACTIONAL_DIGITS - 1) + '1';
+
+    expect(formatNearAmount(contextBoundarySmall)).toBe(expectedValueSmall);
 });
 
 test('formatNearAmount when given large raw amount', () => {

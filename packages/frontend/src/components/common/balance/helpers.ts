@@ -1,19 +1,22 @@
 import BN from 'bn.js';
 import { utils } from 'near-api-js';
 
+import { NEAR_FRACTIONAL_DIGITS } from './config';
 import { formatTokenAmount } from '../../../utils/amounts';
 
-const NEAR_FRACTIONAL_DIGITS = 5;
 export const YOCTO_NEAR_THRESHOLD = new BN('10', 10).pow(
     new BN(utils.format.NEAR_NOMINATION_EXP - NEAR_FRACTIONAL_DIGITS + 1, 10)
 );
 
 export const formatNearAmount = (amount) => {
     amount = amount.toString();
+
     if (amount === '0') {
         return amount;
     }
-    let formattedAmount = utils.format.formatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
+
+    const formattedAmount = utils.format.formatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
+
     if (formattedAmount === '0') {
         return `< ${
             !NEAR_FRACTIONAL_DIGITS
@@ -47,7 +50,12 @@ export const formatWithCommas = (value) => {
     return value;
 };
 
-export const getRoundedBalanceInFiat = (amount, tokenFiatValue, isNear, decimals) => {
+export const getRoundedBalanceInFiat = (
+    amount,
+    tokenFiatValue,
+    isNear?: boolean,
+    decimals?: number
+) => {
     const formattedNearAmount =
         amount && !isNear
             ? formatNearAmount(amount).replace(/,/g, '')
@@ -55,6 +63,7 @@ export const getRoundedBalanceInFiat = (amount, tokenFiatValue, isNear, decimals
     const balanceInFiat = Number(formattedNearAmount) * tokenFiatValue;
     const roundedBalanceInFiat = balanceInFiat && balanceInFiat.toFixed(2);
 
+    // Steve Code Scan:
     if (roundedBalanceInFiat === '0.00' || formattedNearAmount === '< 0.00001') {
         return '< $0.01';
     }
@@ -101,7 +110,7 @@ export const getTotalBalanceFromFungibleTokensListUSD = (fungibleTokensList) => 
     const tokensWithUSDValue = fungibleTokensList.filter(
         (token) => typeof token?.fiatValueMetadata?.usd === 'number'
     );
-    for (let token of tokensWithUSDValue) {
+    for (const token of tokensWithUSDValue) {
         totalBalanceUSD +=
             token.fiatValueMetadata.usd *
             formatTokenAmount(token.balance, token.onChainFTMetadata?.decimals, 5);
