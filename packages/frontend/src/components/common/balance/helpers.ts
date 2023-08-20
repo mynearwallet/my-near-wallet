@@ -1,13 +1,17 @@
 import BN from 'bn.js';
-import { utils } from 'near-api-js';
+import {
+    formatNearAmount as apiFormatNearAmount,
+    NEAR_NOMINATION_EXP,
+} from 'near-api-js/lib/utils/format';
 
 import { NEAR_FRACTIONAL_DIGITS } from './config';
 import { formatTokenAmount } from '../../../utils/amounts';
 
 type Amount = string | number | BN;
 
-export const YOCTO_NEAR_THRESHOLD = new BN('10', 10).pow(
-    new BN(utils.format.NEAR_NOMINATION_EXP - NEAR_FRACTIONAL_DIGITS + 1, 10)
+export const YOCTO_NEAR_THRESHOLD = new BN(
+    '4' + '9'.repeat(NEAR_NOMINATION_EXP - NEAR_FRACTIONAL_DIGITS - 1),
+    10
 );
 
 export const formatNearAmount = (inputAmount: Amount): string => {
@@ -19,7 +23,7 @@ export const formatNearAmount = (inputAmount: Amount): string => {
         return '0';
     }
 
-    const formattedAmount = utils.format.formatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
+    const formattedAmount = apiFormatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
 
     if (formattedAmount === '0') {
         return '< 0.' + '0'.repeat(NEAR_FRACTIONAL_DIGITS - 1) + '1';
