@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { devices } = require('playwright');
+const { devices } = require('@playwright/test');
 
 const config = {
     expect: {

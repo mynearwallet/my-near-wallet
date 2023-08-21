@@ -1,9 +1,9 @@
 import React from 'react';
 import { Translate } from 'react-localize-redux';
 
+import { Container, Description, Main, Title, TitleWrapper } from './ui';
 import FormButton from '../../../common/FormButton';
 import SkeletonLoading from '../../../common/SkeletonLoading';
-import { Container, Description, Main, Title, TitleWrapper } from './ui';
 
 const RecoveryMethod = ({
     title,
@@ -45,7 +45,7 @@ const RecoveryMethod = ({
                 </FormButton>
             </Main>
             {description && <Description>{description}</Description>}
-            {children}
+            <>{children}</>
         </Container>
     );
 };

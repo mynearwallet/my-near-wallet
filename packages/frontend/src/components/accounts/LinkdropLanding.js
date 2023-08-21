@@ -3,6 +3,8 @@ import { Translate } from 'react-localize-redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import NearDropLanding from './linkdrops/NearDropLanding';
+import TrialDropLanding from './linkdrops/TrialDropLanding';
 import { Mixpanel } from '../../mixpanel/index';
 import {
     checkLinkdropInfo,
@@ -18,8 +20,6 @@ import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
 import LoadingDots from '../common/loader/LoadingDots';
 import Container from '../common/styled/Container.css';
 import BrokenLinkIcon from '../svg/BrokenLinkIcon';
-import NearDropLanding from './linkdrops/NearDropLanding';
-import TrialDropLanding from './linkdrops/TrialDropLanding';
 
 const { setLinkdropAmount } = linkdropActions;
 

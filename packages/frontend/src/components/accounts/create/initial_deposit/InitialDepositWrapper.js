@@ -6,6 +6,9 @@ import { parse } from 'query-string';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import FundingReceived from './FundingReceived';
+import FundWithCreditCard from './FundWithCreditCard';
+import FundWithManualDeposit from './FundWithManualDeposit';
 import CONFIG from '../../../../config';
 import { Mixpanel } from '../../../../mixpanel';
 import { redirectTo, checkIsNew } from '../../../../redux/actions/account';
@@ -19,9 +22,6 @@ import { actions as flowLimitationActions } from '../../../../redux/slices/flowL
 import { getSignedUrl } from '../../../../utils/moonpay';
 import useRecursiveTimeout from '../../../../utils/useRecursiveTimeout';
 import { wallet } from '../../../../utils/wallet';
-import FundingReceived from './FundingReceived';
-import FundWithCreditCard from './FundWithCreditCard';
-import FundWithManualDeposit from './FundWithManualDeposit';
 
 const { handleFlowLimitation } = flowLimitationActions;
 

@@ -3,6 +3,7 @@ import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 import { createActions } from 'redux-actions';
 
+import { getBalance } from './account';
 import CONFIG from '../../config';
 import { fungibleTokensService } from '../../services/FungibleTokens';
 import { listStakingPools } from '../../services/indexer';
@@ -51,7 +52,6 @@ import {
     selectStakingLockupId,
 } from '../slices/staking';
 import { actions as tokensActions } from '../slices/tokens';
-import { getBalance } from './account';
 
 const { fetchToken } = tokensActions;
 

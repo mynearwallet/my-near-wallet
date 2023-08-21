@@ -1,15 +1,15 @@
 import Big from 'big.js';
 import React, { useState } from 'react';
 
+import FtSwapDetails from './FtSwapDetails';
+import NearTransformationDetails from './NearTransformationDetails';
+import { SwapDetailsWrapper, AccordionTitle } from './ui';
 import Accordion from '../../../../components/common/Accordion';
 import ChevronIcon from '../../../../components/svg/ChevronIcon';
 import { toSignificantDecimals } from '../../../../utils/amounts';
 import { useSwapData } from '../../model/Swap';
 import { getMinAmountOut, getSwapFeeAmount } from '../../utils/calculations';
 import { DECIMALS_TO_SAFE } from '../../utils/constants';
-import FtSwapDetails from './FtSwapDetails';
-import NearTransformationDetails from './NearTransformationDetails';
-import { SwapDetailsWrapper, AccordionTitle } from './ui';
 
 export default function SwapDetails() {
     const {

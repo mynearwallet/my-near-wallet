@@ -1,11 +1,11 @@
 // @ts-check
+const { StakeUnstakePage } = require('./models/StakeUnstake');
 const {
     LOCKUP_CONFIGS: { FULLY_UNVESTED_CONFIG },
 } = require('../constants');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
 const { generateNUniqueRandomNumbersInRange } = require('../utils/helpers');
-const { StakeUnstakePage } = require('./models/StakeUnstake');
 
 const { describe, afterEach, beforeEach } = test;
 

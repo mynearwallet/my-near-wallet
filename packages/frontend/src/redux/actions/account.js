@@ -2,6 +2,12 @@ import { getLocation, push } from 'connected-react-router';
 import { parse, stringify } from 'query-string';
 import { createActions, createAction } from 'redux-actions';
 
+import {
+    handleStakingUpdateAccount,
+    handleStakingUpdateLockup,
+    handleGetLockup,
+} from './staking';
+import { showCustomAlert } from './status';
 import CONFIG from '../../config';
 import { actions as activeAccountActions } from '../../redux/slices/activeAccount';
 import { syncPrivateShardAccount } from '../../services/PrivateShard';
@@ -51,12 +57,6 @@ import {
     selectFlowLimitationAccountBalance,
     selectFlowLimitationAccountData,
 } from '../slices/flowLimitation';
-import {
-    handleStakingUpdateAccount,
-    handleStakingUpdateLockup,
-    handleGetLockup,
-} from './staking';
-import { showCustomAlert } from './status';
 
 const { handleFlowLimitation, handleClearflowLimitation } = flowLimitationActions;
 

@@ -2,11 +2,11 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
 
+import SwapDetails from './SwapDetails/SwapDetails';
 import SkeletonLoading from '../../../components/common/SkeletonLoading';
 import Token from '../../../components/send/components/entry_types/Token';
 import SwapIcon from '../../../components/svg/WrapIcon';
 import { removeTrailingZeros } from '../../../utils/amounts';
-import SwapDetails from './SwapDetails/SwapDetails';
 
 const Preview = styled.div`
     display: flex;

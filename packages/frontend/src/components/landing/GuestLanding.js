@@ -2,10 +2,10 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import LandingBackground from './LandingBackground';
 import iPhoneMockup from '../../images/iphone-mockup.png';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
-import LandingBackground from './LandingBackground';
 
 const StyledContainer = styled.div`
     &&& {

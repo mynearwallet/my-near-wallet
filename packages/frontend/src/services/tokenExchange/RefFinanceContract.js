@@ -1,7 +1,5 @@
 import * as nearApi from 'near-api-js';
 
-import CONFIG from '../../config';
-import { parseTokenAmount } from '../../utils/amounts';
 import { ERROR_MESSAGES } from './constants';
 import {
     findBestSwapPool,
@@ -9,6 +7,8 @@ import {
     getPriceImpactPercent,
     getTopPoolIds,
 } from './utils';
+import CONFIG from '../../config';
+import { parseTokenAmount } from '../../utils/amounts';
 
 const refConfig = {
     errorRegExp: /[A-Z][0-9]+: ?[a-zA-Z0-9_$\- ]+/,

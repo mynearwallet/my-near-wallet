@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import SendContainerV2, { VIEWS } from './SendContainerV2';
 import CONFIG from '../../config';
 import useSortedTokens from '../../hooks/useSortedTokens';
 import { Mixpanel } from '../../mixpanel/index';
@@ -11,14 +12,13 @@ import { clearLocalAlert, showCustomAlert } from '../../redux/actions/status';
 import { selectAccountId } from '../../redux/slices/account';
 import { actions as ledgerActions } from '../../redux/slices/ledger';
 import { selectStatusLocalAlert } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import { selectAllowedTokens } from '../../redux/slices/tokens';
 import { fungibleTokensService } from '../../services/FungibleTokens';
 import isMobile from '../../utils/isMobile';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
 import { formatErrorBalance } from '../common/balance/helpers';
 import SkeletonLoading from '../common/SkeletonLoading';
-import SendContainerV2, { VIEWS } from './SendContainerV2';
 
 const { checkAndHideLedgerModal } = ledgerActions;
 

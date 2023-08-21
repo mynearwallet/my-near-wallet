@@ -254,6 +254,7 @@
         "cancel": "Cancel",
         "cancelOperation": "Cancel Operation",
         "cancelTransfer": "Cancel Transfer",
+        "change": "Change",
         "claimAccount": "Claim Account",
         "claimMyAccount": "Claim My Account",
         "close": "Close",
@@ -376,6 +377,45 @@
         "two": "Follow the instructions on your device to confirm and grant access to each account you'd like to import."
     },
     "connecting": "Connecting",
+    "connection": {
+        "addNewHeader": "Add New Header",
+        "addRpcProvider": "Add RPC Provider",
+        "addRpcProviderModal": {
+            "connectionName": "Connection Name",
+            "noConfig": "This RPC Provider does not requires any config",
+            "priority": "Priority (lower means used first)",
+            "step1": "Step 1: Choose an RPC provider from the list",
+            "step2": "Step 2: Configure the RPC provider",
+            "step3": "Step 3: Name this connection and set priority",
+            "step4": "Step 4: Test & save the connection",
+            "testSave": "Test & Save Connection"
+        },
+        "apiKey": "Api Key",
+        "changeRpcProvider": "Change RPC Provider",
+        "defaultConnection": "Default Connection",
+        "delete": "Delete",
+        "dirty": "Your changes will only takes full effect after a page refresh, please click here in order to refresh the page.",
+        "edit": "Edit",
+        "headerDuplicateKey": "Duplicated key might cause unstable behavior",
+        "headers": "Headers",
+        "priority": "Priority",
+        "rpcOption": {
+            "ankr": "Ankr",
+            "custom": "Custom",
+            "custom-testnet": "Custom",
+            "getBlock": "GetBlock",
+            "infura": "Infura",
+            "infura-testnet": "Infura (Testnet)",
+            "near": "NEAR",
+            "near-testnet": "NEAR (Testnet)",
+            "nodeReal": "NodeReal",
+            "onerpc": "1RPC",
+            "pagoda": "Pagoda",
+            "pagoda-testnet": "Pagoda (Testnet)"
+        },
+        "rpcProvider": "RPC Provider",
+        "url": "URL"
+    },
     "connectLedger": {
         "connectLedger": "Connect Ledger",
         "ledgerConnected": "Ledger Connected",
@@ -1153,6 +1193,9 @@
     "riscScoring": {
         "checkbox": "I accept responsibility for sending funds to this address.",
         "scamWarning": "This address has a high level of risk and marked as scam. Make sure that this address is safe before sending funds."
+    },
+    "rpcProvider": {
+        "title": "Default RPC Provider"
     },
     "selectAccountDropdown": {
         "account": "Account",

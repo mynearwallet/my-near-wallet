@@ -32,6 +32,11 @@
         "not op_mini all"
     ],
     "dependencies": {
+        "@fortawesome/fontawesome-svg-core": "^6.4.2",
+        "@fortawesome/free-regular-svg-icons": "^6.4.2",
+        "@fortawesome/free-solid-svg-icons": "^6.4.2",
+        "@fortawesome/react-fontawesome": "^0.2.0",
+        "@headlessui/react": "^1.7.16",
         "@ledgerhq/hw-transport-u2f": "^5.34.0",
         "@meteorwallet/meteor-near-sdk": "3.3.0",
         "@near-wallet-selector/account-export": "^7.6.1",
@@ -106,7 +111,6 @@
         "@storybook/react": "^7.0.6",
         "@storybook/react-webpack5": "^7.0.6",
         "@storybook/testing-library": "^0.0.14-next.2",
-        "@types/jest": "^29.5.1",
         "@types/react-router": "^5.1.19",
         "@types/styled-components": "^5.1.26",
         "@typescript-eslint/eslint-plugin": "^5.59.7",

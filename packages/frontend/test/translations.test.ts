@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { expect, test } from '@jest/globals';
+
 const TRANSLATION_BASE_PATH = path.resolve(__dirname, '../src/translations');
 
 test('translations contain no unescaped links', () => {

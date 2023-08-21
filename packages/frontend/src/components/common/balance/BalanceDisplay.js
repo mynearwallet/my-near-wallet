@@ -3,10 +3,10 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import CONFIG from '../../../config';
-import classNames from '../../../utils/classNames';
 import FiatBalance from './FiatBalance';
 import { formatNearAmount, showInYocto, YOCTO_NEAR_THRESHOLD } from './helpers';
+import CONFIG from '../../../config';
+import classNames from '../../../utils/classNames';
 
 const StyledContainer = styled.div`
     white-space: nowrap;

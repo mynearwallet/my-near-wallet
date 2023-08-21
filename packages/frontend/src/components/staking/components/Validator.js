@@ -3,16 +3,22 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 
+import AlertBanner from './AlertBanner';
+import BalanceBox from './BalanceBox';
+import ClaimTokenFarmRewardsModal from './ClaimTokenFarmRewardsModal';
+import { FarmingAPY } from './FarmingAPY';
+import StakeConfirmModal from './StakeConfirmModal';
+import StakingFee from './StakingFee';
 import { Mixpanel } from '../../../mixpanel';
 import { redirectTo } from '../../../redux/actions/account';
 import { claimFarmRewards, getValidatorFarmData } from '../../../redux/actions/staking';
 import { showCustomAlert } from '../../../redux/actions/status';
 import selectNEARAsTokenWithMetadata from '../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
+import { selectStakingCurrentAccountAccountId } from '../../../redux/slices/staking';
 import {
-    selectValidatorsFarmData,
     selectFarmValidatorAPY,
-    selectStakingCurrentAccountAccountId,
-} from '../../../redux/slices/staking';
+    selectValidatorsFarmData,
+} from '../../../redux/slices/staking/farmValidators';
 import { selectActionsPending } from '../../../redux/slices/status';
 import {
     selectTokensFiatValueUSD,
@@ -23,12 +29,6 @@ import StakingFarmContracts from '../../../services/StakingFarmContracts';
 import { FARMING_VALIDATOR_VERSION } from '../../../utils/constants';
 import FormButton from '../../common/FormButton';
 import SafeTranslate from '../../SafeTranslate';
-import AlertBanner from './AlertBanner';
-import BalanceBox from './BalanceBox';
-import ClaimTokenFarmRewardsModal from './ClaimTokenFarmRewardsModal';
-import { FarmingAPY } from './FarmingAPY';
-import StakeConfirmModal from './StakeConfirmModal';
-import StakingFee from './StakingFee';
 
 const renderFarmUi = ({
     farmList,

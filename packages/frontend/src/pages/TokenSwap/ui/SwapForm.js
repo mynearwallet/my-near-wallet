@@ -4,6 +4,8 @@ import { Translate } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import Input from './Input';
+import SwapDetails from './SwapDetails/SwapDetails';
 import BackArrowButton from '../../../components/common/BackArrowButton';
 import FlipButton from '../../../components/common/FlipButton';
 import FormButton from '../../../components/common/FormButton';
@@ -17,8 +19,6 @@ import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import { DEFAULT_OUTPUT_TOKEN_ID, NOTIFICATION_TYPE } from '../utils/constants';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
-import Input from './Input';
-import SwapDetails from './SwapDetails/SwapDetails';
 
 const mobile = isMobile();
 

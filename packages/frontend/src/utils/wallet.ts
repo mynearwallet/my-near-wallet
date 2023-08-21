@@ -4,19 +4,11 @@ import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
-import { JsonRpcProvider } from 'near-api-js/lib/providers';
 import { Action, SignedTransaction } from 'near-api-js/lib/transaction';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
-import { ConnectionInfo } from 'near-api-js/lib/utils/web';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
-import { store, addAccountReducer } from '..';
-import CONFIG from '../config';
-import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
-import { actions as ledgerActions } from '../redux/slices/ledger';
-import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
-import sendJson from '../tmp_fetch_send_json';
 import { decorateWithLockup } from './account-with-lockup';
 import {
     removeAllAccountsPrivateKey,
@@ -34,8 +26,16 @@ import {
     removeLedgerHDPath,
     setLedgerHdPath,
 } from './localStorage';
+import { ConnectionInfo, RpcProvider } from './mnw-api-js';
+import { ConnectionsStorage } from './storage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
+import { store, addAccountReducer } from '..';
+import CONFIG from '../config';
+import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
+import { actions as ledgerActions } from '../redux/slices/ledger';
+import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
+import sendJson from '../tmp_fetch_send_json';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -211,9 +211,9 @@ export default class Wallet {
                     'x-api-key': rpcInfo.shardApiToken,
                 };
             }
-            provider = new JsonRpcProvider(args);
+            provider = new RpcProvider(args);
         } else {
-            provider = { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } };
+            provider = ConnectionsStorage.from(localStorage).createProvider();
         }
         this.connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
@@ -498,14 +498,7 @@ export default class Wallet {
                 await keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
                 const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
                 const account = new nearApiJs.Account(
-                    nearApiJs.Connection.fromConfig({
-                        networkId: CONFIG.NETWORK_ID,
-                        provider: {
-                            type: 'JsonRpcProvider',
-                            args: { url: CONFIG.NODE_URL + '/' },
-                        },
-                        signer: new nearApiJs.InMemorySigner(keyStore),
-                    }),
+                    this.connectionIgnoringLedger,
                     accountId
                 );
 
@@ -1544,7 +1537,7 @@ export default class Wallet {
 
         const connection = nearApiJs.Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
-            provider: { type: 'JsonRpcProvider', args: { url: CONFIG.NODE_URL + '/' } },
+            provider: this.connection.provider,
             signer: new nearApiJs.InMemorySigner(tempKeyStore),
         });
 
@@ -1601,7 +1594,7 @@ export default class Wallet {
                     // );
                     accountIdsSuccess.push({
                         accountId,
-                        keyPair,
+                        newKeyPair: keyPair,
                     });
                 } catch (error) {
                     console.error(error);

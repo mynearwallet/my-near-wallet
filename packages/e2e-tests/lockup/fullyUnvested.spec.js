@@ -2,12 +2,12 @@
 const { BN } = require('bn.js');
 const { formatNearAmount, parseNearAmount } = require('near-api-js/lib/utils/format');
 
+const { ProfilePage } = require('./models/ProfilePage');
 const {
     LOCKUP_CONFIGS: { FULLY_UNVESTED_CONFIG },
 } = require('../constants');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
-const { ProfilePage } = require('./models/ProfilePage');
 
 const { describe, beforeAll, afterAll } = test;
 

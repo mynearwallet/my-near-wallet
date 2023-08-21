@@ -3,6 +3,8 @@ import { parse } from 'query-string';
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import FundNewAccount from './FundNewAccount';
+import SelectAccount from './SelectAccount';
 import CONFIG from '../../../../config';
 import { Mixpanel } from '../../../../mixpanel';
 import {
@@ -19,8 +21,6 @@ import {
 import { createNewAccountWithCurrentActiveAccount } from '../../../../redux/slices/account/createAccountThunks';
 import { selectAvailableAccounts } from '../../../../redux/slices/availableAccounts';
 import { actions as ledgerActions } from '../../../../redux/slices/ledger';
-import FundNewAccount from './FundNewAccount';
-import SelectAccount from './SelectAccount';
 
 const { checkAndHideLedgerModal } = ledgerActions;
 

@@ -5,6 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3-near';
 import { useDispatch, useSelector } from 'react-redux';
 
+import VerifyAccount from './VerifyAccount';
 import { Mixpanel } from '../../../../mixpanel';
 import {
     redirectTo,
@@ -16,7 +17,6 @@ import { actions as ledgerActions } from '../../../../redux/slices/ledger';
 import { isMoonpayAvailable } from '../../../../utils/moonpay';
 import { wallet } from '../../../../utils/wallet';
 import EnterVerificationCode from '../../EnterVerificationCode';
-import VerifyAccount from './VerifyAccount';
 
 const { checkAndHideLedgerModal } = ledgerActions;
 

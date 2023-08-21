@@ -1,8 +1,8 @@
 // @ts-check
+const { LoginPage } = require('./models/Login');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
 const { testDappURL } = require('../utils/config');
-const { LoginPage } = require('./models/Login');
 
 const { describe, beforeAll, afterAll, beforeEach } = test;
 

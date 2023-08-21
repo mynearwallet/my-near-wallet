@@ -2,10 +2,10 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import CONFIG from '../../../config';
-import Balance from '../balance/Balance';
 import TokenAmount from './TokenAmount';
 import TokenIcon from './TokenIcon';
+import CONFIG from '../../../config';
+import Balance from '../balance/Balance';
 
 const StyledContainer = styled.div`
     display: flex;

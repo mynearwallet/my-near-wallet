@@ -5,6 +5,16 @@ import { Link } from 'react-router-dom';
 import { Textfit } from 'react-textfit';
 import styled from 'styled-components';
 
+import ActivitiesWrapper from './ActivitiesWrapper';
+import AllTokensTotalBalanceUSD from './AllTokensTotalBalanceUSD';
+import CreateCustomNameModal from './CreateCustomNameModal';
+import CreateFromImplicitSuccessModal from './CreateFromImplicitSuccessModal';
+import DepositNearBanner from './DepositNearBanner';
+import LinkDropSuccessModal from './LinkDropSuccessModal';
+import NFTs from './NFTs';
+import SidebarLight from './SidebarLight';
+import Tokens from './Tokens';
+import { ZeroBalanceAccountImportedModal } from './ZeroBalanceAccountImportedModal';
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
 import { selectPasswordProtectionSlice } from '../../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import classNames from '../../utils/classNames';
@@ -18,16 +28,6 @@ import DownArrowIcon from '../svg/DownArrowIcon';
 import SendIcon from '../svg/SendIcon';
 import TopUpIcon from '../svg/TopUpIcon';
 import WrapIcon from '../svg/WrapIcon';
-import ActivitiesWrapper from './ActivitiesWrapper';
-import AllTokensTotalBalanceUSD from './AllTokensTotalBalanceUSD';
-import CreateCustomNameModal from './CreateCustomNameModal';
-import CreateFromImplicitSuccessModal from './CreateFromImplicitSuccessModal';
-import DepositNearBanner from './DepositNearBanner';
-import LinkDropSuccessModal from './LinkDropSuccessModal';
-import NFTs from './NFTs';
-import SidebarLight from './SidebarLight';
-import Tokens from './Tokens';
-import { ZeroBalanceAccountImportedModal } from './ZeroBalanceAccountImportedModal';
 
 const StyledContainer = styled(Container)`
     @media (max-width: 991px) {

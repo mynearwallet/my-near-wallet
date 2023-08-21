@@ -6,13 +6,16 @@ import FormButton from '../common/FormButton';
 import PlusSignIcon from '../svg/PlusSignIcon';
 
 const Button = styled(FormButton)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     margin-top: 15px !important;
 
     svg {
-        width: 24px !important;
-        height: 24px !important;
-        margin: -4px 3px -6px 0 !important;
+        width: 22px !important;
+        height: 22px !important;
+        margin: -5px 6px -4px 0 !important;
     }
 `;
 
