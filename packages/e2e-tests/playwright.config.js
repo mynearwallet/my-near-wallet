@@ -13,6 +13,8 @@ const config = {
     ],
     timeout: 5 * 60 * 1000,
     use: {
+        actionTimeout: 5000,
+        navigationTimeout: 5000,
         baseURL: process.env.WALLET_URL || 'https://localhost:1234',
         headless: true,
         viewport: { width: 1280, height: 720 },
