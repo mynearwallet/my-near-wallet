@@ -2,7 +2,7 @@ require('dotenv').config();
 const { devices } = require('@playwright/test');
 
 const config = {
-    fullyParallel: true,
+    fullyParallel: false,
     expect: {
         timeout: 60 * 1000, // unit is ms, default is 5s
     },
