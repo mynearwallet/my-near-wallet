@@ -13,6 +13,7 @@ const { VerifySeedPhrasePage } = require('../register/models/VerifySeedPhrase');
 const { generateTestAccountId } = require('../utils/account');
 const { testDappURL } = require('../utils/config');
 const nearApiJsConnection = require('../utils/connectionSingleton');
+const { createPassword } = require('../utils/createPassword');
 const E2eTestAccount = require('../utils/E2eTestAccount');
 const { getKeyPairFromSeedPhrase } = require('../utils/helpers');
 const LinkdropAccountManager = require('../utils/LinkdropAccountManager');
@@ -55,6 +56,7 @@ describe('Linkdrop flow', () => {
         await expect(page.locator('.dots')).not.toBeVisible();
         await linkdropPage.loginAndClaim();
 
+        await createPassword(page);
         await page.click('data-test-id=recoverAccountWithPassphraseButton');
         await page.fill(
             'data-test-id=seedPhraseRecoveryInput',
@@ -65,6 +67,7 @@ describe('Linkdrop flow', () => {
 
         await expect(page).toHaveURL(/\/$/);
         await page.reload();
+
         await expect(page.locator('.tokensLoading')).not.toBeVisible();
         const nearBalance = await new HomePage(page).getNearBalanceInNear();
         expect(
@@ -81,6 +84,8 @@ describe('Linkdrop flow', () => {
         await linkdropPage.navigate(linkdropContractAccount.accountId, linkdropSecretKey);
         await expect(page.locator('.dots')).not.toBeVisible();
         await linkdropPage.loginAndClaim();
+
+        await createPassword(page);
         const keyPair = getKeyPairFromSeedPhrase(linkdropReceiverAccount.seedPhrase);
         await page.click('data-test-id=recoverAccountWithPrivateKey');
         await page.fill('data-test-id=privateKeyRecoveryInput', keyPair.toString());
@@ -111,6 +116,7 @@ describe('Linkdrop flow', () => {
         await expect(page.locator('.dots')).not.toBeVisible();
         await linkdropPage.loginAndClaim();
 
+        await createPassword(page);
         await page.click('data-test-id=recoverAccountWithPassphraseButton');
         await page.fill(
             'data-test-id=seedPhraseRecoveryInput',
@@ -144,6 +150,7 @@ describe('Linkdrop flow', () => {
         );
         await linkdropPage.createAccountToClaim();
 
+        await createPassword(page);
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
@@ -198,6 +205,7 @@ describe('Linkdrop flow', () => {
         );
         await linkdropPage.createAccountToClaim();
 
+        await createPassword(page);
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
