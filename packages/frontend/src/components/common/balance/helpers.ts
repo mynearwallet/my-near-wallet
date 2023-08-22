@@ -9,108 +9,166 @@ import { formatTokenAmount } from '../../../utils/amounts';
 
 type Amount = string | number | BN;
 
-export const YOCTO_NEAR_THRESHOLD = new BN(
-    '4' + '9'.repeat(NEAR_NOMINATION_EXP - NEAR_FRACTIONAL_DIGITS - 1),
-    10
+const VERY_LITTLE_NEAR: string = '< 0.' + '0'.repeat(NEAR_FRACTIONAL_DIGITS - 1) + '1';
+
+export const YOCTO_NEAR_THRESHOLD: BN = new BN(
+    '4' + '9'.repeat(NEAR_NOMINATION_EXP - NEAR_FRACTIONAL_DIGITS - 1)
 );
 
-export const formatNearAmount = (inputAmount: Amount): string => {
+function isZero(inputAmount: Amount): boolean {
     const amount: string = inputAmount.toString();
 
     const pattern: RegExp = /^0+$/;
 
     if (pattern.test(amount)) {
+        return true;
+    }
+
+    return false;
+}
+
+export const formatNearAmount = (amount: Amount): string => {
+    if (isZero(amount)) {
         return '0';
     }
 
-    const formattedAmount = apiFormatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
+    const formattedAmount: string = apiFormatNearAmount(amount, NEAR_FRACTIONAL_DIGITS);
 
     if (formattedAmount === '0') {
-        return '< 0.' + '0'.repeat(NEAR_FRACTIONAL_DIGITS - 1) + '1';
+        return VERY_LITTLE_NEAR;
     }
 
     return formattedAmount;
 };
 
-export const showInYocto = (amountStr) => {
-    return formatWithCommas(amountStr) + ' yoctoNEAR';
+export const showInYocto = (amount: string): string => {
+    return formatWithCommas(amount) + ' yoctoNEAR';
 };
 
-export function formatErrorBalance(msg) {
-    const regExp = /\d* yoctoNEAR/;
-    const yoctoSubString = msg.match(regExp);
+export function formatErrorBalance(message: string): string {
+    const regExp: RegExp = /\d* yoctoNEAR/;
+    const yoctoSubString: RegExpMatchArray = message.match(regExp);
+
     if (yoctoSubString) {
         const nearAmount = formatNearAmount(yoctoSubString[0].split(' ')[0]);
-        return msg.replace(regExp, nearAmount + ' NEAR');
+        return message.replace(regExp, nearAmount + ' NEAR');
     }
 
-    return msg;
+    return message;
 }
 
-export const formatWithCommas = (value) => {
+export const formatWithCommas = (value: string): string => {
     const pattern = /(-?\d+)(\d{3})/;
+
     while (pattern.test(value)) {
         value = value.toString().replace(pattern, '$1,$2');
     }
+
     return value;
 };
 
-export const getRoundedBalanceInFiat = (
-    amount,
-    tokenFiatValue,
-    isNear?: boolean,
-    decimals?: number
-) => {
-    const formattedNearAmount =
-        amount && !isNear
-            ? formatNearAmount(amount).replace(/,/g, '')
-            : formatTokenAmount(amount, decimals, decimals);
-    const balanceInFiat = Number(formattedNearAmount) * tokenFiatValue;
-    const roundedBalanceInFiat = balanceInFiat && balanceInFiat.toFixed(2);
+interface GetBalanceInFiatParams {
+    amount: Amount;
+    tokenFiatValue: number;
+    isContract?: boolean;
+    decimals?: number;
+}
 
-    // Steve Code Scan:
-    if (roundedBalanceInFiat === '0.00' || formattedNearAmount === '< 0.00001') {
-        return '< $0.01';
+export const getBalanceInFiat = (params: GetBalanceInFiatParams): number => {
+    const { amount, tokenFiatValue, isContract, decimals } = params;
+
+    if (isZero(amount)) {
+        return 0;
+    }
+
+    const formattedNearAmount: string = isContract
+        ? formatTokenAmount(amount, decimals, decimals)
+        : formatNearAmount(amount);
+
+    const balanceInFiat: number = parseFloat(formattedNearAmount) * tokenFiatValue;
+
+    return balanceInFiat;
+};
+
+export const getRoundedBalanceInFiat = (params: GetBalanceInFiatParams): string => {
+    const balanceInFiat = getBalanceInFiat(params);
+
+    if (balanceInFiat === 0) {
+        return '-';
+    }
+
+    const roundedBalanceInFiat: string = balanceInFiat.toFixed(2);
+
+    if (roundedBalanceInFiat === '0.00') {
+        return '< 0.01';
     }
 
     return roundedBalanceInFiat;
 };
 
-export const getTotalBalanceInFiat = (mainTokens, currentLanguage) => {
-    const totalAmount = mainTokens
-        .map((el) => {
-            const USD = el.fiatValueMetadata.usd;
-            const balance = el.balance;
-            return el.contractName
-                ? getRoundedBalanceInFiat(
-                      balance,
-                      USD,
-                      true,
-                      el.onChainFTMetadata.decimals
-                  )
-                : getRoundedBalanceInFiat(balance, USD);
-        })
-        .filter((x) => !!x)
-        .reduce((a, b) => `${+a + +b}`, []);
-    return !isNaN(totalAmount)
-        ? new Intl.NumberFormat(`${currentLanguage}`, {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2,
-          }).format(totalAmount)
-        : '0';
+interface Token {
+    contractName?: any;
+    balance: Amount;
+    fiatValueMetadata: {
+        usd: number;
+    };
+    onChainFTMetadata?: {
+        decimals: number;
+    };
+}
+
+function calculateTokenValue(token: Token): string {
+    const tokenFiatValue = token.fiatValueMetadata.usd;
+    const amount = token.balance;
+
+    if (token.contractName) {
+        return getRoundedBalanceInFiat({
+            amount,
+            tokenFiatValue,
+            isContract: true,
+            decimals: token.onChainFTMetadata?.decimals,
+        });
+    }
+
+    return getRoundedBalanceInFiat({
+        amount,
+        tokenFiatValue,
+    });
+}
+
+export const getTotalBalanceInFiat = (mainTokens: Token[], currentLanguage: string) => {
+    const totalAmount: string = mainTokens
+        .map((token: Token) => calculateTokenValue(token))
+        .filter((tokenValue: string) => !isZero(tokenValue))
+        .reduce(
+            (a: string, b: string) => (parseFloat(a) + parseFloat(b)).toString(),
+            '0'
+        );
+
+    return new Intl.NumberFormat(`${currentLanguage}`, {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+    }).format(parseFloat(totalAmount));
 };
 
-export const getNearAndFiatValue = (rawNearAmount, tokenFiatValue, fiat = 'usd') => {
-    const nearAmount = formatNearAmount(rawNearAmount);
-    const fiatAmount = getRoundedBalanceInFiat(rawNearAmount, tokenFiatValue);
+export const getNearAndFiatValue = (amount, tokenFiatValue, fiat = 'usd') => {
+    const nearAmount = formatNearAmount(amount);
+
+    const fiatAmount = getRoundedBalanceInFiat({
+        amount: amount,
+        tokenFiatValue,
+    });
+
     const fiatSymbol = fiat.toUpperCase();
+
     const fiatPrefix = fiatAmount !== '< 0.01' ? '≈ ' : '';
+
     return `${nearAmount} NEAR (${fiatPrefix}${
         formatWithCommas(fiatAmount) || '—'
     } ${fiatSymbol})`;
 };
 
-export const getTotalBalanceFromFungibleTokensListUSD = (fungibleTokensList) => {
+export const getTotalBalanceFromFungibleTokensListUSD = (fungibleTokensList: Token) => {
     let totalBalanceUSD = 0;
     const tokensWithUSDValue = fungibleTokensList.filter(
         (token) => typeof token?.fiatValueMetadata?.usd === 'number'
