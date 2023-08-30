@@ -6,6 +6,12 @@ const createPassword = async (page) => {
     await page.click('data-test-id=set-password');
 };
 
+const unlockPassword = async (page) => {
+    await page.fill('data-test-id=password', '12345678abcdEFGH.');
+    await page.click('data-test-id=unlock');
+};
+
 module.exports = {
     createPassword,
+    unlockPassword,
 };

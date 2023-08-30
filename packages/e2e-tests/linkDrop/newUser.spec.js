@@ -13,16 +13,16 @@ const { VerifySeedPhrasePage } = require('../register/models/VerifySeedPhrase');
 const { generateTestAccountId } = require('../utils/account');
 const { testDappURL } = require('../utils/config');
 const nearApiJsConnection = require('../utils/connectionSingleton');
-const { createPassword } = require('../utils/createPassword');
 const E2eTestAccount = require('../utils/E2eTestAccount');
 const { getKeyPairFromSeedPhrase } = require('../utils/helpers');
 const LinkdropAccountManager = require('../utils/LinkdropAccountManager');
+const { createPassword, unlockPassword } = require('../utils/password');
 
 const { describe, beforeAll, afterAll } = test;
 
 describe('Linkdrop flow', () => {
     let linkdropAccountManager,
-        linkdropNEARAmount = '2.5';
+        linkdropNEARAmount = '1.2';
     let deleteAccountsAfter = [];
 
     const linkdropClaimableAmount = new BN(parseNearAmount(linkdropNEARAmount) || '').sub(
@@ -68,6 +68,7 @@ describe('Linkdrop flow', () => {
         await expect(page).toHaveURL(/\/$/);
         await page.reload();
 
+        await unlockPassword(page);
         await expect(page.locator('.tokensLoading')).not.toBeVisible();
         const nearBalance = await new HomePage(page).getNearBalanceInNear();
         expect(
@@ -94,6 +95,8 @@ describe('Linkdrop flow', () => {
 
         await expect(page).toHaveURL(/\/$/);
         await page.reload();
+
+        await unlockPassword(page);
         await expect(page.locator('.tokensLoading')).not.toBeVisible();
         const nearBalance = await new HomePage(page).getNearBalanceInNear();
         expect(
