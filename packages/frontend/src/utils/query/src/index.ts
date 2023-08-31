@@ -29,25 +29,31 @@ interface SBTToken {
 
 const soulboundContracts: string[] = ['registry.i-am-human.near'];
 
-function getSoulBoundTokens(account: string, contract: string) {
-    return _viewFunction(contract, 'sbt_tokens_by_owner', { account })
-        .then((res) => res.result)
-        .then((res) => JSON.parse(Buffer.from(res).toString()))
-        .then((arr) =>
-            arr.map(
-                (item): SBTToken => ({
-                    account,
-                    contract,
-                    tokenName: item[0],
-                    tokenId: item[1][0].token,
-                    tokenMetadata: item[1][0].metadata,
-                })
-            )
-        )
-        .catch((err) => console.log(err));
+async function getSoulBoundTokens(
+    account: string,
+    contract: string
+): Promise<SBTToken[] | undefined> {
+    try {
+        const viewFunctionResult = (
+            await _viewFunction(contract, 'sbt_tokens_by_owner', { account })
+        ).result;
+        const arr: any[] = JSON.parse(Buffer.from(viewFunctionResult).toString());
+        return arr.map(
+            (item): SBTToken => ({
+                account,
+                contract,
+                tokenName: item[0],
+                tokenId: item[1][0].token,
+                tokenMetadata: item[1][0].metadata,
+            })
+        );
+    } catch (err) {
+        console.log(err);
+        return undefined;
+    }
 }
 
-export const useSoulboundTokens = (availableAccounts) => {
+export const useSoulboundTokens = (availableAccounts: string[]) => {
     return useQuery({
         queryKey: ['soulboundTokens', availableAccounts],
         queryFn: async () => {
@@ -58,7 +64,7 @@ export const useSoulboundTokens = (availableAccounts) => {
                 soulboundContracts.map((contract) => {
                     promises.push(
                         getSoulBoundTokens(account, contract).then((arr) =>
-                            arr.forEach((token) => tokens.push(token))
+                            arr?.forEach((token) => tokens.push(token))
                         )
                     );
                 });
