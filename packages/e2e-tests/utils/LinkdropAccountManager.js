@@ -6,8 +6,8 @@ const {
     },
 } = require('near-api-js');
 
-const { fetchLinkdropContract } = require('../contracts');
 const nearApiJsConnection = require('./connectionSingleton');
+const { fetchLinkdropContract } = require('../contracts');
 
 class LinkdropAccountManager {
     // Create random accounts for linkdrop sender, receiver and contract account and deploy linkdrop contract to the contract account

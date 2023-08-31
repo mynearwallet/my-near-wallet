@@ -107,9 +107,11 @@ module.exports = {
             },
         },
         {
-            files: ['*.ts'],
+            files: ['*.ts', '*.tsx'],
             rules: {
                 'no-undef': 'off',
+                'no-unused-vars': 'off',
+                '@typescript-eslint/no-unused-vars': 'error',
             },
         },
     ],

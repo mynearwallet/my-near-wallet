@@ -1,10 +1,10 @@
 // @ts-check
 const { formatNearAmount } = require('near-api-js/lib/utils/format');
 
+const { StakeUnstakePage } = require('./models/StakeUnstake');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
 const { generateNUniqueRandomNumbersInRange } = require('../utils/helpers');
-const { StakeUnstakePage } = require('./models/StakeUnstake');
 
 const { describe, afterEach, beforeEach } = test;
 

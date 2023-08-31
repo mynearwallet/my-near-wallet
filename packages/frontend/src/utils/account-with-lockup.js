@@ -5,10 +5,10 @@ import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { BinaryReader } from 'near-api-js/lib/utils/serialize';
 
+import { WalletError } from './walletError';
 import CONFIG from '../config';
 import { listStakingDeposits } from '../services/indexer';
 import StakingFarmContracts from '../services/StakingFarmContracts';
-import { WalletError } from './walletError';
 
 // TODO: Should gas allowance be dynamically calculated
 export const LOCKUP_MIN_BALANCE_OLD = new BN(parseNearAmount('35'));

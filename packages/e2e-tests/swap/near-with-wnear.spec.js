@@ -1,9 +1,6 @@
 // @ts-check
 const nearApi = require('near-api-js');
 
-const { CONTRACT } = require('../constants');
-const { test, expect } = require('../playwrightWithFixtures');
-const { HomePage } = require('../register/models/Home');
 const {
     NEAR_DEPOSIT_FEE,
     NEAR_WITHDRAW_FEE,
@@ -11,6 +8,9 @@ const {
 } = require('./constants');
 const { SwapPage } = require('./models/Swap');
 const { getResultMessageRegExp, removeStringBrakes } = require('./utils');
+const { CONTRACT } = require('../constants');
+const { test, expect } = require('../playwrightWithFixtures');
+const { HomePage } = require('../register/models/Home');
 
 const {
     utils: { format },

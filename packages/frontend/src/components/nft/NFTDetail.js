@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import { NFTMedia } from './NFTMedia';
+import NFTTransferModal from './NFTTransferModal';
 import CONFIG from '../../config';
 import UserIconGrey from '../../images/UserIconGrey';
 import BackArrowButton from '../common/BackArrowButton';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import SendIcon from '../svg/SendIcon';
-import { NFTMedia } from './NFTMedia';
-import NFTTransferModal from './NFTTransferModal';
 
 const StyledContainer = styled(Container)`
     .container {

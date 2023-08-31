@@ -122,30 +122,31 @@ export default function ({ content, translationId }) {
                 <h2>
                     <Translate id={translationId} />
                 </h2>
-                <a
-                    href={`https://awesomenear.com/categories/${sectionLink}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                >
+                <a href={sectionLink} target='_blank' rel='noopener noreferrer'>
                     <Translate id='explore.seeAll' />
                 </a>
             </StyledHeader>
             <StyledContent>
-                {projects.map((el) => (
+                {projects.map((project) => (
                     <StyledCard
-                        key={el.name}
-                        href={`https://awesomenear.com/${el.linkName}`}
+                        key={project.name}
+                        href={project.linkUrl}
                         target='_blank'
                         rel='noopener noreferrer'
                     >
                         <StyledCardHeader>
-                            <img src={el.icon} alt={el.name} width='40' height='40' />
+                            <img
+                                src={project.icon}
+                                alt={project.name}
+                                width='40'
+                                height='40'
+                            />
                             <StyledMeta>
-                                <div>{el.name}</div>
-                                <span>{el.category}</span>
+                                <div>{project.name}</div>
+                                <span>{project.category}</span>
                             </StyledMeta>
                         </StyledCardHeader>
-                        <StyledCardInfo>{el.info}</StyledCardInfo>
+                        <StyledCardInfo>{project.info}</StyledCardInfo>
                     </StyledCard>
                 ))}
             </StyledContent>

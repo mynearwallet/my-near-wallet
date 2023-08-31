@@ -3,12 +3,6 @@ import { Translate } from 'react-localize-redux';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import CONFIG from '../../config';
-import { actions as transactionsActions } from '../../redux/slices/transactions';
-import { TRANSACTIONS_REFRESH_INTERVAL } from '../../utils/wallet';
-import FormButton from '../common/FormButton';
-import Modal from '../common/modal/Modal';
-import SafeTranslate from '../SafeTranslate';
 import {
     ActionTitle,
     ActionValue,
@@ -16,6 +10,12 @@ import {
     ActionStatus,
     translateData,
 } from './ActivityBox';
+import CONFIG from '../../config';
+import { actions as transactionsActions } from '../../redux/slices/transactions';
+import { TRANSACTIONS_REFRESH_INTERVAL } from '../../utils/wallet';
+import FormButton from '../common/FormButton';
+import Modal from '../common/modal/Modal';
+import SafeTranslate from '../SafeTranslate';
 
 const StyledContainer = styled.div`
     display: flex;

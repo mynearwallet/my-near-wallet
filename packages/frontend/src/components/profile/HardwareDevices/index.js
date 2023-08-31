@@ -3,6 +3,7 @@ import { Translate } from 'react-localize-redux';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import { Authorized, Container, Device, MainTitle, Name } from './ui';
 import { Mixpanel } from '../../../mixpanel/index';
 import {
     getAccessKeys,
@@ -21,7 +22,6 @@ import {
 import FormButton from '../../common/FormButton';
 import SkeletonLoading from '../../common/SkeletonLoading';
 import ConfirmDisable from '../ConfirmDisable';
-import { Authorized, Container, Device, MainTitle, Name } from './ui';
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 
 const HardwareDevices = ({

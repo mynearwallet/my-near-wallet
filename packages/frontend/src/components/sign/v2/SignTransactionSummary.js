@@ -3,13 +3,13 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import SignTransaction from './SignTransaction';
 import AlertBanner from '../../common/AlertBanner';
 import FormButton from '../../common/FormButton';
 import FormButtonGroup from '../../common/FormButtonGroup';
 import Container from '../../common/styled/Container.css';
 import ConnectWithApplication from '../../login/v2/ConnectWithApplication';
 import ConnectWithPrivateShard from '../../login/v2/ConnectWithPrivateShard';
-import SignTransaction from './SignTransaction';
 
 const StyledContainer = styled(Container)`
     &&& {

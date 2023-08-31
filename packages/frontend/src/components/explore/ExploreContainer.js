@@ -2,7 +2,6 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import Container from '../common/styled/Container.css';
 import Banner from './components/Banner';
 import ExploreSection from './components/ExploreSection';
 import TrandingProjects from './components/TrandingProjects';
@@ -13,6 +12,7 @@ import {
     collectNFTsSection,
     playToEarnSection,
 } from './content';
+import Container from '../common/styled/Container.css';
 
 const StyledContainer = styled(Container)`
     padding: 0 14px 30px 14px;

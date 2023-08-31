@@ -2,8 +2,8 @@ const { BN } = require('bn.js');
 const milliseconds = require('ms');
 const { formatNearAmount } = require('near-api-js/lib/utils/format');
 
-const { getBankAccount } = require('../utils/account');
 const { formatTestTitle, formatFailure } = require('./playwright-formatters');
+const { getBankAccount } = require('../utils/account');
 
 /** @implements {import('@playwright/test/reporter').Reporter} */
 class WalletE2eLogsReporter {

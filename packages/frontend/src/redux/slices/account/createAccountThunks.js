@@ -3,6 +3,7 @@ import { KeyPair } from 'near-api-js';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { KeyType } from 'near-api-js/lib/utils/key_pair';
 
+import { SLICE_NAME } from './';
 import CONFIG from '../../../config';
 import { actions as ledgerActions } from '../../../redux/slices/ledger';
 import sendJson from '../../../tmp_fetch_send_json';
@@ -22,7 +23,6 @@ import {
 import { WalletError } from '../../../utils/walletError';
 import { finishAccountSetup } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
-import { SLICE_NAME } from './';
 
 const { signInWithLedger } = ledgerActions;
 
@@ -164,6 +164,8 @@ export const createNewAccount = createAsyncThunk(
             });
         }
 
+        // NOTE: wallet.saveAccount is being called multiple times here. But some of them are called
+        // without the keypair.
         await wallet.saveAndMakeAccountActive(accountId);
         await dispatch(
             addLocalKeyAndFinishSetup({

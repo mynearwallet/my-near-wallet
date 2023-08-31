@@ -1,19 +1,10 @@
 import React from 'react';
 import { Translate } from 'react-localize-redux';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Textfit } from 'react-textfit';
 import styled from 'styled-components';
 
-import getCurrentLanguage from '../../hooks/getCurrentLanguage';
-import classNames from '../../utils/classNames';
-import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
-import { getTotalBalanceInFiat } from '../common/balance/helpers';
-import FormButton from '../common/FormButton';
-import Container from '../common/styled/Container.css';
-import Tooltip from '../common/Tooltip';
-import DownArrowIcon from '../svg/DownArrowIcon';
-import SendIcon from '../svg/SendIcon';
-import TopUpIcon from '../svg/TopUpIcon';
-import WrapIcon from '../svg/WrapIcon';
 import ActivitiesWrapper from './ActivitiesWrapper';
 import AllTokensTotalBalanceUSD from './AllTokensTotalBalanceUSD';
 import CreateCustomNameModal from './CreateCustomNameModal';
@@ -24,6 +15,19 @@ import NFTs from './NFTs';
 import SidebarLight from './SidebarLight';
 import Tokens from './Tokens';
 import { ZeroBalanceAccountImportedModal } from './ZeroBalanceAccountImportedModal';
+import getCurrentLanguage from '../../hooks/getCurrentLanguage';
+import { selectPasswordProtectionSlice } from '../../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
+import classNames from '../../utils/classNames';
+import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
+import AlertBanner from '../common/AlertBanner';
+import { getTotalBalanceInFiat } from '../common/balance/helpers';
+import FormButton from '../common/FormButton';
+import Container from '../common/styled/Container.css';
+import Tooltip from '../common/Tooltip';
+import DownArrowIcon from '../svg/DownArrowIcon';
+import SendIcon from '../svg/SendIcon';
+import TopUpIcon from '../svg/TopUpIcon';
+import WrapIcon from '../svg/WrapIcon';
 
 const StyledContainer = styled(Container)`
     @media (max-width: 991px) {
@@ -31,6 +35,10 @@ const StyledContainer = styled(Container)`
         &.showing-banner {
             margin-top: -15px;
         }
+    }
+
+    .split {
+        margin-top: 20px;
     }
 
     .coingecko {
@@ -311,9 +319,21 @@ export function Wallet({
 }) {
     const currentLanguage = getCurrentLanguage();
     const totalAmount = getTotalBalanceInFiat(fungibleTokensList, currentLanguage);
+    const { dataStatus } = useSelector(selectPasswordProtectionSlice);
 
     return (
         <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
+            {/* TODO: Style and translate this */}
+            {!dataStatus.hasEncryptedData && (
+                <AlertBanner theme={'warning'} className={'password-encryption-alert'}>
+                    <Translate id='wallet.recommendToSetPassword' />
+                    <br />
+                    <Link to='/set-password' className={'right'}>
+                        <Translate id='wallet.setUpPasswordBtn' />
+                    </Link>
+                </AlertBanner>
+            )}
+
             <div className='split'>
                 <div className='left'>
                     <div className='tab-selector'>

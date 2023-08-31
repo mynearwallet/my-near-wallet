@@ -2,11 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
 
+import { Container, Description, Title } from './ui';
 import { selectAccountId } from '../../../redux/slices/account';
 import isMobile from '../../../utils/isMobile';
 import FormButton from '../../common/FormButton';
 import Modal from '../../common/modal/Modal';
-import { Container, Description, Title } from './ui';
 
 const ConfirmDisableMethod = ({
     title,

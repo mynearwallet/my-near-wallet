@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 
+import { listLikelyTokens } from './indexer';
 import CONFIG from '../config';
 import {
     parseTokenAmount,
@@ -9,7 +10,6 @@ import {
 } from '../utils/amounts';
 import { getTotalGasFee } from '../utils/gasPrice';
 import { wallet } from '../utils/wallet';
-import { listLikelyTokens } from './indexer';
 
 const {
     transactions: { functionCall },
@@ -18,11 +18,19 @@ const {
     },
 } = nearApiJs;
 
+let _viewFunctionAccount;
+
 // Fungible Token Standard
 // https://github.com/near/NEPs/tree/master/specs/Standards/FungibleToken
 export default class FungibleTokens {
     // View functions are not signed, so do not require a real account!
-    static viewFunctionAccount = wallet.getAccountBasic('dontcare');
+    static get viewFunctionAccount() {
+        if (!_viewFunctionAccount) {
+            _viewFunctionAccount = wallet.getAccountBasic('dontcare');
+        }
+
+        return _viewFunctionAccount;
+    }
 
     static async checkRegistration({ contractName, accountId }) {
         try {

@@ -1,15 +1,15 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-const { WALLET_NETWORK } = require('../constants');
-const { generateTestAccountId } = require('../utils/account');
-const nearApiJsConnection = require('../utils/connectionSingleton');
-const E2eTestAccount = require('../utils/E2eTestAccount');
 const { CreateAccountPage } = require('./models/CreateAccount');
 const { HomePage } = require('./models/Home');
 const { SetRecoveryOptionPage } = require('./models/SetRecoveryOption');
 const { SetupSeedPhrasePage } = require('./models/SetupSeedPhrase');
 const { VerifySeedPhrasePage } = require('./models/VerifySeedPhrase');
+const { WALLET_NETWORK } = require('../constants');
+const { generateTestAccountId } = require('../utils/account');
+const nearApiJsConnection = require('../utils/connectionSingleton');
+const E2eTestAccount = require('../utils/E2eTestAccount');
 
 const { describe, afterAll } = test;
 

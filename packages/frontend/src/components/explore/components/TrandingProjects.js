@@ -73,15 +73,20 @@ export default function ({ projects }) {
                 </StyledHeaderH2>
             </StyledHeader>
             <StyledArea>
-                {projects.map((el) => (
+                {projects.map((project) => (
                     <StyledLink
-                        key={el.name}
-                        href={`https://awesomenear.com/${el.linkName}`}
+                        key={project.name}
+                        href={project.linkUrl}
                         target='_blank'
                         rel='noopener noreferrer'
                     >
-                        <StyledImg src={el.icon} alt={el.name} width='80' height='80' />
-                        <div>{el.name}</div>
+                        <StyledImg
+                            src={project.icon}
+                            alt={project.name}
+                            width='80'
+                            height='80'
+                        />
+                        <div>{project.name}</div>
                     </StyledLink>
                 ))}
             </StyledArea>

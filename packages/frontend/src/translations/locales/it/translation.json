@@ -1153,6 +1153,43 @@
         "secondaryCta": "Conserva le chiavi esistenti",
         "two": "Il mantenimento di più chiavi e metodi di ripristino (comprese le passphrase) aumenta la vulnerabilità del tuo account."
     },
+    "setupPasswordProtection": {
+        "average": "Password media",
+        "changePassword": {
+            "completedDescription": "You have updated your password successfully.",
+            "completedTitle": "Password Updated Successfully",
+            "step1Description": "Please confirm your current password to continue",
+            "step1Title": "Step 1/2: Confirm Old Password",
+            "step2Description": "Set your new password here",
+            "step2Title": "Step 2/2: Set New Password"
+        },
+        "confirm": "Conferma Password",
+        "disableModal": {
+            "description": "Disabilitare la crittografia della password espone i tuoi account a un rischio maggiore. Sei sicuro di voler continuare?",
+            "disabledDescription": "La crittografia della password è stata disattivata con successo",
+            "disabledTitle": "Crittografia Password Disattivata",
+            "instruction": "Inserisci qui la tua password per confermare",
+            "title": "Disabilita la crittografia della password"
+        },
+        "enter": "Inserisci password",
+        "invalidPassword": "Password non valida",
+        "lengthError": "Almeno 8 caratteri",
+        "matchError": "Le password non corrispondono",
+        "pageText": "Userai questa password per sbloccare il tuo portafoglio.",
+        "pageTitle": "Crea una password",
+        "passwordExist": "Password già esistente",
+        "passwordExistDescription": "Hai già protetto il tuo account con una password.",
+        "setPasswordSuccessfully": "Password impostata con successo",
+        "setPasswordSuccessfullyButton": "Torna alla Home",
+        "setPasswordSuccessfullyDescription": "I tuoi account sono ora meglio protetti dalla crittografia della password.",
+        "strong": "Password forte",
+        "unlockWalletButton": "Sblocca Portafoglio",
+        "unlockWalletDescription": "Bentornato, il mondo web3 ti attende. Inserisci la tua password per sbloccare il tuo portafoglio.",
+        "unlockWalletInputPlaceholder": "Inserisci password",
+        "unlockWalletTitle": "Sblocca Portafoglio",
+        "week": "Password debole",
+        "withoutPassword": "Continua senza creare una password"
+    },
     "setupRecovery": {
         "advancedSecurity": "Più sicuro (consigliato)",
         "advancedSecurityDesc": "Annota una passphrase di 12 parole o proteggi il tuo account con il tuo dispositivo Ledger.",
@@ -1596,6 +1633,8 @@
             "desc": "Avrai bisogno di token NEAR per eseguire transazioni con il tuo wallet.",
             "title": "Deposita NEAR"
         },
+        "recommendToSetPassword": "Recomenda-se configurar uma senha para sua conta para melhorar a segurança de suas chaves privadas ou frase de segurança.",
+        "setUpPasswordBtn": "Configurar senha",
         "status": "Stato",
         "tokens": "Tokens",
         "totalBalance": "Saldo Totale",

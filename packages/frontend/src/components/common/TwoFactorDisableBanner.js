@@ -3,13 +3,13 @@ import { Translate } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import FormButton from './FormButton';
 import CONFIG from '../../config';
 import { selectAccountSlice } from '../../redux/slices/account';
 import WalletClass, { wallet } from '../../utils/wallet';
 import AlertTriangleIcon from '../svg/AlertTriangleIcon';
 import LockIcon from '../svg/LockIcon';
 import Disable2FAModal from '../wallet-migration/Disable2FA';
-import FormButton from './FormButton';
 
 const Container = styled.div`
     border: 2px solid #dc1f26;

@@ -2,9 +2,9 @@
 const BN = require('bn.js');
 const { parseNearAmount, formatNearAmount } = require('near-api-js/lib/utils/format');
 
+const { StakeUnstakePage } = require('./models/StakeUnstake');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
-const { StakeUnstakePage } = require('./models/StakeUnstake');
 
 const { describe, beforeAll, afterAll, beforeEach } = test;
 

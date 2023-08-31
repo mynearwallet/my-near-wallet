@@ -50,6 +50,7 @@ const InputWrapper = styled.div`
         }
     }
 `;
+
 class AccountFormAccountId extends Component {
     state = {
         accountId: this.props.defaultAccountId || '',
@@ -133,8 +134,8 @@ class AccountFormAccountId extends Component {
 
         this.checkAccountAvailabilityTimer &&
             clearTimeout(this.checkAccountAvailabilityTimer);
-        this.checkAccountAvailabilityTimer = setTimeout(() => {
-            this.handleCheckAvailability(accountId, type);
+        this.checkAccountAvailabilityTimer = setTimeout(async () => {
+            await this.handleCheckAvailability(accountId, type);
         }, ACCOUNT_CHECK_TIMEOUT);
     };
 
@@ -148,28 +149,33 @@ class AccountFormAccountId extends Component {
             invalidAccountIdLength: !!accountId && !this.checkAccountIdLength(accountId),
         }));
 
-    handleCheckAvailability = (accountId, type) => {
-        if (type === 'create') {
-            Mixpanel.track('CA Check account availability');
-        }
-        if (!accountId) {
+    handleCheckAvailability = async (accountId, type) => {
+        try {
+            if (type === 'create') {
+                Mixpanel.track('CA Check account availability');
+            }
+            if (!accountId) {
+                return false;
+            }
+            if (this.isImplicitAccount(accountId)) {
+                return true;
+            }
+            if (
+                !(
+                    type === 'create' &&
+                    !this.handleAccountIdLengthState(accountId) &&
+                    !this.checkAccountIdLength(accountId)
+                )
+            ) {
+                return await this.props.checkAvailability(
+                    type === 'create' ? this.props.accountId : accountId
+                );
+            }
+            return false;
+        } catch (e) {
+            console.error(e);
             return false;
         }
-        if (this.isImplicitAccount(accountId)) {
-            return true;
-        }
-        if (
-            !(
-                type === 'create' &&
-                !this.handleAccountIdLengthState(accountId) &&
-                !this.checkAccountIdLength(accountId)
-            )
-        ) {
-            return this.props.checkAvailability(
-                type === 'create' ? this.props.accountId : accountId
-            );
-        }
-        return false;
     };
 
     isSameAccount = () =>

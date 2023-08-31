@@ -2,10 +2,11 @@ import { BN } from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 import { parseSeedPhrase } from 'near-seed-phrase';
 
+import { ConnectionsStorage } from './storage';
+import { WalletError } from './walletError';
 import { store } from '..';
 import CONFIG from '../config';
 import { promptTwoFactor, refreshAccount } from '../redux/actions/account';
-import { WalletError } from './walletError';
 
 const {
     multisig: { Account2FA },
@@ -122,10 +123,7 @@ export class TwoFactor extends Account2FA {
         );
         const connection = Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
-            provider: {
-                type: 'JsonRpcProvider',
-                args: { url: CONFIG.NODE_URL },
-            },
+            provider: ConnectionsStorage.from(localStorage).createProvider(),
             signer: { type: 'InMemorySigner', keyStore },
         });
 

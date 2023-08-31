@@ -5,6 +5,11 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 
+import AccountFundedModal from './AccountFundedModal';
+import FundWithMoonpay from './create/FundWithMoonpay';
+import FundWithUtorg from './create/FundWithUtorg';
+import AccountFunded from './create/status/AccountFunded';
+import AccountNeedsFunding from './create/status/AccountNeedsFunding';
 import CONFIG from '../../config';
 import { Mixpanel } from '../../mixpanel';
 import { redirectTo } from '../../redux/actions/account';
@@ -12,7 +17,7 @@ import { selectAccountId, selectAccountSlice } from '../../redux/slices/account'
 import { createAccountFromImplicit } from '../../redux/slices/account/createAccountThunks';
 import { actions as createFromImplicitActions } from '../../redux/slices/createFromImplicit';
 import { selectStatusMainLoader } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import { isMoonpayAvailable, getSignedUrl } from '../../utils/moonpay';
 import { wallet } from '../../utils/wallet';
 import { getNearAndFiatValue } from '../common/balance/helpers';
@@ -21,11 +26,6 @@ import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import WhereToBuyNearModal from '../common/WhereToBuyNearModal';
 import SafeTranslate from '../SafeTranslate';
-import AccountFundedModal from './AccountFundedModal';
-import FundWithMoonpay from './create/FundWithMoonpay';
-import FundWithUtorg from './create/FundWithUtorg';
-import AccountFunded from './create/status/AccountFunded';
-import AccountNeedsFunding from './create/status/AccountNeedsFunding';
 
 const { setCreateFromImplicitSuccess } = createFromImplicitActions;
 

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Navigation from './Navigation';
 import { switchAccount, getAccountBalance } from '../../redux/actions/account';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { selectAvailableAccounts } from '../../redux/slices/availableAccounts';
@@ -8,7 +9,6 @@ import {
     selectFlowLimitationMainMenu,
     selectFlowLimitationSubMenu,
 } from '../../redux/slices/flowLimitation';
-import Navigation from './Navigation';
 
 export default () => {
     const dispatch = useDispatch();

@@ -1,7 +1,7 @@
-const { WALLET_NETWORK } = require('../constants');
 const nearApiJsConnection = require('./connectionSingleton');
 const E2eTestAccount = require('./E2eTestAccount');
 const SelfReloadingE2eTestAccount = require('./SelfReloadingE2eTestAccount');
+const { WALLET_NETWORK } = require('../constants');
 
 const getBankAccount = async () => {
     const { BANK_ACCOUNT: accountId, BANK_SEED_PHRASE: seedPhrase } = process.env;

@@ -4,6 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { ClaimSuccess } from './components/ClaimSuccess';
+import Staking from './components/Staking';
+import StakingAction from './components/StakingAction';
+import Unstake from './components/Unstake';
+import Validator from './components/Validator';
+import Validators from './components/Validators';
+import Withdraw from './components/Withdraw';
 import { Mixpanel } from '../../mixpanel/index';
 import { getBalance } from '../../redux/actions/account';
 import {
@@ -21,20 +28,13 @@ import {
 import { selectLedgerHasLedger } from '../../redux/slices/ledger';
 import { selectStakingSlice } from '../../redux/slices/staking';
 import { selectStatusSlice } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import { FARMING_VALIDATOR_VERSION } from '../../utils/constants';
 import {
     setStakingAccountSelected,
     getStakingAccountSelected,
 } from '../../utils/localStorage';
 import Container from '../common/styled/Container.css';
-import { ClaimSuccess } from './components/ClaimSuccess';
-import Staking from './components/Staking';
-import StakingAction from './components/StakingAction';
-import Unstake from './components/Unstake';
-import Validator from './components/Validator';
-import Validators from './components/Validators';
-import Withdraw from './components/Withdraw';
 
 const StyledContainer = styled(Container)`
     h1,

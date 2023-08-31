@@ -2,11 +2,11 @@ const { BN } = require('bn.js');
 const { JsonRpcProvider } = require('near-api-js/lib/providers');
 const { parseNearAmount } = require('near-api-js/lib/utils/format');
 
-const { createAccountWithHelper } = require('../services/contractHelper');
 const nearApiJsConnection = require('./connectionSingleton');
 const E2eTestAccount = require('./E2eTestAccount');
 const { generateTestAccountId, getWorkerAccountRegex } = require('./helpers');
 const { getTestAccountSeedPhrase } = require('./helpers');
+const { createAccountWithHelper } = require('../services/contractHelper');
 const { TEST_WORKER_INDEX } = process.env;
 
 class SelfReloadingJSONRpcProvider extends JsonRpcProvider {

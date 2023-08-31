@@ -3,8 +3,8 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
-import CONFIG from '../../../config';
 import ArrowUpRight from '../..//svg/ArrowUpRight';
+import CONFIG from '../../../config';
 import Balance from '../../common/balance/Balance';
 
 const StyledContainer = styled.div`

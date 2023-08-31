@@ -7,6 +7,7 @@ import {
     MAINNET,
     TESTNET,
 } from '../utils/constants';
+import { ConnectionsStorage } from '../utils/storage';
 
 // Staking Farm Contract
 // https://github.com/referencedev/staking-farm/
@@ -15,10 +16,7 @@ export default class StakingFarmContracts {
     static viewFunctionAccount = new Account(
         Connection.fromConfig({
             networkId: CONFIG.NETWORK_ID,
-            provider: {
-                type: 'JsonRpcProvider',
-                args: { url: CONFIG.NODE_URL + '/' },
-            },
+            provider: ConnectionsStorage.from(localStorage).createProvider(),
             signer: {},
         }),
         'dontcare'

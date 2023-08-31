@@ -5,6 +5,9 @@ import { Translate } from 'react-localize-redux';
 import { connect } from 'react-redux';
 import { withRouter, Route } from 'react-router-dom';
 
+import { SetPasswordPage } from './password_encryption/SetPasswordPage';
+import SetupSeedPhraseForm from './SetupSeedPhraseForm';
+import SetupSeedPhraseVerify from './SetupSeedPhraseVerify';
 import { Mixpanel } from '../../mixpanel/index';
 import {
     handleAddAccessKeySeedPhrase,
@@ -28,9 +31,6 @@ import parseFundingOptions from '../../utils/parseFundingOptions';
 import { Snackbar, snackbarDuration } from '../common/Snackbar';
 import Container from '../common/styled/Container.css';
 import { isRetryableRecaptchaError } from '../Recaptcha';
-import SetPasswordForm from './SetPasswordForm';
-import SetupSeedPhraseForm from './SetupSeedPhraseForm';
-import SetupSeedPhraseVerify from './SetupSeedPhraseVerify';
 
 const { setLinkdropAmount } = linkdropActions;
 const { fetchRecoveryMethods } = recoveryMethodsActions;
@@ -231,10 +231,6 @@ class SetupSeedPhrase extends Component {
         e.preventDefault();
     };
 
-    handleSubmitPasswordStep = (password) => {
-        console.log(password);
-    };
-
     render() {
         const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } =
             this.props;
@@ -331,24 +327,7 @@ class SetupSeedPhrase extends Component {
                         />
                         <Route
                             path={'/setup-seed-phrase/:accountId/set-encryption'}
-                            render={() => (
-                                <Container className='small-centered border'>
-                                    <form
-                                        onSubmit={this.handleSubmitPasswordStep}
-                                        autoComplete='off'
-                                    >
-                                        <h1>
-                                            <Translate id='setupPasswordProtection.pageTitle' />
-                                        </h1>
-                                        <h2>
-                                            <Translate id='setupPasswordProtection.pageText' />
-                                        </h2>
-                                        <SetPasswordForm
-                                            onSubmit={this.handleSubmitPasswordStep}
-                                        />
-                                    </form>
-                                </Container>
-                            )}
+                            render={() => <SetPasswordPage />}
                         />
                         <Snackbar
                             theme='success'

@@ -254,6 +254,7 @@
         "cancel": "Cancel",
         "cancelOperation": "Cancel Operation",
         "cancelTransfer": "Cancel Transfer",
+        "change": "Change",
         "claimAccount": "Claim Account",
         "claimMyAccount": "Claim My Account",
         "close": "Close",
@@ -376,6 +377,45 @@
         "two": "Follow the instructions on your device to confirm and grant access to each account you'd like to import."
     },
     "connecting": "Connecting",
+    "connection": {
+        "addNewHeader": "Add New Header",
+        "addRpcProvider": "Add RPC Provider",
+        "addRpcProviderModal": {
+            "connectionName": "Connection Name",
+            "noConfig": "This RPC Provider does not requires any config",
+            "priority": "Priority (lower means used first)",
+            "step1": "Step 1: Choose an RPC provider from the list",
+            "step2": "Step 2: Configure the RPC provider",
+            "step3": "Step 3: Name this connection and set priority",
+            "step4": "Step 4: Test & save the connection",
+            "testSave": "Test & Save Connection"
+        },
+        "apiKey": "Api Key",
+        "changeRpcProvider": "Change RPC Provider",
+        "defaultConnection": "Default Connection",
+        "delete": "Delete",
+        "dirty": "Your changes will only takes full effect after a page refresh, please click here in order to refresh the page.",
+        "edit": "Edit",
+        "headerDuplicateKey": "Duplicated key might cause unstable behavior",
+        "headers": "Headers",
+        "priority": "Priority",
+        "rpcOption": {
+            "ankr": "Ankr",
+            "custom": "Custom",
+            "custom-testnet": "Custom",
+            "getBlock": "GetBlock",
+            "infura": "Infura",
+            "infura-testnet": "Infura (Testnet)",
+            "near": "NEAR",
+            "near-testnet": "NEAR (Testnet)",
+            "nodeReal": "NodeReal",
+            "onerpc": "1RPC",
+            "pagoda": "Pagoda",
+            "pagoda-testnet": "Pagoda (Testnet)"
+        },
+        "rpcProvider": "RPC Provider",
+        "url": "URL"
+    },
     "connectLedger": {
         "connectLedger": "Connect Ledger",
         "ledgerConnected": "Ledger Connected",
@@ -1154,6 +1194,9 @@
         "checkbox": "I accept responsibility for sending funds to this address.",
         "scamWarning": "This address has a high level of risk and marked as scam. Make sure that this address is safe before sending funds."
     },
+    "rpcProvider": {
+        "title": "Default RPC Provider"
+    },
     "selectAccountDropdown": {
         "account": "Account",
         "createAccount": "Create New Account",
@@ -1320,14 +1363,44 @@
     },
     "setupPasswordProtection": {
         "average": "Average password",
+        "changePassword": {
+            "completedDescription": "You have updated your password successfully.",
+            "completedTitle": "Password Updated Successfully",
+            "step1Description": "Please confirm your current password to continue",
+            "step1Title": "Step 1/2: Confirm Old Password",
+            "step2Description": "Set your new password here",
+            "step2Title": "Step 2/2: Set New Password"
+        },
         "confirm": "Confirm Password",
+        "disableModal": {
+            "description": "Disabling password encryption will expose your accounts to a bigger risk. Are you sure you want to continue?",
+            "disabledDescription": "Password encryption disabled successfully",
+            "disabledTitle": "Password Encryption Disabled",
+            "instruction": "Insert your password here to confirm",
+            "title": "Disable Password Encryption"
+        },
         "enter": "Enter password",
+        "invalidPassword": "Invalid Password",
         "lengthError": "At least 8 characters",
         "matchError": "Passwords do not match",
         "pageText": "You will use this to unlock your wallet.",
         "pageTitle": "Create a Password",
+        "passwordExist": "Password already exists",
+        "passwordExistDescription": "You have already secured your account with a password.",
+        "setPasswordSuccessfully": "Password Set Successfully",
+        "setPasswordSuccessfullyButton": "Back To Home",
+        "setPasswordSuccessfullyDescription": "Your accounts are now protected by password encryption.",
         "strong": "Strong password",
-        "week": "Week password",
+        "unlockWalletButton": "Unlock Wallet",
+        "unlockWalletDescription": "Welcome back, the web3 world awaits you. Enter your password to unlock your wallet.",
+        "unlockWalletInputPlaceholder": "Enter password",
+        "unlockWalletTitle": "Unlock Wallet",
+        "warn": {
+            "passwordManager": "I acknowledge that storing this password in my browser's password manager exposes me to additional risk (we recommend you do not).",
+            "privateComputer": "If I am using this wallet in any public computer or environment that I feel not safe, I should immediately delete all browser history after using it.",
+            "recovery": "I acknowledge that this password can not be used to recover my accounts, I still need to preserve the recovery methods used when first creating my accounts (seed phrase etc.)"
+        },
+        "week": "Weak password",
         "withoutPassword": "Continue without creating a password"
     },
     "setupRecovery": {
@@ -1824,6 +1897,8 @@
             "desc": "You’ll need NEAR tokens to perform transactions with your wallet.",
             "title": "Deposit NEAR"
         },
+        "recommendToSetPassword": "It is highly recommended to set up a password for your wallet to better secure your account keys and sensitive data.",
+        "setUpPasswordBtn": "Set up password",
         "status": "Status",
         "tokens": "Tokens",
         "totalBalance": "Total Balance",
