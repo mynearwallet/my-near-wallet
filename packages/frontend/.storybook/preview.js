@@ -5,6 +5,7 @@ import '../src/app/index.css';
 import GlobalStyle from '../src/components/GlobalStyle';
 import { setupStore } from '../src';
 import { Provider } from 'react-redux';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -20,14 +21,17 @@ const preview = {
 };
 
 const store = setupStore({});
+const queryClient = new QueryClient();
 
 const withProviders = (Story, context) => {
     return (
         <Provider store={store}>
             <Suspense fallback={<div>loading translations...</div>}>
                 <I18nextProvider i18n={i18n}>
-                    <GlobalStyle />
-                    <Story {...context} />
+                    <QueryClientProvider client={queryClient}>
+                        <GlobalStyle />
+                        <Story {...context} />
+                    </QueryClientProvider>
                 </I18nextProvider>
             </Suspense>
         </Provider>
