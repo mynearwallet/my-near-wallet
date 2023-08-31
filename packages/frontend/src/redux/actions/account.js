@@ -343,10 +343,7 @@ export const {
     clearCode,
     getMultisigRequest,
 } = createActions({
-    INITIALIZE_RECOVERY_METHOD: [
-        wallet.initializeRecoveryMethod.bind(wallet),
-        () => ({}),
-    ],
+    INITIALIZE_RECOVERY_METHOD: [() => wallet.initializeRecoveryMethod(), () => ({})],
     VALIDATE_SECURITY_CODE: [wallet.validateSecurityCode.bind(wallet), () => ({})],
     INIT_TWO_FACTOR: [
         (...args) => new TwoFactor(wallet, wallet.accountId).initTwoFactor(...args),
