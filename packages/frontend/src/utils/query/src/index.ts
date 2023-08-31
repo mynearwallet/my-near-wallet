@@ -24,7 +24,7 @@ interface SBTToken {
     contract: string;
     tokenName: string;
     tokenId: number;
-    tokenMetadata: string;
+    tokenMetadata: Record<string, number | null>;
 }
 
 const soulboundContracts: string[] = ['registry.i-am-human.near'];
@@ -33,7 +33,7 @@ function getSoulBoundTokens(account: string, contract: string): Promise<SBTToken
     return _viewFunction(contract, 'sbt_tokens_by_owner', { account })
         .then((res: any) => res.result)
         .then((res: Uint8Array) => JSON.parse(Buffer.from(res).toString()))
-        .then((arr: [string, Record<string, any>][]) => {
+        .then((arr: [string, Record<string, any>[]][]) => {
             return arr.map(
                 (item): SBTToken => ({
                     account,
