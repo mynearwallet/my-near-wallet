@@ -29,12 +29,12 @@ interface SBTToken {
 
 const soulboundContracts: string[] = ['registry.i-am-human.near'];
 
-function getSoulBoundTokens(account: string, contract: string) {
+function getSoulBoundTokens(account: string, contract: string): Promise<SBTToken[]> {
     return _viewFunction(contract, 'sbt_tokens_by_owner', { account })
-        .then((res) => res.result)
-        .then((res) => JSON.parse(Buffer.from(res).toString()))
-        .then((arr) =>
-            arr.map(
+        .then((res: any) => res.result)
+        .then((res: Uint8Array) => JSON.parse(Buffer.from(res).toString()))
+        .then((arr: [string, Record<string, any>][]) => {
+            return arr.map(
                 (item): SBTToken => ({
                     account,
                     contract,
@@ -42,12 +42,15 @@ function getSoulBoundTokens(account: string, contract: string) {
                     tokenId: item[1][0].token,
                     tokenMetadata: item[1][0].metadata,
                 })
-            )
-        )
-        .catch((err) => console.log(err));
+            );
+        })
+        .catch((err) => {
+            console.log(err);
+            return [];
+        });
 }
 
-export const useSoulboundTokens = (availableAccounts) => {
+export const useSoulboundTokens = (availableAccounts: string[]) => {
     return useQuery({
         queryKey: ['soulboundTokens', availableAccounts],
         queryFn: async () => {
