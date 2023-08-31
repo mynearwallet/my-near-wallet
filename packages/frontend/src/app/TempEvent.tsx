@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import tempEventImage from '../images/temp-event.jpeg';
 import { selectAvailableAccounts } from '../redux/slices/availableAccounts';
 import { useSoulboundTokens } from '../utils/query/src';
 
@@ -45,11 +46,16 @@ function Modal({ open, onClose }: { open: boolean; onClose: () => void }) {
                         <div className='inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl'>
                             <Dialog.Title
                                 as='h3'
-                                className='text-lg font-medium leading-6 text-gray-900'
+                                className='text-3xl text-center font-medium leading-6 text-gray-600'
                             >
                                 NDC voting is coming!
                             </Dialog.Title>
-                            <span className='text-gray-600 text-md mt-2 block'>
+                            <img
+                                className='w-full mt-6 rounded-3xl'
+                                src={tempEventImage}
+                                alt='NDC voting event'
+                            />
+                            <span className='text-gray-400 text-lg mt-4 block'>
                                 The NEAR Digital Collective (NDC) is all about giving
                                 everyone a say in the NEAR network's future. It's about
                                 transparency, collective decisions, and
@@ -57,12 +63,20 @@ function Modal({ open, onClose }: { open: boolean; onClose: () => void }) {
                                 register as a voter before September 1, 23:59 UTC via
                                 I-AM-HUMAN. Make your voice count!
                             </span>
-                            <button
-                                onClick={() => window.open('https://i-am-human.app/')}
-                                className='block text-center w-full p-2 mt-4 bg-sky-400 hover:bg-sky-600 text-sky-800 hover:text-sky-200 rounded-md'
-                            >
-                                Register as a voter now!
-                            </button>
+                            <div className='flex flex-row-reverse mt-4'>
+                                <button
+                                    onClick={() => window.open('https://i-am-human.app/')}
+                                    className='block text-lg p-4 bg-gradient-to-tr from-[#a0d4fc] via-[#5cc5f2] via-40% to-[#cc92ff] text-white font-bold rounded-full'
+                                >
+                                    Register as a voter now!
+                                </button>
+                                <button
+                                    onClick={onClose}
+                                    className='block text-lg p-4 text-gray-500 hover:text-gray-900'
+                                >
+                                    Close
+                                </button>
+                            </div>
                         </div>
                     </Transition.Child>
                 </div>
