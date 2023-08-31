@@ -29,25 +29,28 @@ interface SBTToken {
 
 const soulboundContracts: string[] = ['registry.i-am-human.near'];
 
-function getSoulBoundTokens(account: string, contract: string): Promise<SBTToken[]> {
-    return _viewFunction(contract, 'sbt_tokens_by_owner', { account })
-        .then((res: any) => res.result)
-        .then((res: Uint8Array) => JSON.parse(Buffer.from(res).toString()))
-        .then((arr: [string, Record<string, any>[]][]) => {
-            return arr.map(
-                (item): SBTToken => ({
-                    account,
-                    contract,
-                    tokenName: item[0],
-                    tokenId: item[1][0].token,
-                    tokenMetadata: item[1][0].metadata,
-                })
-            );
-        })
-        .catch((err) => {
-            console.log(err);
-            return [];
-        });
+async function getSoulBoundTokens(
+    account: string,
+    contract: string
+): Promise<SBTToken[]> {
+    try {
+        const viewFunctionResult: Uint8Array = (
+            await _viewFunction(contract, 'sbt_tokens_by_owner', { account })
+        ).result;
+        const arr: any[] = JSON.parse(Buffer.from(viewFunctionResult).toString());
+        return arr.map(
+            (item): SBTToken => ({
+                account,
+                contract,
+                tokenName: item[0],
+                tokenId: item[1][0].token,
+                tokenMetadata: item[1][0].metadata,
+            })
+        );
+    } catch (err) {
+        console.log(err);
+        return [];
+    }
 }
 
 export const useSoulboundTokens = (availableAccounts: string[]) => {
@@ -61,7 +64,7 @@ export const useSoulboundTokens = (availableAccounts: string[]) => {
                 soulboundContracts.map((contract) => {
                     promises.push(
                         getSoulBoundTokens(account, contract).then((arr) =>
-                            arr.forEach((token) => tokens.push(token))
+                            arr?.forEach((token) => tokens.push(token))
                         )
                     );
                 });
