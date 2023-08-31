@@ -48,9 +48,6 @@ function getSoulBoundTokens(account: string, contract: string) {
 }
 
 export const useSoulboundTokens = (availableAccounts) => {
-    console.log(availableAccounts);
-    console.log(soulboundContracts);
-
     return useQuery({
         queryKey: ['soulboundTokens', availableAccounts],
         queryFn: async () => {
