@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import languagesIcon from '../../images/icon-languages.svg';
-import LanguageToggle from '../common/LangSwitcher';
+import ConnectionIcon from './ConnectionIcon';
 import ConnectLedger from './ConnectLedger';
 import DesktopMenu from './DesktopMenu';
 import Logo from './Logo';
 import NavLinks from './NavLinks';
 import UserAccount from './UserAccount';
+import languagesIcon from '../../images/icon-languages.svg';
+import LanguageToggle from '../common/LangSwitcher';
 
 const Container = styled.div`
     display: none;
@@ -65,6 +66,7 @@ const Lang = styled.div`
     }
 
     .lang-selector {
+        color: #72727a;
         appearance: none;
         background: transparent url(${languagesIcon}) no-repeat 5px center / 20px 20px;
         border: 0;
@@ -104,8 +106,14 @@ class DesktopContainer extends Component {
         return (
             <Container>
                 <Logo link={!flowLimitationMainMenu} />
-                {showAllNavigationLinks && <NavLinks />}
+                {showAllNavigationLinks && (
+                    <>
+                        <NavLinks />
+                        <ConnectionIcon />
+                    </>
+                )}
                 <Lang>
+                    {!showAllNavigationLinks && <ConnectionIcon />}
                     <LanguageToggle />
                 </Lang>
                 <ConnectLedger />

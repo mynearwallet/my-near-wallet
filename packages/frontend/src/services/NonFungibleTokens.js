@@ -1,8 +1,8 @@
 import * as nearAPI from 'near-api-js';
 
+import { listLikelyNfts } from './indexer';
 import CONFIG from '../config';
 import { wallet } from '../utils/wallet';
-import { listLikelyNfts } from './indexer';
 
 export const TOKENS_PER_PAGE = 4;
 

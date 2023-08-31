@@ -3,6 +3,10 @@ import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 
+import { formatCreatedAt } from './lib/format';
+import { createUserRecoveryMethodsMap } from './lib/recovery-methods';
+import { DisablePasswordEncryptionModal } from './password_encryption/DisablePasswordEncryptionModal';
+import RecoveryMethod from './RecoveryMethod';
 import { Mixpanel } from '../../../mixpanel';
 import { deleteRecoveryMethod, redirectTo } from '../../../redux/actions/account';
 import { selectAccountLedgerKey } from '../../../redux/slices/account';
@@ -19,10 +23,6 @@ import ShieldIcon from '../../svg/ShieldIcon';
 import ConfirmDisableMethod from '../ConfirmDisableMethod';
 import HardwareDevices from '../HardwareDevices';
 import { RecoveryOption } from '../ui';
-import { formatCreatedAt } from './lib/format';
-import { createUserRecoveryMethodsMap } from './lib/recovery-methods';
-import { DisablePasswordEncryptionModal } from './password_encryption/DisablePasswordEncryptionModal';
-import RecoveryMethod from './RecoveryMethod';
 
 const { fetchRecoveryMethods } = recoveryMethodsActions;
 

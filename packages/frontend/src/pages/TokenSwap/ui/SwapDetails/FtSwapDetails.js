@@ -2,13 +2,13 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import SlippagePicker from './SlippagePicker';
 import Tooltip from '../../../../components/common/Tooltip';
 import Amount from '../../../../components/send/components/entry_types/Amount';
 import StyledContainer from '../../../../components/send/components/entry_types/css/Style.css';
 import CONFIG from '../../../../config';
 import { useSwapData } from '../../model/Swap';
 import PriceImpact from '../PriceImpact';
-import SlippagePicker from './SlippagePicker';
 
 const RowWrapper = styled.div`
     display: flex;

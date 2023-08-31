@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import SignTransactionDetails from './SignTransactionDetails';
 import { selectAccountUrlPrivateShard } from '../../../redux/slices/account';
 import { selectSignTransactions } from '../../../redux/slices/sign';
-import SignTransactionDetails from './SignTransactionDetails';
 
 export default ({ onClickGoBack, signGasFee }) => {
     const transactions = useSelector(selectSignTransactions);

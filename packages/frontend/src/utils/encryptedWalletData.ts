@@ -188,7 +188,7 @@ function getStoredWalletDataStatus(): TStoredWalletDataStatus {
 }
 
 interface IOSetEncryptedData_Input {
-    password: string;
+    password?: string;
     accounts: IDecryptedAccount[];
 }
 

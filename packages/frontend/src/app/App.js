@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
+import TempEvent from './TempEvent';
 import AccessKeysWrapper from '../components/access-keys/v2/AccessKeysWrapper';
 import AutoImportWrapper from '../components/accounts/auto_import/AutoImportWrapper';
 import BatchImportAccounts from '../components/accounts/batch_import_accounts';
@@ -46,6 +47,7 @@ import PrivateRoute from '../components/common/routing/PrivateRoute';
 import PublicRoute from '../components/common/routing/PublicRoute';
 import Route from '../components/common/routing/Route';
 import Updater from '../components/common/Updater';
+import Connection from '../components/connection/Connection';
 import { ExploreContainer } from '../components/explore/ExploreContainer';
 import GlobalStyle from '../components/GlobalStyle';
 import LoginCliLoginSuccess from '../components/login/LoginCliLoginSuccess';
@@ -316,6 +318,7 @@ class Routing extends Component {
                 ])}
                 id='app-container'
             >
+                <TempEvent />
                 <Bootstrap />
                 <Updater />
                 <GlobalStyle />
@@ -625,6 +628,7 @@ class Routing extends Component {
                                 path='/explore'
                                 component={ExploreContainer}
                             />
+                            <Route exact path='/connection' component={Connection} />
                             <Route
                                 exact
                                 path='/cli-login-success'

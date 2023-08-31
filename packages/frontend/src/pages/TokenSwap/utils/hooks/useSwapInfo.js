@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 
+import usePools from './usePools';
 import useDebouncedValue from '../../../../hooks/useDebouncedValue';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { useSwapData } from '../../model/Swap';
 import { SWAP_INFO_DELAY, IMPOSSIBLE_POOL_ID, NOTIFICATION_TYPE } from '../constants';
-import usePools from './usePools';
 
 export default function useSwapInfo({
     account,

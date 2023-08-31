@@ -28,100 +28,117 @@ import sweatEconomyIcon from './media/sweat-economy.jpg';
 import tamagoIcon from './media/tamago.jpg';
 import tonicDexIcon from './media/tonic-dex.jpg';
 
-export const trandingProjects = [
+interface Project {
+    icon: any;
+    name: string;
+    linkUrl: string;
+    category?: string;
+    info?: string;
+}
+
+interface Section {
+    name: string;
+    icon: any;
+    colour: string;
+    sectionLink: string;
+    projects: Project[];
+}
+
+export const trandingProjects: Project[] = [
     {
         icon: refFinanceIcon,
         name: 'Ref Finance',
-        linkName: 'ref-finance',
+        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=ref-finance',
     },
     {
         icon: parasIcon,
         name: 'Paras',
-        linkName: 'paras',
+        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=paras',
     },
     {
         icon: burrowIcon,
         name: 'Burrow',
-        linkName: 'burrow',
+        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=burrow',
     },
     {
         icon: metapoolIcon,
         name: 'Meta Pool',
-        linkName: 'meta-pool',
+        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=meta-pool',
     },
     {
         icon: astrodaoIcon,
         name: 'Astro DAO',
-        linkName: 'astrodao',
+        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=astrodao',
     },
     {
         icon: rainbowbridgeIcon,
         name: 'Rainbow Bridge',
-        linkName: 'rainbow-bridge',
+        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=rainbow-bridge',
     },
 ];
 
-export const exchangeSection = {
+export const exchangeSection: Section = {
     name: 'Exchanges',
     icon: exchangeSectionIcon,
     colour: '#FFF7FB',
-    sectionLink: 'exchanges',
+    sectionLink: 'https://near.org/near/widget/Search.IndexPage?term=exchanges',
     projects: [
         {
             icon: refFinanceIcon,
             name: 'Ref Finance',
-            linkName: 'ref-finance',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=ref-finance',
             category: 'AMM DEX',
             info: 'Multi-purpose DeFi platform built on NEAR Protocol.',
         },
         {
             icon: tonicDexIcon,
             name: 'Tonic DEX',
-            linkName: 'tonic-dex',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=tonic-dex',
             category: 'Orderbook DEX',
             info: 'Orderbook DEX on NEAR.',
         },
         {
             icon: jumboExchangeIcon,
             name: 'Jumbo Exchange',
-            linkName: 'jumbo-exchange',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=jumbo-exchange',
             category: 'AMM DEX',
             info: 'UI/UX Friendly AMM built on NEAR.',
         },
         {
             icon: arbitoorAggregatorIcon,
             name: 'Arbitoor Aggregator',
-            linkName: 'arbitoor-aggregator',
+            linkUrl:
+                'https://near.org/near/widget/Search.IndexPage?term=arbitoor-aggregator',
             category: 'DEX Aggregator',
             info: 'The Liquidity Aggregator and Swap Infrastructure for NEAR.',
         },
         {
             icon: spinIcon,
             name: 'Spin',
-            linkName: 'spin',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=spin',
             category: 'Orderbook DEX',
             info: 'DeFi derivatives infrastructure built on NEAR Protocol.',
         },
         {
             icon: rainbowbridgeIcon,
             name: 'Rainbow Bridge',
-            linkName: 'rainbow-bridge',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=rainbow-bridge',
             category: 'Cross-chain Bridge',
             info: 'Transfer tokens between Ethereum and NEAR.',
         },
     ],
 };
 
-export const startEarningSection = {
+export const startEarningSection: Section = {
     name: 'Start Earning',
     icon: startEarningSectionIcon,
     colour: 'linear-gradient(0deg, #F4FFEE, #F4FFEE), linear-gradient(0deg, #ECFFE3, #ECFFE3), linear-gradient(0deg, #ECFFE3, #ECFFE3), #ECFFE3;',
-    sectionLink: 'defi',
+    sectionLink: 'https://near.org/near/widget/Search.IndexPage?term=defi',
     projects: [
         {
             icon: burrowIcon,
             name: 'Burrow',
-            linkName: 'burrow',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=burrow',
             category: 'Lending Protocol',
             info: 'Borrow, Supply, Thrive.',
         },
@@ -129,137 +146,140 @@ export const startEarningSection = {
         {
             icon: pembrockFinanceIcon,
             name: 'PembRock Finance',
-            linkName: 'pembrock-finance',
+            linkUrl:
+                'https://near.org/near/widget/Search.IndexPage?term=pembrock-finance',
             category: 'Leveraged yield farming',
             info: 'Leveraged yield farming on NEAR.',
         },
         {
             icon: metapoolIcon,
             name: 'Meta Pool',
-            linkName: 'meta-pool',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=meta-pool',
             category: 'Liquid Staking',
             info: 'Liquid Staking Protocol built on NEAR.',
         },
         {
             icon: linearProtocolIcon,
             name: 'LiNEAR Protocol',
-            linkName: 'linear-protocol',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=linear-protocol',
             category: 'Liquid Staking',
             info: 'Your Journey of DeFi on NEAR Starts Here.',
         },
         {
             icon: astroStakersIcon,
             name: 'Astro-Stakers',
-            linkName: 'astro-stakers',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=astro-stakers',
             category: 'Staking Provider',
             info: 'Low-fee Community Staking Provider for NEAR Protocol.',
         },
         {
             icon: dragonflyCapitalPartnersIcon,
             name: 'Dragonfly Capital Partners',
-            linkName: 'dragonfly-capital-partners',
+            linkUrl:
+                'https://near.org/near/widget/Search.IndexPage?term=dragonfly-capital-partners',
             category: 'Staking Provider',
             info: 'Global from day one.',
         },
     ],
 };
 
-export const collectNFTsSection = {
+export const collectNFTsSection: Section = {
     name: 'Collect NFTs',
     icon: collectNFTsSectionIcon,
     colour: 'linear-gradient(0deg, #FEF4FF, #FEF4FF), linear-gradient(0deg, #ECFFE3, #ECFFE3), linear-gradient(0deg, #ECFFE3, #ECFFE3), #ECFFE3;',
-    sectionLink: 'marketplaces',
+    sectionLink: 'https://near.org/near/widget/Search.IndexPage?term=marketplaces',
     projects: [
         {
             icon: parasIcon,
             name: 'Paras',
-            linkName: 'paras',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=paras',
             category: 'NFT Marketplace',
             info: 'Create, Trade, and Collect Digital Collectibles.',
         },
         {
             icon: mintbaseIcon,
             name: 'Mintbase',
-            linkName: 'mintbase',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=mintbase',
             category: 'NFT Marketplace',
             info: 'Digital assets minted and backed by you.',
         },
         {
             icon: apollo42Icon,
             name: 'Apollo42',
-            linkName: 'apollo42',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=apollo42',
             category: 'NFT Marketplace',
             info: 'Your journey to a new galaxy of digital cultures and collectibles.',
         },
         {
             icon: tamagoIcon,
             name: 'Tamago',
-            linkName: 'tamago',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=tamago',
             category: 'Audio Streaming platform',
             info: 'Decentralized Audio Streaming platform built on the NEAR.',
         },
         {
             icon: nearnautsIcon,
             name: 'NEARNauts',
-            linkName: 'nearnauts',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=nearnauts',
             category: 'NFT Collectibles',
             info: 'A generative project on the NEAR Network.',
         },
         {
             icon: antisocialApeClubIcon,
             name: 'Antisocial Ape Club',
-            linkName: 'antisocial-ape-club',
+            linkUrl:
+                'https://near.org/near/widget/Search.IndexPage?term=antisocial-ape-club',
             category: 'NFT Collectibles',
             info: '3333 unique, randomly generated pixel art ape NFTs.',
         },
     ],
 };
 
-export const playToEarnSection = {
+export const playToEarnSection: Section = {
     name: 'Play To Earn',
     icon: playToEarnSectionIcon,
     colour: 'linear-gradient(0deg, #F7F7FF, #F7F7FF), linear-gradient(0deg, #ECFFE3, #ECFFE3), linear-gradient(0deg, #ECFFE3, #ECFFE3), #ECFFE3;',
-    sectionLink: 'gaming',
+    sectionLink: 'https://near.org/near/widget/Search.IndexPage?term=gaming',
     projects: [
         {
             icon: metamonIcon,
             name: 'Metamon',
-            linkName: 'metamon',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=metamon',
             category: 'Play to Earn',
             info: 'Free-to-play Play-to-Earn online Battle Royale Game and Sci-Fi Franchise.',
         },
         {
             icon: cryptoheroeIcon,
             name: 'Crypto Hero',
-            linkName: 'cryptoheroes',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=cryptoheroes',
             category: 'Play to Earn',
             info: 'A blockchain game focused on PvE with a P2E raid system.',
         },
         {
             icon: armoredKingdomIcon,
             name: 'Armored Kindom',
-            linkName: 'armored-kingdom',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=armored-kingdom',
             category: 'Play to Earn',
             info: 'A multi-media entertainment universe.',
         },
         {
             icon: galaxyOnlineIcon,
             name: 'Galaxy Online',
-            linkName: 'galaxy-online',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=galaxy-online',
             category: 'Play to Earn',
             info: 'Epic MMO with blockchain-based game races.',
         },
         {
             icon: hashRushIcon,
             name: 'Hash Rush',
-            linkName: 'hash-rush',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=hash-rush',
             category: 'Play to Earn',
             info: 'Online sci-fi/fantasy RTS set in the fictional Hermeian galaxy.',
         },
         {
             icon: sweatEconomyIcon,
             name: 'Sweat Economy',
-            linkName: 'sweat-economy',
+            linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=sweat-economy',
             category: 'Move to Earn',
             info: 'Sweatcoin. Move to Earn. Walk into crypto.',
         },

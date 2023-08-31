@@ -4,6 +4,7 @@ import { Translate } from 'react-localize-redux';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
+import TwoFactorOption from './TwoFactorOption';
 import CONFIG from '../../../config';
 import { useRecoveryMethods } from '../../../hooks/recoveryMethods';
 import { Mixpanel } from '../../../mixpanel/index';
@@ -17,7 +18,7 @@ import { clearGlobalAlert } from '../../../redux/actions/status';
 import { selectAccountHas2fa, selectAccountId } from '../../../redux/slices/account';
 import { selectLedgerHasLedger } from '../../../redux/slices/ledger';
 import { selectActionsPending, selectStatusSlice } from '../../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../../redux/slices/tokenFiatValues/near';
 import { validateEmail } from '../../../utils/account';
 import AlertBanner from '../../common/AlertBanner';
 import { getNearAndFiatValue } from '../../common/balance/helpers';
@@ -26,7 +27,6 @@ import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
 import SafeTranslate from '../../SafeTranslate';
 import EnterVerificationCode from '../EnterVerificationCode';
-import TwoFactorOption from './TwoFactorOption';
 
 const { parseNearAmount } = utils.format;
 

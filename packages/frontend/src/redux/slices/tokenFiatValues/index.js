@@ -84,28 +84,12 @@ export const selectFiatValueLoadingState = (state) => state.status.loading;
 export const selectFiatValueErrorState = (state) => state.status.error;
 
 export const selectAllTokenFiatValues = (state) => state[SLICE_NAME];
-export const selectNearTokenFiatData = createSelector(
-    selectAllTokenFiatValues,
-    ({ tokens }) => tokens.near || {}
-);
-export const selectNearTokenFiatValueUSD = createSelector(
-    selectNearTokenFiatData,
-    (near) => near.usd
-);
-
-export const selectUSDNTokenFiatData = createSelector(
-    selectAllTokenFiatValues,
-    ({ tokens }) => tokens.usn || {}
-);
-export const selectUSDNTokenFiatValueUSD = createSelector(
-    selectUSDNTokenFiatData,
-    (usn) => usn.usd
-);
 
 export const selectTokensFiatValueUSD = createSelector(
     selectAllTokenFiatValues,
     ({ tokens }) => tokens || {}
 );
+
 export const selectTokenWhiteList = createSelector(
     selectAllTokenFiatValues,
     ({ tokenWhiteList }) => tokenWhiteList || []

@@ -8,6 +8,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3-near';
 import { LocalizeProvider } from 'react-localize-redux';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 
 import App from './app';
@@ -35,11 +36,11 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
 };
 
 export const store = setupStore({});
+export const queryClient = new QueryClient();
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
-// @ts-ignore TODO fake property
-store.addAccountReducer = () => {
+export const addAccountReducer = () => {
     store.replaceReducer(createRootReducer(history));
 };
 
@@ -52,7 +53,9 @@ ReactDOM.render(
     >
         <Provider store={store}>
             <LocalizeProvider store={store}>
-                <App history={history} />
+                <QueryClientProvider client={queryClient}>
+                    <App history={history} />
+                </QueryClientProvider>
             </LocalizeProvider>
         </Provider>
     </GoogleReCaptchaProvider>,

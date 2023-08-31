@@ -1,5 +1,6 @@
 import Big from 'big.js';
 
+import { FEE_DIVISOR } from './constants';
 import {
     parseTokenAmount,
     formatTokenAmount,
@@ -7,7 +8,6 @@ import {
 } from '../../utils/amounts';
 import { MAX_PERCENTAGE } from '../../utils/constants';
 import { retryRequestIfFailed } from '../../utils/request';
-import { FEE_DIVISOR } from './constants';
 
 const localCache = {};
 

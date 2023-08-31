@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import AccountFormAccountId from './AccountFormAccountId';
 import CONFIG from '../../config';
 import { Mixpanel } from '../../mixpanel/index';
 import {
@@ -23,7 +24,7 @@ import {
     selectStatusLocalAlert,
     selectStatusMainLoader,
 } from '../../redux/slices/status';
-import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues';
+import { selectNearTokenFiatValueUSD } from '../../redux/slices/tokenFiatValues/near';
 import isMobile from '../../utils/isMobile';
 import { ENABLE_IDENTITY_VERIFIED_ACCOUNT } from '../../utils/wallet';
 import AccountNote from '../common/AccountNote';
@@ -35,7 +36,6 @@ import SafeTranslate from '../SafeTranslate';
 import BrokenLinkIcon from '../svg/BrokenLinkIcon';
 import FundNearIcon from '../svg/FundNearIcon';
 import DepositNearBanner from '../wallet/DepositNearBanner';
-import AccountFormAccountId from './AccountFormAccountId';
 
 const StyledContainer = styled(Container)`
     .input {

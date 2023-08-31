@@ -2,10 +2,8 @@ import BN from 'bn.js';
 import { isEmpty, some } from 'lodash';
 import { createSelector } from 'reselect';
 
-import {
-    selectStakingCurrentAccountAccountId,
-    selectValidatorsFarmData,
-} from '../slices/staking';
+import { selectStakingCurrentAccountAccountId } from '../slices/staking';
+import { selectValidatorsFarmData } from '../slices/staking/farmValidators';
 import {
     selectTokensFiatValueUSD,
     selectTokenWhiteList,
