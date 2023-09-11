@@ -494,16 +494,7 @@ export default class Wallet {
 
         switch (keyType) {
             case Wallet.KEY_TYPES.FAK: {
-                const keyStore = new nearApiJs.keyStores.InMemoryKeyStore();
-                await keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
-                const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
-                const account = new nearApiJs.Account(
-                    this.connectionIgnoringLedger,
-                    accountId
-                );
-
-                await account.addKey(newKeyPair.getPublicKey());
-                await this.saveAccount(accountId, newKeyPair);
+                await this.saveAccount(accountId, keyPair);
 
                 if (!this.accountId) {
                     return this.makeAccountActive(accountId);
