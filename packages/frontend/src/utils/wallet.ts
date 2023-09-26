@@ -158,9 +158,14 @@ export default class Wallet {
             removeAllAccountsPrivateKey();
         }
 
-        this.signerIgnoringLedger = rpcInfo ? wallet.signerIgnoringLedger : new nearApiJs.InMemorySigner(this.keyStore);
+        this.signerIgnoringLedger = new nearApiJs.InMemorySigner(this.keyStore);
 
-        const signerIgnoringLedger = this.signerIgnoringLedger;
+        const getSignerIgnoringLedger = () => {
+            if (rpcInfo && wallet) {
+                return wallet.signerIgnoringLedger;
+            }
+            return this.signerIgnoringLedger;
+        }
         const wallet = this;
 
         this.signer = {
@@ -200,7 +205,7 @@ export default class Wallet {
                     };
                 }
 
-                return signerIgnoringLedger.signMessage(message, accountId, networkId);
+                return getSignerIgnoringLedger().signMessage(message, accountId, networkId);
             },
         };
         let provider;
