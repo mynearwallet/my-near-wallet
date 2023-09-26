@@ -13,14 +13,12 @@ export async function syncPrivateShardAccount({
         publicKey,
         signature,
         shardId: shardInfo.shardId,
-        method: 'sync',
     };
-    const response = await fetch(`${CONFIG.CALIMERO_API_URL}/api/v1/shards/${shardInfo.shardId}/wallet/api/v1/account/sync`, {
+    const response = await fetch(`${CONFIG.CALIMERO_URL}/api/public/sync`, {
         method: 'POST',
         body: JSON.stringify(postData),
         headers: {
             'Content-type': 'application/json; charset=utf-8',
-            'x-api-key': shardInfo.shardApiToken
         },
     });
     if (!response.ok) {
