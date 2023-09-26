@@ -158,7 +158,7 @@ export default class Wallet {
             removeAllAccountsPrivateKey();
         }
 
-        this.signerIgnoringLedger = new nearApiJs.InMemorySigner(this.keyStore);
+        this.signerIgnoringLedger = rpcInfo ? wallet.signerIgnoringLedger : new nearApiJs.InMemorySigner(this.keyStore);
 
         const signerIgnoringLedger = this.signerIgnoringLedger;
         const wallet = this;
