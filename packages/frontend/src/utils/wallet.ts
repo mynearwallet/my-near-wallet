@@ -160,7 +160,12 @@ export default class Wallet {
 
         this.signerIgnoringLedger = new nearApiJs.InMemorySigner(this.keyStore);
 
-        const signerIgnoringLedger = this.signerIgnoringLedger;
+        const getSignerIgnoringLedger = () => {
+            if (rpcInfo && wallet) {
+                return wallet.signerIgnoringLedger;
+            }
+            return this.signerIgnoringLedger;
+        }
         const wallet = this;
 
         this.signer = {
@@ -170,7 +175,7 @@ export default class Wallet {
                     return ledgerKey;
                 }
 
-                return await signerIgnoringLedger.getPublicKey(accountId, networkId);
+                return await getSignerIgnoringLedger().getPublicKey(accountId, networkId);
             },
             async signMessage(message, accountId, networkId) {
                 if (await wallet.getLedgerKey(accountId)) {
@@ -200,7 +205,7 @@ export default class Wallet {
                     };
                 }
 
-                return signerIgnoringLedger.signMessage(message, accountId, networkId);
+                return getSignerIgnoringLedger().signMessage(message, accountId, networkId);
             },
         };
         let provider;
