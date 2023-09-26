@@ -175,7 +175,7 @@ export default class Wallet {
                     return ledgerKey;
                 }
 
-                return await signerIgnoringLedger.getPublicKey(accountId, networkId);
+                return await getSignerIgnoringLedger().getPublicKey(accountId, networkId);
             },
             async signMessage(message, accountId, networkId) {
                 if (await wallet.getLedgerKey(accountId)) {
