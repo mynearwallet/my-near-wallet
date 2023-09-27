@@ -15,6 +15,14 @@ const test = base.test.extend({
     bankAccount: [
         // eslint-disable-next-line no-empty-pattern
         async ({}, use, workerInfo) => {
+            await new Promise((resolve) => {
+                console.log(workerInfo);
+                const timeout =
+                    (workerInfo.workerIndex % 30) * 5000 +
+                    Math.ceil(Math.random() * 5000);
+                setTimeout(resolve, timeout);
+            });
+
             const bankAccount = await getBankAccount();
             const workerBankAccountId = getWorkerAccountId(workerInfo.workerIndex);
             const workerBankAccountSeedphrase =
