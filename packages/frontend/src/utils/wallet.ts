@@ -161,12 +161,8 @@ export default class Wallet {
         this.signerIgnoringLedger = new nearApiJs.InMemorySigner(this.keyStore);
 
         const getSignerIgnoringLedger = () => {
-            if (rpcInfo && wallet) {
-                return wallet.signerIgnoringLedger;
-            }
-            return this.signerIgnoringLedger;
-        }
-        const wallet = this;
+            return rpcInfo ? wallet.signerIgnoringLedger : this.signerIgnoringLedger;
+        };
 
         this.signer = {
             async getPublicKey(accountId, networkId) {
@@ -205,7 +201,11 @@ export default class Wallet {
                     };
                 }
 
-                return getSignerIgnoringLedger().signMessage(message, accountId, networkId);
+                return getSignerIgnoringLedger().signMessage(
+                    message,
+                    accountId,
+                    networkId
+                );
             },
         };
         let provider;
@@ -972,7 +972,7 @@ export default class Wallet {
             : await this.getAccount(accountId);
 
         const has2fa = await TwoFactor.has2faEnabled(account);
-        console.log('key being added to 2fa account ?', has2fa, account);
+
         try {
             // TODO: Why not always pass `fullAccess` explicitly when it's desired?
             // TODO: Alternatively require passing MULTISIG_CHANGE_METHODS from caller as `methodNames`
@@ -989,12 +989,19 @@ export default class Wallet {
                     ? MULTISIG_CHANGE_METHODS
                     : methodNames;
 
-                return await account.addKey(
-                    publicKey.toString(),
-                    contractId,
-                    finalMethodNames,
-                    CONFIG.ACCESS_KEY_FUNDING_AMOUNT
-                );
+                console.log('adding access key with account', account);
+
+                return await account
+                    .addKey(
+                        publicKey.toString(),
+                        contractId,
+                        finalMethodNames,
+                        CONFIG.ACCESS_KEY_FUNDING_AMOUNT
+                    )
+                    .catch((e) => {
+                        console.log('error adding access key', e);
+                        throw e;
+                    });
             }
         } catch (e) {
             if (e.type === 'AddKeyAlreadyExists') {
