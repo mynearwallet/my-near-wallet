@@ -989,19 +989,12 @@ export default class Wallet {
                     ? MULTISIG_CHANGE_METHODS
                     : methodNames;
 
-                console.log('adding access key with account', account);
-
-                return await account
-                    .addKey(
-                        publicKey.toString(),
-                        contractId,
-                        finalMethodNames,
-                        CONFIG.ACCESS_KEY_FUNDING_AMOUNT
-                    )
-                    .catch((e) => {
-                        console.log('error adding access key', e);
-                        throw e;
-                    });
+                return await account.addKey(
+                    publicKey.toString(),
+                    contractId,
+                    finalMethodNames,
+                    CONFIG.ACCESS_KEY_FUNDING_AMOUNT
+                );
             }
         } catch (e) {
             if (e.type === 'AddKeyAlreadyExists') {
