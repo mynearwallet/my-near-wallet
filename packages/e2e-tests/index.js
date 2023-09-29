@@ -54,11 +54,7 @@ async function createIncident(accountId, error) {
 Wallet e2e-tests suite has failed. See https://dashboard.render.com/cron/crn-bvrt6tblc6ct62bdjmig/logs for details.
 Make sure that account recovery works well on https://wallet.near.org.
 
-${
-    accountId
-        ? `Test account to check https://explorer.near.org/accounts/${accountId}`
-        : ''
-}
+${accountId ? `Test account to check https://nearblocks.io/address/${accountId}` : ''}
 
 ${error.stack}
                     `,
