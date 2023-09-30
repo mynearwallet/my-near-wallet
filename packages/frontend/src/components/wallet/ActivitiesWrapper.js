@@ -140,7 +140,7 @@ const ActivitiesWrapper = () => {
             )}
             <FormButton
                 color='gray-blue'
-                linkTo={`${CONFIG.EXPLORER_URL}/accounts/${accountId}`}
+                linkTo={`${CONFIG.EXPLORER_URL}/address/${accountId}`}
                 trackingId='Click to account on explorer'
             >
                 <Translate id='button.viewAll' />

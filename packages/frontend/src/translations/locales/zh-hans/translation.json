@@ -873,7 +873,7 @@
             "walletId": "钱包 ID"
         },
         "accountDoesNotExistBanner": {
-            "desc": "<a href='https://explorer.near.org/accounts/${data}' rel='noopener noreferrer' target='_blank'><b>此账户</b></a>暂无动态。向你的账户发送 NEAR 开始使用所有 NEAR 钱包功能。"
+            "desc": "<a href='https://nearblocks.io/address/${data}' rel='noopener noreferrer' target='_blank'><b>此账户</b></a>暂无动态。向你的账户发送 NEAR 开始使用所有 NEAR 钱包功能。"
         },
         "authorizedApps": {
             "title": "已授权应用"
