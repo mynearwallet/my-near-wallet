@@ -17,7 +17,11 @@ import { formatTokenAmount } from '../../../utils/amounts';
 import { NEAR_DECIMALS } from '../../../utils/constants';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
-import { DEFAULT_OUTPUT_TOKEN_ID, NOTIFICATION_TYPE } from '../utils/constants';
+import {
+    DEFAULT_OUTPUT_TOKEN_ID,
+    PRICE_IMPACT_THRESHOLD,
+    NOTIFICATION_TYPE,
+} from '../utils/constants';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
 
 const mobile = isMobile();
@@ -101,6 +105,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
             amountOut,
             swapPoolId,
             estimatedFee,
+            priceImpactPercent,
         },
         events: { setViewState, setTokenIn, setTokenOut, setAmountIn, setAmountOut },
     } = useSwapData();
@@ -329,8 +334,26 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
                             </Notification>
                         )}
 
+                        {priceImpactPercent > PRICE_IMPACT_THRESHOLD.error ? (
+                            <div className='p-3 mt-2 border-red-600 text-red-600 text-md bg-red-100 rounded-lg border-solid border-1'>
+                                The price impact is {priceImpactPercent}%. To protect you
+                                from potential asset loss, we have disabled the swap. We
+                                recommend using https://app.ref.finance.
+                            </div>
+                        ) : priceImpactPercent > PRICE_IMPACT_THRESHOLD.warning ? (
+                            <div className='p-3 mt-2 border-yellow-800 text-yellow-800 text-md bg-yellow-100 rounded-lg border-solid border-1'>
+                                The price impact is {priceImpactPercent}%. For a better
+                                swap, please consider using https://app.ref.finance.
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+
                         <FormButton
-                            disabled={!canSwap}
+                            disabled={
+                                !canSwap ||
+                                priceImpactPercent > PRICE_IMPACT_THRESHOLD.error
+                            }
                             onClick={onClickReview}
                             trackingId='Click Preview swap on Swap page'
                             data-test-id='swapPageSwapPreviewStateButton'
