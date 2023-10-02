@@ -4,8 +4,10 @@ NEAR Wallet discovers non-fungible tokens using a range of indexer queries and d
 
 ## Contents
 
-1. [NEAR Wallet non-fungible token discovery](#NEAR-Wallet-non-fungible-token-discovery)
-2. [NEAR Wallet non-fungible token display](#NEAR-Wallet-non-fungible-token-display)
+- [NEAR Wallet Non-Fungible Token (NEP-171) Discovery and Display](#near-wallet-non-fungible-token-nep-171-discovery-and-display)
+  - [Contents](#contents)
+  - [NEAR Wallet non-fungible token discovery](#near-wallet-non-fungible-token-discovery)
+  - [NEAR Wallet non-fungible token display](#near-wallet-non-fungible-token-display)
 
 ## NEAR Wallet non-fungible token discovery
 
@@ -24,7 +26,7 @@ The NFT is then displayed as follows:
 <img src="./assets/non-fungible-token-display.png" height="400">
 
 1. This is the icon for the NFT contract. It's retrieved from the `icon` prop of `NFTContractMetadata` and is rendered if it's a [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs).
-2. This is the `name` prop of the `NFTContractMetadata`. It will link to the NFT contract's account page on [explorer](https://explorer.near.org/).
+2. This is the `name` prop of the `NFTContractMetadata`. It will link to the NFT contract's account page on [explorer](https://nearblocks.io/).
 3. This is the length of the list of tokens returned by the NFT contract's `nft_tokens_for_owner`.
 4. This is the image of the token. It's displayed as the `media` prop of [`TokenMetadata`](https://nomicon.io/Standards/NonFungibleToken/Metadata.html#interface) if it's a url or a [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs). Otherwise the `media` prop is appended to the `base_uri` prop of `NFTContractMetadata` (fetched from `nft_metadata`) and if `base_uri` is not set, then to `https://cloudflare-ipfs.com/ipfs/` and that is used as the url.
 5. This is the `title` prop of [`TokenMetadata`](https://nomicon.io/Standards/NonFungibleToken/Metadata.html#interface)
