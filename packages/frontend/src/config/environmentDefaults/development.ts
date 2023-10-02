@@ -8,7 +8,7 @@ export default {
     DISABLE_CREATE_ACCOUNT: false,
     EXPLORE_APPS_URL: 'https://awesomenear.com/',
     EXPLORE_DEFI_URL: 'https://awesomenear.com/categories/defi/',
-    EXPLORER_URL: 'https://explorer.testnet.near.org',
+    EXPLORER_URL: 'https://testnet.nearblocks.io',
     GLEAP_FRONTEND_API_KEY: 'Pc07nwsDmsVoWYJJj9BgES87xE7RCW74',
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: false,
     INDEXER_SERVICE_URL: 'https://testnet-api.kitwallet.app',

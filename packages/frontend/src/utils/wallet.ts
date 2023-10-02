@@ -160,8 +160,9 @@ export default class Wallet {
 
         this.signerIgnoringLedger = new nearApiJs.InMemorySigner(this.keyStore);
 
-        const signerIgnoringLedger = this.signerIgnoringLedger;
-        const wallet = this;
+        const getSignerIgnoringLedger = () => {
+            return rpcInfo ? wallet.signerIgnoringLedger : this.signerIgnoringLedger;
+        };
 
         this.signer = {
             async getPublicKey(accountId, networkId) {
@@ -170,7 +171,7 @@ export default class Wallet {
                     return ledgerKey;
                 }
 
-                return await signerIgnoringLedger.getPublicKey(accountId, networkId);
+                return await getSignerIgnoringLedger().getPublicKey(accountId, networkId);
             },
             async signMessage(message, accountId, networkId) {
                 if (await wallet.getLedgerKey(accountId)) {
@@ -200,7 +201,11 @@ export default class Wallet {
                     };
                 }
 
-                return signerIgnoringLedger.signMessage(message, accountId, networkId);
+                return getSignerIgnoringLedger().signMessage(
+                    message,
+                    accountId,
+                    networkId
+                );
             },
         };
         let provider;
@@ -967,7 +972,7 @@ export default class Wallet {
             : await this.getAccount(accountId);
 
         const has2fa = await TwoFactor.has2faEnabled(account);
-        console.log('key being added to 2fa account ?', has2fa, account);
+
         try {
             // TODO: Why not always pass `fullAccess` explicitly when it's desired?
             // TODO: Alternatively require passing MULTISIG_CHANGE_METHODS from caller as `methodNames`
