@@ -76,6 +76,7 @@ import LoginWrapper from '../routes/LoginWrapper';
 import SetupLedgerNewAccountWrapper from '../routes/SetupLedgerNewAccountWrapper';
 import SetupPassphraseNewAccountWrapper from '../routes/SetupPassphraseNewAccountWrapper';
 import SetupRecoveryImplicitAccountWrapper from '../routes/SetupRecoveryImplicitAccountWrapper';
+import SignMessageWrapper from '../routes/SignMessageWrapper';
 import SignWrapper from '../routes/SignWrapper';
 import VerifyOwnerWrapper from '../routes/VerifyOwnerWrapper';
 import WalletWrapper from '../routes/WalletWrapper';
@@ -645,6 +646,11 @@ class Routing extends Component {
                                 path='/privacy'
                                 component={Privacy}
                                 indexBySearchEngines={true}
+                            />
+                            <PrivateRoute
+                                exact
+                                path='/sign-message'
+                                component={SignMessageWrapper}
                             />
                             {WEB3AUTH_FEATURE_ENABLED && (
                                 <PrivateRoute
