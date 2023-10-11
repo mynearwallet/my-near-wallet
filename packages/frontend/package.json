@@ -44,6 +44,7 @@
         "@sentry/browser": "^6.4.1",
         "big.js": "^6.2.1",
         "bip39-light": "^1.0.7",
+        "borsh": "1.0.0",
         "connected-react-router": "^6.6.0",
         "dataloader": "^2.1.0",
         "escape-html": "^1.0.3",

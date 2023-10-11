@@ -4,6 +4,7 @@ import { localizeReducer } from 'react-localize-redux';
 import account from '../reducers/account';
 import allAccounts from '../reducers/allAccounts';
 import sign from '../reducers/sign';
+import signMessage from '../reducers/signMessage';
 import staking from '../reducers/staking';
 import status from '../reducers/status';
 import verifyOwner from '../reducers/verifyOwner';
@@ -33,6 +34,7 @@ export default (history) => ({
     staking,
     status,
     verifyOwner,
+    signMessage,
     [security.name]: security.reducer,
     [nftSlice.name]: nftSlice.reducer,
     [linkdropSlice.name]: linkdropSlice.reducer,

@@ -28,6 +28,7 @@ import Wallet, {
     ENABLE_IDENTITY_VERIFIED_ACCOUNT,
     WALLET_BATCH_IMPORT_URL,
     WALLET_VERIFY_OWNER_URL,
+    WALLET_SIGN_MESSAGE_URL,
 } from '../../utils/wallet';
 import { WalletError } from '../../utils/walletError';
 import { withAlert } from '../reducers/status';
@@ -131,6 +132,7 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
             WALLET_LINKDROP_URL,
             WALLET_BATCH_IMPORT_URL,
             WALLET_VERIFY_OWNER_URL,
+            WALLET_SIGN_MESSAGE_URL,
         ].includes(currentPage)
     ) {
         let parsedUrl = {
@@ -148,6 +150,7 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
                 WALLET_CREATE_NEW_ACCOUNT_URL,
                 WALLET_LINKDROP_URL,
                 WALLET_VERIFY_OWNER_URL,
+                WALLET_SIGN_MESSAGE_URL,
             ].includes(currentPage) &&
             search !== ''
         ) {
