@@ -19,15 +19,15 @@ import {
     selectSignMessageError,
     SIGN_MESSAGE_STATUS,
 } from '../redux/slices/signMessage';
-import { addQueryParams } from '../utils/addQueryParams';
+import { addHashParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 import { validateNonce } from '../utils/signMessage';
 
 const buildRedirectUrl = (accountUrlCallbackUrl, signedRequest, state, error) => {
     if (!error) {
-        return addQueryParams(accountUrlCallbackUrl, { ...signedRequest, state });
+        return addHashParams(accountUrlCallbackUrl, { ...signedRequest, state });
     }
-    return addQueryParams(accountUrlCallbackUrl, {
+    return addHashParams(accountUrlCallbackUrl, {
         error: error?.message?.substring(0, 100) || 'Unknown error',
     });
 };
