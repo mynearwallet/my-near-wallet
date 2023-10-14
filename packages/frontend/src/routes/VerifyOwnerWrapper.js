@@ -17,7 +17,7 @@ import {
     VERIFY_OWNER_STATUS,
     selectVerifyOwnerError,
 } from '../redux/slices/verifyOwner';
-import { addQueryParams } from '../utils/addQueryParams';
+import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
 const buildRedirectUrl = (accountUrlCallbackUrl, meta, signedRequest, error) => {

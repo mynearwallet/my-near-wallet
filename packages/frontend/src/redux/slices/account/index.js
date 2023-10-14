@@ -151,6 +151,15 @@ export const selectAccountUrlMessage = createSelector(
     (url) => url.message
 );
 
+export const selectAccountUrlNonce = createSelector(selectAccountUrl, (url) => url.nonce);
+
+export const selectAccountUrlRecipient = createSelector(
+    selectAccountUrl,
+    (url) => url.recipient
+);
+
+export const selectAccountUrlState = createSelector(selectAccountUrl, (url) => url.state);
+
 export const selectAccountUrlPrivateShard = createSelector(selectAccountUrl, (url) =>
     url.calimeroShardId && url.calimeroRPCEndpoint
         ? {

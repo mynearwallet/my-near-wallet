@@ -58,6 +58,7 @@ export const WALLET_LINKDROP_URL = 'linkdrop';
 export const WALLET_RECOVER_ACCOUNT_URL = 'recover-account';
 export const WALLET_SEND_MONEY_URL = 'send-money';
 export const WALLET_VERIFY_OWNER_URL = 'verify-owner';
+export const WALLET_SIGN_MESSAGE_URL = 'sign-message';
 
 export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_HELPER_URL}/account`;
 export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/fundedAccount`;

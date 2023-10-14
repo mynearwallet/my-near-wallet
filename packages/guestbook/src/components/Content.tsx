@@ -4,12 +4,12 @@ import { providers, utils } from 'near-api-js';
 import type { AccountView, CodeResult } from 'near-api-js/lib/providers/provider';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 
-import { CONTRACT_ID } from '../constants';
-import { useWalletSelector } from '../contexts/WalletSelectorContext';
-import type { Account, Message } from '../interfaces';
 import Form from './Form';
 import Messages from './Messages';
 import SignIn from './SignIn';
+import { CONTRACT_ID } from '../constants';
+import { useWalletSelector } from '../contexts/WalletSelectorContext';
+import type { Account, Message } from '../interfaces';
 
 type Submitted = SubmitEvent & {
     target: { elements: { [key: string]: HTMLInputElement } };
@@ -214,6 +214,25 @@ const Content: React.FC = () => {
         }
     };
 
+    const handleSignMessage = async () => {
+        const wallet = await selector.wallet();
+        try {
+            const signature = await wallet.signMessage({
+                message: 'test message for verification',
+                nonce: Buffer.from('30990309-30990309-390A303-292090'),
+                recipient: 'test.app',
+                callbackUrl: 'https://test.app',
+            });
+
+            if (signature) {
+                alert(`Message signature: ${JSON.stringify(signature)}`);
+            }
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Something went wrong';
+            alert(message);
+        }
+    };
+
     const handleSubmit = useCallback(
         async (e: Submitted) => {
             e.preventDefault();
@@ -270,6 +289,7 @@ const Content: React.FC = () => {
                 <button onClick={handleSignOut}>Log out</button>
                 <button onClick={handleSwitchWallet}>Switch Wallet</button>
                 <button onClick={handleVerifyOwner}>Verify Owner</button>
+                <button onClick={handleSignMessage}>Sign Message</button>
                 {accounts.length > 1 && (
                     <button onClick={handleSwitchAccount}>Switch Account</button>
                 )}
