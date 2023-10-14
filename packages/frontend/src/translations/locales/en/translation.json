@@ -318,6 +318,7 @@
         "secureMyAccount": "Secure My Account",
         "send": "Send",
         "setupPhrase": "Setup Recovery Phrase",
+        "sign": "Sign",
         "signIn": "Sign In",
         "signingIn": "Signing In",
         "signInLedger": "Sign in with Ledger",
@@ -1531,6 +1532,18 @@
             }
         },
         "one": "Before importing your accounts, you’ll need to grant NEAR Wallet permission to access them."
+    },
+    "signMessage": {
+        "invalidRequest": {
+            "body": "The request is invalid and cannot be signed.",
+            "title": "Invalid Transaction"
+        },
+        "summary": {
+            "infoMessage": "Once connected, <span class='color-blue'>≪${appName}≫</span> will have <span class='color-black'><b>permissions</b></span>:",
+            "permissions": "Verify your account using your profile name and wallet address.",
+            "signAMessage": "with ${accountId}",
+            "title": "Authorization Request"
+        }
     },
     "stagingBanner": {
         "desc": "Warning: This is a pre-release version of the NEAR Wallet. There may be bugs, and these bugs may lead to loss of funds. By continuing to use this version, you agree that you understand and accept these risks, and understand that the NEAR Wallet team will be unable to help you.",

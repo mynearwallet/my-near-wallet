@@ -13,6 +13,7 @@ const getBankAccount = async () => {
             : new E2eTestAccount(accountId, seedPhrase, {
                   accountId: nearApiJsConnection.config.networkId,
               });
+
     return account.initialize();
 };
 

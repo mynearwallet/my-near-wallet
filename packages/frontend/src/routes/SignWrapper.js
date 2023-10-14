@@ -28,7 +28,7 @@ import {
     selectSignTransactions,
     selectSignTransactionsBatchIsValid,
 } from '../redux/slices/sign';
-import { addQueryParams } from '../utils/addQueryParams';
+import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
 const SignWrapper = () => {
