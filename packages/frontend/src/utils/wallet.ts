@@ -883,12 +883,12 @@ export default class Wallet {
             if (accountIndex < 0) {
                 decryptedAccounts.push({
                     accountId,
-                    privateKey: keyPair.secretKey,
+                    privateKey: keyPair?.secretKey,
                 });
             } else {
                 decryptedAccounts[accountIndex] = {
                     accountId,
-                    privateKey: keyPair.secretKey,
+                    privateKey: keyPair?.secretKey,
                 };
             }
         } else if (action === 'remove') {
