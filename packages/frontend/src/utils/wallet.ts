@@ -924,7 +924,9 @@ export default class Wallet {
                 await this.setKey(accountId, keyPair);
             }
         }
+
         this.accounts[accountId] = true;
+        this.save();
 
         addAccountReducer();
     }
@@ -1197,11 +1199,20 @@ export default class Wallet {
             );
         }
 
-        await Promise.all(
-            accountIds.map(async (accountId) => {
-                await this.saveAccount(accountId);
-            })
-        );
+        for (
+            let accountIdIndex = 0;
+            accountIdIndex < accountIds.length;
+            accountIdIndex++
+        ) {
+            const accountId = accountIds[accountIdIndex];
+            await this.saveAccount(accountId);
+        }
+
+        // await Promise.all(
+        //     accountIds.map(async (accountId) => {
+        //         await this.saveAccount(accountId);
+        //     })
+        // );
 
         store.dispatch(makeAccountActive(accountIds[accountIds.length - 1]));
 
