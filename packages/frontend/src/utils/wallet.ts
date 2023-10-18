@@ -879,16 +879,16 @@ export default class Wallet {
             (account) => account.accountId === accountId
         );
 
-        if (action === 'add') {
+        if (action === 'add' && keyPair) {
             if (accountIndex < 0) {
                 decryptedAccounts.push({
                     accountId,
-                    privateKey: keyPair?.secretKey,
+                    privateKey: keyPair.secretKey,
                 });
             } else {
                 decryptedAccounts[accountIndex] = {
                     accountId,
-                    privateKey: keyPair?.secretKey,
+                    privateKey: keyPair.secretKey,
                 };
             }
         } else if (action === 'remove') {
