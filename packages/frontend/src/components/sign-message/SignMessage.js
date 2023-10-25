@@ -25,6 +25,7 @@ const StyledContainer = styled.div`
         color: #272729;
         text-align: center;
         line-height: 130%;
+        word-break: break-word;
     }
 
     > .icon {
