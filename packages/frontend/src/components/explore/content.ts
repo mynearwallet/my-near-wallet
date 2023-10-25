@@ -67,8 +67,8 @@ export const trandingProjects: Project[] = [
     },
     {
         icon: astrodaoIcon,
-        name: 'Astro DAO',
-        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=astrodao',
+        name: 'Learn NEAR',
+        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=learnnear',
     },
     {
         icon: rainbowbridgeIcon,
