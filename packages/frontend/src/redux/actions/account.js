@@ -180,7 +180,7 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
 const checkContractId = () => async (dispatch, getState) => {
     const contractId = selectAccountUrlContractId(getState());
     const failureUrl = selectAccountUrlFailureUrl(getState());
-    const shardInfo = selectAccountUrlPrivateShard(getState());
+    let shardInfo = selectAccountUrlPrivateShard(getState());
 
     if (contractId) {
         const redirectIncorrectContractId = () => {
@@ -199,10 +199,13 @@ const checkContractId = () => async (dispatch, getState) => {
         }
 
         try {
-            const getAccount = shardInfo
-                ? new Wallet(shardInfo).getAccountBasic
-                : wallet.getAccountBasic;
-            await getAccount(contractId).state();
+            if (shardInfo) {
+                shardInfo.xSignature = await wallet.generatePrivateShardXSignature();
+                const privateShardWallet = new Wallet(shardInfo);
+                await privateShardWallet.getAccountBasic(contractId).state();
+            } else {
+                await wallet.getAccountBasic(contractId).state();
+            }
         } catch (error) {
             if (error.message.indexOf('does not exist while viewing') !== -1) {
                 redirectIncorrectContractId();
@@ -247,19 +250,13 @@ export const allowLogin = () => async (dispatch, getState) => {
     const title = selectAccountUrlTitle(getState());
     const successUrl = selectAccountUrlSuccessUrl(getState());
 
-    const shardInfo = selectAccountUrlPrivateShard(getState());
+    let shardInfo = selectAccountUrlPrivateShard(getState());
     const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
 
     if (shardInfo) {
-        const account = await wallet.getAccount(wallet.accountId);
-        const signature = await wallet.signatureFor(account);
-        const publicKey = await wallet.getPublicKey(account.accountId);
-        const publicKeyString = publicKey.toString(publicKey);
-        signature.publicKey = publicKeyString;
+        shardInfo.xSignature = await wallet.generatePrivateShardXSignature();
         await syncPrivateShardAccount({
             accountId: wallet.accountId,
-            publicKey: publicKeyString,
-            signature,
             shardInfo,
         });
     }

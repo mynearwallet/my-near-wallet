@@ -35,6 +35,7 @@ import CONFIG from '../config';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
+import { fetchChallenge } from '../services/PrivateShard';
 import sendJson from '../tmp_fetch_send_json';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
@@ -206,9 +207,9 @@ export default class Wallet {
         let provider;
         if (rpcInfo) {
             const args: ConnectionInfo = { url: rpcInfo.shardRpc + '/' };
-            if (rpcInfo.shardApiToken) {
+            if (rpcInfo.xSignature) {
                 args.headers = {
-                    'x-api-key': rpcInfo.shardApiToken,
+                    'x-signature': rpcInfo.xSignature,
                 };
             }
             provider = new RpcProvider(args);
@@ -453,7 +454,6 @@ export default class Wallet {
     }
 
     async getAccountKeyType(accountId) {
-        console.log(wallet);
         const keypair = await wallet.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
         return this.getPublicKeyType(accountId, keypair.getPublicKey().toString());
     }
@@ -992,7 +992,6 @@ export default class Wallet {
                 const finalMethodNames = isMultisig
                     ? MULTISIG_CHANGE_METHODS
                     : methodNames;
-
                 return await account.addKey(
                     publicKey.toString(),
                     contractId,
@@ -1264,6 +1263,30 @@ export default class Wallet {
 
         const account = await this.getAccount(accountId);
         return await account.getAccountBalance(limitedAccountData);
+    }
+
+    async signatureForChallenge(account, challenge) {
+        const { accountId } = account;
+        const signer = account.signerIgnoringLedger || account.connection.signer;
+        const signed = await signer.signMessage(
+            Buffer.from(challenge),
+            accountId,
+            CONFIG.NETWORK_ID
+        );
+        const signature = Buffer.from(signed.signature).toString('base64');
+        const publicKey = signed.publicKey.toString();
+
+        return { challenge, signature, publicKey, accountId };
+    }
+
+    async generatePrivateShardXSignature() {
+        const challenge = await fetchChallenge();
+        const account = await this.getAccount(wallet.accountId);
+        const signedChallenge = await this.signatureForChallenge(account, challenge.data);
+        const encodedSig = Buffer.from(JSON.stringify(signedChallenge)).toString(
+            'base64'
+        );
+        return encodedSig;
     }
 
     async signatureFor(account) {

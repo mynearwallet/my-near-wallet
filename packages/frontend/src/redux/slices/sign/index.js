@@ -31,7 +31,7 @@ export const handleSignTransactions = createAsyncThunk(
         const { dispatch, getState } = thunkAPI;
         let transactionsHashes;
         const retryingTx = !!selectSignRetryTransactions(getState()).length;
-        const shardInfo = selectAccountUrlPrivateShard(getState());
+        let shardInfo = selectAccountUrlPrivateShard(getState());
 
         const mixpanelName = `SIGN${
             retryingTx ? ' - RETRYRETRY WITH INCREASED GAS' : ''
@@ -47,6 +47,9 @@ export const handleSignTransactions = createAsyncThunk(
             const accountId = selectAccountId(getState());
 
             try {
+                if (shardInfo) {
+                    shardInfo.xSignature = await wallet.generatePrivateShardXSignature();
+                }
                 const signingWallet = shardInfo ? new Wallet(shardInfo) : wallet;
                 transactionsHashes = await signingWallet.signAndSendTransactions(
                     transactions,
