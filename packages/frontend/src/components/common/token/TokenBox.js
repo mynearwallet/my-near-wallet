@@ -182,6 +182,8 @@ const SubTitle = ({ showFiatPrice, price, currentLanguage, name = '-' }) => {
     );
 };
 
+const blacklistedTokens = ['congratulations.laboratory.jumpfinance.near'];
+
 const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) => {
     const { symbol = '', name = '', icon = '' } = token.onChainFTMetadata;
 
@@ -190,6 +192,10 @@ const TokenBox = ({ token, onClick, currentLanguage, showFiatPrice = false }) =>
             onClick(token);
         }
     };
+
+    if (blacklistedTokens.includes(token.contractName)) {
+        return <></>;
+    }
 
     return (
         <StyledContainer
