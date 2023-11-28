@@ -6,7 +6,6 @@ import astroStakersIcon from './media/astro-stakers.jpg';
 import burrowIcon from './media/burrow.svg';
 import collectNFTsSectionIcon from './media/collectNFTsSectionIcon.svg';
 import cryptoheroeIcon from './media/cryptoheroes.jpg';
-import dragonflyCapitalPartnersIcon from './media/dragonfly-capital-partners.svg';
 import exchangeSectionIcon from './media/exchangeSectionIcon.svg';
 import galaxyOnlineIcon from './media/galaxy-online.svg';
 import hashRushIcon from './media/hash-rush.png';
@@ -173,12 +172,11 @@ export const startEarningSection: Section = {
             info: 'Low-fee Community Staking Provider for NEAR Protocol.',
         },
         {
-            icon: dragonflyCapitalPartnersIcon,
-            name: 'Dragonfly Capital Partners',
-            linkUrl:
-                'https://near.org/near/widget/Search.IndexPage?term=dragonfly-capital-partners',
+            icon: learnNearIcon,
+            name: 'Learn NEAR Club',
+            linkUrl: 'https://learnnear.club/',
             category: 'Staking Provider',
-            info: 'Global from day one.',
+            info: 'Learn how to use and build on NEAR and Earn NEAR.',
         },
     ],
 };
