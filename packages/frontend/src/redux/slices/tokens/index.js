@@ -4,6 +4,7 @@ import set from 'lodash.set';
 import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 
+import topTokens from './topTokens.json';
 import CONFIG from '../../../config';
 import FungibleTokens from '../../../services/FungibleTokens';
 import { formatToken } from '../../../utils/token';
@@ -75,8 +76,10 @@ const fetchTokens = createAsyncThunk(
             ...new Set([
                 ...(await FungibleTokens.getLikelyTokenContracts({ accountId })),
                 ...CONFIG.WHITELISTED_CONTRACTS,
+                ...topTokens,
             ]),
         ];
+
         const tokens = {};
         const tokensWithBalance = {};
 
