@@ -780,11 +780,13 @@ export const claimFarmRewards = (validatorId, token_id) => async (dispatch, getS
             ...validators.find((validator) => validator?.accountId === validatorId),
         };
 
-        const storageAvailable = await fungibleTokensService.isStorageBalanceAvailable({
-            contractName: token_id,
-            accountId: accountId,
-        });
-        if (!storageAvailable) {
+        const isStorageDepositRequired =
+            await fungibleTokensService.isStorageDepositRequired({
+                contractName: token_id,
+                accountId: accountId,
+            });
+
+        if (isStorageDepositRequired) {
             try {
                 const account = await wallet.getAccount(accountId);
                 await fungibleTokensService.transferStorageDeposit({
