@@ -12,7 +12,7 @@ export default {
                     ...CUSTOM_REQUEST_HEADERS,
                 },
             }).then((res) => res.json()),
-            fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys//${publicKey}`, {
+            fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
                 headers: {
                     accept: '*/*',
                 },
