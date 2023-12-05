@@ -6,11 +6,23 @@ import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
 
 export default {
     listAccountsByPublicKey: (publicKey) => {
-        return fetch(`${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}/accounts`, {
-            headers: {
-                ...CUSTOM_REQUEST_HEADERS,
-            },
-        }).then((res) => res.json());
+        return Promise.all([
+            fetch(`${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}/accounts`, {
+                headers: {
+                    ...CUSTOM_REQUEST_HEADERS,
+                },
+            }).then((res) => res.json()),
+            fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys//${publicKey}`, {
+                headers: {
+                    accept: '*/*',
+                },
+            })
+                .then((res) => res.json())
+                .then((res) => res.keys.map((key) => key.account_id)),
+        ]).then(([accounts, accountsFromNearblock]) => [
+            ...accounts,
+            ...accountsFromNearblock,
+        ]);
     },
     listLikelyNfts: (accountId, timestamp) => {
         const url = `${CONFIG.INDEXER_SERVICE_URL}/account/${accountId}/likelyNFTsFromBlock`;
