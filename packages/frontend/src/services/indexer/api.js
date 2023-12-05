@@ -20,8 +20,7 @@ export default {
                 .then((res) => res.json())
                 .then((res) => res.keys.map((key) => key.account_id)),
         ]).then(([accounts, accountsFromNearblock]) => [
-            ...accounts,
-            ...accountsFromNearblock,
+            ...new Set([...accounts, ...accountsFromNearblock]),
         ]);
     },
     listLikelyNfts: (accountId, timestamp) => {
