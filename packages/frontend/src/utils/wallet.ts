@@ -1510,31 +1510,22 @@ export default class Wallet {
         );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
-        const keyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromString(
-            secretKey
-        ) as KeyPairEd25519;
-        const publicKey = keyPair.publicKey.toString();
-
-        const tempKeyStore = new nearApiJs.keyStores.InMemoryKeyStore();
-
-        let accountIds = [];
-        const accountIdsByPublickKey = await getAccountIds(publicKey);
-        if (!accountId) {
-            accountIds = accountIdsByPublickKey;
-        } else if (accountIdsByPublickKey.includes(accountId)) {
-            accountIds = [accountId];
-        }
-
+    protected async getExistingAccountListByPublicKey(
+        publicKey: string,
+        accountIdFilter?: string
+    ): Promise<string[]> {
         // remove duplicate and non-existing accounts
-        const accountsSet = new Set(accountIds);
+        const accountsSet = new Set(
+            await this.getAccountListByPublicKey(publicKey, accountIdFilter)
+        );
+
         for (const accountId of accountsSet) {
             if (!(await this.accountExists(accountId))) {
                 accountsSet.delete(accountId);
             }
         }
-        accountIds = [...accountsSet];
+
+        const accountIds = [...accountsSet];
 
         if (!accountIds.length) {
             throw new WalletError(
@@ -1543,113 +1534,54 @@ export default class Wallet {
             );
         }
 
-        const connection = nearApiJs.Connection.fromConfig({
-            networkId: CONFIG.NETWORK_ID,
-            provider: this.connection.provider,
-            signer: new nearApiJs.InMemorySigner(tempKeyStore),
-        });
+        return accountIds;
+    }
 
-        const connectionConstructor = this.connection;
+    protected async getAccountListByPublicKey(
+        publicKey: string,
+        accountIdFilter?: string
+    ): Promise<string[]> {
+        const accountIdsByPublicKey = await getAccountIds(publicKey);
 
-        const accountIdsSuccess = [];
-        const accountIdsError = [];
-        await Promise.all(
-            accountIds.map(async (accountId) => {
-                if (!accountId || !accountId.length) {
-                    return;
-                }
-                // temp account
-                this.connection = connection;
-                this.accountId = accountId;
-                const account = await this.getAccount(accountId);
-                let recoveryKeyIsFAK = false;
-                // check if recover access key is FAK and if so add key without 2FA
-                if (await TwoFactor.has2faEnabled(account)) {
-                    const accessKeys = await account.getAccessKeys();
-                    recoveryKeyIsFAK = accessKeys.find(
-                        ({ public_key, access_key }) =>
-                            public_key === publicKey &&
-                            access_key.permission &&
-                            access_key.permission === 'FullAccess'
-                    );
-                    if (recoveryKeyIsFAK) {
-                        console.log('using FAK and regular Account instance to recover');
-                        shouldCreateFullAccessKey = false;
-                    }
-                }
+        if (!accountIdFilter) {
+            return accountIdsByPublicKey;
+        }
 
-                const keyPair = nearApiJs.KeyPair.fromString(secretKey);
-                await tempKeyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
-                account.keyStore = tempKeyStore;
+        if (accountIdsByPublicKey.includes(accountIdFilter)) {
+            return [accountIdFilter];
+        }
 
-                // todo WARNING, should be refactored: attempt to assign to const or readonly var
-                account.signerIgnoringLedger = account.connection.signer =
-                    new nearApiJs.InMemorySigner(tempKeyStore);
+        return [];
+    }
 
-                // const newKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
-                //     'ed25519'
-                // ) as KeyPairEd25519;
+    async recoverAccountSecretKey(
+        secretKey: string,
+        accountIdFilter: string,
+        shouldCreateFullAccessKey?: boolean
+    ): Promise<{ numberOfAccounts: number; accountList: string }> {
+        if (shouldCreateFullAccessKey) {
+            throw new WalletError(
+                'Create Full Access Key is an obsolete functionality.',
+                'recoverAccountSeedPhrase.errorNotAbleToImportAccount'
+            );
+        }
 
-                try {
-                    // const methodNames = '';
-                    // await this.addAccessKey(
-                    //     accountId,
-                    //     accountId,
-                    //     newKeyPair.publicKey,
-                    //     shouldCreateFullAccessKey,
-                    //     methodNames,
-                    //     recoveryKeyIsFAK
-                    // );
-                    accountIdsSuccess.push({
-                        accountId,
-                        newKeyPair: keyPair,
-                    });
-                } catch (error) {
-                    console.error(error);
-                    accountIdsError.push({
-                        accountId,
-                        error,
-                    });
-                }
-            })
+        const keyPair = nearApiJs.KeyPair.fromString(secretKey) as KeyPairEd25519;
+        const publicKey = keyPair.publicKey.toString();
+
+        const accountIds = await this.getExistingAccountListByPublicKey(
+            publicKey,
+            accountIdFilter
         );
 
-        this.connection = connectionConstructor;
-
-        if (!!accountIdsSuccess.length) {
-            await Promise.all(
-                accountIdsSuccess.map(async ({ accountId, newKeyPair }) => {
-                    await this.saveAccount(accountId, newKeyPair);
-                })
-            );
-
-            const accountId = accountIdsSuccess[accountIdsSuccess.length - 1].accountId;
-            store.dispatch(makeAccountActive(accountId));
-
-            return {
-                numberOfAccounts: accountIdsSuccess.length,
-                accountList: accountIdsSuccess
-                    .flatMap((accountId) => accountId.account_id)
-                    .join(', '),
-            };
-        } else {
-            const lastAccount = accountIdsError
-                .reverse()
-                .find((account) => account.error.type === 'LackBalanceForState');
-
-            if (lastAccount) {
-                this.accountId = localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
-                store.dispatch(
-                    redirectTo(`/profile/${lastAccount.accountId}`, {
-                        globalAlertPreventClear: true,
-                    })
-                );
-
-                throw lastAccount.error;
-            } else {
-                throw accountIdsError[accountIdsError.length - 1].error;
-            }
+        for (const accountId of accountIds) {
+            await this.saveAccount(accountId, keyPair);
         }
+
+        return {
+            numberOfAccounts: accountIds.length,
+            accountList: accountIds.join(', '),
+        };
     }
 
     async signAndSendTransactions(transactions, accountId = this.accountId) {
