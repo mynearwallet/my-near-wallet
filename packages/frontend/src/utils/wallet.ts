@@ -1,5 +1,6 @@
 import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types.d.ts';
+import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
@@ -212,9 +213,9 @@ export default class Wallet {
         let provider;
         if (rpcInfo) {
             const args: ConnectionInfo = { url: rpcInfo.shardRpc + '/' };
-            if (rpcInfo.shardApiToken) {
+            if (rpcInfo.xSignature) {
                 args.headers = {
-                    'x-api-key': rpcInfo.shardApiToken,
+                    'x-signature': rpcInfo.xSignature,
                 };
             }
             provider = new RpcProvider(args);
@@ -459,7 +460,6 @@ export default class Wallet {
     }
 
     async getAccountKeyType(accountId) {
-        console.log(wallet);
         const keypair = await wallet.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
         return this.getPublicKeyType(accountId, keypair.getPublicKey().toString());
     }
@@ -991,7 +991,6 @@ export default class Wallet {
                 const finalMethodNames = isMultisig
                     ? MULTISIG_CHANGE_METHODS
                     : methodNames;
-
                 return await account.addKey(
                     publicKey.toString(),
                     contractId,
@@ -1272,6 +1271,22 @@ export default class Wallet {
 
         const account = await this.getAccount(accountId);
         return await account.getAccountBalance(limitedAccountData);
+    }
+
+    async generatePrivateShardXSignature(shardInfo) {
+        const calimeroConfig = {
+            shardId: shardInfo.shardId,
+            calimeroUrl: CONFIG.CALIMERO_URL,
+            rpcEndpoint: shardInfo.shardRpc,
+            walletNetworkId: CONFIG.NETWORK_ID,
+        };
+        const walletUtils = CalimeroWalletUtils.init(calimeroConfig);
+        const account = await wallet.getAccount(wallet.accountId);
+        const signer = account.signerIgnoringLedger || account.connection.signer;
+        return await walletUtils.generatePrivateShardXSignature(
+            account.accountId,
+            signer
+        );
     }
 
     async signatureFor(account) {
