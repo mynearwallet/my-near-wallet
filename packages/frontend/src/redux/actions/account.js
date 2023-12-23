@@ -1,4 +1,3 @@
-import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import { getLocation, push } from 'connected-react-router';
 import { parse, stringify } from 'query-string';
 import { createActions, createAction } from 'redux-actions';
@@ -11,6 +10,7 @@ import {
 import { showCustomAlert } from './status';
 import CONFIG from '../../config';
 import { actions as activeAccountActions } from '../../redux/slices/activeAccount';
+import { syncPrivateShardAccount } from '../../services/PrivateShard';
 import { showAlert } from '../../utils/alerts';
 import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
 import { loadState, saveState, clearState } from '../../utils/sessionStorage';
@@ -202,16 +202,10 @@ const checkContractId = () => async (dispatch, getState) => {
         }
 
         try {
-            if (shardInfo) {
-                const shardInfoWithAuth = {
-                    ...shardInfo,
-                    xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
-                };
-                const privateShardWallet = new Wallet(shardInfoWithAuth);
-                await privateShardWallet.getAccountBasic(contractId).state();
-            } else {
-                await wallet.getAccountBasic(contractId).state();
-            }
+            const getAccount = shardInfo
+                ? new Wallet(shardInfo).getAccountBasic
+                : wallet.getAccountBasic;
+            await getAccount(contractId).state();
         } catch (error) {
             if (error.message.indexOf('does not exist while viewing') !== -1) {
                 redirectIncorrectContractId();
@@ -257,27 +251,21 @@ export const allowLogin = () => async (dispatch, getState) => {
     const successUrl = selectAccountUrlSuccessUrl(getState());
 
     const shardInfo = selectAccountUrlPrivateShard(getState());
+    const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
 
     if (shardInfo) {
-        const calimeroConfig = {
-            shardId: shardInfo.shardId,
-            calimeroUrl: CONFIG.CALIMERO_URL,
-            rpcEndpoint: shardInfo.shardRpc,
-            walletNetworkId: CONFIG.NETWORK_ID,
-        };
-        const walletUtils = CalimeroWalletUtils.init(calimeroConfig);
         const account = await wallet.getAccount(wallet.accountId);
-        const signer = account.signerIgnoringLedger || account.connection.signer;
-        await walletUtils.syncPrivateShardAccount(account.accountId, signer);
+        const signature = await wallet.signatureFor(account);
+        const publicKey = await wallet.getPublicKey(account.accountId);
+        const publicKeyString = publicKey.toString(publicKey);
+        signature.publicKey = publicKeyString;
+        await syncPrivateShardAccount({
+            accountId: wallet.accountId,
+            publicKey: publicKeyString,
+            signature,
+            shardInfo,
+        });
     }
-
-    const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
-    const shardInfoWithAuth = shardInfo
-        ? {
-              ...shardInfo,
-              xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
-          }
-        : shardInfo;
 
     if (successUrl) {
         if (publicKey) {
@@ -289,7 +277,7 @@ export const allowLogin = () => async (dispatch, getState) => {
                         publicKey,
                         false,
                         methodNames,
-                        shardInfoWithAuth
+                        shardInfo
                     ),
                     { onlyError: true }
                 )
@@ -316,7 +304,7 @@ export const allowLogin = () => async (dispatch, getState) => {
                     publicKey,
                     false,
                     methodNames,
-                    shardInfoWithAuth
+                    shardInfo
                 ),
                 { data: { title } }
             )
@@ -660,10 +648,10 @@ export const { addAccessKey, addAccessKeySeedPhrase, addShardAccessKey } = creat
             publicKey,
             fullAccess = false,
             methodNames = '',
-            shardInfoWithAuth
+            shardInfo
         ) => {
             try {
-                await new Wallet(shardInfoWithAuth).addAccessKey(
+                await new Wallet(shardInfo).addAccessKey(
                     accountId,
                     contractId,
                     publicKey,
