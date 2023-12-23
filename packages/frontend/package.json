@@ -45,6 +45,7 @@
         "big.js": "^6.2.1",
         "bip39-light": "^1.0.7",
         "borsh": "1.0.0",
+        "calimero-wallet-utils": "^0.0.1",
         "connected-react-router": "^6.6.0",
         "dataloader": "^2.1.0",
         "escape-html": "^1.0.3",
