@@ -265,10 +265,11 @@ export const allowLogin = () => async (dispatch, getState) => {
             rpcEndpoint: shardInfo.shardRpc,
             walletNetworkId: CONFIG.NETWORK_ID,
         };
-        const walletUtils = CalimeroWalletUtils.init(calimeroConfig);
-        const account = await wallet.getAccount(wallet.accountId);
-        const signer = account.signerIgnoringLedger || account.connection.signer;
-        await walletUtils.syncPrivateShardAccount(account.accountId, signer);
+
+        const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
+        const xSignature = await wallet.generatePrivateShardXSignature(shardInfo);
+
+        await calimeroWalletUtils.syncAccount(wallet.accountId, xSignature);
     }
 
     const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;

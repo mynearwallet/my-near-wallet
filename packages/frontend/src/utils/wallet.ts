@@ -1280,13 +1280,29 @@ export default class Wallet {
             rpcEndpoint: shardInfo.shardRpc,
             walletNetworkId: CONFIG.NETWORK_ID,
         };
-        const walletUtils = CalimeroWalletUtils.init(calimeroConfig);
+
+        const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
         const account = await wallet.getAccount(wallet.accountId);
         const signer = account.signerIgnoringLedger || account.connection.signer;
-        return await walletUtils.generatePrivateShardXSignature(
+
+        const challenge = await calimeroWalletUtils.fetchChallenge();
+
+        const signedChallenge = await signer.signMessage(
+            Buffer.from(challenge.data),
             account.accountId,
-            signer
+            CONFIG.NETWORK_ID
         );
+
+        const signedChallengePayload = Buffer.from(
+            JSON.stringify({
+                challenge: challenge.data,
+                signature: Buffer.from(signedChallenge.signature).toString('base64'),
+                publicKey: signedChallenge.publicKey.toString(),
+                accountId: account.accountId,
+            })
+        ).toString('base64');
+
+        return signedChallengePayload;
     }
 
     async signatureFor(account) {
