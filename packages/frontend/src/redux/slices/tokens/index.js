@@ -281,11 +281,17 @@ export const selectAllowedTokens = createSelector(
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
         }));
 
+        const safeTokenList = tokenList
+            .filter(({ onChainFTMetadata }) => onChainFTMetadata.symbol.length < 10)
+            .filter(({ onChainFTMetadata }) =>
+                onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)
+            );
+
         if (![...setOfBlacklistedNames].length) {
-            return [nearConfigWithName, ...tokenList];
+            return [nearConfigWithName, ...safeTokenList];
         }
 
-        const allowedTokens = tokenList.filter(
+        const allowedTokens = safeTokenList.filter(
             ({ contractName }) => !setOfBlacklistedNames.has(contractName)
         );
 
