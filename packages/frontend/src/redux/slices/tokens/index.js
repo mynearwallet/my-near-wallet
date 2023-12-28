@@ -122,8 +122,6 @@ async function loadTokens(accountId, contractNames, thunkAPI) {
 const fetchTokens = createAsyncThunk(
     `${SLICE_NAME}/fetchTokens`,
     async ({ accountId }, thunkAPI) => {
-        console.log('fetchTokens is called at timestamp: ', Date.now());
-
         const { dispatch } = thunkAPI;
         const {
             actions: { setTokens, setTokensWithBalance },
@@ -131,25 +129,17 @@ const fetchTokens = createAsyncThunk(
 
         const tokens = {};
 
-        console.log('134: tokens: ', tokens);
-
         const tokensWithBalance = {};
-
-        console.log('138: tokensWithBalance: ', tokensWithBalance);
 
         const defaultContractNames = [
             ...new Set([...CONFIG.WHITELISTED_CONTRACTS, ...topTokens]),
         ];
-
-        console.log('144: defaultContractNames: ', defaultContractNames);
 
         const defaultContractResults = await loadTokens(
             accountId,
             defaultContractNames,
             thunkAPI
         );
-
-        console.log('152: defaultContractResults: ', defaultContractResults);
 
         defaultContractResults.forEach((result) => {
             if (result.error) {
@@ -165,35 +155,19 @@ const fetchTokens = createAsyncThunk(
             }
         });
 
-        console.log('168: tokens: ', tokens);
-        console.log('169: tokensWithBalance: ', tokensWithBalance);
-
-        batch(() => {
-            dispatch(setTokens(tokens));
-            dispatch(setTokensWithBalance(tokensWithBalance));
-        });
-
         const fetchedContractNames = await FungibleTokens.getLikelyTokenContracts({
             accountId,
         });
 
-        console.log('180: fetchedContractNames: ', fetchedContractNames);
-
         const newContractNames = fetchedContractNames.filter(
             (contractName) => !defaultContractNames.includes(contractName)
         );
-
-        console.log('186: newContractNames: ', newContractNames);
 
         const newContractResults = await loadTokens(
             accountId,
             newContractNames,
             thunkAPI
         );
-
-        console.log('194: newContractResults: ', newContractResults);
-
-        // Problem starts here:
 
         newContractResults.forEach((result) => {
             if (result.error) {
@@ -209,16 +183,9 @@ const fetchTokens = createAsyncThunk(
             }
         });
 
-        // Problem ends here.
-        // The problem is that the tokens object is updated with the newContractResults.
-        // The problem is that the tokensWithBalance object is not updated with the newContractResults.
-
-        console.log('216: tokens: ', tokens);
-        console.log('217: tokensWithBalance: ', tokensWithBalance);
-
         batch(() => {
-            dispatch(setTokens(tokens));
-            dispatch(setTokensWithBalance(tokensWithBalance));
+            dispatch(setTokens({ ...tokens }));
+            dispatch(setTokensWithBalance({ ...tokensWithBalance }));
         });
     }
 );
