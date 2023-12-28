@@ -63,70 +63,158 @@ const fetchTokenBalance = createAsyncThunk(
     }
 );
 
+async function loadToken(accountId, contractName, thunkAPI) {
+    const { dispatch, getState } = thunkAPI;
+    const { tokenFiatValues } = getState();
+
+    const {
+        actions: { setContractMetadata },
+    } = tokensMetadataSlice;
+
+    try {
+        const onChainFTMetadata = await getCachedContractMetadataOrFetch(
+            contractName,
+            getState()
+        );
+
+        const balance = await FungibleTokens.getBalanceOf({
+            contractName,
+            accountId,
+        });
+
+        if (!selectOneContractMetadata(getState(), { contractName })) {
+            dispatch(
+                setContractMetadata({
+                    contractName,
+                    metadata: onChainFTMetadata,
+                })
+            );
+        }
+
+        const tokenConfig = {
+            contractName,
+            balance,
+            onChainFTMetadata,
+            fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
+        };
+
+        const formattedToken = formatToken(tokenConfig);
+
+        return {
+            formattedToken,
+            balance,
+        };
+    } catch (error) {
+        return {
+            error,
+        };
+    }
+}
+
+async function loadTokens(accountId, contractNames, thunkAPI) {
+    const contractResults = await Promise.all(
+        contractNames.map((contractName) => loadToken(accountId, contractName, thunkAPI))
+    );
+
+    return contractResults;
+}
+
 const fetchTokens = createAsyncThunk(
     `${SLICE_NAME}/fetchTokens`,
     async ({ accountId }, thunkAPI) => {
-        const { dispatch, getState } = thunkAPI;
+        console.log('fetchTokens is called at timestamp: ', Date.now());
+
+        const { dispatch } = thunkAPI;
         const {
             actions: { setTokens, setTokensWithBalance },
         } = tokensSlice;
-        const { tokenFiatValues } = getState();
-
-        const likelyContractNames = [
-            ...new Set([
-                ...(await FungibleTokens.getLikelyTokenContracts({ accountId })),
-                ...CONFIG.WHITELISTED_CONTRACTS,
-                ...topTokens,
-            ]),
-        ];
 
         const tokens = {};
+
+        console.log('134: tokens: ', tokens);
+
         const tokensWithBalance = {};
 
-        await Promise.all(
-            likelyContractNames.map(async (contractName) => {
-                const {
-                    actions: { setContractMetadata },
-                } = tokensMetadataSlice;
+        console.log('138: tokensWithBalance: ', tokensWithBalance);
 
-                try {
-                    const onChainFTMetadata = await getCachedContractMetadataOrFetch(
-                        contractName,
-                        getState()
-                    );
-                    const balance = await FungibleTokens.getBalanceOf({
-                        contractName,
-                        accountId,
-                    });
+        const defaultContractNames = [
+            ...new Set([...CONFIG.WHITELISTED_CONTRACTS, ...topTokens]),
+        ];
 
-                    if (!selectOneContractMetadata(getState(), { contractName })) {
-                        dispatch(
-                            setContractMetadata({
-                                contractName,
-                                metadata: onChainFTMetadata,
-                            })
-                        );
-                    }
+        console.log('144: defaultContractNames: ', defaultContractNames);
 
-                    const tokenConfig = {
-                        contractName,
-                        balance,
-                        onChainFTMetadata,
-                        fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
-                    };
-
-                    const formattedToken = formatToken(tokenConfig);
-                    tokens[contractName] = formattedToken;
-
-                    if (Number(balance)) {
-                        tokensWithBalance[contractName] = formattedToken;
-                    }
-                } catch (e) {
-                    // Continue loading other likely contracts on failures
-                    console.warn(`Failed to load FT for ${contractName}`, e);
-                }
-            })
+        const defaultContractResults = await loadTokens(
+            accountId,
+            defaultContractNames,
+            thunkAPI
         );
+
+        console.log('152: defaultContractResults: ', defaultContractResults);
+
+        defaultContractResults.forEach((result) => {
+            if (result.error) {
+                return;
+            }
+
+            const { formattedToken, balance } = result;
+
+            tokens[formattedToken.contractName] = formattedToken;
+
+            if (!new BN(balance).isZero()) {
+                tokensWithBalance[formattedToken.contractName] = formattedToken;
+            }
+        });
+
+        console.log('168: tokens: ', tokens);
+        console.log('169: tokensWithBalance: ', tokensWithBalance);
+
+        batch(() => {
+            dispatch(setTokens(tokens));
+            dispatch(setTokensWithBalance(tokensWithBalance));
+        });
+
+        const fetchedContractNames = await FungibleTokens.getLikelyTokenContracts({
+            accountId,
+        });
+
+        console.log('180: fetchedContractNames: ', fetchedContractNames);
+
+        const newContractNames = fetchedContractNames.filter(
+            (contractName) => !defaultContractNames.includes(contractName)
+        );
+
+        console.log('186: newContractNames: ', newContractNames);
+
+        const newContractResults = await loadTokens(
+            accountId,
+            newContractNames,
+            thunkAPI
+        );
+
+        console.log('194: newContractResults: ', newContractResults);
+
+        // Problem starts here:
+
+        newContractResults.forEach((result) => {
+            if (result.error) {
+                return;
+            }
+
+            const { formattedToken, balance } = result;
+
+            tokens[formattedToken.contractName] = formattedToken;
+
+            if (!new BN(balance).isZero()) {
+                tokensWithBalance[formattedToken.contractName] = formattedToken;
+            }
+        });
+
+        // Problem ends here.
+        // The problem is that the tokens object is updated with the newContractResults.
+        // The problem is that the tokensWithBalance object is not updated with the newContractResults.
+
+        console.log('216: tokens: ', tokens);
+        console.log('217: tokensWithBalance: ', tokensWithBalance);
 
         batch(() => {
             dispatch(setTokens(tokens));
