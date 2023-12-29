@@ -63,9 +63,13 @@ const fetchTokenBalance = createAsyncThunk(
     }
 );
 
-async function loadToken(accountId, contractName, thunkAPI) {
+async function loadToken(accountId, contractName, thunkAPI, tokens, tokensWithBalance) {
     const { dispatch, getState } = thunkAPI;
     const { tokenFiatValues } = getState();
+
+    const {
+        actions: { setTokens, setTokensWithBalance },
+    } = tokensSlice;
 
     const {
         actions: { setContractMetadata },
@@ -100,6 +104,17 @@ async function loadToken(accountId, contractName, thunkAPI) {
 
         const formattedToken = formatToken(tokenConfig);
 
+        tokens[formattedToken.contractName] = formattedToken;
+
+        if (!new BN(balance).isZero()) {
+            tokensWithBalance[formattedToken.contractName] = formattedToken;
+        }
+
+        batch(() => {
+            dispatch(setTokens({ ...tokens }));
+            dispatch(setTokensWithBalance({ ...tokensWithBalance }));
+        });
+
         return {
             formattedToken,
             balance,
@@ -111,9 +126,11 @@ async function loadToken(accountId, contractName, thunkAPI) {
     }
 }
 
-async function loadTokens(accountId, contractNames, thunkAPI) {
+async function loadTokens(accountId, contractNames, thunkAPI, tokens, tokensWithBalance) {
     const contractResults = await Promise.all(
-        contractNames.map((contractName) => loadToken(accountId, contractName, thunkAPI))
+        contractNames.map((contractName) =>
+            loadToken(accountId, contractName, thunkAPI, tokens, tokensWithBalance)
+        )
     );
 
     return contractResults;
@@ -122,11 +139,6 @@ async function loadTokens(accountId, contractNames, thunkAPI) {
 const fetchTokens = createAsyncThunk(
     `${SLICE_NAME}/fetchTokens`,
     async ({ accountId }, thunkAPI) => {
-        const { dispatch } = thunkAPI;
-        const {
-            actions: { setTokens, setTokensWithBalance },
-        } = tokensSlice;
-
         const tokens = {};
 
         const tokensWithBalance = {};
@@ -135,58 +147,30 @@ const fetchTokens = createAsyncThunk(
             ...new Set([...CONFIG.WHITELISTED_CONTRACTS, ...topTokens]),
         ];
 
-        const defaultContractResults = await loadTokens(
-            accountId,
-            defaultContractNames,
-            thunkAPI
-        );
-
-        defaultContractResults.forEach((result) => {
-            if (result.error) {
-                return;
-            }
-
-            const { formattedToken, balance } = result;
-
-            tokens[formattedToken.contractName] = formattedToken;
-
-            if (!new BN(balance).isZero()) {
-                tokensWithBalance[formattedToken.contractName] = formattedToken;
-            }
-        });
-
-        const fetchedContractNames = await FungibleTokens.getLikelyTokenContracts({
-            accountId,
-        });
-
-        const newContractNames = fetchedContractNames.filter(
-            (contractName) => !defaultContractNames.includes(contractName)
-        );
-
-        const newContractResults = await loadTokens(
-            accountId,
-            newContractNames,
-            thunkAPI
-        );
-
-        newContractResults.forEach((result) => {
-            if (result.error) {
-                return;
-            }
-
-            const { formattedToken, balance } = result;
-
-            tokens[formattedToken.contractName] = formattedToken;
-
-            if (!new BN(balance).isZero()) {
-                tokensWithBalance[formattedToken.contractName] = formattedToken;
-            }
-        });
-
-        batch(() => {
-            dispatch(setTokens({ ...tokens }));
-            dispatch(setTokensWithBalance({ ...tokensWithBalance }));
-        });
+        await Promise.all([
+            loadTokens(
+                accountId,
+                defaultContractNames,
+                thunkAPI,
+                tokens,
+                tokensWithBalance
+            ),
+            FungibleTokens.getLikelyTokenContracts({ accountId })
+                .then((fetchedContractNames) =>
+                    fetchedContractNames.filter(
+                        (contractName) => !defaultContractNames.includes(contractName)
+                    )
+                )
+                .then((newContractNames) =>
+                    loadTokens(
+                        accountId,
+                        newContractNames,
+                        thunkAPI,
+                        tokens,
+                        tokensWithBalance
+                    )
+                ),
+        ]);
     }
 );
 
