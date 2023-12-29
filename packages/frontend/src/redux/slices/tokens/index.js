@@ -282,23 +282,21 @@ export const selectAllowedTokens = createSelector(
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
         }));
 
-        const safeTokenList = tokenList.filter(
-            ({ onChainFTMetadata, fiatValueMetadata }) => {
-                if (fiatValueMetadata?.usd) {
-                    return true;
-                }
-
-                if (onChainFTMetadata.symbol.length >= 10) {
-                    return false;
-                }
-
-                if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)) {
-                    return false;
-                }
-
+        const safeTokenList = tokenList.filter(({ onChainFTMetadata }) => {
+            if (['USDC.e', 'USDT.e'].includes(onChainFTMetadata.symbol)) {
                 return true;
             }
-        );
+
+            if (onChainFTMetadata.symbol.length >= 10) {
+                return false;
+            }
+
+            if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)) {
+                return false;
+            }
+
+            return true;
+        });
 
         if (![...setOfBlacklistedNames].length) {
             return [nearConfigWithName, ...safeTokenList];
