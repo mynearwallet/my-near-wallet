@@ -94,6 +94,7 @@ const fetchTokens = createAsyncThunk(
                         contractName,
                         getState()
                     );
+
                     const balance = await FungibleTokens.getBalanceOf({
                         contractName,
                         accountId,
@@ -281,11 +282,23 @@ export const selectAllowedTokens = createSelector(
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
         }));
 
-        const safeTokenList = tokenList
-            .filter(({ onChainFTMetadata }) => onChainFTMetadata.symbol.length < 10)
-            .filter(({ onChainFTMetadata }) =>
-                onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)
-            );
+        const safeTokenList = tokenList.filter(
+            ({ onChainFTMetadata, fiatValueMetadata }) => {
+                if (fiatValueMetadata?.usd) {
+                    return true;
+                }
+
+                if (onChainFTMetadata.symbol.length >= 10) {
+                    return false;
+                }
+
+                if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
 
         if (![...setOfBlacklistedNames].length) {
             return [nearConfigWithName, ...safeTokenList];
