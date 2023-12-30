@@ -11,14 +11,23 @@ export default {
                 headers: {
                     ...CUSTOM_REQUEST_HEADERS,
                 },
-            }).then((res) => res.json()),
+            })
+                .then((res) => res.json())
+                .catch((err) => {
+                    console.warn('Error fetching accounts from kitwallet indexer', err);
+                    return [];
+                }),
             fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
                 headers: {
                     accept: '*/*',
                 },
             })
                 .then((res) => res.json())
-                .then((res) => res.keys.map((key) => key.account_id)),
+                .then((res) => res.keys.map((key) => key.account_id))
+                .catch((err) => {
+                    console.warn('Error fetching accounts from nearblock', err);
+                    return [];
+                }),
         ]).then(([accounts, accountsFromNearblock]) => [
             ...new Set([...accounts, ...accountsFromNearblock]),
         ]);
