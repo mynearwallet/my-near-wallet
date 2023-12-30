@@ -283,7 +283,8 @@ export const selectAllowedTokens = createSelector(
         }));
 
         const safeTokenList = tokenList.filter(({ onChainFTMetadata }) => {
-            if (['USDC.e', 'USDT.e'].includes(onChainFTMetadata.symbol)) {
+            console.log(onChainFTMetadata.symbol);
+            if (['Bridged USDC', 'Bridged USDT'].includes(onChainFTMetadata.symbol)) {
                 return true;
             }
 
