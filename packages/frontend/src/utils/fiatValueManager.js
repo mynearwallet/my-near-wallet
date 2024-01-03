@@ -50,6 +50,9 @@ export default class FiatValueManager {
                             },
                         })
                     );
+
+                    console.log('coinGeckoFiatValueDataLoader', tokenFiatValues);
+
                     return tokenIds.map((id) => tokenFiatValues[id]);
                 } catch (error) {
                     console.error(`Failed to fetch coingecko prices: ${error}`);
@@ -74,6 +77,9 @@ export default class FiatValueManager {
                         'GET',
                         CONFIG.REF_FINANCE_API_ENDPOINT + '/list-token-price'
                     );
+
+                    console.log('refFinanceDataLoader', refFinanceTokenFiatValues);
+
                     return [refFinanceTokenFiatValues];
                 } catch (error) {
                     console.error(`Failed to fetch ref-finance prices: ${error}`);
