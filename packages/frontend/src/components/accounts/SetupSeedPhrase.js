@@ -1,3 +1,4 @@
+import { getRouter } from 'connected-react-router';
 import { KeyPair } from 'near-api-js';
 import { generateSeedPhrase } from 'near-seed-phrase';
 import React, { Component, Fragment } from 'react';
@@ -61,6 +62,7 @@ class SetupSeedPhrase extends Component {
 
     refreshData = async () => {
         const { accountId, fetchRecoveryMethods, checkIsNew } = this.props;
+
         const { seedPhrase, publicKey, secretKey } = generateSeedPhrase();
         const recoveryKeyPair = KeyPair.fromString(secretKey);
         const wordId = Math.floor(Math.random() * 12);
@@ -235,8 +237,9 @@ class SetupSeedPhrase extends Component {
         const { recoveryMethods, recoveryMethodsLoader, history, accountId, location } =
             this.props;
         const hasSeedPhraseRecovery =
-            recoveryMethodsLoader ||
-            recoveryMethods.filter((m) => m.kind === 'phrase').length > 0;
+            this.props.router.location.query.addKey !== 'true' &&
+            (recoveryMethodsLoader ||
+                recoveryMethods.filter((m) => m.kind === 'phrase').length > 0);
         const {
             seedPhrase,
             enterWord,
@@ -361,6 +364,7 @@ const mapStateToProps = (state, { match }) => {
         ...selectAccountSlice(state),
         accountId,
         recoveryMethods: selectRecoveryMethodsByAccountId(state, { accountId }),
+        router: getRouter(state),
         mainLoader: selectStatusMainLoader(state),
         recoveryMethodsLoader: selectRecoveryMethodsLoading(state, { accountId }),
     };

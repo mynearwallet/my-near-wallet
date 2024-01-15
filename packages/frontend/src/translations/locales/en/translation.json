@@ -314,6 +314,8 @@
         "resubmit": "Resubmit",
         "retry": "Retry",
         "returnToApp": "Return to App",
+        "rotateKey": "Rotate Key",
+        "rotatingKey": "Rotating Key",
         "saveChanges": "Save Changes",
         "secureMyAccount": "Secure My Account",
         "send": "Send",
@@ -622,16 +624,28 @@
         "termsOfService": "Terms of Service"
     },
     "fullAccessKeys": {
+        "addKey": "Add new access key",
         "authorizedTo": "AUTHORIZED TO",
+        "createdAt": "Created at",
         "dashboardNoKeys": "You have no full access keys",
         "deAuthorizeConfirm": {
             "desc": "The full access key will be permanently deactivated.",
-            "title": "Are you sure you want to disable this full access key?"
+            "seedPhrase": "Account seed phrase / private key",
+            "seedPhrasePrompt": "To prevent you from accidentally locked your account, please enter the seed phrase of this account.",
+            "title": "Delete Access Key"
+        },
+        "rotateKey": {
+            "desc": "The full access key stored and used by MNW will be rotated. This will delete the old key from local storage and replace it with the new key.",
+            "inUse": "Currently used by wallet",
+            "seedPhrase": "Account seed phrase / private key",
+            "seedPhrasePrompt": "Plaese enter the seed phrase for the key that you want to use.",
+            "title": "Rotate Key"
         },
         "noKeys": "You have not connected your NEAR Wallet to any applications. When you do, you can manage them here.<br /><br />See what's been built with NEAR:",
         "pageTitle": "Full Access Keys",
         "submitAnyTransaction": "Submit any transaction on your behalf",
         "useContract": "Use <b>${receiverId}</b> contract on your behalf",
+        "transaction": "Transaction",
         "viewYourAccountName": "View your Account Name"
     },
     "getBalance": "Get balance",
@@ -957,6 +971,9 @@
             "unvested": "Unvested",
             "username": "Account ID",
             "visibleTo": "VISIBLE TO"
+        },
+        "fullAccessKeys": {
+            "title": "Full Access Keys"
         },
         "lockup": {
             "locked": "Locked",

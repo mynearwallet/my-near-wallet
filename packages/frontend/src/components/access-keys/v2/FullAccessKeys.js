@@ -1,9 +1,10 @@
 import React from 'react';
 import { Translate } from 'react-localize-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import FullAccessKey from './FullAccessKey';
 import Container from '../../common/styled/Container.css';
+import FullAccessKeyRotation from '../../profile/full_access_key_rotations/FullAccessKeyRotation';
 
 const StyledContainer = styled(Container)`
     .authorized-app-box {
@@ -21,39 +22,23 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-export default ({
-    fullAccessKeys,
-    onClickDeAuthorizeKey,
-    deAuthorizingKey,
-    userInputAccountId,
-    setUserInputAccountId,
-    accountId,
-    confirmDeAuthorizeKey,
-    setConfirmDeAuthorizeKey,
-}) => {
+export default ({ fullAccessKeys, accountId }) => {
     return (
         <StyledContainer className='medium centered'>
             <h1>
                 <Translate id='fullAccessKeys.pageTitle' /> ({fullAccessKeys?.length})
             </h1>
             <div className='access-keys'>
-                {fullAccessKeys?.map((accessKey, i) => (
-                    <FullAccessKey
-                        key={accessKey.public_key}
-                        accessKey={accessKey}
-                        onClickDeAuthorizeKey={onClickDeAuthorizeKey}
-                        deAuthorizing={deAuthorizingKey === accessKey.public_key}
-                        userInputAccountId={userInputAccountId}
-                        setUserInputAccountId={setUserInputAccountId}
-                        accountId={accountId}
-                        confirmDeAuthorizeKey={confirmDeAuthorizeKey}
-                        setConfirmDeAuthorizeKey={setConfirmDeAuthorizeKey}
-                    />
+                {fullAccessKeys?.map((accessKey, index) => (
+                    <FullAccessKeyRotation key={index} fullAccessKey={accessKey} />
                 ))}
                 {fullAccessKeys?.length === 0 && (
                     <Translate id='fullAccessKeys.dashboardNoKeys' />
                 )}
             </div>
+            <Link to={`/set-recovery/${accountId}?addKey=true`}>
+                <Translate id='fullAccessKeys.addKey' />
+            </Link>
         </StyledContainer>
     );
 };

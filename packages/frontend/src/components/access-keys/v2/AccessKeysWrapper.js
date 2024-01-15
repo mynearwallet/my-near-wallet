@@ -4,21 +4,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import AuthorizedAppsKeys from './AuthorizedAppsKeys';
 import FullAccessKeys from './FullAccessKeys';
 import { getAccessKeys, removeAccessKey } from '../../../redux/actions/account';
-import { selectAccountSlice, selectAccountId } from '../../../redux/slices/account';
+import {
+    selectAccountSlice,
+    selectAccountFullAccessKeys,
+} from '../../../redux/slices/account';
 
 export default ({ type }) => {
     const dispatch = useDispatch();
 
-    const [userInputAccountId, setUserInputAccountId] = useState('');
     const [deAuthorizingKey, setDeAuthorizingKey] = useState('');
-    const [confirmDeAuthorizeKey, setConfirmDeAuthorizeKey] = useState('');
 
     const account = useSelector(selectAccountSlice);
-    const accountId = useSelector(selectAccountId);
 
     // TODO: Use selectors once PR is merged to master:
     // https://github.com/near/near-wallet/pull/2178
-    const fullAccessKeys = account.fullAccessKeys;
+    const fullAccessKeys = useSelector(selectAccountFullAccessKeys);
     const authorizedAppsKeys = account.authorizedApps;
 
     const deAuthorizeKey = async (publicKey) => {
@@ -45,17 +45,7 @@ export default ({ type }) => {
         return (
             <FullAccessKeys
                 fullAccessKeys={fullAccessKeys}
-                onClickDeAuthorizeKey={(publicKey) => deAuthorizeKey(publicKey)}
-                userInputAccountId={userInputAccountId}
-                setUserInputAccountId={(userInputAccountId) =>
-                    setUserInputAccountId(userInputAccountId)
-                }
-                accountId={accountId}
-                confirmDeAuthorizeKey={confirmDeAuthorizeKey}
-                setConfirmDeAuthorizeKey={(publicKey) =>
-                    setConfirmDeAuthorizeKey(publicKey)
-                }
-                deAuthorizingKey={deAuthorizingKey}
+                accountId={account.accountId}
             />
         );
     }
