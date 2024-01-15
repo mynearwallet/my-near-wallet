@@ -626,7 +626,7 @@
     "fullAccessKeys": {
         "addKey": "Add new access key",
         "authorizedTo": "AUTHORIZED TO",
-        "createdAt": "Created at",
+        "createdAt": "Added at",
         "dashboardNoKeys": "You have no full access keys",
         "deAuthorizeConfirm": {
             "desc": "The full access key will be permanently deactivated.",
@@ -638,7 +638,7 @@
         "pageTitle": "Full Access Keys",
         "rotateKey": {
             "desc": "The full access key stored and used by MNW will be rotated. This will delete the old key from local storage and replace it with the new key.",
-            "inUse": "Currently used by wallet",
+            "inUse": "Currently used",
             "seedPhrase": "Account seed phrase / private key",
             "seedPhrasePrompt": "Plaese enter the seed phrase for the key that you want to use.",
             "title": "Rotate Key"

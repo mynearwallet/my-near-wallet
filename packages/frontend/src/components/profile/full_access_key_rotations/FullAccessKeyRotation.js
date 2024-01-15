@@ -338,33 +338,35 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
             ) : (
                 <>
                     <div className='title'>
-                        <Translate id='fullAccessKeys.createdAt' />{' '}
-                        {createdAt.toLocaleString()}
-                        {fullAccessKey.meta.type === 'ledger' ? (
-                            <>
-                                &nbsp; - &nbsp;
-                                <Translate id='hardwareDevices.ledger.title' />
-                            </>
-                        ) : (
-                            ''
-                        )}
+                        <div className='flex flex-wrap'>
+                            <span>
+                                <Translate id='fullAccessKeys.createdAt' />{' '}
+                                {createdAt.toLocaleString()}
+                            </span>
+                            {fullAccessKey.meta.type === 'ledger' ? (
+                                <span className='px-2 py-1 bg-blue-400 rounded-full text-xs ml-2'>
+                                    <Translate id='hardwareDevices.ledger.title' />
+                                </span>
+                            ) : null}
+                            {fullAccessKey.public_key === publicKey ? (
+                                <span className='px-2 py-1 bg-green-400 rounded-full text-xs ml-2'>
+                                    <Translate id='fullAccessKeys.rotateKey.inUse' />
+                                </span>
+                            ) : null}
+                        </div>
                         {fullAccessKey.public_key === publicKey ? (
-                            <>
-                                &nbsp; - &nbsp;
-                                <Translate id='fullAccessKeys.rotateKey.inUse' />
-                                <FormButton
-                                    color='gray-blue'
-                                    className='small'
-                                    onClick={() => {
-                                        setConfirmRotate(true);
-                                    }}
-                                    disabled={rotating}
-                                    sending={rotating}
-                                    sendingString='button.rotatingKey'
-                                >
-                                    <Translate id='button.rotateKey' />
-                                </FormButton>
-                            </>
+                            <FormButton
+                                color='gray-blue'
+                                className='small'
+                                onClick={() => {
+                                    setConfirmRotate(true);
+                                }}
+                                disabled={rotating}
+                                sending={rotating}
+                                sendingString='button.rotatingKey'
+                            >
+                                <Translate id='button.rotateKey' />
+                            </FormButton>
                         ) : (
                             <FormButton
                                 color='gray-red'
