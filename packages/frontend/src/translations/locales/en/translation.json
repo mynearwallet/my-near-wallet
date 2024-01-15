@@ -634,6 +634,8 @@
             "seedPhrasePrompt": "To prevent you from accidentally locked your account, please enter the seed phrase of this account.",
             "title": "Delete Access Key"
         },
+        "noKeys": "You have not connected your NEAR Wallet to any applications. When you do, you can manage them here.<br /><br />See what's been built with NEAR:",
+        "pageTitle": "Full Access Keys",
         "rotateKey": {
             "desc": "The full access key stored and used by MNW will be rotated. This will delete the old key from local storage and replace it with the new key.",
             "inUse": "Currently used by wallet",
@@ -641,11 +643,9 @@
             "seedPhrasePrompt": "Plaese enter the seed phrase for the key that you want to use.",
             "title": "Rotate Key"
         },
-        "noKeys": "You have not connected your NEAR Wallet to any applications. When you do, you can manage them here.<br /><br />See what's been built with NEAR:",
-        "pageTitle": "Full Access Keys",
         "submitAnyTransaction": "Submit any transaction on your behalf",
-        "useContract": "Use <b>${receiverId}</b> contract on your behalf",
         "transaction": "Transaction",
+        "useContract": "Use <b>${receiverId}</b> contract on your behalf",
         "viewYourAccountName": "View your Account Name"
     },
     "getBalance": "Get balance",
