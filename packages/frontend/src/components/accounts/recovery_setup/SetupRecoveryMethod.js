@@ -86,6 +86,10 @@ class SetupRecoveryMethod extends Component {
     };
 
     checkDisabled = (method) => {
+        if (this.props.router.location.query.addKey === 'true') {
+            return false;
+        }
+
         const { recoveryMethods } = this.props;
         let activeMethods = [];
         if (!!recoveryMethods.length) {
