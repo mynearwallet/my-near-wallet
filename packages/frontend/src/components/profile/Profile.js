@@ -14,7 +14,6 @@ import { Recovery } from './Recovery';
 import RemoveAccountWrapper from './remove_account/RemoveAccountWrapper';
 import TwoFactorAuth from './two_factor/TwoFactorAuth';
 import { StyledContainer } from './ui';
-import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrapper';
 import CONFIG from '../../config';
 import { useAccount } from '../../hooks/allAccounts';
 import { Mixpanel } from '../../mixpanel/index';
@@ -313,7 +312,6 @@ const Profile = ({ match }) => {
                     </div>
                 )}
             </div>
-            <ZeroBalanceAccountWrapper />
         </StyledContainer>
     );
 };
