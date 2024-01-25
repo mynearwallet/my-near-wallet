@@ -320,11 +320,25 @@ export const selectAllowedTokens = createSelector(
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
         }));
 
-        const safeTokenList = tokenList
-            .filter(({ onChainFTMetadata }) => onChainFTMetadata.symbol.length < 10)
-            .filter(({ onChainFTMetadata }) =>
-                onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)
-            );
+        const safeTokenList = tokenList.filter(({ onChainFTMetadata }) => {
+            if (
+                ['Native USDT', 'Native USDC', 'Bridged USDC', 'Bridged USDT'].includes(
+                    onChainFTMetadata.symbol
+                )
+            ) {
+                return true;
+            }
+
+            if (onChainFTMetadata.symbol.length >= 10) {
+                return false;
+            }
+
+            if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)) {
+                return false;
+            }
+
+            return true;
+        });
 
         if (![...setOfBlacklistedNames].length) {
             return [nearConfigWithName, ...safeTokenList];

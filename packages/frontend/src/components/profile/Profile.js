@@ -8,12 +8,12 @@ import AuthorizedApp from './authorized_apps/AuthorizedApp';
 import BalanceContainer from './balances/BalanceContainer';
 import LockupAvailTransfer from './balances/LockupAvailTransfer';
 import ExportKeyWrapper from './export_private_key/ExportKeyWrapper';
+import FullAccessKeyRotation from './full_access_key_rotations/FullAccessKeyRotation';
 import MobileSharingWrapper from './mobile_sharing/MobileSharingWrapper';
 import { Recovery } from './Recovery';
 import RemoveAccountWrapper from './remove_account/RemoveAccountWrapper';
 import TwoFactorAuth from './two_factor/TwoFactorAuth';
 import { StyledContainer } from './ui';
-import { ZeroBalanceAccountWrapper } from './zero_balance/ZeroBalanceAccountWrapper';
 import CONFIG from '../../config';
 import { useAccount } from '../../hooks/allAccounts';
 import { Mixpanel } from '../../mixpanel/index';
@@ -34,6 +34,7 @@ import {
     selectAccountId,
     selectAccountLedgerKey,
     selectAccountExists,
+    selectAccountFullAccessKeys,
 } from '../../redux/slices/account';
 import { selectAllAccountsHasLockup } from '../../redux/slices/allAccounts';
 import {
@@ -58,6 +59,7 @@ const Profile = ({ match }) => {
     const accountExists = useSelector(selectAccountExists);
     const has2fa = useSelector(selectAccountHas2fa);
     const authorizedApps = useSelector(selectAccountAuthorizedApps);
+    const fullAccessKeys = useSelector(selectAccountFullAccessKeys);
     const ledgerKey = useSelector(selectAccountLedgerKey);
     const loginAccountId = useSelector(selectAccountId);
     const nearTokenFiatValueUSD = useSelector(selectNearTokenFiatValueUSD);
@@ -239,6 +241,26 @@ const Profile = ({ match }) => {
                             ))}
                         </>
                     ) : null}
+                    {isOwner && fullAccessKeys?.length ? (
+                        <>
+                            <hr />
+                            <div className='auth-apps'>
+                                <h2>
+                                    <CheckCircleIcon />
+                                    <Translate id='profile.fullAccessKeys.title' />
+                                </h2>
+                                <FormButton color='link' linkTo='/full-access-keys'>
+                                    <Translate id='button.viewAll' />
+                                </FormButton>
+                            </div>
+                            {fullAccessKeys.slice(0, 2).map((fullAccessKey, index) => (
+                                <FullAccessKeyRotation
+                                    key={index}
+                                    fullAccessKey={fullAccessKey}
+                                />
+                            ))}
+                        </>
+                    ) : null}
                 </div>
                 {isOwner && (
                     <div className='right'>
@@ -290,7 +312,6 @@ const Profile = ({ match }) => {
                     </div>
                 )}
             </div>
-            <ZeroBalanceAccountWrapper />
         </StyledContainer>
     );
 };

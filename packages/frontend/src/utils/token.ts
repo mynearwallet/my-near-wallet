@@ -3,6 +3,7 @@ enum ETokenContractId {
     BridgedUSDT = 'dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near',
     NativeUSDTTestnet = 'usdtt.fakes.testnet',
     NativeUSDT = 'usdt.tether-token.near',
+    NativeUSDC = '17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1',
     BridgedUSDCTestnet = 'usdc.fakes.testnet',
     BridgedUSDC = 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
 }
@@ -28,6 +29,10 @@ export const tokenContractIdSymbolMap: { [contractName: string]: ITokenContractI
     [ETokenContractId.NativeUSDTTestnet]: {
         isBridged: false,
         symbol: 'Native USDT',
+    },
+    [ETokenContractId.NativeUSDC]: {
+        isBridged: false,
+        symbol: 'Native USDC',
     },
     [ETokenContractId.BridgedUSDC]: {
         isBridged: true,
