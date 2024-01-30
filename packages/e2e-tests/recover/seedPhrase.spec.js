@@ -1,5 +1,6 @@
 // @ts-check
 const { test, expect } = require('../playwrightWithFixtures');
+const { createPassword } = require('../utils/password');
 
 const { describe, beforeAll, afterAll } = test;
 
@@ -19,6 +20,9 @@ describe('Account Recovery Using Seed Phrase', () => {
         await page.goto('/');
 
         await page.click('data-test-id=homePageImportAccountButton');
+
+        await createPassword(page);
+
         await page.click('data-test-id=recoverAccountWithPassphraseButton');
 
         await expect(page).toHaveURL(/\/recover-seed-phrase$/);
@@ -26,6 +30,8 @@ describe('Account Recovery Using Seed Phrase', () => {
 
     test('recovers account using seed phrase', async ({ page }) => {
         await page.goto('/recover-seed-phrase');
+
+        await createPassword(page);
 
         await page.fill('data-test-id=seedPhraseRecoveryInput', testAccount.seedPhrase);
         await page.click('data-test-id=seedPhraseRecoverySubmitButton');

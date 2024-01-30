@@ -1,5 +1,6 @@
 const { WALLET_NETWORK } = require('../../constants');
 const nearApiJsConnection = require('../../utils/connectionSingleton');
+const { createPassword } = require('../../utils/password');
 
 class CreateAccountPage {
     constructor(page) {
@@ -14,6 +15,7 @@ class CreateAccountPage {
         }
     }
     async submitAccountId(accountId) {
+        await createPassword(this.page);
         await this.page.type('data-test-id=createAccount.accountIdInput', accountId);
         await this.page.click('data-test-id=reserveAccountIdButton');
     }
