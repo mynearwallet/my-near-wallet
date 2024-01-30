@@ -1,12 +1,12 @@
 const base = require('@playwright/test');
 const { BN } = require('bn.js');
 
-const { WALLET_NETWORK } = require('./constants');
+// const { WALLET_NETWORK } = require('./constants');
 const { getBankAccount } = require('./utils/account');
-const nearApiJsConnection = require('./utils/connectionSingleton');
+// const nearApiJsConnection = require('./utils/connectionSingleton');
 const E2eTestAccount = require('./utils/E2eTestAccount');
 const { getTestAccountSeedPhrase, getWorkerAccountId } = require('./utils/helpers');
-const SelfReloadingE2eTestAccount = require('./utils/SelfReloadingE2eTestAccount');
+// const SelfReloadingE2eTestAccount = require('./utils/SelfReloadingE2eTestAccount');
 
 /**
  * @type {base.TestType<base.PlaywrightTestArgs & base.PlaywrightTestOptions,{bankAccount: E2eTestAccount | SelfReloadingE2eTestAccount}>}
@@ -27,17 +27,19 @@ const test = base.test.extend({
             const workerBankAccountId = getWorkerAccountId(workerInfo.workerIndex);
             const workerBankAccountSeedphrase =
                 getTestAccountSeedPhrase(workerBankAccountId);
-            const workerBankAccount = await new (nearApiJsConnection.config.networkId !==
-            WALLET_NETWORK.MAINNET
-                ? SelfReloadingE2eTestAccount
-                : E2eTestAccount)(
+
+            const workerBankAccount = await new E2eTestAccount(
                 workerBankAccountId,
                 workerBankAccountSeedphrase,
                 bankAccount.nearApiJsAccount
-            ).connectOrCreate();
+            ).connectOrCreate({
+                amount: '200',
+            });
             const { total: startBalance } = await workerBankAccount.getUpdatedBalance();
             process.env.workerBankStartBalance = startBalance;
+
             await use(workerBankAccount);
+
             const { total: endBalance } = await workerBankAccount.getUpdatedBalance();
             const amountSpent = new BN(process.env.workerBankStartBalance)
                 .sub(new BN(endBalance))
@@ -52,6 +54,7 @@ const test = base.test.extend({
                     },
                 ])
             );
+
             await workerBankAccount.delete();
         },
         { scope: 'worker', auto: true },

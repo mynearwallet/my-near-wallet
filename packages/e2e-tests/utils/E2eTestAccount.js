@@ -16,7 +16,6 @@ const {
 const {
     LOCKUP_CONFIGS: { FULLY_VESTED_CONFIG },
     WALLET_NETWORK,
-    TEST_ACCOUNT_DEPOSIT_AMOUNT,
 } = require('../constants');
 const { fetchLockupContract } = require('../contracts');
 
@@ -54,7 +53,7 @@ class E2eTestAccount {
      */
     async create(
         { amount, contractWasm, initArgs, initFunction } = {
-            amount: TEST_ACCOUNT_DEPOSIT_AMOUNT,
+            amount: '2',
         }
     ) {
         if (contractWasm) {
