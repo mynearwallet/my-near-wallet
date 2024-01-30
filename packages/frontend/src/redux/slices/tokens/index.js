@@ -63,76 +63,114 @@ const fetchTokenBalance = createAsyncThunk(
     }
 );
 
+async function loadToken(accountId, contractName, thunkAPI, tokens, tokensWithBalance) {
+    const { dispatch, getState } = thunkAPI;
+    const { tokenFiatValues } = getState();
+
+    const {
+        actions: { setTokens, setTokensWithBalance },
+    } = tokensSlice;
+
+    const {
+        actions: { setContractMetadata },
+    } = tokensMetadataSlice;
+
+    try {
+        const onChainFTMetadata = await getCachedContractMetadataOrFetch(
+            contractName,
+            getState()
+        );
+
+        const balance = await FungibleTokens.getBalanceOf({
+            contractName,
+            accountId,
+        });
+
+        if (!selectOneContractMetadata(getState(), { contractName })) {
+            dispatch(
+                setContractMetadata({
+                    contractName,
+                    metadata: onChainFTMetadata,
+                })
+            );
+        }
+
+        const tokenConfig = {
+            contractName,
+            balance,
+            onChainFTMetadata,
+            fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
+        };
+
+        const formattedToken = formatToken(tokenConfig);
+
+        tokens[formattedToken.contractName] = formattedToken;
+
+        if (!new BN(balance).isZero()) {
+            tokensWithBalance[formattedToken.contractName] = formattedToken;
+        }
+
+        batch(() => {
+            dispatch(setTokens({ ...tokens }));
+            dispatch(setTokensWithBalance({ ...tokensWithBalance }));
+        });
+
+        return {
+            formattedToken,
+            balance,
+        };
+    } catch (error) {
+        return {
+            error,
+        };
+    }
+}
+
+async function loadTokens(accountId, contractNames, thunkAPI, tokens, tokensWithBalance) {
+    const contractResults = await Promise.all(
+        contractNames.map((contractName) =>
+            loadToken(accountId, contractName, thunkAPI, tokens, tokensWithBalance)
+        )
+    );
+
+    return contractResults;
+}
+
 const fetchTokens = createAsyncThunk(
     `${SLICE_NAME}/fetchTokens`,
     async ({ accountId }, thunkAPI) => {
-        const { dispatch, getState } = thunkAPI;
-        const {
-            actions: { setTokens, setTokensWithBalance },
-        } = tokensSlice;
-        const { tokenFiatValues } = getState();
-
-        const likelyContractNames = [
-            ...new Set([
-                ...(await FungibleTokens.getLikelyTokenContracts({ accountId })),
-                ...CONFIG.WHITELISTED_CONTRACTS,
-                ...topTokens,
-            ]),
-        ];
-
         const tokens = {};
+
         const tokensWithBalance = {};
 
-        await Promise.all(
-            likelyContractNames.map(async (contractName) => {
-                const {
-                    actions: { setContractMetadata },
-                } = tokensMetadataSlice;
+        const defaultContractNames = [
+            ...new Set([...CONFIG.WHITELISTED_CONTRACTS, ...topTokens]),
+        ];
 
-                try {
-                    const onChainFTMetadata = await getCachedContractMetadataOrFetch(
-                        contractName,
-                        getState()
-                    );
-
-                    const balance = await FungibleTokens.getBalanceOf({
-                        contractName,
+        await Promise.all([
+            loadTokens(
+                accountId,
+                defaultContractNames,
+                thunkAPI,
+                tokens,
+                tokensWithBalance
+            ),
+            FungibleTokens.getLikelyTokenContracts({ accountId })
+                .then((fetchedContractNames) =>
+                    fetchedContractNames.filter(
+                        (contractName) => !defaultContractNames.includes(contractName)
+                    )
+                )
+                .then((newContractNames) =>
+                    loadTokens(
                         accountId,
-                    });
-
-                    if (!selectOneContractMetadata(getState(), { contractName })) {
-                        dispatch(
-                            setContractMetadata({
-                                contractName,
-                                metadata: onChainFTMetadata,
-                            })
-                        );
-                    }
-
-                    const tokenConfig = {
-                        contractName,
-                        balance,
-                        onChainFTMetadata,
-                        fiatValueMetadata: tokenFiatValues.tokens[contractName] || {},
-                    };
-
-                    const formattedToken = formatToken(tokenConfig);
-                    tokens[contractName] = formattedToken;
-
-                    if (Number(balance)) {
-                        tokensWithBalance[contractName] = formattedToken;
-                    }
-                } catch (e) {
-                    // Continue loading other likely contracts on failures
-                    console.warn(`Failed to load FT for ${contractName}`, e);
-                }
-            })
-        );
-
-        batch(() => {
-            dispatch(setTokens(tokens));
-            dispatch(setTokensWithBalance(tokensWithBalance));
-        });
+                        newContractNames,
+                        thunkAPI,
+                        tokens,
+                        tokensWithBalance
+                    )
+                ),
+        ]);
     }
 );
 
