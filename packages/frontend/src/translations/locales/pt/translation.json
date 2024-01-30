@@ -1127,32 +1127,32 @@
             "step2Description": "Defina sua nova senha aqui",
             "step2Title": "Passo 2/2: Definir Nova Senha"
         },
-        "confirm": "Conferma Password",
+        "confirm": "Confirme sua senha",
         "disableModal": {
-            "description": "Disabilitare la crittografia della password espone i tuoi account a un rischio maggiore. Sei sicuro di voler continuare?",
-            "disabledDescription": "La crittografia della password è stata disattivata con successo",
-            "disabledTitle": "Crittografia Password Disattivata",
-            "instruction": "Inserisci qui la tua password per confermare",
-            "title": "Disabilita la crittografia della password"
+            "description": "Desativar a criptografia de senha irá expor suas contas a um risco maior. Você tem certeza que quer continuar?",
+            "disabledDescription": "Criptografia de senha desativada com sucesso",
+            "disabledTitle": "Criptografia de senha desativada",
+            "instruction": "Insira sua senha aqui para confirmar",
+            "title": "Desativar criptografia de senha"
         },
-        "enter": "Inserisci password",
-        "invalidPassword": "Password non valida",
-        "lengthError": "Almeno 8 caratteri",
-        "matchError": "Le password non corrispondono",
-        "pageText": "Userai questa password per sbloccare il tuo portafoglio.",
-        "pageTitle": "Crea una password",
-        "passwordExist": "Password già esistente",
-        "passwordExistDescription": "Hai già protetto il tuo account con una password.",
-        "setPasswordSuccessfully": "Password impostata con successo",
-        "setPasswordSuccessfullyButton": "Torna alla Home",
-        "setPasswordSuccessfullyDescription": "I tuoi account sono ora meglio protetti dalla crittografia della password.",
-        "strong": "Password forte",
-        "unlockWalletButton": "Sblocca Portafoglio",
-        "unlockWalletDescription": "Bentornato, il mondo web3 ti attende. Inserisci la tua password per sbloccare il tuo portafoglio.",
-        "unlockWalletInputPlaceholder": "Inserisci password",
-        "unlockWalletTitle": "Sblocca Portafoglio",
-        "week": "Password debole",
-        "withoutPassword": "Continua senza creare una password"
+        "enter": "Digite sua senha",
+        "invalidPassword": "Senha incorreta",
+        "lengthError": "Pelo menos 8 caracteres",
+        "matchError": "Senhas são diferentes",
+        "pageText": "Você usará esta senha para desbloquear sua carteira",
+        "pageTitle": "Criar uma senha",
+        "passwordExist": "Senha já existente",
+        "passwordExistDescription": "Você já protegeu sua conta com uma senha",
+        "setPasswordSuccessfully": "Senha definida com sucesso",
+        "setPasswordSuccessfullyButton": "Voltar para início",
+        "setPasswordSuccessfullyDescription": "Agora suas contas estão protegidas por criptografia de senha.",
+        "strong": "Senha forte",
+        "unlockWalletButton": "Desbloquear carteira",
+        "unlockWalletDescription": "Bem-vindo de volta, o mundo web3 espera por você. Digite sua senha para desbloquear sua carteira.",
+        "unlockWalletInputPlaceholder": "Digite sua senha",
+        "unlockWalletTitle": "Desbloquear carteira",
+        "week": "Senha fraca",
+        "withoutPassword": "Continuar sem criar senha"
     },
     "setupRecovery": {
         "advancedSecurity": "Mais seguro (recomendado)",
@@ -1174,8 +1174,8 @@
         "subHeader": "Selecione um método para proteger e recuperar a sua conta. Isso será usado para verificar atividades importantes, recuperar conta e acessar sua conta em outros dispositivos."
     },
     "setupSeedPhrase": {
-        "pageText": "Write down the following words in order and keep them somewhere safe. <b>Anyone with access to it will also have access to your account!</b> You’ll be asked to verify your passphrase next.",
-        "pageTitle": "Setup Your Secure Passphrase",
+        "pageText": "Escreva as seguintes palavras em ordem e guarde-as em um lugar seguro. <b>Qualquer pessoa com acesso a ele também terá acesso à sua conta!</b> Em seguida, você será solicitado a verificar sua senha.",
+        "pageTitle": "Consigure sua Frase-semente",
         "snackbarCopyImplicitAddress": "Endereço do fundação Copiado!",
         "snackbarCopySuccess": "Frase-semente copiada!"
     },
@@ -1192,7 +1192,7 @@
     "sign": {
         "accountNotFound": {
             "body": "${signCallbackUrl} is requesting authorization from a NEAR account that cannot be found: <b>${signTransactionSignerId}</b><br/><br/>To approve any transactions, you’ll first need to import the account.",
-            "title": "Account Not Found"
+            "title": "Conta nao encontrada"
         },
         "ActionWarrning": {
             "binaryData": "Argumentos contêm dados binários",

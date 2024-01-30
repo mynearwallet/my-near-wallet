@@ -6,6 +6,8 @@ import PreviewInfo from './PreviewInfo';
 import BackArrowButton from '../../../components/common/BackArrowButton';
 import FormButton from '../../../components/common/FormButton';
 import { removeTrailingZeros } from '../../../utils/amounts';
+import { useSwapData } from '../model/Swap';
+import { PRICE_IMPACT_THRESHOLD } from '../utils/constants';
 
 const StyledContainer = styled.div`
     h4 {
@@ -82,6 +84,10 @@ export default function Preview({
         }
     };
 
+    const {
+        swapState: { priceImpactPercent },
+    } = useSwapData();
+
     return (
         <StyledContainer>
             <div className='header'>
@@ -116,9 +122,30 @@ export default function Preview({
                 tokenTo={activeTokenTo}
                 amountTokenTo={amountTokenTo}
             />
+
+            {}
+
+            {priceImpactPercent > PRICE_IMPACT_THRESHOLD.error ? (
+                <div className='p-3 mt-2 border-red-600 text-red-600 text-md bg-red-100 rounded-lg border-solid border-1'>
+                    The price impact is {priceImpactPercent}%. To protect you from
+                    potential asset loss, we have disabled the swap. We recommend using
+                    https://app.ref.finance.
+                </div>
+            ) : priceImpactPercent > PRICE_IMPACT_THRESHOLD.warning ? (
+                <div className='p-3 mt-2 border-yellow-800 text-yellow-800 text-md bg-yellow-100 rounded-lg border-solid border-1'>
+                    The price impact is {priceImpactPercent}%. For a better swap, please
+                    consider using https://app.ref.finance.
+                </div>
+            ) : (
+                <></>
+            )}
+
             <FormButton
                 color='blue width100'
-                disabled={swappingToken === true}
+                disabled={
+                    swappingToken === true ||
+                    priceImpactPercent > PRICE_IMPACT_THRESHOLD.error
+                }
                 sending={swappingToken === true}
                 sendingString='swapping'
                 data-test-id='swapPageStartSwapButton'

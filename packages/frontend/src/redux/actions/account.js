@@ -1,3 +1,4 @@
+import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import { getLocation, push } from 'connected-react-router';
 import { parse, stringify } from 'query-string';
 import { createActions, createAction } from 'redux-actions';
@@ -10,7 +11,6 @@ import {
 import { showCustomAlert } from './status';
 import CONFIG from '../../config';
 import { actions as activeAccountActions } from '../../redux/slices/activeAccount';
-import { syncPrivateShardAccount } from '../../services/PrivateShard';
 import { showAlert } from '../../utils/alerts';
 import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
 import { loadState, saveState, clearState } from '../../utils/sessionStorage';
@@ -28,6 +28,7 @@ import Wallet, {
     ENABLE_IDENTITY_VERIFIED_ACCOUNT,
     WALLET_BATCH_IMPORT_URL,
     WALLET_VERIFY_OWNER_URL,
+    WALLET_SIGN_MESSAGE_URL,
 } from '../../utils/wallet';
 import { WalletError } from '../../utils/walletError';
 import { withAlert } from '../reducers/status';
@@ -131,6 +132,7 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
             WALLET_LINKDROP_URL,
             WALLET_BATCH_IMPORT_URL,
             WALLET_VERIFY_OWNER_URL,
+            WALLET_SIGN_MESSAGE_URL,
         ].includes(currentPage)
     ) {
         let parsedUrl = {
@@ -148,6 +150,7 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
                 WALLET_CREATE_NEW_ACCOUNT_URL,
                 WALLET_LINKDROP_URL,
                 WALLET_VERIFY_OWNER_URL,
+                WALLET_SIGN_MESSAGE_URL,
             ].includes(currentPage) &&
             search !== ''
         ) {
@@ -199,10 +202,16 @@ const checkContractId = () => async (dispatch, getState) => {
         }
 
         try {
-            const getAccount = shardInfo
-                ? new Wallet(shardInfo).getAccountBasic
-                : wallet.getAccountBasic;
-            await getAccount(contractId).state();
+            if (shardInfo) {
+                const shardInfoWithAuth = {
+                    ...shardInfo,
+                    xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
+                };
+                const privateShardWallet = new Wallet(shardInfoWithAuth);
+                await privateShardWallet.getAccountBasic(contractId).state();
+            } else {
+                await wallet.getAccountBasic(contractId).state();
+            }
         } catch (error) {
             if (error.message.indexOf('does not exist while viewing') !== -1) {
                 redirectIncorrectContractId();
@@ -248,21 +257,28 @@ export const allowLogin = () => async (dispatch, getState) => {
     const successUrl = selectAccountUrlSuccessUrl(getState());
 
     const shardInfo = selectAccountUrlPrivateShard(getState());
-    const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
 
     if (shardInfo) {
-        const account = await wallet.getAccount(wallet.accountId);
-        const signature = await wallet.signatureFor(account);
-        const publicKey = await wallet.getPublicKey(account.accountId);
-        const publicKeyString = publicKey.toString(publicKey);
-        signature.publicKey = publicKeyString;
-        await syncPrivateShardAccount({
-            accountId: wallet.accountId,
-            publicKey: publicKeyString,
-            signature,
-            shardInfo,
-        });
+        const calimeroConfig = {
+            shardId: shardInfo.shardId,
+            calimeroUrl: CONFIG.CALIMERO_URL,
+            rpcEndpoint: shardInfo.shardRpc,
+            walletNetworkId: CONFIG.NETWORK_ID,
+        };
+
+        const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
+        const xSignature = await wallet.generatePrivateShardXSignature(shardInfo);
+
+        await calimeroWalletUtils.syncAccount(wallet.accountId, xSignature);
     }
+
+    const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
+    const shardInfoWithAuth = shardInfo
+        ? {
+              ...shardInfo,
+              xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
+          }
+        : shardInfo;
 
     if (successUrl) {
         if (publicKey) {
@@ -274,7 +290,7 @@ export const allowLogin = () => async (dispatch, getState) => {
                         publicKey,
                         false,
                         methodNames,
-                        shardInfo
+                        shardInfoWithAuth
                     ),
                     { onlyError: true }
                 )
@@ -301,7 +317,7 @@ export const allowLogin = () => async (dispatch, getState) => {
                     publicKey,
                     false,
                     methodNames,
-                    shardInfo
+                    shardInfoWithAuth
                 ),
                 { data: { title } }
             )
@@ -344,10 +360,13 @@ export const {
     getMultisigRequest,
 } = createActions({
     INITIALIZE_RECOVERY_METHOD: [
-        wallet.initializeRecoveryMethod.bind(wallet),
+        (...args) => wallet.initializeRecoveryMethod(...args),
         () => ({}),
     ],
-    VALIDATE_SECURITY_CODE: [wallet.validateSecurityCode.bind(wallet), () => ({})],
+    VALIDATE_SECURITY_CODE: [
+        (...args) => wallet.validateSecurityCode(...args),
+        () => ({}),
+    ],
     INIT_TWO_FACTOR: [
         (...args) => new TwoFactor(wallet, wallet.accountId).initTwoFactor(...args),
         () => showAlert({ onlyError: true }),
@@ -399,23 +418,32 @@ export const {
         () => new TwoFactor(wallet, wallet.accountId).getMultisigRequest(),
         () => ({}),
     ],
-    GET_LEDGER_KEY: [wallet.getLedgerKey.bind(wallet), () => ({})],
-    GET_LEDGER_PUBLIC_KEY: [wallet.getLedgerPublicKey.bind(wallet), () => ({})],
-    SETUP_RECOVERY_MESSAGE: [wallet.setupRecoveryMessage.bind(wallet), () => showAlert()],
-    DELETE_RECOVERY_METHOD: [wallet.deleteRecoveryMethod.bind(wallet), () => showAlert()],
-    CHECK_LINKDROP_INFO: [wallet.checkLinkdropInfo.bind(wallet), () => ({})],
+    GET_LEDGER_KEY: [(...args) => wallet.getLedgerKey(...args), () => ({})],
+    GET_LEDGER_PUBLIC_KEY: [(...args) => wallet.getLedgerPublicKey(...args), () => ({})],
+    SETUP_RECOVERY_MESSAGE: [
+        (...args) => wallet.setupRecoveryMessage(...args),
+        () => showAlert(),
+    ],
+    DELETE_RECOVERY_METHOD: [
+        (...args) => wallet.deleteRecoveryMethod(...args),
+        () => showAlert(),
+    ],
+    CHECK_LINKDROP_INFO: [(...args) => wallet.checkLinkdropInfo(...args), () => ({})],
     CLAIM_LINKDROP_TO_ACCOUNT: [
-        wallet.claimLinkdropToAccount.bind(wallet),
+        (...args) => wallet.claimLinkdropToAccount(...args),
         () => showAlert({ onlyError: true }),
     ],
-    CHECK_IS_NEW: [wallet.checkIsNew.bind(wallet), () => showAlert({ localAlert: true })],
-    CHECK_NEW_ACCOUNT: [
-        wallet.checkNewAccount.bind(wallet),
+    CHECK_IS_NEW: [
+        (...args) => wallet.checkIsNew(...args),
         () => showAlert({ localAlert: true }),
     ],
-    SAVE_ACCOUNT: wallet.saveAccount.bind(wallet),
+    CHECK_NEW_ACCOUNT: [
+        (...args) => wallet.checkNewAccount(...args),
+        () => showAlert({ localAlert: true }),
+    ],
+    SAVE_ACCOUNT: (...args) => wallet.saveAccount(...args),
     CHECK_ACCOUNT_AVAILABLE: [
-        wallet.checkAccountAvailable.bind(wallet),
+        (...args) => wallet.checkAccountAvailable(...args),
         () => showAlert({ localAlert: true }),
     ],
     CLEAR_CODE: null,
@@ -429,22 +457,22 @@ export const {
     disableLedger,
     removeNonLedgerAccessKeys,
 } = createActions({
-    GET_ACCESS_KEYS: [wallet.getAccessKeys.bind(wallet), () => ({})],
+    GET_ACCESS_KEYS: [(...args) => wallet.getAccessKeys(...args), () => ({})],
     REMOVE_ACCESS_KEY: [
-        wallet.removeAccessKey.bind(wallet),
+        (...args) => wallet.removeAccessKey(...args),
         () => showAlert({ onlyError: true }),
     ],
     ADD_LEDGER_ACCESS_KEY: [
-        wallet.addLedgerAccessKey.bind(wallet),
+        (...args) => wallet.addLedgerAccessKey(...args),
         () => showAlert({ onlyError: true }),
     ],
     SEND_IDENTITY_VERIFICATION_METHOD_CODE: [
-        wallet.sendIdentityVerificationMethodCode.bind(wallet),
+        (...args) => wallet.sendIdentityVerificationMethodCode(...args),
         () => showAlert({ localAlert: true }),
     ],
-    DISABLE_LEDGER: [wallet.disableLedger.bind(wallet), () => ({})],
+    DISABLE_LEDGER: [(...args) => wallet.disableLedger(...args), () => ({})],
     REMOVE_NON_LEDGER_ACCESS_KEYS: [
-        wallet.removeNonLedgerAccessKeys.bind(wallet),
+        (...args) => wallet.removeNonLedgerAccessKeys(...args),
         () => ({}),
     ],
 });
@@ -604,7 +632,10 @@ export const finishAccountSetup = () => async (dispatch, getState) => {
 };
 
 export const { addAccessKey, addAccessKeySeedPhrase, addShardAccessKey } = createActions({
-    ADD_ACCESS_KEY: [wallet.addAccessKey.bind(wallet), (title) => showAlert({ title })],
+    ADD_ACCESS_KEY: [
+        (...args) => wallet.addAccessKey(...args),
+        (title) => showAlert({ title }),
+    ],
     ADD_ACCESS_KEY_SEED_PHRASE: [
         async (accountId, recoveryKeyPair) => {
             const publicKey = recoveryKeyPair.publicKey.toString();
@@ -630,10 +661,10 @@ export const { addAccessKey, addAccessKeySeedPhrase, addShardAccessKey } = creat
             publicKey,
             fullAccess = false,
             methodNames = '',
-            shardInfo
+            shardInfoWithAuth
         ) => {
             try {
-                await new Wallet(shardInfo).addAccessKey(
+                await new Wallet(shardInfoWithAuth).addAccessKey(
                     accountId,
                     contractId,
                     publicKey,
@@ -652,18 +683,24 @@ export const { addAccessKey, addAccessKeySeedPhrase, addShardAccessKey } = creat
 });
 
 export const { recoverAccountSeedPhrase } = createActions({
-    RECOVER_ACCOUNT_SEED_PHRASE: [wallet.recoverAccountSeedPhrase.bind(wallet), () => {}],
+    RECOVER_ACCOUNT_SEED_PHRASE: [
+        (...args) => wallet.recoverAccountSeedPhrase(...args),
+        () => {},
+    ],
 });
 
 export const { recoverAccountSecretKey } = createActions({
     RECOVER_ACCOUNT_SECRET_KEY: [
-        wallet.recoverAccountSecretKey.bind(wallet),
+        (...args) => wallet.recoverAccountSecretKey(...args),
         () => showAlert(),
     ],
 });
 
 export const { sendMoney, transferAllFromLockup } = createActions({
-    SEND_MONEY: [wallet.sendMoney.bind(wallet), () => showAlert({ onlyError: true })],
+    SEND_MONEY: [
+        (...args) => wallet.sendMoney(...args),
+        () => showAlert({ onlyError: true }),
+    ],
     TRANSFER_ALL_FROM_LOCKUP: [
         async () => {
             const account = await wallet.getAccount(wallet.accountId);
@@ -739,7 +776,7 @@ export const {
     setAccountBalance,
     clearAccountState,
 } = createActions({
-    MAKE_ACCOUNT_ACTIVE: wallet.makeAccountActive.bind(wallet),
+    MAKE_ACCOUNT_ACTIVE: (...args) => wallet.makeAccountActive(...args),
     REFRESH_ACCOUNT_EXTERNAL: [
         async (accountId) => ({
             ...(await (await wallet.getAccount(accountId)).state()),
@@ -766,10 +803,10 @@ export const {
             ...showAlert({ onlyError: true }),
         }),
     ],
-    GET_BALANCE: wallet.getBalance.bind(wallet),
+    GET_BALANCE: (...args) => wallet.getBalance(...args),
     SET_LOCAL_STORAGE: null,
     GET_ACCOUNT_BALANCE: [
-        wallet.getBalance.bind(wallet),
+        (...args) => wallet.getBalance(...args),
         (accountId) => ({
             accountId,
             alert: {

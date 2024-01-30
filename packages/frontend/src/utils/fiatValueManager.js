@@ -10,7 +10,7 @@ import sendJson from '../tmp_fetch_send_json';
 const COINGECKO_PRICE_URL = 'https://api.coingecko.com/api/v3/simple/price';
 
 const CONTRACT_TOKEN_MAP = {
-    // https://explorer.near.org/accounts/token.jumbo_exchange.near
+    // https://nearblocks.io/address/token.jumbo_exchange.near
     'jumbo-exchange': 'token.jumbo_exchange.near',
 };
 

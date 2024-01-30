@@ -6,6 +6,7 @@ declare module '*.css';
 /**
  * path to file
  */
+declare module '*.jpeg';
 declare module '*.png';
 declare module '*.svg';
 declare module '*.ico';

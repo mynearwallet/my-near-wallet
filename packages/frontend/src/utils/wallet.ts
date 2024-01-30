@@ -1,5 +1,6 @@
 import { getNearRpcClient } from '@meteorwallet/meteor-near-sdk';
 import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types.d.ts';
+import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
 import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
@@ -58,6 +59,7 @@ export const WALLET_LINKDROP_URL = 'linkdrop';
 export const WALLET_RECOVER_ACCOUNT_URL = 'recover-account';
 export const WALLET_SEND_MONEY_URL = 'send-money';
 export const WALLET_VERIFY_OWNER_URL = 'verify-owner';
+export const WALLET_SIGN_MESSAGE_URL = 'sign-message';
 
 export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_HELPER_URL}/account`;
 export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/fundedAccount`;
@@ -160,8 +162,9 @@ export default class Wallet {
 
         this.signerIgnoringLedger = new nearApiJs.InMemorySigner(this.keyStore);
 
-        const signerIgnoringLedger = this.signerIgnoringLedger;
-        const wallet = this;
+        const getSignerIgnoringLedger = () => {
+            return rpcInfo ? wallet.signerIgnoringLedger : this.signerIgnoringLedger;
+        };
 
         this.signer = {
             async getPublicKey(accountId, networkId) {
@@ -170,7 +173,7 @@ export default class Wallet {
                     return ledgerKey;
                 }
 
-                return await signerIgnoringLedger.getPublicKey(accountId, networkId);
+                return await getSignerIgnoringLedger().getPublicKey(accountId, networkId);
             },
             async signMessage(message, accountId, networkId) {
                 if (await wallet.getLedgerKey(accountId)) {
@@ -200,15 +203,19 @@ export default class Wallet {
                     };
                 }
 
-                return signerIgnoringLedger.signMessage(message, accountId, networkId);
+                return getSignerIgnoringLedger().signMessage(
+                    message,
+                    accountId,
+                    networkId
+                );
             },
         };
         let provider;
         if (rpcInfo) {
             const args: ConnectionInfo = { url: rpcInfo.shardRpc + '/' };
-            if (rpcInfo.shardApiToken) {
+            if (rpcInfo.xSignature) {
                 args.headers = {
-                    'x-api-key': rpcInfo.shardApiToken,
+                    'x-signature': rpcInfo.xSignature,
                 };
             }
             provider = new RpcProvider(args);
@@ -422,10 +429,19 @@ export default class Wallet {
         }
 
         const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
+
         return Promise.all(
             accessKeys.map(async (accessKey) => ({
                 ...accessKey,
                 meta: await getKeyMeta(accessKey.public_key),
+                created:
+                    accessKey.access_key?.permission === 'FullAccess'
+                        ? await fetch(
+                              `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${accessKey.public_key}`
+                          )
+                              .then((res) => res.json())
+                              .then((res) => res.keys[0]?.created)
+                        : null,
             }))
         );
     }
@@ -453,7 +469,6 @@ export default class Wallet {
     }
 
     async getAccountKeyType(accountId) {
-        console.log(wallet);
         const keypair = await wallet.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
         return this.getPublicKeyType(accountId, keypair.getPublicKey().toString());
     }
@@ -494,16 +509,7 @@ export default class Wallet {
 
         switch (keyType) {
             case Wallet.KEY_TYPES.FAK: {
-                const keyStore = new nearApiJs.keyStores.InMemoryKeyStore();
-                await keyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
-                const newKeyPair = nearApiJs.KeyPair.fromRandom('ed25519');
-                const account = new nearApiJs.Account(
-                    this.connectionIgnoringLedger,
-                    accountId
-                );
-
-                await account.addKey(newKeyPair.getPublicKey());
-                await this.saveAccount(accountId, newKeyPair);
+                await this.saveAccount(accountId, keyPair);
 
                 if (!this.accountId) {
                     return this.makeAccountActive(accountId);
@@ -882,7 +888,7 @@ export default class Wallet {
             (account) => account.accountId === accountId
         );
 
-        if (action === 'add') {
+        if (action === 'add' && keyPair) {
             if (accountIndex < 0) {
                 decryptedAccounts.push({
                     accountId,
@@ -927,7 +933,9 @@ export default class Wallet {
                 await this.setKey(accountId, keyPair);
             }
         }
+
         this.accounts[accountId] = true;
+        this.save();
 
         addAccountReducer();
     }
@@ -976,7 +984,7 @@ export default class Wallet {
             : await this.getAccount(accountId);
 
         const has2fa = await TwoFactor.has2faEnabled(account);
-        console.log('key being added to 2fa account ?', has2fa, account);
+
         try {
             // TODO: Why not always pass `fullAccess` explicitly when it's desired?
             // TODO: Alternatively require passing MULTISIG_CHANGE_METHODS from caller as `methodNames`
@@ -992,7 +1000,6 @@ export default class Wallet {
                 const finalMethodNames = isMultisig
                     ? MULTISIG_CHANGE_METHODS
                     : methodNames;
-
                 return await account.addKey(
                     publicKey.toString(),
                     contractId,
@@ -1200,11 +1207,20 @@ export default class Wallet {
             );
         }
 
-        await Promise.all(
-            accountIds.map(async (accountId) => {
-                await this.saveAccount(accountId);
-            })
-        );
+        for (
+            let accountIdIndex = 0;
+            accountIdIndex < accountIds.length;
+            accountIdIndex++
+        ) {
+            const accountId = accountIds[accountIdIndex];
+            await this.saveAccount(accountId);
+        }
+
+        // await Promise.all(
+        //     accountIds.map(async (accountId) => {
+        //         await this.saveAccount(accountId);
+        //     })
+        // );
 
         store.dispatch(makeAccountActive(accountIds[accountIds.length - 1]));
 
@@ -1264,6 +1280,38 @@ export default class Wallet {
 
         const account = await this.getAccount(accountId);
         return await account.getAccountBalance(limitedAccountData);
+    }
+
+    async generatePrivateShardXSignature(shardInfo) {
+        const calimeroConfig = {
+            shardId: shardInfo.shardId,
+            calimeroUrl: CONFIG.CALIMERO_URL,
+            rpcEndpoint: shardInfo.shardRpc,
+            walletNetworkId: CONFIG.NETWORK_ID,
+        };
+
+        const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
+        const account = await wallet.getAccount(wallet.accountId);
+        const signer = account.signerIgnoringLedger || account.connection.signer;
+
+        const challenge = await calimeroWalletUtils.fetchChallenge();
+
+        const signedChallenge = await signer.signMessage(
+            Buffer.from(challenge.data),
+            account.accountId,
+            CONFIG.NETWORK_ID
+        );
+
+        const signedChallengePayload = Buffer.from(
+            JSON.stringify({
+                challenge: challenge.data,
+                signature: Buffer.from(signedChallenge.signature).toString('base64'),
+                publicKey: signedChallenge.publicKey.toString(),
+                accountId: account.accountId,
+            })
+        ).toString('base64');
+
+        return signedChallengePayload;
     }
 
     async signatureFor(account) {

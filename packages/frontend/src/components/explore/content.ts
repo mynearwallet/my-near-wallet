@@ -3,15 +3,14 @@ import apollo42Icon from './media/apollo42.jpg';
 import arbitoorAggregatorIcon from './media/arbitoor-aggregator.jpg';
 import armoredKingdomIcon from './media/armored-kingdom.jpg';
 import astroStakersIcon from './media/astro-stakers.jpg';
-import astrodaoIcon from './media/astrodao.jpg';
 import burrowIcon from './media/burrow.svg';
 import collectNFTsSectionIcon from './media/collectNFTsSectionIcon.svg';
 import cryptoheroeIcon from './media/cryptoheroes.jpg';
-import dragonflyCapitalPartnersIcon from './media/dragonfly-capital-partners.svg';
 import exchangeSectionIcon from './media/exchangeSectionIcon.svg';
 import galaxyOnlineIcon from './media/galaxy-online.svg';
 import hashRushIcon from './media/hash-rush.png';
 import jumboExchangeIcon from './media/jumbo-exchange.jpg';
+import learnNearIcon from './media/learn-near.png';
 import linearProtocolIcon from './media/linear-protocol.jpg';
 import metapoolIcon from './media/meta-pool.jpg';
 import metamonIcon from './media/metamon.jpg';
@@ -66,9 +65,9 @@ export const trandingProjects: Project[] = [
         linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=meta-pool',
     },
     {
-        icon: astrodaoIcon,
-        name: 'Astro DAO',
-        linkUrl: 'https://near.org/near/widget/Search.IndexPage?term=astrodao',
+        icon: learnNearIcon,
+        name: 'Learn NEAR Club',
+        linkUrl: 'https://learnnear.club',
     },
     {
         icon: rainbowbridgeIcon,
@@ -173,12 +172,11 @@ export const startEarningSection: Section = {
             info: 'Low-fee Community Staking Provider for NEAR Protocol.',
         },
         {
-            icon: dragonflyCapitalPartnersIcon,
-            name: 'Dragonfly Capital Partners',
-            linkUrl:
-                'https://near.org/near/widget/Search.IndexPage?term=dragonfly-capital-partners',
+            icon: learnNearIcon,
+            name: 'Learn NEAR Club',
+            linkUrl: 'https://learnnear.club/',
             category: 'Staking Provider',
-            info: 'Global from day one.',
+            info: 'Learn how to use and build on NEAR and Earn NEAR.',
         },
     ],
 };

@@ -281,7 +281,7 @@ const SendContainerV2 = ({
                         onClickContinue={() => redirectTo('/')}
                         onClickGoToExplorer={() =>
                             window.open(
-                                `${explorerUrl}/transactions/${transactionHash}`,
+                                `${explorerUrl}/txns/${transactionHash}`,
                                 '_blank'
                             )
                         }
