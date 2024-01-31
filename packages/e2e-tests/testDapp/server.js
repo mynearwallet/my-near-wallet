@@ -17,7 +17,7 @@ app.get('/configData.json', function (req, res) {
 
 app.get('/near-api-js.min.js', function (req, res) {
     res.sendFile(
-        path.join(__dirname, '../node_modules/near-api-js/dist/near-api-js.min.js')
+        path.join(__dirname, '../../../node_modules/near-api-js/dist/near-api-js.min.js')
     );
 });
 
