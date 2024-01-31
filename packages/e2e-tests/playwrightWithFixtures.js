@@ -36,7 +36,7 @@ const test = base.test.extend({
                 workerBankAccountSeedphrase,
                 bankAccount.nearApiJsAccount
             ).connectOrCreate({
-                amount: '200',
+                amount: '50',
             });
             const { total: startBalance } = await workerBankAccount.getUpdatedBalance();
             process.env.workerBankStartBalance = startBalance;
