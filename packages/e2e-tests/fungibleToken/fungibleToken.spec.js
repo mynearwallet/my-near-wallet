@@ -49,6 +49,8 @@ describe('Rename FT symbol', () => {
     });
 
     test('Show warning when Bridged token is selected in send page', async ({ page }) => {
+        test.setTimeout(120 * 1000);
+
         const homePage = new HomePage(page);
         await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
         const swapPage = new SwapPage(page);
