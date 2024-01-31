@@ -147,7 +147,8 @@ const fetchTokens = createAsyncThunk(
             ...new Set([...CONFIG.WHITELISTED_CONTRACTS, ...topTokens]),
         ];
 
-        await Promise.all([
+        // await is purposely removed so that redux will not wait for the Promise.all to resolve
+        Promise.all([
             loadTokens(
                 accountId,
                 defaultContractNames,
