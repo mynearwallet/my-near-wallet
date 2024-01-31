@@ -16,10 +16,8 @@ const test = base.test.extend({
         // eslint-disable-next-line no-empty-pattern
         async ({}, use, workerInfo) => {
             await new Promise((resolve) => {
-                console.log(workerInfo);
                 const timeout =
-                    (workerInfo.workerIndex % 30) * 5000 +
-                    Math.ceil(Math.random() * 5000);
+                    (workerInfo.workerIndex % 30) * 500 + Math.ceil(Math.random() * 500);
                 setTimeout(resolve, timeout);
             });
 
