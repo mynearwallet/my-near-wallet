@@ -43,8 +43,8 @@ describe('sign message with guestbook', () => {
 
         await page.getByText('Sign message').click();
         await expect(page).toHaveURL(/\/sign-message/);
-        await page.click('data-test-id=approve-sign-message');
-        await page.pause();
+        await page.click('data-test-id=approve-verify-owner');
+        // await page.pause();
         await expect(page).toHaveURL(new RegExp(guestbookURL));
 
         const parsed = new URL(page.url());
