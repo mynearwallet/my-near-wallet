@@ -17,7 +17,7 @@ const test = base.test.extend({
         async ({}, use, workerInfo) => {
             await new Promise((resolve) => {
                 const timeout =
-                    (workerInfo.workerIndex % 8) * 500 + Math.ceil(Math.random() * 500);
+                    (workerInfo.workerIndex % 6) * 1000 + Math.ceil(Math.random() * 1000);
 
                 console.log(
                     `Worker ${workerInfo.workerIndex} waiting for ${timeout}ms to avoid collissions`
