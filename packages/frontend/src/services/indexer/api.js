@@ -64,6 +64,20 @@ export default {
             },
         }).then((res) => res.json());
     },
+    listTransactions: (accountId, page, perPage) => {
+        const url = `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/account/${accountId}/txns`;
+        return sendJson(
+            'GET',
+            stringifyUrl({
+                url,
+                query: {
+                    order: 'desc',
+                    page,
+                    per_page: perPage,
+                },
+            })
+        );
+    },
     listStakingDeposits: (accountId) => {
         return fetch(`${CONFIG.INDEXER_SERVICE_URL}/staking-deposits/${accountId}`, {
             headers: {

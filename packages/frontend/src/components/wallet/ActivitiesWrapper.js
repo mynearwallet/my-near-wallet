@@ -8,6 +8,15 @@ import ActivityDetailModal from './ActivityDetailModal';
 import CONFIG from '../../config';
 import { selectAccountId } from '../../redux/slices/account';
 import {
+    transactionHistoryActions,
+    transactionHistorySelector,
+    // transactionHistorySelector,
+} from '../../redux/slices/transactionHistory';
+import {
+    TxDefaultPattern,
+    txPatterns,
+} from '../../redux/slices/transactionHistory/transactionPattern';
+import {
     actions as transactionsActions,
     selectTransactionsOneByIdentity,
     selectTransactionsByAccountId,
@@ -15,6 +24,7 @@ import {
 } from '../../redux/slices/transactions';
 import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
+import { TransactionItem } from '../transactions/TransactionItem';
 
 const StyledContainer = styled.div`
     width: 100%;
@@ -91,21 +101,24 @@ const StyledContainer = styled.div`
 const ActivitiesWrapper = () => {
     const dispatch = useDispatch();
 
-    const [transactionHash, setTransactionHash] = useState();
     const accountId = useSelector(selectAccountId);
-    const transactions = useSelector((state) =>
-        selectTransactionsByAccountId(state, { accountId })
-    );
-    const transaction = useSelector((state) =>
-        selectTransactionsOneByIdentity(state, { accountId, id: transactionHash })
-    );
+    // const transactions = useSelector((state) =>
+    //     selectTransactionsByAccountId(state, { accountId })
+    // );
+    // const transaction = useSelector((state) =>
+    //     selectTransactionsOneByIdentity(state, { accountId, id: transactionHash })
+    // );
     const activityLoader = useSelector((state) =>
         selectTransactionsLoading(state, { accountId })
     );
 
+    const transactions = useSelector(transactionHistorySelector);
+
+    console.log(transactions);
     useEffect(() => {
         if (accountId) {
-            dispatch(transactionsActions.fetchTransactions({ accountId }));
+            // dispatch(transactionsActions.fetchTransactions({ accountId }));
+            dispatch(transactionHistoryActions.fetchTransactions({ accountId, page: 1 }));
         }
     }, [accountId]);
 
@@ -114,7 +127,7 @@ const ActivitiesWrapper = () => {
             <h2 className={classNames({ dots: activityLoader })}>
                 <Translate id='dashboard.activity' />
             </h2>
-            {transactions.map((transaction, i) => (
+            {/* {transactions.map((transaction, i) => (
                 <ActivityBox
                     key={`${transaction.hash_with_index}-${transaction.block_hash}-${transaction.kind}`}
                     transaction={transaction}
@@ -124,20 +137,30 @@ const ActivitiesWrapper = () => {
                     accountId={accountId}
                     setTransactionHash={setTransactionHash}
                 />
-            ))}
+            ))} */}
+            {transactions?.map((transaction, i) => {
+                const tx = transactionToHistoryCard(
+                    transaction,
+                    accountId,
+                    CONFIG.NETWORK_ID
+                );
+                return (
+                    <TransactionItem key={`${transaction.transaction.hash}`} {...tx} />
+                );
+            })}
             {transactions?.length === 0 && !activityLoader && (
                 <div className='no-activity'>
                     <Translate id='dashboard.noActivity' />
                 </div>
             )}
-            {transactionHash && (
+            {/* {transactionHash && (
                 <ActivityDetailModal
                     open={!!transactionHash}
                     onClose={() => setTransactionHash()}
                     accountId={accountId}
                     transaction={transaction}
                 />
-            )}
+            )} */}
             <FormButton
                 color='gray-blue'
                 linkTo={`${CONFIG.EXPLORER_URL}/address/${accountId}`}
@@ -150,3 +173,13 @@ const ActivitiesWrapper = () => {
 };
 
 export default ActivitiesWrapper;
+
+function transactionToHistoryCard(data, accountId, network) {
+    const matchedPattern = txPatterns.find((pattern) => pattern.match(data, network));
+    if (matchedPattern) {
+        return matchedPattern.display(data, accountId, network);
+    }
+
+    const defaultPattern = new TxDefaultPattern();
+    return defaultPattern.display(data);
+}
