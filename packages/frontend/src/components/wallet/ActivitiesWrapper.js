@@ -16,6 +16,7 @@ import {
     TxDefaultPattern,
     txPatterns,
 } from '../../redux/slices/transactionHistory/transactionPattern';
+import { transactionToHistoryUIData } from '../../redux/slices/transactionHistory/utils';
 import {
     actions as transactionsActions,
     selectTransactionsOneByIdentity,
@@ -139,7 +140,7 @@ const ActivitiesWrapper = () => {
                 />
             ))} */}
             {transactions?.map((transaction, i) => {
-                const tx = transactionToHistoryCard(
+                const tx = transactionToHistoryUIData(
                     transaction,
                     accountId,
                     CONFIG.NETWORK_ID
@@ -163,7 +164,7 @@ const ActivitiesWrapper = () => {
             )} */}
             <FormButton
                 color='gray-blue'
-                linkTo={`${CONFIG.EXPLORER_URL}/address/${accountId}`}
+                linkTo="transaction-history"
                 trackingId='Click to account on explorer'
             >
                 <Translate id='button.viewAll' />
@@ -173,13 +174,3 @@ const ActivitiesWrapper = () => {
 };
 
 export default ActivitiesWrapper;
-
-function transactionToHistoryCard(data, accountId, network) {
-    const matchedPattern = txPatterns.find((pattern) => pattern.match(data, network));
-    if (matchedPattern) {
-        return matchedPattern.display(data, accountId, network);
-    }
-
-    const defaultPattern = new TxDefaultPattern();
-    return defaultPattern.display(data);
-}

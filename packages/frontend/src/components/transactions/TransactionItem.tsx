@@ -1,12 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { ETransactionStatus } from '../../redux/slices/transactionHistory/type';
 import Card from '../common/styled/Card.css';
-
-export enum ETxStatus {
-    success = 'success',
-    fail = 'fail',
-}
 
 export enum ETxDirection {
     receive = 'receive',
@@ -25,7 +21,7 @@ export interface TransactionItemProps {
     dateTime?: string;
     assetChangeText?: string;
     assetChangeText2?: string;
-    status?: ETxStatus;
+    status?: ETransactionStatus;
     dir?: ETxDirection;
     // transaction hash
     leftCaption?: string;

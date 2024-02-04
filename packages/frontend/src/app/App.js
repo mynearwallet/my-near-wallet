@@ -99,6 +99,7 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
+import TransactionHistory from '../pages/TransactionHistory';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -623,6 +624,11 @@ class Routing extends Component {
                                 render={() => (
                                     <StakingContainer history={this.props.history} />
                                 )}
+                            />
+                            <PrivateRoute
+                                exact
+                                path='/transaction-history'
+                                component={TransactionHistory}
                             />
                             <PrivateRoute
                                 exact
