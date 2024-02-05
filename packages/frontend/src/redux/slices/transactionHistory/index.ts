@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import set from 'lodash.set';
 import uniq from 'lodash.uniq';
+import uniqBy from 'lodash.uniqby';
 import { providers } from 'near-api-js';
 
 import { nearMetadata, wNearMetadata } from './transactionPattern';
@@ -16,11 +17,15 @@ const SLICE_NAME = 'transactionHistory';
 const PER_PAGE = 15;
 
 interface ITransactionHistoryState {
-    transactions: [];
+    transactions: ITransactionListItem[];
+    isLoading: boolean;
+    hasMore: boolean;
 }
 
 const initialState: ITransactionHistoryState = {
     transactions: [],
+    isLoading: false,
+    hasMore: true,
 };
 
 /****************************/
@@ -33,6 +38,29 @@ const transactionHistorySlice = createSlice({
         setTransactions(state, actions) {
             set(state, ['transactions'], actions.payload);
         },
+        addTransactions(state, actions) {
+            state.transactions = uniqBy(
+                [...state.transactions, ...actions.payload],
+                'transaction_hash'
+            );
+            if (!actions.payload.length) {
+                set(state, ['hasMore'], false);
+            }
+        },
+        setLoading(state, actions) {
+            state.isLoading = actions.payload;
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchTransactions.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(fetchTransactions.fulfilled, (state) => {
+            state.isLoading = false;
+        });
+        builder.addCase(fetchTransactions.rejected, (state) => {
+            state.isLoading = false;
+        });
     },
 });
 
@@ -53,6 +81,11 @@ const fetchTransactions = createAsyncThunk(
     `${SLICE_NAME}/fetchTransactions`,
     async (state: { accountId: string; page: number }, { dispatch }) => {
         const { accountId, page } = state;
+        if (!page) {
+            return;
+        }
+        const { setTransactions, addTransactions } = transactionHistorySlice.actions;
+
         const indexerTransactions = await listTransactions(accountId, page, PER_PAGE);
         const transactionsHashs: string[] = uniq(
             indexerTransactions.txns.map((item) => item.transaction_hash)
@@ -65,7 +98,6 @@ const fetchTransactions = createAsyncThunk(
         const transactions = transactionsRaw
             .map((item) => (item.status === 'fulfilled' ? item.value : null))
             .filter(Boolean);
-        const { setTransactions } = transactionHistorySlice.actions;
 
         const receipt_ids: string[] = [];
         for (const t of transactions) {
@@ -115,12 +147,13 @@ const fetchTransactions = createAsyncThunk(
                 };
             })
             .filter(Boolean);
-        dispatch(setTransactions(result));
+        dispatch(page <= 1 ? setTransactions(result) : addTransactions(result));
     }
 );
 
 export const transactionHistoryActions = {
     fetchTransactions,
+    ...transactionHistorySlice.actions,
 };
 
 export const getTransactionDetail = ({
@@ -134,4 +167,5 @@ export const getTransactionDetail = ({
 };
 export default transactionHistorySlice;
 
-export const transactionHistorySelector = (state) => state[SLICE_NAME].transactions;
+export const transactionHistorySelector = (state): ITransactionHistoryState =>
+    state[SLICE_NAME];

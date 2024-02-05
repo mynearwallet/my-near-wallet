@@ -1,20 +1,5 @@
 import { Omit } from 'lodash';
 
-export interface IOTxList_Output {
-    txns: {
-        transaction_hash: string;
-        block_timestamp: string;
-    }[];
-}
-
-export interface IOFtList_Output {
-    txns: {
-        transaction_hash: string;
-        block_timestamp: string;
-        source_type: string;
-    }[];
-}
-
 export enum TxMethodName {
     ft_transfer = 'ft_transfer',
     ft_transfer_call = 'ft_transfer_call',
@@ -48,7 +33,7 @@ export enum ETxDirection {
     unknown = 'unknown',
 }
 
-export interface ITransactionCardDetail {
+export interface TransactionItemComponent {
     id: string;
     image: string;
     image2?: string;
@@ -60,7 +45,7 @@ export interface ITransactionCardDetail {
     assetChangeText2?: string;
     status?: ETransactionStatus;
     dir?: ETxDirection;
-    subCard?: ITransactionCardDetail[];
+    subCard?: TransactionItemComponent[];
     // transaction hash
     leftCaption?: string;
     hasError?: boolean;

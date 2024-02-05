@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ETransactionStatus } from '../../redux/slices/transactionHistory/type';
+import { TransactionItemComponent } from '../../redux/slices/transactionHistory/type';
 import Card from '../common/styled/Card.css';
+import dayjs from 'dayjs';
+import { transPico2Date } from '../../redux/slices/transactionHistory/utils';
 
 export enum ETxDirection {
     receive = 'receive',
@@ -11,25 +13,7 @@ export enum ETxDirection {
     unknown = 'unknown',
 }
 
-export interface TransactionItemProps {
-    id: string;
-    image: string;
-    image2?: string;
-    // Sent, Received, Swapped
-    title: string;
-    subtitle?: React.ReactNode;
-    dateTime?: string;
-    assetChangeText?: string;
-    assetChangeText2?: string;
-    status?: ETransactionStatus;
-    dir?: ETxDirection;
-    // transaction hash
-    leftCaption?: string;
-    hasError?: boolean;
-    isNft?: boolean;
-}
-
-export const TransactionItem = (props: TransactionItemProps) => {
+export const TransactionItem = (props: TransactionItemComponent) => {
     return (
         <StyledContainer>
             <div className='desc-container'>
@@ -47,7 +31,9 @@ export const TransactionItem = (props: TransactionItemProps) => {
             </div>
             <div className='caption-container'>
                 <div className='hash'>{props.leftCaption}</div>
-                <div className='datetime'>{props.dateTime}</div>
+                <div className='datetime'>
+                    {dayjs(transPico2Date(props.dateTime)).format('YYYY-MM-DD HH:mm')}
+                </div>
             </div>
         </StyledContainer>
     );
@@ -87,6 +73,7 @@ const StyledContainer = styled(Card)`
         .subtitle {
             font-size: 11px;
             text-overflow: ellipsis;
+            word-break: break-all;
             overflow: hidden;
             max-width: 170px;
             text-wrap: nowrap;
@@ -109,7 +96,7 @@ const StyledContainer = styled(Card)`
             color: rgb(110, 110, 110);
             font-size: 10px;
             font-weight: 500;
-            width: 120px;
+            max-width: 80%;
             text-overflow: ellipsis;
             overflow: hidden;
             cursor: pointer;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import uniq from 'lodash.uniq';
 
 import ActivityBox from './ActivityBox';
 import ActivityDetailModal from './ActivityDetailModal';
@@ -113,9 +114,8 @@ const ActivitiesWrapper = () => {
         selectTransactionsLoading(state, { accountId })
     );
 
-    const transactions = useSelector(transactionHistorySelector);
+    const { transactions } = useSelector(transactionHistorySelector);
 
-    console.log(transactions);
     useEffect(() => {
         if (accountId) {
             // dispatch(transactionsActions.fetchTransactions({ accountId }));
@@ -164,7 +164,7 @@ const ActivitiesWrapper = () => {
             )} */}
             <FormButton
                 color='gray-blue'
-                linkTo="transaction-history"
+                linkTo='transaction-history'
                 trackingId='Click to account on explorer'
             >
                 <Translate id='button.viewAll' />

@@ -4,7 +4,7 @@ import {
     ETransactionStatus,
     ETxDirection,
     IMetaData,
-    ITransactionCardDetail,
+    TransactionItemComponent,
     ITransactionListItem,
     ITxFunctionCall,
     TxMethodName,
@@ -56,7 +56,7 @@ interface TxPattern {
         data: TxData,
         accountId: string,
         network: ENearNetwork
-    ) => ITransactionCardDetail;
+    ) => TransactionItemComponent;
 }
 
 type TxData = ITransactionListItem & {
@@ -163,7 +163,7 @@ class TransferPattern implements TxPattern {
         return !!primaryReceipt?.receipt.Action.actions[0]?.Transfer;
     }
 
-    display(data: TxData, accountId: string): ITransactionCardDetail {
+    display(data: TxData, accountId: string): TransactionItemComponent {
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceived = dir === ETxDirection.receive;
         return {
@@ -190,7 +190,7 @@ class TransferFtPattern implements TxPattern {
         return methodName === TxMethodName.ft_transfer;
     }
 
-    display(data: TxData, accountId: string): ITransactionCardDetail {
+    display(data: TxData, accountId: string): TransactionItemComponent {
         const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceived = dir === ETxDirection.receive;
@@ -217,7 +217,7 @@ class DeployPattern implements TxPattern {
         );
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         return {
             image: imgDeploy,
             title: 'Deploy Contract',
@@ -237,7 +237,7 @@ class CreateAccountPattern implements TxPattern {
         );
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
         return {
             image: imgKey,
@@ -267,7 +267,7 @@ class SwapPattern implements TxPattern {
         return this.whitelistedReceivers.includes(args.receiver_id);
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
 
         let receivedAmount = '0';
@@ -318,7 +318,7 @@ class NftPattern implements TxPattern {
         data: TxData,
         accountId: string,
         network: ENearNetwork
-    ): ITransactionCardDetail {
+    ): TransactionItemComponent {
         const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceivedNft = dir === ETxDirection.receive;
@@ -350,7 +350,7 @@ class FtMintPattern implements TxPattern {
         return txUtils.getMethodName(data) === TxMethodName.ft_mint;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const fc = txUtils.getFcArgs(data);
         const content = JSON.parse(fc?.content || '{}');
         return {
@@ -371,7 +371,7 @@ class MintPattern implements TxPattern {
         return methodName === TxMethodName.mint;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         return {
             image: data.metaData.icon || '',
             title: 'Mint',
@@ -393,7 +393,7 @@ class NftMintPattern implements TxPattern {
         data: TxData,
         accountId: string,
         network: ENearNetwork
-    ): ITransactionCardDetail {
+    ): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
         let tokenId = args.id;
         try {
@@ -439,7 +439,7 @@ class NftBuyPattern implements TxPattern {
         data: TxData,
         accountId: string,
         network: ENearNetwork
-    ): ITransactionCardDetail {
+    ): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
         let tokenId = args.id || args.token_id;
         try {
@@ -476,7 +476,7 @@ class StakePattern implements TxPattern {
         return methodName === TxMethodName.deposit_and_stake;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const deposit = data.transaction.actions[0].FunctionCall.deposit;
 
         return {
@@ -497,7 +497,7 @@ class LiquidUnStakePattern implements TxPattern {
         return methodName === TxMethodName.liquid_unstake;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
         return {
             image: imgUnStaked,
@@ -525,7 +525,7 @@ class UnStakePattern implements TxPattern {
         return methodName === TxMethodName.unstake;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
         return {
             image: imgUnStaked,
@@ -545,7 +545,7 @@ class ClaimPattern implements TxPattern {
         return methodName === TxMethodName.claim;
     }
 
-    display(data: TxData, accountId: string): ITransactionCardDetail {
+    display(data: TxData, accountId: string): TransactionItemComponent {
         let amount = '0';
         let metaData = {};
 
@@ -590,7 +590,7 @@ class ClaimUnStakePattern implements TxPattern {
         return methodName === TxMethodName.withdraw_all;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         let amount = '0';
         let metaData = {};
 
@@ -622,7 +622,7 @@ class AddKeyPattern implements TxPattern {
         return !!data.transaction.actions[0].AddKey?.public_key;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
         return {
             image: imgKey,
@@ -638,7 +638,7 @@ class DeleteKeyPattern implements TxPattern {
         return !!data.transaction.actions[0].DeleteKey?.public_key;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
         return {
             image: imgKeyDelete,
@@ -654,7 +654,7 @@ class DeployKeyPattern implements TxPattern {
         return txUtils.getMethodName(data) === TxMethodName.deploy;
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         return {
             image: imgDeploy,
             title: 'Deployed Contract',
@@ -672,7 +672,7 @@ class MeteorPointPattern implements TxPattern {
         );
     }
 
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const fc = txUtils.getFcArgs(data);
         const content = JSON.parse(fc.content);
         return {
@@ -691,7 +691,7 @@ class DelegatePattern implements TxPattern {
         return !!data.transaction.actions?.[0]?.Delegate;
     }
 
-    display(data: TxData, accountId, network): ITransactionCardDetail {
+    display(data: TxData, accountId, network): TransactionItemComponent {
         const actions = data.transaction.actions?.[0]?.Delegate?.delegate_action;
 
         const defaultPattern = new TxDefaultPattern();
@@ -728,7 +728,7 @@ class MultiActionsPattern implements TxPattern {
         return data.transaction.actions.length > 1;
     }
 
-    display(data: TxData, accountId: string): ITransactionCardDetail {
+    display(data: TxData, accountId: string): TransactionItemComponent {
         const fc = txUtils.getFcArgs(data);
 
         const subCard = data.receipts
@@ -773,7 +773,7 @@ class FunctionCallDefaultPattern implements TxPattern {
         return !!methodName;
     }
 
-    display(data: TxData, accountId: string): ITransactionCardDetail {
+    display(data: TxData, accountId: string): TransactionItemComponent {
         const methodName = txUtils.getMethodName(data);
         const subCard = data.receipts
             .map((r) => {
@@ -821,7 +821,7 @@ class FunctionCallDefaultPattern implements TxPattern {
 
 export class TxDefaultPattern {
     // display action type
-    display(data: TxData): ITransactionCardDetail {
+    display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
 
         const key = Object.keys(action)?.[0];
