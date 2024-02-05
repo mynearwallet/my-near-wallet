@@ -46,8 +46,7 @@ export interface TransactionItemComponent {
     status?: ETransactionStatus;
     dir?: ETxDirection;
     subCard?: TransactionItemComponent[];
-    // transaction hash
-    leftCaption?: string;
+    transactionHash?: string;
     hasError?: boolean;
     isNft?: boolean;
 }

@@ -2,20 +2,15 @@ import React, { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 
 import Container from '../../components/common/styled/Container.css';
-import { TransactionItem } from '../../components/transactions/TransactionItem';
-import CONFIG from '../../config';
+import GroupedTransactions from '../../components/transactions/GroupedTransactions';
+import TransactionItemModal from '../../components/transactions/TransactionItemModal';
 import { selectAccountId } from '../../redux/slices/account';
 import {
     transactionHistoryActions,
     transactionHistorySelector,
 } from '../../redux/slices/transactionHistory';
-import {
-    groupedByDate,
-    transactionToHistoryUIData,
-} from '../../redux/slices/transactionHistory/utils';
 
 const TransactionHistory = () => {
     const dispatch = useDispatch();
@@ -26,11 +21,6 @@ const TransactionHistory = () => {
     if (!transactions) {
         return null;
     }
-
-    const tx = transactions.map((transaction) =>
-        transactionToHistoryUIData(transaction, accountId, CONFIG.NETWORK_ID)
-    );
-    const groupedTransactions = groupedByDate(tx);
 
     function loadMore() {
         if (accountId && !isLoading) {
@@ -55,33 +45,16 @@ const TransactionHistory = () => {
                     </div>
                 }
             >
-                {groupedTransactions.map((g) => {
-                    return (
-                        <StyledTxDayContainer key={g.date}>
-                            <div>{g.date}</div>
-                            {g.transactions?.map((transaction) => {
-                                return (
-                                    <TransactionItem
-                                        key={`${transaction.leftCaption}`}
-                                        {...transaction}
-                                    />
-                                );
-                            })}
-                         </StyledTxDayContainer>
-                    );
-                })}
+                <GroupedTransactions transactions={transactions} />
             </InfiniteScroll>
             {transactions?.length === 0 && page !== 1 && !isLoading && (
                 <div className='no-activity'>
                     <Translate id='dashboard.noActivity' />
                 </div>
             )}
+            <TransactionItemModal />
         </Container>
     );
 };
 
 export default TransactionHistory;
-
-const StyledTxDayContainer = styled.div`
-    margin-bottom: 28px;
-`;

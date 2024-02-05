@@ -1,10 +1,14 @@
+import dayjs from 'dayjs';
 import React from 'react';
 import styled from 'styled-components';
 
 import { TransactionItemComponent } from '../../redux/slices/transactionHistory/type';
+import {
+    getPrefixByDir,
+    transPico2Date,
+} from '../../redux/slices/transactionHistory/utils';
+import classNames from '../../utils/classNames';
 import Card from '../common/styled/Card.css';
-import dayjs from 'dayjs';
-import { transPico2Date } from '../../redux/slices/transactionHistory/utils';
 
 export enum ETxDirection {
     receive = 'receive',
@@ -13,24 +17,42 @@ export enum ETxDirection {
     unknown = 'unknown',
 }
 
-export const TransactionItem = (props: TransactionItemComponent) => {
+export const TransactionItem = (
+    props: TransactionItemComponent & {
+        onClick: () => void;
+    }
+) => {
     return (
-        <StyledContainer>
+        <StyledContainer onClick={props.onClick}>
             <div className='desc-container'>
                 <img className='image' src={props.image} alt='transaction-icon' />
                 <div className='desc-container-content'>
                     <div className='content-title'>
                         <div className='title'>{props.title}</div>
-                        <div className='asset-change1'>{props.assetChangeText}</div>
+                        {!!props.assetChangeText && (
+                            <div
+                                className={classNames([
+                                    'asset-change1',
+                                    { 'text-green': props.dir !== ETxDirection.send },
+                                ])}
+                            >
+                                {getPrefixByDir(props.dir)}
+                                {props.assetChangeText}
+                            </div>
+                        )}
                     </div>
                     <div className='content-subtitle'>
                         <div className='subtitle'>{props.subtitle}</div>
-                        <div className='asset-change2'>{props.assetChangeText2}</div>
+                        {!!props.assetChangeText2 && (
+                            <div className='asset-change2'>
+                                -{props.assetChangeText2}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
             <div className='caption-container'>
-                <div className='hash'>{props.leftCaption}</div>
+                <div className='hash'>{props.transactionHash}</div>
                 <div className='datetime'>
                     {dayjs(transPico2Date(props.dateTime)).format('YYYY-MM-DD HH:mm')}
                 </div>
@@ -44,6 +66,7 @@ const StyledContainer = styled(Card)`
     flex-direction: column;
     margin: 10px 0;
     padding: 15px 20px;
+    cursor: pointer;
     .desc-container {
         display: flex;
         align-items: center;
@@ -81,6 +104,9 @@ const StyledContainer = styled(Card)`
         .asset-change1 {
             font-size: 15px;
             text-align: right;
+            &.text-green {
+                color: green;
+            }
         }
         .asset-change2 {
             font-size: 15px;
@@ -96,7 +122,7 @@ const StyledContainer = styled(Card)`
             color: rgb(110, 110, 110);
             font-size: 10px;
             font-weight: 500;
-            max-width: 80%;
+            max-width: 50%;
             text-overflow: ellipsis;
             overflow: hidden;
             cursor: pointer;
@@ -105,6 +131,7 @@ const StyledContainer = styled(Card)`
             color: rgb(173, 173, 173);
             font-size: 10px;
             font-weight: 500;
+            text-align: right;
         }
     }
 `;

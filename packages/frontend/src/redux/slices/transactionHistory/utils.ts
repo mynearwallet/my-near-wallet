@@ -1,9 +1,13 @@
 import dayjs from 'dayjs';
 
 import { TxDefaultPattern, txPatterns } from './transactionPattern';
-import { TransactionItemComponent } from './type';
+import { ETxDirection, TransactionItemComponent } from './type';
 
-export function transactionToHistoryUIData(data, accountId, network) {
+export function transactionToHistoryUIData(
+    data,
+    accountId,
+    network
+): TransactionItemComponent {
     const matchedPattern = txPatterns.find((pattern) => pattern.match(data, network));
     if (matchedPattern) {
         return matchedPattern.display(data, accountId, network);
@@ -13,7 +17,7 @@ export function transactionToHistoryUIData(data, accountId, network) {
     return defaultPattern.display(data);
 }
 
-export const transPico2Date = (pico: number | string) => {
+export const transPico2Date = (pico: number | string): Date => {
     if (typeof pico === 'string') {
         pico = parseFloat(pico);
     }
@@ -42,4 +46,13 @@ export function groupedByDate(trxs: TransactionItemComponent[]) {
 
         return acc;
     }, [] as { date: string; transactions: TransactionItemComponent[] }[]);
+}
+
+export function getPrefixByDir(dir?: ETxDirection): string {
+    if (dir === ETxDirection.receive) {
+        return '+';
+    } else if (dir === ETxDirection.send) {
+        return '-';
+    }
+    return '';
 }

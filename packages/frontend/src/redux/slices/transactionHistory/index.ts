@@ -20,12 +20,14 @@ interface ITransactionHistoryState {
     transactions: ITransactionListItem[];
     isLoading: boolean;
     hasMore: boolean;
+    selectedTx: string;
 }
 
 const initialState: ITransactionHistoryState = {
     transactions: [],
     isLoading: false,
     hasMore: true,
+    selectedTx: '',
 };
 
 /****************************/
@@ -49,6 +51,9 @@ const transactionHistorySlice = createSlice({
         },
         setLoading(state, actions) {
             state.isLoading = actions.payload;
+        },
+        setSelectedTx(state, actions) {
+            state.selectedTx = actions.payload;
         },
     },
     extraReducers: (builder) => {

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import uniq from 'lodash.uniq';
 
 import ActivityBox from './ActivityBox';
 import ActivityDetailModal from './ActivityDetailModal';
@@ -17,7 +16,10 @@ import {
     TxDefaultPattern,
     txPatterns,
 } from '../../redux/slices/transactionHistory/transactionPattern';
-import { transactionToHistoryUIData } from '../../redux/slices/transactionHistory/utils';
+import {
+    groupedByDate,
+    transactionToHistoryUIData,
+} from '../../redux/slices/transactionHistory/utils';
 import {
     actions as transactionsActions,
     selectTransactionsOneByIdentity,
@@ -26,7 +28,8 @@ import {
 } from '../../redux/slices/transactions';
 import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
-import { TransactionItem } from '../transactions/TransactionItem';
+import GroupedTransactions from '../transactions/GroupedTransactions';
+import TransactionItemModal from '../transactions/TransactionItemModal.js';
 
 const StyledContainer = styled.div`
     width: 100%;
@@ -110,11 +113,11 @@ const ActivitiesWrapper = () => {
     // const transaction = useSelector((state) =>
     //     selectTransactionsOneByIdentity(state, { accountId, id: transactionHash })
     // );
-    const activityLoader = useSelector((state) =>
-        selectTransactionsLoading(state, { accountId })
-    );
+    // const activityLoader = useSelector((state) =>
+    //     selectTransactionsLoading(state, { accountId })
+    // );
 
-    const { transactions } = useSelector(transactionHistorySelector);
+    const { transactions, isLoading } = useSelector(transactionHistorySelector);
 
     useEffect(() => {
         if (accountId) {
@@ -125,7 +128,7 @@ const ActivitiesWrapper = () => {
 
     return (
         <StyledContainer>
-            <h2 className={classNames({ dots: activityLoader })}>
+            <h2 className={classNames({ dots: isLoading })}>
                 <Translate id='dashboard.activity' />
             </h2>
             {/* {transactions.map((transaction, i) => (
@@ -139,21 +142,13 @@ const ActivitiesWrapper = () => {
                     setTransactionHash={setTransactionHash}
                 />
             ))} */}
-            {transactions?.map((transaction, i) => {
-                const tx = transactionToHistoryUIData(
-                    transaction,
-                    accountId,
-                    CONFIG.NETWORK_ID
-                );
-                return (
-                    <TransactionItem key={`${transaction.transaction.hash}`} {...tx} />
-                );
-            })}
-            {transactions?.length === 0 && !activityLoader && (
+            <GroupedTransactions transactions={transactions} />
+            {transactions?.length === 0 && !isLoading && (
                 <div className='no-activity'>
                     <Translate id='dashboard.noActivity' />
                 </div>
             )}
+            <TransactionItemModal />
             {/* {transactionHash && (
                 <ActivityDetailModal
                     open={!!transactionHash}

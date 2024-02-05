@@ -151,7 +151,7 @@ const txUtils = {
         return {
             id: data.transaction.hash,
             dateTime: data.block_timestamp,
-            leftCaption: data.transaction.hash,
+            transactionHash: data.transaction.hash,
             hasError: !!data.status?.Failure,
         };
     },
