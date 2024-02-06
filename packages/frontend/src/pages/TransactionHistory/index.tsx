@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,6 +30,14 @@ const TransactionHistory = () => {
         }
     }
 
+    // reset on change account
+    useEffect(() => {
+        setPage(0);
+        dispatch(transactionHistoryActions.setTransactions([]));
+        // @ts-ignore:next-line
+        dispatch(transactionHistoryActions.fetchTransactions({ accountId, page: 1 }));
+    }, [accountId]);
+
     return (
         <Container>
             <h2>
@@ -47,11 +55,6 @@ const TransactionHistory = () => {
             >
                 <GroupedTransactions transactions={transactions} />
             </InfiniteScroll>
-            {transactions?.length === 0 && page !== 1 && !isLoading && (
-                <div className='no-activity'>
-                    <Translate id='dashboard.noActivity' />
-                </div>
-            )}
             <TransactionItemModal />
         </Container>
     );

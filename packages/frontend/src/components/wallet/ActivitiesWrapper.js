@@ -3,29 +3,11 @@ import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import ActivityBox from './ActivityBox';
-import ActivityDetailModal from './ActivityDetailModal';
-import CONFIG from '../../config';
 import { selectAccountId } from '../../redux/slices/account';
 import {
     transactionHistoryActions,
     transactionHistorySelector,
-    // transactionHistorySelector,
 } from '../../redux/slices/transactionHistory';
-import {
-    TxDefaultPattern,
-    txPatterns,
-} from '../../redux/slices/transactionHistory/transactionPattern';
-import {
-    groupedByDate,
-    transactionToHistoryUIData,
-} from '../../redux/slices/transactionHistory/utils';
-import {
-    actions as transactionsActions,
-    selectTransactionsOneByIdentity,
-    selectTransactionsByAccountId,
-    selectTransactionsLoading,
-} from '../../redux/slices/transactions';
 import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
 import GroupedTransactions from '../transactions/GroupedTransactions';
@@ -60,6 +42,10 @@ const StyledContainer = styled.div`
             :first-of-type {
                 border-top: 1px solid #f0f0f1;
             }
+        }
+
+        && .subtitle {
+            max-width: 170px;
         }
     }
 
@@ -107,21 +93,10 @@ const ActivitiesWrapper = () => {
     const dispatch = useDispatch();
 
     const accountId = useSelector(selectAccountId);
-    // const transactions = useSelector((state) =>
-    //     selectTransactionsByAccountId(state, { accountId })
-    // );
-    // const transaction = useSelector((state) =>
-    //     selectTransactionsOneByIdentity(state, { accountId, id: transactionHash })
-    // );
-    // const activityLoader = useSelector((state) =>
-    //     selectTransactionsLoading(state, { accountId })
-    // );
-
     const { transactions, isLoading } = useSelector(transactionHistorySelector);
 
     useEffect(() => {
         if (accountId) {
-            // dispatch(transactionsActions.fetchTransactions({ accountId }));
             dispatch(transactionHistoryActions.fetchTransactions({ accountId, page: 1 }));
         }
     }, [accountId]);
@@ -131,17 +106,6 @@ const ActivitiesWrapper = () => {
             <h2 className={classNames({ dots: isLoading })}>
                 <Translate id='dashboard.activity' />
             </h2>
-            {/* {transactions.map((transaction, i) => (
-                <ActivityBox
-                    key={`${transaction.hash_with_index}-${transaction.block_hash}-${transaction.kind}`}
-                    transaction={transaction}
-                    actionArgs={transaction.args}
-                    actionKind={transaction.kind}
-                    receiverId={transaction.receiver_id}
-                    accountId={accountId}
-                    setTransactionHash={setTransactionHash}
-                />
-            ))} */}
             <GroupedTransactions transactions={transactions} />
             {transactions?.length === 0 && !isLoading && (
                 <div className='no-activity'>
@@ -149,14 +113,6 @@ const ActivitiesWrapper = () => {
                 </div>
             )}
             <TransactionItemModal />
-            {/* {transactionHash && (
-                <ActivityDetailModal
-                    open={!!transactionHash}
-                    onClose={() => setTransactionHash()}
-                    accountId={accountId}
-                    transaction={transaction}
-                />
-            )} */}
             <FormButton
                 color='gray-blue'
                 linkTo='transaction-history'

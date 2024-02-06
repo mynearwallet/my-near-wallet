@@ -1,3 +1,4 @@
+/** @deprecated */
 import React, { useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch } from 'react-redux';

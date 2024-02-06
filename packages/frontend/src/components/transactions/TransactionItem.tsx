@@ -20,6 +20,7 @@ export enum ETxDirection {
 export const TransactionItem = (
     props: TransactionItemComponent & {
         onClick: () => void;
+        onClickTransactionHash: () => void;
     }
 ) => {
     return (
@@ -44,15 +45,21 @@ export const TransactionItem = (
                     <div className='content-subtitle'>
                         <div className='subtitle'>{props.subtitle}</div>
                         {!!props.assetChangeText2 && (
-                            <div className='asset-change2'>
-                                -{props.assetChangeText2}
-                            </div>
+                            <div className='asset-change2'>-{props.assetChangeText2}</div>
                         )}
                     </div>
                 </div>
             </div>
             <div className='caption-container'>
-                <div className='hash'>{props.transactionHash}</div>
+                <div
+                    className='hash'
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        props.onClickTransactionHash();
+                    }}
+                >
+                    {props.transactionHash}
+                </div>
                 <div className='datetime'>
                     {dayjs(transPico2Date(props.dateTime)).format('YYYY-MM-DD HH:mm')}
                 </div>
@@ -100,6 +107,11 @@ const StyledContainer = styled(Card)`
             overflow: hidden;
             max-width: 170px;
             text-wrap: nowrap;
+        }
+        @media (min-width: 992px) {
+            .subtitle {
+                max-width: 80%;
+            }
         }
         .asset-change1 {
             font-size: 15px;

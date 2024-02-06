@@ -36,7 +36,14 @@ const TransactionItemModal = () => {
         <Modal id='transaction-modal' isOpen={!!selectedTx} onClose={onClose} closeButton>
             <StyledContainer>
                 <div className='row'>
-                    <div className='item'>
+                    <div className='item head-item'>
+                        <div className='icon'>
+                            <img
+                                src={tx.image}
+                                alt='transaction-icon'
+                                style={{ objectFit: 'contain' }}
+                            />
+                        </div>
                         <div>
                             <h2>{tx.title}</h2>
                             <div className='subtitle'>{tx.subtitle}</div>
@@ -114,6 +121,10 @@ const StyledContainer = styled.div`
             color: green;
         }
     }
+    .icon {
+        width: 28px;
+        height: 28px;
+    }
 
     .row {
         width: 100%;
@@ -122,6 +133,10 @@ const StyledContainer = styled.div`
     }
 
     .item {
+        &.head-item {
+            justify-content: flex-start;
+            gap: 16px;
+        }
         display: flex;
         align-items: center;
         justify-content: space-between;

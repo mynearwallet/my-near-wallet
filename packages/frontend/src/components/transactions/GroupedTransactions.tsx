@@ -7,7 +7,10 @@ import CONFIG from '../../config';
 import { selectAccountId } from '../../redux/slices/account';
 import { transactionHistoryActions } from '../../redux/slices/transactionHistory';
 import { ITransactionListItem } from '../../redux/slices/transactionHistory/type';
-import { groupedByDate, transactionToHistoryUIData } from '../../redux/slices/transactionHistory/utils';
+import {
+    groupedByDate,
+    transactionToHistoryUIData,
+} from '../../redux/slices/transactionHistory/utils';
 
 type Props = {
     transactions: ITransactionListItem[];
@@ -36,6 +39,11 @@ const GroupedTransactions = ({ transactions }: Props) => {
                                     )
                                 )
                             }
+                            onClickTransactionHash={() => {
+                                navigator.clipboard?.writeText(
+                                    transaction.transactionHash
+                                );
+                            }}
                             {...transaction}
                         />
                     );

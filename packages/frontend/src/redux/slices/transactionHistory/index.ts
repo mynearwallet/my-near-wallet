@@ -21,6 +21,7 @@ interface ITransactionHistoryState {
     isLoading: boolean;
     hasMore: boolean;
     selectedTx: string;
+    transactionAccountId: string;
 }
 
 const initialState: ITransactionHistoryState = {
@@ -28,6 +29,7 @@ const initialState: ITransactionHistoryState = {
     isLoading: false,
     hasMore: true,
     selectedTx: '',
+    transactionAccountId: '',
 };
 
 /****************************/
@@ -39,6 +41,7 @@ const transactionHistorySlice = createSlice({
     reducers: {
         setTransactions(state, actions) {
             set(state, ['transactions'], actions.payload);
+            set(state, ['hasMore'], true);
         },
         addTransactions(state, actions) {
             state.transactions = uniqBy(
