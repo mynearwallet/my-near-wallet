@@ -1,4 +1,4 @@
-import { Omit } from 'lodash';
+import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
 export enum TxMethodName {
     ft_transfer = 'ft_transfer',
@@ -86,34 +86,6 @@ interface IReceipt {
     receiver_id: string;
 }
 
-interface IReceiptOutcome {
-    block_hash: string;
-    id: string;
-    outcome: {
-        executor_id: string;
-        gas_burnt: number;
-        logs: string[];
-        metadata: {
-            gas_profile: {
-                cost: string;
-                cost_category: string;
-                gas_used: string;
-            }[];
-            version: number;
-        };
-        receipt_ids: string[];
-        status: {
-            SuccessReceiptId?: string;
-            Failure?: Object;
-        };
-        tokens_burnt: string;
-    };
-    proof: {
-        direction: string;
-        hash: string;
-    }[];
-}
-
 export interface ITxFunctionCall {
     args: string;
     deposit: string;
@@ -121,86 +93,13 @@ export interface ITxFunctionCall {
     method_name: TxMethodName;
 }
 
-export interface ITransaction {
-    actions: {
-        FunctionCall: ITxFunctionCall;
-        CreateAccount?: any;
-        DeployContract?: any;
-        Transfer?: {
-            deposit: string;
-        };
-        AddKey?: {
-            public_key: string;
-        };
-        DeleteKey?: {
-            public_key: string;
-        };
-        Delegate?: {
-            delegate_action: {
-                actions: Omit<ITransaction['actions'], 'Delegate'>;
-                receiver_id: string;
-                sender_id: string;
-            };
-            signature: string;
-        };
-        Stake?: any;
-    }[];
-    hash: string;
-    nonce: number;
-    public_key: string;
-    receiver_id: string;
-    signature: string;
-    signer_id: string;
-}
-
-interface ITransactionOutcome {
-    block_hash: string;
-    id: string;
-    outcome: {
-        executor_id: string;
-        gas_burnt: number;
-        logs: string[];
-        metadata: {
-            gas_profile: null;
-            version: number;
-        };
-        receipt_ids: string[];
-        status: {
-            SuccessReceiptId: string;
-        };
-        tokens_burnt: string;
-    };
-    proof: {
-        direction: string;
-        hash: string;
-    }[];
-}
-
-export interface ITransactionDetail {
+interface WithReceipt {
     receipts: IReceipt[];
-    receipts_outcome: IReceiptOutcome[];
-    status: {
-        SuccessValue?: string;
-        Failure?: Object;
-    };
-    transaction: ITransaction;
-    transaction_outcome: ITransactionOutcome;
 }
 
-export interface ITransactionDetailResponse {
-    id: number;
-    jsonrpc: '2.0';
-    result: ITransactionDetail;
-}
+export interface ITransactionDetail extends FinalExecutionOutcome, WithReceipt {}
 
-export interface ITransactionListItem {
+export interface ITransactionListItem extends FinalExecutionOutcome, WithReceipt {
     metaData: IMetaData;
     receipts: IReceipt[];
-    receipts_outcome: IReceiptOutcome[];
-    status: {
-        SuccessValue?: string;
-        Failure?: Object;
-    };
-    transaction: ITransaction;
-    transaction_outcome: ITransactionOutcome;
 }

@@ -1,4 +1,6 @@
 import { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types';
+import { FinalExecutionStatusBasic } from 'near-api-js/lib/providers';
+import { ExecutionStatus } from 'near-api-js/lib/providers/provider';
 
 import {
     ETransactionStatus,
@@ -83,7 +85,9 @@ enum ETxActionKind {
 
 const txUtils = {
     getPrimaryReceipt(data: TxData) {
-        const primaryReceiptId = data.transaction_outcome.outcome.status.SuccessReceiptId;
+        const primaryReceiptId = (
+            data.transaction_outcome.outcome.status as ExecutionStatus
+        ).SuccessReceiptId;
         const primaryReceipt = data.receipts.find(
             (item) => item.receipt_id === primaryReceiptId
         );
@@ -97,7 +101,7 @@ const txUtils = {
         return data.transaction.actions[0]?.FunctionCall?.method_name;
     },
     getTxStatus(data: TxData) {
-        return !data.status.Failure
+        return !data.status[FinalExecutionStatusBasic.Failure]
             ? ETransactionStatus.success
             : ETransactionStatus.fail;
     },
@@ -152,7 +156,7 @@ const txUtils = {
             id: data.transaction.hash,
             dateTime: data.block_timestamp,
             transactionHash: data.transaction.hash,
-            hasError: !!data.status?.Failure,
+            hasError: !!data.status?.[FinalExecutionStatusBasic.Failure],
         };
     },
 };
@@ -252,7 +256,9 @@ class CreateAccountPattern implements TxPattern {
 class SwapPattern implements TxPattern {
     private whitelistedReceivers = ['v2.ref-finance.near', 'v1.jumbo_exchange.near'];
     private hasError(data: TxData) {
-        return data.receipts_outcome.some((r) => r.outcome.status.Failure);
+        return data.receipts_outcome.some(
+            (r) => r.outcome.status[FinalExecutionStatusBasic.Failure]
+        );
     }
 
     match(data: TxData): boolean {
