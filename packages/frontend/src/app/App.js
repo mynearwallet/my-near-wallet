@@ -65,6 +65,7 @@ import WalletMigration from '../components/wallet-migration/WalletMigration';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
+import TransactionHistory from '../pages/TransactionHistory';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
@@ -99,7 +100,6 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
-import TransactionHistory from '../pages/TransactionHistory';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
