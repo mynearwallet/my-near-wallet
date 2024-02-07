@@ -430,18 +430,26 @@ export default class Wallet {
 
         const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
 
+        for (let i = 0; i < Math.ceil(accessKeys.length / 25.0); i++) {
+            const response = await fetch(
+                `${
+                    CONFIG.INDEXER_NEARBLOCK_SERVICE_URL
+                }/v1/account/${accountId}/keys?page=${i + 1}&per_page=25`
+            ).then((res) => res.json());
+
+            response.keys.forEach((keyInfo) => {
+                accessKeys
+                    .filter((accessKey) => accessKey.public_key !== keyInfo.public_key)
+                    .forEach((accessKey) => {
+                        accessKey.created = keyInfo.created;
+                    });
+            });
+        }
+
         return Promise.all(
             accessKeys.map(async (accessKey) => ({
                 ...accessKey,
                 meta: await getKeyMeta(accessKey.public_key),
-                created:
-                    accessKey.access_key?.permission === 'FullAccess'
-                        ? await fetch(
-                              `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${accessKey.public_key}`
-                          )
-                              .then((res) => res.json())
-                              .then((res) => res.keys[0]?.created)
-                        : null,
             }))
         );
     }
@@ -1234,10 +1242,7 @@ export default class Wallet {
         if (!client) {
             store.dispatch(checkAndHideLedgerModal());
             store.dispatch(handleShowConnectModal());
-            throw new WalletError(
-                'The Ledger client is unavailable.',
-                'connectLedger.noClient'
-            );
+            return null;
         }
         this.dispatchShowLedgerModal(true);
         const rawPublicKey = await client.getPublicKey(path);
