@@ -1,5 +1,6 @@
 import { stringifyUrl } from 'query-string';
 
+import { NearBlocksTxnsResponse } from './type';
 import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
@@ -17,7 +18,7 @@ export default {
                     console.warn('Error fetching accounts from kitwallet indexer', err);
                     return [];
                 }),
-            fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
+            fetch(`${CONFIG.INDEXER_NEARBLOCKS_SERVICE_URL}/v1/keys/${publicKey}`, {
                 headers: {
                     accept: '*/*',
                 },
@@ -64,8 +65,12 @@ export default {
             },
         }).then((res) => res.json());
     },
-    listTransactions: (accountId, page, perPage) => {
-        const url = `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/account/${accountId}/txns`;
+    listTransactions: (
+        accountId: string,
+        page: number,
+        perPage: number
+    ): Promise<NearBlocksTxnsResponse> => {
+        const url = `${CONFIG.INDEXER_NEARBLOCKS_SERVICE_URL}/v1/account/${accountId}/txns`;
         return sendJson(
             'GET',
             stringifyUrl({
