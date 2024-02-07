@@ -8,7 +8,8 @@ const getLanguageSelector = createSelector(getLanguagesList, (languages) =>
 
 function getCurrentLanguage() {
     const currentLanguage = useSelector(getLanguageSelector);
-    return currentLanguage.code;
+
+    return currentLanguage?.code ?? 'en';
 }
 
 export default getCurrentLanguage;
