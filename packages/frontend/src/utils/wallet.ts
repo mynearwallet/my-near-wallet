@@ -452,7 +452,7 @@ export default class Wallet {
                             accessKey.created = keyInfo.created;
                         });
                 });
-            } while (response?.keys?.length == 25);
+            } while (response?.keys?.length === 25);
         }
 
         return Promise.all(
