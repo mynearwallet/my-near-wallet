@@ -1242,7 +1242,10 @@ export default class Wallet {
         if (!client) {
             store.dispatch(checkAndHideLedgerModal());
             store.dispatch(handleShowConnectModal());
-            return null;
+            throw new WalletError(
+                'The Ledger client is unavailable.',
+                'connectLedger.noClient'
+            );
         }
         this.dispatchShowLedgerModal(true);
         const rawPublicKey = await client.getPublicKey(path);
