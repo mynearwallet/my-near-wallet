@@ -430,20 +430,29 @@ export default class Wallet {
 
         const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
 
-        for (let i = 0; i < Math.ceil(accessKeys.length / 25.0); i++) {
-            const response = await fetch(
-                `${
-                    CONFIG.INDEXER_NEARBLOCK_SERVICE_URL
-                }/v1/account/${accountId}/keys?page=${i + 1}&per_page=25`
-            ).then((res) => res.json());
+        {
+            let pageCount = 1;
+            let response: {
+                keys?: any[];
+            } = {};
 
-            response.keys.forEach((keyInfo) => {
-                accessKeys
-                    .filter((accessKey) => accessKey.public_key !== keyInfo.public_key)
-                    .forEach((accessKey) => {
-                        accessKey.created = keyInfo.created;
-                    });
-            });
+            do {
+                response = await fetch(
+                    `${
+                        CONFIG.INDEXER_NEARBLOCK_SERVICE_URL
+                    }/v1/account/${accountId}/keys?page=${pageCount++}&per_page=25`
+                ).then((res) => res.json());
+
+                response.keys.forEach((keyInfo) => {
+                    accessKeys
+                        .filter(
+                            (accessKey) => accessKey.public_key !== keyInfo.public_key
+                        )
+                        .forEach((accessKey) => {
+                            accessKey.created = keyInfo.created;
+                        });
+                });
+            } while (response?.keys?.length == 25);
         }
 
         return Promise.all(
