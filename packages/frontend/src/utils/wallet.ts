@@ -11,6 +11,7 @@ import { KeyType } from 'near-api-js/lib/utils/key_pair';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { decorateWithLockup } from './account-with-lockup';
+import { getAccessKeysDataLoader } from './cache/accessKeysDataLoader';
 import {
     removeAllAccountsPrivateKey,
     retrieveAllAccountsPrivateKey,
@@ -381,6 +382,7 @@ export default class Wallet {
                 authorizedApps: accessKeys.filter(
                     (it) =>
                         it.access_key &&
+                        it.access_key.permission !== 'FullAccess' &&
                         it.access_key.permission.FunctionCall &&
                         it.access_key.permission.FunctionCall.receiver_id !==
                             this.accountId
@@ -423,44 +425,8 @@ export default class Wallet {
 
     // TODO: Figure out whether wallet should work with any account or current one.
     // Maybe make wallet account specific and switch whole Wallet?
-    async getAccessKeys(accountId = this.accountId) {
-        if (!accountId) {
-            return null;
-        }
-
-        const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
-
-        {
-            let pageCount = 1;
-            let response: {
-                keys?: any[];
-            } = {};
-
-            do {
-                response = await fetch(
-                    `${
-                        CONFIG.INDEXER_NEARBLOCK_SERVICE_URL
-                    }/v1/account/${accountId}/keys?page=${pageCount++}&per_page=25`
-                ).then((res) => res.json());
-
-                response.keys.forEach((keyInfo) => {
-                    accessKeys
-                        .filter(
-                            (accessKey) => accessKey.public_key !== keyInfo.public_key
-                        )
-                        .forEach((accessKey) => {
-                            accessKey.created = keyInfo.created;
-                        });
-                });
-            } while (response?.keys?.length === 25);
-        }
-
-        return Promise.all(
-            accessKeys.map(async (accessKey) => ({
-                ...accessKey,
-                meta: await getKeyMeta(accessKey.public_key),
-            }))
-        );
+    getAccessKeys(accountId = this.accountId) {
+        return getAccessKeysDataLoader().load(accountId);
     }
 
     async getPublicKeyType(accountId, publicKeyString) {
