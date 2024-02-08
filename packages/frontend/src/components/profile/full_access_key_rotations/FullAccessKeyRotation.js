@@ -104,7 +104,8 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
     const [deAuthorizing, setDeAuthorizing] = React.useState(false);
     const [rotating, setRotating] = React.useState(false);
     const [inputSeedPhrase, setInputSeedPhrase] = React.useState('');
-    const [inputSeedPhraseSuccess, setInputSeedPhraseSuccess] = React.useState('');
+    const [inputSeedPhraseSuccess, setInputSeedPhraseSuccess] =
+        React.useState('');
     const [inputSeedPhraseError, setInputSeedPhraseError] = React.useState('');
     const [publicKey, setPublicKey] = React.useState('');
     const [editName, setEditName] = React.useState(false);
@@ -114,7 +115,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
 
     const accountId = useSelector(selectAccountId);
 
-    const publicKeyNameStorage = makePublicKeyNameStorage(fullAccessKey.public_key);
+    const publicKeyNameStorage = makePublicKeyNameStorage(
+        fullAccessKey.public_key
+    );
 
     React.useEffect(() => {
         wallet.signer
@@ -146,7 +149,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                 bip39.validateMnemonic(newInput.trim());
                 inputSecretKey = parseSeedPhrase(newInput).secretKey;
             } catch (err) {
-                setInputSeedPhraseError('fullAccessKeys.warning.invalidSeedPhrase');
+                setInputSeedPhraseError(
+                    'fullAccessKeys.warning.invalidSeedPhrase'
+                );
                 setInputSeedPhraseSuccess('');
                 return;
             }
@@ -174,8 +179,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
         }
 
         if (
-            fullAccessKeys.filter((accessKey) => accessKey.public_key === inputPublicKey)
-                .length === 0
+            fullAccessKeys.filter(
+                (accessKey) => accessKey.public_key === inputPublicKey
+            ).length === 0
         ) {
             setInputSeedPhraseError('fullAccessKeys.warning.invalidKey');
             setInputSeedPhraseSuccess('');
@@ -197,14 +203,18 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
             } else if (bip39SeedPhrasePattern.test(inputSeedPhrase.trim())) {
                 try {
                     bip39.validateMnemonic(inputSeedPhrase.trim());
-                    inputSecretKey = parseSeedPhrase(inputSeedPhrase.trim()).secretKey;
+                    inputSecretKey = parseSeedPhrase(
+                        inputSeedPhrase.trim()
+                    ).secretKey;
                 } catch (err) {
                     throw new Error(
                         'The seed phrase you entered is not a valid seed phrase, its checksum is wrong.'
                     );
                 }
             } else {
-                throw new Error('We can not detect the key format you entered.');
+                throw new Error(
+                    'We can not detect the key format you entered.'
+                );
             }
 
             const inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
@@ -253,14 +263,18 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
             } else if (bip39SeedPhrasePattern.test(inputSeedPhrase.trim())) {
                 try {
                     bip39.validateMnemonic(inputSeedPhrase.trim());
-                    inputSecretKey = parseSeedPhrase(inputSeedPhrase.trim()).secretKey;
+                    inputSecretKey = parseSeedPhrase(
+                        inputSeedPhrase.trim()
+                    ).secretKey;
                 } catch (err) {
                     throw new Error(
                         'The seed phrase you entered is not a valid seed phrase, its checksum is wrong.'
                     );
                 }
             } else {
-                throw new Error('We can not detect the key format you entered.');
+                throw new Error(
+                    'We can not detect the key format you entered.'
+                );
             }
 
             const inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
@@ -282,7 +296,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                 );
             }
 
-            await dispatch(recoverAccountSecretKey(inputKeyPair.secretKey.toString()));
+            await dispatch(
+                recoverAccountSecretKey(inputKeyPair.secretKey.toString())
+            );
             await dispatch(refreshAccount());
         } catch (error) {
             dispatch(
@@ -298,7 +314,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
         }
     }
 
-    const createdAt = new Date(fullAccessKey?.created?.block_timestamp / 1000000);
+    const createdAt = new Date(
+        fullAccessKey?.created?.block_timestamp / 1000000
+    );
 
     const transactionHash = fullAccessKey?.created?.transaction_hash;
 
@@ -367,7 +385,10 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                                 <Translate id='button.cancel' />
                             </FormButton>
                             <FormButton
-                                disabled={deAuthorizing || inputSeedPhraseSuccess === ''}
+                                disabled={
+                                    deAuthorizing ||
+                                    inputSeedPhraseSuccess === ''
+                                }
                                 sending={deAuthorizing}
                                 sendingString='button.deAuthorizing'
                                 color='red'
@@ -441,7 +462,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                                 <Translate id='button.cancel' />
                             </FormButton>
                             <FormButton
-                                disabled={rotating || inputSeedPhraseSuccess === ''}
+                                disabled={
+                                    rotating || inputSeedPhraseSuccess === ''
+                                }
                                 sending={rotating}
                                 sendingString='button.rotatingKey'
                                 color='red'
@@ -481,7 +504,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                                         'fullAccessKeys.editName.name'
                                     )}
                                     value={inputName}
-                                    onChange={(e) => setInputName(e.target.value)}
+                                    onChange={(e) =>
+                                        setInputName(e.target.value)
+                                    }
                                     autoComplete='off'
                                     spellCheck='false'
                                     autoFocus={true}
@@ -519,7 +544,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                                 <FontAwesomeIcon
                                     className='flex-initial text-gray-600 hover:text-gray-900 cursor-pointer ml-1'
                                     onClick={() => {
-                                        setInputName(publicKeyNameStorage.load());
+                                        setInputName(
+                                            publicKeyNameStorage.load()
+                                        );
                                         setEditName(true);
                                     }}
                                     icon={faPen}
@@ -572,20 +599,20 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                         <span>
                             <Translate id='fullAccessKeys.transaction' />
                         </span>
-                        <Link>
-                            <a
-                                href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
-                                target='_blank'
-                                rel='noreferrer'
-                            >
-                                {transactionHash}
-                            </a>
-                        </Link>
+                        <div className='text-gray-500 text-sm'>
+                            <Translate id='fullAccessKeys.createdAt' />
+                            &nbsp;{createdAt.toLocaleString()}
+                        </div>
                     </div>
-                    <div className='text-gray-500 text-sm mt-1'>
-                        <Translate id='fullAccessKeys.createdAt' />
-                        &nbsp;{createdAt.toLocaleString()}
-                    </div>
+                    <Link className='mt-1'>
+                        <a
+                            href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
+                            target='_blank'
+                            rel='noreferrer'
+                        >
+                            {transactionHash}
+                        </a>
+                    </Link>
                 </>
             )}
         </Container>
