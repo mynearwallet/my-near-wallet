@@ -65,6 +65,7 @@ import WalletMigration from '../components/wallet-migration/WalletMigration';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
+import TransactionHistory from '../pages/TransactionHistory';
 import * as accountActions from '../redux/actions/account';
 import { handleClearAlert } from '../redux/reducers/status';
 import { selectAccountSlice } from '../redux/slices/account';
@@ -623,6 +624,11 @@ class Routing extends Component {
                                 render={() => (
                                     <StakingContainer history={this.props.history} />
                                 )}
+                            />
+                            <PrivateRoute
+                                exact
+                                path='/transaction-history'
+                                component={TransactionHistory}
                             />
                             <PrivateRoute
                                 exact
