@@ -50,6 +50,7 @@ const accessKeys = handleActions(
                 payload.filter(
                     (it) =>
                         it.access_key &&
+                        it.access_key.permission !== 'FullAccess' &&
                         it.access_key.permission.FunctionCall &&
                         it.access_key.permission.FunctionCall.receiver_id !==
                             state.accountId
