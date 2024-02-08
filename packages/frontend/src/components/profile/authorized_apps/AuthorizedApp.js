@@ -59,8 +59,6 @@ const Container = styled.div`
 `;
 
 const AuthorizedApp = ({ app, onClick, deAuthorizing }) => {
-    console.log('app', app);
-
     return (
         <Container className='authorized-app-box'>
             <div className='title'>
