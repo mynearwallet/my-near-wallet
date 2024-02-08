@@ -81,7 +81,7 @@ const Link = styled.div`
     a {
         display: block;
         width: 100%;
-        text-align: center;
+        text-align: left;
         text-decoration: underline;
         @media (max-width: 992px) {
             text-align: start;
@@ -580,20 +580,29 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                         <span>
                             <Translate id='fullAccessKeys.transaction' />
                         </span>
-                        <Link>
-                            <a
-                                href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
-                                target='_blank'
-                                rel='noreferrer'
-                            >
-                                {transactionHash}
-                            </a>
-                        </Link>
+                        <div className='text-gray-500 text-sm'>
+                            <Translate id='fullAccessKeys.createdAt' />
+                            &nbsp;{createdAt.toLocaleString()}
+                        </div>
                     </div>
-                    <div className='text-gray-500 text-sm mt-1'>
-                        <Translate id='fullAccessKeys.createdAt' />
-                        &nbsp;{createdAt.toLocaleString()}
-                    </div>
+                    <Link className='mt-1'>
+                        <a
+                            href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
+                            target='_blank'
+                            rel='noreferrer'
+                        >
+                            {transactionHash.length > 15
+                                ? transactionHash
+                                      .substring(0, 6)
+                                      .concat(
+                                          '...',
+                                          transactionHash.substring(
+                                              transactionHash.length - 6
+                                          )
+                                      )
+                                : transactionHash}
+                        </a>
+                    </Link>
                 </>
             )}
         </Container>

@@ -183,7 +183,8 @@
         "feeAllowance": "Fee Allowance",
         "ledger": "Ledger",
         "pageTitle": "Authorized Apps",
-        "publicKey": "Public Key"
+        "publicKey": "Public Key",
+        "unlimited": "Unlimited"
     },
     "available": "Available",
     "availableBalanceInfo": "Your spendable NEAR balance excluding funds locked or staked. <a href='/profile'>View Balance Breakdown →</a>",
