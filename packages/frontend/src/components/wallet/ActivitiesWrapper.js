@@ -100,13 +100,14 @@ const ActivitiesWrapper = () => {
             dispatch(transactionHistoryActions.fetchTransactions({ accountId, page: 1 }));
         }
     }, [accountId]);
+    const displayedTransactions = [...transactions].slice(0, 10);
 
     return (
         <StyledContainer>
             <h2 className={classNames({ dots: isLoading })}>
                 <Translate id='dashboard.activity' />
             </h2>
-            <GroupedTransactions transactions={transactions} />
+            <GroupedTransactions transactions={displayedTransactions} />
             {transactions?.length === 0 && !isLoading && (
                 <div className='no-activity'>
                     <Translate id='dashboard.noActivity' />

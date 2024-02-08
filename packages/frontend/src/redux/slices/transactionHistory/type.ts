@@ -1,25 +1,6 @@
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
-export enum TxMethodName {
-    ft_transfer = 'ft_transfer',
-    ft_transfer_call = 'ft_transfer_call',
-    ft_resolve_transfer = 'ft_resolve_transfer',
-    exchange_callback_post_withdraw = 'exchange_callback_post_withdraw',
-    nft_transfer = 'nft_transfer',
-    mint = 'mint',
-    nft_mint = 'nft_mint',
-    nft_buy = 'nft_buy',
-    buy = 'buy',
-    ft_mint = 'ft_mint',
-    deposit_and_stake = 'deposit_and_stake',
-    unstake = 'unstake',
-    deploy = 'deploy',
-    create_account = 'create_account',
-    liquid_unstake = 'liquid_unstake',
-    claim = 'claim',
-    withdraw_all = 'withdraw_all',
-    near_withdraw = 'near_withdraw',
-}
+import { TxMethodName } from './constant';
 
 export enum ETransactionStatus {
     success = 'success',

@@ -11,6 +11,7 @@ import {
     transactionHistoryActions,
     transactionHistorySelector,
 } from '../../redux/slices/transactionHistory';
+import styled from 'styled-components';
 
 const TransactionHistory = () => {
     const dispatch = useDispatch();
@@ -40,24 +41,34 @@ const TransactionHistory = () => {
 
     return (
         <Container>
-            <h2>
-                <Translate id='dashboard.activity' />
-            </h2>
-            <InfiniteScroll
-                pageStart={0}
-                loadMore={loadMore}
-                hasMore={hasMore}
-                loader={
-                    <div className='loader' key={0}>
-                        <Translate id='loading' />
-                    </div>
-                }
-            >
-                <GroupedTransactions transactions={transactions} />
-            </InfiniteScroll>
-            <TransactionItemModal />
+            <StyledContainer>
+                <h2 className='page-title'>
+                    <Translate id='dashboard.activity' />
+                </h2>
+                <InfiniteScroll
+                    pageStart={0}
+                    loadMore={loadMore}
+                    hasMore={hasMore}
+                    loader={
+                        <div className='loader' key={0}>
+                            <Translate id='loading' />
+                        </div>
+                    }
+                >
+                    <GroupedTransactions transactions={transactions} />
+                </InfiniteScroll>
+                <TransactionItemModal />
+            </StyledContainer>
         </Container>
     );
 };
 
 export default TransactionHistory;
+
+const StyledContainer = styled.div`
+    .page-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #555;
+    }
+`;

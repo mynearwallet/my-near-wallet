@@ -1,5 +1,7 @@
+import { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types';
 import dayjs from 'dayjs';
 
+import { IPFS_NFT_CACHE_URL } from './constant';
 import { TxDefaultPattern, txPatterns } from './transactionPattern';
 import { ETxDirection, TransactionItemComponent } from './type';
 
@@ -55,4 +57,18 @@ export function getPrefixByDir(dir?: ETxDirection): string {
         return '-';
     }
     return '';
+}
+
+export const IpfsCacheApi = {
+    getNftTokenImgUrl,
+};
+
+function getNftTokenImgUrl(network: ENearNetwork, contractId: string, tokenId: string) {
+    return `${IPFS_NFT_CACHE_URL}/network/${network}/nfts/${contractId}/tokens/${tokenId}/image`;
+}
+
+export function getMeteorPointsContractId(network: ENearNetwork) {
+    return network === ENearNetwork.mainnet
+        ? 'meteor-points.near'
+        : 'mst.testcandy.testnet';
 }

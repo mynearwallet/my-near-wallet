@@ -27,7 +27,7 @@ const GroupedTransactions = ({ transactions }: Props) => {
     return groupedTransactions.map((g) => {
         return (
             <StyledTxDayContainer key={g.date}>
-                <div>{g.date}</div>
+                <div className='date-title'>{g.date}</div>
                 {g.transactions?.map((transaction) => {
                     return (
                         <TransactionItem
@@ -59,5 +59,8 @@ const StyledTxDayContainer = styled.div`
     margin-bottom: 28px;
     h2 {
         font-size: 18px;
+    }
+    .date-title {
+        text-transform: capitalize;
     }
 `;

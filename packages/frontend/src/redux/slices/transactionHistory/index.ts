@@ -4,7 +4,7 @@ import uniq from 'lodash.uniq';
 import uniqBy from 'lodash.uniqby';
 import { providers } from 'near-api-js';
 
-import { nearMetadata, wNearMetadata } from './transactionPattern';
+import { nearMetadata, wNearMetadata } from './constant';
 import { IMetaData, ITransactionListItem } from './type';
 import CONFIG from '../../../config';
 import { listTransactions } from '../../../services/indexer';
@@ -14,7 +14,7 @@ import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
 // Var declarations
 /****************************/
 const SLICE_NAME = 'transactionHistory';
-const PER_PAGE = 15;
+const PER_PAGE = 10;
 
 interface ITransactionHistoryState {
     transactions: ITransactionListItem[];
