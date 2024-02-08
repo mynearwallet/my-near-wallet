@@ -437,7 +437,7 @@ export default class Wallet {
                 created:
                     accessKey.access_key?.permission === 'FullAccess'
                         ? await fetch(
-                              `${CONFIG.INDEXER_NEARBLOCKS_SERVICE_URL}/v1/keys/${accessKey.public_key}`
+                              `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${accessKey.public_key}`
                           )
                               .then((res) => res.json())
                               .then((res) => res.keys[0]?.created)

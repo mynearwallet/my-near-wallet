@@ -18,7 +18,7 @@ export default {
                     console.warn('Error fetching accounts from kitwallet indexer', err);
                     return [];
                 }),
-            fetch(`${CONFIG.INDEXER_NEARBLOCKS_SERVICE_URL}/v1/keys/${publicKey}`, {
+            fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
                 headers: {
                     accept: '*/*',
                 },
@@ -70,7 +70,7 @@ export default {
         page: number,
         perPage: number
     ): Promise<NearBlocksTxnsResponse> => {
-        const url = `${CONFIG.INDEXER_NEARBLOCKS_SERVICE_URL}/v1/account/${accountId}/txns`;
+        const url = `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/account/${accountId}/txns`;
         return sendJson(
             'GET',
             stringifyUrl({
