@@ -318,8 +318,8 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                     <div className='desc mt-4'>
                         <Translate id='fullAccessKeys.deAuthorizeConfirm.seedPhrasePrompt' />
                         <span className='text-red-700'>
-                            &nbsp;Currently not working with ledger yet. We are working on
-                            it.
+                            &nbsp;We're still working on making the feature compatible
+                            with Ledger hardware wallets. Hang tight!
                         </span>
                     </div>
                     <form
@@ -396,8 +396,8 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                     <div className='desc mt-4'>
                         <Translate id='fullAccessKeys.rotateKey.seedPhrasePrompt' />
                         <span className='text-red-700'>
-                            &nbsp;Currently not working with ledger yet. We are working on
-                            it.
+                            &nbsp;We're still working on making the feature compatible
+                            with Ledger hardware wallets. Hang tight!
                         </span>
                     </div>
                     <form
