@@ -59,6 +59,8 @@ const Container = styled.div`
 `;
 
 const AuthorizedApp = ({ app, onClick, deAuthorizing }) => {
+    console.log('app', app);
+
     return (
         <Container className='authorized-app-box'>
             <div className='title'>
@@ -83,14 +85,11 @@ const AuthorizedApp = ({ app, onClick, deAuthorizing }) => {
                     <Translate id='authorizedApps.feeAllowance' />
                 </span>
                 <span>
-                    {app.access_key.permission.FunctionCall.allowance ===
-                    undefined ? (
+                    {app.access_key.permission.FunctionCall.allowance === null ? (
                         <Translate id='authorizedApps.unlimited' />
                     ) : (
                         <Balance
-                            amount={
-                                app.access_key.permission.FunctionCall.allowance
-                            }
+                            amount={app.access_key.permission.FunctionCall.allowance}
                             showBalanceInUSD={false}
                         />
                     )}
