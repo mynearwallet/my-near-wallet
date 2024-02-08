@@ -37,6 +37,7 @@ export default {
     MULTISIG_MIN_AMOUNT: '4',
     NETWORK_ID: 'default',
     NODE_URL: 'https://rpc.mainnet.near.org',
+    NODE_ARCHIVAL_URL: 'https://archival-rpc.mainnet.near.org',
     REACT_APP_USE_TESTINGLOCKUP: false,
     RECAPTCHA_CHALLENGE_API_KEY: '6LeRzswaAAAAAGeS7mSasZ1wDcGnMcH3D7W1gy1b',
     RECAPTCHA_ENTERPRISE_SITE_KEY: '6LcpJ3EcAAAAAFgA-nixKFNGWMo9IG9FQhH4XjSY',

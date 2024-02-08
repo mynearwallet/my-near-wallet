@@ -36,6 +36,7 @@ export default {
     MULTISIG_MIN_AMOUNT: '4',
     NETWORK_ID: 'default',
     NODE_URL: 'https://rpc.testnet.near.org',
+    NODE_ARCHIVAL_URL: 'https://archival-rpc.testnet.near.org',
     REACT_APP_USE_TESTINGLOCKUP: true,
     SENTRY_DSN:
         'https://75d1dabd0ab646329fad8a3e7d6c761d@o398573.ingest.sentry.io/5254526',
