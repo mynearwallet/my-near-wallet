@@ -83,10 +83,17 @@ const AuthorizedApp = ({ app, onClick, deAuthorizing }) => {
                     <Translate id='authorizedApps.feeAllowance' />
                 </span>
                 <span>
-                    <Balance
-                        amount={app.access_key.permission.FunctionCall.allowance}
-                        showBalanceInUSD={false}
-                    />
+                    {app.access_key.permission.FunctionCall.allowance ===
+                    undefined ? (
+                        <Translate id='authorizedApps.unlimited' />
+                    ) : (
+                        <Balance
+                            amount={
+                                app.access_key.permission.FunctionCall.allowance
+                            }
+                            showBalanceInUSD={false}
+                        />
+                    )}
                 </span>
             </div>
         </Container>
