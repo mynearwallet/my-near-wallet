@@ -2,7 +2,7 @@ import * as nearApiJs from 'near-api-js';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
 export default {
-    ACCOUNT_HELPER_URL: 'https://staging-api.kitwallet.app',
+    ACCOUNT_HELPER_URL: 'https://api.kitwallet.app',
     ACCOUNT_ID_SUFFIX: 'near',
     ACCESS_KEY_FUNDING_AMOUNT: nearApiJs.utils.format.parseNearAmount('0.25'),
     BROWSER_MIXPANEL_TOKEN: '7c5730e5b3556a06b73829b3c3b40a86',
@@ -12,7 +12,7 @@ export default {
     EXPLORER_URL: 'https://nearblocks.io',
     GLEAP_FRONTEND_API_KEY: 'Pc07nwsDmsVoWYJJj9BgES87xE7RCW74',
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: false,
-    INDEXER_SERVICE_URL: 'https://staging-api.kitwallet.app',
+    INDEXER_SERVICE_URL: 'https://api.kitwallet.app',
     INDEXER_NEARBLOCK_SERVICE_URL: 'https://api.nearblocks.io',
     LINKDROP_GAS: '100000000000000',
     LOCKUP_ACCOUNT_ID_SUFFIX: 'lockup.near',
