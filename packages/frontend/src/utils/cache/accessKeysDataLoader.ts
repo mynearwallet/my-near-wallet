@@ -44,11 +44,13 @@ async function getAccessKeys(accountId: string): Promise<AccessKeyLikeArray> {
             ).then((res) => res.json());
 
             response.keys.forEach((keyInfo) => {
-                accessKeys
-                    .filter((accessKey) => accessKey.public_key !== keyInfo.public_key)
-                    .forEach((accessKey) => {
-                        accessKey.created = keyInfo.created;
-                    });
+                const accessKey = accessKeys.find(
+                    (accessKey) => accessKey.public_key === keyInfo.public_key
+                );
+
+                if (accessKey) {
+                    accessKey.created = keyInfo.created;
+                }
             });
         } while (response?.keys?.length === 25);
     }
