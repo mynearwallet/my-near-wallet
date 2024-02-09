@@ -13,7 +13,14 @@ const schema = {
     },
 };
 
-export const validateNonce = (nonce?: string) => nonce && nonce.length === 32;
+const isBase64 = (value: string) => /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(value);
+
+export const validateNonce = (nonce?: string) => {
+    if (nonce && isBase64(nonce)) {
+        return Buffer.from(nonce, 'base64').length === 32;
+    }
+    return nonce && nonce.length === 32;
+};
 
 export const serialize = (value) => borsh.serialize(schema, value);
 export const deserialize = (value) => borsh.deserialize(schema, value);
@@ -24,10 +31,11 @@ export const messageToSign = (data: {
     recipient: string;
     callbackUrl?: string;
 }) => {
+    const nonce = isBase64(data.nonce) ? Buffer.from(data.nonce, 'base64') : Buffer.from(data.nonce);
     const payload = {
         tag: 2147484061,
         ...data,
-        nonce: Buffer.from(data.nonce),
+        nonce,
     };
 
     return serialize(payload);

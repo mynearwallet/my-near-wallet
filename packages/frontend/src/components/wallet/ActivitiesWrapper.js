@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import ActivityBox from './ActivityBox';
-import ActivityDetailModal from './ActivityDetailModal';
-import CONFIG from '../../config';
 import { selectAccountId } from '../../redux/slices/account';
 import {
-    actions as transactionsActions,
-    selectTransactionsOneByIdentity,
-    selectTransactionsByAccountId,
-    selectTransactionsLoading,
-} from '../../redux/slices/transactions';
+    transactionHistoryActions,
+    transactionHistorySelector,
+} from '../../redux/slices/transactionHistory';
 import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
+import GroupedTransactions from '../transactions/GroupedTransactions';
+import TransactionItemModal from '../transactions/TransactionItemModal.js';
 
 const StyledContainer = styled.div`
     width: 100%;
@@ -45,6 +42,10 @@ const StyledContainer = styled.div`
             :first-of-type {
                 border-top: 1px solid #f0f0f1;
             }
+        }
+
+        && .subtitle {
+            max-width: 170px;
         }
     }
 
@@ -91,56 +92,31 @@ const StyledContainer = styled.div`
 const ActivitiesWrapper = () => {
     const dispatch = useDispatch();
 
-    const [transactionHash, setTransactionHash] = useState();
     const accountId = useSelector(selectAccountId);
-    const transactions = useSelector((state) =>
-        selectTransactionsByAccountId(state, { accountId })
-    );
-    const transaction = useSelector((state) =>
-        selectTransactionsOneByIdentity(state, { accountId, id: transactionHash })
-    );
-    const activityLoader = useSelector((state) =>
-        selectTransactionsLoading(state, { accountId })
-    );
+    const { transactions, isLoading } = useSelector(transactionHistorySelector);
 
     useEffect(() => {
         if (accountId) {
-            dispatch(transactionsActions.fetchTransactions({ accountId }));
+            dispatch(transactionHistoryActions.fetchTransactions({ accountId, page: 1 }));
         }
     }, [accountId]);
+    const displayedTransactions = [...transactions].slice(0, 10);
 
     return (
         <StyledContainer>
-            <h2 className={classNames({ dots: activityLoader })}>
+            <h2 className={classNames({ dots: isLoading })}>
                 <Translate id='dashboard.activity' />
             </h2>
-            {transactions.map((transaction, i) => (
-                <ActivityBox
-                    key={`${transaction.hash_with_index}-${transaction.block_hash}-${transaction.kind}`}
-                    transaction={transaction}
-                    actionArgs={transaction.args}
-                    actionKind={transaction.kind}
-                    receiverId={transaction.receiver_id}
-                    accountId={accountId}
-                    setTransactionHash={setTransactionHash}
-                />
-            ))}
-            {transactions?.length === 0 && !activityLoader && (
+            <GroupedTransactions transactions={displayedTransactions} />
+            {transactions?.length === 0 && !isLoading && (
                 <div className='no-activity'>
                     <Translate id='dashboard.noActivity' />
                 </div>
             )}
-            {transactionHash && (
-                <ActivityDetailModal
-                    open={!!transactionHash}
-                    onClose={() => setTransactionHash()}
-                    accountId={accountId}
-                    transaction={transaction}
-                />
-            )}
+            <TransactionItemModal />
             <FormButton
                 color='gray-blue'
-                linkTo={`${CONFIG.EXPLORER_URL}/address/${accountId}`}
+                linkTo='transaction-history'
                 trackingId='Click to account on explorer'
             >
                 <Translate id='button.viewAll' />
