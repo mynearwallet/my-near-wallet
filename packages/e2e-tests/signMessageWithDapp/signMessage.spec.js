@@ -49,12 +49,11 @@ describe('sign message with guestbook', () => {
 
         const parsed = new URL(page.url());
 
-        const searchParams = parsed.searchParams;
-
         const mustHaveParams = ['accountId', 'publicKey', 'signature'];
 
         mustHaveParams.map((v) => {
-            expect(searchParams.has(v)).toBe(true);
+            const hash = parsed.hash;
+            expect(hash.includes(v)).toBe(true);
         });
     });
 });

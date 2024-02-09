@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { Redirect, Switch } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import TempEvent from './TempEvent';
 import AccessKeysWrapper from '../components/access-keys/v2/AccessKeysWrapper';
 import AutoImportWrapper from '../components/accounts/auto_import/AutoImportWrapper';
 import BatchImportAccounts from '../components/accounts/batch_import_accounts';
@@ -319,7 +318,6 @@ class Routing extends Component {
                 ])}
                 id='app-container'
             >
-                <TempEvent />
                 <Bootstrap />
                 <Updater />
                 <GlobalStyle />
