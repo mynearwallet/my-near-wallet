@@ -47,26 +47,5 @@ describe('verify owner with guestbook', () => {
             console.log(dialog.message());
             return dialog.accept();
         });
-
-        // await expect(page).toHaveURL(/\/verify-owner/);
-        // await page.click('data-test-id=approve-verify-owner');
-        // await page.pause();
-        // await expect(page).toHaveURL(new RegExp(guestbookURL));
-
-        // const parsed = new URL(page.url());
-
-        // const searchParams = parsed.searchParams;
-
-        // const mustHaveParams = [
-        //     'accountId',
-        //     'message',
-        //     'blockId',
-        //     'publicKey',
-        //     'signature',
-        // ];
-
-        // mustHaveParams.map((v) => {
-        //     expect(searchParams.has(v)).toBe(true);
-        // });
     });
 });
