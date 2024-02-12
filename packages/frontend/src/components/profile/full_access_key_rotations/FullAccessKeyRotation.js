@@ -63,10 +63,12 @@ const Container = styled.div`
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             span {
                 :first-of-type {
                     color: #72727a;
                 }
+
                 :last-of-type {
                     color: #272729;
                     font-weight: 600;
@@ -575,34 +577,43 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                     <div className='key font-monospace mt-4'>
                         {fullAccessKey.public_key}
                     </div>
-                    <hr />
-                    <div className='fee'>
-                        <span>
+                    {transactionHash && <hr /> && (
+                        <div className='fee mt-3' style={{ fontWeight: 'bold' }}>
                             <Translate id='fullAccessKeys.transaction' />
-                        </span>
-                        <div className='text-gray-500 text-sm'>
-                            <Translate id='fullAccessKeys.createdAt' />
-                            &nbsp;{createdAt.toLocaleString()}
                         </div>
-                    </div>
-                    <Link className='mt-1'>
-                        <a
-                            href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
-                            target='_blank'
-                            rel='noreferrer'
+                    )}
+                    {transactionHash && (
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                            }}
                         >
-                            {transactionHash.length > 15
-                                ? transactionHash
-                                      .substring(0, 6)
-                                      .concat(
-                                          '...',
-                                          transactionHash.substring(
-                                              transactionHash.length - 6
-                                          )
-                                      )
-                                : transactionHash}
-                        </a>
-                    </Link>
+                            <Link className='mt-1'>
+                                <a
+                                    href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
+                                    target='_blank'
+                                    rel='noreferrer'
+                                >
+                                    {transactionHash.length > 15
+                                        ? transactionHash
+                                              .substring(0, 6)
+                                              .concat(
+                                                  '...',
+                                                  transactionHash.substring(
+                                                      transactionHash.length - 6
+                                                  )
+                                              )
+                                        : transactionHash}
+                                </a>
+                            </Link>
+                            <div className='text-gray-500 text-sm'>
+                                <Translate id='fullAccessKeys.createdAt' />
+                                &nbsp;{createdAt.toLocaleString()}
+                            </div>
+                        </div>
+                    )}
                 </>
             )}
         </Container>
