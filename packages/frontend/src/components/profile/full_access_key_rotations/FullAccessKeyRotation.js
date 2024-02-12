@@ -591,7 +591,7 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                             target='_blank'
                             rel='noreferrer'
                         >
-                            {transactionHash.length > 15
+                            {transactionHash && transactionHash.length > 15
                                 ? transactionHash
                                       .substring(0, 6)
                                       .concat(
