@@ -3,20 +3,19 @@ const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
 const { SwapPage } = require('../swap/models/Swap');
 const { SendMoneyPage } = require('../transfer-tokens/models/SendMoney');
-const { describe, beforeAll, afterAll } = test;
+const { getEnvTestAccount } = require('../utils/account');
+const { describe, beforeEach } = test;
 
 describe('Rename FT symbol', () => {
-    /**
-     * @type {import('../utils/E2eTestAccount')}
-     */
-    let account;
-    beforeAll(async ({ bankAccount }) => {
-        account = bankAccount.spawnRandomSubAccountInstance();
-        await account.create();
-    });
+    const account = getEnvTestAccount();
 
-    afterAll(async () => {
-        await account.delete();
+    beforeEach(async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.navigate();
+        await homePage.loginWithSeedPhraseLocalStorage(
+            account.accountId,
+            account.seedPhrase
+        );
     });
 
     test('Bridged USDT and Bridged USDC is renamed properly', async ({ page }) => {

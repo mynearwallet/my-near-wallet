@@ -50,7 +50,6 @@ describe('Swap wrapped NEAR with NEP141', () => {
     });
 
     afterAll(async () => {
-        await homePage.close();
         await swapPage.close();
         try {
             await account.delete();

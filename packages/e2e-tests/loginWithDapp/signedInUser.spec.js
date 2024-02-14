@@ -2,17 +2,13 @@
 const { LoginPage } = require('./models/Login');
 const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
+const { getEnvTestAccount } = require('../utils/account');
 const { testDappURL } = require('../utils/config');
 
-const { describe, beforeAll, afterAll, beforeEach } = test;
+const { describe, beforeEach } = test;
 
 describe('Login with Dapp', () => {
-    let testAccount;
-
-    beforeAll(async ({ bankAccount }) => {
-        testAccount = await bankAccount.spawnRandomSubAccountInstance();
-        await testAccount.create();
-    });
+    const testAccount = getEnvTestAccount();
 
     beforeEach(async ({ page }) => {
         const homePage = new HomePage(page);
@@ -21,10 +17,6 @@ describe('Login with Dapp', () => {
             testAccount.accountId,
             testAccount.seedPhrase
         );
-    });
-
-    afterAll(async () => {
-        await testAccount.delete();
     });
 
     test('navigates to login with dapp page', async ({ page }) => {

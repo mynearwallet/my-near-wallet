@@ -1,21 +1,13 @@
 // @ts-check
 const { test, expect } = require('../playwrightWithFixtures');
+const { getEnvTestAccount } = require('../utils/account');
 const { getKeyPairFromSeedPhrase } = require('../utils/helpers');
 const { createPassword } = require('../utils/password');
 
-const { describe, beforeAll, afterAll } = test;
+const { describe } = test;
 
 describe('Account Recovery Using Private Key', () => {
-    let testAccount;
-
-    beforeAll(async ({ bankAccount }) => {
-        testAccount = bankAccount.spawnRandomSubAccountInstance();
-        await testAccount.create();
-    });
-
-    afterAll(async () => {
-        await testAccount.delete();
-    });
+    const testAccount = getEnvTestAccount();
 
     test('navigates to private key page successfully', async ({ page }) => {
         await page.goto('/');
