@@ -4,10 +4,14 @@ const { getEnvTestAccount } = require('../utils/account');
 const { getKeyPairFromSeedPhrase } = require('../utils/helpers');
 const { createPassword } = require('../utils/password');
 
-const { describe } = test;
+const { describe, beforeAll } = test;
 
 describe('Account Recovery Using Private Key', () => {
-    const testAccount = getEnvTestAccount();
+    let testAccount;
+
+    beforeAll(async () => {
+        testAccount = await getEnvTestAccount();
+    });
 
     test('navigates to private key page successfully', async ({ page }) => {
         await page.goto('/');

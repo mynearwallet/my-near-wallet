@@ -5,10 +5,14 @@ const { HomePage } = require('../register/models/Home');
 const { getEnvTestAccount } = require('../utils/account');
 const { testDappURL } = require('../utils/config');
 
-const { describe, beforeEach } = test;
+const { describe, beforeEach, beforeAll } = test;
 
 describe('Login with Dapp', () => {
-    const testAccount = getEnvTestAccount();
+    let testAccount;
+
+    beforeAll(async () => {
+        testAccount = await getEnvTestAccount();
+    });
 
     beforeEach(async ({ page }) => {
         const homePage = new HomePage(page);

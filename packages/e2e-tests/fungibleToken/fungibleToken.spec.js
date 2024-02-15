@@ -4,10 +4,14 @@ const { HomePage } = require('../register/models/Home');
 const { SwapPage } = require('../swap/models/Swap');
 const { SendMoneyPage } = require('../transfer-tokens/models/SendMoney');
 const { getEnvTestAccount } = require('../utils/account');
-const { describe, beforeEach } = test;
+const { describe, beforeEach, beforeAll } = test;
 
 describe('Rename FT symbol', () => {
-    const account = getEnvTestAccount();
+    let account;
+
+    beforeAll(async () => {
+        account = await getEnvTestAccount();
+    });
 
     beforeEach(async ({ page }) => {
         const homePage = new HomePage(page);

@@ -49,7 +49,6 @@ describe('Swap NEAR with wrapped NEAR', () => {
     });
 
     afterAll(async () => {
-        await homePage.close();
         await swapPage.close();
         await account.delete();
     });

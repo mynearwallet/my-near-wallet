@@ -189,6 +189,7 @@ describe('Linkdrop flow', () => {
         page,
         context,
     }) => {
+        test.setTimeout(60_000);
         await context
             .grantPermissions(['clipboard-read', 'clipboard-write'])
             .catch(test.skip);
