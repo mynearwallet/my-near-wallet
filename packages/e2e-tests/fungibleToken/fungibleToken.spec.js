@@ -1,5 +1,6 @@
 // @ts-check
-const { test, expect } = require('../playwrightWithFixtures');
+const { test, expect } = require('@playwright/test');
+
 const { HomePage } = require('../register/models/Home');
 const { SwapPage } = require('../swap/models/Swap');
 const { SendMoneyPage } = require('../transfer-tokens/models/SendMoney');

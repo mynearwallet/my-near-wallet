@@ -1,6 +1,7 @@
 // @ts-check
+const { test, expect } = require('@playwright/test');
+
 const { LoginPage } = require('./models/Login');
-const { test, expect } = require('../playwrightWithFixtures');
 const { HomePage } = require('../register/models/Home');
 const { getEnvTestAccount } = require('../utils/account');
 const { testDappURL } = require('../utils/config');

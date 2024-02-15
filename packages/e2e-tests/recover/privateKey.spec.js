@@ -1,5 +1,6 @@
 // @ts-check
-const { test, expect } = require('../playwrightWithFixtures');
+const { test, expect } = require('@playwright/test');
+
 const { getEnvTestAccount } = require('../utils/account');
 const { getKeyPairFromSeedPhrase } = require('../utils/helpers');
 const { createPassword } = require('../utils/password');

@@ -49,7 +49,6 @@ describe('Swap NEP141 with NEP141', () => {
     });
 
     afterAll(async () => {
-        await homePage.close();
         await swapPage.close();
         await account.delete();
     });
