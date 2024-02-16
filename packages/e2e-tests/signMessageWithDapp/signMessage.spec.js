@@ -1,16 +1,17 @@
 // @ts-check
-const { test, expect } = require('../playwrightWithFixtures');
+const { test, expect } = require('@playwright/test');
+
 const { HomePage } = require('../register/models/Home');
+const { getEnvTestAccount } = require('../utils/account');
 const guestbookURL = 'http://localhost:4200';
 
-const { describe, beforeAll, afterAll, beforeEach } = test;
+const { describe, beforeAll, beforeEach } = test;
 
 describe('sign message with guestbook', () => {
     let testAccount;
 
-    beforeAll(async ({ bankAccount }) => {
-        testAccount = await bankAccount.spawnRandomSubAccountInstance();
-        await testAccount.create();
+    beforeAll(async () => {
+        testAccount = await getEnvTestAccount();
     });
 
     beforeEach(async ({ page }) => {
@@ -20,10 +21,6 @@ describe('sign message with guestbook', () => {
             testAccount.accountId,
             testAccount.seedPhrase
         );
-    });
-
-    afterAll(async () => {
-        await testAccount.delete();
     });
 
     test('navigates back to guestbook after sign message', async ({ page }) => {

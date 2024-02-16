@@ -1,19 +1,16 @@
 // @ts-check
-const { test, expect } = require('../playwrightWithFixtures');
+const { test, expect } = require('@playwright/test');
+
+const { getEnvTestAccount } = require('../utils/account');
 const { createPassword } = require('../utils/password');
 
-const { describe, beforeAll, afterAll } = test;
+const { describe, beforeAll } = test;
 
 describe('Account Recovery Using Seed Phrase', () => {
     let testAccount;
 
-    beforeAll(async ({ bankAccount }) => {
-        testAccount = bankAccount.spawnRandomSubAccountInstance();
-        await testAccount.create();
-    });
-
-    afterAll(async () => {
-        await testAccount.delete();
+    beforeAll(async () => {
+        testAccount = await getEnvTestAccount();
     });
 
     test('navigates to seed phrase page successfully', async ({ page }) => {

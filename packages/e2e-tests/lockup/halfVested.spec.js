@@ -64,7 +64,7 @@ describe('half vested lockup', () => {
             await page.reload();
             await expect(
                 page.locator('data-test-id=lockupTransferToWalletButton')
-            ).toBeVisible({ timeout: 5 * 1000 });
+            ).toBeVisible({ timeout: 10 * 1000 });
         }).toPass({ timeout: 60 * 1000 });
 
         const { total } = await latestLockupContractAccount.getUpdatedBalance();

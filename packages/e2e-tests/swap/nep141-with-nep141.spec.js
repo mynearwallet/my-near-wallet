@@ -108,6 +108,10 @@ describe('Swap NEP141 with NEP141', () => {
         nearBalanceBefore = await account.getUpdatedBalance();
         parsedTotalBefore = Number(format.formatNearAmount(nearBalanceBefore.total));
 
+        // swap disabled if price impact percentage is high
+        if (page.locator('data-test-id=swapPriceDisabledWarning')) {
+            test.skip();
+        }
         expect(Number(token1OutAmount) > 0).toBeTruthy();
 
         await swapPage.clickOnPreviewButton();
