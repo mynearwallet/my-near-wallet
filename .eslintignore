@@ -2,4 +2,3 @@ node_modules/
 .husky/
 build/
 dist/
-.eslintrc.js
