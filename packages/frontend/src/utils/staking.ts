@@ -1,10 +1,11 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 
+import { EpochValidatorInfo } from 'near-api-js/lib/providers/provider';
 import { wallet } from './wallet';
 import CONFIG from '../config';
 import { listStakingDeposits } from '../services/indexer';
-import { nearTo } from '../utils/amounts';
+import { nearTo } from './amounts';
 
 const {
     utils: {
@@ -136,4 +137,42 @@ export const calculateAPY = (poolSummary, tokenPrices) => {
         console.error('Error during calculating APY', e);
         return '-';
     }
+};
+
+function getUniqueAccountIdsFromEpochValidatorInfo(
+    epochValidatorInfo: EpochValidatorInfo
+): string[] {
+    try {
+        const allAccountIds: string[] = [];
+        // Extract account IDs from each key and concatenate them
+        allAccountIds.push(
+            ...epochValidatorInfo.current_proposals.map(
+                (validator) => validator.account_id
+            ),
+            ...epochValidatorInfo.current_validators.map(
+                (validator) => validator.account_id
+            ),
+            ...epochValidatorInfo.next_validators.map(
+                (validator) => validator.account_id
+            ),
+            ...epochValidatorInfo.prev_epoch_kickout.map(
+                (validator) => validator.account_id
+            )
+        );
+
+        // Convert the concatenated array into a Set to remove duplicates
+        const uniqueAccountIdsSet = new Set(allAccountIds);
+        return Array.from(uniqueAccountIdsSet);
+    } catch (error) {
+        console.error('Error in getUniqueAccountIdsFromEpochValidatorInfo: ', error);
+        return [];
+    }
+}
+
+const getRecentEpochValidators = async () => {
+    return await wallet.connection.provider.validators(null);
+};
+export const getValidatorIdsFromRpc = async (): Promise<string[]> => {
+    const validatorsList = await getRecentEpochValidators();
+    return getUniqueAccountIdsFromEpochValidatorInfo(validatorsList);
 };
