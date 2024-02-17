@@ -4,25 +4,32 @@ import { NearBlocksTxnsResponse } from './type';
 import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
+import { fetchWithTimeout } from '../../utils/request';
 
 export default {
     listAccountsByPublicKey: (publicKey) => {
         return Promise.all([
-            fetch(`${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}/accounts`, {
-                headers: {
-                    ...CUSTOM_REQUEST_HEADERS,
-                },
-            })
+            fetchWithTimeout(
+                `${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}/accounts`,
+                {
+                    headers: {
+                        ...CUSTOM_REQUEST_HEADERS,
+                    },
+                }
+            )
                 .then((res) => res.json())
                 .catch((err) => {
                     console.warn('Error fetching accounts from kitwallet indexer', err);
                     return [];
                 }),
-            fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
-                headers: {
-                    accept: '*/*',
-                },
-            })
+            fetchWithTimeout(
+                `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`,
+                {
+                    headers: {
+                        accept: '*/*',
+                    },
+                }
+            )
                 .then((res) => res.json())
                 .then((res) => res.keys.map((key) => key.account_id))
                 .catch((err) => {

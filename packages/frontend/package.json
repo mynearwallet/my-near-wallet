@@ -14,7 +14,7 @@
         "build": "yarn run bundle && yarn run sentry",
         "bundle": "cross-env NODE_ENV=production node ci/runBundler.js",
         "check": "tsc --noEmit",
-        "dev": "yarn && cross-env NEAR_WALLET_ENV=testnet REACT_APP_USE_TESTINGLOCKUP=true yarn start",
+        "dev": "yarn && cross-env NEAR_WALLET_ENV=mainnet REACT_APP_USE_TESTINGLOCKUP=true yarn start",
         "dev:mainnet": "yarn && cross-env NEAR_WALLET_ENV=mainnet REACT_APP_USE_TESTINGLOCKUP=true yarn start:mainnet",
         "sentry": "node ci/sentry-send-release.js",
         "test": "jest",
