@@ -31,22 +31,6 @@ module.exports = {
         'no-extra-semi': 'off',
         'no-irregular-whitespace': 'off',
         'import/named': ['error', 'always'],
-        'import/order': [
-            'error',
-            {
-                alphabetize: {
-                    order: 'asc',
-                    caseInsensitive: true,
-                },
-                'newlines-between': 'always',
-                groups: [
-                    'builtin',
-                    ['external', 'internal'],
-                    ['sibling', 'parent', 'index'],
-                    'object',
-                ],
-            },
-        ],
         'max-statements-per-line': ['error', { max: 1 }],
         'no-process-env': ['error'],
         'no-restricted-globals': [
