@@ -14,6 +14,7 @@ export default {
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: false,
     INDEXER_SERVICE_URL: 'https://testnet-api.kitwallet.app',
     INDEXER_NEARBLOCK_SERVICE_URL: 'https://api-testnet.nearblocks.io',
+    INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL: 'https://api-testnet.nearblocks.io',
     LINKDROP_GAS: '100000000000000',
     LOCKUP_ACCOUNT_ID_SUFFIX: 'lockup.m0',
     MIN_BALANCE_FOR_GAS: nearApiJs.utils.format.parseNearAmount('0.05'),
