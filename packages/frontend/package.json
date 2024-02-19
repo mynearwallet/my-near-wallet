@@ -39,6 +39,7 @@
         "@headlessui/react": "^1.7.16",
         "@ledgerhq/hw-transport-u2f": "^5.34.0",
         "@meteorwallet/meteor-near-sdk": "3.3.0",
+        "@mintbase-js/data": "^0.5.5-beta.2",
         "@near-wallet-selector/account-export": "^7.6.1",
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/browser": "^6.4.1",
@@ -51,6 +52,8 @@
         "dayjs": "^1.11.10",
         "escape-html": "^1.0.3",
         "fetch-send-json": "0.0.2",
+        "graphql": "^16.8.1",
+        "graphql-request": "^6.1.0",
         "i18next": "^22.0.4",
         "js-sha256": "^0.9.0",
         "lodash.assign": "^4.2.0",
@@ -148,5 +151,8 @@
         "ts-jest": "^29.1.0",
         "typescript": "^5.0.4",
         "webpack": "^5.80.0"
+    },
+    "@parcel/resolver-default": {
+        "packageExports": true
     }
 }
