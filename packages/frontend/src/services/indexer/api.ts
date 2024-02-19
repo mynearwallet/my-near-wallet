@@ -4,58 +4,78 @@ import { NearBlocksTxnsResponse } from './type';
 import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
-import { fetchWithTimeout, timeout } from '../../utils/request';
 import { accountsByPublicKey } from '@mintbase-js/data';
 
 export default {
-    listAccountsByPublicKey: (publicKey) => {
-        return Promise.all([
-            fetchWithTimeout(
-                `${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}/accounts`,
-                {
+    listAccountsByPublicKey: (publicKey): Promise<string[]> => {
+        return new Promise(async (masterResolve, masterReject) => {
+            const masterController = new AbortController();
+
+            const promises = [
+                fetch(`${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}/accounts`, {
                     headers: {
                         ...CUSTOM_REQUEST_HEADERS,
                     },
-                },
-                30000
-            )
-                .then((res) => res.json())
-                .catch((err) => {
-                    console.warn('Error fetching accounts from kitwallet indexer', err);
-                    return [];
-                }),
-            fetchWithTimeout(
-                `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`,
-                {
+                    signal: masterController.signal,
+                })
+                    .then((res) => res.json())
+                    .catch((err) => {
+                        console.warn('kitwallet fetch error', err);
+                        return [];
+                    }),
+                fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
                     headers: {
                         accept: '*/*',
                     },
-                },
-                30000
-            )
-                .then((res) => res.json())
-                .then((res) => res.keys.map((key) => key.account_id))
-                .catch((err) => {
-                    console.warn('Error fetching accounts from nearblock', err);
-                    return [];
-                }),
-            timeout(
-                30000,
+                    signal: masterController.signal,
+                })
+                    .then((res) => res.json())
+                    .then((res) => res.keys.map((key) => key.account_id))
+                    .catch((err) => {
+                        console.warn('nearblocks fetch error', err);
+                        return [];
+                    }),
+                fetch(
+                    `${CONFIG.INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL}/v1/keys/${publicKey}`,
+                    {
+                        headers: {
+                            accept: '*/*',
+                        },
+                        signal: masterController.signal,
+                    }
+                )
+                    .then((res) => res.json())
+                    .then((res) => res.keys.map((key) => key.account_id))
+                    .catch((err) => {
+                        console.warn('nearblocks experimental fetch error', err);
+                        return [];
+                    }),
                 accountsByPublicKey(publicKey, CONFIG.IS_MAINNET ? 'mainnet' : 'testnet')
-            )
-                .then((res) => res.data ?? [])
-                .catch((err) => {
-                    console.warn('Error fetching accounts from mintbase', err);
-                    return [];
-                }),
-        ]).then(([accounts, accountsFromNearblock, accountsFromMintbase]) => {
-            return [
-                ...new Set([
-                    ...accounts,
-                    ...accountsFromNearblock,
-                    ...accountsFromMintbase,
-                ]),
+                    .then((res) => res.data ?? [])
+                    .catch((err) => {
+                        console.warn('mintbase fetch error', err);
+                        return [];
+                    }),
             ];
+
+            const results = await Promise.all(
+                promises.map((promise) =>
+                    promise.then((data) => {
+                        if (data.length === 0) {
+                            return data;
+                        }
+
+                        masterController.abort();
+                        masterResolve(data);
+                    })
+                )
+            );
+
+            const flattenResults = results.flat();
+
+            if (flattenResults.length === 0) {
+                masterReject(new Error('No accounts found'));
+            }
         });
     },
     listLikelyNfts: (accountId, timestamp) => {
