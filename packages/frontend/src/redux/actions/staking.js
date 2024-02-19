@@ -6,7 +6,6 @@ import { createActions } from 'redux-actions';
 import { getBalance } from './account';
 import CONFIG from '../../config';
 import { fungibleTokensService } from '../../services/FungibleTokens';
-import { listStakingPools } from '../../services/indexer';
 import StakingFarmContracts from '../../services/StakingFarmContracts';
 import {
     getLockupAccountId,
@@ -530,9 +529,12 @@ export const { staking } = createActions({
                     wallet.connection.provider.connection.url.indexOf(MAINNET) > -1
                         ? MAINNET
                         : TESTNET;
-                const allStakingPools = await listStakingPools();
+                // const allStakingPools = await listStakingPools();
                 const prefix = getValidatorRegExp(networkId);
-                accountIds = [...new Set([...rpcValidators, ...allStakingPools])].filter(
+                // accountIds = [...new Set([...rpcValidators, ...allStakingPools])].filter(
+                //     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
+                // );
+                accountIds = [...new Set(rpcValidators)].filter(
                     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
                 );
             }
