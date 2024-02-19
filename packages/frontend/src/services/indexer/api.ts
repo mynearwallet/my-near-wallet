@@ -39,13 +39,18 @@ export default {
                     console.warn('Error fetching accounts from nearblock', err);
                     return [];
                 }),
-            accountsByPublicKey(publicKey, CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'),
-        ]).then(([accounts, accountsFromNearblock, mintbaseResponse]) => {
+            accountsByPublicKey(publicKey, CONFIG.IS_MAINNET ? 'mainnet' : 'testnet')
+                .then(res => res.data)
+                .catch((err) => {
+                    console.warn('Error fetching accounts from mintbase', err);
+                    return [];
+                }),
+        ]).then(([accounts, accountsFromNearblock, accountsFromMintbase]) => {
             return [
                 ...new Set([
                     ...accounts,
                     ...accountsFromNearblock,
-                    ...mintbaseResponse.data,
+                    ...accountsFromMintbase,
                 ]),
             ];
         });
