@@ -17,7 +17,12 @@ export default {
                         ...CUSTOM_REQUEST_HEADERS,
                     },
                     signal: masterController.signal,
-                }).then((res) => res.json()),
+                })
+                    .then((res) => res.json())
+                    .catch((err) => {
+                        console.warn('kitwallet fetch error', err);
+                        return [];
+                    }),
                 fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
                     headers: {
                         accept: '*/*',
@@ -25,7 +30,11 @@ export default {
                     signal: masterController.signal,
                 })
                     .then((res) => res.json())
-                    .then((res) => res.keys.map((key) => key.account_id)),
+                    .then((res) => res.keys.map((key) => key.account_id))
+                    .catch((err) => {
+                        console.warn('nearblocks fetch error', err);
+                        return [];
+                    }),
                 fetch(
                     `${CONFIG.INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL}/v1/keys/${publicKey}`,
                     {
@@ -36,11 +45,17 @@ export default {
                     }
                 )
                     .then((res) => res.json())
-                    .then((res) => res.keys.map((key) => key.account_id)),
-                accountsByPublicKey(
-                    publicKey,
-                    CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
-                ).then((res) => res.data ?? []),
+                    .then((res) => res.keys.map((key) => key.account_id))
+                    .catch((err) => {
+                        console.warn('nearblocks experimental fetch error', err);
+                        return [];
+                    }),
+                accountsByPublicKey(publicKey, CONFIG.IS_MAINNET ? 'mainnet' : 'testnet')
+                    .then((res) => res.data ?? [])
+                    .catch((err) => {
+                        console.warn('mintbase fetch error', err);
+                        return [];
+                    }),
             ];
 
             const results = await Promise.all(
