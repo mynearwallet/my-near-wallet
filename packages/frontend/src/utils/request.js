@@ -12,7 +12,7 @@ export const retryRequestIfFailed = async (callback, { attempts = 1, delay = 100
 };
 
 // Function to implement a timeout
-function timeout(ms, promise) {
+export function timeout(ms, promise) {
     return new Promise((resolve, reject) => {
         const timer = setTimeout(() => {
             reject(new Error('Timeout after ' + ms + ' ms')); // Rejects the promise after timeout

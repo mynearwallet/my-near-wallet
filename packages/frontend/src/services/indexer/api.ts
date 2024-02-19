@@ -4,7 +4,7 @@ import { NearBlocksTxnsResponse } from './type';
 import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
-import { fetchWithTimeout } from '../../utils/request';
+import { fetchWithTimeout, timeout } from '../../utils/request';
 import { accountsByPublicKey } from '@mintbase-js/data';
 
 export default {
@@ -17,7 +17,7 @@ export default {
                         ...CUSTOM_REQUEST_HEADERS,
                     },
                 },
-                10000
+                30000
             )
                 .then((res) => res.json())
                 .catch((err) => {
@@ -31,7 +31,7 @@ export default {
                         accept: '*/*',
                     },
                 },
-                10000
+                30000
             )
                 .then((res) => res.json())
                 .then((res) => res.keys.map((key) => key.account_id))
@@ -39,8 +39,11 @@ export default {
                     console.warn('Error fetching accounts from nearblock', err);
                     return [];
                 }),
-            accountsByPublicKey(publicKey, CONFIG.IS_MAINNET ? 'mainnet' : 'testnet')
-                .then(res => res.data)
+            timeout(
+                30000,
+                accountsByPublicKey(publicKey, CONFIG.IS_MAINNET ? 'mainnet' : 'testnet')
+            )
+                .then((res) => res.data ?? [])
                 .catch((err) => {
                     console.warn('Error fetching accounts from mintbase', err);
                     return [];
