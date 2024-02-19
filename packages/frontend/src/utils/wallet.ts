@@ -6,7 +6,6 @@ import * as nearApiJs from 'near-api-js';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { decorateWithLockup } from './account-with-lockup';
-import { getAccessKeysDataLoader } from './cache/accessKeysDataLoader';
 import {
     removeAllAccountsPrivateKey,
     retrieveAllAccountsPrivateKey,
@@ -420,8 +419,18 @@ export default class Wallet {
 
     // TODO: Figure out whether wallet should work with any account or current one.
     // Maybe make wallet account specific and switch whole Wallet?
-    getAccessKeys(accountId = this.accountId) {
-        return getAccessKeysDataLoader().load(accountId);
+    async getAccessKeys(accountId = this.accountId) {
+        if (!accountId) {
+            return null;
+        }
+
+        const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
+        return Promise.all(
+            accessKeys.map(async (accessKey) => ({
+                ...accessKey,
+                meta: await getKeyMeta(accessKey.public_key),
+            }))
+        );
     }
 
     async getPublicKeyType(accountId, publicKeyString) {
