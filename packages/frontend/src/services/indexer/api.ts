@@ -25,7 +25,7 @@ export default {
                     return [];
                 }),
             fetchWithTimeout(
-                `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`,
+                `${CONFIG.INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL}/v1/keys/${publicKey}`,
                 {
                     headers: {
                         accept: '*/*',
