@@ -5,6 +5,7 @@ import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
 import { fetchWithTimeout } from '../../utils/request';
+import { accountsByPublicKey } from '@mintbase-js/data';
 
 export default {
     listAccountsByPublicKey: (publicKey) => {
@@ -38,9 +39,21 @@ export default {
                     console.warn('Error fetching accounts from nearblock', err);
                     return [];
                 }),
-        ]).then(([accounts, accountsFromNearblock]) => [
-            ...new Set([...accounts, ...accountsFromNearblock]),
-        ]);
+            accountsByPublicKey(publicKey, CONFIG.IS_MAINNET ? 'mainnet' : 'testnet')
+                .then(res => res.data)
+                .catch((err) => {
+                    console.warn('Error fetching accounts from mintbase', err);
+                    return [];
+                }),
+        ]).then(([accounts, accountsFromNearblock, accountsFromMintbase]) => {
+            return [
+                ...new Set([
+                    ...accounts,
+                    ...accountsFromNearblock,
+                    ...accountsFromMintbase,
+                ]),
+            ];
+        });
     },
     listLikelyNfts: (accountId, timestamp) => {
         const url = `${CONFIG.INDEXER_SERVICE_URL}/account/${accountId}/likelyNFTsFromBlock`;

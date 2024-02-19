@@ -39,5 +39,8 @@
   },
   "resolutions": {
     "node-gyp": "9.3.1"
+  },
+  "@parcel/resolver-default": {
+    "packageExports": true
   }
 }
