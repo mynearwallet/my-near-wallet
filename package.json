@@ -11,6 +11,7 @@
     "storybook": "cd packages/frontend && yarn storybook",
     "test": "cd packages/frontend && yarn install --frozen-lockfile && yarn test",
     "dev": "cd packages/frontend && yarn install --frozen-lockfile && yarn dev",
+    "dev:statelessnet": "cd packages/frontend && yarn install --frozen-lockfile && yarn dev:statelessnet",
     "dev:mainnet": "cd packages/frontend && yarn install --frozen-lockfile && yarn dev:mainnet",
     "guestbook": "cd packages/guestbook && yarn install --frozen-lockfile && yarn dev",
     "test:e2e": "cd packages/e2e-tests && yarn e2e",
