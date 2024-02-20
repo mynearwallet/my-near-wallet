@@ -2,7 +2,7 @@ import * as nearApiJs from 'near-api-js';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
 export default {
-    ACCOUNT_HELPER_URL: 'https://preflight-api.kitwallet.app',
+    ACCOUNT_HELPER_URL: 'https://testnet-api.kitwallet.app',
     ACCOUNT_ID_SUFFIX: 'testnet',
     ACCESS_KEY_FUNDING_AMOUNT: nearApiJs.utils.format.parseNearAmount('0.25'),
     BROWSER_MIXPANEL_TOKEN: '778bd24eec7329cf885f0cecfc3d4f5d',
@@ -12,8 +12,9 @@ export default {
     EXPLORER_URL: 'https://testnet.nearblocks.io',
     GLEAP_FRONTEND_API_KEY: 'Pc07nwsDmsVoWYJJj9BgES87xE7RCW74',
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: false,
-    INDEXER_SERVICE_URL: 'https://preflight-api.kitwallet.app',
+    INDEXER_SERVICE_URL: 'https://testnet-api.kitwallet.app',
     INDEXER_NEARBLOCK_SERVICE_URL: 'https://api-testnet.nearblocks.io',
+    INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL: 'https://api-testnet.nearblocks.io',
     LINKDROP_GAS: '100000000000000',
     LOCKUP_ACCOUNT_ID_SUFFIX: 'lockup.m0',
     MIN_BALANCE_FOR_GAS: nearApiJs.utils.format.parseNearAmount('0.05'),
@@ -37,6 +38,7 @@ export default {
     MULTISIG_MIN_AMOUNT: '4',
     NETWORK_ID: 'default',
     NODE_URL: 'https://rpc.testnet.near.org',
+    NODE_ARCHIVAL_URL: 'https://archival-rpc.testnet.near.org',
     REACT_APP_USE_TESTINGLOCKUP: false,
     SENTRY_DSN:
         'https://75d1dabd0ab646329fad8a3e7d6c761d@o398573.ingest.sentry.io/5254526',

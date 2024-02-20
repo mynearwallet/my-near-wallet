@@ -52,6 +52,7 @@ class ParcelBundler {
             defaultConfig: '@parcel/config-default',
             cacheDir: CACHE_PATH,
             defaultTargetOptions: {
+                shouldScopeHoist: false,
                 shouldOptimize: !this.isDevelopment,
                 distDir: this.distDir,
                 sourceMaps: false,

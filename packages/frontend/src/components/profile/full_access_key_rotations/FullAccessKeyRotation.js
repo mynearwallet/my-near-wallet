@@ -63,10 +63,12 @@ const Container = styled.div`
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             span {
                 :first-of-type {
                     color: #72727a;
                 }
+
                 :last-of-type {
                     color: #272729;
                     font-weight: 600;
@@ -81,7 +83,7 @@ const Link = styled.div`
     a {
         display: block;
         width: 100%;
-        text-align: center;
+        text-align: left;
         text-decoration: underline;
         @media (max-width: 992px) {
             text-align: start;
@@ -317,6 +319,10 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                     </div>
                     <div className='desc mt-4'>
                         <Translate id='fullAccessKeys.deAuthorizeConfirm.seedPhrasePrompt' />
+                        <span className='text-red-700'>
+                            &nbsp;We're still working on making the feature compatible
+                            with Ledger hardware wallets. Hang tight!
+                        </span>
                     </div>
                     <form
                         onSubmit={(e) => {
@@ -391,6 +397,10 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                     </div>
                     <div className='desc mt-4'>
                         <Translate id='fullAccessKeys.rotateKey.seedPhrasePrompt' />
+                        <span className='text-red-700'>
+                            &nbsp;We're still working on making the feature compatible
+                            with Ledger hardware wallets. Hang tight!
+                        </span>
                     </div>
                     <form
                         onSubmit={(e) => {
@@ -567,25 +577,43 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                     <div className='key font-monospace mt-4'>
                         {fullAccessKey.public_key}
                     </div>
-                    <hr />
-                    <div className='fee'>
-                        <span>
+                    {transactionHash && <hr /> && (
+                        <div className='fee mt-3' style={{ fontWeight: 'bold' }}>
                             <Translate id='fullAccessKeys.transaction' />
-                        </span>
-                        <Link>
-                            <a
-                                href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
-                                target='_blank'
-                                rel='noreferrer'
-                            >
-                                {transactionHash}
-                            </a>
-                        </Link>
-                    </div>
-                    <div className='text-gray-500 text-sm mt-1'>
-                        <Translate id='fullAccessKeys.createdAt' />
-                        &nbsp;{createdAt.toLocaleString()}
-                    </div>
+                        </div>
+                    )}
+                    {transactionHash && (
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                            }}
+                        >
+                            <Link className='mt-1'>
+                                <a
+                                    href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
+                                    target='_blank'
+                                    rel='noreferrer'
+                                >
+                                    {transactionHash.length > 15
+                                        ? transactionHash
+                                              .substring(0, 6)
+                                              .concat(
+                                                  '...',
+                                                  transactionHash.substring(
+                                                      transactionHash.length - 6
+                                                  )
+                                              )
+                                        : transactionHash}
+                                </a>
+                            </Link>
+                            <div className='text-gray-500 text-sm'>
+                                <Translate id='fullAccessKeys.createdAt' />
+                                &nbsp;{createdAt.toLocaleString()}
+                            </div>
+                        </div>
+                    )}
                 </>
             )}
         </Container>

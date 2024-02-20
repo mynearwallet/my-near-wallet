@@ -39,6 +39,7 @@
         "@headlessui/react": "^1.7.16",
         "@ledgerhq/hw-transport-u2f": "^5.34.0",
         "@meteorwallet/meteor-near-sdk": "3.3.0",
+        "@mintbase-js/data": "^0.5.5-beta.2",
         "@near-wallet-selector/account-export": "^7.6.1",
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/browser": "^6.4.1",
@@ -48,8 +49,11 @@
         "calimero-wallet-utils": "^0.0.1",
         "connected-react-router": "^6.6.0",
         "dataloader": "^2.1.0",
+        "dayjs": "^1.11.10",
         "escape-html": "^1.0.3",
         "fetch-send-json": "0.0.2",
+        "graphql": "^16.8.1",
+        "graphql-request": "^6.1.0",
         "i18next": "^22.0.4",
         "js-sha256": "^0.9.0",
         "lodash.assign": "^4.2.0",
@@ -65,6 +69,7 @@
         "lodash.once": "^4.1.1",
         "lodash.set": "^4.3.2",
         "lodash.throttle": "^4.1.1",
+        "lodash.uniqby": "^4.7.0",
         "lodash.unset": "^4.5.2",
         "lodash.update": "^4.10.2",
         "mixpanel-browser": "^2.41.0",
@@ -82,6 +87,7 @@
         "react-google-recaptcha-v3-near": "^2.0.0",
         "react-helmet": "^6.1.0",
         "react-i18next": "^12.0.0",
+        "react-infinite-scroller": "^1.2.6",
         "react-localize-redux": "^3.5.3",
         "react-phone-number-input": "2.3.11",
         "react-query": "^3.39.3",
@@ -145,5 +151,8 @@
         "ts-jest": "^29.1.0",
         "typescript": "^5.0.4",
         "webpack": "^5.80.0"
+    },
+    "@parcel/resolver-default": {
+        "packageExports": true
     }
 }

@@ -20,6 +20,7 @@ import recoveryMethodsSlice from '../slices/recoveryMethods';
 import security from '../slices/security';
 import swapSlice from '../slices/swap';
 import tokenFiatValuesSlice from '../slices/tokenFiatValues';
+import transactionHistorySlice from '../slices/transactionHistory';
 import transactionsSlice from '../slices/transactions';
 
 export default (history) => ({
@@ -38,10 +39,11 @@ export default (history) => ({
     [security.name]: security.reducer,
     [nftSlice.name]: nftSlice.reducer,
     [linkdropSlice.name]: linkdropSlice.reducer,
-    [transactionsSlice.name]: transactionsSlice.reducer,
     [flowLimitationSlice.name]: flowLimitationSlice.reducer,
     [createFromImplicitSlice.name]: createFromImplicitSlice.reducer,
     [importZeroBalanceAccountSlice.name]: importZeroBalanceAccountSlice.reducer,
+    [transactionsSlice.name]: transactionsSlice.reducer,
+    [transactionHistorySlice.name]: transactionHistorySlice.reducer,
     [recoveryMethodsSlice.name]: recoveryMethodsSlice.reducer,
     [availableAccountsSlice.name]: availableAccountsSlice.reducer,
     [ledgerSlice.name]: ledgerSlice.reducer,

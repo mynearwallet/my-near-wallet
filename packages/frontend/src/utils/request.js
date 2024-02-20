@@ -10,3 +10,28 @@ export const retryRequestIfFailed = async (callback, { attempts = 1, delay = 100
 
     return;
 };
+
+// Function to implement a timeout
+export function timeout(ms, promise) {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+            reject(new Error('Timeout after ' + ms + ' ms')); // Rejects the promise after timeout
+        }, ms);
+
+        promise.then(
+            (res) => {
+                clearTimeout(timer);
+                resolve(res);
+            },
+            (err) => {
+                clearTimeout(timer);
+                reject(err);
+            }
+        );
+    });
+}
+
+// Function to fetch with a timeout
+export function fetchWithTimeout(url, options, timeoutMs = 5000) {
+    return timeout(timeoutMs, fetch(url, options));
+}

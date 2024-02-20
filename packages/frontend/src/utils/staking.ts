@@ -1,10 +1,10 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
-
+import { EpochValidatorInfo } from 'near-api-js/lib/providers/provider';
+import { nearTo } from './amounts';
 import { wallet } from './wallet';
+
 import CONFIG from '../config';
-import { listStakingDeposits } from '../services/indexer';
-import { nearTo } from '../utils/amounts';
 
 const {
     utils: {
@@ -81,11 +81,34 @@ export async function updateStakedBalance(validatorId, account_id, contract) {
     );
 }
 
-export async function getStakingDeposits(accountId) {
-    const stakingDeposits = await listStakingDeposits(accountId);
+export async function getStakingDeposits(accountId: string) {
+    // NOTE: Disabling this and replacing it with RPC methods now since indexer is not reliable
+    // const stakingDeposits = await listStakingDeposits(accountId);
+
+    const validatorIds = await getValidatorIdsFromRpc();
+    let validatorWithBalance = await Promise.all(
+        validatorIds.map(async (validatorId) => {
+            const account = wallet.getAccountBasic(accountId);
+            const balance = await account.viewFunction(
+                validatorId,
+                'get_account_total_balance',
+                {
+                    account_id: accountId,
+                }
+            );
+            return { validator_id: validatorId, deposit: balance } as {
+                validator_id: string;
+                deposit: string;
+            };
+        })
+    );
+
+    validatorWithBalance = validatorWithBalance.filter((validator) => {
+        return validator.deposit !== '0';
+    });
 
     const validatorDepositMap = {};
-    stakingDeposits.forEach(({ validator_id, deposit }) => {
+    validatorWithBalance.forEach(({ validator_id, deposit }) => {
         validatorDepositMap[validator_id] = deposit;
     });
 
@@ -136,4 +159,42 @@ export const calculateAPY = (poolSummary, tokenPrices) => {
         console.error('Error during calculating APY', e);
         return '-';
     }
+};
+
+function getUniqueAccountIdsFromEpochValidatorInfo(
+    epochValidatorInfo: EpochValidatorInfo
+): string[] {
+    try {
+        const allAccountIds: string[] = [];
+        // Extract account IDs from each key and concatenate them
+        allAccountIds.push(
+            ...epochValidatorInfo.current_proposals.map(
+                (validator) => validator.account_id
+            ),
+            ...epochValidatorInfo.current_validators.map(
+                (validator) => validator.account_id
+            ),
+            ...epochValidatorInfo.next_validators.map(
+                (validator) => validator.account_id
+            ),
+            ...epochValidatorInfo.prev_epoch_kickout.map(
+                (validator) => validator.account_id
+            )
+        );
+
+        // Convert the concatenated array into a Set to remove duplicates
+        const uniqueAccountIdsSet = new Set(allAccountIds);
+        return Array.from(uniqueAccountIdsSet);
+    } catch (error) {
+        console.error('Error in getUniqueAccountIdsFromEpochValidatorInfo: ', error);
+        return [];
+    }
+}
+
+const getRecentEpochValidators = async () => {
+    return await wallet.connection.provider.validators(null);
+};
+export const getValidatorIdsFromRpc = async (): Promise<string[]> => {
+    const validatorsList = await getRecentEpochValidators();
+    return getUniqueAccountIdsFromEpochValidatorInfo(validatorsList);
 };

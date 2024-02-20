@@ -3,11 +3,6 @@ import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/c
 import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
-import { MULTISIG_CHANGE_METHODS } from 'near-api-js/lib/account_multisig';
-import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
-import { Action, SignedTransaction } from 'near-api-js/lib/transaction';
-import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
-import { KeyType } from 'near-api-js/lib/utils/key_pair';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { decorateWithLockup } from './account-with-lockup';
@@ -100,8 +95,8 @@ const {
 class FundingAccount extends nearApiJs.Account {
     async signButDontSendTransaction(
         receiverId: string,
-        actions: Action[]
-    ): Promise<[Uint8Array, SignedTransaction]> {
+        actions: nearApiJs.transactions.Action[]
+    ): Promise<[Uint8Array, nearApiJs.transactions.SignedTransaction]> {
         return await this.signTransaction(receiverId, actions);
     }
 }
@@ -134,7 +129,7 @@ export async function getKeyMeta(publicKey) {
 export default class Wallet {
     accountId;
     accounts;
-    connection;
+    connection: nearApiJs.Connection;
     connectionIgnoringLedger;
     keyStore;
     signer;
@@ -309,7 +304,7 @@ export default class Wallet {
                     !this.isMultisigKeyInfoView(accountId, localKey));
 
             if (ledgerKey && localKeyIsNullOrNonMultisigLAK) {
-                return PublicKey.from(ledgerKey.public_key);
+                return nearApiJs.utils.PublicKey.from(ledgerKey.public_key);
             }
         }
         return null;
@@ -381,6 +376,7 @@ export default class Wallet {
                 authorizedApps: accessKeys.filter(
                     (it) =>
                         it.access_key &&
+                        it.access_key.permission !== 'FullAccess' &&
                         it.access_key.permission.FunctionCall &&
                         it.access_key.permission.FunctionCall.receiver_id !==
                             this.accountId
@@ -406,7 +402,7 @@ export default class Wallet {
         await storedWalletDataActions.setNewEncryptedData({ password, accounts });
 
         removeAllAccountsPrivateKey();
-        this.keyStore = new InMemoryKeyStore();
+        this.keyStore = new nearApiJs.keyStores.InMemoryKeyStore();
         await this.unlockWallet();
     }
 
@@ -429,19 +425,10 @@ export default class Wallet {
         }
 
         const accessKeys = await (await this.getAccount(accountId)).getAccessKeys();
-
         return Promise.all(
             accessKeys.map(async (accessKey) => ({
                 ...accessKey,
                 meta: await getKeyMeta(accessKey.public_key),
-                created:
-                    accessKey.access_key?.permission === 'FullAccess'
-                        ? await fetch(
-                              `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${accessKey.public_key}`
-                          )
-                              .then((res) => res.json())
-                              .then((res) => res.keys[0]?.created)
-                        : null,
             }))
         );
     }
@@ -718,8 +705,8 @@ export default class Wallet {
                 public_key,
             },
         ] = accessKeys;
-        const implicitPublicKey = new PublicKey({
-            keyType: KeyType.ED25519,
+        const implicitPublicKey = new nearApiJs.utils.PublicKey({
+            keyType: nearApiJs.utils.key_pair.KeyType.ED25519,
             data: Buffer.from(fundingAccountId, 'hex'),
         });
 
@@ -741,7 +728,7 @@ export default class Wallet {
         });
 
         const key = (
-            nearApiJs.KeyPair.fromString(fundingKey) as KeyPairEd25519
+            nearApiJs.KeyPair.fromString(fundingKey) as nearApiJs.utils.KeyPairEd25519
         ).publicKey.toString();
 
         const keyInfo = {
@@ -821,7 +808,8 @@ export default class Wallet {
         ]);
         return await getNearRpcClient(
             (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork,
-            this.connection.provider.connection.url
+            (this.connection.provider as nearApiJs.providers.JsonRpcProvider).connection
+                .url
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
@@ -853,7 +841,8 @@ export default class Wallet {
 
         return await getNearRpcClient(
             (CONFIG.IS_MAINNET ? 'mainnet' : 'testnet') as ENearNetwork,
-            this.connection.provider.connection.url
+            (this.connection.provider as nearApiJs.providers.JsonRpcProvider).connection
+                .url
         ).custom_broadcast_tx_async_wait_all_receipts({
             signed_transaction_base64: Buffer.from(signedTx.encode()).toString('base64'),
             sender_account_id: fundingContract,
@@ -998,7 +987,7 @@ export default class Wallet {
                 const isMultisig =
                     has2fa && !methodNames.length && accountId === contractId;
                 const finalMethodNames = isMultisig
-                    ? MULTISIG_CHANGE_METHODS
+                    ? nearApiJs.multisig.MULTISIG_CHANGE_METHODS
                     : methodNames;
                 return await account.addKey(
                     publicKey.toString(),
@@ -1071,9 +1060,9 @@ export default class Wallet {
 
     async disableLedger() {
         const account = await this.getAccount(this.accountId);
-        const keyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
+        const keyPair: nearApiJs.utils.KeyPairEd25519 = nearApiJs.KeyPair.fromRandom(
             'ed25519'
-        ) as KeyPairEd25519;
+        ) as nearApiJs.utils.KeyPairEd25519;
         await account.addKey(keyPair.publicKey);
         await this.keyStore.setKey(CONFIG.NETWORK_ID, this.accountId, keyPair);
 
@@ -1241,7 +1230,10 @@ export default class Wallet {
         }
         this.dispatchShowLedgerModal(true);
         const rawPublicKey = await client.getPublicKey(path);
-        return new PublicKey({ keyType: KeyType.ED25519, data: rawPublicKey });
+        return new nearApiJs.utils.PublicKey({
+            keyType: nearApiJs.utils.key_pair.KeyType.ED25519,
+            data: rawPublicKey,
+        });
     }
 
     async getAvailableKeys() {
@@ -1340,9 +1332,8 @@ export default class Wallet {
     async initializeRecoveryMethodNewImplicitAccount(method) {
         const { seedPhrase } = generateSeedPhrase();
         const { secretKey } = parseSeedPhrase(seedPhrase);
-        const recoveryKeyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromString(
-            secretKey
-        ) as KeyPairEd25519;
+        const recoveryKeyPair: nearApiJs.utils.KeyPairEd25519 =
+            nearApiJs.KeyPair.fromString(secretKey) as nearApiJs.utils.KeyPairEd25519;
         const implicitAccountId = Buffer.from(recoveryKeyPair.publicKey.data).toString(
             'hex'
         );
@@ -1552,9 +1543,9 @@ export default class Wallet {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
-        const keyPair: KeyPairEd25519 = nearApiJs.KeyPair.fromString(
+        const keyPair: nearApiJs.utils.KeyPairEd25519 = nearApiJs.KeyPair.fromString(
             secretKey
-        ) as KeyPairEd25519;
+        ) as nearApiJs.utils.KeyPairEd25519;
         const publicKey = keyPair.publicKey.toString();
 
         const tempKeyStore = new nearApiJs.keyStores.InMemoryKeyStore();
