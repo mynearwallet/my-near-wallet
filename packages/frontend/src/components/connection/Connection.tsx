@@ -147,6 +147,8 @@ export default function ConnectionComponent() {
                         : {
                               id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
                                   ? 'near'
+                                  : CONFIG.NEAR_WALLET_ENV.startsWith('statelessnet')
+                                  ? 'near-statelessnet'
                                   : 'near-testnet',
                           }
                 }

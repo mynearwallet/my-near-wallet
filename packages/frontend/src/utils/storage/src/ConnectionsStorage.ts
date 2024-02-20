@@ -4,7 +4,11 @@ import { RpcProvider, RpcProviderDetail, RpcRotator } from '../../mnw-api-js';
 
 const defaultConnections = [
     {
-        id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet') ? 'near' : 'near-testnet',
+        id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
+            ? 'near'
+            : CONFIG.NEAR_WALLET_ENV.startsWith('statelessnet')
+            ? 'near-statelessnet'
+            : 'near-testnet',
         label: 'Default Connection',
         priority: 10,
     },

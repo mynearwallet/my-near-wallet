@@ -11,7 +11,11 @@ import {
 } from '../../utils/mnw-api-js';
 
 const rpcOptionList = RpcRotator.getRpcOptionList(
-    CONFIG.NEAR_WALLET_ENV.startsWith('mainnet') ? 'mainnet' : 'testnet'
+    CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
+        ? 'mainnet'
+        : CONFIG.NEAR_WALLET_ENV.startsWith('statelessnet')
+        ? 'statelessnet'
+        : 'testnet'
 );
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

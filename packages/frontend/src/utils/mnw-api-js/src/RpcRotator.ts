@@ -9,26 +9,6 @@ const mainnetRpcOptionList: RpcOption[] = [
             url: 'https://rpc.mainnet.near.org/',
         },
     },
-    // {
-    //     id: 'pagoda',
-    //     defaultParams: {
-    //         url: 'https://near-mainnet.api.pagoda.co/rpc/v1/',
-    //     },
-    //     userParams: ['apiKey'],
-    //     generator: ({ url, headers, apiKey }) => ({
-    //         url,
-    //         headers: {
-    //             ...headers,
-    //             'x-api-key': apiKey,
-    //         },
-    //     }),
-    // },
-    // {
-    //     id: 'onerpc',
-    //     defaultParams: {
-    //         url: 'https://1rpc.io/near/',
-    //     },
-    // },
     {
         id: 'ankr',
         defaultParams: {
@@ -85,20 +65,6 @@ const testnetRpcOptionList: RpcOption[] = [
             url: 'https://rpc.testnet.near.org/',
         },
     },
-    // {
-    //     id: 'pagoda-testnet',
-    //     defaultParams: {
-    //         url: 'https://near-testnet.api.pagoda.co/rpc/v1/',
-    //     },
-    //     userParams: ['apiKey'],
-    //     generator: ({ url, headers, apiKey }) => ({
-    //         url,
-    //         headers: {
-    //             ...headers,
-    //             'x-api-key': apiKey,
-    //         },
-    //     }),
-    // },
     {
         id: 'infura-testnet',
         defaultParams: {
@@ -120,9 +86,27 @@ const testnetRpcOptionList: RpcOption[] = [
     },
 ];
 
+const statelessnetRpcOptionList: RpcOption[] = [
+    {
+        id: 'near-statelessnet',
+        defaultParams: {
+            url: 'https://rpc.statelessnet.near.org',
+        },
+    },
+    {
+        id: 'custom-statelessnet',
+        userParams: ['url', 'headers'],
+        generator: ({ url, headers }) => ({
+            url,
+            headers,
+        }),
+    },
+];
+
 const indexedRpcOptions: Record<string, RpcOption> = [
     ...testnetRpcOptionList,
     ...mainnetRpcOptionList,
+    ...statelessnetRpcOptionList,
 ].reduce(
     (
         indexedRpcOptions: Record<string, RpcOption>,
@@ -135,11 +119,15 @@ const indexedRpcOptions: Record<string, RpcOption> = [
 );
 
 export class RpcRotator {
-    static getRpcOptionList(environment: 'mainnet' | 'testnet'): RpcOption[] {
+    static getRpcOptionList(
+        environment: 'mainnet' | 'testnet' | 'statelessnet'
+    ): RpcOption[] {
         if (environment === 'mainnet') {
             return mainnetRpcOptionList;
         } else if (environment === 'testnet') {
             return testnetRpcOptionList;
+        } else if (environment === 'statelessnet') {
+            return statelessnetRpcOptionList;
         }
 
         return testnetRpcOptionList;
