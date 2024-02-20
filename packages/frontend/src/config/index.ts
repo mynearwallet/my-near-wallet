@@ -5,6 +5,7 @@ import mainnet from './environmentDefaults/mainnet';
 import mainnet_STAGING from './environmentDefaults/mainnet_STAGING';
 import testnet from './environmentDefaults/testnet';
 import testnet_STAGING from './environmentDefaults/testnet_STAGING';
+import statelessnet from './environmentDefaults/statelessnet';
 
 const clearEmptyProps = <T>(config: T): T =>
     Object.entries(config).reduce<T>((cfg, [key, value]) => {
@@ -21,6 +22,7 @@ const defaults = {
     [ENVIRONMENT.TESTNET_STAGING]: testnet_STAGING,
     [ENVIRONMENT.MAINNET]: mainnet,
     [ENVIRONMENT.MAINNET_STAGING]: mainnet_STAGING,
+    [ENVIRONMENT.STATELESSNET]: statelessnet,
 }[environmentConfig.NEAR_WALLET_ENV];
 
 const CONFIG = {
