@@ -82,6 +82,7 @@ describe('Swap wrapped NEAR with NEP141', () => {
         await swapPage.clickOnPreviewButton();
         await swapPage.confirmSwap();
         await swapPage.clickOnContinueAfterSwapButton();
+        await page.reload();
 
         let nearBalanceAfter = await account.getUpdatedBalance();
         let parsedTotalAfter = format.formatNearAmount(nearBalanceAfter.total);
