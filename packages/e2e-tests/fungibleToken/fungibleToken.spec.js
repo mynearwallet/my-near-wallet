@@ -61,7 +61,7 @@ describe('Rename FT symbol', () => {
         await swapPage.navigate();
         await swapPage.fillForm({
             inId: 'NEAR',
-            inAmount: '0.5',
+            inAmount: '0.001',
             outId: 'usdt.fakes.testnet',
         });
         await swapPage.clickOnPreviewButton();
