@@ -158,10 +158,29 @@ export const createNewAccount = createAsyncThunk(
                 recaptchaCode: recaptchaToken,
             });
         } else {
-            await sendJson('POST', CONTRACT_CREATE_ACCOUNT_URL, {
-                newAccountId: accountId,
-                newAccountPublicKey: publicKey.toString(),
-            });
+            if (CONFIG.IS_STATELESSNET) {
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+                const params = [];
+                params.push(`account_id=${encodeURIComponent(accountId)}`);
+                params.push(`public_key=${encodeURIComponent(publicKey.toString())}`);
+
+                await fetch(
+                    'https://sw4-account-creator-g55a3i3lmq-ey.a.run.app/create_account',
+                    {
+                        method: 'POST',
+                        headers: headers,
+                        body: params.join('&'),
+                        redirect: 'follow',
+                    }
+                );
+            } else {
+                await sendJson('POST', CONTRACT_CREATE_ACCOUNT_URL, {
+                    newAccountId: accountId,
+                    newAccountPublicKey: publicKey.toString(),
+                });
+            }
         }
 
         // NOTE: wallet.saveAccount is being called multiple times here. But some of them are called
