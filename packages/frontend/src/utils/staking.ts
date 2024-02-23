@@ -88,18 +88,25 @@ export async function getStakingDeposits(accountId: string) {
     const validatorIds = await getValidatorIdsFromRpc();
     let validatorWithBalance = await Promise.all(
         validatorIds.map(async (validatorId) => {
-            const account = wallet.getAccountBasic(accountId);
-            const balance = await account.viewFunction(
-                validatorId,
-                'get_account_total_balance',
-                {
-                    account_id: accountId,
-                }
-            );
-            return { validator_id: validatorId, deposit: balance } as {
-                validator_id: string;
-                deposit: string;
-            };
+            try {
+                const account = wallet.getAccountBasic(accountId);
+                const balance = await account.viewFunction(
+                    validatorId,
+                    'get_account_total_balance',
+                    {
+                        account_id: accountId,
+                    }
+                );
+                return { validator_id: validatorId, deposit: balance } as {
+                    validator_id: string;
+                    deposit: string;
+                };
+            } catch (err) {
+                return {
+                    validator_id: '',
+                    deposit: '0',
+                };
+            }
         })
     );
 

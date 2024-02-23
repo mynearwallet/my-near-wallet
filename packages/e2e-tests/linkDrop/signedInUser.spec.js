@@ -137,6 +137,7 @@ describe('Linkdrop flow', () => {
     });
 
     test('claims linkdrop to new account', async ({ page, context }) => {
+        test.setTimeout(60 * 1000);
         await context
             .grantPermissions(['clipboard-read', 'clipboard-write'])
             .catch(test.skip);

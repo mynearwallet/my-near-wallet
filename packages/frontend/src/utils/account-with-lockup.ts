@@ -242,14 +242,18 @@ async function getAccountBalance(limitedAccountData = false) {
     let stakedBalanceMainAccount = new BN(0);
     await Promise.all(
         stakingDeposits.map(async (validator_id) => {
-            const validatorBalance = new BN(
-                await this.wrappedAccount.viewFunction(
-                    validator_id,
-                    'get_account_total_balance',
-                    { account_id: this.accountId }
-                )
-            );
-            stakedBalanceMainAccount = stakedBalanceMainAccount.add(validatorBalance);
+            try {
+                const validatorBalance = new BN(
+                    await this.wrappedAccount.viewFunction(
+                        validator_id,
+                        'get_account_total_balance',
+                        { account_id: this.accountId }
+                    )
+                );
+                stakedBalanceMainAccount = stakedBalanceMainAccount.add(validatorBalance);
+            } catch (err) {
+                console.log(err);
+            }
         })
     );
 
