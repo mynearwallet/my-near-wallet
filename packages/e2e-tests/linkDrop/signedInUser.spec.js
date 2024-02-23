@@ -137,7 +137,6 @@ describe('Linkdrop flow', () => {
     });
 
     test('claims linkdrop to new account', async ({ page, context }) => {
-        test.setTimeout(60 * 1000);
         await context
             .grantPermissions(['clipboard-read', 'clipboard-write'])
             .catch(test.skip);
@@ -159,7 +158,9 @@ describe('Linkdrop flow', () => {
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
-        await createAccountPage.submitAccountId(testAccountId);
+        await createAccountPage.submitAccountId(testAccountId, {
+            withPasswordCreate: false,
+        });
 
         const setRecoveryOptionPage = new SetRecoveryOptionPage(page);
         await setRecoveryOptionPage.clickSeedPhraseRecoveryOption();
@@ -188,7 +189,9 @@ describe('Linkdrop flow', () => {
         ).initialize();
         deleteAccountsAfter.push(testAccount);
 
-        await expect(page).toHaveURL(/\/$/);
+        await page.waitForURL(/\/$/, {
+            timeout: 60_000,
+        });
         await expect(page.locator('data-test-id=linkDropSuccessModal')).toBeVisible();
     });
 
@@ -226,7 +229,9 @@ describe('Linkdrop flow', () => {
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
-        await createAccountPage.submitAccountId(testAccountId);
+        await createAccountPage.submitAccountId(testAccountId, {
+            withPasswordCreate: false,
+        });
 
         const setRecoveryOptionPage = new SetRecoveryOptionPage(page);
         await setRecoveryOptionPage.clickSeedPhraseRecoveryOption();
@@ -252,7 +257,9 @@ describe('Linkdrop flow', () => {
         ).initialize();
         deleteAccountsAfter.push(testAccount);
 
-        await expect(page).toHaveURL(new RegExp(testDappURL));
+        await page.waitForURL(new RegExp(testDappURL), {
+            timeout: 60_000,
+        });
         await expect(page).toHaveURL(new RegExp(`accountId=${testAccountId}`));
     });
 });

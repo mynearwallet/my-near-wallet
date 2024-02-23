@@ -14,8 +14,11 @@ class CreateAccountPage {
             await this.page.click('data-test-id=acceptTermsButton');
         }
     }
-    async submitAccountId(accountId) {
-        await createPassword(this.page);
+    async submitAccountId(accountId, options) {
+        const withPasswordPage = options?.withPasswordPage ?? true;
+        if (withPasswordPage) {
+            await createPassword(this.page);
+        }
         await this.page.type('data-test-id=createAccount.accountIdInput', accountId);
         await this.page.click('data-test-id=reserveAccountIdButton');
     }
