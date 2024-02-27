@@ -2,16 +2,16 @@ import Cache from '../../utils/cache';
 
 export class AccessKeyCache extends Cache {
     static STORE_NAME = 'AccessKeyCache';
-    static INDEX_NAME = 'PublicKey';
+    static INDEX_NAME = 'AccountId';
 
     constructor() {
         super(AccessKeyCache.STORE_NAME, AccessKeyCache.INDEX_NAME);
     }
 
-    getRecord(publicKey) {
+    getRecord(accountId) {
         return new Promise(async (resolve, reject) => {
             const store = await this.getIndexStore();
-            const query = store.get(publicKey);
+            const query = store.get(accountId);
 
             query.onsuccess = (event) => {
                 resolve(event.target.result);
@@ -21,13 +21,13 @@ export class AccessKeyCache extends Cache {
         });
     }
 
-    addRecord(publicKey, keyMeta) {
+    addRecord(accountId, keyMetas) {
         return new Promise(async (resolve, reject) => {
             const store = await this.getObjectStore();
 
             const item = {
-                publicKey,
-                keyMeta,
+                accountId,
+                keyMetas,
             };
 
             const request = store.add(item, IDBCursor.primaryKey);
@@ -36,38 +36,24 @@ export class AccessKeyCache extends Cache {
         });
     }
 
-    async updateRecord(publicKey, keyMeta) {
-        const id = await this.getRecord(publicKey).then((record) => record?.id);
+    async updateRecord(accountId, keyMetas) {
+        const id = await this.getRecord(accountId).then((record) => record?.id);
 
         if (!id) {
-            return this.addRecord(publicKey, keyMeta);
+            return this.addRecord(accountId, keyMetas);
         }
 
         return new Promise(async (resolve, reject) => {
             const store = await this.getObjectStore();
 
             const request = store.put({
-                publicKey,
-                keyMeta,
+                accountId,
+                keyMetas,
                 id,
             });
 
             request.onsuccess = resolve;
             request.onerror = reject;
-        });
-    }
-
-    getLastRecord() {
-        return new Promise(async (resolve) => {
-            const store = await this.getObjectStore();
-
-            const request = store.index('Created').openCursor(null, 'prev');
-
-            request.onsuccess = (event) => {
-                resolve(event.target.result);
-            };
-
-            request.onerror = () => resolve(undefined);
         });
     }
 }

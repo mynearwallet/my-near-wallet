@@ -26,12 +26,8 @@ export default class Cache {
                 autoIncrement: true,
             });
 
-            store.createIndex('PublicKey', 'publicKey', {
+            store.createIndex('AccountId', 'accountId', {
                 unique: true,
-            });
-
-            store.createIndex('Created', 'keyMeta.block_timestamp', {
-                unique: false,
             });
         }
     }

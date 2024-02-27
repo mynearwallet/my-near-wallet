@@ -40,7 +40,8 @@ export default ({ fullAccessKeys, accountId }) => {
             return getAccessKeyMeta(fullAccessKeys, accountId);
         },
         initialData: fullAccessKeys,
-        initialDataUpdatedAt: 1, // This is to force the initialData to be refetched immediately
+        initialDataUpdatedAt: 1, // This is to force the initialData to be refetched immediately,
+        enabled: !!fullAccessKeys && !!accountId,
     });
 
     const filteredFullAccessKeys = React.useMemo(() => {

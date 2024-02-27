@@ -1,6 +1,14 @@
 import CONFIG from '../../config';
 import { AccessKeyCache } from './cache';
 
+interface KeyMeta {
+    publicKey: string;
+    created: {
+        block_timestamp: number;
+        transaction_hash: string;
+    };
+}
+
 export async function getAccessKeyMeta(accessKeys, accountId) {
     const accessKeysWithMetadata = accessKeys.map((key) => ({ ...key }));
 
@@ -11,7 +19,24 @@ export async function getAccessKeyMeta(accessKeys, accountId) {
         let pageCount = 1;
         let response;
 
-        const lastRecord = await accessKeyCache.getLastRecord();
+        const existingRecords = await accessKeyCache.getRecord(accountId);
+
+        let lastRecord: KeyMeta | undefined;
+        let newRecords: KeyMeta[];
+
+        if ((existingRecords?.keyMetas?.length ?? 0) > 0) {
+            lastRecord = existingRecords.keyMetas.sort(
+                (keyMetaX, keyMetaY) => keyMetaX.created - keyMetaY.created
+            )[0];
+
+            newRecords = existingRecords.keyMetas;
+        } else {
+            lastRecord = undefined;
+
+            newRecords = [];
+        }
+
+        let found = false;
 
         do {
             response = await fetch(
@@ -20,34 +45,45 @@ export async function getAccessKeyMeta(accessKeys, accountId) {
                 }/v1/account/${accountId}/keys?page=${pageCount++}&per_page=25&order=desc`
             ).then((res) => res.json());
 
-            await Promise.all(
-                response?.keys?.map((keyInfo) =>
-                    accessKeyCache
-                        .updateRecord(keyInfo.public_key, keyInfo.created)
-                        .catch((err) => {
-                            console.error('save access key record error', err);
-                        })
-                )
-            );
-        } while (
-            response?.keys?.length === 25 &&
-            response?.keys?.filter(
-                (key) => key.public_key === lastRecord?.value?.publicKey
-            ).length === 0
-        );
+            response.keys.map((keyInfo) => {
+                if (keyInfo.public_key === lastRecord?.publicKey) {
+                    found = true;
+                }
+
+                const record = newRecords.find(
+                    (record) => record.publicKey === keyInfo.public_key
+                );
+
+                if (record) {
+                    record.created = keyInfo.created;
+                } else {
+                    newRecords.push({
+                        publicKey: keyInfo.public_key,
+                        created: keyInfo.created,
+                    });
+                }
+            });
+        } while (response?.keys?.length === 25 && !found);
+
+        await accessKeyCache.updateRecord(accountId, newRecords);
     } catch (err) {
         console.error('fetch access key from nearblocks error', err);
         // Even with error, we don't want to stop the process, we try to fetch old value from cache
     }
 
-    await Promise.all(
-        accessKeysWithMetadata.map((key) =>
-            accessKeyCache
-                .getRecord(key.public_key)
-                .then((record) => (key.created = record?.keyMeta))
-                .catch((err) => console.error('get access key record error', err))
-        )
-    );
+    const records = await accessKeyCache.getRecord(accountId);
+
+    console.log('records', records);
+
+    records.keyMetas.forEach((keyMeta) => {
+        const accessKey = accessKeysWithMetadata.find(
+            (key) => key.public_key === keyMeta.publicKey
+        );
+
+        if (accessKey) {
+            accessKey.created = keyMeta.created;
+        }
+    });
 
     return accessKeysWithMetadata;
 }
