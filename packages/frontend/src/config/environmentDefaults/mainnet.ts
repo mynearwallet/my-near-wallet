@@ -15,6 +15,7 @@ export default {
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: false,
     // INDEXER_SERVICE_URL: 'https://api.kitwallet.app',
     INDEXER_SERVICE_URL: 'https://api3.nearblocks.io/v1/kitwallet',
+    INDEXER_FASTNEAR_SERVICE_URL: 'https://api.fastnear.com',
     INDEXER_NEARBLOCK_SERVICE_URL: 'https://api.nearblocks.io',
     INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL: 'https://api3.nearblocks.io',
     LINKDROP_GAS: '100000000000000',
