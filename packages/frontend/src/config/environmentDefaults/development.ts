@@ -3,6 +3,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
 export default {
     ACCOUNT_HELPER_URL: 'https://testnet-api.kitwallet.app',
+    ACCOUNT_KITWALLET_HELPER_URL: 'https://testnet-api.kitwallet.app',
     ACCOUNT_ID_SUFFIX: 'testnet',
     ACCESS_KEY_FUNDING_AMOUNT: nearApiJs.utils.format.parseNearAmount('0.25'),
     DISABLE_CREATE_ACCOUNT: false,
@@ -12,6 +13,7 @@ export default {
     GLEAP_FRONTEND_API_KEY: 'Pc07nwsDmsVoWYJJj9BgES87xE7RCW74',
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: false,
     INDEXER_SERVICE_URL: 'https://testnet-api.kitwallet.app',
+    INDEXER_FASTNEAR_SERVICE_URL: 'https://api.fastnear.com',
     INDEXER_NEARBLOCK_SERVICE_URL: 'https://api-testnet.nearblocks.io',
     INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL: 'https://api-testnet.nearblocks.io',
     LINKDROP_GAS: '100000000000000',

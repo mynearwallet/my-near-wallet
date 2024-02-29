@@ -1323,7 +1323,7 @@ export default class Wallet {
     }
 
     async postSignedJson(path, options) {
-        return await sendJson('POST', CONFIG.ACCOUNT_HELPER_URL + path, {
+        return await sendJson('POST', CONFIG.ACCOUNT_KITWALLET_HELPER_URL + path, {
             ...options,
             ...(await this.signatureFor(this)),
         });
