@@ -159,22 +159,17 @@ export const createNewAccount = createAsyncThunk(
             });
         } else {
             if (CONFIG.IS_STATELESSNET) {
-                const headers = new Headers();
-                headers.append('Content-Type', 'application/x-www-form-urlencoded');
-
-                const params = [];
-                params.push(`account_id=${encodeURIComponent(accountId)}`);
-                params.push(`public_key=${encodeURIComponent(publicKey.toString())}`);
-
-                await fetch(
-                    'https://sw4-account-creator-g55a3i3lmq-ey.a.run.app/create_account',
-                    {
-                        method: 'POST',
-                        headers: headers,
-                        body: params.join('&'),
-                        redirect: 'follow',
-                    }
-                );
+                await fetch(`${CONFIG.ACCOUNT_HELPER_URL}/create`, {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'POST',
+                    body: JSON.stringify({
+                        account_id: accountId,
+                        public_key: publicKey.toString(),
+                    }),
+                });
             } else {
                 await sendJson('POST', CONTRACT_CREATE_ACCOUNT_URL, {
                     newAccountId: accountId,
