@@ -86,7 +86,7 @@ export default {
         page: number,
         perPage: number
     ): Promise<NearBlocksTxnsResponse> => {
-        const url = `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/account/${accountId}/txns`;
+        const url = `${CONFIG.ACCOUNT_HELPER_URL}/${accountId}/txns`;
         return sendJson(
             'GET',
             stringifyUrl({
