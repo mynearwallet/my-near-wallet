@@ -402,7 +402,7 @@ export default function NFTTransferModal({ onClose, nft, accountId }) {
                             <div className='success-bottons'>
                                 <FormButton
                                     type='button'
-                                    linkTo={`${CONFIG.EXPLORER_URL}/txns/${result.transaction.hash}`}
+                                    linkTo={`${CONFIG.EXPLORER_URL}/transactions/${result.transaction.hash}`}
                                     color='gray-gray'
                                 >
                                     <Translate id='NFTTransfer.viewTransaction' />

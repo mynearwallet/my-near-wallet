@@ -592,7 +592,7 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                         >
                             <Link className='mt-1'>
                                 <a
-                                    href={`${CONFIG.EXPLORER_URL}/txns/${transactionHash}`}
+                                    href={`${CONFIG.EXPLORER_URL}/transactions/${transactionHash}`}
                                     target='_blank'
                                     rel='noreferrer'
                                 >

@@ -89,7 +89,7 @@ const TransactionItemModal = () => {
                     </div>
                     <FormButton
                         color='gray-blue'
-                        linkTo={`${CONFIG.EXPLORER_URL}/txns/${tx.transactionHash}`}
+                        linkTo={`${CONFIG.EXPLORER_URL}/transactions/${tx.transactionHash}`}
                         trackingId='Click access key added view on explorer button'
                     >
                         <Translate id='button.viewOnExplorer' />

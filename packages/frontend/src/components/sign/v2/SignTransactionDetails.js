@@ -137,7 +137,7 @@ export default ({ onClickGoBack, transactions, signGasFee, privateShardInfo }) =
                             <div className='entry'>
                                 <Translate id='sign.details.forContract' />
                                 <a
-                                    href={`${CONFIG.EXPLORER_URL}/address/${receiverId}`}
+                                    href={`${CONFIG.EXPLORER_URL}/accounts/${receiverId}`}
                                     rel='noopener noreferrer'
                                     target='_blank'
                                 >

@@ -5,5 +5,5 @@ export function openNewWindow(url) {
 }
 
 export function openTransactionInExplorer(hash) {
-    openNewWindow(`${CONFIG.EXPLORER_URL}/txns/${hash}`);
+    openNewWindow(`${CONFIG.EXPLORER_URL}/transactions/${hash}`);
 }

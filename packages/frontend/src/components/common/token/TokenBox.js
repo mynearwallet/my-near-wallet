@@ -142,7 +142,7 @@ const Title = ({ content, title }) => {
         <span className='title' title={title || content}>
             {title && title !== CONFIG.NEAR_ID ? (
                 <a
-                    href={`${CONFIG.EXPLORER_URL}/address/${title}`}
+                    href={`${CONFIG.EXPLORER_URL}/accounts/${title}`}
                     onClick={stopPropagation}
                     target='_blank'
                     rel='noopener noreferrer'

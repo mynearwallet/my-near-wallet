@@ -144,7 +144,7 @@ const NFTBox = ({ tokenDetails }) => {
                 </div>
                 <div className='desc'>
                     <a
-                        href={`${CONFIG.EXPLORER_URL}/address/${contractName}`}
+                        href={`${CONFIG.EXPLORER_URL}/accounts/${contractName}`}
                         title={name}
                         target='_blank'
                         rel='noopener noreferrer'

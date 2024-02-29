@@ -244,7 +244,7 @@ const ActivityDetailModal = ({ open, onClose, accountId, transaction }) => {
                 </div>
                 <FormButton
                     color='gray-blue'
-                    linkTo={`${CONFIG.EXPLORER_URL}/txns/${hash}`}
+                    linkTo={`${CONFIG.EXPLORER_URL}/transactions/${hash}`}
                     trackingId='Click access key added view on explorer button'
                 >
                     <Translate id='button.viewOnExplorer' />

@@ -29,7 +29,7 @@ const LoginWrapper = () => {
     const failureUrl = URLParams.failure_url;
     const successUrl = URLParams.success_url;
     const invalidContractId = URLParams.invalidContractId;
-    const contractIdUrl = `${CONFIG.EXPLORER_URL}/address/${contractId}`;
+    const contractIdUrl = `${CONFIG.EXPLORER_URL}/accounts/${contractId}`;
 
     const accountLocalStorageAccountId = useSelector(selectAccountLocalStorageAccountId);
     const isPrivateShard = !!useSelector(selectAccountUrlPrivateShard);
