@@ -4,7 +4,6 @@ import { NearBlocksTxnsResponse } from './type';
 import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
-import { accountsByPublicKey } from '@mintbase-js/data';
 
 export default {
     listAccountsByPublicKey: (publicKey): Promise<string[]> => {
@@ -12,86 +11,23 @@ export default {
             const masterController = new AbortController();
 
             const promises = [
-                // ---------------------
-                // Nearblocks API3 kitwallet mock
-                // ---------------------
-                fetch(`${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}/accounts`, {
-                    headers: {
-                        ...CUSTOM_REQUEST_HEADERS,
-                    },
-                    signal: masterController.signal,
-                })
+                fetch(`${CONFIG.INDEXER_SERVICE_URL}/publicKey/${publicKey}`)
                     .then((res) => res.json())
-                    .catch((err) => {
-                        console.warn('kitwallet fetch error', err);
-                        return [];
-                    }),
-                // ---------------------
-                // Nearblocks API v1
-                // ---------------------
-                // fetch(`${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/keys/${publicKey}`, {
-                //     headers: {
-                //         accept: '*/*',
-                //     },
-                //     signal: masterController.signal,
-                // })
-                //     .then((res) => res.json())
-                //     .then((res) => res.keys.map((key) => key.account_id))
-                //     .catch((err) => {
-                //         console.warn('nearblocks fetch error', err);
-                //         return [];
-                //     }),
-                // ---------------------
-                // Nearblocks API v1 mirror server
-                // ---------------------
-                // fetch(
-                //     `${CONFIG.INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL}/v1/keys/${publicKey}`,
-                //     {
-                //         headers: {
-                //             accept: '*/*',
-                //         },
-                //         signal: masterController.signal,
-                //     }
-                // )
-                //     .then((res) => res.json())
-                //     .then((res) => res.keys.map((key) => key.account_id))
-                //     .catch((err) => {
-                //         console.warn('nearblocks experimental fetch error', err);
-                //         return [];
-                //     }),
-                // ---------------------
-                // Mintbase API
-                // ---------------------
-                accountsByPublicKey(
-                    publicKey.toString(),
-                    CONFIG.IS_MAINNET ? 'mainnet' : 'testnet'
-                )
-                    .then((res) => res.data ?? [])
-                    .catch((err) => {
-                        console.warn('mintbase fetch error', err);
-                        return [];
-                    }),
+                    .then((res: unknown) =>
+                        typeof res === 'object' &&
+                        'keys' in res &&
+                        Array.isArray(res.keys) &&
+                        res.keys.length
+                            ? res.keys.map((key: unknown) =>
+                                  typeof key === 'object' &&
+                                  'account_id' in key &&
+                                  typeof key.account_id === 'string'
+                                      ? key.account_id
+                                      : ''
+                              )
+                            : []
+                    ),
             ];
-
-            if (CONFIG.IS_MAINNET) {
-                // ---------------------
-                // Fastnear API
-                // ---------------------
-                promises.push(
-                    fetch(
-                        `${CONFIG.INDEXER_FASTNEAR_SERVICE_URL}/v0/public_key/${publicKey}`,
-                        {
-                            signal: masterController.signal,
-                        }
-                    )
-                        .then((res) => res.json())
-                        .then((res) => res.account_ids ?? [])
-                        .catch((err) => {
-                            console.warn('fastnear fetch error', err);
-                            return [];
-                        })
-                );
-            }
 
             const results = await Promise.all(
                 promises.map((promise) =>
