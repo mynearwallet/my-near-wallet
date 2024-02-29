@@ -11,7 +11,7 @@ export default {
             const masterController = new AbortController();
 
             const promises = [
-                fetch(`${CONFIG.ACCOUNT_HELPER_URL}/publicKey/${publicKey}`)
+                fetch(`${CONFIG.ACCOUNT_HELPER_URL}/keys/${publicKey}`)
                     .then((res) => res.json())
                     .then((res: unknown) =>
                         typeof res === 'object' &&
