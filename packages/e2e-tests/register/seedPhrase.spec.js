@@ -34,7 +34,9 @@ describe('Account Registration Using Seed Phrase', () => {
 
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
-        await createAccountPage.submitAccountId(testAccountId);
+        await createAccountPage.submitAccountId(testAccountId, {
+            withCreatePasswordPage: true,
+        });
         await expect(page).toHaveURL(new RegExp(`/set-recovery/${testAccountId}`));
     });
     test('is able to select other recovery methods and navigate to phrase setup', async ({

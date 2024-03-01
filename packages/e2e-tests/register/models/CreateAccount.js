@@ -15,7 +15,7 @@ class CreateAccountPage {
         }
     }
     async submitAccountId(accountId, options) {
-        const withPasswordPage = options?.withPasswordPage ?? true;
+        const withPasswordPage = options?.withCreatePasswordPage ?? false;
         if (withPasswordPage) {
             await createPassword(this.page);
         }

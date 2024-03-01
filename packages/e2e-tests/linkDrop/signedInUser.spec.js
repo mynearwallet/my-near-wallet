@@ -158,9 +158,7 @@ describe('Linkdrop flow', () => {
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
-        await createAccountPage.submitAccountId(testAccountId, {
-            withPasswordCreate: false,
-        });
+        await createAccountPage.submitAccountId(testAccountId);
 
         const setRecoveryOptionPage = new SetRecoveryOptionPage(page);
         await setRecoveryOptionPage.clickSeedPhraseRecoveryOption();
@@ -229,9 +227,7 @@ describe('Linkdrop flow', () => {
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
-        await createAccountPage.submitAccountId(testAccountId, {
-            withPasswordCreate: false,
-        });
+        await createAccountPage.submitAccountId(testAccountId);
 
         const setRecoveryOptionPage = new SetRecoveryOptionPage(page);
         await setRecoveryOptionPage.clickSeedPhraseRecoveryOption();
