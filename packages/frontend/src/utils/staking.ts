@@ -99,7 +99,7 @@ export async function getStakingDeposits(accountId: string) {
                         err.message.includes('CompilationError(CodeDoesNotExist') ||
                         err.message.includes('MethodResolveError(MethodNotFound)')
                     ) {
-                        return 0;
+                        return '0';
                     } else {
                         throw err;
                     }

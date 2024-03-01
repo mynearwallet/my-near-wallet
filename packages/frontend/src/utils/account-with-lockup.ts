@@ -253,7 +253,7 @@ async function getAccountBalance(limitedAccountData = false) {
                             err.message.includes('CompilationError(CodeDoesNotExist') ||
                             err.message.includes('MethodResolveError(MethodNotFound)')
                         ) {
-                            return 0;
+                            return '0';
                         } else {
                             throw err;
                         }
