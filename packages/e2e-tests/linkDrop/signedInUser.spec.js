@@ -172,8 +172,6 @@ describe('Linkdrop flow', () => {
         const requestedVerificationWordNumber =
             await verifySeedPhrasePage.getRequestedVerificationWordNumber();
 
-        await linkdropAccountManager.mockCreateAccount(page);
-
         await verifySeedPhrasePage.verifyWithWord(
             copiedSeedPhrase.split(' ')[requestedVerificationWordNumber - 1]
         );
@@ -240,7 +238,6 @@ describe('Linkdrop flow', () => {
         const verifySeedPhrasePage = new VerifySeedPhrasePage(page);
         const requestedVerificationWordNumber =
             await verifySeedPhrasePage.getRequestedVerificationWordNumber();
-        await linkdropAccountManager.mockCreateAccount(page);
         await verifySeedPhrasePage.verifyWithWord(
             copiedSeedPhrase.split(' ')[requestedVerificationWordNumber - 1]
         );
