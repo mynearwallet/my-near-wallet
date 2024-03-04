@@ -1,5 +1,3 @@
-const { createPassword } = require('../../utils/password');
-
 class SetupSeedPhrasePage {
     constructor(page) {
         this.page = page;
@@ -8,7 +6,6 @@ class SetupSeedPhrasePage {
         await this.page.goto(`/setup-seed-phrase/${accountId}/phrase`);
     }
     async copySeedPhrase() {
-        await createPassword(this.page);
         await this.page.waitForSelector('.single-phrase');
         await this.page.click('data-test-id=copySeedPhraseButton');
         return this.page.evaluate(() => navigator.clipboard.readText());

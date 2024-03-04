@@ -10,6 +10,7 @@ const { WALLET_NETWORK } = require('../constants');
 const { generateTestAccountId } = require('../utils/account');
 const nearApiJsConnection = require('../utils/connectionSingleton');
 const E2eTestAccount = require('../utils/E2eTestAccount');
+const { createPassword } = require('../utils/password');
 
 const { describe, afterAll } = test;
 
@@ -80,6 +81,7 @@ describe('Account Registration Using Seed Phrase', () => {
             `${testAccountId}.${nearApiJsConnection.config?.networkId}`
         );
 
+        await createPassword(page);
         const copiedSeedPhrase = await setupSeedPhrasePage.copySeedPhrase();
 
         await setupSeedPhrasePage.continueToSeedPhraseVerification();
