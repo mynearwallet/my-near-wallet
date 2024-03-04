@@ -242,18 +242,25 @@ async function getAccountBalance(limitedAccountData = false) {
     let stakedBalanceMainAccount = new BN(0);
     await Promise.all(
         stakingDeposits.map(async (validator_id) => {
-            try {
-                const validatorBalance = new BN(
-                    await this.wrappedAccount.viewFunction(
-                        validator_id,
-                        'get_account_total_balance',
-                        { account_id: this.accountId }
-                    )
-                );
-                stakedBalanceMainAccount = stakedBalanceMainAccount.add(validatorBalance);
-            } catch (err) {
-                console.log(err);
-            }
+            const validatorBalance = new BN(
+                await this.wrappedAccount
+                    .viewFunction(validator_id, 'get_account_total_balance', {
+                        account_id: this.accountId,
+                    })
+                    .catch((err) => {   
+                        if (
+                            // Means the validators  don't have contract deployed, or don't support staking
+                            err.message.includes('CompilationError(CodeDoesNotExist') ||
+                            err.message.includes('MethodResolveError(MethodNotFound)')
+                        ) {
+                            return '0';
+                        } else {
+                            throw err;
+                        }
+                    })
+            );
+
+            stakedBalanceMainAccount = stakedBalanceMainAccount.add(validatorBalance);
         })
     );
 

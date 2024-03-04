@@ -88,25 +88,27 @@ export async function getStakingDeposits(accountId: string) {
     const validatorIds = await getValidatorIdsFromRpc();
     let validatorWithBalance = await Promise.all(
         validatorIds.map(async (validatorId) => {
-            try {
-                const account = wallet.getAccountBasic(accountId);
-                const balance = await account.viewFunction(
-                    validatorId,
-                    'get_account_total_balance',
-                    {
-                        account_id: accountId,
+            const account = wallet.getAccountBasic(accountId);
+            const balance = await account
+                .viewFunction(validatorId, 'get_account_total_balance', {
+                    account_id: accountId,
+                })
+                .catch((err) => {
+                    if (
+                        // Means the validators  don't have contract deployed, or don't support staking
+                        err.message.includes('CompilationError(CodeDoesNotExist') ||
+                        err.message.includes('MethodResolveError(MethodNotFound)')
+                    ) {
+                        return '0';
+                    } else {
+                        throw err;
                     }
-                );
-                return { validator_id: validatorId, deposit: balance } as {
-                    validator_id: string;
-                    deposit: string;
-                };
-            } catch (err) {
-                return {
-                    validator_id: '',
-                    deposit: '0',
-                };
-            }
+                });
+
+            return { validator_id: validatorId, deposit: balance } as {
+                validator_id: string;
+                deposit: string;
+            };
         })
     );
 
