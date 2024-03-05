@@ -57,9 +57,9 @@ export const WALLET_VERIFY_OWNER_URL = 'verify-owner';
 export const WALLET_SIGN_MESSAGE_URL = 'sign-message';
 
 export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_HELPER_URL}/account`;
-export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/fundedAccount`;
-export const IDENTITY_FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/identityFundedAccount`;
-const IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/identityVerificationMethod`;
+export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/fundedAccount`;
+export const IDENTITY_FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityFundedAccount`;
+const IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityVerificationMethod`;
 
 export const SHOW_NETWORK_BANNER = !CONFIG.IS_MAINNET || CONFIG.SHOW_PRERELEASE_WARNING;
 export const ENABLE_IDENTITY_VERIFIED_ACCOUNT = true;
@@ -643,7 +643,7 @@ export default class Wallet {
     async checkFundedAccountAvailable() {
         const { available } = await sendJson(
             'GET',
-            CONFIG.ACCOUNT_HELPER_URL + '/checkFundedAccountAvailable'
+            CONFIG.ACCOUNT_KITWALLET_HELPER_URL + '/checkFundedAccountAvailable'
         );
         return available;
     }
