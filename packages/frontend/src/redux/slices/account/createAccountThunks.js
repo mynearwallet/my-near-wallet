@@ -346,7 +346,7 @@ export const initiateSetupForZeroBalanceAccountLedger = createAsyncThunk(
             try {
                 await sendJson(
                     'POST',
-                    `${CONFIG.ACCOUNT_HELPER_URL}/account/ledgerKeyAdded`,
+                    `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/account/ledgerKeyAdded`,
                     {
                         accountId: implicitAccountId,
                         publicKey: ledgerPublicKey.toString(),
