@@ -121,7 +121,11 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
     React.useEffect(() => {
         wallet.signer
             .getPublicKey(accountId, CONFIG.NETWORK_ID)
-            .then((publicKey) => publicKey.toString())
+            .then((publicKey) => {
+                if (publicKey) {
+                    return publicKey.toString();
+                }
+            })
             .then((publicKey) => setPublicKey(publicKey));
     }, [accountId, wallet.signer]);
 

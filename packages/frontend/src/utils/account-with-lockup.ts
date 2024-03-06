@@ -204,8 +204,12 @@ async function accountExists(connection, accountId) {
 }
 
 export function getLockupAccountId(accountId) {
-    if (CONFIG.REACT_APP_USE_TESTINGLOCKUP && accountId.length < 64) {
-        return `testinglockup.${accountId}`;
+    const testingPrefix = 'testinglockup.';
+    if (
+        CONFIG.REACT_APP_USE_TESTINGLOCKUP &&
+        accountId.length + testingPrefix.length < 64
+    ) {
+        return `${testingPrefix}${accountId}`;
     }
     return (
         // @ts-ignore: Ignoring this error for now while fixing balance not showing
