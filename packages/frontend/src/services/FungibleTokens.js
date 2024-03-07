@@ -1,7 +1,6 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 
-import { listLikelyTokens } from './indexer';
 import CONFIG from '../config';
 import {
     parseTokenAmount,
@@ -10,6 +9,7 @@ import {
 } from '../utils/amounts';
 import { getTotalGasFee } from '../utils/gasPrice';
 import { wallet } from '../utils/wallet';
+import { CoreIndexerAdapter } from './coreIndexer/CoreIndexerAdapter';
 
 const {
     transactions: { functionCall },
@@ -67,7 +67,8 @@ export default class FungibleTokens {
     }
 
     static async getLikelyTokenContracts({ accountId }) {
-        return listLikelyTokens(accountId);
+        const coreIndexerAdapter = CoreIndexerAdapter.getInstance(CONFIG.NEAR_WALLET_ENV);
+        return await coreIndexerAdapter.getAccountFtList(accountId);
     }
 
     static async getStorageBalance({ contractName, accountId }) {
