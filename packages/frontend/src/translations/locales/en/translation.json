@@ -410,6 +410,8 @@
             "getBlock": "GetBlock",
             "infura": "Infura",
             "infura-testnet": "Infura (Testnet)",
+            "lava": "Lava",
+            "lava-testnet": "Lava (Testnet)",
             "near": "NEAR",
             "near-testnet": "NEAR (Testnet)",
             "nodeReal": "NodeReal",
