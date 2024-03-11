@@ -1605,11 +1605,21 @@ export default class Wallet {
                 let recoveryKeyIsFAK = false;
 
                 const accessKeys = await account.getAccessKeys();
-                if (!accessKeys.length && accountIds.length === 1) {
-                    throw new WalletError(
-                        `No access key found for ${accountId}`,
-                        'recoverAccountSeedPhrase.errorGeneral'
-                    );
+                const hasFullAccessKey = accessKeys.some(
+                    (key) => key.access_key.permission === 'FullAccess'
+                );
+
+                if (accountIds.length === 1) {
+                    if (!accessKeys.length || !hasFullAccessKey) {
+                        accountIdsError.push({
+                            accountId,
+                            error: new WalletError(
+                                `No access key found for ${accountId}`,
+                                'recoverAccountSeedPhrase.errorGeneral'
+                            ),
+                        });
+                        return;
+                    }
                 }
 
                 // check if recover access key is FAK and if so add key without 2FA
