@@ -14,20 +14,12 @@ import {
     redirectToApp,
     refreshAccount,
 } from '../../redux/actions/account';
-import {
-    clearGlobalAlert,
-    clearLocalAlert,
-    showCustomAlert,
-} from '../../redux/actions/status';
-import { actions as importZeroBalanceAccountActions } from '../../redux/slices/importZeroBalanceAccount';
-import { importZeroBalanceAccountPrivateKey } from '../../redux/slices/importZeroBalanceAccount/importAccountThunks';
+import { clearLocalAlert, showCustomAlert } from '../../redux/actions/status';
 import { selectStatusLocalAlert } from '../../redux/slices/status';
 import classNames from '../../utils/classNames';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
-
-const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
 const StyledContainer = styled(Container)`
     .input {
@@ -81,12 +73,12 @@ const RecoverAccountPrivateKey = () => {
                 await dispatch(refreshAccount());
             },
             async (e) => {
-                if (e.message.includes('Cannot find matching public key')) {
-                    await dispatch(importZeroBalanceAccountPrivateKey(privateKey));
-                    dispatch(setZeroBalanceAccountImportMethod('privateKey'));
-                    dispatch(clearGlobalAlert());
-                    dispatch(redirectToApp());
-                }
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    errorMessage: e.message,
+                    messageCode: 'account.recoverAccount.errorGeneral',
+                });
 
                 throw e;
             },

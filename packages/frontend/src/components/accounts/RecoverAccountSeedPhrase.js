@@ -15,11 +15,7 @@ import {
     refreshAccount,
     clearAccountState,
 } from '../../redux/actions/account';
-import {
-    clearLocalAlert,
-    showCustomAlert,
-    clearGlobalAlert,
-} from '../../redux/actions/status';
+import { clearLocalAlert, showCustomAlert } from '../../redux/actions/status';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { actions as importZeroBalanceAccountActions } from '../../redux/slices/importZeroBalanceAccount';
 import { importZeroBalanceAccountPhrase } from '../../redux/slices/importZeroBalanceAccount/importAccountThunks';
@@ -96,8 +92,6 @@ class RecoverAccountSeedPhrase extends Component {
             recoverAccountSeedPhrase,
             refreshAccount,
             showCustomAlert,
-            importZeroBalanceAccountPhrase,
-            setZeroBalanceAccountImportMethod,
         } = this.props;
 
         try {
@@ -121,12 +115,12 @@ class RecoverAccountSeedPhrase extends Component {
                 await refreshAccount();
             },
             async (e) => {
-                if (e.message.includes('Cannot find matching public key')) {
-                    await importZeroBalanceAccountPhrase(seedPhrase);
-                    setZeroBalanceAccountImportMethod('phrase');
-                    clearGlobalAlert();
-                    redirectToApp();
-                }
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    errorMessage: e.message,
+                    messageCode: e.messageCode,
+                });
 
                 throw e;
             },

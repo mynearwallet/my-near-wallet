@@ -32,6 +32,7 @@ import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/a
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import sendJson from '../tmp_fetch_send_json';
+import { showCustomAlert } from '../redux/actions/status';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -1560,12 +1561,20 @@ export default class Wallet {
 
         // remove duplicate and non-existing accounts
         const accountsSet = new Set(accountIds);
+        let deletedAccount;
         for (const accountId of accountsSet) {
             if (!(await this.accountExists(accountId))) {
                 accountsSet.delete(accountId);
+                deletedAccount = accountId;
             }
         }
         accountIds = [...accountsSet];
+        if (deletedAccount && !accountIds.length) {
+            throw new WalletError(
+                `Cannot import account but found deleted account for public key: ${publicKey}`,
+                'recoverAccountSeedPhrase.errorGeneral'
+            );
+        }
 
         if (!accountIds.length) {
             throw new WalletError(
@@ -1594,9 +1603,17 @@ export default class Wallet {
                 this.accountId = accountId;
                 const account = await this.getAccount(accountId);
                 let recoveryKeyIsFAK = false;
+
+                const accessKeys = await account.getAccessKeys();
+                if (!accessKeys.length && accountIds.length === 1) {
+                    throw new WalletError(
+                        `No access key found for ${accountId}`,
+                        'recoverAccountSeedPhrase.errorGeneral'
+                    );
+                }
+
                 // check if recover access key is FAK and if so add key without 2FA
                 if (await TwoFactor.has2faEnabled(account)) {
-                    const accessKeys = await account.getAccessKeys();
                     recoveryKeyIsFAK = accessKeys.find(
                         ({ public_key, access_key }) =>
                             public_key === publicKey &&
@@ -1677,6 +1694,12 @@ export default class Wallet {
                 );
 
                 throw lastAccount.error;
+            } else if (!accountIdsError.length) {
+                showCustomAlert({
+                    success: false,
+                    messageCodeHeader: 'error',
+                    messageCode: 'walletErrorCodes.recoverAccount.error',
+                });
             } else {
                 throw accountIdsError[accountIdsError.length - 1].error;
             }

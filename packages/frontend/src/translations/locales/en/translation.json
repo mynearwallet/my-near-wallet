@@ -2014,6 +2014,7 @@
             "errorPKNotValid": "The provided private key is not valid. Please check your private key and try again."
         },
         "recoverAccountSeedPhrase": {
+            "errorGeneral": "Failed to recover account.",
             "errorInvalidSeedPhrase": "No accounts were found for this passphrase.",
             "errorNotAbleToImportAccount": "Import of your account failed. Please try again or contact support for assistance.",
             "errorSeedPhraseNotValid": "The provided passphrase is not valid. Please check your passphrase and try again."
