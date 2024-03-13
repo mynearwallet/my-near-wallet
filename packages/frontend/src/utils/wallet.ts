@@ -1561,15 +1561,15 @@ export default class Wallet {
 
         // remove duplicate and non-existing accounts
         const accountsSet = new Set(accountIds);
-        let deletedAccount;
+        let hasDeletedAccount = false;
         for (const accountId of accountsSet) {
             if (!(await this.accountExists(accountId))) {
                 accountsSet.delete(accountId);
-                deletedAccount = accountId;
+                hasDeletedAccount = !!accountId;
             }
         }
         accountIds = [...accountsSet];
-        if (deletedAccount && !accountIds.length) {
+        if (hasDeletedAccount && !accountIds.length) {
             throw new WalletError(
                 `Cannot import account but found deleted account for public key: ${publicKey}`,
                 'recoverAccountSeedPhrase.errorGeneral'
