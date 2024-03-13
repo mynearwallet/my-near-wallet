@@ -79,7 +79,7 @@ export default {
                 // ---------------------
                 promises.push(
                     fetch(
-                        `${CONFIG.INDEXER_FASTNEAR_SERVICE_URL}/v0/public_key/${publicKey}`,
+                        `${CONFIG.INDEXER_FASTNEAR_SERVICE_URL}/v0/public_key/${publicKey}/all`,
                         {
                             signal: masterController.signal,
                         }
