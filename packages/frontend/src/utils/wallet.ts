@@ -32,7 +32,6 @@ import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/a
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import sendJson from '../tmp_fetch_send_json';
-import { showCustomAlert } from '../redux/actions/status';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -1579,7 +1578,8 @@ export default class Wallet {
         if (!accountIds.length) {
             throw new WalletError(
                 `Cannot find matching public key: ${publicKey}`,
-                'recoverAccountSeedPhrase.errorInvalidSeedPhrase'
+                'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
+                { errorCode: 'noPublicKeyMatch' }
             );
         }
 
@@ -1704,12 +1704,6 @@ export default class Wallet {
                 );
 
                 throw lastAccount.error;
-            } else if (!accountIdsError.length) {
-                showCustomAlert({
-                    success: false,
-                    messageCodeHeader: 'error',
-                    messageCode: 'walletErrorCodes.recoverAccount.error',
-                });
             } else {
                 throw accountIdsError[accountIdsError.length - 1].error;
             }

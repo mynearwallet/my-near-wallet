@@ -14,12 +14,18 @@ import {
     redirectToApp,
     refreshAccount,
 } from '../../redux/actions/account';
-import { clearLocalAlert, showCustomAlert } from '../../redux/actions/status';
+import {
+    clearGlobalAlert,
+    clearLocalAlert,
+    showCustomAlert,
+} from '../../redux/actions/status';
 import { selectStatusLocalAlert } from '../../redux/slices/status';
 import classNames from '../../utils/classNames';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import { importZeroBalanceAccountPrivateKey } from '../../redux/slices/importZeroBalanceAccount/importAccountThunks';
+import { selectZeroBalanceAccountImportMethod } from '../../redux/slices/importZeroBalanceAccount';
 
 const StyledContainer = styled(Container)`
     .input {
@@ -73,12 +79,19 @@ const RecoverAccountPrivateKey = () => {
                 await dispatch(refreshAccount());
             },
             async (e) => {
-                showCustomAlert({
-                    success: false,
-                    messageCodeHeader: 'error',
-                    errorMessage: e.message,
-                    messageCode: 'account.recoverAccount.errorGeneral',
-                });
+                if (e.data?.errorCode === 'noPublicKeyMatch') {
+                    await dispatch(importZeroBalanceAccountPrivateKey(privateKey));
+                    dispatch(selectZeroBalanceAccountImportMethod('privateKey'));
+                    dispatch(clearGlobalAlert());
+                    dispatch(redirectToApp());
+                } else {
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        errorMessage: e.message,
+                        messageCode: 'account.recoverAccount.errorGeneral',
+                    });
+                }
 
                 throw e;
             },

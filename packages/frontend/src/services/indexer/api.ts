@@ -8,7 +8,7 @@ import { accountsByPublicKey } from '@mintbase-js/data';
 
 export default {
     listAccountsByPublicKey: (publicKey): Promise<string[]> => {
-        return new Promise(async (masterResolve, masterReject) => {
+        return new Promise(async (masterResolve) => {
             const masterController = new AbortController();
 
             const promises = [
@@ -109,7 +109,7 @@ export default {
             const flattenResults = results.flat();
 
             if (flattenResults.length === 0) {
-                masterReject(new Error('No accounts found'));
+                masterResolve([]);
             }
         });
     },
