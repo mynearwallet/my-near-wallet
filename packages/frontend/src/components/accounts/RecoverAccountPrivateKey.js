@@ -26,6 +26,7 @@ import classNames from '../../utils/classNames';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import { ModalManualImport } from './manual_import/ModalManualImport';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -47,6 +48,12 @@ const StyledContainer = styled(Container)`
     button {
         width: 100% !important;
         margin-top: 30px !important;
+    }
+
+    .manual-import__button {
+        color: blue;
+        cursor: pointer;
+        margin-top: 8px;
     }
 `;
 
@@ -128,6 +135,8 @@ const RecoverAccountPrivateKey = () => {
         dispatch(clearAccountState());
     };
 
+    const [isManualImportOpen, setManualImportOpen] = useState(false);
+
     return (
         <StyledContainer className='small-centered border'>
             <h1>
@@ -156,6 +165,19 @@ const RecoverAccountPrivateKey = () => {
                     required
                     tabIndex='2'
                     autoCapitalize='off'
+                />
+                <div className='manual-import'>
+                    Can't find your account?{' '}
+                    <span
+                        className='manual-import__button'
+                        onClick={() => setManualImportOpen(true)}
+                    >
+                        Import it manually.
+                    </span>
+                </div>
+                <ModalManualImport
+                    isVisible={isManualImportOpen}
+                    setVisible={setManualImportOpen}
                 />
                 <FormButton
                     type='submit'
