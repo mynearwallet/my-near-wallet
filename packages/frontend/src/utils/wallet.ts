@@ -56,7 +56,7 @@ export const WALLET_SEND_MONEY_URL = 'send-money';
 export const WALLET_VERIFY_OWNER_URL = 'verify-owner';
 export const WALLET_SIGN_MESSAGE_URL = 'sign-message';
 
-export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_HELPER_URL}/account`;
+export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/account`;
 export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/fundedAccount`;
 export const IDENTITY_FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityFundedAccount`;
 const IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityVerificationMethod`;
@@ -1345,7 +1345,8 @@ export default class Wallet {
         };
         await sendJson(
             'POST',
-            CONFIG.ACCOUNT_HELPER_URL + '/account/initializeRecoveryMethodForTempAccount',
+            CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
+                '/account/initializeRecoveryMethodForTempAccount',
             body
         );
         return seedPhrase;
@@ -1362,7 +1363,7 @@ export default class Wallet {
         if (isNew) {
             await sendJson(
                 'POST',
-                CONFIG.ACCOUNT_HELPER_URL +
+                CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
                     '/account/initializeRecoveryMethodForTempAccount',
                 body
             );
@@ -1381,7 +1382,8 @@ export default class Wallet {
         try {
             await sendJson(
                 'POST',
-                CONFIG.ACCOUNT_HELPER_URL + '/account/validateSecurityCodeForTempAccount',
+                CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
+                    '/account/validateSecurityCodeForTempAccount',
                 {
                     accountId: implicitAccountId,
                     method,
@@ -1417,7 +1419,7 @@ export default class Wallet {
             if (isNew) {
                 await sendJson(
                     'POST',
-                    CONFIG.ACCOUNT_HELPER_URL +
+                    CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
                         '/account/validateSecurityCodeForTempAccount',
                     {
                         ...body,
