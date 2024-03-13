@@ -96,6 +96,8 @@ class RecoverAccountSeedPhrase extends Component {
             recoverAccountSeedPhrase,
             refreshAccount,
             showCustomAlert,
+            importZeroBalanceAccountPhrase,
+            setZeroBalanceAccountImportMethod,
         } = this.props;
 
         try {
