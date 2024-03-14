@@ -452,7 +452,11 @@ export default class Wallet {
             return Wallet.KEY_TYPES.OTHER;
         }
 
-        throw new Error('No matching key pair for public key');
+        throw new WalletError(
+            'No matching key pair for public key',
+            'recoverAccountSeedPhrase.keyPairUnmatch',
+            { errorCode: 'keyPairUnmatch' }
+        );
     }
 
     async getAccountKeyType(accountId) {
@@ -1562,7 +1566,9 @@ export default class Wallet {
         const accountsSet = new Set(accountIds);
         let hasDeletedAccount = false;
         for (const accountId of accountsSet) {
-            if (!(await this.accountExists(accountId))) {
+            const isAccountExist = await this.accountExists(accountId);
+            console.log({ isAccountExist, accountId });
+            if (!isAccountExist) {
                 accountsSet.delete(accountId);
                 hasDeletedAccount = !!accountId;
             }
@@ -1608,6 +1614,9 @@ export default class Wallet {
                 const hasFullAccessKey = accessKeys.some(
                     (key) => key.access_key.permission === 'FullAccess'
                 );
+                const keyPair = nearApiJs.KeyPair.fromString(secretKey);
+                // check for keypair match
+                await this.getPublicKeyType(accountId, keyPair);
 
                 if (accountIds.length === 1) {
                     if (!accessKeys.length || !hasFullAccessKey) {
@@ -1636,7 +1645,6 @@ export default class Wallet {
                     }
                 }
 
-                const keyPair = nearApiJs.KeyPair.fromString(secretKey);
                 await tempKeyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
                 account.keyStore = tempKeyStore;
 

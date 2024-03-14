@@ -2015,6 +2015,7 @@
         },
         "recoverAccountSeedPhrase": {
             "errorGeneral": "Failed to recover account.",
+            "keyPairUnmatch": "The imported key does not match the public key.",
             "errorInvalidSeedPhrase": "No accounts were found for this passphrase.",
             "errorNotAbleToImportAccount": "Import of your account failed. Please try again or contact support for assistance.",
             "errorSeedPhraseNotValid": "The provided passphrase is not valid. Please check your passphrase and try again."
