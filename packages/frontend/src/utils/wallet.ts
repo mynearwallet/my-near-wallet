@@ -453,7 +453,7 @@ export default class Wallet {
         }
 
         throw new WalletError(
-            'No matching key pair for public key',
+            `No matching key pair for public key ${publicKeyString}`,
             'recoverAccountSeedPhrase.keyPairUnmatch',
             { errorCode: 'keyPairUnmatch' }
         );
