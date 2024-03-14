@@ -452,11 +452,7 @@ export default class Wallet {
             return Wallet.KEY_TYPES.OTHER;
         }
 
-        throw new WalletError(
-            `No matching key pair for public key ${publicKeyString}`,
-            'recoverAccountSeedPhrase.keyPairUnmatch',
-            { errorCode: 'keyPairUnmatch' }
-        );
+        throw new Error('No matching key pair for public key');
     }
 
     async getAccountKeyType(accountId) {
@@ -1609,13 +1605,16 @@ export default class Wallet {
                 const account = await this.getAccount(accountId);
                 let recoveryKeyIsFAK = false;
 
-                const accessKeys = await account.getAccessKeys();
+                // check for keypair match
+                const accessKeys = await this.getAccessKeys(accountId);
                 const hasFullAccessKey = accessKeys.some(
                     (key) => key.access_key.permission === 'FullAccess'
                 );
-                const keyPair = nearApiJs.KeyPair.fromString(secretKey);
-                // check for keypair match
-                await this.getPublicKeyType(accountId, keyPair);
+
+                const publicKey = keyPair.getPublicKey().toString();
+                const hasMatchedPublicKey = accessKeys.some(
+                    ({ public_key }) => public_key === publicKey
+                );
 
                 if (accountIds.length === 1) {
                     if (!accessKeys.length || !hasFullAccessKey) {
@@ -1628,6 +1627,19 @@ export default class Wallet {
                         });
                         return;
                     }
+                }
+
+                // private key doesnt match with their public key
+                if (!hasMatchedPublicKey) {
+                    accountIdsError.push({
+                        accountId,
+                        error: new WalletError(
+                            `No matching key pair for public key ${publicKey}`,
+                            'recoverAccountSeedPhrase.keyPairUnmatch',
+                            { errorCode: 'keyPairUnmatch' }
+                        ),
+                    });
+                    return;
                 }
 
                 // check if recover access key is FAK and if so add key without 2FA
