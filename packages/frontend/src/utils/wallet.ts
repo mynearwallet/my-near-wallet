@@ -1567,7 +1567,6 @@ export default class Wallet {
         let hasDeletedAccount = false;
         for (const accountId of accountsSet) {
             const isAccountExist = await this.accountExists(accountId);
-            console.log({ isAccountExist, accountId });
             if (!isAccountExist) {
                 accountsSet.delete(accountId);
                 hasDeletedAccount = !!accountId;
