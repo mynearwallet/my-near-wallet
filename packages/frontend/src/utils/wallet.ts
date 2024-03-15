@@ -1577,11 +1577,27 @@ export default class Wallet {
         }
 
         if (!accountIds.length) {
-            throw new WalletError(
-                `Cannot find matching public key: ${publicKey}`,
-                'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
-                { errorCode: 'noPublicKeyMatch' }
+            const implicitAccountId = Buffer.from(keyPair.getPublicKey().data).toString(
+                'hex'
             );
+            try {
+                const account = await this.getAccount(implicitAccountId);
+                if (account) {
+                    accountIds.push(implicitAccountId);
+                } else {
+                    throw new WalletError(
+                        `Cannot find matching public key: ${publicKey}`,
+                        'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
+                        { errorCode: 'noPublicKeyMatch' }
+                    );
+                }
+            } catch (err) {
+                throw new WalletError(
+                    `Account not exist for public key: ${publicKey}`,
+                    'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
+                    { errorCode: 'accountNotExist' }
+                );
+            }
         }
 
         const connection = nearApiJs.Connection.fromConfig({
@@ -1611,22 +1627,19 @@ export default class Wallet {
                     (key) => key.access_key.permission === 'FullAccess'
                 );
 
-                const publicKey = keyPair.getPublicKey().toString();
                 const hasMatchedPublicKey = accessKeys.some(
                     ({ public_key }) => public_key === publicKey
                 );
 
-                if (accountIds.length === 1) {
-                    if (!accessKeys.length || !hasFullAccessKey) {
-                        accountIdsError.push({
-                            accountId,
-                            error: new WalletError(
-                                `No access key found for ${accountId}`,
-                                'recoverAccountSeedPhrase.errorGeneral'
-                            ),
-                        });
-                        return;
-                    }
+                if (!accessKeys.length || !hasFullAccessKey) {
+                    accountIdsError.push({
+                        accountId,
+                        error: new WalletError(
+                            `No access key found for ${accountId}`,
+                            'recoverAccountSeedPhrase.errorGeneral'
+                        ),
+                    });
+                    return;
                 }
 
                 // private key doesnt match with their public key

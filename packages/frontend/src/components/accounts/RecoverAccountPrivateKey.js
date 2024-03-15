@@ -81,7 +81,7 @@ const RecoverAccountPrivateKey = () => {
                 await dispatch(refreshAccount());
             },
             async (e) => {
-                if (e.data?.errorCode === 'noPublicKeyMatch') {
+                if (e.data?.errorCode === 'accountNotExist') {
                     await dispatch(importZeroBalanceAccountPrivateKey(privateKey));
                     dispatch(setZeroBalanceAccountImportMethod('privateKey'));
                     dispatch(clearGlobalAlert());

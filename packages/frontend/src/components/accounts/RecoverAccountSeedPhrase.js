@@ -121,7 +121,7 @@ class RecoverAccountSeedPhrase extends Component {
                 await refreshAccount();
             },
             async (e) => {
-                if (e.data?.errorCode === 'noPublicKeyMatch') {
+                if (e.data?.errorCode === 'accountNotExist') {
                     await importZeroBalanceAccountPhrase(seedPhrase);
                     setZeroBalanceAccountImportMethod('phrase');
                     clearGlobalAlert();
