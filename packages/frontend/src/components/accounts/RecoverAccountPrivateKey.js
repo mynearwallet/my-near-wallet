@@ -81,11 +81,18 @@ const RecoverAccountPrivateKey = () => {
                 await dispatch(refreshAccount());
             },
             async (e) => {
-                if (e.message.includes('Cannot find matching public key')) {
+                if (e.data?.errorCode === 'accountNotExist') {
                     await dispatch(importZeroBalanceAccountPrivateKey(privateKey));
                     dispatch(setZeroBalanceAccountImportMethod('privateKey'));
                     dispatch(clearGlobalAlert());
                     dispatch(redirectToApp());
+                } else {
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        errorMessage: e.message,
+                        messageCode: 'account.recoverAccount.errorGeneral',
+                    });
                 }
 
                 throw e;

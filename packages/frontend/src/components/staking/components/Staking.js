@@ -95,11 +95,11 @@ export default function Staking({
                         buttonTestId='stakingPageUnstakingButton'
                         balanceTestId='stakingPageTotalStakedAmount'
                     />
-                    <BalanceBox
+                    {/* <BalanceBox
                         title='staking.balanceBox.unclaimed.title'
                         info='staking.balanceBox.unclaimed.info'
                         token={{ ...NEARAsTokenWithMetadata, balance: totalUnclaimed }}
-                    />
+                    /> */}
                 </>
             )}
             {!loading && currentValidators.length ? (
