@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo, useState } from 'react';
 import * as nearApiJs from 'near-api-js';
 import { parseSeedPhrase } from 'near-seed-phrase';
@@ -10,6 +9,7 @@ import FormButtonGroup from '../../common/FormButtonGroup';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import {
+    recoverAccountSecretKey,
     recoverAccountSeedPhrase,
     redirectToApp,
     refreshAccount,
@@ -39,7 +39,9 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
             return publicKey;
         } else if (privateKey && importType === EWalletImportInputType.PRIVATE_KEY) {
             try {
-                const keyPair = nearApiJs.KeyPair.fromString(privateKey);
+                const keyPair = nearApiJs.KeyPair.fromString(
+                    privateKey
+                ) as nearApiJs.utils.KeyPairEd25519;
                 return keyPair.publicKey.toString();
             } catch (err) {
                 console.log('invalid private key');
@@ -78,12 +80,14 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
 
         try {
             if (importType === EWalletImportInputType.SECRET_PHRASE) {
-                await dispatch(recoverAccountSeedPhrase(seedPhrase));
+                await dispatch(recoverAccountSeedPhrase(seedPhrase, accountId));
             } else if (importType === EWalletImportInputType.PRIVATE_KEY) {
-                await dispatch(recoverAccountSecretKey(privateKey));
+                await dispatch(recoverAccountSecretKey(privateKey, accountId, false));
             }
+            // @ts-ignore
             await dispatch(refreshAccount());
-            dispatch(redirectToApp());
+            // @ts-ignore
+            dispatch(redirectToApp('/'));
         } catch (e) {
             setManualImportModalMsg({
                 status: 'error',
@@ -98,6 +102,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
     }
 
     return (
+        // @ts-ignore
         <Modal
             id='modal-manual-import'
             isOpen={isVisible}
@@ -144,7 +149,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                         <h4>Public key</h4>
                         <input
                             disabled
-                            value={publicKey || '-'}
+                            value={!!seedPhrase || !!privateKey ? publicKey : '-'}
                             className='border-gray-400 bg-gray-100 text-gray-800 rounded-md'
                         />
                     </div>
@@ -158,6 +163,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                     {manualImportModalMsg.message}
                 </div>
                 <FormButtonGroup>
+                    {/* @ts-ignore */}
                     <FormButton
                         color='gray'
                         className='link'
@@ -166,6 +172,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                     >
                         <Translate id='button.cancel' />
                     </FormButton>
+                    {/* @ts-ignore */}
                     <FormButton
                         disabled={isLoadingValidation}
                         sending={isLoadingValidation}
