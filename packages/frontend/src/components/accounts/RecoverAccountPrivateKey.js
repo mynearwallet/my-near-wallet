@@ -26,7 +26,8 @@ import classNames from '../../utils/classNames';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
-import { ModalManualImport } from './manual_import/ModalManualImport';
+import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
+import { EWalletImportInputType } from './manual_import/type';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -135,8 +136,6 @@ const RecoverAccountPrivateKey = () => {
         dispatch(clearAccountState());
     };
 
-    const [isManualImportOpen, setManualImportOpen] = useState(false);
-
     return (
         <StyledContainer className='small-centered border'>
             <h1>
@@ -166,19 +165,6 @@ const RecoverAccountPrivateKey = () => {
                     tabIndex='2'
                     autoCapitalize='off'
                 />
-                <div className='manual-import'>
-                    Can't find your account?{' '}
-                    <span
-                        className='manual-import__button'
-                        onClick={() => setManualImportOpen(true)}
-                    >
-                        Import it manually.
-                    </span>
-                </div>
-                <ModalManualImport
-                    isVisible={isManualImportOpen}
-                    setVisible={setManualImportOpen}
-                />
                 <FormButton
                     type='submit'
                     color='blue'
@@ -189,6 +175,9 @@ const RecoverAccountPrivateKey = () => {
                 >
                     <Translate id='button.findMyAccount' />
                 </FormButton>
+                <ModalManualImportWithButton
+                    importType={EWalletImportInputType.PRIVATE_KEY}
+                />
             </form>
         </StyledContainer>
     );

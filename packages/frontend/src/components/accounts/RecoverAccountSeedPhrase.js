@@ -31,6 +31,8 @@ import {
 import isValidSeedPhrase from '../../utils/isValidSeedPhrase';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import Container from '../common/styled/Container.css';
+import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
+import { EWalletImportInputType } from './manual_import/type';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -195,6 +197,9 @@ class RecoverAccountSeedPhrase extends Component {
                         handleChange={this.handleChange}
                     />
                 </form>
+                <ModalManualImportWithButton
+                    importType={EWalletImportInputType.SECRET_PHRASE}
+                />
             </StyledContainer>
         );
     }
