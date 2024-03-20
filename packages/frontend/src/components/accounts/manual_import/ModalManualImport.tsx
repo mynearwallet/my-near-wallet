@@ -195,7 +195,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                         onClick={handleImport}
                         data-test-id='manualImportSubmitButton'
                     >
-                        <Translate id='button.acceptAndContinue' />
+                        <Translate id='button.findMyAccount' />
                     </FormButton>
                 </FormButtonGroup>
             </Container>
