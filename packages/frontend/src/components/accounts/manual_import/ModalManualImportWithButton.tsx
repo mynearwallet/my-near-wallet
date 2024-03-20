@@ -14,6 +14,7 @@ const ModalManualImportWithButton = ({ importType }: Props) => {
             <div className='mt-4'>
                 <Translate id='recoverManual.cantFindAccount' />{' '}
                 <span
+                    data-test-id='buttonOpenManualImportModal'
                     className='underline color-blue cursor-pointer'
                     onClick={() => {
                         setManualImportOpen(true);

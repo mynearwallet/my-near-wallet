@@ -120,6 +120,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                     <div className='field-section'>
                         <h4 className='field-title'>Passphrase</h4>
                         <textarea
+                            data-test-id='manualImportInputSeedPhrase'
                             placeholder='correct horse battery staple...'
                             value={seedPhrase}
                             onChange={(e) => setSeedPhrase(e.target.value)}
@@ -130,6 +131,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                     <div className='field-section'>
                         <h4 className='field-title'>Private Key</h4>
                         <textarea
+                            data-test-id='manualImportInputPrivateKey'
                             placeholder='ed25519:yourprivatekey'
                             value={privateKey}
                             onChange={(e) => setPrivateKey(e.target.value)}
@@ -143,6 +145,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                         <Translate id='recoverManual.inputAccountId' />
                     </h4>
                     <input
+                        data-test-id='manualImportInputAccountId'
                         autoComplete='off'
                         placeholder='youraccountname.near'
                         value={accountId}
