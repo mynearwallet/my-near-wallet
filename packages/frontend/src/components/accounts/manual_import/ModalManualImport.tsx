@@ -80,9 +80,13 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
 
         try {
             if (importType === EWalletImportInputType.SECRET_PHRASE) {
-                await dispatch(recoverAccountSeedPhrase(seedPhrase, accountId));
+                await dispatch(
+                    recoverAccountSeedPhrase(seedPhrase, accountId, false, false)
+                );
             } else if (importType === EWalletImportInputType.PRIVATE_KEY) {
-                await dispatch(recoverAccountSecretKey(privateKey, accountId, false));
+                await dispatch(
+                    recoverAccountSecretKey(privateKey, accountId, false, false)
+                );
             }
             // @ts-ignore
             await dispatch(refreshAccount());

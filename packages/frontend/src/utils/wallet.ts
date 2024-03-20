@@ -1533,18 +1533,25 @@ export default class Wallet {
     async recoverAccountSeedPhrase(
         seedPhrase,
         accountId,
-        shouldCreateFullAccessKey = true
+        shouldCreateFullAccessKey = true,
+        shouldGetAccountIdList = true
     ) {
         const { secretKey } = parseSeedPhrase(seedPhrase);
         return await this.recoverAccountSecretKey(
             secretKey,
             accountId,
-            shouldCreateFullAccessKey
+            shouldCreateFullAccessKey,
+            shouldGetAccountIdList
         );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
+    async recoverAccountSecretKey(
+        secretKey,
+        accountId,
+        shouldCreateFullAccessKey,
+        shouldGetAccountIdList
+    ) {
         const keyPair: nearApiJs.utils.KeyPairEd25519 = nearApiJs.KeyPair.fromString(
             secretKey
         ) as nearApiJs.utils.KeyPairEd25519;
@@ -1553,10 +1560,14 @@ export default class Wallet {
         const tempKeyStore = new nearApiJs.keyStores.InMemoryKeyStore();
 
         let accountIds = [];
-        const accountIdsByPublickKey = await getAccountIds(publicKey);
-        if (!accountId) {
-            accountIds = accountIdsByPublickKey;
-        } else if (accountIdsByPublickKey.includes(accountId)) {
+        if (shouldGetAccountIdList) {
+            const accountIdsByPublickKey = await getAccountIds(publicKey);
+            if (!accountId) {
+                accountIds = accountIdsByPublickKey;
+            } else if (accountIdsByPublickKey.includes(accountId)) {
+                accountIds = [accountId];
+            }
+        } else {
             accountIds = [accountId];
         }
 
