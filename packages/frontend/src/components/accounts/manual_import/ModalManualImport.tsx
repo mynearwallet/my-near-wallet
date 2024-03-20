@@ -29,8 +29,8 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
     const [isLoadingValidation, setLoadingValidation] = useState(false);
     const [manualImportModalMsg, setManualImportModalMsg] = useState<{
         status: 'success' | 'error';
-        message: string;
-    }>({ status: 'error', message: '' });
+        messageCode: string;
+    }>({ status: 'error', messageCode: '' });
     const dispatch = useDispatch();
 
     const publicKey = useMemo(() => {
@@ -52,7 +52,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
     async function handleImport() {
         setManualImportModalMsg({
             status: 'error',
-            message: '',
+            messageCode: '',
         });
         let account;
         setLoadingValidation(true);
@@ -62,7 +62,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
             setLoadingValidation(false);
             setManualImportModalMsg({
                 status: 'error',
-                message: 'Account does not exist or access key doesnt match',
+                messageCode: 'recoverManual.errorAccountNotExist',
             });
             return;
         }
@@ -73,7 +73,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
             setLoadingValidation(false);
             setManualImportModalMsg({
                 status: 'error',
-                message: 'Account does not exist or access key doesnt match',
+                messageCode: 'recoverManual.errorAccessKeyNotMatch',
             });
             return;
         }
@@ -95,7 +95,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
         } catch (e) {
             setManualImportModalMsg({
                 status: 'error',
-                message: e.messageCode,
+                messageCode: e.messageCode || e.message,
             });
         }
         setLoadingValidation(false);
@@ -113,11 +113,14 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
             onClose={() => setVisible(false)}
         >
             <Container>
-                <h3 className='title'>Manual Import Account</h3>
+                <h3 className='title'>
+                    <Translate id='recoverManual.pageTitle' />
+                </h3>
                 {importType === EWalletImportInputType.SECRET_PHRASE ? (
                     <div className='field-section'>
-                        <h4 className='field-title'>Secret Phrase</h4>
+                        <h4 className='field-title'>Passphrase</h4>
                         <textarea
+                            placeholder='correct horse battery staple...'
                             value={seedPhrase}
                             onChange={(e) => setSeedPhrase(e.target.value)}
                             className='border-gray-400 bg-gray-100 text-gray-800 rounded-md'
@@ -127,6 +130,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                     <div className='field-section'>
                         <h4 className='field-title'>Private Key</h4>
                         <textarea
+                            placeholder='ed25519:yourprivatekey'
                             value={privateKey}
                             onChange={(e) => setPrivateKey(e.target.value)}
                             className='border-gray-400 bg-gray-100 text-gray-800 rounded-md'
@@ -136,10 +140,11 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
 
                 <div className='field-section'>
                     <h4 className='field-title'>
-                        Insert your account ID here to import your account
+                        <Translate id='recoverManual.inputAccountId' />
                     </h4>
                     <input
                         autoComplete='off'
+                        placeholder='youraccountname.near'
                         value={accountId}
                         onChange={(e) => {
                             const newAccountId = e.target.value;
@@ -164,7 +169,7 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                             manualImportModalMsg.status === 'success' ? 'green' : 'red',
                     }}
                 >
-                    {manualImportModalMsg.message}
+                    <Translate id={manualImportModalMsg.messageCode} />
                 </div>
                 <FormButtonGroup>
                     {/* @ts-ignore */}

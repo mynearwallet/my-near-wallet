@@ -50,12 +50,6 @@ const StyledContainer = styled(Container)`
         width: 100% !important;
         margin-top: 30px !important;
     }
-
-    .manual-import__button {
-        color: blue;
-        cursor: pointer;
-        margin-top: 8px;
-    }
 `;
 
 const RecoverAccountPrivateKey = () => {

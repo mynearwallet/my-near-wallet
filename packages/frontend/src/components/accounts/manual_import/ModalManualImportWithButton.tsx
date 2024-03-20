@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Translate } from 'react-localize-redux';
 import { ModalManualImport } from './ModalManualImport';
 import { EWalletImportInputType } from './type';
 
@@ -11,15 +12,14 @@ const ModalManualImportWithButton = ({ importType }: Props) => {
     return (
         <>
             <div className='mt-4'>
-                Can't find your account?{' '}
+                <Translate id='recoverManual.cantFindAccount' />{' '}
                 <span
                     className='underline color-blue cursor-pointer'
                     onClick={() => {
-                        console.log('set');
                         setManualImportOpen(true);
                     }}
                 >
-                    Import it manually.
+                    <Translate id='recoverManual.buttonImportManually' />{' '}
                 </span>
             </div>
             <ModalManualImport
