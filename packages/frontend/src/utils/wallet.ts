@@ -1550,7 +1550,7 @@ export default class Wallet {
         secretKey,
         accountId,
         shouldCreateFullAccessKey,
-        shouldGetAccountIdList
+        shouldGetAccountIdList = true
     ) {
         const keyPair: nearApiJs.utils.KeyPairEd25519 = nearApiJs.KeyPair.fromString(
             secretKey
@@ -1567,7 +1567,7 @@ export default class Wallet {
             } else if (accountIdsByPublickKey.includes(accountId)) {
                 accountIds = [accountId];
             }
-        } else {
+        } else if (!!accountId) {
             accountIds = [accountId];
         }
 
