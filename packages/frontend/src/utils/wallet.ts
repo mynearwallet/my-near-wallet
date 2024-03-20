@@ -118,6 +118,10 @@ export async function setKeyMeta(publicKey, meta) {
     localStorage.setItem(`keyMeta:${publicKey}`, JSON.stringify(meta));
 }
 
+export async function unsetKeyMeta(publicKey) {
+    localStorage.removeItem(`keyMeta:${publicKey}`);
+}
+
 export async function getKeyMeta(publicKey) {
     try {
         return JSON.parse(localStorage.getItem(`keyMeta:${publicKey}`)) || {};

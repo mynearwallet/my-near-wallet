@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import makePublicKeyNameStorage from './makePublicKeyNameStorage';
+import { store } from '../../..';
 import CONFIG from '../../../config';
 import {
     getAccessKeys,
@@ -21,9 +22,19 @@ import {
     selectAccountId,
     selectAccountFullAccessKeys,
 } from '../../../redux/slices/account';
-import { wallet } from '../../../utils/wallet';
+import {
+    actions as ledgerActions,
+    selectLedgerConnectionModalType,
+} from '../../../redux/slices/ledger';
+import { ledgerManager } from '../../../utils/ledgerManager';
+import { setLedgerHdPath } from '../../../utils/localStorage';
+import { unsetKeyMeta, wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
 import FormButtonGroup from '../../common/FormButtonGroup';
+import { ConfirmDeAuthorizeBox } from './ConfirmDeAuthorizeBox';
+import { ConfirmRotateBox } from './ConfirmRotateBox';
+
+const { checkAndHideLedgerModal } = ledgerActions;
 
 const Container = styled.div`
     &&& {
@@ -100,6 +111,7 @@ const ed25519PrivateKeyPattern =
 
 const FullAccessKeyRotation = ({ fullAccessKey }) => {
     const dispatch = useDispatch();
+    const ledgerConnectionModalType = useSelector(selectLedgerConnectionModalType);
 
     const [confirmDeAuthorize, setConfirmDeAuthorize] = React.useState(false);
     const [confirmRotate, setConfirmRotate] = React.useState(false);
@@ -111,12 +123,19 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
     const [publicKey, setPublicKey] = React.useState('');
     const [editName, setEditName] = React.useState(false);
     const [inputName, setInputName] = React.useState('');
+    const [usingLedger, setUsingLedger] = React.useState(false);
+    const [ledgerPath, setLedgerPath] = React.useState('1');
+    const [ledgerConnected, setLedgerConnected] = React.useState(false);
 
     const fullAccessKeys = useSelector(selectAccountFullAccessKeys);
 
     const accountId = useSelector(selectAccountId);
 
     const publicKeyNameStorage = makePublicKeyNameStorage(fullAccessKey.public_key);
+
+    React.useEffect(() => {
+        setLedgerConnected(ledgerManager.available);
+    }, [ledgerConnectionModalType]);
 
     React.useEffect(() => {
         wallet.signer
@@ -192,25 +211,41 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
         setDeAuthorizing(true);
 
         try {
-            let inputSecretKey;
+            let inputPublicKey;
 
-            if (ed25519PrivateKeyPattern.test(inputSeedPhrase.trim())) {
-                inputSecretKey = inputSeedPhrase.trim();
-            } else if (bip39SeedPhrasePattern.test(inputSeedPhrase.trim())) {
-                try {
-                    bip39.validateMnemonic(inputSeedPhrase.trim());
-                    inputSecretKey = parseSeedPhrase(inputSeedPhrase.trim()).secretKey;
-                } catch (err) {
-                    throw new Error(
-                        'The seed phrase you entered is not a valid seed phrase, its checksum is wrong.'
-                    );
+            if (usingLedger) {
+                if (!ledgerConnected) {
+                    return;
                 }
-            } else {
-                throw new Error('We can not detect the key format you entered.');
-            }
 
-            const inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
-            const inputPublicKey = inputKeyPair.publicKey.toString();
+                const publicKey = await wallet.getLedgerPublicKey(
+                    `44'/397'/0'/0'/${ledgerPath}'`
+                );
+
+                inputPublicKey = publicKey.toString();
+            } else {
+                let inputSecretKey;
+
+                if (ed25519PrivateKeyPattern.test(inputSeedPhrase.trim())) {
+                    inputSecretKey = inputSeedPhrase.trim();
+                } else if (bip39SeedPhrasePattern.test(inputSeedPhrase.trim())) {
+                    try {
+                        bip39.validateMnemonic(inputSeedPhrase.trim());
+                        inputSecretKey = parseSeedPhrase(
+                            inputSeedPhrase.trim()
+                        ).secretKey;
+                    } catch (err) {
+                        throw new Error(
+                            'The seed phrase you entered is not a valid seed phrase, its checksum is wrong.'
+                        );
+                    }
+                } else {
+                    throw new Error('We can not detect the key format you entered.');
+                }
+
+                const inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
+                inputPublicKey = inputKeyPair.publicKey.toString();
+            }
 
             if (inputPublicKey === fullAccessKey.public_key) {
                 throw new Error(
@@ -229,6 +264,7 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
             }
 
             await dispatch(removeAccessKey(fullAccessKey.public_key));
+            await unsetKeyMeta(fullAccessKey.public_key);
             await dispatch(getAccessKeys());
         } catch (error) {
             dispatch(
@@ -240,6 +276,7 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                 })
             );
         } finally {
+            store.dispatch(checkAndHideLedgerModal());
             setDeAuthorizing(false);
         }
     }
@@ -248,25 +285,42 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
         setRotating(true);
 
         try {
-            let inputSecretKey;
+            let inputPublicKey;
+            let inputKeyPair;
 
-            if (ed25519PrivateKeyPattern.test(inputSeedPhrase.trim())) {
-                inputSecretKey = inputSeedPhrase.trim();
-            } else if (bip39SeedPhrasePattern.test(inputSeedPhrase.trim())) {
-                try {
-                    bip39.validateMnemonic(inputSeedPhrase.trim());
-                    inputSecretKey = parseSeedPhrase(inputSeedPhrase.trim()).secretKey;
-                } catch (err) {
-                    throw new Error(
-                        'The seed phrase you entered is not a valid seed phrase, its checksum is wrong.'
-                    );
+            if (usingLedger) {
+                if (!ledgerConnected) {
+                    return;
                 }
-            } else {
-                throw new Error('We can not detect the key format you entered.');
-            }
 
-            const inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
-            const inputPublicKey = inputKeyPair.publicKey.toString();
+                const publicKey = await wallet.getLedgerPublicKey(
+                    `44'/397'/0'/0'/${ledgerPath}'`
+                );
+
+                inputPublicKey = publicKey.toString();
+            } else {
+                let inputSecretKey;
+
+                if (ed25519PrivateKeyPattern.test(inputSeedPhrase.trim())) {
+                    inputSecretKey = inputSeedPhrase.trim();
+                } else if (bip39SeedPhrasePattern.test(inputSeedPhrase.trim())) {
+                    try {
+                        bip39.validateMnemonic(inputSeedPhrase.trim());
+                        inputSecretKey = parseSeedPhrase(
+                            inputSeedPhrase.trim()
+                        ).secretKey;
+                    } catch (err) {
+                        throw new Error(
+                            'The seed phrase you entered is not a valid seed phrase, its checksum is wrong.'
+                        );
+                    }
+                } else {
+                    throw new Error('We can not detect the key format you entered.');
+                }
+
+                inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
+                inputPublicKey = inputKeyPair.publicKey.toString();
+            }
 
             if (inputPublicKey === fullAccessKey.public_key) {
                 throw new Error(
@@ -284,7 +338,17 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                 );
             }
 
-            await dispatch(recoverAccountSecretKey(inputKeyPair.secretKey.toString()));
+            const oldPublicKey = publicKey;
+
+            if (usingLedger) {
+                setLedgerHdPath({ accountId, path: `44'/397'/0'/0'/${ledgerPath}'` });
+                await wallet.addLedgerAccountId({ accountId });
+            } else {
+                await dispatch(
+                    recoverAccountSecretKey(inputKeyPair.secretKey.toString())
+                );
+            }
+            await unsetKeyMeta(oldPublicKey);
             await dispatch(refreshAccount());
         } catch (error) {
             dispatch(
@@ -307,161 +371,39 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
     return (
         <Container className='authorized-app-box'>
             {confirmDeAuthorize ? (
-                <>
-                    <div className='title disable'>
-                        <Translate id='fullAccessKeys.deAuthorizeConfirm.title' />
-                    </div>
-                    <div className='desc'>
-                        <Translate id='fullAccessKeys.deAuthorizeConfirm.desc' />
-                    </div>
-                    <div className='key font-monospace mt-4'>
-                        {fullAccessKey.public_key}
-                    </div>
-                    <div className='desc mt-4'>
-                        <Translate id='fullAccessKeys.deAuthorizeConfirm.seedPhrasePrompt' />
-                        <span className='text-red-700'>
-                            &nbsp;We're still working on making the feature compatible
-                            with Ledger hardware wallets. Hang tight!
-                        </span>
-                    </div>
-                    <form
-                        onSubmit={(e) => {
-                            deauthorizeKey();
-                            e.preventDefault();
-                        }}
-                        autoComplete='off'
-                    >
-                        <Translate>
-                            {({ translate }) => (
-                                <input
-                                    placeholder={translate(
-                                        'fullAccessKeys.deAuthorizeConfirm.seedPhrase'
-                                    )}
-                                    value={inputSeedPhrase}
-                                    onChange={(e) =>
-                                        validateInputSeedPhrase(e.target.value)
-                                    }
-                                    autoComplete='off'
-                                    spellCheck='false'
-                                    disabled={deAuthorizing}
-                                    autoFocus={true}
-                                />
-                            )}
-                        </Translate>
-                        {inputSeedPhraseSuccess ? (
-                            <div className='mt-2 text-green-600'>
-                                <Translate id='fullAccessKeys.info.key' />
-                                {inputSeedPhraseSuccess}
-                            </div>
-                        ) : inputSeedPhraseError ? (
-                            <div className='mt-2 text-red-600'>
-                                <Translate id={inputSeedPhraseError} />
-                            </div>
-                        ) : (
-                            <></>
-                        )}
-                        <FormButtonGroup>
-                            <FormButton
-                                onClick={() => {
-                                    setConfirmDeAuthorize(false);
-                                    clearInputSeedPhrase();
-                                }}
-                                color='gray-white'
-                                disabled={deAuthorizing}
-                                type='button'
-                            >
-                                <Translate id='button.cancel' />
-                            </FormButton>
-                            <FormButton
-                                disabled={deAuthorizing || inputSeedPhraseSuccess === ''}
-                                sending={deAuthorizing}
-                                sendingString='button.deAuthorizing'
-                                color='red'
-                                type='submit'
-                            >
-                                <Translate id='button.approve' />
-                            </FormButton>
-                        </FormButtonGroup>
-                    </form>
-                </>
+                <ConfirmDeAuthorizeBox
+                    deauthorizeKey={deauthorizeKey}
+                    fullAccessKey={fullAccessKey}
+                    usingLedger={usingLedger}
+                    setUsingLedger={setUsingLedger}
+                    ledgerConnected={ledgerConnected}
+                    ledgerPath={ledgerPath}
+                    setLedgerPath={setLedgerPath}
+                    inputSeedPhrase={inputSeedPhrase}
+                    validateInputSeedPhrase={validateInputSeedPhrase}
+                    inputSeedPhraseSuccess={inputSeedPhraseSuccess}
+                    inputSeedPhraseError={inputSeedPhraseError}
+                    clearInputSeedPhrase={clearInputSeedPhrase}
+                    deAuthorizing={deAuthorizing}
+                    setConfirmDeAuthorize={setConfirmDeAuthorize}
+                />
             ) : confirmRotate ? (
-                <>
-                    <div className='title disable'>
-                        <Translate id='fullAccessKeys.rotateKey.title' />
-                    </div>
-                    <div className='desc'>
-                        <Translate id='fullAccessKeys.rotateKey.desc' />
-                    </div>
-                    <div className='key font-monospace mt-4'>
-                        {fullAccessKey.public_key}
-                    </div>
-                    <div className='desc mt-4'>
-                        <Translate id='fullAccessKeys.rotateKey.seedPhrasePrompt' />
-                        <span className='text-red-700'>
-                            &nbsp;We're still working on making the feature compatible
-                            with Ledger hardware wallets. Hang tight!
-                        </span>
-                    </div>
-                    <form
-                        onSubmit={(e) => {
-                            rotateKey();
-                            e.preventDefault();
-                        }}
-                        autoComplete='off'
-                    >
-                        <Translate>
-                            {({ translate }) => (
-                                <input
-                                    placeholder={translate(
-                                        'fullAccessKeys.rotateKey.seedPhrase'
-                                    )}
-                                    value={inputSeedPhrase}
-                                    onChange={(e) =>
-                                        validateInputSeedPhrase(e.target.value)
-                                    }
-                                    autoComplete='off'
-                                    spellCheck='false'
-                                    disabled={rotating}
-                                    autoFocus={true}
-                                />
-                            )}
-                        </Translate>
-                        {inputSeedPhraseSuccess ? (
-                            <div className='mt-2 text-green-600'>
-                                <Translate id='fullAccessKeys.info.key' />
-                                {inputSeedPhraseSuccess}
-                            </div>
-                        ) : inputSeedPhraseError ? (
-                            <div className='mt-2 text-red-600'>
-                                <Translate id={inputSeedPhraseError} />
-                            </div>
-                        ) : (
-                            <></>
-                        )}
-                        <FormButtonGroup>
-                            <FormButton
-                                onClick={() => {
-                                    setConfirmRotate(false);
-                                    clearInputSeedPhrase();
-                                }}
-                                color='gray-white'
-                                disabled={rotating}
-                                type='button'
-                            >
-                                <Translate id='button.cancel' />
-                            </FormButton>
-                            <FormButton
-                                disabled={rotating || inputSeedPhraseSuccess === ''}
-                                sending={rotating}
-                                sendingString='button.rotatingKey'
-                                color='red'
-                                type='submit'
-                            >
-                                <Translate id='button.approve' />
-                            </FormButton>
-                        </FormButtonGroup>
-                    </form>
-                </>
+                <ConfirmRotateBox
+                    fullAccessKey={fullAccessKey}
+                    rotateKey={rotateKey}
+                    usingLedger={usingLedger}
+                    setUsingLedger={setUsingLedger}
+                    ledgerConnected={ledgerConnected}
+                    ledgerPath={ledgerPath}
+                    setLedgerPath={setLedgerPath}
+                    inputSeedPhrase={inputSeedPhrase}
+                    validateInputSeedPhrase={validateInputSeedPhrase}
+                    inputSeedPhraseSuccess={inputSeedPhraseSuccess}
+                    inputSeedPhraseError={inputSeedPhraseError}
+                    clearInputSeedPhrase={clearInputSeedPhrase}
+                    rotating={rotating}
+                    setConfirmRotate={setConfirmRotate}
+                />
             ) : editName ? (
                 <>
                     <div className='title disable'>

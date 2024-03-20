@@ -662,6 +662,11 @@
         "submitAnyTransaction": "Submit any transaction on your behalf",
         "transaction": "Transaction",
         "useContract": "Use <b>${receiverId}</b> contract on your behalf",
+        "usingLedger": {
+            "checkbox": "I am using ledger.",
+            "connect": "Connect Ledger Device",
+            "hdPath": "HD Path: 44/397/0/0/"
+        },
         "viewYourAccountName": "View your Account Name",
         "warning": {
             "invalidFormat": "We cannot detect the key format you entered.",
