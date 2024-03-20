@@ -198,6 +198,7 @@ const Content: React.FC = () => {
         [selector, accountId]
     );
 
+    // https://github.com/near/NEPs/commit/5b9ddc02e235a3c71d6f983c539cc7e5f58d28cd
     const handleVerifyOwner = async () => {
         const wallet = await selector.wallet();
         try {
