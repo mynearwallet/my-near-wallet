@@ -163,14 +163,18 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                         />
                     </div>
                 </div>
-                <div
-                    style={{
-                        color:
-                            manualImportModalMsg.status === 'success' ? 'green' : 'red',
-                    }}
-                >
-                    <Translate id={manualImportModalMsg.messageCode} />
-                </div>
+                {!!manualImportModalMsg.messageCode && (
+                    <div
+                        style={{
+                            color:
+                                manualImportModalMsg.status === 'success'
+                                    ? 'green'
+                                    : 'red',
+                        }}
+                    >
+                        <Translate id={manualImportModalMsg.messageCode} />
+                    </div>
+                )}
                 <FormButtonGroup>
                     {/* @ts-ignore */}
                     <FormButton
