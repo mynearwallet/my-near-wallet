@@ -125,16 +125,13 @@ export default {
             })
         );
     },
-    listLikelyTokens: (accountId, timestamp) => {
+    listLikelyTokens: (accountId) => {
         const url = `${CONFIG.INDEXER_SERVICE_URL}/account/${accountId}/likelyTokensFromBlock`;
 
         return sendJson(
             'GET',
             stringifyUrl({
                 url,
-                query: {
-                    fromBlockTimestamp: timestamp,
-                },
             })
         );
     },
