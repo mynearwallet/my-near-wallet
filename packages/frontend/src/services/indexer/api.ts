@@ -8,7 +8,7 @@ import { accountsByPublicKey } from '@mintbase-js/data';
 
 export default {
     listAccountsByPublicKey: (publicKey): Promise<string[]> => {
-        return new Promise(async (masterResolve, masterReject) => {
+        return new Promise(async (masterResolve) => {
             const masterController = new AbortController();
 
             const promises = [
@@ -79,7 +79,7 @@ export default {
                 // ---------------------
                 promises.push(
                     fetch(
-                        `${CONFIG.INDEXER_FASTNEAR_SERVICE_URL}/v0/public_key/${publicKey}`,
+                        `${CONFIG.INDEXER_FASTNEAR_SERVICE_URL}/v0/public_key/${publicKey}/all`,
                         {
                             signal: masterController.signal,
                         }
@@ -109,7 +109,7 @@ export default {
             const flattenResults = results.flat();
 
             if (flattenResults.length === 0) {
-                masterReject(new Error('No accounts found'));
+                masterResolve([]);
             }
         });
     },
@@ -125,16 +125,13 @@ export default {
             })
         );
     },
-    listLikelyTokens: (accountId, timestamp) => {
+    listLikelyTokens: (accountId) => {
         const url = `${CONFIG.INDEXER_SERVICE_URL}/account/${accountId}/likelyTokensFromBlock`;
 
         return sendJson(
             'GET',
             stringifyUrl({
                 url,
-                query: {
-                    fromBlockTimestamp: timestamp,
-                },
             })
         );
     },

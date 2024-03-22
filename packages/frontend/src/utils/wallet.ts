@@ -56,10 +56,10 @@ export const WALLET_SEND_MONEY_URL = 'send-money';
 export const WALLET_VERIFY_OWNER_URL = 'verify-owner';
 export const WALLET_SIGN_MESSAGE_URL = 'sign-message';
 
-export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_HELPER_URL}/account`;
-export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/fundedAccount`;
-export const IDENTITY_FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/identityFundedAccount`;
-const IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL = `${CONFIG.ACCOUNT_HELPER_URL}/identityVerificationMethod`;
+export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/account`;
+export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/fundedAccount`;
+export const IDENTITY_FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityFundedAccount`;
+const IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityVerificationMethod`;
 
 export const SHOW_NETWORK_BANNER = !CONFIG.IS_MAINNET || CONFIG.SHOW_PRERELEASE_WARNING;
 export const ENABLE_IDENTITY_VERIFIED_ACCOUNT = true;
@@ -643,7 +643,7 @@ export default class Wallet {
     async checkFundedAccountAvailable() {
         const { available } = await sendJson(
             'GET',
-            CONFIG.ACCOUNT_HELPER_URL + '/checkFundedAccountAvailable'
+            CONFIG.ACCOUNT_KITWALLET_HELPER_URL + '/checkFundedAccountAvailable'
         );
         return available;
     }
@@ -1345,7 +1345,8 @@ export default class Wallet {
         };
         await sendJson(
             'POST',
-            CONFIG.ACCOUNT_HELPER_URL + '/account/initializeRecoveryMethodForTempAccount',
+            CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
+                '/account/initializeRecoveryMethodForTempAccount',
             body
         );
         return seedPhrase;
@@ -1362,7 +1363,7 @@ export default class Wallet {
         if (isNew) {
             await sendJson(
                 'POST',
-                CONFIG.ACCOUNT_HELPER_URL +
+                CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
                     '/account/initializeRecoveryMethodForTempAccount',
                 body
             );
@@ -1381,7 +1382,8 @@ export default class Wallet {
         try {
             await sendJson(
                 'POST',
-                CONFIG.ACCOUNT_HELPER_URL + '/account/validateSecurityCodeForTempAccount',
+                CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
+                    '/account/validateSecurityCodeForTempAccount',
                 {
                     accountId: implicitAccountId,
                     method,
@@ -1417,7 +1419,7 @@ export default class Wallet {
             if (isNew) {
                 await sendJson(
                     'POST',
-                    CONFIG.ACCOUNT_HELPER_URL +
+                    CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
                         '/account/validateSecurityCodeForTempAccount',
                     {
                         ...body,
@@ -1560,18 +1562,44 @@ export default class Wallet {
 
         // remove duplicate and non-existing accounts
         const accountsSet = new Set(accountIds);
+        let hasDeletedAccount = false;
         for (const accountId of accountsSet) {
-            if (!(await this.accountExists(accountId))) {
+            const isAccountExist = await this.accountExists(accountId);
+            if (!isAccountExist) {
                 accountsSet.delete(accountId);
+                hasDeletedAccount = !!accountId;
             }
         }
         accountIds = [...accountsSet];
+        if (hasDeletedAccount && !accountIds.length) {
+            throw new WalletError(
+                `Cannot import account but found deleted account for public key: ${publicKey}`,
+                'recoverAccountSeedPhrase.errorGeneral'
+            );
+        }
 
         if (!accountIds.length) {
-            throw new WalletError(
-                `Cannot find matching public key: ${publicKey}`,
-                'recoverAccountSeedPhrase.errorInvalidSeedPhrase'
+            const implicitAccountId = Buffer.from(keyPair.getPublicKey().data).toString(
+                'hex'
             );
+            try {
+                const account = await this.getAccount(implicitAccountId);
+                if (account) {
+                    accountIds.push(implicitAccountId);
+                } else {
+                    throw new WalletError(
+                        `Cannot find matching public key: ${publicKey}`,
+                        'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
+                        { errorCode: 'noPublicKeyMatch' }
+                    );
+                }
+            } catch (err) {
+                throw new WalletError(
+                    `Account not exist for public key: ${publicKey}`,
+                    'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
+                    { errorCode: 'accountNotExist' }
+                );
+            }
         }
 
         const connection = nearApiJs.Connection.fromConfig({
@@ -1594,9 +1622,43 @@ export default class Wallet {
                 this.accountId = accountId;
                 const account = await this.getAccount(accountId);
                 let recoveryKeyIsFAK = false;
+
+                // check for keypair match
+                const accessKeys = await this.getAccessKeys(accountId);
+                const hasFullAccessKey = accessKeys.some(
+                    (key) => key.access_key.permission === 'FullAccess'
+                );
+
+                const hasMatchedPublicKey = accessKeys.some(
+                    ({ public_key }) => public_key === publicKey
+                );
+
+                if (!accessKeys.length || !hasFullAccessKey) {
+                    accountIdsError.push({
+                        accountId,
+                        error: new WalletError(
+                            `No access key found for ${accountId}`,
+                            'recoverAccountSeedPhrase.errorGeneral'
+                        ),
+                    });
+                    return;
+                }
+
+                // private key doesnt match with their public key
+                if (!hasMatchedPublicKey) {
+                    accountIdsError.push({
+                        accountId,
+                        error: new WalletError(
+                            `No matching key pair for public key ${publicKey}`,
+                            'recoverAccountSeedPhrase.keyPairUnmatch',
+                            { errorCode: 'keyPairUnmatch' }
+                        ),
+                    });
+                    return;
+                }
+
                 // check if recover access key is FAK and if so add key without 2FA
                 if (await TwoFactor.has2faEnabled(account)) {
-                    const accessKeys = await account.getAccessKeys();
                     recoveryKeyIsFAK = accessKeys.find(
                         ({ public_key, access_key }) =>
                             public_key === publicKey &&
@@ -1609,7 +1671,6 @@ export default class Wallet {
                     }
                 }
 
-                const keyPair = nearApiJs.KeyPair.fromString(secretKey);
                 await tempKeyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
                 account.keyStore = tempKeyStore;
 
