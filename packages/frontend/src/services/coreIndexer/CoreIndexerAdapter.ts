@@ -89,8 +89,8 @@ export class CoreIndexerAdapter {
                             return data;
                         }
 
-                        masterController.abort();
                         if (!waitAllIndexer) {
+                            masterController.abort();
                             masterResolve(data);
                         }
                         return data;

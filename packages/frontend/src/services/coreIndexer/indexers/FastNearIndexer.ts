@@ -47,6 +47,6 @@ export class FastNearIndexer extends AbstractCoreIndexer {
 }
 
 interface Response_getAccountIdListFromPublicKey {
-    public_key: string;
+    public_key: PublicKey;
     account_ids: string[];
 }
