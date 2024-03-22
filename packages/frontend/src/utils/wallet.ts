@@ -3,6 +3,7 @@ import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/c
 import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
+import type { AccessKeyList } from 'near-api-js/lib/providers/provider';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { decorateWithLockup } from './account-with-lockup';
@@ -1561,10 +1562,10 @@ export default class Wallet {
 
         let accountIds = [];
         if (shouldGetAccountIdList) {
-            const accountIdsByPublickKey = await getAccountIds(publicKey);
+            const accountIdsByPublicKey = await getAccountIds(publicKey);
             if (!accountId) {
-                accountIds = accountIdsByPublickKey;
-            } else if (accountIdsByPublickKey.includes(accountId)) {
+                accountIds = accountIdsByPublicKey;
+            } else if (accountIdsByPublicKey.includes(accountId)) {
                 accountIds = [accountId];
             }
         } else if (!!accountId) {
@@ -1573,22 +1574,15 @@ export default class Wallet {
 
         // remove duplicate and non-existing accounts
         const accountsSet = new Set(accountIds);
-        let hasDeletedAccount = false;
         for (const accountId of accountsSet) {
             const isAccountExist = await this.accountExists(accountId);
             if (!isAccountExist) {
                 accountsSet.delete(accountId);
-                hasDeletedAccount = !!accountId;
             }
         }
         accountIds = [...accountsSet];
-        if (hasDeletedAccount && !accountIds.length) {
-            throw new WalletError(
-                `Cannot import account but found deleted account for public key: ${publicKey}`,
-                'recoverAccountSeedPhrase.errorGeneral'
-            );
-        }
 
+        const accountIdsError = [];
         if (!accountIds.length) {
             const implicitAccountId = Buffer.from(keyPair.getPublicKey().data).toString(
                 'hex'
@@ -1596,6 +1590,17 @@ export default class Wallet {
             try {
                 const account = await this.getAccount(implicitAccountId);
                 if (account) {
+                    const accessKeys = await this.getAccessKeys(implicitAccountId);
+                    const hasMatchedPublicKey = accessKeys.some(
+                        ({ public_key }) => public_key === publicKey
+                    );
+                    if (!hasMatchedPublicKey) {
+                        throw new WalletError(
+                            `No matching key pair for public key ${publicKey}`,
+                            'recoverAccountSeedPhrase.keyPairUnmatch',
+                            { errorCode: 'keyPairUnmatch' }
+                        );
+                    }
                     accountIds.push(implicitAccountId);
                 } else {
                     throw new WalletError(
@@ -1605,6 +1610,29 @@ export default class Wallet {
                     );
                 }
             } catch (err) {
+                const provider = new nearApiJs.providers.JsonRpcProvider({
+                    url: (this.connection.provider as nearApiJs.providers.JsonRpcProvider)
+                        .connection.url,
+                });
+                const accessKeys = await provider
+                    .query<AccessKeyList>({
+                        request_type: 'view_access_key_list',
+                        finality: 'optimistic',
+                        account_id: implicitAccountId,
+                    })
+                    .then((r) => r?.keys || []);
+
+                const hasMatchedPublicKey = accessKeys.some(
+                    ({ public_key }) => public_key === publicKey
+                );
+                if (accessKeys.length && !hasMatchedPublicKey) {
+                    throw new WalletError(
+                        `No matching key pair for public key ${publicKey}`,
+                        'recoverAccountSeedPhrase.keyPairUnmatch',
+                        { errorCode: 'keyPairUnmatch' }
+                    );
+                }
+
                 throw new WalletError(
                     `Account not exist for public key: ${publicKey}`,
                     'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
@@ -1622,7 +1650,6 @@ export default class Wallet {
         const connectionConstructor = this.connection;
 
         const accountIdsSuccess = [];
-        const accountIdsError = [];
         await Promise.all(
             accountIds.map(async (accountId) => {
                 if (!accountId || !accountId.length) {
