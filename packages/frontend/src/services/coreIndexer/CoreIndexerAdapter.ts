@@ -78,7 +78,6 @@ export class CoreIndexerAdapter {
         waitAllIndexer?: boolean
     ): Promise<string[]> {
         return new Promise(async (masterResolve, masterReject) => {
-            const masterController = new AbortController();
             const promises = this.indexersInQueue.map((indexer) =>
                 indexer.getAccountIdListFromPublicKey(publicKey)
             );
@@ -90,7 +89,6 @@ export class CoreIndexerAdapter {
                         }
 
                         if (!waitAllIndexer) {
-                            masterController.abort();
                             masterResolve(data);
                         }
                         return data;

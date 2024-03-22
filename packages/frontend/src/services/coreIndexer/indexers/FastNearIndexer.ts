@@ -30,9 +30,7 @@ export class FastNearIndexer extends AbstractCoreIndexer {
         }
     }
 
-    async getAccountIdListFromPublicKey(
-        publicKey: PublicKey | string
-    ): Promise<string[]> {
+    async getAccountIdListFromPublicKey(publicKey: string): Promise<string[]> {
         const result: Response_getAccountIdListFromPublicKey = await fetch(
             `${this.getBaseUrl()}/public_key/${publicKey}`
         ).then((r) => r.json());
