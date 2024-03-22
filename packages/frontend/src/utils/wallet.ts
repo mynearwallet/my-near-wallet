@@ -1117,7 +1117,8 @@ export default class Wallet {
 
         let accountIds;
         try {
-            accountIds = await getAccountIds(publicKey);
+            const waitAllIndexer = true;
+            accountIds = await getAccountIds(publicKey, waitAllIndexer);
         } catch (error) {
             if (error.name === 'AbortError') {
                 throw new WalletError('Fetch aborted.', 'getLedgerAccountIds.aborted');

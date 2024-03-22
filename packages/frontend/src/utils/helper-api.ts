@@ -1,16 +1,18 @@
 import * as nearApiJs from 'near-api-js';
 import { parseSeedPhrase } from 'near-seed-phrase';
 
-import { listAccountsByPublicKey } from '../services/indexer';
+import CONFIG from '../config';
+import { CoreIndexerAdapter } from '../services/coreIndexer/CoreIndexerAdapter';
 
-export async function getAccountIds(publicKey) {
-    return listAccountsByPublicKey(publicKey);
+export async function getAccountIds(publicKey, waitAllIndexer?:boolean) {
+    const coreIndexerAdapter = CoreIndexerAdapter.getInstance(CONFIG.CURRENT_NEAR_NETWORK);
+    return await coreIndexerAdapter.fetchAccountIdsByPublicKeyFromAllIndexers(publicKey, waitAllIndexer);
 }
 
 export async function getAccountIdsBySeedPhrase(seedPhrase) {
     const { secretKey } = parseSeedPhrase(seedPhrase);
     const keyPair = nearApiJs.KeyPair.fromString(secretKey);
-    const publicKey = keyPair.publicKey.toString();
+    const publicKey = keyPair.getPublicKey().toString();
     return getAccountIds(publicKey);
 }
 
