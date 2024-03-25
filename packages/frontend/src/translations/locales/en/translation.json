@@ -664,7 +664,7 @@
         "useContract": "Use <b>${receiverId}</b> contract on your behalf",
         "viewYourAccountName": "View your Account Name",
         "warning": {
-            "doesNotMatch": "he key you entered is not a valid recovery key for the public key you wanted to use.",
+            "doesNotMatch": "The key you entered is not a valid recovery key for the public key you wanted to use.",
             "invalidFormat": "We cannot detect the key format you entered.",
             "invalidKey": "The key you entered is not a valid recovery key for this account.",
             "invalidSeedPhrase": "The seed phrase you entered is not valid; its checksum is incorrect."
