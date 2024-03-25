@@ -967,6 +967,14 @@
             "title": "私钥"
         }
     },
+    "recoverManual": {
+        "buttonImportManually": "手动导入。",
+        "cantFindAccount": "找不到您的帐户？",
+        "errorAccessKeyNotMatch": "访问密钥不匹配",
+        "errorAccountNotExist": "账户不存在",
+        "inputAccountId": "在此插入您的帐户 ID 以导入您的帐户",
+        "pageTitle": "手动导入账户"
+    },
     "recoverPrivateKey": {
         "pageText": "请输入与该账户关联的私钥。",
         "pageTitle": "使用私钥进行恢复",

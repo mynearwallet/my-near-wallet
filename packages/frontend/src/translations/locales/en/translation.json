@@ -1066,6 +1066,14 @@
             "title": "Private Key"
         }
     },
+    "recoverManual": {
+        "buttonImportManually": "Import it manually.",
+        "cantFindAccount": "Can't find your account?",
+        "errorAccessKeyNotMatch": "Access key doesn't match",
+        "errorAccountNotExist": "Account does not exist",
+        "inputAccountId": "Insert your account ID here to import your account",
+        "pageTitle": "Manual Import Account"
+    },
     "recoverPrivateKey": {
         "pageText": "Enter the private key associated with the account.",
         "pageTitle": "Recover using Private Key",

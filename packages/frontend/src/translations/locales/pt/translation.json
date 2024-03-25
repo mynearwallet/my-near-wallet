@@ -815,6 +815,14 @@
             "title": "Chave Privada"
         }
     },
+    "recoverManual": {
+        "buttonImportManually": "Importar manualmente.",
+        "cantFindAccount": "Não consegue encontrar sua conta?",
+        "errorAccessKeyNotMatch": "A chave de acesso não corresponde",
+        "errorAccountNotExist": "Conta não existe",
+        "inputAccountId": "Insira o ID da sua conta aqui para importar sua conta",
+        "pageTitle": "Importação manual de conta"
+    },
     "recoverPrivateKey": {
         "pageText": "Digite a chave privada associada à conta.",
         "pageTitle": "Recuperar usando a Chave Privada",
