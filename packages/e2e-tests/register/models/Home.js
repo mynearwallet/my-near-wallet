@@ -53,7 +53,9 @@ class HomePage {
         const rawBalance = await this.page.textContent(
             'data-test-id=walletHomeNearBalance'
         );
-        const mixed = rawBalance.split(' ')[0];
+
+        const mixed = rawBalance.replace('—', '').split(' ')[0];
+
         if (mixed.includes('$')) {
             return mixed.split('$')[0];
         }

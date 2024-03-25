@@ -247,7 +247,7 @@ async function getAccountBalance(limitedAccountData = false) {
                     .viewFunction(validator_id, 'get_account_total_balance', {
                         account_id: this.accountId,
                     })
-                    .catch((err) => {
+                    .catch((err) => {   
                         if (
                             // Means the validators  don't have contract deployed, or don't support staking
                             err.message.includes('CompilationError(CodeDoesNotExist') ||

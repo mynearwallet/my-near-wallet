@@ -23,7 +23,19 @@ function generateTestAccountId() {
     }`;
 }
 
+async function getEnvTestAccount() {
+    const { TEST_ACCOUNT_ID, TEST_ACCOUNT_SEED_PHRASE } = process.env;
+    const near = await nearApiJsConnection.getConnection();
+    const nearApiJsAccount = await near.account(TEST_ACCOUNT_ID);
+    return new E2eTestAccount(
+        TEST_ACCOUNT_ID || '',
+        TEST_ACCOUNT_SEED_PHRASE || '',
+        nearApiJsAccount
+    );
+}
+
 module.exports = {
     getBankAccount,
     generateTestAccountId,
+    getEnvTestAccount,
 };

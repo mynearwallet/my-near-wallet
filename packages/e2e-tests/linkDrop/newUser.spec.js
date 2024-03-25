@@ -16,12 +16,13 @@ const nearApiJsConnection = require('../utils/connectionSingleton');
 const E2eTestAccount = require('../utils/E2eTestAccount');
 const { getKeyPairFromSeedPhrase } = require('../utils/helpers');
 const LinkdropAccountManager = require('../utils/LinkdropAccountManager');
+const { createPassword, unlockPassword } = require('../utils/password');
 
 const { describe, beforeAll, afterAll } = test;
 
 describe('Linkdrop flow', () => {
     let linkdropAccountManager,
-        linkdropNEARAmount = '2.5';
+        linkdropNEARAmount = '1.2';
     let deleteAccountsAfter = [];
 
     const linkdropClaimableAmount = new BN(parseNearAmount(linkdropNEARAmount) || '').sub(
@@ -55,6 +56,7 @@ describe('Linkdrop flow', () => {
         await expect(page.locator('.dots')).not.toBeVisible();
         await linkdropPage.loginAndClaim();
 
+        await createPassword(page);
         await page.click('data-test-id=recoverAccountWithPassphraseButton');
         await page.fill(
             'data-test-id=seedPhraseRecoveryInput',
@@ -65,6 +67,8 @@ describe('Linkdrop flow', () => {
 
         await expect(page).toHaveURL(/\/$/);
         await page.reload();
+
+        await unlockPassword(page);
         await expect(page.locator('.tokensLoading')).not.toBeVisible();
         const nearBalance = await new HomePage(page).getNearBalanceInNear();
         expect(
@@ -81,6 +85,8 @@ describe('Linkdrop flow', () => {
         await linkdropPage.navigate(linkdropContractAccount.accountId, linkdropSecretKey);
         await expect(page.locator('.dots')).not.toBeVisible();
         await linkdropPage.loginAndClaim();
+
+        await createPassword(page);
         const keyPair = getKeyPairFromSeedPhrase(linkdropReceiverAccount.seedPhrase);
         await page.click('data-test-id=recoverAccountWithPrivateKey');
         await page.fill('data-test-id=privateKeyRecoveryInput', keyPair.toString());
@@ -89,6 +95,8 @@ describe('Linkdrop flow', () => {
 
         await expect(page).toHaveURL(/\/$/);
         await page.reload();
+
+        await unlockPassword(page);
         await expect(page.locator('.tokensLoading')).not.toBeVisible();
         const nearBalance = await new HomePage(page).getNearBalanceInNear();
         expect(
@@ -111,6 +119,7 @@ describe('Linkdrop flow', () => {
         await expect(page.locator('.dots')).not.toBeVisible();
         await linkdropPage.loginAndClaim();
 
+        await createPassword(page);
         await page.click('data-test-id=recoverAccountWithPassphraseButton');
         await page.fill(
             'data-test-id=seedPhraseRecoveryInput',
@@ -144,6 +153,7 @@ describe('Linkdrop flow', () => {
         );
         await linkdropPage.createAccountToClaim();
 
+        await createPassword(page);
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
@@ -179,6 +189,7 @@ describe('Linkdrop flow', () => {
         page,
         context,
     }) => {
+        test.setTimeout(60_000);
         await context
             .grantPermissions(['clipboard-read', 'clipboard-write'])
             .catch(test.skip);
@@ -198,6 +209,7 @@ describe('Linkdrop flow', () => {
         );
         await linkdropPage.createAccountToClaim();
 
+        await createPassword(page);
         const createAccountPage = new CreateAccountPage(page);
         await createAccountPage.acceptTerms();
         const testAccountId = generateTestAccountId();
