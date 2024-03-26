@@ -330,11 +330,11 @@ export const selectAllowedTokens = createSelector(
                 return true;
             }
 
-            if (onChainFTMetadata.symbol.length >= 10) {
+            if (onChainFTMetadata.symbol.length >= 15) {
                 return false;
             }
 
-            if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)) {
+            if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9$]+$/)) {
                 return false;
             }
 
