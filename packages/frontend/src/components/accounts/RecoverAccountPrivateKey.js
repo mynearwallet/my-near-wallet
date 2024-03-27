@@ -26,6 +26,8 @@ import classNames from '../../utils/classNames';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
+import { EWalletImportInputType } from './manual_import/type';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -167,6 +169,9 @@ const RecoverAccountPrivateKey = () => {
                 >
                     <Translate id='button.findMyAccount' />
                 </FormButton>
+                <ModalManualImportWithButton
+                    importType={EWalletImportInputType.PRIVATE_KEY}
+                />
             </form>
         </StyledContainer>
     );

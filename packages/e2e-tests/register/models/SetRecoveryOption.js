@@ -1,3 +1,5 @@
+const { createPassword } = require('../../utils/password');
+
 class SetRecoveryOptionPage {
     recoveryOptions = {
         ledger: 'ledger',
@@ -25,6 +27,7 @@ class SetRecoveryOptionPage {
         return `data-test-id=recoveryOption.${this.recoveryOptions.seedPhrase}`;
     }
     async clickLedgerRecoveryOption() {
+        await createPassword(this.page);
         return await this.page.click(this.getLedgerSelector());
     }
     async clickEmailRecoveryOption() {

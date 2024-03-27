@@ -126,7 +126,10 @@ export default function Preview({
             {}
 
             {priceImpactPercent > PRICE_IMPACT_THRESHOLD.error ? (
-                <div className='p-3 mt-2 border-red-600 text-red-600 text-md bg-red-100 rounded-lg border-solid border-1'>
+                <div
+                    className='p-3 mt-2 border-red-600 text-red-600 text-md bg-red-100 rounded-lg border-solid border-1'
+                    data-test-id='swapPriceDisabledWarning'
+                >
                     The price impact is {priceImpactPercent}%. To protect you from
                     potential asset loss, we have disabled the swap. We recommend using
                     https://app.ref.finance.

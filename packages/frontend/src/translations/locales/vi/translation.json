@@ -754,6 +754,14 @@
             "title": "Khóa riêng"
         }
     },
+    "recoverManual": {
+        "buttonImportManually": "Nhập thủ công.",
+        "cantFindAccount": "Không thể tìm thấy tài khoản của bạn?",
+        "errorAccessKeyNotMatch": "Khóa truy cập không khớp",
+        "errorAccountNotExist": "Tài khoản không tồn tại",
+        "inputAccountId": "Chèn ID tài khoản của bạn vào đây để nhập tài khoản của bạn",
+        "pageTitle": "Tài khoản nhập thủ công"
+    },
     "recoverPrivateKey": {
         "pageText": "Vui lòng nhập khóa riêng liên kết với tài khoản.",
         "pageTitle": "Khôi phục bằng Khóa Riêng",

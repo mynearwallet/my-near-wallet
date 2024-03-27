@@ -21,7 +21,9 @@ class SelfReloadingE2eTestAccount extends E2eTestAccount {
         this.nearApiJsAccount = new Account(
             new Connection(
                 config.networkId,
-                new SelfReloadingJSONRpcProvider(config.nodeUrl),
+                new SelfReloadingJSONRpcProvider({
+                    url: config.nodeUrl,
+                }),
                 new InMemorySigner(config.keyStore)
             ),
             this.accountId

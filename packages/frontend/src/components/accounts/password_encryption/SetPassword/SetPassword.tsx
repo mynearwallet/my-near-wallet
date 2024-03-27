@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { currentTargetValue } from '../../../../shared/lib/forms/selectors';
-import ComplexityBlock from '../../ComplexityBlock';
-import { validatePassword } from '../../ComplexityBlock/lib/complexity';
 import { inLength, isEqual, MIN_PASS_LEN } from './lib/validation';
 import { Confirm, Enter } from './ui';
 import Input from './ui/Input';
+import { currentTargetValue } from '../../../../shared/lib/forms/selectors';
+import ComplexityBlock from '../../ComplexityBlock';
+import { validatePassword } from '../../ComplexityBlock/lib/complexity';
 
 type SetPasswordProps = {
     onChange: (value: string | null) => void;
@@ -78,6 +78,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
             <Enter>
                 <Input
                     error={lengthError ? t('setupPasswordProtection.lengthError') : ''}
+                    data-test-id='password'
                     placeholder={t('setupPasswordProtection.enter')}
                     value={password}
                     onChange={currentTargetValue(handleChangePassword)}
@@ -93,6 +94,7 @@ const SetPassword: FC<SetPasswordProps> = ({ onChange }) => {
                             ? t('setupPasswordProtection.matchError')
                             : ''
                     }
+                    data-test-id='confirm-password'
                     placeholder={t('setupPasswordProtection.confirm')}
                     value={confirmPassValue}
                     onChange={currentTargetValue(handleChangeConfirmPassword)}

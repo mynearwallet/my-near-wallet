@@ -8,6 +8,7 @@ const { connect, keyStores, WalletConnection, utils } = nearApi;
 
     const config = {
         ...DEFAULT_NEAR_CONFIG,
+        walletUrl: 'https://localhost:1234/',
         keyStore: new keyStores.BrowserLocalStorageKeyStore(),
     };
     const near = await connect(config);

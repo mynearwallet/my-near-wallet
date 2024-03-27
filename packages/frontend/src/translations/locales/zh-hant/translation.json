@@ -967,6 +967,14 @@
             "title": "私鑰"
         }
     },
+    "recoverManual": {
+        "buttonImportManually": "手動導入。",
+        "cantFindAccount": "找不到您的帳戶？",
+        "errorAccessKeyNotMatch": "存取金鑰不符",
+        "errorAccountNotExist": "帳戶不存在",
+        "inputAccountId": "在此插入您的帳戶 ID 以匯入您的帳戶",
+        "pageTitle": "手動導入帳戶"
+    },
     "recoverPrivateKey": {
         "pageText": "請輸入與該帳戶相關聯的私鑰。",
         "pageTitle": "使用私鑰進行恢復",

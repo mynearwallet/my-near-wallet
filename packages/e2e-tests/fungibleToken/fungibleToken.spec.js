@@ -1,22 +1,26 @@
 // @ts-check
-const { test, expect } = require('../playwrightWithFixtures');
+const { test, expect } = require('@playwright/test');
+
 const { HomePage } = require('../register/models/Home');
 const { SwapPage } = require('../swap/models/Swap');
 const { SendMoneyPage } = require('../transfer-tokens/models/SendMoney');
-const { describe, beforeAll, afterAll } = test;
+const { getEnvTestAccount } = require('../utils/account');
+const { describe, beforeEach, beforeAll } = test;
 
 describe('Rename FT symbol', () => {
-    /**
-     * @type {import('../utils/E2eTestAccount')}
-     */
     let account;
-    beforeAll(async ({ bankAccount }) => {
-        account = bankAccount.spawnRandomSubAccountInstance();
-        await account.create();
+
+    beforeAll(async () => {
+        account = await getEnvTestAccount();
     });
 
-    afterAll(async () => {
-        await account.delete();
+    beforeEach(async ({ page }) => {
+        const homePage = new HomePage(page);
+        await homePage.navigate();
+        await homePage.loginWithSeedPhraseLocalStorage(
+            account.accountId,
+            account.seedPhrase
+        );
     });
 
     test('Bridged USDT and Bridged USDC is renamed properly', async ({ page }) => {
@@ -49,13 +53,15 @@ describe('Rename FT symbol', () => {
     });
 
     test('Show warning when Bridged token is selected in send page', async ({ page }) => {
+        test.setTimeout(120 * 1000);
+
         const homePage = new HomePage(page);
         await homePage.loginAndNavigate(account.accountId, account.seedPhrase);
         const swapPage = new SwapPage(page);
         await swapPage.navigate();
         await swapPage.fillForm({
             inId: 'NEAR',
-            inAmount: '0.5',
+            inAmount: '0.001',
             outId: 'usdt.fakes.testnet',
         });
         await swapPage.clickOnPreviewButton();

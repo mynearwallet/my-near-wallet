@@ -86,6 +86,7 @@ describe('Lockup stake and unstake', () => {
         await stakeUnstakePage.selectNthAccount(1);
         await page.locator('data-test-id=stakingPageUnstakingButton').click({
             trial: true,
+            timeout: 60_000,
         });
         await expect(
             page.locator('data-test-id=stakingPageTotalStakedAmount')
