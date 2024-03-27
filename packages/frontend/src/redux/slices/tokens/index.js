@@ -303,6 +303,15 @@ export const selectTokensWithMetadataForAccountId = createSelector(
     }
 );
 
+const WHITELISTED_TOKENS = [
+    'Native USDT',
+    'Native USDC',
+    'Bridged USDC',
+    'Bridged USDT',
+    'BLACKDRAGON',
+    '$META',
+];
+
 export const selectAllowedTokens = createSelector(
     [
         selectTokensFiatValueUSD,
@@ -322,15 +331,11 @@ export const selectAllowedTokens = createSelector(
         }));
 
         const safeTokenList = tokenList.filter(({ onChainFTMetadata }) => {
-            if (
-                ['Native USDT', 'Native USDC', 'Bridged USDC', 'Bridged USDT'].includes(
-                    onChainFTMetadata.symbol
-                )
-            ) {
+            if (WHITELISTED_TOKENS.includes(onChainFTMetadata.symbol)) {
                 return true;
             }
 
-            if (onChainFTMetadata.symbol.length >= 15) {
+            if (onChainFTMetadata.symbol.length >= 10) {
                 return false;
             }
 
