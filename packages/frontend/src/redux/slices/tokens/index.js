@@ -339,7 +339,7 @@ export const selectAllowedTokens = createSelector(
                 return false;
             }
 
-            if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9$]+$/)) {
+            if (!onChainFTMetadata.symbol.match(/^[a-zA-Z0-9]+$/)) {
                 return false;
             }
 
