@@ -1,26 +1,15 @@
 // @ts-check
 const { test, expect } = require('../playwrightWithFixtures');
+const { createPassword } = require('../utils/password');
 
-const { describe, beforeAll, afterAll } = test;
+const { describe } = test;
 
 describe('Account Recovery Using Private Key', () => {
-    let testAccount;
-
-    beforeAll(async ({ bankAccount }) => {
-        testAccount = bankAccount.spawnRandomSubAccountInstance();
-        await testAccount.create();
-    });
-
-    afterAll(async () => {
-        await testAccount.delete();
-    });
-
     test('should import manual account success from seedphrase page', async ({
         page,
     }) => {
         await page.goto('/recover-seed-phrase');
-        // uncomment after merge pr 212
-        // await createPassword(page);
+        await createPassword(page);
         await page.click('data-test-id=buttonOpenManualImportModal');
 
         await page.fill(
