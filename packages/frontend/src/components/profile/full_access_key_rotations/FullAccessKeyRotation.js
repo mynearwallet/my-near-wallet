@@ -161,31 +161,41 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
         const inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
         const inputPublicKey = inputKeyPair.publicKey.toString();
 
-        if (inputPublicKey === fullAccessKey.public_key) {
-            if (confirmDeAuthorize) {
+        if (confirmDeAuthorize) {
+            if (inputPublicKey === fullAccessKey.public_key) {
                 setInputSeedPhraseError(
                     'fullAccessKeys.deAuthorizeConfirm.sameKeyWarning'
                 );
-            } else if (confirmRotate) {
-                setInputSeedPhraseError(
-                    'fullAccessKeys.deAuthorizeConfirm.sameKeyWarning'
-                );
+                setInputSeedPhraseSuccess('');
+                return;
             }
-            setInputSeedPhraseSuccess('');
+
+            if (
+                fullAccessKeys.filter(
+                    (accessKey) => accessKey.public_key === inputPublicKey
+                ).length === 0
+            ) {
+                setInputSeedPhraseError('fullAccessKeys.warning.invalidKey');
+                setInputSeedPhraseSuccess('');
+                return;
+            }
+
+            setInputSeedPhraseError('');
+            setInputSeedPhraseSuccess(inputPublicKey);
             return;
         }
 
-        if (
-            fullAccessKeys.filter((accessKey) => accessKey.public_key === inputPublicKey)
-                .length === 0
-        ) {
-            setInputSeedPhraseError('fullAccessKeys.warning.invalidKey');
-            setInputSeedPhraseSuccess('');
+        if (confirmRotate) {
+            if (inputPublicKey !== fullAccessKey.public_key) {
+                setInputSeedPhraseError('fullAccessKeys.warning.doesNotMatch');
+                setInputSeedPhraseSuccess('');
+                return;
+            }
+
+            setInputSeedPhraseError('');
+            setInputSeedPhraseSuccess(inputPublicKey);
             return;
         }
-
-        setInputSeedPhraseError('');
-        setInputSeedPhraseSuccess(inputPublicKey);
     }
 
     async function deauthorizeKey() {
@@ -268,19 +278,9 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
             const inputKeyPair = nearApiJs.KeyPair.fromString(inputSecretKey);
             const inputPublicKey = inputKeyPair.publicKey.toString();
 
-            if (inputPublicKey === fullAccessKey.public_key) {
+            if (inputPublicKey !== fullAccessKey.public_key) {
                 throw new Error(
-                    'You are already using this key. There is no need to rotate.'
-                );
-            }
-
-            if (
-                fullAccessKeys.filter(
-                    (accessKey) => accessKey.public_key === inputPublicKey
-                ).length === 0
-            ) {
-                throw new Error(
-                    'The key you entered is not a valid recovery key for this account'
+                    'The seed phrase you entered does not match this public key.'
                 );
             }
 
@@ -547,31 +547,34 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                             ) : null}
                         </div>
                         {fullAccessKey.public_key === publicKey ? (
-                            <FormButton
-                                color='gray-blue'
-                                className='small'
-                                onClick={() => {
-                                    setConfirmRotate(true);
-                                }}
-                                disabled={rotating}
-                                sending={rotating}
-                                sendingString='button.rotatingKey'
-                            >
-                                <Translate id='button.rotateKey' />
-                            </FormButton>
+                            <></>
                         ) : (
-                            <FormButton
-                                color='gray-red'
-                                className='small'
-                                onClick={() => {
-                                    setConfirmDeAuthorize(true);
-                                }}
-                                disabled={deAuthorizing}
-                                sending={deAuthorizing}
-                                sendingString='button.deAuthorizing'
-                            >
-                                <Translate id='button.deauthorize' />
-                            </FormButton>
+                            <div className='mt-0'>
+                                <FormButton
+                                    color='gray-blue'
+                                    className='small'
+                                    onClick={() => {
+                                        setConfirmRotate(true);
+                                    }}
+                                    disabled={rotating}
+                                    sending={rotating}
+                                    sendingString='button.rotatingKey'
+                                >
+                                    <Translate id='button.rotateKey' />
+                                </FormButton>{' '}
+                                <FormButton
+                                    color='gray-red'
+                                    className='small'
+                                    onClick={() => {
+                                        setConfirmDeAuthorize(true);
+                                    }}
+                                    disabled={deAuthorizing}
+                                    sending={deAuthorizing}
+                                    sendingString='button.deAuthorizing'
+                                >
+                                    <Translate id='button.deauthorize' />
+                                </FormButton>
+                            </div>
                         )}
                     </div>
                     <div className='key font-monospace mt-4'>
