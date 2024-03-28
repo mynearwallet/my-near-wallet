@@ -5,9 +5,9 @@ import {
 } from './AbstractCoreIndexer';
 import { NearBlocksBlockData } from '../types/nearblocksV1Indexer.type';
 
-export class NearblocksV1Indexer extends AbstractCoreIndexer {
+export class NearblocksV3Indexer extends AbstractCoreIndexer {
     networkSupported = [ENearNetwork.mainnet, ENearNetwork.testnet];
-    priority = 4;
+    priority = 2;
     methodsSupported = [
         E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey,
         E_CoreIndexerAvailableMethods.getAccountFtList,
@@ -15,7 +15,7 @@ export class NearblocksV1Indexer extends AbstractCoreIndexer {
 
     protected getBaseUrl(): string {
         return this.network === ENearNetwork.mainnet
-            ? 'https://api.nearblocks.io/v1'
+            ? 'https://api3.nearblocks.io/v1'
             : 'https://api-testnet.nearblocks.io/v1';
     }
 
