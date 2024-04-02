@@ -4,7 +4,7 @@ import {
     E_CoreIndexerAvailableMethods,
 } from './indexers/AbstractCoreIndexer';
 import { FastNearIndexer } from './indexers/FastNearIndexer';
-import { NearblocksV1Indexer } from './indexers/NearblocksV1Indexer';
+import { NearblocksV3Indexer } from './indexers/NearblocksV3Indexer';
 import { MintbaseIndexer } from './indexers/MintbaseIndexer';
 import uniq from 'lodash.uniq';
 
@@ -19,7 +19,7 @@ export class CoreIndexerAdapter {
         this.network = network;
         const indexers = [
             new FastNearIndexer(network),
-            new NearblocksV1Indexer(network),
+            new NearblocksV3Indexer(network),
             new MintbaseIndexer(network),
         ];
         const supportedIndexers = indexers.filter((indexer) =>
