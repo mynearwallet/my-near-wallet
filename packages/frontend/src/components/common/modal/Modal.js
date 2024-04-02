@@ -109,7 +109,7 @@ function Modal({
             data-test-id={testId}
             style={style}
         >
-            <div id='modal-container' className='modal'>
+            <div data-test-id='modalContainer' id='modal-container' className='modal'>
                 {closeButton && (
                     <CloseButton device={closeButton} onClick={handleClick} />
                 )}
