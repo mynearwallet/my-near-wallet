@@ -4,7 +4,7 @@ import {
     E_CoreIndexerAvailableMethods,
 } from './AbstractCoreIndexer';
 import { NearBlocksBlockData } from '../types/nearblocksV1Indexer.type';
-import { listStakingDeposits } from '../../indexer';
+import { CUSTOM_REQUEST_HEADERS } from '../../../utils/constants';
 
 export class NearblocksV3Indexer extends AbstractCoreIndexer {
     networkSupported = [ENearNetwork.mainnet, ENearNetwork.testnet];
@@ -13,6 +13,7 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
         E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey,
         E_CoreIndexerAvailableMethods.getAccountFtList,
         E_CoreIndexerAvailableMethods.getAccountValidatorList,
+        E_CoreIndexerAvailableMethods.getValidatorList,
     ];
 
     protected getBaseUrl(): string {
@@ -54,8 +55,23 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
     }
 
     async getAccountValidatorList(accountId: string): Promise<string[]> {
-        const stakingDeposits = await listStakingDeposits(accountId);
+        const stakingDeposits = await fetch(
+            `${this.getBaseUrl()}/kitwallet/staking-deposits/${accountId}`,
+            {
+                headers: {
+                    ...CUSTOM_REQUEST_HEADERS,
+                },
+            }
+        ).then((r) => r.json());
         return stakingDeposits.map((d) => d.validator_id);
+    }
+
+    async getValidatorList(): Promise<string[]> {
+        return fetch(`${this.getBaseUrl()}/kitwallet/stakingPools`, {
+            headers: {
+                ...CUSTOM_REQUEST_HEADERS,
+            },
+        }).then((r) => r.json());
     }
 }
 

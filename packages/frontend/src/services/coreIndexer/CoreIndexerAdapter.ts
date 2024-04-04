@@ -7,6 +7,7 @@ import { FastNearIndexer } from './indexers/FastNearIndexer';
 import { NearblocksV3Indexer } from './indexers/NearblocksV3Indexer';
 import { MintbaseIndexer } from './indexers/MintbaseIndexer';
 import uniq from 'lodash.uniq';
+import CONFIG from '../../config';
 
 // NOTE: We are using this adapter to abstract different type of indexers
 // This class is using a singleton design
@@ -125,4 +126,22 @@ export class CoreIndexerAdapter {
             return [];
         });
     }
+
+    async fetchValidatorIds(): Promise<string[]> {
+        return await Promise.any(
+            this.indexersInQueue
+                .filter((indexer) =>
+                    indexer.methodsSupported.includes(
+                        E_CoreIndexerAvailableMethods.getValidatorList
+                    )
+                )
+                .map((indexer) => indexer.getValidatorList())
+        ).catch(() => {
+            return [];
+        });
+    }
 }
+
+export const coreIndexerAdapter = CoreIndexerAdapter.getInstance(
+    CONFIG.CURRENT_NEAR_NETWORK
+);

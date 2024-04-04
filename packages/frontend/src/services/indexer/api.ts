@@ -160,18 +160,4 @@ export default {
             })
         );
     },
-    listStakingDeposits: (accountId) => {
-        return fetch(`${CONFIG.INDEXER_SERVICE_URL}/staking-deposits/${accountId}`, {
-            headers: {
-                ...CUSTOM_REQUEST_HEADERS,
-            },
-        }).then((r) => r.json());
-    },
-    listStakingPools: () => {
-        return fetch(`${CONFIG.INDEXER_SERVICE_URL}/stakingPools`, {
-            headers: {
-                ...CUSTOM_REQUEST_HEADERS,
-            },
-        }).then((r) => r.json());
-    },
 };

@@ -84,9 +84,6 @@ export async function updateStakedBalance(validatorId, account_id, contract) {
 }
 
 export async function getStakingDeposits(accountId: string) {
-    // NOTE: Disabling this and replacing it with RPC methods now since indexer is not reliable
-    // const stakingDeposits = await listStakingDeposits(accountId);
-
     const validatorIds = await getValidatorIds(accountId);
     const account = wallet.getAccountBasic(accountId);
     let validatorWithBalance = await Promise.all(
