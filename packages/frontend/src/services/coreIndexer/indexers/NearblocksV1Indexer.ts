@@ -50,6 +50,10 @@ export class NearblocksV1Indexer extends AbstractCoreIndexer {
             );
         }
     }
+
+    async getAccountValidatorList(): Promise<string[]> {
+        return [];
+    }
 }
 
 interface I_getAccountIdListFromPublicKey_Output {

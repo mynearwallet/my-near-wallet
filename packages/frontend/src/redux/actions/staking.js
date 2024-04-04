@@ -51,6 +51,7 @@ import {
     selectStakingLockupId,
 } from '../slices/staking';
 import { actions as tokensActions } from '../slices/tokens';
+import { listStakingPools } from '../../services/indexer';
 
 const { fetchToken } = tokensActions;
 
@@ -529,12 +530,9 @@ export const { staking } = createActions({
                     wallet.connection.provider.connection.url.indexOf(MAINNET) > -1
                         ? MAINNET
                         : TESTNET;
-                // const allStakingPools = await listStakingPools();
+                const allStakingPools = await listStakingPools();
                 const prefix = getValidatorRegExp(networkId);
-                // accountIds = [...new Set([...rpcValidators, ...allStakingPools])].filter(
-                //     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
-                // );
-                accountIds = [...new Set(rpcValidators)].filter(
+                accountIds = [...new Set([...rpcValidators, ...allStakingPools])].filter(
                     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
                 );
             }

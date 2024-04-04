@@ -111,4 +111,18 @@ export class CoreIndexerAdapter {
             }
         });
     }
+
+    async fetchAccountValidatorIds(accountId): Promise<string[]> {
+        return await Promise.any(
+            this.indexersInQueue
+                .filter((indexer) =>
+                    indexer.methodsSupported.includes(
+                        E_CoreIndexerAvailableMethods.getAccountValidatorList
+                    )
+                )
+                .map((indexer) => indexer.getAccountValidatorList(accountId))
+        ).catch(() => {
+            return [];
+        });
+    }
 }

@@ -18,9 +18,11 @@ export abstract class AbstractCoreIndexer {
 
     abstract getAccountIdListFromPublicKey(publicKey: string): Promise<string[]>;
     abstract getAccountFtList(accountId: string): Promise<string[]>;
+    abstract getAccountValidatorList(accountId: string): Promise<string[]>;
 }
 
 export enum E_CoreIndexerAvailableMethods {
     getAccountIdListFromPublicKey = 'getAccountIdListFromPublicKey',
     getAccountFtList = 'getAccountFtList',
+    getAccountValidatorList = 'getAccountValidatorList',
 }
