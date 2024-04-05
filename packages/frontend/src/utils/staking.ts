@@ -215,7 +215,9 @@ const getValidatorIdsFromIndexer = async (accountId: string): Promise<string[]> 
 };
 
 export const getValidatorIds = async (accountId: string): Promise<string[]> => {
-    const validatorIdsRpc = await getValidatorIdsFromRpc();
-    const validatorIdsIndexer = await getValidatorIdsFromIndexer(accountId);
+    const [validatorIdsRpc, validatorIdsIndexer] = await Promise.all([
+        getValidatorIdsFromRpc(),
+        getValidatorIdsFromIndexer(accountId),
+    ]);
     return uniq([...validatorIdsRpc, ...validatorIdsIndexer]);
 };
