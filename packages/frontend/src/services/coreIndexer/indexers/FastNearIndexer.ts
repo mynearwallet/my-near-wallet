@@ -42,6 +42,14 @@ export class FastNearIndexer extends AbstractCoreIndexer {
             );
         }
     }
+
+    async getAccountValidatorList(): Promise<string[]> {
+        return [];
+    }
+
+    async getValidatorList(): Promise<string[]> {
+        return [];
+    }
 }
 
 interface Response_getAccountIdListFromPublicKey {

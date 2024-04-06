@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 import { createActions } from 'redux-actions';
+import uniq from 'lodash.uniq';
 
 import { getBalance } from './account';
 import CONFIG from '../../config';
@@ -51,6 +52,7 @@ import {
     selectStakingLockupId,
 } from '../slices/staking';
 import { actions as tokensActions } from '../slices/tokens';
+import { coreIndexerAdapter } from '../../services/coreIndexer/CoreIndexerAdapter';
 
 const { fetchToken } = tokensActions;
 
@@ -529,12 +531,9 @@ export const { staking } = createActions({
                     wallet.connection.provider.connection.url.indexOf(MAINNET) > -1
                         ? MAINNET
                         : TESTNET;
-                // const allStakingPools = await listStakingPools();
+                const allStakingPools = await coreIndexerAdapter.fetchValidatorIds();
                 const prefix = getValidatorRegExp(networkId);
-                // accountIds = [...new Set([...rpcValidators, ...allStakingPools])].filter(
-                //     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
-                // );
-                accountIds = [...new Set(rpcValidators)].filter(
+                accountIds = uniq([...rpcValidators, ...allStakingPools]).filter(
                     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
                 );
             }

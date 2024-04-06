@@ -4,6 +4,7 @@ import {
     E_CoreIndexerAvailableMethods,
 } from './AbstractCoreIndexer';
 import { NearBlocksBlockData } from '../types/nearblocksV1Indexer.type';
+import { CUSTOM_REQUEST_HEADERS } from '../../../utils/constants';
 
 export class NearblocksV3Indexer extends AbstractCoreIndexer {
     networkSupported = [ENearNetwork.mainnet, ENearNetwork.testnet];
@@ -11,6 +12,8 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
     methodsSupported = [
         E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey,
         E_CoreIndexerAvailableMethods.getAccountFtList,
+        E_CoreIndexerAvailableMethods.getAccountValidatorList,
+        E_CoreIndexerAvailableMethods.getValidatorList,
     ];
 
     protected getBaseUrl(): string {
@@ -27,7 +30,7 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
             return result_1;
         } else {
             throw new Error(
-                `Error: Nearblocks V1 failed to capture account fungible token list for account id: ${accountId}`
+                `Error: Nearblocks V3 failed to capture account fungible token list for account id: ${accountId}`
             );
         }
     }
@@ -38,7 +41,7 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
         if (!response.ok) {
             const message = `An error has occured: ${response.status}`;
             console.error(response);
-            throw new Error(`Error: NearBlocks V1 call error ${message}`);
+            throw new Error(`Error: NearBlocks V3 call error ${message}`);
         }
 
         const result = (await response.json()) as I_getAccountIdListFromPublicKey_Output;
@@ -46,9 +49,29 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
             return result.keys.map((item) => item.account_id);
         } else {
             throw new Error(
-                `Error: Nearblocks V1 failed to capture account ids from public key: ${publicKey}`
+                `Error: Nearblocks V3 failed to capture account ids from public key: ${publicKey}`
             );
         }
+    }
+
+    async getAccountValidatorList(accountId: string): Promise<string[]> {
+        const stakingDeposits = await fetch(
+            `${this.getBaseUrl()}/kitwallet/staking-deposits/${accountId}`,
+            {
+                headers: {
+                    ...CUSTOM_REQUEST_HEADERS,
+                },
+            }
+        ).then((r) => r.json());
+        return stakingDeposits.map((d) => d.validator_id);
+    }
+
+    async getValidatorList(): Promise<string[]> {
+        return fetch(`${this.getBaseUrl()}/kitwallet/stakingPools`, {
+            headers: {
+                ...CUSTOM_REQUEST_HEADERS,
+            },
+        }).then((r) => r.json());
     }
 }
 
