@@ -32,4 +32,12 @@ export class MintbaseIndexer extends AbstractCoreIndexer {
         }
         return data;
     }
+
+    getAccountValidatorList(): Promise<string[]> {
+        return Promise.resolve([]);
+    }
+
+    async getValidatorList(): Promise<string[]> {
+        return [];
+    }
 }

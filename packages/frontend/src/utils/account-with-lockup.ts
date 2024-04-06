@@ -6,7 +6,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { BinaryReader } from 'near-api-js/lib/utils/serialize';
 
 import { WalletError } from './walletError';
-import { getValidatorIdsFromRpc } from './staking';
+import { getValidatorIds } from './staking';
 import CONFIG from '../config';
 import StakingFarmContracts from '../services/StakingFarmContracts';
 
@@ -237,17 +237,16 @@ async function getAccountBalance(limitedAccountData = false) {
         };
     }
 
-    // const stakingDeposits = await listStakingDeposits(this.accountId);
-    const stakingDeposits = await getValidatorIdsFromRpc();
+    const validatorIds = await getValidatorIds(this.accountId);
     let stakedBalanceMainAccount = new BN(0);
     await Promise.all(
-        stakingDeposits.map(async (validator_id) => {
+        validatorIds.map(async (validator_id) => {
             const validatorBalance = new BN(
                 await this.wrappedAccount
                     .viewFunction(validator_id, 'get_account_total_balance', {
                         account_id: this.accountId,
                     })
-                    .catch((err) => {   
+                    .catch((err) => {
                         if (
                             // Means the validators  don't have contract deployed, or don't support staking
                             err.message.includes('CompilationError(CodeDoesNotExist') ||
