@@ -23,7 +23,7 @@ export const NOTIFICATION_TYPE = {
 // Used to let users know about possible losses.
 export const PRICE_IMPACT_THRESHOLD = {
     warning: 1,
-    error: 4,
+    error: 6,
 };
 
 // Used to initialize output token in the form.
