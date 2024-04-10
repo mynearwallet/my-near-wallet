@@ -40,4 +40,8 @@ export class MintbaseIndexer extends AbstractCoreIndexer {
     async getValidatorList(): Promise<string[]> {
         return [];
     }
+
+    async getAccountNfts(): Promise<string[]> {
+        return [];
+    }
 }

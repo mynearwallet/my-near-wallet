@@ -8,9 +8,9 @@ import NonFungibleTokens from '../../../services/NonFungibleTokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import { createParameterSelector } from '../../selectors/topLevel';
+import { coreIndexerAdapter } from '../../../services/coreIndexer/CoreIndexerAdapter';
 
-const { getLikelyTokenContracts, getMetadata, getToken, getTokens, getNumberOfTokens } =
-    NonFungibleTokens;
+const { getMetadata, getToken, getTokens, getNumberOfTokens } = NonFungibleTokens;
 
 const SLICE_NAME = 'NFT';
 const ENABLE_DEBUG = false;
@@ -167,7 +167,7 @@ const fetchNFTs = createAsyncThunk(
 
         const { dispatch, getState } = thunkAPI;
 
-        const likelyContracts = await getLikelyTokenContracts(accountId);
+        const likelyContracts = await coreIndexerAdapter.getAccountNfts(accountId);
         debugLog({ likelyContracts });
 
         await Promise.all(

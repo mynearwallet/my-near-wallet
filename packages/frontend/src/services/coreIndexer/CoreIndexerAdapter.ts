@@ -140,6 +140,20 @@ export class CoreIndexerAdapter {
             return [];
         });
     }
+
+    async getAccountNfts(accountId): Promise<string[]> {
+        return await Promise.any(
+            this.indexersInQueue
+                .filter((indexer) =>
+                    indexer.methodsSupported.includes(
+                        E_CoreIndexerAvailableMethods.getAccountNfts
+                    )
+                )
+                .map((indexer) => indexer.getAccountNfts(accountId))
+        ).catch(() => {
+            return [];
+        });
+    }
 }
 
 export const coreIndexerAdapter = CoreIndexerAdapter.getInstance(
