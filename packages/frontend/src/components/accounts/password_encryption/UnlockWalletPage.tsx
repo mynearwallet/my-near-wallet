@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
-
 import Input from './SetPassword/ui/Input';
 import { Submit } from './SetPasswordForm/ui';
+
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
 import { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
@@ -39,6 +39,12 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
         setPassword(value);
     };
 
+    const handleKeyUp = (e) => {
+        if (e && e.key === 'Enter' && password.length) {
+            unlockHandler();
+        }
+    };
+
     return (
         <Container className='small-centered border'>
             <div>
@@ -56,6 +62,7 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
                     data-test-id='password'
                     value={password ?? ''}
                     onChange={currentTargetValue(handleChangePassword)}
+                    onKeyUpCapture={handleKeyUp}
                     error={errorMessage}
                 />
 
