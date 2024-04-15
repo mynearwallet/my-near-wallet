@@ -76,7 +76,7 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
     }
 
     async getAccountNfts(accountId: string): Promise<string[]> {
-        return fetch(
+        const result = await fetch(
             `${this.getBaseUrl()}/kitwallet/account/${accountId}/likelyNFTsFromBlock`,
             {
                 headers: {
@@ -84,6 +84,7 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
                 },
             }
         ).then((r) => r.json());
+        return result?.list || [];
     }
 }
 
