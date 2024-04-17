@@ -6,7 +6,11 @@ import { useSelector } from 'react-redux';
 import NFTBox from './NFTBox';
 import FormButton from '../common/FormButton';
 import NearCircleIcon from '../svg/NearCircleIcon.js';
-import { selectTokensWithMetadataForAccountId } from '../../redux/slices/nft';
+import {
+    selectLoadingOwnedToken,
+    selectTokensWithMetadataForAccountId,
+} from '../../redux/slices/nft';
+import LoadingDots from '../common/loader/LoadingDots';
 
 const StyledContainer = styled.div`
     &&& {
@@ -59,15 +63,33 @@ const StyledContainer = styled.div`
     }
 `;
 
+const StyledLoadingContainer = styled.div`
+    display: flex;
+    align-items: center;
+    height: 300px;
+    max-height: 50vh;
+`;
+
 const NFTs = ({ accountId }) => {
     const tokens = useSelector((state) =>
         selectTokensWithMetadataForAccountId(state, { accountId })
+    );
+    const isLoadingTokens = useSelector((state) =>
+        selectLoadingOwnedToken(state, { accountId })
     );
 
     const ownedTokens = tokens.filter(
         (tokenDetails) =>
             tokenDetails.ownedTokensMetadata && tokenDetails.ownedTokensMetadata.length
     );
+    if (isLoadingTokens) {
+        return (
+            <StyledLoadingContainer>
+                <LoadingDots />
+            </StyledLoadingContainer>
+        );
+    }
+
     if (ownedTokens.length) {
         return (
             <StyledContainer>

@@ -166,15 +166,21 @@ const fetchNFTs = createAsyncThunk(
         debugLog('THUNK/fetchNFTs');
 
         const { dispatch, getState } = thunkAPI;
+        const {
+            actions: { setContractMetadata, setIsLoadingTokens },
+        } = nftSlice;
+        dispatch(
+            setIsLoadingTokens({
+                isLoading: true,
+                accountId,
+            })
+        );
 
         const likelyContracts = await coreIndexerAdapter.getAccountNfts(accountId);
         debugLog({ likelyContracts });
 
         await Promise.all(
             likelyContracts.map(async (contractName) => {
-                const {
-                    actions: { setContractMetadata },
-                } = nftSlice;
                 try {
                     const contractMetadata = await getCachedContractMetadataOrFetch(
                         contractName,
@@ -211,6 +217,12 @@ const fetchNFTs = createAsyncThunk(
                 }
             })
         );
+        dispatch(
+            setIsLoadingTokens({
+                isLoading: false,
+                accountId,
+            })
+        );
     }
 );
 
@@ -218,6 +230,14 @@ const nftSlice = createSlice({
     name: SLICE_NAME,
     initialState,
     reducers: {
+        setIsLoadingTokens(state, { payload }) {
+            const { accountId, isLoading } = payload;
+            set(
+                state,
+                ['ownedTokens', 'byAccountId', accountId, 'isLoadingTokens'],
+                isLoading
+            );
+        },
         setContractMetadata(state, { payload }) {
             debugLog('REDUCER/setContractMetadata');
             const { metadata, contractName } = payload;
@@ -374,6 +394,12 @@ const selectNumberOfOwnedTokensForAccount = createSelector(
     [selectOwnedTokens, getAccountIdParam],
     (ownedTokensByAccountId, accountId) =>
         (ownedTokensByAccountId.byAccountId[accountId] || {}).numberByContractName || {}
+);
+
+export const selectLoadingOwnedToken = createSelector(
+    [selectOwnedTokens, getAccountIdParam],
+    (ownedTokensByAccountId, accountId) =>
+        (ownedTokensByAccountId.byAccountId[accountId] || {}).isLoadingTokens
 );
 
 const selectOwnedTokensForAccountForContract = createSelector(
