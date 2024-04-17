@@ -34,6 +34,8 @@ const StyledContainer = styled.div`
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        padding: 20px 0;
+        margin-bottom: 12px;
     }
 
     .symbol {
@@ -79,28 +81,24 @@ const StyledContainer = styled.div`
 
     .title {
         cursor: pointer;
+        text-align: center;
+        color: #393434;
     }
 
     .tokens {
-        display: flex;
-        flex-wrap: wrap;
-        max-width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px 20px;
+        @media (max-width: 991px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 
     .nft {
+        display: flex;
+        flex-direction: column;
         flex-grow: 1;
-        flex-basis: 50%;
-        max-width: 50%;
-        padding: 15px 0;
         color: black;
-
-        :nth-child(odd) {
-            padding-right: 5px;
-        }
-
-        :nth-child(even) {
-            padding-left: 5px;
-        }
 
         a {
             color: inherit;
@@ -118,8 +116,11 @@ const StyledContainer = styled.div`
     .nft img,
     .nft video {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         cursor: pointer;
+        object-fit: cover;
+        height: 250px;
+        border-radius: 8px;
     }
 `;
 
@@ -132,6 +133,7 @@ const NFTBox = ({ tokenDetails }) => {
     } = tokenDetails;
     const dispatch = useDispatch();
 
+    console.log({ ownedTokensMetadata });
     return (
         <StyledContainer className='nft-box'>
             <div className='nft-header'>
@@ -174,7 +176,7 @@ const NFTBox = ({ tokenDetails }) => {
                                         mediaUrl={mediaUrl}
                                         autoPlay={index === 0}
                                     />
-                                    <b className='title'>{title}</b>
+                                    <p className='title'>{title}</p>
                                 </div>
                             );
                         }

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 import NFTBox from './NFTBox';
 import FormButton from '../common/FormButton';
 import NearCircleIcon from '../svg/NearCircleIcon.js';
+import { selectTokensWithMetadataForAccountId } from '../../redux/slices/nft';
 
 const StyledContainer = styled.div`
     &&& {
@@ -57,7 +59,11 @@ const StyledContainer = styled.div`
     }
 `;
 
-const NFTs = ({ tokens }) => {
+const NFTs = ({ accountId }) => {
+    const tokens = useSelector((state) =>
+        selectTokensWithMetadataForAccountId(state, { accountId })
+    );
+
     const ownedTokens = tokens.filter(
         (tokenDetails) =>
             tokenDetails.ownedTokensMetadata && tokenDetails.ownedTokensMetadata.length

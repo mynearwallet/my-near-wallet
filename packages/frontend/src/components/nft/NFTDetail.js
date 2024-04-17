@@ -21,7 +21,7 @@ const StyledContainer = styled(Container)`
         img {
             width: 100%;
             max-width: 429px;
-            margin-bottom: 83px;
+            margin-bottom: 30px;
 
             filter: drop-shadow(0px 100px 80px rgba(0, 0, 0, 0.07))
                 drop-shadow(0px 41.7776px 33.4221px rgba(0, 0, 0, 0.0503198))
@@ -29,6 +29,13 @@ const StyledContainer = styled(Container)`
                 drop-shadow(0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035))
                 drop-shadow(0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725))
                 drop-shadow(0px 2.76726px 2.21381px rgba(0, 0, 0, 0.0196802));
+        }
+
+        img {
+            max-width: 500px;
+            min-height: 320px;
+            object-fit: contain;
+            border-radius: 10px;
         }
 
         .desc {
@@ -86,6 +93,10 @@ const StyledContainer = styled(Container)`
         top: -12px;
         left: -78px;
     }
+
+    .title {
+        margin-bottom: 1rem;
+    }
 `;
 
 const UserIcon = styled.div`
@@ -125,10 +136,12 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                         className='back-btn'
                     ></BackArrowButton>
 
+                    <h1 className='title'>{nft.metadata.title}</h1>
                     <NFTMedia mediaUrl={nft.metadata.mediaUrl} />
 
-                    <h1 className='title'>{nft.metadata.title}</h1>
-                    <p className='desc'>{nft.metadata.description}</p>
+                    {!!nft.metadata.description && (
+                        <p className='desc'>{nft.metadata.description}</p>
+                    )}
 
                     <div className='owner'>
                         <p>

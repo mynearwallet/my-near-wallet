@@ -30,7 +30,7 @@ const StyledContainer = styled.div`
         padding: 0;
 
         img {
-            width: 100%;
+            max-width: 100%;
             border-radius: 8px;
             margin: 16px 0;
         }
