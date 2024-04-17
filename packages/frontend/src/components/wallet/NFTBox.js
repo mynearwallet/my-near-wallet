@@ -119,8 +119,14 @@ const StyledContainer = styled.div`
         margin-bottom: 8px;
         cursor: pointer;
         object-fit: cover;
-        height: 250px;
+        height: 240px;
         border-radius: 8px;
+    }
+
+    @media (min-width: 992px) {
+        .nft img {
+            height: 170px;
+        }
     }
 `;
 
