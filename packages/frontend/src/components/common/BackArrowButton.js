@@ -14,7 +14,6 @@ const StyledContainer = styled.div`
         justify-content: center;
         border-radius: 50%;
         cursor: pointer;
-        margin-top: 0.65rem;
 
         :hover {
             background-color: #eeefee;

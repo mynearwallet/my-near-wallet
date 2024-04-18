@@ -29,6 +29,10 @@ const StyledContainer = styled.div`
         align-items: center;
         padding: 0;
 
+        .transfer-img {
+            width: 50%;
+        }
+
         img {
             max-width: 100%;
             border-radius: 8px;

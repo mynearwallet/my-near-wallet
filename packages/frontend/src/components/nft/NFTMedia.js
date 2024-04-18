@@ -37,7 +37,7 @@ export function NFTMedia({ mediaUrl, autoPlay = false }) {
             src={mediaUrl}
             skip={!mediaUrl && !isVideo}
             alt='NFT'
-            loadImageTimeout={20000}
+            loadImageTimeout={40_000}
         />
     );
 }

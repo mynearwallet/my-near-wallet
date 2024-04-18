@@ -13,6 +13,12 @@ import Container from '../common/styled/Container.css';
 import SendIcon from '../svg/SendIcon';
 
 const StyledContainer = styled(Container)`
+    display: flex;
+    justify-content: center;
+    @media (max-width: 767px) {
+        margin-bottom: 4rem;
+    }
+
     .container {
         max-width: 429px;
         position: relative;
@@ -39,15 +45,14 @@ const StyledContainer = styled(Container)`
         }
 
         .desc {
-            margin-top: 48px;
-            margin-bottom: 56px;
+            margin-bottom: 3rem;
 
             font-weight: 500;
             font-size: 16px;
             line-height: 150%;
             display: flex;
             align-items: center;
-            color: #272729;
+            color: #404040;
         }
     }
 
@@ -80,7 +85,7 @@ const StyledContainer = styled(Container)`
     &&& {
         .transfer-btn {
             width: 100%;
-            margin-top: 56px;
+            margin-top: 2rem;
 
             svg {
                 margin-right: 10px;
@@ -89,13 +94,19 @@ const StyledContainer = styled(Container)`
     }
 
     .back-arrow-button {
-        position: absolute;
-        top: -12px;
-        left: -78px;
+        position: relative;
+        top: 0;
+        left: -8px;
+        float: left;
+        @media (min-width: 767px) {
+            position: absolute;
+            top: -6px;
+            left: -78px;
+        }
     }
-
     .title {
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
+        line-height: 2.5rem;
     }
 `;
 
@@ -131,17 +142,14 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
         <StyledContainer className='medium centered'>
             {nft && (
                 <div className='container'>
+                    <NFTMedia mediaUrl={nft.metadata.mediaUrl} />
                     <BackArrowButton
                         onClick={() => history.goBack()}
                         className='back-btn'
                     ></BackArrowButton>
 
                     <h1 className='title'>{nft.metadata.title}</h1>
-                    <NFTMedia mediaUrl={nft.metadata.mediaUrl} />
-
-                    {!!nft.metadata.description && (
-                        <p className='desc'>{nft.metadata.description}</p>
-                    )}
+                    <p className='desc'>{nft.metadata.description}</p>
 
                     <div className='owner'>
                         <p>
