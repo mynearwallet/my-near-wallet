@@ -80,6 +80,7 @@ const StyledContainer = styled.div`
     }
 
     .title {
+        margin-top: 8px;
         cursor: pointer;
         text-align: center;
         color: #393434;
@@ -116,7 +117,6 @@ const StyledContainer = styled.div`
     .nft img,
     .nft video {
         width: 100%;
-        margin-bottom: 8px;
         cursor: pointer;
         object-fit: cover;
         height: 240px;

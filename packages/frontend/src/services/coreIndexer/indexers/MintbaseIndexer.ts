@@ -5,14 +5,28 @@ import {
 } from './AbstractCoreIndexer';
 import { accountsByPublicKey } from '@mintbase-js/data';
 import { Network } from '@mintbase-js/sdk';
+import { GraphQLClient, gql } from 'graphql-request';
+import { NftDetail } from '../types/coreIndexer.type';
+import { NftMetadataResponse } from '../types/mintbaseIndexer.type';
 
 export class MintbaseIndexer extends AbstractCoreIndexer {
     networkSupported = [ENearNetwork.mainnet, ENearNetwork.testnet];
     priority = 3;
-    methodsSupported = [E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey];
+    methodsSupported = [
+        E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey,
+        E_CoreIndexerAvailableMethods.getNftDetailByReference,
+    ];
+    gqlClient = new GraphQLClient(this.getBaseUrl(), {
+        headers: {
+            'content-type': 'application/json',
+            'mb-api-key': 'anon',
+        },
+    });
 
     protected getBaseUrl(): string {
-        return '';
+        return this.network === ENearNetwork.mainnet
+            ? 'https://graph.mintbase.xyz/mainnet'
+            : 'https://graph.mintbase.xyz/testnet';
     }
 
     getAccountFtList(): Promise<string[]> {
@@ -43,5 +57,29 @@ export class MintbaseIndexer extends AbstractCoreIndexer {
 
     async getAccountNfts(): Promise<string[]> {
         return [];
+    }
+
+    async getNftDetailByReference(referenceId: string): Promise<NftDetail> {
+        const res = await this.gqlClient.request<NftMetadataResponse>(
+            gql`
+                query MyQuery($referenceId: String!) {
+                    nft_metadata(where: { reference: { _eq: $referenceId } }) {
+                        id
+                        media
+                        reference_blob
+                        extra
+                        description
+                        nft_contract_id
+                        title
+                    }
+                }
+            `,
+            { referenceId }
+        );
+        const meta = res.nft_metadata[0];
+        return {
+            ...meta,
+            ...meta.reference_blob,
+        };
     }
 }

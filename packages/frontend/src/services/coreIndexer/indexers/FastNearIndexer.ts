@@ -62,6 +62,10 @@ export class FastNearIndexer extends AbstractCoreIndexer {
         );
         return result.contract_ids || [];
     }
+
+    async getNftDetailByReference() {
+        return {};
+    }
 }
 
 interface Response_getAccountIdListFromPublicKey {

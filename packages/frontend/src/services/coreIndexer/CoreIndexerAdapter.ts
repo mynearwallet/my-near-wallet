@@ -8,6 +8,7 @@ import { NearblocksV3Indexer } from './indexers/NearblocksV3Indexer';
 import { MintbaseIndexer } from './indexers/MintbaseIndexer';
 import uniq from 'lodash.uniq';
 import CONFIG from '../../config';
+import { NftDetail } from './types/coreIndexer.type';
 
 // NOTE: We are using this adapter to abstract different type of indexers
 // This class is using a singleton design
@@ -152,6 +153,20 @@ export class CoreIndexerAdapter {
                 .map((indexer) => indexer.getAccountNfts(accountId))
         ).catch(() => {
             return [];
+        });
+    }
+
+    async getNftDetailByReference(referenceId: string): Promise<NftDetail> {
+        return await Promise.any(
+            this.indexersInQueue
+                .filter((indexer) =>
+                    indexer.methodsSupported.includes(
+                        E_CoreIndexerAvailableMethods.getNftDetailByReference
+                    )
+                )
+                .map((indexer) => indexer.getNftDetailByReference(referenceId))
+        ).catch(() => {
+            return {};
         });
     }
 }

@@ -2,6 +2,7 @@ import BN from 'bn.js';
 import React, { useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 
 import { NFTMedia } from './NFTMedia';
 import NFTTransferModal from './NFTTransferModal';
@@ -11,6 +12,7 @@ import BackArrowButton from '../common/BackArrowButton';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import SendIcon from '../svg/SendIcon';
+import { coreIndexerAdapter } from '../../services/coreIndexer/CoreIndexerAdapter';
 
 const StyledContainer = styled(Container)`
     display: flex;
@@ -45,8 +47,6 @@ const StyledContainer = styled(Container)`
         }
 
         .desc {
-            margin-bottom: 3rem;
-
             font-weight: 500;
             font-size: 16px;
             line-height: 150%;
@@ -58,13 +58,8 @@ const StyledContainer = styled(Container)`
 
     .owner {
         p {
-            font-weight: 500;
-            font-size: 12px;
-            line-height: 150%;
             display: flex;
             align-items: center;
-            letter-spacing: 0.115em;
-            color: #a2a2a8;
         }
 
         .inner {
@@ -104,9 +99,41 @@ const StyledContainer = styled(Container)`
             left: -78px;
         }
     }
+
     .title {
         margin-bottom: 0.8rem;
         line-height: 2.5rem;
+    }
+
+    .sections {
+        display: flex;
+        flex-direction: column;
+        gap: 2.3rem;
+    }
+
+    .section-title {
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 150%;
+        letter-spacing: 0.115em;
+        color: #a2a2a8;
+    }
+    .attributes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    .attributes__item {
+        background: #f9f9f9;
+        border-radius: 4px;
+        padding: 0.7rem 0.7rem;
+    }
+    .attributes__key {
+        font-size: 0.75rem;
+    }
+    .attributes__value {
+        font-weight: bold;
     }
 `;
 
@@ -138,6 +165,14 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
     );
     const hasSufficientBalance = new BN(nearBalance).gte(transferMax);
 
+    const { data: indexerData = {} } = useQuery({
+        queryKey: ['nftDetail', nft?.metadata?.reference],
+        queryFn: async () => {
+            return coreIndexerAdapter.getNftDetailByReference(nft?.metadata?.reference);
+        },
+        enabled: !!nft?.metadata?.reference,
+    });
+
     return (
         <StyledContainer className='medium centered'>
             {nft && (
@@ -149,18 +184,50 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                     ></BackArrowButton>
 
                     <h1 className='title'>{nft.metadata.title}</h1>
-                    <p className='desc'>{nft.metadata.description}</p>
+                    <div className='sections'>
+                        <div className='sections__item'>
+                            <div className='subtitle'>Description</div>
+                            <p className='desc'>
+                                {nft.metadata.description ||
+                                    indexerData.description ||
+                                    '-'}
+                            </p>
+                        </div>
 
-                    <div className='owner'>
-                        <p>
-                            <Translate id='NFTDetail.owner' />
-                        </p>
+                        {!!indexerData.attributes?.length && (
+                            <div className='sections__item'>
+                                <div className='subtitle'>Attributes</div>
+                                <div className='attributes'>
+                                    {indexerData.attributes.map((item) => (
+                                        <div
+                                            key={item.trait_type}
+                                            className='attributes__item'
+                                        >
+                                            <div className='attributes__key'>
+                                                {item.trait_type}
+                                            </div>
+                                            <div className='attributes__value'>
+                                                {item.value}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
-                        <div className='inner'>
-                            <UserIcon>
-                                <UserIconGrey color='#9a9a9a' />
-                            </UserIcon>
-                            <span>{ownerId}</span>
+                        <div className='sections__item'>
+                            <div className='owner'>
+                                <p className='section-title'>
+                                    <Translate id='NFTDetail.owner' />
+                                </p>
+
+                                <div className='inner'>
+                                    <UserIcon>
+                                        <UserIconGrey color='#9a9a9a' />
+                                    </UserIcon>
+                                    <span>{ownerId}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
