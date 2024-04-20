@@ -17,6 +17,8 @@ export enum TxMethodName {
     claim = 'claim',
     withdraw_all = 'withdraw_all',
     near_withdraw = 'near_withdraw',
+    recruit_tinkers = 'recruit_tinkers',
+    harvest = 'harvest',
 }
 
 export const methodNameShowlist = [

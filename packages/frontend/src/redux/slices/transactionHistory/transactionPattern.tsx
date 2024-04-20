@@ -652,6 +652,82 @@ class MeteorPointPattern implements TxPattern {
     }
 }
 
+class HarvestMoonRecruitTinker implements TxPattern {
+    match(data: TxData): boolean {
+        return txUtils.getMethodName(data) === TxMethodName.recruit_tinkers;
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        let amount;
+        try {
+            for (const r of data.receipts_outcome) {
+                if (r.outcome?.logs?.length) {
+                    for (const rawLog of r.outcome?.logs) {
+                        const logs = rawLog.split(' ');
+                        if (logs[0] === 'Added' && logs[2] === 'count') {
+                            amount = logs[1];
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('parse harvestmoon recruit tinker error');
+        }
+        return {
+            image: data.metaData.icon || '',
+            title: 'Recruit tinker',
+            subtitle: `from ${data.transaction.receiver_id}`,
+            assetChangeText: amount ? `${amount} Tinker` : '',
+            dir: ETxDirection.receive,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
+class HarvestMoonHarvest implements TxPattern {
+    match(data: TxData): boolean {
+        return txUtils.getMethodName(data) === TxMethodName.harvest;
+    }
+
+    display(data: TxData, accountId: string): TransactionItemComponent {
+        let amount = '0';
+        let isReferral = false;
+        try {
+            for (const r of data.receipts_outcome) {
+                if (r.outcome?.logs?.length) {
+                    for (const rawLog of r.outcome?.logs) {
+                        if (rawLog.includes('EVENT_JSON:')) {
+                            const log = JSON.parse(
+                                rawLog.replace('EVENT_JSON:', '') || '{}'
+                            );
+                            if (log.standard === 'nep141') {
+                                if (
+                                    log.data[0].owner_id === accountId &&
+                                    log.data[0].memo === 'Referral'
+                                ) {
+                                    isReferral = true;
+                                }
+                                amount = log.data[0].amount;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('parse harvestmoon harvest error');
+        }
+
+        return {
+            image: data.metaData.icon || '',
+            title: isReferral ? 'Referral Harvest' : 'Harvest',
+            subtitle: `from ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.formatAmountFromMeta(amount, data.metaData),
+            dir: ETxDirection.receive,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
 class DelegatePattern implements TxPattern {
     match(data: TxData): boolean {
         return !!data.transaction.actions?.[0]?.Delegate;
@@ -828,6 +904,8 @@ export const txPatterns: TxPattern[] = [
     new DeleteKeyPattern(),
     new DeployKeyPattern(),
     new MeteorPointPattern(),
+    new HarvestMoonRecruitTinker(),
+    new HarvestMoonHarvest(),
     new DelegatePattern(),
     new FunctionCallDefaultPattern(),
 ];
