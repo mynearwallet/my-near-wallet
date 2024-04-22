@@ -34,7 +34,11 @@ export default ({
             publicKey={publicKey}
             contractId={contractId}
             onClickCancel={onClickCancel}
-            onClickConnect={Mixpanel.withTracking('LOGIN', () => dispatch(allowLogin()))}
+            onClickConnect={() => {
+                return Mixpanel.withTracking('LOGIN', () => {
+                    return dispatch(allowLogin());
+                });
+            }}
             contractIdUrl={contractIdUrl}
             successUrlIsValid={successUrlIsValid}
             privateShardInfo={privateShardInfo}

@@ -209,7 +209,10 @@ const GlobalAlertNew = ({
 
     if (!!alerts.length) {
         return (
-            <AlertContainer types={alerts.map((alert) => alert.type)}>
+            <AlertContainer
+                data-test-id='alertContainer'
+                types={alerts.map((alert) => alert.type)}
+            >
                 <Translate>
                     {({ translate }) => (
                         <>

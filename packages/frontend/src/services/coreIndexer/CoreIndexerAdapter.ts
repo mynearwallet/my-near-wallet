@@ -78,7 +78,7 @@ export class CoreIndexerAdapter {
         publicKey: string,
         waitAllIndexer?: boolean
     ): Promise<string[]> {
-        return new Promise(async (masterResolve, masterReject) => {
+        return new Promise(async (masterResolve) => {
             const promises = this.indexersInQueue.map((indexer) =>
                 indexer.getAccountIdListFromPublicKey(publicKey)
             );
@@ -106,7 +106,7 @@ export class CoreIndexerAdapter {
                 .flat();
 
             if (flattenResults.length === 0) {
-                masterReject(new Error('No accounts found'));
+                masterResolve([]);
             } else {
                 masterResolve(uniq(flattenResults));
             }
