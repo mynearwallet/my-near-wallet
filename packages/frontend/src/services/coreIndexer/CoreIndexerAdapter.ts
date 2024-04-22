@@ -156,7 +156,7 @@ export class CoreIndexerAdapter {
         });
     }
 
-    async getNftDetailByReference(referenceId: string): Promise<NftDetail> {
+    async getNftDetailByReference(referenceId: string): Promise<Partial<NftDetail>> {
         return await Promise.any(
             this.indexersInQueue
                 .filter((indexer) =>

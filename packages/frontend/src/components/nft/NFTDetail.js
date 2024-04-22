@@ -177,7 +177,10 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
         <StyledContainer className='medium centered'>
             {nft && (
                 <div className='container'>
-                    <NFTMedia mediaUrl={nft.metadata.mediaUrl} />
+                    <NFTMedia
+                        mediaUrl={nft.metadata.mediaUrl}
+                        mimeType={indexerData.mime_type}
+                    />
                     <BackArrowButton
                         onClick={() => history.goBack()}
                         className='back-btn'
