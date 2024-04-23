@@ -8,8 +8,8 @@ import { nearMetadata, wNearMetadata } from './constant';
 import { IMetaData, ITransactionListItem } from './type';
 import CONFIG from '../../../config';
 import { listTransactions } from '../../../services/indexer';
-import { getCachedContractMetadataOrFetch as getCachedContractMetadataOrFetchNft } from '../nft';
 import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
+import NonFungibleTokens from '../../../services/NonFungibleTokens';
 
 /****************************/
 // Var declarations
@@ -79,7 +79,7 @@ async function fetchAllMetaData(state, allReceiver: string[]) {
             return getCachedContractMetadataOrFetch(contractName, state);
         }),
         ...allReceiver.map((contractName) => {
-            return getCachedContractMetadataOrFetchNft(contractName, state);
+            return NonFungibleTokens.getMetadata(contractName);
         }),
     ]);
     const metas: { [key: string]: IMetaData } = {};
