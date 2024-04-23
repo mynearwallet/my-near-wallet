@@ -33,7 +33,7 @@ const initialOwnedTokenState = {
     tokens: [],
 };
 
-async function getCachedContractMetadataOrFetch(contractName, state) {
+export async function getCachedContractMetadataOrFetch(contractName, state) {
     let contractMetadata = selectOneContractMetadata(state, { contractName });
     if (contractMetadata) {
         debugLog('Returning cached contract metadata', { contractName });
