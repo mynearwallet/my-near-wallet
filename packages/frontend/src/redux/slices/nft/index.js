@@ -3,6 +3,7 @@ import merge from 'lodash.merge';
 import set from 'lodash.set';
 import update from 'lodash.update';
 import { createSelector } from 'reselect';
+import uniqBy from 'lodash.uniqby';
 
 import NonFungibleTokens from '../../../services/NonFungibleTokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
@@ -13,7 +14,7 @@ import { coreIndexerAdapter } from '../../../services/coreIndexer/CoreIndexerAda
 const { getMetadata, getToken, getTokens, getNumberOfTokens } = NonFungibleTokens;
 
 const SLICE_NAME = 'NFT';
-const ENABLE_DEBUG = false;
+const ENABLE_DEBUG = true;
 const debugLog = (...args) => ENABLE_DEBUG && console.log(`${SLICE_NAME}Slice`, ...args);
 
 const initialState = {
@@ -69,14 +70,15 @@ const fetchOwnedNFTsForContract = createAsyncThunk(
         } = nftSlice;
         const { dispatch, getState } = thunkAPI;
 
+        const fromIndex = selectTokensListForAccountForContract(getState(), {
+            accountId,
+            contractName,
+        }).length;
         const tokenMetadata = await getTokens({
             contractName,
             accountId,
             base_uri: contractMetadata.base_uri,
-            fromIndex: selectTokensListForAccountForContract(getState(), {
-                accountId,
-                contractName,
-            }).length,
+            fromIndex: fromIndex === 1 ? 0 : fromIndex,
         });
         await dispatch(
             addTokensMetadata({ accountId, contractName, tokens: tokenMetadata })
@@ -257,7 +259,11 @@ const nftSlice = createSlice({
                     contractName,
                     'tokens',
                 ],
-                (n) => (n || []).concat(tokens)
+                (n) => {
+                    const newTokens = [...(n || []), ...tokens];
+                    const uniqTokens = uniqBy(newTokens, 'token_id');
+                    return uniqTokens;
+                }
             );
         },
         clearTokenMetadata(state, { payload }) {
