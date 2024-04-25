@@ -84,6 +84,7 @@ const StyledContainer = styled.div`
         cursor: pointer;
         text-align: center;
         color: #393434;
+        word-break: break-word;
     }
 
     .tokens {
