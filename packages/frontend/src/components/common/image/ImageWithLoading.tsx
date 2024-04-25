@@ -25,12 +25,14 @@ const LoadingContainer = styled.div`
 const ImageWithLoading = ({
     src,
     alt,
+    style,
     skip,
     loadImageTimeout,
 }: {
     skip?: boolean;
     loadImageTimeout?: number;
-} & HTMLImageElement) => {
+    style?: HTMLStyleElement;
+} & Partial<HTMLImageElement>) => {
     const [isErrorImage, setIsErrorImage] = useState(false);
     const { isLoaded, isError } = useImageLoading({
         imageUrl: src,
@@ -39,14 +41,19 @@ const ImageWithLoading = ({
     });
 
     return (
-        <Container>
+        <Container className='image-withloading-container'>
             {!isLoaded && (!isError || !isErrorImage) && (
                 <LoadingContainer>
                     <LoadingSkeleton />
                 </LoadingContainer>
             )}
             {isError || isErrorImage ? (
-                <img src={FailedToLoad} alt='error' />
+                <img
+                    className='image-withloading__image'
+                    src={FailedToLoad}
+                    alt='error'
+                    style={style}
+                />
             ) : (
                 <img
                     src={src}
