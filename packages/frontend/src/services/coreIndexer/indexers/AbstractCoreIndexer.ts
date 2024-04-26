@@ -20,6 +20,8 @@ export abstract class AbstractCoreIndexer {
     abstract getAccountFtList(accountId: string): Promise<string[]>;
     abstract getAccountValidatorList(accountId: string): Promise<string[]>;
     abstract getValidatorList(): Promise<string[]>;
+    abstract getAccountNfts(accountId: string): Promise<string[]>;
+    abstract getNftDetailByReference(referenceid: string): {};
 }
 
 export enum E_CoreIndexerAvailableMethods {
@@ -27,4 +29,6 @@ export enum E_CoreIndexerAvailableMethods {
     getAccountFtList = 'getAccountFtList',
     getAccountValidatorList = 'getAccountValidatorList',
     getValidatorList = 'getValidatorList',
+    getAccountNfts = 'getAccountNfts',
+    getNftDetailByReference = 'getNftDetailByReference',
 }

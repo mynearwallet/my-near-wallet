@@ -71,6 +71,14 @@ export class NearblocksV1Indexer extends AbstractCoreIndexer {
             },
         }).then((r) => r.json());
     }
+
+    async getAccountNfts(): Promise<string[]> {
+        return [];
+    }
+
+    async getNftDetailByReference() {
+        return {};
+    }
 }
 
 interface I_getAccountIdListFromPublicKey_Output {

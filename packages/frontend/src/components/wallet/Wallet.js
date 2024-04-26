@@ -310,7 +310,6 @@ export function Wallet({
     fungibleTokensList,
     tokensLoading,
     availableAccounts,
-    sortedNFTs,
     handleCloseLinkdropModal,
     handleSetCreateFromImplicitSuccess,
     handleSetCreateCustomName,
@@ -357,7 +356,7 @@ export function Wallet({
                         </div>
                     </div>
                     {tab === 'collectibles' ? (
-                        <NFTs tokens={sortedNFTs} />
+                        <NFTs accountId={accountId} />
                     ) : (
                         <FungibleTokens
                             currentLanguage={currentLanguage}
