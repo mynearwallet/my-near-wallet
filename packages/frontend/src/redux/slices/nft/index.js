@@ -65,7 +65,7 @@ const fetchOwnedNFTsForContract = createAsyncThunk(
     async ({ accountId, contractName, contractMetadata }, thunkAPI) => {
         debugLog('THUNK/fetchOwnedNFTsForContract');
         const {
-            actions: { addTokensMetadata },
+            actions: { upsertTokensMetadata },
         } = nftSlice;
         const { dispatch, getState } = thunkAPI;
 
@@ -80,7 +80,7 @@ const fetchOwnedNFTsForContract = createAsyncThunk(
             fromIndex: fromIndex === 1 ? 0 : fromIndex,
         });
         await dispatch(
-            addTokensMetadata({ accountId, contractName, tokens: tokenMetadata })
+            upsertTokensMetadata({ accountId, contractName, tokens: tokenMetadata })
         );
     },
     {
@@ -135,7 +135,7 @@ const fetchNFT = createAsyncThunk(
         debugLog('THUNK/fetchNFT');
 
         const {
-            actions: { addTokensMetadata, setContractMetadata },
+            actions: { upsertTokensMetadata, setContractMetadata },
         } = nftSlice;
 
         const contractMetadata = await getCachedContractMetadataOrFetch(
@@ -145,7 +145,7 @@ const fetchNFT = createAsyncThunk(
         dispatch(setContractMetadata({ contractName, metadata: contractMetadata }));
 
         const token = await getToken(contractName, tokenId, contractMetadata.base_uri);
-        dispatch(addTokensMetadata({ accountId, contractName, tokens: [token] }));
+        dispatch(upsertTokensMetadata({ accountId, contractName, tokens: [token] }));
     }
 );
 
@@ -232,8 +232,8 @@ const nftSlice = createSlice({
             const { metadata, contractName } = payload;
             set(state, ['metadata', 'byContractName', contractName], metadata);
         },
-        addTokensMetadata(state, { payload }) {
-            debugLog('REDUCER/addTokensMetadata');
+        upsertTokensMetadata(state, { payload }) {
+            debugLog('REDUCER/upsertTokensMetadata');
 
             const { contractName, tokens, accountId } = payload;
             update(
