@@ -13,6 +13,7 @@ import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import SendIcon from '../svg/SendIcon';
 import { coreIndexerAdapter } from '../../services/coreIndexer/CoreIndexerAdapter';
+import LoadingDots from '../common/loader/LoadingDots';
 
 const StyledContainer = styled(Container)`
     display: flex;
@@ -165,7 +166,7 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
     );
     const hasSufficientBalance = new BN(nearBalance).gte(transferMax);
 
-    const { data: indexerData = {} } = useQuery({
+    const { data: indexerData = {}, isLoading } = useQuery({
         queryKey: ['nftDetail', nft?.metadata?.reference],
         queryFn: async () => {
             return coreIndexerAdapter.getNftDetailByReference(nft?.metadata?.reference);
@@ -196,6 +197,8 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                                     '-'}
                             </p>
                         </div>
+
+                        {isLoading && <LoadingDots />}
 
                         {!!indexerData.attributes?.length && (
                             <div className='sections__item'>

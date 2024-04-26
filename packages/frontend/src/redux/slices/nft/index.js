@@ -3,7 +3,6 @@ import merge from 'lodash.merge';
 import set from 'lodash.set';
 import update from 'lodash.update';
 import { createSelector } from 'reselect';
-import uniqBy from 'lodash.uniqby';
 
 import NonFungibleTokens from '../../../services/NonFungibleTokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
@@ -14,7 +13,7 @@ import { coreIndexerAdapter } from '../../../services/coreIndexer/CoreIndexerAda
 const { getMetadata, getToken, getTokens, getNumberOfTokens } = NonFungibleTokens;
 
 const SLICE_NAME = 'NFT';
-const ENABLE_DEBUG = true;
+const ENABLE_DEBUG = false;
 const debugLog = (...args) => ENABLE_DEBUG && console.log(`${SLICE_NAME}Slice`, ...args);
 
 const initialState = {
@@ -139,26 +138,14 @@ const fetchNFT = createAsyncThunk(
             actions: { addTokensMetadata, setContractMetadata },
         } = nftSlice;
 
-        if (
-            !selectTokenForAccountForContractForTokenId(getState(), {
-                accountId,
-                contractName,
-                tokenId,
-            })
-        ) {
-            const contractMetadata = await getCachedContractMetadataOrFetch(
-                contractName,
-                getState()
-            );
-            dispatch(setContractMetadata({ contractName, metadata: contractMetadata }));
+        const contractMetadata = await getCachedContractMetadataOrFetch(
+            contractName,
+            getState()
+        );
+        dispatch(setContractMetadata({ contractName, metadata: contractMetadata }));
 
-            const token = await getToken(
-                contractName,
-                tokenId,
-                contractMetadata.base_uri
-            );
-            dispatch(addTokensMetadata({ accountId, contractName, tokens: [token] }));
-        }
+        const token = await getToken(contractName, tokenId, contractMetadata.base_uri);
+        dispatch(addTokensMetadata({ accountId, contractName, tokens: [token] }));
     }
 );
 
@@ -259,10 +246,14 @@ const nftSlice = createSlice({
                     contractName,
                     'tokens',
                 ],
-                (n) => {
+                (n = []) => {
                     const newTokens = [...(n || []), ...tokens];
-                    const uniqTokens = uniqBy(newTokens, 'token_id');
-                    return uniqTokens;
+                    // remove duplicate from last index
+                    const res = newTokens.filter(
+                        (v, i, a) =>
+                            a.findLastIndex((v2) => v2.token_id === v.token_id) === i
+                    );
+                    return res;
                 }
             );
         },
