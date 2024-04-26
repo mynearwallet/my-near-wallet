@@ -23,10 +23,7 @@ import {
     selectLinkdropAmount,
     actions as linkdropActions,
 } from '../redux/slices/linkdrop';
-import {
-    selectTokensWithMetadataForAccountId,
-    actions as nftActions,
-} from '../redux/slices/nft';
+import { actions as nftActions } from '../redux/slices/nft';
 import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsByAccountId,
@@ -54,9 +51,6 @@ const WalletWrapper = ({ tab, setTab }) => {
         selectTokensLoading(state, { accountId })
     );
     const availableAccounts = useSelector(selectAvailableAccounts);
-    const sortedNFTs = useSelector((state) =>
-        selectTokensWithMetadataForAccountId(state, { accountId })
-    );
     const userRecoveryMethods = useSelector((state) =>
         selectRecoveryMethodsByAccountId(state, { accountId })
     );
@@ -90,7 +84,6 @@ const WalletWrapper = ({ tab, setTab }) => {
             fungibleTokensList={sortedTokens}
             tokensLoading={tokensLoading}
             availableAccounts={availableAccounts}
-            sortedNFTs={sortedNFTs}
             handleCloseLinkdropModal={useCallback(() => {
                 dispatch(setLinkdropAmount('0'));
                 Mixpanel.track('Click dismiss NEAR drop success modal');

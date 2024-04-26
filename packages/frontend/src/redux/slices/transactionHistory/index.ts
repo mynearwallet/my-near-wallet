@@ -9,6 +9,7 @@ import { IMetaData, ITransactionListItem } from './type';
 import CONFIG from '../../../config';
 import { listTransactions } from '../../../services/indexer';
 import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
+import NonFungibleTokens from '../../../services/NonFungibleTokens';
 
 /****************************/
 // Var declarations
@@ -77,6 +78,9 @@ async function fetchAllMetaData(state, allReceiver: string[]) {
         ...allReceiver.map((contractName) => {
             return getCachedContractMetadataOrFetch(contractName, state);
         }),
+        ...allReceiver.map((contractName) => {
+            return NonFungibleTokens.getMetadata(contractName);
+        }),
     ]);
     const metas: { [key: string]: IMetaData } = {};
     allReceiver.forEach((receiverId, i) => {
@@ -116,10 +120,16 @@ const fetchTransactions = createAsyncThunk(
         const metaDatas = await fetchAllMetaData(
             state,
             uniq([
+                'x.paras.near',
                 ...receipt_ids,
+                // ...transactions.map((item) => item.transaction?.receiver_id),
+                ...transactions
+                    .map((r) => r?.transaction?.receiver_id || '')
+                    .filter((x) => x),
                 // ...transactions.map((item) => item.transaction?.receiver_id),
             ])
         );
+        console.log({ receipt_ids, metaDatas });
 
         const result = transactions
             .map((item) => {

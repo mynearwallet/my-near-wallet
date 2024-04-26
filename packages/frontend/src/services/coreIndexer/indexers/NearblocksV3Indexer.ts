@@ -14,6 +14,7 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
         E_CoreIndexerAvailableMethods.getAccountFtList,
         E_CoreIndexerAvailableMethods.getAccountValidatorList,
         E_CoreIndexerAvailableMethods.getValidatorList,
+        E_CoreIndexerAvailableMethods.getAccountNfts,
     ];
 
     protected getBaseUrl(): string {
@@ -72,6 +73,22 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
                 ...CUSTOM_REQUEST_HEADERS,
             },
         }).then((r) => r.json());
+    }
+
+    async getAccountNfts(accountId: string): Promise<string[]> {
+        const result = await fetch(
+            `${this.getBaseUrl()}/kitwallet/account/${accountId}/likelyNFTsFromBlock`,
+            {
+                headers: {
+                    ...CUSTOM_REQUEST_HEADERS,
+                },
+            }
+        ).then((r) => r.json());
+        return result?.list || [];
+    }
+
+    async getNftDetailByReference() {
+        return {};
     }
 }
 

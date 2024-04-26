@@ -4,7 +4,7 @@ import { listLikelyNfts } from './indexer';
 import CONFIG from '../config';
 import { wallet } from '../utils/wallet';
 
-export const TOKENS_PER_PAGE = 4;
+export const TOKENS_PER_PAGE = 6;
 
 const functionCall = nearAPI.transactions.functionCall;
 

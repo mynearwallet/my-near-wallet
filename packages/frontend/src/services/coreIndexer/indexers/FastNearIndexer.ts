@@ -11,6 +11,8 @@ export class FastNearIndexer extends AbstractCoreIndexer {
     methodsSupported = [
         E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey,
         E_CoreIndexerAvailableMethods.getAccountFtList,
+        E_CoreIndexerAvailableMethods.getAccountValidatorList,
+        E_CoreIndexerAvailableMethods.getAccountNfts,
     ];
 
     protected getBaseUrl(): string {
@@ -43,12 +45,26 @@ export class FastNearIndexer extends AbstractCoreIndexer {
         }
     }
 
-    async getAccountValidatorList(): Promise<string[]> {
-        return [];
+    async getAccountValidatorList(accountId: string): Promise<string[]> {
+        const result = await fetch(
+            `${this.getBaseUrl()}/account/${accountId}/staking`
+        ).then((r) => r.json());
+        return result.contract_ids || [];
     }
 
     async getValidatorList(): Promise<string[]> {
         return [];
+    }
+
+    async getAccountNfts(accountId: string): Promise<string[]> {
+        const result = await fetch(`${this.getBaseUrl()}/account/${accountId}/nft`).then(
+            (r) => r.json()
+        );
+        return result.contract_ids || [];
+    }
+
+    async getNftDetailByReference() {
+        return {};
     }
 }
 

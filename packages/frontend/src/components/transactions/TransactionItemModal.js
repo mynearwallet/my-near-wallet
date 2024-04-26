@@ -19,6 +19,7 @@ import {
 import classNames from '../../utils/classNames';
 import FormButton from '../common/FormButton';
 import Modal from '../common/modal/Modal';
+import ImageWithLoading from '../common/image/ImageWithLoading';
 
 const TransactionItemModal = () => {
     const dispatch = useDispatch();
@@ -38,9 +39,10 @@ const TransactionItemModal = () => {
                 <div className='row'>
                     <div className='item head-item'>
                         <div className='icon'>
-                            <img
+                            <ImageWithLoading
                                 src={tx.image}
                                 alt='transaction-icon'
+                                loadImageTimeout={60_000}
                                 style={{ objectFit: 'contain' }}
                             />
                         </div>
