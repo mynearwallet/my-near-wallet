@@ -888,10 +888,10 @@
         "title": "Test-only Wallet"
     },
     "NFTDetail": {
-        "owner": "OWNER",
-        "transfer": "Transfer",
+        "attributes": "Attributes",
         "description": "Description",
-        "attributes": "Attributes"
+        "owner": "OWNER",
+        "transfer": "Transfer"
     },
     "NFTs": {
         "emptyState": "Looks like you don't have any collectibles yet.",

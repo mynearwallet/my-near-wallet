@@ -582,10 +582,10 @@
         "title": "Тестовый кошелек"
     },
     "NFTDetail": {
-        "owner": "ВЛАДЕЛЕЦ",
-        "transfer": "Перенос",
+        "attributes": "Атрибуты",
         "description": "Описание",
-        "attributes": "Атрибуты"
+        "owner": "ВЛАДЕЛЕЦ",
+        "transfer": "Перенос"
     },
     "NFTTransfer": {
         "youSent": "You sent <span class='color-blue'>${title}</span> to <span class='color-green'>${receiverId}</span>"

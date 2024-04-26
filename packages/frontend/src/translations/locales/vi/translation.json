@@ -610,11 +610,11 @@
         "title": "Ví chỉ thử nghiệm"
     },
     "NFTDetail": {
-        "owner": "CHỦ SỞ HỮU",
-        "transfer": "Chuyển",
+        "attributes": "Thuộc tính",
         "description": "Mô tả",
-        "attributes": "Thuộc tính"
-     },
+        "owner": "CHỦ SỞ HỮU",
+        "transfer": "Chuyển"
+    },
     "NFTTransfer": {
         "youSent": "You sent <span class='color-blue'>${title}</span> to <span class='color-green'>${receiverId}</span>"
     },

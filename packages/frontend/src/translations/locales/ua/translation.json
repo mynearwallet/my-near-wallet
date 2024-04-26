@@ -706,10 +706,10 @@
         "title": "Тестовий гаманець"
     },
     "NFTDetail": {
-        "owner": "Власник",
-        "transfer": "Переказ",
+        "attributes": "Атрибути",
         "description": "Опис",
-        "attributes": "Атрибути"
+        "owner": "Власник",
+        "transfer": "Переказ"
     },
     "NFTs": {
         "emptyState": "Схоже, у вас ще немає предметів колекціонування.",

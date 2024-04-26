@@ -683,10 +683,10 @@
         "title": "Wallet di prova"
     },
     "NFTDetail": {
-        "owner": "PROPRIETARIO",
-        "transfer": "Trasferisci",
+        "attributes": "Attributi",
         "description": "Descrizione",
-        "attributes": "Attributi"
+        "owner": "PROPRIETARIO",
+        "transfer": "Trasferisci"
     },
     "NFTs": {
         "emptyState": "Sembra che tu non abbia ancora alcun collectible.",

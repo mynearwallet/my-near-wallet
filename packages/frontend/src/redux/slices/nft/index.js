@@ -4,7 +4,7 @@ import set from 'lodash.set';
 import update from 'lodash.update';
 import { createSelector } from 'reselect';
 
-import NonFungibleTokens from '../../../services/NonFungibleTokens';
+import NonFungibleTokens, { TOKENS_PER_PAGE } from '../../../services/NonFungibleTokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import { createParameterSelector } from '../../selectors/topLevel';
@@ -435,6 +435,7 @@ export const selectHasFetchedAllTokensForAccountForContract = createSelector(
         selectNumberOfOwnedTokensForAccountForContract,
     ],
     (tokensListByAccountByContract, numberOfOwnedTokensForAccountForContract) =>
+        tokensListByAccountByContract.length < TOKENS_PER_PAGE ||
         tokensListByAccountByContract.length === numberOfOwnedTokensForAccountForContract
 );
 

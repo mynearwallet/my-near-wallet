@@ -665,10 +665,10 @@
         "title": "Carteira de testes"
     },
     "NFTDetail": {
-        "owner": "PROPRIETÁRIO",
-        "transfer": "Transferir",
+        "attributes": "Atributos",
         "description": "Descrição",
-        "attributes": "Atributos"
+        "owner": "PROPRIETÁRIO",
+        "transfer": "Transferir"
     },
     "NFTs": {
         "emptyState": "Parece que você ainda não tem nenhum colecionável.",

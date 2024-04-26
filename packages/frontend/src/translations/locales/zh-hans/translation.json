@@ -784,10 +784,10 @@
         "title": "测试网钱包"
     },
     "NFTDetail": {
-        "owner": "所有者",
-        "transfer": "发送",
+        "attributes": "属性",
         "description": "描述",
-        "attributes": "属性"
+        "owner": "所有者",
+        "transfer": "发送"
     },
     "NFTs": {
         "emptyState": "似乎你还没有收藏品。",
