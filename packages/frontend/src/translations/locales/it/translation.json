@@ -684,7 +684,9 @@
     },
     "NFTDetail": {
         "owner": "PROPRIETARIO",
-        "transfer": "Trasferisci"
+        "transfer": "Trasferisci",
+        "description": "Descrizione",
+        "attributes": "Attributi"
     },
     "NFTs": {
         "emptyState": "Sembra che tu non abbia ancora alcun collectible.",

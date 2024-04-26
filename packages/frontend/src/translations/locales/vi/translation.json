@@ -609,6 +609,12 @@
         "header": "NEAR thử nghiệm Ví",
         "title": "Ví chỉ thử nghiệm"
     },
+    "NFTDetail": {
+        "owner": "CHỦ SỞ HỮU",
+        "transfer": "Chuyển",
+        "description": "Mô tả",
+        "attributes": "Thuộc tính"
+     },
     "NFTTransfer": {
         "youSent": "You sent <span class='color-blue'>${title}</span> to <span class='color-green'>${receiverId}</span>"
     },

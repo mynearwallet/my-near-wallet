@@ -47,7 +47,11 @@ const StyledContainer = styled(Container)`
             border-radius: 10px;
         }
 
-        .desc {
+        .sections__item__subtitle {
+            margin-bottom: 3px;
+        }
+
+        .sections__item__desc {
             font-weight: 500;
             font-size: 16px;
             line-height: 150%;
@@ -124,6 +128,7 @@ const StyledContainer = styled(Container)`
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
+        margin-top: 4px;
     }
     .attributes__item {
         background: #f9f9f9;
@@ -190,8 +195,10 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                     <h1 className='title'>{nft.metadata.title}</h1>
                     <div className='sections'>
                         <div className='sections__item'>
-                            <div className='subtitle'>Description</div>
-                            <p className='desc'>
+                            <div className='sections__item__subtitle'>
+                                <Translate id='NFTDetail.description' />
+                            </div>
+                            <p className='sections__item__desc'>
                                 {nft.metadata.description ||
                                     indexerData.description ||
                                     '-'}
@@ -202,7 +209,9 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
 
                         {!!indexerData.attributes?.length && (
                             <div className='sections__item'>
-                                <div className='subtitle'>Attributes</div>
+                                <div className='sections__item__subtitle'>
+                                    <Translate id='NFTDetail.attributes' />
+                                </div>
                                 <div className='attributes'>
                                     {indexerData.attributes.map((item) => (
                                         <div

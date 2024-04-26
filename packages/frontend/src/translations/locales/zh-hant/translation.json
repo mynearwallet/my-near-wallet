@@ -785,7 +785,9 @@
     },
     "NFTDetail": {
         "owner": "所有者",
-        "transfer": "發送"
+        "transfer": "發送",
+        "description": "描述",
+        "attributes": "屬性"
     },
     "NFTs": {
         "emptyState": "似乎你還沒有收藏品。",

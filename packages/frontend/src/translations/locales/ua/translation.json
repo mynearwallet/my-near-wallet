@@ -707,7 +707,9 @@
     },
     "NFTDetail": {
         "owner": "Власник",
-        "transfer": "Переказ"
+        "transfer": "Переказ",
+        "description": "Опис",
+        "attributes": "Атрибути"
     },
     "NFTs": {
         "emptyState": "Схоже, у вас ще немає предметів колекціонування.",

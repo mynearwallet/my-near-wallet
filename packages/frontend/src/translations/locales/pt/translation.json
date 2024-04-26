@@ -664,6 +664,12 @@
         "header": "Carteira de teste NEAR",
         "title": "Carteira de testes"
     },
+    "NFTDetail": {
+        "owner": "PROPRIETÁRIO",
+        "transfer": "Transferir",
+        "description": "Descrição",
+        "attributes": "Atributos"
+    },
     "NFTs": {
         "emptyState": "Parece que você ainda não tem nenhum colecionável.",
         "loadMore": "Carregar mais"

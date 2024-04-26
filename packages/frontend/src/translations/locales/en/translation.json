@@ -889,7 +889,9 @@
     },
     "NFTDetail": {
         "owner": "OWNER",
-        "transfer": "Transfer"
+        "transfer": "Transfer",
+        "description": "Description",
+        "attributes": "Attributes"
     },
     "NFTs": {
         "emptyState": "Looks like you don't have any collectibles yet.",
