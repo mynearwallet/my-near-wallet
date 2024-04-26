@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
@@ -179,6 +179,24 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
         enabled: !!nft?.metadata?.reference,
     });
 
+    const attributes = useMemo(() => {
+        if (indexerData.attributes?.length) {
+            return indexerData.attributes;
+        }
+        try {
+            if (nft?.metadata?.extra) {
+                console.log(
+                    'JSON.parse(nft?.metadata?.extra)',
+                    JSON.parse(nft?.metadata?.extra)
+                );
+                return JSON.parse(nft?.metadata?.extra).attributes;
+            }
+        } catch (err) {
+            console.log('Failed to parse nft extra');
+        }
+        return [];
+    }, [indexerData.attributes, nft?.metadata]);
+
     return (
         <StyledContainer className='medium centered'>
             {nft && (
@@ -207,13 +225,13 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
 
                         {isLoading && <LoadingDots />}
 
-                        {!!indexerData.attributes?.length && (
+                        {!!attributes?.length && (
                             <div className='sections__item'>
                                 <div className='sections__item__subtitle'>
                                     <Translate id='NFTDetail.attributes' />
                                 </div>
                                 <div className='attributes'>
-                                    {indexerData.attributes.map((item) => (
+                                    {attributes.map((item) => (
                                         <div
                                             key={item.trait_type}
                                             className='attributes__item'
