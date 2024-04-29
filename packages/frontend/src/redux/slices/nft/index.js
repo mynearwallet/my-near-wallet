@@ -247,13 +247,26 @@ const nftSlice = createSlice({
                     'tokens',
                 ],
                 (n = []) => {
-                    const newTokens = [...(n || []), ...tokens];
-                    // remove duplicate from last index
-                    const res = newTokens.filter(
-                        (v, i, a) =>
-                            a.findLastIndex((v2) => v2.token_id === v.token_id) === i
-                    );
-                    return res;
+                    // preserve index when adding tokens & remove duplicate
+                    const arr = [...(n || []), ...tokens];
+                    try {
+                        const seen = {};
+                        let seenCount = 0;
+                        for (let i = 0; i < arr.length; i++) {
+                            const item = arr[i];
+                            if (seen[item.token_id] !== undefined) {
+                                arr[seen[item.token_id]] = item;
+                                seenCount++;
+                            } else {
+                                seen[item.token_id] = i;
+                            }
+                        }
+
+                        return arr.slice(0, arr.length - seenCount);
+                    } catch (err) {
+                        console.log(err);
+                        return n;
+                    }
                 }
             );
         },
