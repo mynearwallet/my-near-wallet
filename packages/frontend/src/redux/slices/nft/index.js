@@ -9,6 +9,7 @@ import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import { createParameterSelector } from '../../selectors/topLevel';
 import { coreIndexerAdapter } from '../../../services/coreIndexer/CoreIndexerAdapter';
+import { keepLastUniqueDataWithProperty } from '../../../utils/array';
 
 const { getMetadata, getToken, getTokens, getNumberOfTokens } = NonFungibleTokens;
 
@@ -247,26 +248,8 @@ const nftSlice = createSlice({
                     'tokens',
                 ],
                 (n = []) => {
-                    // preserve index when adding tokens & remove duplicate
                     const arr = [...(n || []), ...tokens];
-                    try {
-                        const seen = {};
-                        let seenCount = 0;
-                        for (let i = 0; i < arr.length; i++) {
-                            const item = arr[i];
-                            if (seen[item.token_id] !== undefined) {
-                                arr[seen[item.token_id]] = item;
-                                seenCount++;
-                            } else {
-                                seen[item.token_id] = i;
-                            }
-                        }
-
-                        return arr.slice(0, arr.length - seenCount);
-                    } catch (err) {
-                        console.log(err);
-                        return n;
-                    }
+                    return keepLastUniqueDataWithProperty(arr, 'token_id');
                 }
             );
         },
