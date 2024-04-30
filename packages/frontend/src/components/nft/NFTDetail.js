@@ -185,10 +185,6 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
         }
         try {
             if (nft?.metadata?.extra) {
-                console.log(
-                    'JSON.parse(nft?.metadata?.extra)',
-                    JSON.parse(nft?.metadata?.extra)
-                );
                 return JSON.parse(nft?.metadata?.extra).attributes;
             }
         } catch (err) {
