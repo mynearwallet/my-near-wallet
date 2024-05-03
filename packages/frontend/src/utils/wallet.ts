@@ -1668,11 +1668,13 @@ export default class Wallet {
                     (key) => key.access_key.permission === 'FullAccess'
                 );
 
+                const has2faEnabled = await TwoFactor.has2faEnabled(account);
+
                 const hasMatchedPublicKey = accessKeys.some(
                     ({ public_key }) => public_key === publicKey
                 );
 
-                if (!accessKeys.length || !hasFullAccessKey) {
+                if (!accessKeys.length || !(has2faEnabled || hasFullAccessKey)) {
                     accountIdsError.push({
                         accountId,
                         error: new WalletError(
@@ -1697,7 +1699,7 @@ export default class Wallet {
                 }
 
                 // check if recover access key is FAK and if so add key without 2FA
-                if (await TwoFactor.has2faEnabled(account)) {
+                if (has2faEnabled) {
                     recoveryKeyIsFAK = accessKeys.find(
                         ({ public_key, access_key }) =>
                             public_key === publicKey &&
