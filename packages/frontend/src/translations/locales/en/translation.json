@@ -315,7 +315,7 @@
         "resubmit": "Resubmit",
         "retry": "Retry",
         "returnToApp": "Return to App",
-        "rotateKey": "Rotate Key",
+        "rotateKey": "Use this key",
         "rotatingKey": "Rotating Key",
         "saveChanges": "Save Changes",
         "secureMyAccount": "Secure My Account",
@@ -656,14 +656,15 @@
             "inUse": "Currently in use",
             "sameKeyWarning": "You are already using this key. There is no need to rotate.",
             "seedPhrase": "Account seed phrase / private key",
-            "seedPhrasePrompt": "Please enter the seed phrase for the key you want to use.",
-            "title": "Rotate Key"
+            "seedPhrasePrompt": "Please enter the seed phrase of this key.",
+            "title": "Use as Current Key"
         },
         "submitAnyTransaction": "Submit any transaction on your behalf",
         "transaction": "Transaction",
         "useContract": "Use <b>${receiverId}</b> contract on your behalf",
         "viewYourAccountName": "View your Account Name",
         "warning": {
+            "doesNotMatch": "The key you entered is not a valid recovery key for the public key you wanted to use.",
             "invalidFormat": "We cannot detect the key format you entered.",
             "invalidKey": "The key you entered is not a valid recovery key for this account.",
             "invalidSeedPhrase": "The seed phrase you entered is not valid; its checksum is incorrect."
