@@ -33,6 +33,7 @@ import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/a
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import sendJson from '../tmp_fetch_send_json';
+import { withAdjustedStorageCost } from './accountsLogic/withAdjustedStorageCost';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -1253,10 +1254,13 @@ export default class Wallet {
     }
 
     async getAccount(accountId, limitedAccountData = false) {
-        let account = new nearApiJs.Account(this.connection, accountId);
+        const AccountWithAdjustedStorageCost = withAdjustedStorageCost(nearApiJs.Account);
+        let account = new AccountWithAdjustedStorageCost(this.connection, accountId);
+
+        const TwoFactorWithAdjustedStorageCost = withAdjustedStorageCost(TwoFactor);
         const has2fa = await TwoFactor.has2faEnabled(account);
         if (has2fa) {
-            account = new TwoFactor(this, accountId, has2fa);
+            account = new TwoFactorWithAdjustedStorageCost(this, accountId, has2fa);
         }
 
         // TODO: Check if lockup needed somehow? Should be changed to async? Should just check in wrapper?
