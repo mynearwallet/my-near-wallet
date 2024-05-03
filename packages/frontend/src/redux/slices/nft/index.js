@@ -3,18 +3,18 @@ import merge from 'lodash.merge';
 import set from 'lodash.set';
 import update from 'lodash.update';
 import { createSelector } from 'reselect';
-import uniqBy from 'lodash.uniqby';
 
-import NonFungibleTokens from '../../../services/NonFungibleTokens';
+import NonFungibleTokens, { TOKENS_PER_PAGE } from '../../../services/NonFungibleTokens';
 import handleAsyncThunkStatus from '../../reducerStatus/handleAsyncThunkStatus';
 import initialStatusState from '../../reducerStatus/initialState/initialStatusState';
 import { createParameterSelector } from '../../selectors/topLevel';
 import { coreIndexerAdapter } from '../../../services/coreIndexer/CoreIndexerAdapter';
+import { keepLastUniqueDataWithProperty } from '../../../utils/array';
 
 const { getMetadata, getToken, getTokens, getNumberOfTokens } = NonFungibleTokens;
 
 const SLICE_NAME = 'NFT';
-const ENABLE_DEBUG = true;
+const ENABLE_DEBUG = false;
 const debugLog = (...args) => ENABLE_DEBUG && console.log(`${SLICE_NAME}Slice`, ...args);
 
 const initialState = {
@@ -66,7 +66,7 @@ const fetchOwnedNFTsForContract = createAsyncThunk(
     async ({ accountId, contractName, contractMetadata }, thunkAPI) => {
         debugLog('THUNK/fetchOwnedNFTsForContract');
         const {
-            actions: { addTokensMetadata },
+            actions: { upsertTokensMetadata },
         } = nftSlice;
         const { dispatch, getState } = thunkAPI;
 
@@ -81,7 +81,7 @@ const fetchOwnedNFTsForContract = createAsyncThunk(
             fromIndex: fromIndex === 1 ? 0 : fromIndex,
         });
         await dispatch(
-            addTokensMetadata({ accountId, contractName, tokens: tokenMetadata })
+            upsertTokensMetadata({ accountId, contractName, tokens: tokenMetadata })
         );
     },
     {
@@ -136,29 +136,17 @@ const fetchNFT = createAsyncThunk(
         debugLog('THUNK/fetchNFT');
 
         const {
-            actions: { addTokensMetadata, setContractMetadata },
+            actions: { upsertTokensMetadata, setContractMetadata },
         } = nftSlice;
 
-        if (
-            !selectTokenForAccountForContractForTokenId(getState(), {
-                accountId,
-                contractName,
-                tokenId,
-            })
-        ) {
-            const contractMetadata = await getCachedContractMetadataOrFetch(
-                contractName,
-                getState()
-            );
-            dispatch(setContractMetadata({ contractName, metadata: contractMetadata }));
+        const contractMetadata = await getCachedContractMetadataOrFetch(
+            contractName,
+            getState()
+        );
+        dispatch(setContractMetadata({ contractName, metadata: contractMetadata }));
 
-            const token = await getToken(
-                contractName,
-                tokenId,
-                contractMetadata.base_uri
-            );
-            dispatch(addTokensMetadata({ accountId, contractName, tokens: [token] }));
-        }
+        const token = await getToken(contractName, tokenId, contractMetadata.base_uri);
+        dispatch(upsertTokensMetadata({ accountId, contractName, tokens: [token] }));
     }
 );
 
@@ -245,8 +233,8 @@ const nftSlice = createSlice({
             const { metadata, contractName } = payload;
             set(state, ['metadata', 'byContractName', contractName], metadata);
         },
-        addTokensMetadata(state, { payload }) {
-            debugLog('REDUCER/addTokensMetadata');
+        upsertTokensMetadata(state, { payload }) {
+            debugLog('REDUCER/upsertTokensMetadata');
 
             const { contractName, tokens, accountId } = payload;
             update(
@@ -259,10 +247,9 @@ const nftSlice = createSlice({
                     contractName,
                     'tokens',
                 ],
-                (n) => {
-                    const newTokens = [...(n || []), ...tokens];
-                    const uniqTokens = uniqBy(newTokens, 'token_id');
-                    return uniqTokens;
+                (n = []) => {
+                    const arr = [...(n || []), ...tokens];
+                    return keepLastUniqueDataWithProperty(arr, 'token_id');
                 }
             );
         },
@@ -444,6 +431,7 @@ export const selectHasFetchedAllTokensForAccountForContract = createSelector(
         selectNumberOfOwnedTokensForAccountForContract,
     ],
     (tokensListByAccountByContract, numberOfOwnedTokensForAccountForContract) =>
+        tokensListByAccountByContract.length < TOKENS_PER_PAGE ||
         tokensListByAccountByContract.length === numberOfOwnedTokensForAccountForContract
 );
 

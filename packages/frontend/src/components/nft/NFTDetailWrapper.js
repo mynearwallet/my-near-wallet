@@ -32,10 +32,10 @@ const NFTDetailWrapper = ({ match, history }) => {
     const { fetchNFT } = nftActions;
 
     useEffect(() => {
-        if (accountId && !nft && !transferredNft) {
+        if (accountId && !transferredNft) {
             dispatch(fetchNFT({ accountId, contractName, tokenId }));
         }
-    }, [accountId, contractName, nft, transferredNft]);
+    }, [accountId, contractName, transferredNft]);
 
     return (
         <NFTDetail

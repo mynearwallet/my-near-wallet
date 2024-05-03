@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
@@ -13,6 +13,7 @@ import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import SendIcon from '../svg/SendIcon';
 import { coreIndexerAdapter } from '../../services/coreIndexer/CoreIndexerAdapter';
+import LoadingDots from '../common/loader/LoadingDots';
 
 const StyledContainer = styled(Container)`
     display: flex;
@@ -46,7 +47,11 @@ const StyledContainer = styled(Container)`
             border-radius: 10px;
         }
 
-        .desc {
+        .sections__item__subtitle {
+            margin-bottom: 3px;
+        }
+
+        .sections__item__desc {
             font-weight: 500;
             font-size: 16px;
             line-height: 150%;
@@ -123,6 +128,7 @@ const StyledContainer = styled(Container)`
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
+        margin-top: 4px;
     }
     .attributes__item {
         background: #f9f9f9;
@@ -165,13 +171,27 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
     );
     const hasSufficientBalance = new BN(nearBalance).gte(transferMax);
 
-    const { data: indexerData = {} } = useQuery({
+    const { data: indexerData = {}, isLoading } = useQuery({
         queryKey: ['nftDetail', nft?.metadata?.reference],
         queryFn: async () => {
             return coreIndexerAdapter.getNftDetailByReference(nft?.metadata?.reference);
         },
         enabled: !!nft?.metadata?.reference,
     });
+
+    const attributes = useMemo(() => {
+        if (indexerData.attributes?.length) {
+            return indexerData.attributes;
+        }
+        try {
+            if (nft?.metadata?.extra) {
+                return JSON.parse(nft?.metadata?.extra).attributes;
+            }
+        } catch (err) {
+            console.log('Failed to parse nft extra');
+        }
+        return [];
+    }, [indexerData.attributes, nft?.metadata]);
 
     return (
         <StyledContainer className='medium centered'>
@@ -189,19 +209,25 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                     <h1 className='title'>{nft.metadata.title}</h1>
                     <div className='sections'>
                         <div className='sections__item'>
-                            <div className='subtitle'>Description</div>
-                            <p className='desc'>
+                            <div className='sections__item__subtitle'>
+                                <Translate id='NFTDetail.description' />
+                            </div>
+                            <p className='sections__item__desc'>
                                 {nft.metadata.description ||
                                     indexerData.description ||
                                     '-'}
                             </p>
                         </div>
 
-                        {!!indexerData.attributes?.length && (
+                        {isLoading && <LoadingDots />}
+
+                        {!!attributes?.length && (
                             <div className='sections__item'>
-                                <div className='subtitle'>Attributes</div>
+                                <div className='sections__item__subtitle'>
+                                    <Translate id='NFTDetail.attributes' />
+                                </div>
                                 <div className='attributes'>
-                                    {indexerData.attributes.map((item) => (
+                                    {attributes.map((item) => (
                                         <div
                                             key={item.trait_type}
                                             className='attributes__item'

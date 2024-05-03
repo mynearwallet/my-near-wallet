@@ -888,6 +888,8 @@
         "title": "Test-only Wallet"
     },
     "NFTDetail": {
+        "attributes": "Attributes",
+        "description": "Description",
         "owner": "OWNER",
         "transfer": "Transfer"
     },

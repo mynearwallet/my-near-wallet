@@ -581,6 +581,12 @@
         "header": "Тестовый кошелек NEAR",
         "title": "Тестовый кошелек"
     },
+    "NFTDetail": {
+        "attributes": "Атрибуты",
+        "description": "Описание",
+        "owner": "ВЛАДЕЛЕЦ",
+        "transfer": "Перенос"
+    },
     "NFTTransfer": {
         "youSent": "You sent <span class='color-blue'>${title}</span> to <span class='color-green'>${receiverId}</span>"
     },
