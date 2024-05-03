@@ -33,6 +33,7 @@ import parseFundingOptions from '../../utils/parseFundingOptions';
 import Container from '../common/styled/Container.css';
 import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
 import { EWalletImportInputType } from './manual_import/type';
+import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -178,29 +179,32 @@ class RecoverAccountSeedPhrase extends Component {
         };
 
         return (
-            <StyledContainer className='small-centered border'>
-                <h1>
-                    <Translate id='recoverSeedPhrase.pageTitle' />
-                </h1>
-                <h2>
-                    <Translate id='recoverSeedPhrase.pageText' />
-                </h2>
-                <form
-                    onSubmit={(e) => {
-                        this.handleSubmit();
-                        e.preventDefault();
-                    }}
-                    autoComplete='off'
-                >
-                    <RecoverAccountSeedPhraseForm
-                        {...combinedState}
-                        handleChange={this.handleChange}
+            <>
+                <VerifyWalletDomainBanner />
+                <StyledContainer className='small-centered border'>
+                    <h1>
+                        <Translate id='recoverSeedPhrase.pageTitle' />
+                    </h1>
+                    <h2>
+                        <Translate id='recoverSeedPhrase.pageText' />
+                    </h2>
+                    <form
+                        onSubmit={(e) => {
+                            this.handleSubmit();
+                            e.preventDefault();
+                        }}
+                        autoComplete='off'
+                    >
+                        <RecoverAccountSeedPhraseForm
+                            {...combinedState}
+                            handleChange={this.handleChange}
+                        />
+                    </form>
+                    <ModalManualImportWithButton
+                        importType={EWalletImportInputType.SECRET_PHRASE}
                     />
-                </form>
-                <ModalManualImportWithButton
-                    importType={EWalletImportInputType.SECRET_PHRASE}
-                />
-            </StyledContainer>
+                </StyledContainer>
+            </>
         );
     }
 }
