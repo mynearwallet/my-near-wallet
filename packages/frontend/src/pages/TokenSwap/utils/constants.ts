@@ -22,8 +22,8 @@ export const NOTIFICATION_TYPE = {
 // Percentage of price impact in swaps.
 // Used to let users know about possible losses.
 export const PRICE_IMPACT_THRESHOLD = {
-    warning: 4,
-    error: 10,
+    warning: 2,
+    error: 6,
 };
 
 // Used to initialize output token in the form.

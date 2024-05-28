@@ -784,6 +784,8 @@
         "title": "測試網錢包"
     },
     "NFTDetail": {
+        "attributes": "屬性",
+        "description": "描述",
         "owner": "所有者",
         "transfer": "發送"
     },

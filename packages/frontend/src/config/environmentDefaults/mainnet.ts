@@ -37,6 +37,8 @@ export default {
         '8DKTSceSbxVgh4ANXwqmRqGyPWCuZAR1fCqGPXUjD5nZ',
         // https://github.com/near/core-contracts/blob/f93c146d87a779a2063a30d2c1567701306fcae4/multisig/res/multisig.wasm
         '55E7imniT2uuYrECn17qJAk9fLcwQW4ftNSwmCJL5Di',
+        // unknown
+        'HRP7Qf2HDaXTD8EWs7G8siNNGxWWBCe1JaDxcM2cJmQR',
     ],
     MULTISIG_MIN_AMOUNT: '4',
     NETWORK_ID: 'default',

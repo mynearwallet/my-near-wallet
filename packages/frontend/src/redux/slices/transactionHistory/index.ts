@@ -122,14 +122,11 @@ const fetchTransactions = createAsyncThunk(
             uniq([
                 'x.paras.near',
                 ...receipt_ids,
-                // ...transactions.map((item) => item.transaction?.receiver_id),
                 ...transactions
                     .map((r) => r?.transaction?.receiver_id || '')
                     .filter((x) => x),
-                // ...transactions.map((item) => item.transaction?.receiver_id),
             ])
         );
-        console.log({ receipt_ids, metaDatas });
 
         const result = transactions
             .map((item) => {
