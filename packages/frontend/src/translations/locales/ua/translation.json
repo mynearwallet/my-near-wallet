@@ -706,6 +706,8 @@
         "title": "Тестовий гаманець"
     },
     "NFTDetail": {
+        "attributes": "Атрибути",
+        "description": "Опис",
         "owner": "Власник",
         "transfer": "Переказ"
     },

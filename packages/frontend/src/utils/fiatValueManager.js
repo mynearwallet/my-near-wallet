@@ -105,7 +105,7 @@ export default class FiatValueManager {
             return {
                 ...acc,
                 [curr]: {
-                    usd: +Number(prices[curr]?.price).toFixed(2) || null,
+                    usd: +Number(prices[curr]?.price) || null,
                     last_updated_at,
                 },
             };
