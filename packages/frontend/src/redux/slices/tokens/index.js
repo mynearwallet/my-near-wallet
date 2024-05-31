@@ -320,11 +320,6 @@ export const selectAllowedTokens = createSelector(
         selectNEARAsTokenWithMetadata,
     ],
     (tokensFiatData, tokensWithBalance, setOfBlacklistedNames, nearConfig) => {
-        const nearConfigWithName = {
-            ...nearConfig,
-            contractName: CONFIG.NEAR_ID,
-        };
-
         const tokenList = Object.values(tokensWithBalance).map((tokenData) => ({
             ...tokenData,
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
@@ -346,6 +341,10 @@ export const selectAllowedTokens = createSelector(
             return true;
         });
 
+        const nearConfigWithName = {
+            ...nearConfig,
+            contractName: CONFIG.NEAR_ID,
+        };
         if (![...setOfBlacklistedNames].length) {
             return [nearConfigWithName, ...safeTokenList];
         }

@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Wallet } from '../components/wallet/Wallet';
-import useSortedTokens from '../hooks/useSortedTokens';
 import { Mixpanel } from '../mixpanel/index';
 import {
     selectAccountId,
@@ -28,7 +27,6 @@ import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsByAccountId,
 } from '../redux/slices/recoveryMethods';
-import { selectTokensLoading, selectAllowedTokens } from '../redux/slices/tokens';
 
 const { fetchNFTs } = nftActions;
 const { setLinkdropAmount } = linkdropActions;
@@ -47,15 +45,10 @@ const WalletWrapper = ({ tab, setTab }) => {
     const zeroBalanceAccountImportMethod = useSelector(
         selectZeroBalanceAccountImportMethod
     );
-    const tokensLoading = useSelector((state) =>
-        selectTokensLoading(state, { accountId })
-    );
     const availableAccounts = useSelector(selectAvailableAccounts);
     const userRecoveryMethods = useSelector((state) =>
         selectRecoveryMethodsByAccountId(state, { accountId })
     );
-    const allowedTokens = useSelector(selectAllowedTokens);
-    const sortedTokens = useSortedTokens(allowedTokens);
 
     useEffect(() => {
         if (accountId) {
@@ -81,8 +74,6 @@ const WalletWrapper = ({ tab, setTab }) => {
             createFromImplicitSuccess={createFromImplicitSuccess}
             createCustomName={createCustomName}
             zeroBalanceAccountImportMethod={zeroBalanceAccountImportMethod}
-            fungibleTokensList={sortedTokens}
-            tokensLoading={tokensLoading}
             availableAccounts={availableAccounts}
             handleCloseLinkdropModal={useCallback(() => {
                 dispatch(setLinkdropAmount('0'));
