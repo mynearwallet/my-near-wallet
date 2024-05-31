@@ -13,9 +13,11 @@ import {
     checkAbleToIncreaseGas,
     getFirstTransactionWithFunctionCallAction,
     calculateGasForSuccessTransactions,
+    transactionsProgress,
 } from '../../slices/sign';
 
 const initialState = {
+    transactionsProgress: [],
     status: SIGN_STATUS.NEEDS_CONFIRMATION,
     successHashes: [],
 };
@@ -157,6 +159,24 @@ const sign = handleActions(
         [handleSignTransactions.rejected]: handleTransactionsRejected,
         [makeAccountActive]: () => {
             return initialState;
+        },
+        [transactionsProgress]: (state, { payload }) => {
+            if (payload.txs) {
+                return {
+                    ...state,
+                    transactionsProgress: payload.txs,
+                };
+            }
+            return {
+                ...state,
+                transactionsProgress: state.transactionsProgress.map((tx, i) => ({
+                    ...tx,
+                    txProgress:
+                        payload.txIndex === i && payload.txProgress
+                            ? payload.txProgress
+                            : tx.txProgress,
+                })),
+            };
         },
     },
     initialState

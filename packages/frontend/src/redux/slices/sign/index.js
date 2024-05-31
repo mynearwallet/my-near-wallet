@@ -94,6 +94,61 @@ export const handleSignTransactions = createAsyncThunk(
     }
 );
 
+export const transactionsProgress = createAction('transactionsProgress');
+
+export const handleTransactionsExecutor = createAsyncThunk(
+    `${SLICE_NAME}/handleTransactionsExecutor`,
+    async ({ txs, accountId }, thunkAPI) => {
+        const { dispatch } = thunkAPI;
+        const walletAccount = await wallet.getAccount(accountId);
+
+        dispatch(transactionsProgress({ txs }));
+        for (let i = 0; i < txs.length; i++) {
+            const tx = txs[i];
+            dispatch(
+                transactionsProgress({
+                    txIndex: i,
+                    txProgress: 'signing',
+                })
+            );
+            const {
+                status,
+                receipts_outcome,
+                transaction: { hash },
+            } = await walletAccount.signAndSendTransaction(tx);
+
+            const failedResult = receipts_outcome.find(
+                ({ outcome: { status } }) => !!status?.Failure
+            );
+
+            if (failedResult?.outcome?.status?.Failure) {
+                dispatch(
+                    transactionsProgress({
+                        txIndex: i,
+                        hash,
+                        status,
+                        txProgress: 'failed',
+                    })
+                );
+            } else {
+                dispatch(
+                    transactionsProgress({
+                        txIndex: i,
+                        hash,
+                        status,
+                        txProgress: 'success',
+                    })
+                );
+            }
+        }
+        // dispatch(
+        //     transactionsProgress({
+        //         txs: [],
+        //     })
+        // );
+    }
+);
+
 export const removeSuccessTransactions = ({ transactions, successHashes }) => {
     const transactionsCopy = cloneDeep(transactions);
 
