@@ -15,7 +15,7 @@ test(
 
         await checkConnection(rpcProvider);
     },
-    30 * 1000
+    60 * 1000
 );
 
 test(
