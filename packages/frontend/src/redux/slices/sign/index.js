@@ -7,6 +7,8 @@ import { Mixpanel } from '../../../mixpanel';
 import Wallet, { wallet } from '../../../utils/wallet';
 import { showCustomAlert } from '../../actions/status';
 import { selectAccountId, selectAccountUrlPrivateShard } from '../account';
+import { store } from '../../..';
+import { keysToSnakeCase } from '../../../utils/object';
 
 const SLICE_NAME = 'sign';
 
@@ -98,11 +100,38 @@ export const transactionsProgress = createAction('transactionsProgress');
 
 export const handleTransactionsExecutor = createAsyncThunk(
     `${SLICE_NAME}/handleTransactionsExecutor`,
-    async ({ txs, accountId }, thunkAPI) => {
-        const { dispatch } = thunkAPI;
+    async ({ txs }, thunkAPI) => {
+        let res = [];
+        const { dispatch, getState } = thunkAPI;
+        const accountId = selectAccountId(getState());
         const walletAccount = await wallet.getAccount(accountId);
 
-        dispatch(transactionsProgress({ txs }));
+        const result = {
+            success: true,
+            txHash: '',
+            failReason: '',
+        };
+
+        dispatch(
+            transactionsProgress({
+                txs: txs.map((tx) => ({
+                    ...tx,
+                    transaction: {
+                        receiver_id: tx.receiverId,
+                        signer_id: accountId,
+                        actions: tx.actions.map((action) => {
+                            return Object.entries(action).reduce((acc, [key, value]) => {
+                                return {
+                                    ...acc,
+                                    [key.charAt(0).toUpperCase() + key.slice(1)]:
+                                        keysToSnakeCase(value),
+                                };
+                            }, {});
+                        }),
+                    },
+                })),
+            })
+        );
         for (let i = 0; i < txs.length; i++) {
             const tx = txs[i];
             dispatch(
@@ -111,17 +140,23 @@ export const handleTransactionsExecutor = createAsyncThunk(
                     txProgress: 'signing',
                 })
             );
+            const txRes = await walletAccount.signAndSendTransaction(tx);
+            res.push(txRes);
+
             const {
                 status,
                 receipts_outcome,
                 transaction: { hash },
-            } = await walletAccount.signAndSendTransaction(tx);
+            } = txRes;
+            result.txHash = hash;
 
             const failedResult = receipts_outcome.find(
                 ({ outcome: { status } }) => !!status?.Failure
             );
 
             if (failedResult?.outcome?.status?.Failure) {
+                result.success = false;
+                result.failReason = failedResult.outcome.status.Failure;
                 dispatch(
                     transactionsProgress({
                         txIndex: i,
@@ -141,11 +176,13 @@ export const handleTransactionsExecutor = createAsyncThunk(
                 );
             }
         }
-        // dispatch(
-        //     transactionsProgress({
-        //         txs: [],
-        //     })
-        // );
+        result.data = res;
+        dispatch(
+            transactionsProgress({
+                txs: [],
+            })
+        );
+        return result;
     }
 );
 
@@ -332,3 +369,21 @@ export const selectSignFeesGasLimitIncludingGasChanges = createSelector(
         return new BN(calculateGasLimit(tx.flatMap((t) => t.actions))).add(gasUsed);
     }
 );
+
+export async function dispatchTransactionExecutor(txOption) {
+    const res = await store.dispatch(
+        await handleTransactionsExecutor({
+            txs: [txOption],
+        })
+    );
+    return res.payload.data[0];
+}
+
+export async function dispatchTransactionsExecutor(txs) {
+    const res = await store.dispatch(
+        await handleTransactionsExecutor({
+            txs,
+        })
+    );
+    return res.payload;
+}

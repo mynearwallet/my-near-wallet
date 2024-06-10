@@ -10,6 +10,7 @@ import {
 import { getTotalGasFee } from '../utils/gasPrice';
 import { wallet } from '../utils/wallet';
 import { CoreIndexerAdapter } from './coreIndexer/CoreIndexerAdapter';
+import { dispatchTransactionExecutor } from '../redux/slices/sign';
 
 const {
     transactions: { functionCall },
@@ -190,7 +191,7 @@ export default class FungibleTokens {
             contractName,
         });
 
-        return account.signAndSendTransaction({
+        const txOption = {
             receiverId: contractName,
             actions: [
                 ...(isRegistrationRequired
@@ -213,7 +214,9 @@ export default class FungibleTokens {
                     CONFIG.TOKEN_TRANSFER_DEPOSIT
                 ),
             ],
-        });
+        };
+
+        return dispatchTransactionExecutor(txOption);
     }
 
     async transferStorageDeposit({

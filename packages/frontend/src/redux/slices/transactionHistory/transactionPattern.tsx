@@ -102,9 +102,16 @@ const txUtils = {
             return ETxDirection.receive;
         }
     },
-    decodeArgs(args_base64) {
-        const args_raw = args_base64 ? atob(args_base64) : '';
+    decodeArgs(argsParam) {
         try {
+            let args_raw;
+            if (argsParam instanceof Uint8Array) {
+                const args_base64 = Buffer.from(argsParam);
+                const decoder = new TextDecoder();
+                args_raw = decoder.decode(args_base64);
+            } else {
+                args_raw = argsParam ? atob(argsParam) : '';
+            }
             const args = JSON.parse(args_raw || '{}') || {};
             return args;
         } catch (err) {

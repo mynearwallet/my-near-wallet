@@ -3,8 +3,7 @@ import { transactions } from 'near-api-js';
 import refFinanceContract from './RefFinanceContract';
 import CONFIG from '../../config';
 import { fungibleTokensService } from '../FungibleTokens';
-import { store } from '../..';
-import { handleTransactionsExecutor } from '../../redux/slices/sign';
+import { dispatchTransactionsExecutor } from '../../redux/slices/sign';
 
 class FungibleTokenExchange {
     constructor({ exchaingeContract, tokenService }) {
@@ -273,47 +272,13 @@ class FungibleTokenExchange {
     }
 
     async _processTransactions(account, txs) {
-        const swapResult = {
-            success: true,
-            swapTxHash: '',
-            failReason: '',
-        };
-
         console.log('_processTransactions', account);
-        store.dispatch(handleTransactionsExecutor({ txs, accountId: account.accountId }));
-
-        return swapResult;
-
-        // for (const tx of txs) {
-        //     const {
-        //         status,
-        //         receipts_outcome,
-        //         transaction: { hash, actions },
-        //     } = await account.signAndSendTransaction(tx);
-
-        //     const failedResult = receipts_outcome.find(
-        //         ({ outcome: { status } }) => !!status?.Failure
-        //     );
-
-        //     swapResult.success = !status?.Failure;
-
-        //     if (failedResult?.outcome?.status?.Failure) {
-        //         swapResult.success = false;
-        //         swapResult.failReason = this._exchangeContract.extractErrorMessage(
-        //             failedResult.outcome.status.Failure
-        //         );
-        //     }
-
-        //     const swapTx = actions.find(
-        //         (action) => action['FunctionCall']?.method_name === 'ft_transfer_call'
-        //     );
-
-        //     if (swapTx) {
-        //         swapResult.swapTxHash = hash;
-        //     }
-        // }
-
-        // return swapResult;
+        const res = await dispatchTransactionsExecutor(txs);
+        return {
+            success: res.success,
+            swapTxHash: res.txHash,
+            failReason: res.failReason,
+        };
     }
 }
 

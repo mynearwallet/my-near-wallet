@@ -1817,7 +1817,9 @@
             "NotStarted": "Not started",
             "Started": "Started",
             "SuccessValue": "Succeeded"
-        }
+        },
+        "executeTitle": "Executing Transaction",
+        "steps": "Steps ${currentStepCount} of ${totalStepCount}"
     },
     "transfer": {
         "estimatedFees": "Estimated fees",
