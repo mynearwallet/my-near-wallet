@@ -3,6 +3,7 @@ import * as nearAPI from 'near-api-js';
 import { listLikelyNfts } from './indexer';
 import CONFIG from '../config';
 import { wallet } from '../utils/wallet';
+import { dispatchTransactionExecutor } from '../redux/slices/sign/transactionExecutor';
 
 export const TOKENS_PER_PAGE = 6;
 
@@ -141,9 +142,7 @@ export default class NonFungibleTokens {
     };
 
     static transfer = async ({ accountId, contractId, tokenId, receiverId }) => {
-        const account = await wallet.getAccount(accountId);
-
-        return account.signAndSendTransaction({
+        return dispatchTransactionExecutor({
             receiverId: contractId,
             actions: [
                 functionCall(

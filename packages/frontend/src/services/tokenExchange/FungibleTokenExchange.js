@@ -3,7 +3,7 @@ import { transactions } from 'near-api-js';
 import refFinanceContract from './RefFinanceContract';
 import CONFIG from '../../config';
 import { fungibleTokensService } from '../FungibleTokens';
-import { dispatchTransactionsExecutor } from '../../redux/slices/sign';
+import { dispatchTransactionsExecutor } from '../../redux/slices/sign/transactionExecutor';
 
 class FungibleTokenExchange {
     constructor({ exchaingeContract, tokenService }) {

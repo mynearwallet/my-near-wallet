@@ -53,6 +53,7 @@ import {
 } from '../slices/staking';
 import { actions as tokensActions } from '../slices/tokens';
 import { coreIndexerAdapter } from '../../services/coreIndexer/CoreIndexerAdapter';
+import { dispatchTransactionExecutor } from '../slices/sign/transactionExecutor';
 
 const { fetchToken } = tokensActions;
 
@@ -76,7 +77,7 @@ export const { staking } = createActions({
                         await contract.get_staking_pool_account_id();
                     if (validatorId !== selectedValidatorId) {
                         if (selectedValidatorId !== null) {
-                            await signAndSendTransaction({
+                            await dispatchTransactionExecutor({
                                 receiverId: lockupId,
                                 actions: [
                                     functionCall(
@@ -88,7 +89,7 @@ export const { staking } = createActions({
                                 ],
                             });
                         }
-                        await signAndSendTransaction({
+                        await dispatchTransactionExecutor({
                             receiverId: lockupId,
                             actions: [
                                 functionCall(

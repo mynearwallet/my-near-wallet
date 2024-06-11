@@ -1810,6 +1810,7 @@
     "total": "total",
     "totalBalance": "Your total balance represents all NEAR tokens under your control. In many cases, you will not have immediate access to this entire balance (e.g. if it is locked, delegated, or staked). Check your Available Balance for the NEAR you can actively use, transfer, delegate, and stake.",
     "transaction": {
+        "executeTitle": "Executing Transaction",
         "status": {
             "checkingStatus": "Checking status...",
             "Failure": "Failed",
@@ -1818,7 +1819,6 @@
             "Started": "Started",
             "SuccessValue": "Succeeded"
         },
-        "executeTitle": "Executing Transaction",
         "steps": "Steps ${currentStepCount} of ${totalStepCount}"
     },
     "transfer": {

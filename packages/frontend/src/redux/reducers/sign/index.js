@@ -13,8 +13,8 @@ import {
     checkAbleToIncreaseGas,
     getFirstTransactionWithFunctionCallAction,
     calculateGasForSuccessTransactions,
-    transactionsProgress,
 } from '../../slices/sign';
+import { transactionsProgress } from '../../slices/sign/transactionExecutor';
 
 const initialState = {
     transactionsProgress: [],
