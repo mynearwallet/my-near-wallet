@@ -5,16 +5,36 @@ import { wallet } from '../../../utils/wallet';
 import { selectAccountId } from '../account';
 import { store } from '../../..';
 import { keysToSnakeCase } from '../../../utils/object';
+import {
+    actions as ledgerActions,
+    selectLedgerConnectionAvailable,
+    selectLedgerHasLedger,
+} from '../ledger';
 
 const SLICE_NAME = 'sign';
+
+export enum TX_PROGRESS {
+    signing = 'signing',
+    success = 'success',
+    failed = 'failed',
+}
 
 export const transactionsProgress = createAction<
     Partial<{
         txs: [];
         txIndex: number;
         txProgress: string;
+        hash: string;
     }>
 >('transactionsProgress');
+
+interface ITransactionExecutorResult {
+    success: boolean;
+    txHash: string;
+    failReason: string;
+    data: FinalExecutionOutcome[];
+    retry?: boolean;
+}
 
 export const handleTransactionsExecutor = createAsyncThunk(
     `${SLICE_NAME}/handleTransactionsExecutor`,
@@ -30,24 +50,30 @@ export const handleTransactionsExecutor = createAsyncThunk(
             accountId?: string;
         },
         thunkAPI
-    ) => {
+    ): Promise<ITransactionExecutorResult> => {
         const res = [];
         const { dispatch, getState } = thunkAPI;
         const selectedAccountId = selectAccountId(getState());
         const currentAccountId = accountId || selectedAccountId;
         const walletAccount = await wallet.getAccount(currentAccountId);
 
-        const result: {
-            success: boolean;
-            txHash: string;
-            failReason: string;
-            data: FinalExecutionOutcome[];
-        } = {
+        const result: ITransactionExecutorResult = {
             success: true,
             txHash: '',
             failReason: '',
             data: [],
         };
+
+        const ledgerConnectionAvailable = selectLedgerConnectionAvailable(getState());
+        const hasLedger = selectLedgerHasLedger(getState());
+        if (hasLedger && !ledgerConnectionAvailable) {
+            dispatch(ledgerActions.handleShowConnectModal());
+            return {
+                ...result,
+                success: false,
+                retry: true,
+            };
+        }
 
         dispatch(
             transactionsProgress({
@@ -74,10 +100,24 @@ export const handleTransactionsExecutor = createAsyncThunk(
             dispatch(
                 transactionsProgress({
                     txIndex: i,
-                    txProgress: 'signing',
+                    txProgress: TX_PROGRESS.signing,
                 })
             );
-            const txRes = await walletAccount.signAndSendTransaction(tx);
+            let txRes;
+            try {
+                txRes = await walletAccount.signAndSendTransaction(tx);
+            } catch (err) {
+                dispatch(
+                    transactionsProgress({
+                        txIndex: i,
+                        txProgress: TX_PROGRESS.failed,
+                    })
+                );
+                return {
+                    ...result,
+                    success: false,
+                };
+            }
             res.push(txRes);
 
             const {
@@ -99,16 +139,20 @@ export const handleTransactionsExecutor = createAsyncThunk(
                         txIndex: i,
                         hash,
                         status,
-                        txProgress: 'failed',
+                        txProgress: TX_PROGRESS.failed,
                     })
                 );
+                return {
+                    ...result,
+                    success: false,
+                };
             } else {
                 dispatch(
                     transactionsProgress({
                         txIndex: i,
                         hash,
                         status,
-                        txProgress: 'success',
+                        txProgress: TX_PROGRESS.success,
                     })
                 );
             }

@@ -273,11 +273,12 @@ class FungibleTokenExchange {
 
     async _processTransactions(account, txs) {
         console.log('_processTransactions', account);
-        const res = await dispatchTransactionsExecutor(txs);
+        const res = await dispatchTransactionsExecutor(txs, account.accountId);
         return {
             success: res.success,
             swapTxHash: res.txHash,
             failReason: res.failReason,
+            retry: res.retry,
         };
     }
 }

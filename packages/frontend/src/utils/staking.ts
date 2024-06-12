@@ -70,7 +70,6 @@ export const lockupMethods = {
 };
 
 export async function signAndSendTransaction(signAndSendTransactionOptions) {
-    // return dispatchTransactionExecutor(signAndSendTransactionOptions);
     return (await wallet.getAccount(wallet.accountId)).signAndSendTransaction(
         signAndSendTransactionOptions
     );

@@ -169,13 +169,22 @@ const sign = handleActions(
             }
             return {
                 ...state,
-                transactionsProgress: state.transactionsProgress.map((tx, i) => ({
-                    ...tx,
-                    txProgress:
-                        payload.txIndex === i && payload.txProgress
-                            ? payload.txProgress
-                            : tx.txProgress,
-                })),
+                transactionsProgress: state.transactionsProgress.map((tx, i) => {
+                    const updatedTx =
+                        payload.txIndex === i
+                            ? {
+                                  txProgress: payload.txProgress,
+                                  transaction: {
+                                      ...tx.transaction,
+                                      hash: payload.hash,
+                                  },
+                              }
+                            : {};
+                    return {
+                        ...tx,
+                        ...updatedTx,
+                    };
+                }),
             };
         },
     },
