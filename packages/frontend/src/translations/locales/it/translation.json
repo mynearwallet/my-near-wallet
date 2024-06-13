@@ -1534,7 +1534,9 @@
             "NotStarted": "Non iniziato",
             "Started": "Iniziato",
             "SuccessValue": "Successo"
-        }
+        },
+        "steps": "Passi ${currentStepCount} di ${totalStepCount}",
+        "TransactionHash": "Hash della transazione"
     },
     "transfer": {
         "estimatedFees": "Commissioni stimate",

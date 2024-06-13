@@ -38,6 +38,7 @@ const TransactionExecutorModal = () => {
             id='transaction-executor-modal'
             closeButton={hasError}
             disableClose={!hasError}
+            style={{ zIndex: 1999 }}
             onClose={() => {
                 dispatch(
                     transactionsProgress({
@@ -96,7 +97,8 @@ const TransactionExecutorModal = () => {
                                 {!!txUI.transactionHash && (
                                     <div className='card-footer'>
                                         <div className='hash'>
-                                            Transaction hash: {txUI.transactionHash}
+                                            <Translate id='transaction.TransactionHash' />
+                                            : {txUI.transactionHash}
                                         </div>
                                         {/* @ts-ignore */}
                                         <FormButton
@@ -104,7 +106,7 @@ const TransactionExecutorModal = () => {
                                             className='link'
                                             linkTo={`${CONFIG.EXPLORER_URL}/txns/${txUI.transactionHash}`}
                                         >
-                                            View on explorer
+                                            <Translate id='button.viewOnExplorer' />
                                         </FormButton>
                                     </div>
                                 )}

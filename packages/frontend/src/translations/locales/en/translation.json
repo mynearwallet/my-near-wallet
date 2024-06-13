@@ -1819,7 +1819,8 @@
             "Started": "Started",
             "SuccessValue": "Succeeded"
         },
-        "steps": "Steps ${currentStepCount} of ${totalStepCount}"
+        "steps": "Steps ${currentStepCount} of ${totalStepCount}",
+        "TransactionHash": "Transaction hash"
     },
     "transfer": {
         "estimatedFees": "Estimated fees",

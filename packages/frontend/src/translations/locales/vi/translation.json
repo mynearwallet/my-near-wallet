@@ -1398,7 +1398,9 @@
             "NotStarted": "Chưa bắt đầu",
             "Started": "Đã bắt đầu",
             "SuccessValue": "Thành công"
-        }
+        },
+        "steps": "Bước ${currentStepCount} trong tổng số ${totalStepCount}",
+        "TransactionHash": "Băm giao dịch"
     },
     "twoFactor": {
         "active": "Hoạt động",

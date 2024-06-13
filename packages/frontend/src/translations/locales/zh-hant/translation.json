@@ -1685,7 +1685,9 @@
             "NotStarted": "未開始",
             "Started": "已開始",
             "SuccessValue": "成功"
-        }
+        },
+        "steps": "第 ${currentStepCount} 步，共 ${totalStepCount}",
+        "TransactionHash": "交易哈希"
     },
     "transfer": {
         "estimatedFees": "預估費用",
