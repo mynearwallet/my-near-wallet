@@ -1,4 +1,4 @@
-import snakeCase from 'lodash.snakeCase';
+import snakeCase from 'lodash.snakecase';
 
 export function keysToSnakeCase(obj) {
     if (typeof obj === 'object' && obj !== null) {

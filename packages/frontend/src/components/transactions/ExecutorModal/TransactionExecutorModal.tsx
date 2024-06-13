@@ -82,11 +82,13 @@ const TransactionExecutorModal = () => {
                                             }}
                                         />
                                     </div>
-                                    <div className='card-header__progress'>
-                                        {(tx.txProgress === 'signing' ||
-                                            !tx.txProgress) && <LoadingDots />}
-                                        {tx.txProgress || 'pending'}
-                                    </div>
+                                    {!hasError && (
+                                        <div className='card-header__progress'>
+                                            {(tx.txProgress === 'signing' ||
+                                                !tx.txProgress) && <LoadingDots />}
+                                            {tx.txProgress || 'pending'}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className='card-content'>
                                     <div>
