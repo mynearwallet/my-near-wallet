@@ -18,7 +18,7 @@ const TokenSwap = ({ history }) => {
 
         if (accountId) {
             const updateAccount = async () => {
-                const instance = await wallet.getAccount(accountId);
+                const instance = await wallet.getAccount(accountId, true);
 
                 if (mounted) {
                     setAccount(instance);
