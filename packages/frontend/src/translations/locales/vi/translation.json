@@ -609,6 +609,12 @@
         "header": "NEAR thử nghiệm Ví",
         "title": "Ví chỉ thử nghiệm"
     },
+    "NFTDetail": {
+        "attributes": "Thuộc tính",
+        "description": "Mô tả",
+        "owner": "CHỦ SỞ HỮU",
+        "transfer": "Chuyển"
+    },
     "NFTTransfer": {
         "youSent": "You sent <span class='color-blue'>${title}</span> to <span class='color-green'>${receiverId}</span>"
     },
@@ -753,6 +759,14 @@
             "desc": "Hãy đảm bảo rằng bạn có khóa riêng bắt đầu bằng ed25519, sau đó nhấp vào liên kết bên dưới để bắt đầu quá trình khôi phục.",
             "title": "Khóa riêng"
         }
+    },
+    "recoverManual": {
+        "buttonImportManually": "Nhập thủ công.",
+        "cantFindAccount": "Không thể tìm thấy tài khoản của bạn?",
+        "errorAccessKeyNotMatch": "Khóa truy cập không khớp",
+        "errorAccountNotExist": "Tài khoản không tồn tại",
+        "inputAccountId": "Chèn ID tài khoản của bạn vào đây để nhập tài khoản của bạn",
+        "pageTitle": "Tài khoản nhập thủ công"
     },
     "recoverPrivateKey": {
         "pageText": "Vui lòng nhập khóa riêng liên kết với tài khoản.",

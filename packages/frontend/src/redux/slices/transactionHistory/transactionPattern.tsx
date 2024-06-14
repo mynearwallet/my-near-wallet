@@ -151,7 +151,10 @@ class TransferPattern implements TxPattern {
 class TransferFtPattern implements TxPattern {
     match(data: TxData): boolean {
         const methodName = txUtils.getMethodName(data);
-        return methodName === TxMethodName.ft_transfer;
+        return (
+            methodName === TxMethodName.ft_transfer ||
+            methodName === TxMethodName.ft_transfer_call
+        );
     }
 
     display(data: TxData, accountId: string): TransactionItemComponent {
@@ -810,10 +813,10 @@ export class TxDefaultPattern {
 export const txPatterns: TxPattern[] = [
     new MultiActionsPattern(),
     new TransferPattern(),
-    new TransferFtPattern(),
     new DeployPattern(),
     new CreateAccountPattern(),
     new SwapPattern(),
+    new TransferFtPattern(),
     new NftPattern(),
     new MintPattern(),
     new FtMintPattern(),

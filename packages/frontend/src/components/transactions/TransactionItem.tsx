@@ -9,6 +9,7 @@ import {
 } from '../../redux/slices/transactionHistory/utils';
 import classNames from '../../utils/classNames';
 import Card from '../common/styled/Card.css';
+import ImageWithLoading from '../common/image/ImageWithLoading';
 
 export enum ETxDirection {
     receive = 'receive',
@@ -26,7 +27,11 @@ export const TransactionItem = (
     return (
         <StyledContainer onClick={props.onClick}>
             <div className='desc-container'>
-                <img className='image' src={props.image} alt='transaction-icon' />
+                <ImageWithLoading
+                    src={props.image}
+                    alt='transaction-icon'
+                    loadImageTimeout={60_000}
+                />
                 <div className='desc-container-content'>
                     <div className='content-title'>
                         <div className='title'>{props.title}</div>
@@ -79,9 +84,11 @@ const StyledContainer = styled(Card)`
         align-items: center;
         gap: 10px;
     }
-    .image {
+    .image-withloading-container {
         width: 26px;
         height: 26px;
+    }
+    .image-withloading__image {
         object-fit: contain;
     }
     .desc-container-content {

@@ -57,6 +57,35 @@ class LinkdropAccountManager {
             this.linkdropReceiverAccount.delete(),
         ]);
     }
+    async mockCreateAccount(page) {
+        return page.route(
+            nearApiJsConnection.getDefaultConfig().nodeUrl,
+            async (route) => {
+                const postData = route.request().postDataJSON();
+                if (
+                    postData.method === 'EXPERIMENTAL_tx_status' ||
+                    postData.params.account_id === 'ref-finance-101.testnet'
+                ) {
+                    const json = {
+                        jsonrpc: '2.0',
+                        id: 5000,
+                        result: {
+                            block_hash: 'GLmmExoi7nLhRgG5CnZVBMf3CGcEwtBpTtemMDVRFQbZ',
+                            block_height: 157884806,
+                            logs: [],
+                            result: [34, 48, 34],
+                        },
+                    };
+                    await route.fulfill({
+                        status: 200,
+                        body: JSON.stringify(json),
+                    });
+                } else {
+                    route.continue();
+                }
+            }
+        );
+    }
 }
 
 module.exports = LinkdropAccountManager;

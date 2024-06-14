@@ -20,9 +20,11 @@ class SelfReloadingJSONRpcProvider extends JsonRpcProvider {
                 if (!this.reloadingPromise) {
                     this.reloadingPromise = SelfReloadingJSONRpcProvider.reloadAccount(
                         signedTransaction.transaction.signerId
-                    ).finally(() => {
-                        this.reloadingPromise = null;
-                    });
+                    )
+                        .catch((err) => console.log(err))
+                        .finally(() => {
+                            this.reloadingPromise = null;
+                        });
                 }
                 return this.reloadingPromise.then(() => {
                     if (
@@ -47,14 +49,24 @@ class SelfReloadingJSONRpcProvider extends JsonRpcProvider {
             nearApiJsConnection.config.networkId
         }`;
         const randomSubaccountSeedphrase = getTestAccountSeedPhrase(randomSubaccountId);
-        await createAccountWithHelper(randomSubaccountId, randomSubaccountSeedphrase);
-        const randomAccount = await new E2eTestAccount(
+
+        const createAccountSuccess = await createAccountWithHelper(
+            randomSubaccountId,
+            randomSubaccountSeedphrase
+        );
+
+        if (!createAccountSuccess) {
+            return;
+        }
+
+        const randomAccount = new E2eTestAccount(
             randomSubaccountId,
             randomSubaccountSeedphrase,
             {
                 accountId: nearApiJsConnection.config.networkId,
             }
         ).initialize();
+
         return randomAccount.nearApiJsAccount.deleteAccount(accountId);
     }
 }

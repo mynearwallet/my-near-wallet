@@ -1,9 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Checkbox from '../../../common/Checkbox';
-import FormButton from '../../../common/FormButton';
-import SetPassword from '../SetPassword';
 import {
     PasswordForm,
     Submit,
@@ -12,6 +9,9 @@ import {
     CheckBoxLabel,
     CheckBoxWrapper,
 } from './ui';
+import Checkbox from '../../../common/Checkbox';
+import FormButton from '../../../common/FormButton';
+import SetPassword from '../SetPassword';
 
 type SetPasswordFormProps = {
     onSubmit: (password: string) => void;
@@ -46,6 +46,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
                 <CheckBoxGroup>
                     <CheckBoxContainer>
                         <CheckBoxWrapper
+                            data-test-id='recovery-warn'
                             onClick={() => setRecoveryWarnChecked((prev) => !prev)}
                         >
                             <Checkbox className='' checked={recoveryWarnChecked} />
@@ -56,6 +57,7 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
                     </CheckBoxContainer>
                     <CheckBoxContainer>
                         <CheckBoxWrapper
+                            data-test-id='password-manager-warn'
                             onClick={() => setPasswordManagerWarnChecked((prev) => !prev)}
                         >
                             <Checkbox className='' checked={passwordManagerWarnChecked} />
@@ -78,7 +80,11 @@ const SetPasswordForm: FC<SetPasswordFormProps> = ({ onSubmit }) => {
             </PasswordForm>
             <Submit>
                 {/* @ts-ignore: prop error */}
-                <FormButton onClick={handleClickNext} disabled={submitDisabled}>
+                <FormButton
+                    data-test-id='set-password'
+                    onClick={handleClickNext}
+                    disabled={submitDisabled}
+                >
                     {t('button.next')}
                 </FormButton>
             </Submit>

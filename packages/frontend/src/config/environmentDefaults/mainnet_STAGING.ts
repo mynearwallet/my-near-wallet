@@ -16,7 +16,7 @@ export default {
     // INDEXER_SERVICE_URL: 'https://api.kitwallet.app',
     INDEXER_SERVICE_URL: 'https://api3.nearblocks.io/v1/kitwallet',
     INDEXER_FASTNEAR_SERVICE_URL: 'https://api.fastnear.com',
-    INDEXER_NEARBLOCK_SERVICE_URL: 'https://api.nearblocks.io',
+    INDEXER_NEARBLOCK_SERVICE_URL: 'https://api3.nearblocks.io',
     INDEXER_NEARBLOCK_EXPERIMENTAL_SERVICE_URL: 'https://api3.nearblocks.io',
     LINKDROP_GAS: '100000000000000',
     LOCKUP_ACCOUNT_ID_SUFFIX: 'lockup.near',
@@ -37,6 +37,8 @@ export default {
         '8DKTSceSbxVgh4ANXwqmRqGyPWCuZAR1fCqGPXUjD5nZ',
         // https://github.com/near/core-contracts/blob/f93c146d87a779a2063a30d2c1567701306fcae4/multisig/res/multisig.wasm
         '55E7imniT2uuYrECn17qJAk9fLcwQW4ftNSwmCJL5Di',
+        // unknown
+        'HRP7Qf2HDaXTD8EWs7G8siNNGxWWBCe1JaDxcM2cJmQR',
     ],
     MULTISIG_MIN_AMOUNT: '4',
     NETWORK_ID: 'default',

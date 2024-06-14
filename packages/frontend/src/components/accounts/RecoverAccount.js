@@ -119,40 +119,6 @@ const RecoverAccount = ({ locationSearch, isMobile }) => {
                 </h2>
                 <Options>
                     <Option>
-                        <Header icon={EmailIcon}>
-                            <Translate id='recoverAccount.email.title' />
-                        </Header>
-                        <P>
-                            <Translate id='recoverAccount.email.desc' />{' '}
-                            <span>
-                                <Translate id='recoverAccount.email.subject' />
-                            </span>
-                        </P>
-                        <P>
-                            <Translate id='recoverAccount.actionRequired' />
-                        </P>
-                        <P>
-                            <Translate id='recoverAccount.cannotResend' />
-                        </P>
-                    </Option>
-                    <Option>
-                        <Header icon={PhoneIcon}>
-                            <Translate id='recoverAccount.phone.title' />
-                        </Header>
-                        <P>
-                            <Translate id='recoverAccount.phone.desc' />{' '}
-                            <span>
-                                <Translate id='recoverAccount.phone.number' />
-                            </span>
-                        </P>
-                        <P>
-                            <Translate id='recoverAccount.actionRequired' />
-                        </P>
-                        <P>
-                            <Translate id='recoverAccount.cannotResend' />
-                        </P>
-                    </Option>
-                    <Option>
                         <Header icon={PhraseIcon}>
                             <Translate id='recoverAccount.phrase.title' />
                         </Header>
@@ -207,6 +173,40 @@ const RecoverAccount = ({ locationSearch, isMobile }) => {
                         >
                             <Translate id='button.recoverAccount' />
                         </FormButton>
+                    </Option>
+                    <Option>
+                        <Header icon={EmailIcon}>
+                            <Translate id='recoverAccount.email.title' />
+                        </Header>
+                        <P>
+                            <Translate id='recoverAccount.email.desc' />{' '}
+                            <span>
+                                <Translate id='recoverAccount.email.subject' />
+                            </span>
+                        </P>
+                        <P>
+                            <Translate id='recoverAccount.actionRequired' />
+                        </P>
+                        <P>
+                            <Translate id='recoverAccount.cannotResend' />
+                        </P>
+                    </Option>
+                    <Option>
+                        <Header icon={PhoneIcon}>
+                            <Translate id='recoverAccount.phone.title' />
+                        </Header>
+                        <P>
+                            <Translate id='recoverAccount.phone.desc' />{' '}
+                            <span>
+                                <Translate id='recoverAccount.phone.number' />
+                            </span>
+                        </P>
+                        <P>
+                            <Translate id='recoverAccount.actionRequired' />
+                        </P>
+                        <P>
+                            <Translate id='recoverAccount.cannotResend' />
+                        </P>
                     </Option>
                     {!CONFIG.IS_MAINNET && isMobile && (
                         <Option>

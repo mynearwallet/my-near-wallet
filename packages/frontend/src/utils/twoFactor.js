@@ -19,7 +19,7 @@ export class TwoFactor extends Account2FA {
     constructor(wallet, accountId, has2fa = false) {
         super(wallet.connection, accountId, {
             storage: localStorage,
-            helperUrl: CONFIG.ACCOUNT_HELPER_URL,
+            helperUrl: CONFIG.ACCOUNT_KITWALLET_HELPER_URL,
             getCode: () => store.dispatch(promptTwoFactor(true)).payload.promise,
         });
         this.wallet = wallet;
@@ -138,7 +138,7 @@ export class TwoFactor extends Account2FA {
         }
 
         const account = new Account2FA(connection, accountId, {
-            helperUrl: CONFIG.ACCOUNT_HELPER_URL,
+            helperUrl: CONFIG.ACCOUNT_KITWALLET_HELPER_URL,
         });
 
         return await account.disableWithFAK({

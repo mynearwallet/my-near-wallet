@@ -1,3 +1,4 @@
+import { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types';
 import environmentConfig from './configFromEnvironment';
 import ENVIRONMENT from './enviroment';
 import development from './environmentDefaults/development';
@@ -23,7 +24,19 @@ const defaults = {
     [ENVIRONMENT.MAINNET_STAGING]: mainnet_STAGING,
 }[environmentConfig.NEAR_WALLET_ENV];
 
+const NearNetworkMap = {
+    [ENVIRONMENT.DEVELOPMENT]:
+        environmentConfig.NEAR_WALLET_ENV as string as ENearNetwork,
+    [ENVIRONMENT.MAINNET]: environmentConfig.NEAR_WALLET_ENV as string as ENearNetwork,
+    [ENVIRONMENT.TESTNET]: environmentConfig.NEAR_WALLET_ENV as string as ENearNetwork,
+    [ENVIRONMENT.MAINNET_STAGING]: ENearNetwork.mainnet,
+    [ENVIRONMENT.TESTNET_STAGING]: ENearNetwork.testnet,
+};
+const CURRENT_NEAR_NETWORK: ENearNetwork =
+    NearNetworkMap[environmentConfig.NEAR_WALLET_ENV];
+
 const CONFIG = {
+    CURRENT_NEAR_NETWORK,
     ...defaults,
     ...clearEmptyProps(environmentConfig),
 };

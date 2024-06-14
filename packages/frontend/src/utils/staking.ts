@@ -1,10 +1,12 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 import { EpochValidatorInfo } from 'near-api-js/lib/providers/provider';
+import uniq from 'lodash.uniq';
 import { nearTo } from './amounts';
 import { wallet } from './wallet';
 
 import CONFIG from '../config';
+import { CoreIndexerAdapter } from '../services/coreIndexer/CoreIndexerAdapter';
 
 const {
     utils: {
@@ -82,13 +84,10 @@ export async function updateStakedBalance(validatorId, account_id, contract) {
 }
 
 export async function getStakingDeposits(accountId: string) {
-    // NOTE: Disabling this and replacing it with RPC methods now since indexer is not reliable
-    // const stakingDeposits = await listStakingDeposits(accountId);
-
-    const validatorIds = await getValidatorIdsFromRpc();
+    const validatorIds = await getValidatorIds(accountId);
+    const account = wallet.getAccountBasic(accountId);
     let validatorWithBalance = await Promise.all(
         validatorIds.map(async (validatorId) => {
-            const account = wallet.getAccountBasic(accountId);
             const balance = await account
                 .viewFunction(validatorId, 'get_account_total_balance', {
                     account_id: accountId,
@@ -203,7 +202,22 @@ function getUniqueAccountIdsFromEpochValidatorInfo(
 const getRecentEpochValidators = async () => {
     return await wallet.connection.provider.validators(null);
 };
-export const getValidatorIdsFromRpc = async (): Promise<string[]> => {
+const getValidatorIdsFromRpc = async (): Promise<string[]> => {
     const validatorsList = await getRecentEpochValidators();
     return getUniqueAccountIdsFromEpochValidatorInfo(validatorsList);
+};
+
+const getValidatorIdsFromIndexer = async (accountId: string): Promise<string[]> => {
+    const coreIndexerAdapter = CoreIndexerAdapter.getInstance(
+        CONFIG.CURRENT_NEAR_NETWORK
+    );
+    return await coreIndexerAdapter.fetchAccountValidatorIds(accountId);
+};
+
+export const getValidatorIds = async (accountId: string): Promise<string[]> => {
+    const [validatorIdsRpc, validatorIdsIndexer] = await Promise.all([
+        getValidatorIdsFromRpc(),
+        getValidatorIdsFromIndexer(accountId),
+    ]);
+    return uniq([...validatorIdsRpc, ...validatorIdsIndexer]);
 };

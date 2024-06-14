@@ -157,7 +157,7 @@ const Title = ({ content, title }) => {
 };
 
 const SubTitle = ({ showFiatPrice, price, currentLanguage, name = '-' }) => {
-    const fiatDecimals = 2;
+    const fiatDecimals = 15;
 
     return (
         <span className='subTitle'>
@@ -166,7 +166,7 @@ const SubTitle = ({ showFiatPrice, price, currentLanguage, name = '-' }) => {
                     <>
                         $
                         {new Intl.NumberFormat(`${currentLanguage}`, {
-                            minimumFractionDigits: fiatDecimals,
+                            minimumFractionDigits: 0,
                             maximumFractionDigits: fiatDecimals,
                         }).format(price)}
                     </>

@@ -133,7 +133,10 @@ export default function StakingAction({
             await handleStakingAction(action, validator.accountId, stakeActionAmount);
             setSuccess(true);
             setConfirm(false);
-        } finally {
+            setLoadingStaking(false);
+        } catch (error) {
+            setSuccess(false);
+            setConfirm(false);
             setLoadingStaking(false);
         }
     };

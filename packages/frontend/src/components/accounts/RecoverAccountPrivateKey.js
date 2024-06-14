@@ -26,6 +26,9 @@ import classNames from '../../utils/classNames';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
+import { EWalletImportInputType } from './manual_import/type';
+import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -81,11 +84,18 @@ const RecoverAccountPrivateKey = () => {
                 await dispatch(refreshAccount());
             },
             async (e) => {
-                if (e.message.includes('Cannot find matching public key')) {
+                if (e.data?.errorCode === 'accountNotExist') {
                     await dispatch(importZeroBalanceAccountPrivateKey(privateKey));
                     dispatch(setZeroBalanceAccountImportMethod('privateKey'));
                     dispatch(clearGlobalAlert());
                     dispatch(redirectToApp());
+                } else {
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        errorMessage: e.message,
+                        messageCode: 'account.recoverAccount.errorGeneral',
+                    });
                 }
 
                 throw e;
@@ -122,46 +132,52 @@ const RecoverAccountPrivateKey = () => {
     };
 
     return (
-        <StyledContainer className='small-centered border'>
-            <h1>
-                <Translate id='recoverPrivateKey.pageTitle' />
-            </h1>
-            <h2>
-                <Translate id='recoverPrivateKey.pageText' />
-            </h2>
-            <form onSubmit={handleSubmit} autoComplete='off'>
-                <h4>
-                    <Translate id='recoverPrivateKey.privateKeyInput.title' />
-                </h4>
-                <input
-                    value={privateKey}
-                    onChange={(e) => {
-                        setPrivateKey(e.target.value);
-                        dispatch(clearLocalAlert());
-                    }}
-                    className={classNames([
-                        { success: localAlert && localAlert.success },
-                        { problem: localAlert && localAlert.success === false },
-                    ])}
-                    placeholder='ed25519:abc123...'
-                    disabled={recoveringAccount}
-                    data-test-id='privateKeyRecoveryInput'
-                    required
-                    tabIndex='2'
-                    autoCapitalize='off'
-                />
-                <FormButton
-                    type='submit'
-                    color='blue'
-                    disabled={recoveringAccount}
-                    sending={recoveringAccount}
-                    sendingString='button.recovering'
-                    data-test-id='privateKeyRecoverySubmitButton'
-                >
-                    <Translate id='button.findMyAccount' />
-                </FormButton>
-            </form>
-        </StyledContainer>
+        <>
+            <VerifyWalletDomainBanner />
+            <StyledContainer className='small-centered border'>
+                <h1>
+                    <Translate id='recoverPrivateKey.pageTitle' />
+                </h1>
+                <h2>
+                    <Translate id='recoverPrivateKey.pageText' />
+                </h2>
+                <form onSubmit={handleSubmit} autoComplete='off'>
+                    <h4>
+                        <Translate id='recoverPrivateKey.privateKeyInput.title' />
+                    </h4>
+                    <input
+                        value={privateKey}
+                        onChange={(e) => {
+                            setPrivateKey(e.target.value);
+                            dispatch(clearLocalAlert());
+                        }}
+                        className={classNames([
+                            { success: localAlert && localAlert.success },
+                            { problem: localAlert && localAlert.success === false },
+                        ])}
+                        placeholder='ed25519:abc123...'
+                        disabled={recoveringAccount}
+                        data-test-id='privateKeyRecoveryInput'
+                        required
+                        tabIndex='2'
+                        autoCapitalize='off'
+                    />
+                    <FormButton
+                        type='submit'
+                        color='blue'
+                        disabled={recoveringAccount}
+                        sending={recoveringAccount}
+                        sendingString='button.recovering'
+                        data-test-id='privateKeyRecoverySubmitButton'
+                    >
+                        <Translate id='button.findMyAccount' />
+                    </FormButton>
+                    <ModalManualImportWithButton
+                        importType={EWalletImportInputType.PRIVATE_KEY}
+                    />
+                </form>
+            </StyledContainer>
+        </>
     );
 };
 

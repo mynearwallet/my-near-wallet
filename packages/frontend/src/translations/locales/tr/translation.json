@@ -796,6 +796,14 @@
             "title": "Özel Anahtar"
         }
     },
+    "recoverManual": {
+        "buttonImportManually": "Manuel olarak içe aktarın.",
+        "cantFindAccount": "Hesabınızı bulamıyor musunuz?",
+        "errorAccessKeyNotMatch": "Erişim anahtarı eşleşmiyor",
+        "errorAccountNotExist": "Hesap mevcut değil",
+        "inputAccountId": "Hesabınızı içe aktarmak için hesap kimliğinizi buraya girin",
+        "pageTitle": "Hesabı Manuel İçe Aktarma"
+    },
     "recoverPrivateKey": {
         "pageText": "Hesapla ilişkili olan özel anahtarı girin.",
         "pageTitle": "Özel Anahtar ile Kurtarma Yap",

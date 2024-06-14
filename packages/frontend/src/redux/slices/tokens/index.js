@@ -303,6 +303,15 @@ export const selectTokensWithMetadataForAccountId = createSelector(
     }
 );
 
+const WHITELISTED_TOKENS = [
+    'Native USDT',
+    'Native USDC',
+    'Bridged USDC',
+    'Bridged USDT',
+    'BLACKDRAGON',
+    '$META',
+];
+
 export const selectAllowedTokens = createSelector(
     [
         selectTokensFiatValueUSD,
@@ -311,22 +320,13 @@ export const selectAllowedTokens = createSelector(
         selectNEARAsTokenWithMetadata,
     ],
     (tokensFiatData, tokensWithBalance, setOfBlacklistedNames, nearConfig) => {
-        const nearConfigWithName = {
-            ...nearConfig,
-            contractName: CONFIG.NEAR_ID,
-        };
-
         const tokenList = Object.values(tokensWithBalance).map((tokenData) => ({
             ...tokenData,
             fiatValueMetadata: tokensFiatData[tokenData.contractName] || {},
         }));
 
         const safeTokenList = tokenList.filter(({ onChainFTMetadata }) => {
-            if (
-                ['Native USDT', 'Native USDC', 'Bridged USDC', 'Bridged USDT'].includes(
-                    onChainFTMetadata.symbol
-                )
-            ) {
+            if (WHITELISTED_TOKENS.includes(onChainFTMetadata.symbol)) {
                 return true;
             }
 
@@ -341,6 +341,10 @@ export const selectAllowedTokens = createSelector(
             return true;
         });
 
+        const nearConfigWithName = {
+            ...nearConfig,
+            contractName: CONFIG.NEAR_ID,
+        };
         if (![...setOfBlacklistedNames].length) {
             return [nearConfigWithName, ...safeTokenList];
         }

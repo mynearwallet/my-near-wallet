@@ -69,6 +69,14 @@ const mainnetRpcOptionList: RpcOption[] = [
         }),
     },
     {
+        id: 'lava',
+        userParams: ['url', 'headers'],
+        generator: ({ url, headers }) => ({
+            url,
+            headers,
+        }),
+    },
+    {
         id: 'custom',
         userParams: ['url', 'headers'],
         generator: ({ url, headers }) => ({
@@ -107,6 +115,14 @@ const testnetRpcOptionList: RpcOption[] = [
         userParams: ['apiKey'],
         generator: ({ url, headers, apiKey }) => ({
             url: url.replace('API-KEY', apiKey),
+            headers,
+        }),
+    },
+    {
+        id: 'lava-testnet',
+        userParams: ['url', 'headers'],
+        generator: ({ url, headers }) => ({
+            url,
             headers,
         }),
     },

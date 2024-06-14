@@ -1,16 +1,17 @@
 // @ts-check
-const { test, expect } = require('../playwrightWithFixtures');
+const { test, expect } = require('@playwright/test');
+
 const { HomePage } = require('../register/models/Home');
+const { getEnvTestAccount } = require('../utils/account');
 const guestbookURL = 'http://localhost:4200';
 
-const { describe, beforeAll, afterAll, beforeEach } = test;
+const { describe, beforeAll, beforeEach } = test;
 
 describe('sign message with guestbook', () => {
     let testAccount;
 
-    beforeAll(async ({ bankAccount }) => {
-        testAccount = await bankAccount.spawnRandomSubAccountInstance();
-        await testAccount.create();
+    beforeAll(async () => {
+        testAccount = await getEnvTestAccount();
     });
 
     beforeEach(async ({ page }) => {
@@ -20,10 +21,6 @@ describe('sign message with guestbook', () => {
             testAccount.accountId,
             testAccount.seedPhrase
         );
-    });
-
-    afterAll(async () => {
-        await testAccount.delete();
     });
 
     test('navigates back to guestbook after sign message', async ({ page }) => {
@@ -43,22 +40,17 @@ describe('sign message with guestbook', () => {
 
         await page.getByText('Sign message').click();
         await expect(page).toHaveURL(/\/sign-message/);
-        await page.click('data-test-id=approve-sign-message');
-        await page.pause();
+        await page.click('data-test-id=approve-verify-owner');
+        // await page.pause();
         await expect(page).toHaveURL(new RegExp(guestbookURL));
 
         const parsed = new URL(page.url());
 
-        const searchParams = parsed.searchParams;
-
-        const mustHaveParams = [
-            'accountId',
-            'publicKey',
-            'signature',
-        ];
+        const mustHaveParams = ['accountId', 'publicKey', 'signature'];
 
         mustHaveParams.map((v) => {
-            expect(searchParams.has(v)).toBe(true);
+            const hash = parsed.hash;
+            expect(hash.includes(v)).toBe(true);
         });
     });
 });

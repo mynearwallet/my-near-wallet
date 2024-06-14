@@ -54,6 +54,7 @@ export default function AddConnectionForm({ connection, saveConnection }) {
                     }
 
                     setCurrentRpcOption(rpcOption);
+                    setUrl('');
                 }}
             >
                 {t(`connection.rpcOption.${rpcOption.id}`)}

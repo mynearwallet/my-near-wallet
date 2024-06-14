@@ -48,7 +48,7 @@ export const getSignedUrl = async (accountId, redirectUrl) => {
         `&redirectURL=${encodeURIComponent(redirectUrl)}`;
     const { signature } = await sendJson(
         'GET',
-        `${CONFIG.ACCOUNT_HELPER_URL}/moonpay/signURL?url=${encodeURIComponent(
+        `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/moonpay/signURL?url=${encodeURIComponent(
             widgetUrl
         )}`
     );

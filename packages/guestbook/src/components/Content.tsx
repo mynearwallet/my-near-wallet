@@ -198,6 +198,7 @@ const Content: React.FC = () => {
         [selector, accountId]
     );
 
+    // https://github.com/near/NEPs/commit/5b9ddc02e235a3c71d6f983c539cc7e5f58d28cd
     const handleVerifyOwner = async () => {
         const wallet = await selector.wallet();
         try {
@@ -221,7 +222,7 @@ const Content: React.FC = () => {
                 message: 'test message for verification',
                 nonce: Buffer.from('30990309-30990309-390A303-292090'),
                 recipient: 'test.app',
-                callbackUrl: 'https://test.app',
+                callbackUrl: 'http://localhost:4200',
             });
 
             if (signature) {

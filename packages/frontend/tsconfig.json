@@ -8,7 +8,7 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "isolatedModules": true,
-        "lib": ["dom", "es2020"],
+        "lib": ["dom", "es2020", "ES2021.Promise"],
         "module": "ESNext",
         "moduleResolution": "node",
         "resolveJsonModule": true,

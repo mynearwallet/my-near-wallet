@@ -2,7 +2,7 @@ const { BN } = require('bn.js');
 const { parseNearAmount } = require('near-api-js/lib/utils/format');
 
 const dateNowNanosBN = new BN(Date.now()).mul(new BN('1000000'));
-const TEST_ACCOUNT_DEPOSIT_AMOUNT = process.env.TEST_ACCOUNT_DEPOSIT_AMOUNT || '2.0';
+const TEST_ACCOUNT_DEPOSIT_AMOUNT = process.env.TEST_ACCOUNT_DEPOSIT_AMOUNT || '0.0001';
 
 module.exports = {
     TEST_ACCOUNT_DEPOSIT_AMOUNT,

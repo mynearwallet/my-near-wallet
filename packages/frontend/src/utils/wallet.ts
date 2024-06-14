@@ -3,6 +3,7 @@ import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/c
 import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
+import type { AccessKeyList } from 'near-api-js/lib/providers/provider';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { decorateWithLockup } from './account-with-lockup';
@@ -32,6 +33,7 @@ import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/a
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import sendJson from '../tmp_fetch_send_json';
+import { withAdjustedStorageCost } from './accountsLogic/withAdjustedStorageCost';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -56,7 +58,7 @@ export const WALLET_SEND_MONEY_URL = 'send-money';
 export const WALLET_VERIFY_OWNER_URL = 'verify-owner';
 export const WALLET_SIGN_MESSAGE_URL = 'sign-message';
 
-export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_HELPER_URL}/account`;
+export const CONTRACT_CREATE_ACCOUNT_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/account`;
 export const FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/fundedAccount`;
 export const IDENTITY_FUNDED_ACCOUNT_CREATE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityFundedAccount`;
 const IDENTITY_VERIFICATION_METHOD_SEND_CODE_URL = `${CONFIG.ACCOUNT_KITWALLET_HELPER_URL}/identityVerificationMethod`;
@@ -1117,7 +1119,8 @@ export default class Wallet {
 
         let accountIds;
         try {
-            accountIds = await getAccountIds(publicKey);
+            const waitAllIndexer = true;
+            accountIds = await getAccountIds(publicKey, waitAllIndexer);
         } catch (error) {
             if (error.name === 'AbortError') {
                 throw new WalletError('Fetch aborted.', 'getLedgerAccountIds.aborted');
@@ -1251,10 +1254,13 @@ export default class Wallet {
     }
 
     async getAccount(accountId, limitedAccountData = false) {
-        let account = new nearApiJs.Account(this.connection, accountId);
+        const AccountWithAdjustedStorageCost = withAdjustedStorageCost(nearApiJs.Account);
+        let account = new AccountWithAdjustedStorageCost(this.connection, accountId);
+
+        const TwoFactorWithAdjustedStorageCost = withAdjustedStorageCost(TwoFactor);
         const has2fa = await TwoFactor.has2faEnabled(account);
         if (has2fa) {
-            account = new TwoFactor(this, accountId, has2fa);
+            account = new TwoFactorWithAdjustedStorageCost(this, accountId, has2fa);
         }
 
         // TODO: Check if lockup needed somehow? Should be changed to async? Should just check in wrapper?
@@ -1345,7 +1351,8 @@ export default class Wallet {
         };
         await sendJson(
             'POST',
-            CONFIG.ACCOUNT_HELPER_URL + '/account/initializeRecoveryMethodForTempAccount',
+            CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
+                '/account/initializeRecoveryMethodForTempAccount',
             body
         );
         return seedPhrase;
@@ -1362,7 +1369,7 @@ export default class Wallet {
         if (isNew) {
             await sendJson(
                 'POST',
-                CONFIG.ACCOUNT_HELPER_URL +
+                CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
                     '/account/initializeRecoveryMethodForTempAccount',
                 body
             );
@@ -1381,7 +1388,8 @@ export default class Wallet {
         try {
             await sendJson(
                 'POST',
-                CONFIG.ACCOUNT_HELPER_URL + '/account/validateSecurityCodeForTempAccount',
+                CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
+                    '/account/validateSecurityCodeForTempAccount',
                 {
                     accountId: implicitAccountId,
                     method,
@@ -1417,7 +1425,7 @@ export default class Wallet {
             if (isNew) {
                 await sendJson(
                     'POST',
-                    CONFIG.ACCOUNT_HELPER_URL +
+                    CONFIG.ACCOUNT_KITWALLET_HELPER_URL +
                         '/account/validateSecurityCodeForTempAccount',
                     {
                         ...body,
@@ -1531,18 +1539,25 @@ export default class Wallet {
     async recoverAccountSeedPhrase(
         seedPhrase,
         accountId,
-        shouldCreateFullAccessKey = true
+        shouldCreateFullAccessKey = true,
+        shouldGetAccountIdList = true
     ) {
         const { secretKey } = parseSeedPhrase(seedPhrase);
         return await this.recoverAccountSecretKey(
             secretKey,
             accountId,
-            shouldCreateFullAccessKey
+            shouldCreateFullAccessKey,
+            shouldGetAccountIdList
         );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async recoverAccountSecretKey(secretKey, accountId, shouldCreateFullAccessKey) {
+    async recoverAccountSecretKey(
+        secretKey,
+        accountId,
+        shouldCreateFullAccessKey,
+        shouldGetAccountIdList = true
+    ) {
         const keyPair: nearApiJs.utils.KeyPairEd25519 = nearApiJs.KeyPair.fromString(
             secretKey
         ) as nearApiJs.utils.KeyPairEd25519;
@@ -1551,27 +1566,84 @@ export default class Wallet {
         const tempKeyStore = new nearApiJs.keyStores.InMemoryKeyStore();
 
         let accountIds = [];
-        const accountIdsByPublickKey = await getAccountIds(publicKey);
-        if (!accountId) {
-            accountIds = accountIdsByPublickKey;
-        } else if (accountIdsByPublickKey.includes(accountId)) {
+        if (shouldGetAccountIdList) {
+            const accountIdsByPublicKey = await getAccountIds(publicKey);
+            if (!accountId) {
+                accountIds = accountIdsByPublicKey;
+            } else if (accountIdsByPublicKey.includes(accountId)) {
+                accountIds = [accountId];
+            }
+        } else if (!!accountId) {
             accountIds = [accountId];
         }
 
         // remove duplicate and non-existing accounts
         const accountsSet = new Set(accountIds);
         for (const accountId of accountsSet) {
-            if (!(await this.accountExists(accountId))) {
+            const isAccountExist = await this.accountExists(accountId);
+            if (!isAccountExist) {
                 accountsSet.delete(accountId);
             }
         }
         accountIds = [...accountsSet];
 
+        const accountIdsError = [];
         if (!accountIds.length) {
-            throw new WalletError(
-                `Cannot find matching public key: ${publicKey}`,
-                'recoverAccountSeedPhrase.errorInvalidSeedPhrase'
+            const implicitAccountId = Buffer.from(keyPair.getPublicKey().data).toString(
+                'hex'
             );
+            try {
+                const account = await this.getAccount(implicitAccountId);
+                if (account) {
+                    const accessKeys = await this.getAccessKeys(implicitAccountId);
+                    const hasMatchedPublicKey = accessKeys.some(
+                        ({ public_key }) => public_key === publicKey
+                    );
+                    if (!hasMatchedPublicKey) {
+                        throw new WalletError(
+                            `No matching key pair for public key ${publicKey}`,
+                            'recoverAccountSeedPhrase.keyPairUnmatch',
+                            { errorCode: 'keyPairUnmatch' }
+                        );
+                    }
+                    accountIds.push(implicitAccountId);
+                } else {
+                    throw new WalletError(
+                        `Cannot find matching public key: ${publicKey}`,
+                        'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
+                        { errorCode: 'noPublicKeyMatch' }
+                    );
+                }
+            } catch (err) {
+                const provider = new nearApiJs.providers.JsonRpcProvider({
+                    url: (this.connection.provider as nearApiJs.providers.JsonRpcProvider)
+                        .connection.url,
+                });
+                const accessKeys = await provider
+                    .query<AccessKeyList>({
+                        request_type: 'view_access_key_list',
+                        finality: 'optimistic',
+                        account_id: implicitAccountId,
+                    })
+                    .then((r) => r?.keys || []);
+
+                const hasMatchedPublicKey = accessKeys.some(
+                    ({ public_key }) => public_key === publicKey
+                );
+                if (accessKeys.length && !hasMatchedPublicKey) {
+                    throw new WalletError(
+                        `No matching key pair for public key ${publicKey}`,
+                        'recoverAccountSeedPhrase.keyPairUnmatch',
+                        { errorCode: 'keyPairUnmatch' }
+                    );
+                }
+
+                throw new WalletError(
+                    `Account not exist for public key: ${publicKey}`,
+                    'recoverAccountSeedPhrase.errorInvalidSeedPhrase',
+                    { errorCode: 'accountNotExist' }
+                );
+            }
         }
 
         const connection = nearApiJs.Connection.fromConfig({
@@ -1583,7 +1655,6 @@ export default class Wallet {
         const connectionConstructor = this.connection;
 
         const accountIdsSuccess = [];
-        const accountIdsError = [];
         await Promise.all(
             accountIds.map(async (accountId) => {
                 if (!accountId || !accountId.length) {
@@ -1594,9 +1665,45 @@ export default class Wallet {
                 this.accountId = accountId;
                 const account = await this.getAccount(accountId);
                 let recoveryKeyIsFAK = false;
+
+                // check for keypair match
+                const accessKeys = await this.getAccessKeys(accountId);
+                const hasFullAccessKey = accessKeys.some(
+                    (key) => key.access_key.permission === 'FullAccess'
+                );
+
+                const has2faEnabled = await TwoFactor.has2faEnabled(account);
+
+                const hasMatchedPublicKey = accessKeys.some(
+                    ({ public_key }) => public_key === publicKey
+                );
+
+                if (!accessKeys.length || !(has2faEnabled || hasFullAccessKey)) {
+                    accountIdsError.push({
+                        accountId,
+                        error: new WalletError(
+                            `No access key found for ${accountId}`,
+                            'recoverAccountSeedPhrase.errorGeneral'
+                        ),
+                    });
+                    return;
+                }
+
+                // private key doesnt match with their public key
+                if (!hasMatchedPublicKey) {
+                    accountIdsError.push({
+                        accountId,
+                        error: new WalletError(
+                            `No matching key pair for public key ${publicKey}`,
+                            'recoverAccountSeedPhrase.keyPairUnmatch',
+                            { errorCode: 'keyPairUnmatch' }
+                        ),
+                    });
+                    return;
+                }
+
                 // check if recover access key is FAK and if so add key without 2FA
-                if (await TwoFactor.has2faEnabled(account)) {
-                    const accessKeys = await account.getAccessKeys();
+                if (has2faEnabled) {
                     recoveryKeyIsFAK = accessKeys.find(
                         ({ public_key, access_key }) =>
                             public_key === publicKey &&
@@ -1609,7 +1716,6 @@ export default class Wallet {
                     }
                 }
 
-                const keyPair = nearApiJs.KeyPair.fromString(secretKey);
                 await tempKeyStore.setKey(CONFIG.NETWORK_ID, accountId, keyPair);
                 account.keyStore = tempKeyStore;
 

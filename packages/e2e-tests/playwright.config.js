@@ -2,6 +2,7 @@ require('dotenv').config();
 const { devices } = require('@playwright/test');
 
 const config = {
+    fullyParallel: false,
     expect: {
         timeout: 60 * 1000, // unit is ms, default is 5s
     },
@@ -12,6 +13,8 @@ const config = {
     ],
     timeout: 5 * 60 * 1000,
     use: {
+        actionTimeout: 30 * 1000,
+        navigationTimeout: 30 * 1000,
         baseURL: process.env.WALLET_URL || 'https://localhost:1234',
         headless: true,
         viewport: { width: 1280, height: 720 },

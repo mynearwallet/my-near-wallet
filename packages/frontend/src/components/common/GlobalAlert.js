@@ -114,9 +114,10 @@ const Content = styled.div`
 const Icon = styled.div`
     padding-right: 16px;
     flex: 0 0 24px;
+    margin-top: 0.4em;
 
     img {
-        width: 24px;
+        min-width: 24px;
     }
 `;
 
@@ -208,7 +209,10 @@ const GlobalAlertNew = ({
 
     if (!!alerts.length) {
         return (
-            <AlertContainer types={alerts.map((alert) => alert.type)}>
+            <AlertContainer
+                data-test-id='alertContainer'
+                types={alerts.map((alert) => alert.type)}
+            >
                 <Translate>
                     {({ translate }) => (
                         <>

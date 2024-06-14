@@ -1,13 +1,13 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
+import Input from './SetPassword/ui/Input';
+import { Submit } from './SetPasswordForm/ui';
 
 import { currentTargetValue } from '../../../shared/lib/forms/selectors';
 import { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
-import Input from './SetPassword/ui/Input';
-import { Submit } from './SetPasswordForm/ui';
 
 type UnlockWalletPageProps = {
     titleId: string;
@@ -39,6 +39,12 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
         setPassword(value);
     };
 
+    const handleKeyUp = (e) => {
+        if (e && e.key === 'Enter' && password.length) {
+            unlockHandler();
+        }
+    };
+
     return (
         <Container className='small-centered border'>
             <div>
@@ -53,8 +59,10 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
                     placeholder={t(
                         'setupPasswordProtection.unlockWalletInputPlaceholder'
                     )}
+                    data-test-id='password'
                     value={password ?? ''}
                     onChange={currentTargetValue(handleChangePassword)}
+                    onKeyUpCapture={handleKeyUp}
                     error={errorMessage}
                 />
 
@@ -63,7 +71,11 @@ export const UnlockWalletPage: FC<UnlockWalletPageProps> = ({
                 <br />
                 <Submit>
                     {/* @ts-ignore: prop error */}
-                    <FormButton onClick={unlockHandler} disabled={!password}>
+                    <FormButton
+                        data-test-id='unlock'
+                        onClick={unlockHandler}
+                        disabled={!password}
+                    >
                         {t('setupPasswordProtection.unlockWalletButton')}
                     </FormButton>
                 </Submit>

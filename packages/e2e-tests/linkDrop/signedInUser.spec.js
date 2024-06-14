@@ -145,21 +145,13 @@ describe('Linkdrop flow', () => {
             test.skip();
         }
 
-        const linkdropKeyPair = KeyPairEd25519.fromRandom();
-        const linkdropContractTLAAccountId = 'testnet';
-        const { linkdropSenderAccount } = linkdropAccountManager;
-
-        await linkdropSenderAccount.nearApiJsAccount.functionCall(
-            linkdropContractTLAAccountId,
-            'send',
-            { public_key: linkdropKeyPair.publicKey.toString() },
-            null,
-            new BN(parseNearAmount(linkdropNEARAmount) || '')
+        const linkdropSecretKey = await linkdropAccountManager.sendToNetworkTLA(
+            linkdropNEARAmount
         );
         const linkdropPage = new LinkDropPage(page);
         await linkdropPage.navigate(
-            linkdropContractTLAAccountId,
-            linkdropKeyPair.secretKey
+            nearApiJsConnection.config?.networkId,
+            linkdropSecretKey
         );
         await linkdropPage.createAccountToClaim();
 
@@ -179,9 +171,11 @@ describe('Linkdrop flow', () => {
         const verifySeedPhrasePage = new VerifySeedPhrasePage(page);
         const requestedVerificationWordNumber =
             await verifySeedPhrasePage.getRequestedVerificationWordNumber();
+
         await verifySeedPhrasePage.verifyWithWord(
             copiedSeedPhrase.split(' ')[requestedVerificationWordNumber - 1]
         );
+
         const testAccount = await new E2eTestAccount(
             `${testAccountId}.${nearApiJsConnection.config?.networkId}`,
             copiedSeedPhrase,
@@ -191,7 +185,9 @@ describe('Linkdrop flow', () => {
         ).initialize();
         deleteAccountsAfter.push(testAccount);
 
-        await expect(page).toHaveURL(/\/$/);
+        await page.waitForURL(/\/$/, {
+            timeout: 60_000,
+        });
         await expect(page.locator('data-test-id=linkDropSuccessModal')).toBeVisible();
     });
 
@@ -254,7 +250,9 @@ describe('Linkdrop flow', () => {
         ).initialize();
         deleteAccountsAfter.push(testAccount);
 
-        await expect(page).toHaveURL(new RegExp(testDappURL));
+        await page.waitForURL(new RegExp(testDappURL), {
+            timeout: 60_000,
+        });
         await expect(page).toHaveURL(new RegExp(`accountId=${testAccountId}`));
     });
 });

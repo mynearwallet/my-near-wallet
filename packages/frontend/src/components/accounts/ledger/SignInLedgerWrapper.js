@@ -22,6 +22,7 @@ import {
     selectLedgerTxSigned,
 } from '../../../redux/slices/ledger';
 import Container from '../../common/styled/Container.css';
+import VerifyWalletDomainBanner from '../../common/VerifyWalletDomainBanner';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 const { signInWithLedger, clearSignInWithLedgerModalState } = ledgerActions;
@@ -105,6 +106,7 @@ const SignInLedgerWrapper = (props) => {
 
     return (
         <>
+            <VerifyWalletDomainBanner />
             <Container className='small-centered border ledger-theme'>
                 {!signInWithLedgerStatus && (
                     <Authorize

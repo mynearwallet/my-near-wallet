@@ -48,7 +48,9 @@ class SwapPage {
     }
 
     async waitResultMessageElement() {
-        return this.page.waitForSelector('data-test-id=swapPageSuccessMessage');
+        return this.page.waitForSelector('data-test-id=swapPageSuccessMessage', {
+            timeout: 120000,
+        });
     }
 
     async fillForm({ inId, inAmount, outId, initialDelay = TOKENS_LOADING_DELAY }) {

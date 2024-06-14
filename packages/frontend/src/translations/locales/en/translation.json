@@ -315,7 +315,7 @@
         "resubmit": "Resubmit",
         "retry": "Retry",
         "returnToApp": "Return to App",
-        "rotateKey": "Rotate Key",
+        "rotateKey": "Use this key",
         "rotatingKey": "Rotating Key",
         "saveChanges": "Save Changes",
         "secureMyAccount": "Secure My Account",
@@ -410,6 +410,8 @@
             "getBlock": "GetBlock",
             "infura": "Infura",
             "infura-testnet": "Infura (Testnet)",
+            "lava": "Lava",
+            "lava-testnet": "Lava (Testnet)",
             "near": "NEAR",
             "near-testnet": "NEAR (Testnet)",
             "nodeReal": "NodeReal",
@@ -654,14 +656,15 @@
             "inUse": "Currently in use",
             "sameKeyWarning": "You are already using this key. There is no need to rotate.",
             "seedPhrase": "Account seed phrase / private key",
-            "seedPhrasePrompt": "Please enter the seed phrase for the key you want to use.",
-            "title": "Rotate Key"
+            "seedPhrasePrompt": "Please enter the seed phrase of this key.",
+            "title": "Use as Current Key"
         },
         "submitAnyTransaction": "Submit any transaction on your behalf",
         "transaction": "Transaction",
         "useContract": "Use <b>${receiverId}</b> contract on your behalf",
         "viewYourAccountName": "View your Account Name",
         "warning": {
+            "doesNotMatch": "The key you entered is not a valid recovery key for the public key you wanted to use.",
             "invalidFormat": "We cannot detect the key format you entered.",
             "invalidKey": "The key you entered is not a valid recovery key for this account.",
             "invalidSeedPhrase": "The seed phrase you entered is not valid; its checksum is incorrect."
@@ -886,6 +889,8 @@
         "title": "Test-only Wallet"
     },
     "NFTDetail": {
+        "attributes": "Attributes",
+        "description": "Description",
         "owner": "OWNER",
         "transfer": "Transfer"
     },
@@ -1063,6 +1068,14 @@
             "desc": "Make sure you have your private key started with ed25519, then click below to begin the recovery process.",
             "title": "Private Key"
         }
+    },
+    "recoverManual": {
+        "buttonImportManually": "Import it manually.",
+        "cantFindAccount": "Can't find your account?",
+        "errorAccessKeyNotMatch": "Access key doesn't match",
+        "errorAccountNotExist": "Account does not exist",
+        "inputAccountId": "Insert your account ID here to import your account",
+        "pageTitle": "Manual Import Account"
     },
     "recoverPrivateKey": {
         "pageText": "Enter the private key associated with the account.",
@@ -2012,9 +2025,11 @@
             "errorPKNotValid": "The provided private key is not valid. Please check your private key and try again."
         },
         "recoverAccountSeedPhrase": {
+            "errorGeneral": "Failed to recover account.",
             "errorInvalidSeedPhrase": "No accounts were found for this passphrase.",
             "errorNotAbleToImportAccount": "Import of your account failed. Please try again or contact support for assistance.",
-            "errorSeedPhraseNotValid": "The provided passphrase is not valid. Please check your passphrase and try again."
+            "errorSeedPhraseNotValid": "The provided passphrase is not valid. Please check your passphrase and try again.",
+            "keyPairUnmatch": "The imported key does not match the public key."
         },
         "recoveryMethods": {
             "lastMethod": "Cannot delete your last recovery method. Unless you have Ledger enabled, you need to keep at least one recovery method active to ensure recoverability of your account.",

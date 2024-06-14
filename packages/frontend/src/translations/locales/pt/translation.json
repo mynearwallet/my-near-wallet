@@ -664,6 +664,12 @@
         "header": "Carteira de teste NEAR",
         "title": "Carteira de testes"
     },
+    "NFTDetail": {
+        "attributes": "Atributos",
+        "description": "Descrição",
+        "owner": "PROPRIETÁRIO",
+        "transfer": "Transferir"
+    },
     "NFTs": {
         "emptyState": "Parece que você ainda não tem nenhum colecionável.",
         "loadMore": "Carregar mais"
@@ -814,6 +820,14 @@
             "desc": "Verifique se a sua chave privada começa com 'ed25519' e, em seguida, clique abaixo para iniciar o processo de recuperação.",
             "title": "Chave Privada"
         }
+    },
+    "recoverManual": {
+        "buttonImportManually": "Importar manualmente.",
+        "cantFindAccount": "Não consegue encontrar sua conta?",
+        "errorAccessKeyNotMatch": "A chave de acesso não corresponde",
+        "errorAccountNotExist": "Conta não existe",
+        "inputAccountId": "Insira o ID da sua conta aqui para importar sua conta",
+        "pageTitle": "Importação manual de conta"
     },
     "recoverPrivateKey": {
         "pageText": "Digite a chave privada associada à conta.",

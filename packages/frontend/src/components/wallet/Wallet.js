@@ -20,7 +20,6 @@ import { selectPasswordProtectionSlice } from '../../redux/slices/passwordProtec
 import classNames from '../../utils/classNames';
 import { SHOW_NETWORK_BANNER } from '../../utils/wallet';
 import AlertBanner from '../common/AlertBanner';
-import { getTotalBalanceInFiat } from '../common/balance/helpers';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import Tooltip from '../common/Tooltip';
@@ -28,6 +27,9 @@ import DownArrowIcon from '../svg/DownArrowIcon';
 import SendIcon from '../svg/SendIcon';
 import TopUpIcon from '../svg/TopUpIcon';
 import WrapIcon from '../svg/WrapIcon';
+import { selectAllowedTokens, selectTokensLoading } from '../../redux/slices/tokens';
+import useSortedTokens from '../../hooks/useSortedTokens';
+import { selectAccountId } from '../../redux/slices/account';
 
 const StyledContainer = styled(Container)`
     @media (max-width: 991px) {
@@ -307,18 +309,13 @@ export function Wallet({
     createFromImplicitSuccess,
     createCustomName,
     zeroBalanceAccountImportMethod,
-    fungibleTokensList,
-    tokensLoading,
     availableAccounts,
-    sortedNFTs,
     handleCloseLinkdropModal,
     handleSetCreateFromImplicitSuccess,
     handleSetCreateCustomName,
     handleSetZeroBalanceAccountImportMethod,
     userRecoveryMethods,
 }) {
-    const currentLanguage = getCurrentLanguage();
-    const totalAmount = getTotalBalanceInFiat(fungibleTokensList, currentLanguage);
     const { dataStatus } = useSelector(selectPasswordProtectionSlice);
 
     return (
@@ -357,17 +354,9 @@ export function Wallet({
                         </div>
                     </div>
                     {tab === 'collectibles' ? (
-                        <NFTs tokens={sortedNFTs} />
+                        <NFTs accountId={accountId} />
                     ) : (
-                        <FungibleTokens
-                            currentLanguage={currentLanguage}
-                            totalAmount={totalAmount}
-                            balance={balance}
-                            tokensLoading={tokensLoading}
-                            fungibleTokens={fungibleTokensList}
-                            accountExists={accountExists}
-                            fungibleTokensList={fungibleTokensList}
-                        />
+                        <FungibleTokens accountExists={accountExists} />
                     )}
                 </div>
                 <div className='right'>
@@ -408,15 +397,17 @@ export function Wallet({
     );
 }
 
-const FungibleTokens = ({
-    balance,
-    tokensLoading,
-    fungibleTokens,
-    accountExists,
-    totalAmount,
-    currentLanguage,
-    fungibleTokensList,
-}) => {
+const FungibleTokens = ({ accountExists }) => {
+    const allowedTokens = useSelector(selectAllowedTokens);
+    const fungibleTokens = useSortedTokens(allowedTokens);
+    const currentLanguage = getCurrentLanguage();
+    // const totalAmount = getTotalBalanceInFiat(fungibleTokens, currentLanguage);
+
+    const accountId = useSelector(selectAccountId);
+    const tokensLoading = useSelector((state) =>
+        selectTokensLoading(state, { accountId })
+    );
+
     const zeroBalanceAccount = accountExists === false;
     const currentFungibleTokens = fungibleTokens[0];
     const hideFungibleTokenSection =
@@ -427,7 +418,7 @@ const FungibleTokens = ({
         <>
             <div className='total-balance'>
                 <Textfit mode='single' max={48}>
-                    <AllTokensTotalBalanceUSD allFungibleTokens={fungibleTokensList} />
+                    <AllTokensTotalBalanceUSD allFungibleTokens={fungibleTokens} />
                 </Textfit>
             </div>
             <div className='sub-title balance'>
@@ -497,9 +488,6 @@ const FungibleTokens = ({
                         currentLanguage={currentLanguage}
                         showFiatPrice
                     />
-                    <div className='coingecko'>
-                        <Translate id='poweredByCoinGecko' />
-                    </div>
                 </>
             )}
         </>

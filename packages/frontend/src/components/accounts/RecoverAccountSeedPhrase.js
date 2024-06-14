@@ -16,9 +16,9 @@ import {
     clearAccountState,
 } from '../../redux/actions/account';
 import {
+    clearGlobalAlert,
     clearLocalAlert,
     showCustomAlert,
-    clearGlobalAlert,
 } from '../../redux/actions/status';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { actions as importZeroBalanceAccountActions } from '../../redux/slices/importZeroBalanceAccount';
@@ -31,6 +31,9 @@ import {
 import isValidSeedPhrase from '../../utils/isValidSeedPhrase';
 import parseFundingOptions from '../../utils/parseFundingOptions';
 import Container from '../common/styled/Container.css';
+import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
+import { EWalletImportInputType } from './manual_import/type';
+import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -121,11 +124,18 @@ class RecoverAccountSeedPhrase extends Component {
                 await refreshAccount();
             },
             async (e) => {
-                if (e.message.includes('Cannot find matching public key')) {
+                if (e.data?.errorCode === 'accountNotExist') {
                     await importZeroBalanceAccountPhrase(seedPhrase);
                     setZeroBalanceAccountImportMethod('phrase');
                     clearGlobalAlert();
                     redirectToApp();
+                } else {
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        errorMessage: e.message,
+                        messageCode: e.messageCode,
+                    });
                 }
 
                 throw e;
@@ -169,26 +179,32 @@ class RecoverAccountSeedPhrase extends Component {
         };
 
         return (
-            <StyledContainer className='small-centered border'>
-                <h1>
-                    <Translate id='recoverSeedPhrase.pageTitle' />
-                </h1>
-                <h2>
-                    <Translate id='recoverSeedPhrase.pageText' />
-                </h2>
-                <form
-                    onSubmit={(e) => {
-                        this.handleSubmit();
-                        e.preventDefault();
-                    }}
-                    autoComplete='off'
-                >
-                    <RecoverAccountSeedPhraseForm
-                        {...combinedState}
-                        handleChange={this.handleChange}
+            <>
+                <VerifyWalletDomainBanner />
+                <StyledContainer className='small-centered border'>
+                    <h1>
+                        <Translate id='recoverSeedPhrase.pageTitle' />
+                    </h1>
+                    <h2>
+                        <Translate id='recoverSeedPhrase.pageText' />
+                    </h2>
+                    <form
+                        onSubmit={(e) => {
+                            this.handleSubmit();
+                            e.preventDefault();
+                        }}
+                        autoComplete='off'
+                    >
+                        <RecoverAccountSeedPhraseForm
+                            {...combinedState}
+                            handleChange={this.handleChange}
+                        />
+                    </form>
+                    <ModalManualImportWithButton
+                        importType={EWalletImportInputType.SECRET_PHRASE}
                     />
-                </form>
-            </StyledContainer>
+                </StyledContainer>
+            </>
         );
     }
 }
