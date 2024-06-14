@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - testnet
+  pull_request:
+    types:
+      - closed
 
 concurrency:
   group: 'testnet'
@@ -11,8 +14,9 @@ concurrency:
 
 jobs:
   testnet-live-deploy:
-    uses: ./.github/workflows/cloudflare-pages-deploy.yml
-    with:
-      environment: testnet
-      near_wallet_env: testnet
-    secrets: inherit
+    if_merged:
+      uses: ./.github/workflows/cloudflare-pages-deploy.yml
+      with:
+        environment: testnet
+        near_wallet_env: testnet
+      secrets: inherit
