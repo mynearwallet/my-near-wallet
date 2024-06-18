@@ -33,7 +33,6 @@ const TransactionExecutorModal = () => {
     );
 
     return (
-        // @ts-ignore
         <Modal
             id='transaction-executor-modal'
             closeButton={hasError}
@@ -102,7 +101,6 @@ const TransactionExecutorModal = () => {
                                             <Translate id='transaction.TransactionHash' />
                                             : {txUI.transactionHash}
                                         </div>
-                                        {/* @ts-ignore */}
                                         <FormButton
                                             color='gray'
                                             className='link'
