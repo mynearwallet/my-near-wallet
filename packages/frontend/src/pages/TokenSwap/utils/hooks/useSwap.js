@@ -95,7 +95,7 @@ export default function useSwap({
             };
 
             try {
-                const { swapTxHash, success, failReason } =
+                const { swapTxHash, success, failReason, retry } =
                     await fungibleTokenExchange.swap({
                         account,
                         amountIn,
@@ -104,6 +104,12 @@ export default function useSwap({
                         tokenOut,
                         minAmountOut,
                     });
+
+                if (retry) {
+                    setViewState(VIEW_STATE.preview);
+                    setSwapPending(false);
+                    return;
+                }
 
                 Mixpanel.track(`Swap:${success ? 'done' : 'failed'}`, {
                     failReason,

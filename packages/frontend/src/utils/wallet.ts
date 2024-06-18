@@ -34,6 +34,7 @@ import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import sendJson from '../tmp_fetch_send_json';
 import { withAdjustedStorageCost } from './accountsLogic/withAdjustedStorageCost';
+import { dispatchTransactionExecutor } from '../redux/slices/sign/transactionExecutor';
 
 export const WALLET_CREATE_NEW_ACCOUNT_URL = 'create';
 export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
@@ -1800,7 +1801,7 @@ export default class Wallet {
             const recreateTransaction = account.deployMultisig || true;
             if (recreateTransaction) {
                 try {
-                    ({ status, transaction } = await account.signAndSendTransaction({
+                    ({ status, transaction } = await dispatchTransactionExecutor({
                         receiverId,
                         actions,
                     }));
