@@ -3,6 +3,8 @@ import { Translate } from 'react-localize-redux';
 
 import ListWrapper from './ListWrapper';
 import ValidatorBox from './ValidatorBox';
+import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
+import ValidatorBoxItem from './ValidatorBoxItem';
 
 export default function Validators({ validators, stakeFromAccount }) {
     const [validator, setValidator] = useState('');
@@ -49,6 +51,13 @@ export default function Validators({ validators, stakeFromAccount }) {
                 </div>
             )}
             <ListWrapper>
+                <div>Liquid staking list</div>
+                <ValidatorBoxItem
+                    validatorId={METAPOOL_CONTRACT_ID}
+                    fee='2~6'
+                    active
+                    isSelectable
+                />
                 {validators
                     .filter((v) => v.accountId.includes(validator))
                     .map((validator, i) => (

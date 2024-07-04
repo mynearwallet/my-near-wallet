@@ -1,0 +1,144 @@
+import React, { useState } from 'react';
+import { Translate } from 'react-localize-redux';
+import BN from 'bn.js';
+import { useSelector } from 'react-redux';
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
+import { useMutation } from 'react-query';
+
+import FormButton from '../../common/FormButton';
+import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
+import ValidatorBoxItem from '../components/ValidatorBoxItem';
+import { Mixpanel } from '../../../mixpanel';
+import AmountInput from '../components/AmountInput';
+import { selectStakingSlice } from '../../../redux/slices/staking';
+import { STAKING_AMOUNT_DEVIATION } from '../../../utils/staking';
+import isDecimalString from '../../../utils/isDecimalString';
+import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
+import { liquidStaking } from '../../../redux/actions/staking';
+import { toYoctoNear } from '../../../utils/gasPrice';
+import { selectAvailableBalance } from '../../../redux/slices/account';
+
+const StakingForm = () => {
+    const [amount, setAmount] = useState('');
+    const staking = useSelector(selectStakingSlice);
+    const availableBalance = useSelector(selectAvailableBalance);
+    const { currentAccount } = staking;
+    const { totalUnstaked } = currentAccount;
+
+    const liquidStakingMutation = useMutation({
+        mutationFn: async (amount: string) => {
+            return await liquidStaking({
+                contractId: METAPOOL_CONTRACT_ID,
+                amountInYocto: new BN(toYoctoNear(amount)).toString(),
+                accountId: currentAccount.accoundId,
+            });
+        },
+        mutationKey: ['liquidStakingMutation', amount],
+    });
+
+    const handleSetMax = () => {
+        const isPositiveValue = new BN(availableBalance).gt(new BN('0'));
+
+        if (isPositiveValue) {
+            setAmount(formatNearAmount(availableBalance, 5).replace(/,/g, ''));
+        }
+        Mixpanel.track('STAKE/UNSTAKE Use max token');
+    };
+
+    const handleOnChange = (amount) => {
+        setAmount(amount);
+    };
+
+    const invalidStakeActionAmount =
+        new BN(parseNearAmount(amount))
+            .sub(new BN(totalUnstaked))
+            .gt(new BN(STAKING_AMOUNT_DEVIATION)) || !isDecimalString(amount);
+
+    return (
+        <div>
+            StakingForm
+            <div className='send-theme'>
+                <h1>
+                    <Translate id={'staking.stake.title'} />
+                </h1>
+                <h2>
+                    <Translate id={'staking.stake.desc'} />
+                </h2>
+                <div className='amount-header-wrapper'>
+                    <h4>
+                        <Translate id='staking.stake.amount' />
+                    </h4>
+                    {/*@ts-ignore*/}
+                    <FormButton
+                        className='small'
+                        color='light-blue'
+                        onClick={handleSetMax}
+                        data-test-id='stakingPageUseMaxButton'
+                    >
+                        <Translate id='staking.stake.useMax' />
+                    </FormButton>
+                </div>
+                <AmountInput
+                    action={'stake'}
+                    value={amount}
+                    onChange={handleOnChange}
+                    valid={true}
+                    availableBalance={availableBalance}
+                    availableClick={handleSetMax}
+                    insufficientBalance={invalidStakeActionAmount}
+                    disabled={false}
+                    stakeFromAccount={true}
+                    inputTestId='stakingAmountInput'
+                />
+                <ArrowCircleIcon color={'#6AD1E3'} />
+                <div className='header-button'>
+                    <h4>
+                        <Translate id={'staking.stake.stakeWith'} />
+                    </h4>
+                    {/*@ts-ignore*/}
+                    <FormButton
+                        className='small'
+                        color='light-blue'
+                        linkTo='/staking/validators'
+                        trackingId='STAKE Go to validators list page'
+                    >
+                        <Translate id='button.edit' />
+                    </FormButton>
+                </div>
+                <ValidatorBoxItem validatorId={METAPOOL_CONTRACT_ID} fee='2~6' active />
+                {/*@ts-ignore*/}
+                <FormButton
+                    sending={liquidStakingMutation.isLoading}
+                    sendingString='staking.staking.checkingValidator'
+                    disabled={!amount}
+                    onClick={() => {
+                        liquidStakingMutation.mutate(amount);
+                    }}
+                    trackingId='STAKE/UNSTAKE Click submit stake button'
+                    data-test-id='submitStakeButton'
+                >
+                    <Translate id={'staking.stake.button'} />
+                </FormButton>
+                {/* {confirm && (
+                    <StakeConfirmModal
+                        title={`staking.stake.confirm`}
+                        label={`staking.stake.with`}
+                        validator={validator}
+                        amount={useMax ? amount : toNear(amount)}
+                        open={confirm}
+                        onConfirm={onStakingAction}
+                        onClose={() => {
+                            setConfirm(false);
+                            Mixpanel.track('STAKE/UNSTAKE Close the modal');
+                        }}
+                        loading={loadingStaking}
+                        disclaimer={getStakeActionDisclaimer()}
+                        sendingString={stake ? 'staking' : 'unstaking'}
+                    />
+                )} */}
+            </div>
+        </div>
+    );
+};
+
+export default StakingForm;

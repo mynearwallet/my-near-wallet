@@ -125,7 +125,7 @@ const NavLinks = () => (
         </NavLink>
         <NavLink
             data-test-id='staking_navlink'
-            to='/staking'
+            to='/staking-selector'
             activeClassName='selected'
             onClick={() => Mixpanel.track('Click Staking button on nav')}
         >
