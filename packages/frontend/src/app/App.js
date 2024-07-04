@@ -100,6 +100,8 @@ import {
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
 import TransactionExecutorModal from '../components/transactions/ExecutorModal/TransactionExecutorModal';
+import StakingSelector from '../components/staking/StakingSelector';
+import LiquidStakingContainer from '../components/staking/liquid-staking/LiquidStakingContainer';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -621,10 +623,18 @@ class Routing extends Component {
                             />
                             <PrivateRoute exact path='/sign' component={SignWrapper} />
                             <PrivateRoute
+                                path='/staking-selector'
+                                render={() => <StakingSelector />}
+                            />
+                            <PrivateRoute
                                 path='/staking'
                                 render={() => (
                                     <StakingContainer history={this.props.history} />
                                 )}
+                            />
+                            <PrivateRoute
+                                path='/liquid-staking'
+                                render={() => <LiquidStakingContainer />}
                             />
                             <PrivateRoute
                                 exact
