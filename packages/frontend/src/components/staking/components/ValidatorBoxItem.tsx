@@ -15,6 +15,7 @@ type Props = {
     amount?: string;
     withCta?: boolean;
     handleUnstake?: () => void;
+    onClick?: () => void;
 };
 
 const Container = styled.div`
@@ -52,10 +53,11 @@ const ValidatorBoxItem = ({
     amount,
     withCta,
     handleUnstake,
+    onClick,
 }: Props) => {
     const history = useHistory();
     return (
-        <div>
+        <div onClick={onClick}>
             <Container className='validator-box' data-test-id='stakingPageValidatorItem'>
                 <UserIcon background={true} />
                 <div className='left'>
@@ -110,7 +112,7 @@ const ValidatorBoxItem = ({
                     {/* @ts-ignore */}
                     <FormButton
                         onClick={() => {
-                            history.push(`/liquid-staking/${validatorId}`);
+                            history.push(`/liquid-staking/${validatorId}/stake`);
                         }}
                     >
                         Stake More

@@ -5,7 +5,6 @@ import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
 import { selectAccountId } from '../../../redux/slices/account';
-import Validator from './Validator';
 import StakingForm from './StakingForm';
 import { getBalance } from '../../../redux/actions/account';
 import OwnedValidators from './OwnedValidators';
@@ -22,35 +21,32 @@ const LiquidStakingContainer = () => {
     }, [accountId]);
 
     return (
-        <div>
-            <ConnectedRouter history={history}>
-                <Switch>
-                    <Route
-                        exact
-                        path='/liquid-staking/:validator'
-                        render={(props) => <StakingForm {...props} />}
-                    />
-                    <Route
-                        exact
-                        path='/liquid-staking'
-                        render={() => (
-                            <>
-                                <div>Liquid Staking</div>
-                                <div>Create New Staking</div>
-                                <div>My Staked Validators</div>
-                                <div>
-                                    It may take ~1 minute to display your newly staked
-                                    validator.
-                                </div>
-                                <div>Metapool</div>
-                                <Validator />
-                                <OwnedValidators accountId={accountId} />
-                            </>
-                        )}
-                    />
-                </Switch>
-            </ConnectedRouter>
-        </div>
+        <ConnectedRouter history={history}>
+            <Switch>
+                <Route
+                    exact
+                    path='/liquid-staking/:validator/stake'
+                    render={(props) => <StakingForm {...props} />}
+                />
+                <Route
+                    exact
+                    path='/liquid-staking'
+                    render={() => (
+                        <>
+                            <div>Liquid Staking</div>
+                            <div>Create New Staking</div>
+                            <div>My Staked Validators</div>
+                            <div>
+                                It may take ~1 minute to display your newly staked
+                                validator.
+                            </div>
+                            <div>Metapool</div>
+                            <OwnedValidators accountId={accountId} />
+                        </>
+                    )}
+                />
+            </Switch>
+        </ConnectedRouter>
     );
 };
 
