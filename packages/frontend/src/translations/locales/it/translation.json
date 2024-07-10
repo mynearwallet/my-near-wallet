@@ -490,8 +490,10 @@
         "title": "Dispositivi Hardware"
     },
     "importAccount": {
+        "importAccount": "Importa il tuo account",
         "noId": "Importando account",
         "noIdFailed": "Impossibile importare l'account.",
+        "selectAccount": "Scegli il portafoglio che desideri importare",
         "withId": "Importando account: ${accountId}",
         "withIdFailed": "Impossibile importare l'account: ${accountId}"
     },

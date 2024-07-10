@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { Translate } from 'react-localize-redux';
 import { actions as ledgerActions } from '../../../redux/slices/ledger';
 import FormButton from '../../common/FormButton';
+import UserIconGrey from '../../../images/UserIconGrey';
+import IconCheck from '../../../images/IconCheck';
 
 type Props = {
     ledgerHdPath: string;
@@ -45,18 +47,29 @@ const SelectAccountImport = ({ ledgerHdPath, ledgerAccounts }: Props) => {
 
     return (
         <Container>
-            <div>ledgerAccounts</div>
+            <div className='account-select__title'>
+                <Translate id={'importAccount.importAccount'} />
+            </div>
+            <div className='account-select__subtitle'>
+                <Translate id={'importAccount.selectAccount'} />
+            </div>
             <div className='account-select__wrapper'>
                 {ledgerAccounts.map((accountId) => {
+                    const isSelected = !!selectedAccounts[accountId];
                     return (
                         <StyledCard
                             key={accountId}
-                            isSelected={!!selectedAccounts[accountId]}
+                            isSelected={isSelected}
                             onClick={() => {
                                 handleSelect(accountId);
                             }}
                         >
-                            {accountId}
+                            <UserIcon>
+                                <UserIconGrey color='#9a9a9a' />
+                            </UserIcon>
+                            <div className='account-select__account-id'>{accountId}</div>
+                            <div style={{ flexGrow: 1 }}></div>
+                            {isSelected && <IconCheck color='#5ace84' stroke='3px' />}
                         </StyledCard>
                     );
                 })}
@@ -75,17 +88,53 @@ const SelectAccountImport = ({ ledgerHdPath, ledgerAccounts }: Props) => {
 export default SelectAccountImport;
 
 const Container = styled.div`
+    width: 100%;
+    text-align: left;
+    .account-select__title {
+        margin-bottom: 16px;
+        font-weight: bold;
+        font-size: 22px;
+    }
+    .account-select__subtitle {
+        margin-bottom: 16px;
+    }
     .account-select__wrapper {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 8px;
+        width: 100%;
     }
 `;
 
 const StyledCard = styled.div<{ isSelected: boolean }>`
     border: 1px solid #e6e6e6;
     border-radius: 8px;
-    padding: 20px;
+    padding: 8px 16px;
     border-color: ${(props) => (props.isSelected ? 'green' : '#ccc')};
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    &:hover {
+        background-color: #fafafa;
+    }
+`;
+
+const UserIcon = styled.div`
+    background-size: 21px;
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f8f8f8;
+    text-align: center;
+    margin: 0 12px 0 0;
+
+    svg {
+        width: 26px;
+        height: 26px;
+        margin: 7px;
+    }
+
+    @media (min-width: 940px) {
+        display: inline-block;
+    }
 `;

@@ -131,8 +131,7 @@ const SignInLedgerWrapper = (props) => {
                         ledgerAccounts={signInWithLedgerKeys}
                     />
                 )}
-                {(signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS ||
-                    signInWithLedgerStatus === LEDGER_MODAL_STATUS.SUCCESS) && (
+                {signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS && (
                     <ImportAccounts
                         accountsApproved={accountsApproved}
                         totalAccounts={totalAccounts}

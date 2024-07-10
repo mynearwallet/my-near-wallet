@@ -588,8 +588,10 @@
         "title": "硬件钱包"
     },
     "importAccount": {
+        "importAccount": "导入您的帐户",
         "noId": "正在导入账户",
         "noIdFailed": "导入账户失败。",
+        "selectAccount": "选择您要导入的帐户",
         "withId": "导入账户：${accountId}",
         "withIdFailed": "导入账户失败：${accountId}"
     },
