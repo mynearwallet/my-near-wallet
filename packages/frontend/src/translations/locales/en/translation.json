@@ -688,8 +688,10 @@
         "title": "Hardware Devices"
     },
     "importAccount": {
+        "importAccount": "Import Your Account",
         "noId": "Importing account",
         "noIdFailed": "Failed to import account.",
+        "selectAccount": "Pick the wallet you'd like to import",
         "withId": "Importing account: ${accountId}",
         "withIdFailed": "Failed to import account: ${accountId}"
     },

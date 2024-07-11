@@ -425,6 +425,14 @@
         },
         "title": "Thiêt bị ổ cứng"
     },
+    "importAccount": {
+        "importAccount": "Nhập sua conta",
+        "noId": "Nhập conta",
+        "noIdFailed": "Falha ao importar conta.",
+        "selectAccount": "Escolha a carteira que giả vờ nhập khẩu",
+        "withId": "Nhập conta: ${accountId}",
+        "withIdFailed": "Falha ao importar conta: ${accountId}"
+    },
     "importAccountWithLink": {
         "accountFound": "1 Tài khoản được tìm thấy",
         "accountImported": "Tài khoản được Thêm vào",
