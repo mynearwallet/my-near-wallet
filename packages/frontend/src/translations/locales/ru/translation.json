@@ -412,6 +412,14 @@
         },
         "title": "Аппаратные устройства"
     },
+    "importAccount": {
+        "importAccount": "Импортируйте вашу учетную запись",
+        "noId": "Импорт аккаунта",
+        "noIdFailed": "Не удалось импортировать учетную запись.",
+        "selectAccount": "Выберите кошелек, который вы хотите импортировать",
+        "withId": "Импорт учетной записи: ${accountId}",
+        "withIdFailed": "Не удалось импортировать учетную запись: ${accountId}"
+    },
     "importAccountWithLink": {
         "accountFound": "1 Account Found",
         "accountImported": "Account Imported",

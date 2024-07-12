@@ -472,8 +472,10 @@
         "title": "Dispositivos Físicos"
     },
     "importAccount": {
+        "importAccount": "Importar a sua conta",
         "noId": "Importando conta",
         "noIdFailed": "Falha ao importar conta.",
+        "selectAccount": "Escolha a carteira que pretende importar",
         "withId": "Importando conta: ${accountId}",
         "withIdFailed": "Falha ao importar conta: ${accountId}"
     },
