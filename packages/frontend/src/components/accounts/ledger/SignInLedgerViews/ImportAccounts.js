@@ -35,7 +35,9 @@ const ImportAccounts = ({
         Math.max(accountsApproved + accountsError + accountsRejected - 1, 0),
         totalAccounts - 3
     );
-    const success = signInWithLedgerStatus === LEDGER_MODAL_STATUS.SUCCESS;
+    const success =
+        signInWithLedgerStatus === LEDGER_MODAL_STATUS.SUCCESS ||
+        accountsApproved + accountsError + accountsRejected === totalAccounts;
 
     return (
         <>
