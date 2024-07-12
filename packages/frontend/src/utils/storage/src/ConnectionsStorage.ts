@@ -2,11 +2,38 @@ import { ObjectStorage } from './ObjectStorage';
 import CONFIG from '../../../config';
 import { RpcProvider, RpcProviderDetail, RpcRotator } from '../../mnw-api-js';
 
-const defaultConnections = [
+export const defaultConnections = [
     {
         id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet') ? 'near' : 'near-testnet',
         label: 'Default Connection',
+        data: {
+            url: 'https://rpc.mainnet.near.org',
+        },
         priority: 10,
+    },
+    {
+        id: 'lava',
+        label: 'Lava Rpc',
+        data: {
+            url: 'https://near.lava.build',
+        },
+        priority: 11,
+    },
+    {
+        id: 'betaNearRpc',
+        label: 'Official Beta Rpc',
+        data: {
+            url: 'https://beta.rpc.mainnet.near.org',
+        },
+        priority: 12,
+    },
+    {
+        id: 'fastNear',
+        label: 'Fast Near Rpc',
+        data: {
+            url: 'https://free.rpc.fastnear.com',
+        },
+        priority: 13,
     },
 ];
 

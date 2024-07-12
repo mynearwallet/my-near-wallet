@@ -122,7 +122,7 @@ const WEB3AUTH_FEATURE_ENABLED = true;
 
 const Container = styled.div`
     min-height: 100vh;
-    padding-bottom: 230px;
+    padding-bottom: 260px;
     padding-top: 75px;
 
     @media (max-width: 991px) {

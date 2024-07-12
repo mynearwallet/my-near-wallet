@@ -397,6 +397,7 @@
         "apiKey": "Api Key",
         "changeRpcProvider": "Change RPC Provider",
         "defaultConnection": "Default Connection",
+        "select": "Set Primary",
         "delete": "Delete",
         "dirty": "Your changes will only takes full effect after a page refresh, please click here in order to refresh the page.",
         "edit": "Edit",
