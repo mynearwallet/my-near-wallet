@@ -2,7 +2,7 @@ import { ObjectStorage } from './ObjectStorage';
 import CONFIG from '../../../config';
 import { RpcProvider, RpcProviderDetail, RpcRotator } from '../../mnw-api-js';
 
-export const defaultConnections = [
+const mainnetConnections = [
     {
         id: CONFIG.NEAR_WALLET_ENV.startsWith('mainnet') ? 'near' : 'near-testnet',
         label: 'Default Connection',
@@ -36,6 +36,21 @@ export const defaultConnections = [
         priority: 13,
     },
 ];
+
+const testnetConnections = [
+    {
+        id: 'near-testnet',
+        label: 'Default Connection',
+        data: {
+            url: 'https://rpc.testnet.near.org',
+        },
+        priority: 10,
+    },
+];
+
+export const defaultConnections = CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
+    ? mainnetConnections
+    : testnetConnections;
 
 export class ConnectionsStorage extends ObjectStorage<RpcProviderDetail[]> {
     storageKey: string = 'connections';
