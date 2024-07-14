@@ -6,7 +6,7 @@ const mainnetRpcOptionList: RpcOption[] = [
     {
         id: 'near',
         defaultParams: {
-            url: 'https://free.rpc.fastnear.com/',
+            url: 'https://rpc.mainnet.near.org/',
         },
     },
     // {

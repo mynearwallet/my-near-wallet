@@ -11,7 +11,7 @@ async function checkConnection(rpcProvider) {
 test(
     'passing url should work (deprecated method)',
     async () => {
-        const rpcProvider = new RpcProvider('https://free.rpc.fastnear.com/');
+        const rpcProvider = new RpcProvider('https://rpc.mainnet.near.org/');
 
         await checkConnection(rpcProvider);
     },
@@ -37,7 +37,7 @@ test(
 test(
     'passing ConnectionInfo should work (original method)',
     async () => {
-        const rpcProvider = new RpcProvider({ url: 'https://free.rpc.fastnear.com/' });
+        const rpcProvider = new RpcProvider({ url: 'https://rpc.mainnet.near.org/' });
 
         await checkConnection(rpcProvider);
     },
