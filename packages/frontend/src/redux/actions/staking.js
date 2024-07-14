@@ -14,11 +14,9 @@ import {
 } from '../../utils/account-with-lockup';
 import { showAlert } from '../../utils/alerts';
 import {
-    MAINNET,
     getValidatorRegExp,
     getValidationVersion,
     FARMING_VALIDATOR_VERSION,
-    TESTNET,
 } from '../../utils/constants';
 import { setStakingAccountSelected } from '../../utils/localStorage';
 import {
@@ -343,11 +341,7 @@ export const { staking } = createActions({
 
                         totalStaked = totalStaked.add(new BN(validator.staked));
                         totalUnclaimed = totalUnclaimed.add(new BN(validator.unclaimed));
-                        const networkId =
-                            wallet.connection.provider.connection.url.indexOf(MAINNET) >
-                            -1
-                                ? MAINNET
-                                : TESTNET;
+                        const networkId = CONFIG.CURRENT_NEAR_NETWORK;
 
                         validator.version = getValidationVersion(
                             networkId,
@@ -522,10 +516,7 @@ export const { staking } = createActions({
                     ...current_proposals,
                 ].map(({ account_id }) => account_id);
 
-                const networkId =
-                    wallet.connection.provider.connection.url.indexOf(MAINNET) > -1
-                        ? MAINNET
-                        : TESTNET;
+                const networkId = CONFIG.CURRENT_NEAR_NETWORK;
                 const allStakingPools = await coreIndexerAdapter.fetchValidatorIds();
                 const prefix = getValidatorRegExp(networkId);
                 accountIds = uniq([...rpcValidators, ...allStakingPools]).filter(
@@ -555,12 +546,7 @@ export const { staking } = createActions({
                                 (fee.numerator / fee.denominator) *
                                 100
                             ).toFixed(2);
-                            const networkId =
-                                wallet.connection.provider.connection.url.indexOf(
-                                    MAINNET
-                                ) > -1
-                                    ? MAINNET
-                                    : TESTNET;
+                            const networkId = CONFIG.CURRENT_NEAR_NETWORK;
 
                             validator.version = getValidationVersion(
                                 networkId,
