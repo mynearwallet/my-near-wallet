@@ -420,6 +420,7 @@
             "pagoda-testnet": "Pagoda (Testnet)"
         },
         "rpcProvider": "RPC Provider",
+        "select": "Set Primary",
         "url": "URL"
     },
     "connectLedger": {
