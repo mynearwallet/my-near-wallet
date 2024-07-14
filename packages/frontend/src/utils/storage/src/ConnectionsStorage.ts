@@ -4,26 +4,26 @@ import { RpcProvider, RpcProviderDetail, RpcRotator } from '../../mnw-api-js';
 
 const mainnetConnections = [
     {
+        id: 'near',
+        label: 'Official Near Rpc',
+        data: {
+            url: 'https://rpc.mainnet.near.org',
+        },
+        priority: 10,
+    },
+    {
         id: 'fastNear',
         label: 'Fast Near Rpc',
         data: {
             url: 'https://free.rpc.fastnear.com',
         },
-        priority: 10,
+        priority: 11,
     },
     {
         id: 'lava',
         label: 'Lava Rpc',
         data: {
             url: 'https://near.lava.build',
-        },
-        priority: 11,
-    },
-    {
-        id: 'near',
-        label: 'Near Connection',
-        data: {
-            url: 'https://rpc.mainnet.near.org',
         },
         priority: 12,
     },
