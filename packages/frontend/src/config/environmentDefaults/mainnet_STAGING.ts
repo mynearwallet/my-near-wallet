@@ -42,7 +42,7 @@ export default {
     ],
     MULTISIG_MIN_AMOUNT: '4',
     NETWORK_ID: 'default',
-    NODE_URL: 'https://free.rpc.fastnear.com',
+    NODE_URL: 'https://rpc.mainnet.near.org',
     NODE_ARCHIVAL_URL: 'https://archival-rpc.mainnet.pagoda.co',
     REACT_APP_USE_TESTINGLOCKUP: false,
     RECAPTCHA_CHALLENGE_API_KEY: '6LeRzswaAAAAAGeS7mSasZ1wDcGnMcH3D7W1gy1b',
