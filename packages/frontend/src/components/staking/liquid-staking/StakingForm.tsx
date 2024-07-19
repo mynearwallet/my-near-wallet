@@ -4,6 +4,7 @@ import BN from 'bn.js';
 import { useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation } from 'react-query';
+import { useHistory } from 'react-router';
 
 import FormButton from '../../common/FormButton';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
@@ -11,19 +12,23 @@ import ValidatorBoxItem from '../components/ValidatorBoxItem';
 import { Mixpanel } from '../../../mixpanel';
 import AmountInput from '../components/AmountInput';
 import { selectStakingSlice } from '../../../redux/slices/staking';
-import { STAKING_AMOUNT_DEVIATION } from '../../../utils/staking';
+import {
+    LIQUID_STAKING_MIN_AMOUNT,
+    STAKING_AMOUNT_DEVIATION,
+} from '../../../utils/staking';
 import isDecimalString from '../../../utils/isDecimalString';
 import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 import { liquidStaking } from '../../../redux/actions/staking';
 import { toYoctoNear } from '../../../utils/gasPrice';
 import { selectAvailableBalance } from '../../../redux/slices/account';
+import Container from '../../common/styled/Container.css';
 
 const StakingForm = () => {
+    const history = useHistory();
     const [amount, setAmount] = useState('');
     const staking = useSelector(selectStakingSlice);
     const availableBalance = useSelector(selectAvailableBalance);
     const { currentAccount } = staking;
-    const { totalUnstaked } = currentAccount;
 
     const liquidStakingMutation = useMutation({
         mutationFn: async (amount: string) => {
@@ -34,6 +39,9 @@ const StakingForm = () => {
             });
         },
         mutationKey: ['liquidStakingMutation', amount],
+        onSuccess: () => {
+            history.push('/staking');
+        },
     });
 
     const handleSetMax = () => {
@@ -51,12 +59,13 @@ const StakingForm = () => {
 
     const invalidStakeActionAmount =
         new BN(parseNearAmount(amount))
-            .sub(new BN(totalUnstaked))
-            .gt(new BN(STAKING_AMOUNT_DEVIATION)) || !isDecimalString(amount);
+            .sub(new BN(availableBalance))
+            .gt(new BN(STAKING_AMOUNT_DEVIATION)) ||
+        new BN(parseNearAmount(amount)).lt(new BN(LIQUID_STAKING_MIN_AMOUNT)) ||
+        !isDecimalString(amount);
 
     return (
-        <div>
-            StakingForm
+        <Container className='small-centered'>
             <div className='send-theme'>
                 <h1>
                     <Translate id={'staking.stake.title'} />
@@ -82,10 +91,10 @@ const StakingForm = () => {
                     action={'stake'}
                     value={amount}
                     onChange={handleOnChange}
-                    valid={true}
+                    valid={!liquidStakingMutation.isLoading && !invalidStakeActionAmount}
                     availableBalance={availableBalance}
                     availableClick={handleSetMax}
-                    insufficientBalance={invalidStakeActionAmount}
+                    insufficientBalance={!!amount && invalidStakeActionAmount}
                     disabled={false}
                     stakeFromAccount={true}
                     inputTestId='stakingAmountInput'
@@ -110,7 +119,7 @@ const StakingForm = () => {
                 <FormButton
                     sending={liquidStakingMutation.isLoading}
                     sendingString='staking.staking.checkingValidator'
-                    disabled={!amount}
+                    disabled={!amount || liquidStakingMutation.isLoading}
                     onClick={() => {
                         liquidStakingMutation.mutate(amount);
                     }}
@@ -137,7 +146,7 @@ const StakingForm = () => {
                     />
                 )} */}
             </div>
-        </div>
+        </Container>
     );
 };
 

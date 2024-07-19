@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { BN } from 'bn.js';
 
@@ -8,11 +8,8 @@ import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 import FungibleTokens from '../../../services/FungibleTokens';
 import { selectAllowedTokens } from '../../../redux/slices/tokens';
 import ValidatorBoxItem from '../components/ValidatorBoxItem';
-import { liquidUnStake } from '../../../redux/actions/staking';
-import { toYoctoNear } from '../../../utils/gasPrice';
-import Modal from '../../common/modal/Modal';
-import FormButton from '../../common/FormButton';
-import AmountInput from '../components/AmountInput';
+import ModalUnstake from './ModalUnstake';
+import { formatNearAmount } from '../../common/balance/helpers';
 
 type TStakedValidator = {
     // These are optional because we only start getting them after getting list of user's staked validators
@@ -87,10 +84,10 @@ async function getMetapoolValidator({ accountId, tokens }): Promise<TStakedValid
         unstakedStatusResult,
     ] = await Promise.all(promises);
 
-    console.log({ unstakedBalanceResult });
-
-    const nearToken = tokens.find((token) => token.id == 'near');
-    const stNearToken = tokens.find((token) => token.id == METAPOOL_CONTRACT_ID);
+    const nearToken = tokens.find((token) => token.contractName === 'NEAR');
+    const stNearToken = tokens.find(
+        (token) => token.contractName === METAPOOL_CONTRACT_ID
+    );
 
     const metapoolValidator: TStakedValidator = {
         validatorId: METAPOOL_CONTRACT_ID,
@@ -122,7 +119,7 @@ async function getMetapoolValidator({ accountId, tokens }): Promise<TStakedValid
 
 const OwnedValidators = ({ accountId }: { accountId: string }) => {
     const allowedTokens = useSelector(selectAllowedTokens);
-    const { data: liquidValidatorData } = useQuery({
+    const { data: liquidValidatorData, refetch } = useQuery({
         queryKey: ['liquidValidator', accountId, allowedTokens],
         queryFn: async () => {
             return getMetapoolValidator({
@@ -133,29 +130,20 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
         enabled: !!accountId,
     });
 
-    const liquidUnstakeMutation = useMutation({
-        mutationFn: async (amount: string) => {
-            return await liquidUnStake({
-                contractId: METAPOOL_CONTRACT_ID,
-                amountInYocto: new BN(toYoctoNear(amount)).toString(),
-            });
-        },
-        mutationKey: ['liquidUnstakeMutation'],
-    });
-
     const [isModalVisible, setModalVisible] = useState(false);
-    const [unstakeAmount, setUnstakeAmount] = useState('');
-
-    // const stNearToken = liquidValidatorData?.tokenToReceive;
-    console.log({ liquidValidatorData });
 
     return (
         <div>
-            OwnedValidators
-            <div>{liquidValidatorData?.validatorId}</div>
             <ValidatorBoxItem
                 validatorId={METAPOOL_CONTRACT_ID}
-                amount={liquidValidatorData?.stakedBalance}
+                amountString={
+                    liquidValidatorData
+                        ? `${formatNearAmount(liquidValidatorData?.stakedBalance)} ${
+                              liquidValidatorData?.tokenToReceive?.onChainFTMetadata
+                                  ?.symbol
+                          }`
+                        : ''
+                }
                 fee='2~6'
                 active
                 withCta
@@ -164,37 +152,12 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
                 }}
             />
             {!!isModalVisible && (
-                // @ts-ignore
-                <Modal
-                    id='account-funded-modal'
-                    isOpen={isModalVisible}
-                    onClose={() => {
-                        setModalVisible((prev) => !prev);
-                    }}
-                >
-                    {/* @ts-ignore */}
-                    <AmountInput
-                        action={'stake'}
-                        value={unstakeAmount}
-                        onChange={setUnstakeAmount}
-                        valid={true}
-                        availableBalance={liquidValidatorData.stakedBalance}
-                        // availableClick={handleSetMax}
-                        // insufficientBalance={invalidStakeActionAmount}
-                        disabled={false}
-                        stakeFromAccount={true}
-                        inputTestId='stakingAmountInput'
-                    />
-                    {/* @ts-ignore */}
-                    <FormButton
-                        disabled={!unstakeAmount}
-                        onClick={() => {
-                            liquidUnstakeMutation.mutate(unstakeAmount);
-                        }}
-                    >
-                        Unstake
-                    </FormButton>
-                </Modal>
+                <ModalUnstake
+                    isModalVisible={isModalVisible}
+                    setModalVisible={setModalVisible}
+                    stakedBalance={liquidValidatorData?.stakedBalance}
+                    onUnstakeCompleted={refetch}
+                />
             )}
         </div>
     );
