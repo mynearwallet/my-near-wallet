@@ -5,23 +5,130 @@ import { useHistory } from 'react-router';
 
 import UserIcon from '../../svg/UserIcon';
 import FormButton from '../../common/FormButton';
-import Balance from '../../common/balance/Balance';
 
 type Props = {
     validatorId: string;
     fee: string;
     active?: boolean;
     isSelectable?: boolean;
-    amount?: string;
+    amountString?: string;
     withCta?: boolean;
     handleUnstake?: () => void;
     onClick?: () => void;
 };
 
+const buttonStyle = {
+    width: 'auto',
+    margin: 0,
+    padding: '0 14px',
+    fontWeight: 400,
+    height: '30px',
+};
+
+const ValidatorBoxItem = ({
+    validatorId,
+    fee,
+    active,
+    isSelectable,
+    amountString,
+    withCta,
+    handleUnstake,
+    onClick,
+}: Props) => {
+    const history = useHistory();
+    return (
+        <Container onClick={onClick}>
+            <div className='validator-box' data-test-id='stakingPageValidatorItem'>
+                <div className='content'>
+                    <UserIcon background={true} />
+                    <div>
+                        <div
+                            className='name-container'
+                            data-test-id='stakingPageValidatorItemName'
+                        >
+                            {validatorId}
+                        </div>
+                        {!!fee && (
+                            <div className='text-left'>
+                                <span className='fee'>
+                                    {fee}% <Translate id='staking.validatorBox.fee' />{' '}
+                                    -&nbsp;
+                                </span>
+                                <span>
+                                    {' '}
+                                    {active ? (
+                                        <span className='active'>
+                                            <Translate id='staking.validatorBox.state.active' />
+                                        </span>
+                                    ) : (
+                                        <span className='inactive'>
+                                            <Translate id='staking.validatorBox.state.inactive' />
+                                        </span>
+                                    )}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                {isSelectable && (
+                    // @ts-ignore
+                    <FormButton
+                        className='validator-select-button gray-blue'
+                        linkTo={`/liquid-staking/${validatorId}/stake`}
+                        data-test-id='stakingPageSelectValidator'
+                    >
+                        <Translate id='staking.validatorBox.cta' />
+                    </FormButton>
+                )}
+                {!!amountString && (
+                    <div className='amount-wrapper'>
+                        <div className='active'>Staking</div>
+                        <div className='amount'>{amountString}</div>
+                    </div>
+                )}
+            </div>
+            {withCta && (
+                <CtaWrapper>
+                    {/* @ts-ignore */}
+                    <FormButton
+                        color='gray-gray'
+                        style={buttonStyle}
+                        onClick={handleUnstake}
+                    >
+                        Unstake
+                    </FormButton>
+                    {/* @ts-ignore */}
+                    <FormButton
+                        style={buttonStyle}
+                        onClick={() => {
+                            history.push(`/liquid-staking/${validatorId}/stake`);
+                        }}
+                    >
+                        Stake More
+                    </FormButton>
+                </CtaWrapper>
+            )}
+        </Container>
+    );
+};
+
+export default ValidatorBoxItem;
+
 const Container = styled.div`
-    display: flex;
-    .left {
-        margin-left: 10px;
+    border-top: 2px solid #f2f2f2;
+    padding: 1em 0;
+    .validator-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #24272a;
+    }
+    svg {
+        margin-right: 10px;
+    }
+    .content {
+        display: flex;
+        justify-content: space-around;
     }
 
     .active {
@@ -40,87 +147,26 @@ const Container = styled.div`
         height: 34px !important;
     }
 
-    .validator-box {
-        cursor: pointer;
+    .fee {
+        color: #a7a29e;
+    }
+
+    .amount-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        text-align: right;
     }
 `;
 
-const ValidatorBoxItem = ({
-    validatorId,
-    fee,
-    active,
-    isSelectable,
-    amount,
-    withCta,
-    handleUnstake,
-    onClick,
-}: Props) => {
-    const history = useHistory();
-    return (
-        <div onClick={onClick}>
-            <Container className='validator-box' data-test-id='stakingPageValidatorItem'>
-                <UserIcon background={true} />
-                <div className='left'>
-                    <div>
-                        <div
-                            className='name-container'
-                            data-test-id='stakingPageValidatorItemName'
-                        >
-                            {validatorId}
-                        </div>
-                    </div>
-                    {!!fee && (
-                        <div className='text-left'>
-                            <span>
-                                {fee}% <Translate id='staking.validatorBox.fee' /> -&nbsp;
-                            </span>
-                            <span>
-                                {' '}
-                                {active ? (
-                                    <span className='active'>
-                                        <Translate id='staking.validatorBox.state.active' />
-                                    </span>
-                                ) : (
-                                    <span className='inactive'>
-                                        <Translate id='staking.validatorBox.state.inactive' />
-                                    </span>
-                                )}
-                            </span>
-                        </div>
-                    )}
-                </div>
-                {isSelectable && (
-                    // @ts-ignore
-                    <FormButton
-                        className='validator-select-button gray-blue'
-                        linkTo={`/liquid-staking/${validatorId}`}
-                        data-test-id='stakingPageSelectValidator'
-                    >
-                        <Translate id='staking.validatorBox.cta' />
-                    </FormButton>
-                )}
-                {!!amount && (
-                    <div className='amount'>
-                        <Balance amount={amount} showBalanceInUSD />
-                    </div>
-                )}
-            </Container>
-            {withCta && (
-                <div>
-                    {/* @ts-ignore */}
-                    <FormButton onClick={handleUnstake}>Unstake</FormButton>
-                    {/* @ts-ignore */}
-                    <FormButton
-                        onClick={() => {
-                            history.push(`/liquid-staking/${validatorId}/stake`);
-                        }}
-                    >
-                        Stake More
-                    </FormButton>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default ValidatorBoxItem;
+const CtaWrapper = styled.div`
+    display: flex;
+    gap: 8px;
+    margin-top: 0.6em;
+    justify-content: flex-end;
+    && {
+        button {
+            margin: 6px auto 0 auto !important;
+        }
+    }
+`;

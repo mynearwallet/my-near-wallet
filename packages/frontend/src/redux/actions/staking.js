@@ -745,7 +745,9 @@ export const updateStaking =
         const accountId = selectStakingMainAccountId(getState());
         const lockupId = selectStakingLockupAccountId(getState());
 
-        await dispatch(staking.getValidators(null, accountId));
+        if (!selectStakingAllValidatorsLength(getState())) {
+            await dispatch(staking.getValidators(null, accountId));
+        }
 
         await dispatch(handleStakingUpdateAccount(recentlyStakedValidators));
         if (lockupId) {
