@@ -99,6 +99,7 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
+import TransactionExecutorModal from '../components/transactions/ExecutorModal/TransactionExecutorModal';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -336,6 +337,7 @@ class Routing extends Component {
                         />
                         <LedgerConfirmActionModal />
                         <LedgerConnectModal />
+                        <TransactionExecutorModal />
                         {account.requestPending !== null && (
                             <TwoFactorVerifyModal
                                 onClose={(verified, error) => {

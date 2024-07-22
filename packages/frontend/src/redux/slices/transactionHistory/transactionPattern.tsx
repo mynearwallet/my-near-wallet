@@ -102,9 +102,16 @@ const txUtils = {
             return ETxDirection.receive;
         }
     },
-    decodeArgs(args_base64) {
-        const args_raw = args_base64 ? atob(args_base64) : '';
+    decodeArgs(argsParam) {
         try {
+            let args_raw;
+            if (argsParam instanceof Uint8Array) {
+                const args_base64 = Buffer.from(argsParam);
+                const decoder = new TextDecoder();
+                args_raw = decoder.decode(args_base64);
+            } else {
+                args_raw = argsParam ? atob(argsParam) : '';
+            }
             const args = JSON.parse(args_raw || '{}') || {};
             return args;
         } catch (err) {
@@ -166,7 +173,9 @@ class TransferFtPattern implements TxPattern {
             title: isReceived ? 'Received' : 'Sent',
             subtitle: isReceived
                 ? `from ${data.transaction.signer_id}`
-                : `to ${args.receiver_id || args.receiverId}`,
+                : `to ${
+                      args.receiver_id || args.receiverId || data.transaction.receiver_id
+                  }`,
             status: txUtils.getTxStatus(data),
             assetChangeText: txUtils.getAmount(data, args.amount),
             dir,
@@ -219,7 +228,7 @@ class CreateAccountPattern implements TxPattern {
 class SwapPattern implements TxPattern {
     private whitelistedReceivers = ['v2.ref-finance.near', 'v1.jumbo_exchange.near'];
     private hasError(data: TxData) {
-        return data.receipts_outcome.some(
+        return data.receipts_outcome?.some(
             (r) => r.outcome.status[FinalExecutionStatusBasic.Failure]
         );
     }
