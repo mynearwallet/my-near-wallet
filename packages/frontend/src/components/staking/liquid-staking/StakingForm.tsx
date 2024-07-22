@@ -98,7 +98,11 @@ const StakingForm = () => {
                     disabled={false}
                     stakeFromAccount={true}
                     inputTestId='stakingAmountInput'
+                    showSymbolNEAR={true}
                 />
+                {!!amount && amount < '1' && (
+                    <div style={{ color: '#ff585d' }}>Minimum 1 NEAR</div>
+                )}
                 <ArrowCircleIcon color={'#6AD1E3'} />
                 <div className='header-button'>
                     <h4>
@@ -119,7 +123,7 @@ const StakingForm = () => {
                 <FormButton
                     sending={liquidStakingMutation.isLoading}
                     sendingString='staking.staking.checkingValidator'
-                    disabled={!amount || liquidStakingMutation.isLoading}
+                    disabled={!amount || amount < '1' || liquidStakingMutation.isLoading}
                     onClick={() => {
                         liquidStakingMutation.mutate(amount);
                     }}

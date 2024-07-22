@@ -10,6 +10,7 @@ import { selectAllowedTokens } from '../../../redux/slices/tokens';
 import ValidatorBoxItem from '../components/ValidatorBoxItem';
 import ModalUnstake from './ModalUnstake';
 import { formatNearAmount } from '../../common/balance/helpers';
+import LoadingDots from '../../common/loader/LoadingDots';
 
 type TStakedValidator = {
     // These are optional because we only start getting them after getting list of user's staked validators
@@ -119,7 +120,11 @@ async function getMetapoolValidator({ accountId, tokens }): Promise<TStakedValid
 
 const OwnedValidators = ({ accountId }: { accountId: string }) => {
     const allowedTokens = useSelector(selectAllowedTokens);
-    const { data: liquidValidatorData, refetch } = useQuery({
+    const {
+        data: liquidValidatorData,
+        isLoading,
+        refetch,
+    } = useQuery({
         queryKey: ['liquidValidator', accountId, allowedTokens],
         queryFn: async () => {
             return getMetapoolValidator({
@@ -132,25 +137,35 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
 
     const [isModalVisible, setModalVisible] = useState(false);
 
+    if (isLoading) {
+        return <LoadingDots />;
+    }
+
+    if (!liquidValidatorData) {
+        return null;
+    }
+
     return (
         <div>
-            <ValidatorBoxItem
-                validatorId={METAPOOL_CONTRACT_ID}
-                amountString={
-                    liquidValidatorData
-                        ? `${formatNearAmount(liquidValidatorData?.stakedBalance)} ${
-                              liquidValidatorData?.tokenToReceive?.onChainFTMetadata
-                                  ?.symbol
-                          }`
-                        : ''
-                }
-                fee='2~6'
-                active
-                withCta
-                handleUnstake={() => {
-                    setModalVisible(true);
-                }}
-            />
+            {!!liquidValidatorData?.stakedBalance && (
+                <ValidatorBoxItem
+                    validatorId={METAPOOL_CONTRACT_ID}
+                    amountString={
+                        liquidValidatorData
+                            ? `${formatNearAmount(liquidValidatorData.stakedBalance)} ${
+                                  liquidValidatorData?.tokenToReceive?.onChainFTMetadata
+                                      ?.symbol || ''
+                              }`
+                            : ''
+                    }
+                    fee='2~6'
+                    active
+                    withCta
+                    handleUnstake={() => {
+                        setModalVisible(true);
+                    }}
+                />
+            )}
             {!!isModalVisible && (
                 <ModalUnstake
                     isModalVisible={isModalVisible}
