@@ -147,7 +147,7 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
 
     return (
         <div>
-            {!!liquidValidatorData?.stakedBalance && (
+            {!!+liquidValidatorData?.stakedBalance && (
                 <ValidatorBoxItem
                     validatorId={METAPOOL_CONTRACT_ID}
                     amountString={
