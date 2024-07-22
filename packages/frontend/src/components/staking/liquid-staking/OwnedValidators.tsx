@@ -66,10 +66,6 @@ async function getMetapoolValidator({ accountId, tokens }): Promise<TStakedValid
         'get_account_unstaked_balance',
         { account_id: accountId }
     );
-    // const unstakedBalanceAsync =
-    //     staking_async_function.getUnstakedBalanceWithValidator(input);
-    // const unstakedStatusAsync =
-    //     staking_async_function.getUnstakedStatusWithValidator(input);
 
     const promises = [
         getMetapoolAsync,

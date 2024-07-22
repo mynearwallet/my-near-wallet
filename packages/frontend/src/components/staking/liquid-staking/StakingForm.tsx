@@ -129,23 +129,6 @@ const StakingForm = () => {
                 >
                     <Translate id={'staking.stake.button'} />
                 </FormButton>
-                {/* {confirm && (
-                    <StakeConfirmModal
-                        title={`staking.stake.confirm`}
-                        label={`staking.stake.with`}
-                        validator={validator}
-                        amount={useMax ? amount : toNear(amount)}
-                        open={confirm}
-                        onConfirm={onStakingAction}
-                        onClose={() => {
-                            setConfirm(false);
-                            Mixpanel.track('STAKE/UNSTAKE Close the modal');
-                        }}
-                        loading={loadingStaking}
-                        disclaimer={getStakeActionDisclaimer()}
-                        sendingString={stake ? 'staking' : 'unstaking'}
-                    />
-                )} */}
             </div>
         </Container>
     );
