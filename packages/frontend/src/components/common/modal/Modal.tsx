@@ -15,7 +15,7 @@ interface IModal {
     modalSize?: string;
     modalClass?: string;
     children: React.ReactNode;
-    closeButton?: string;
+    closeButton?: string | boolean;
     disableClose?: boolean;
     mobileActionSheet?: boolean;
     'data-test-id'?: string;

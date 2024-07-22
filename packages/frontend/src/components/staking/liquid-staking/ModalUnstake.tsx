@@ -69,7 +69,6 @@ const ModalUnstake = ({
         unstakeAmount > formatNearAmount(stakedBalance) || unstakeAmount < '0';
 
     return (
-        // @ts-ignore
         <Modal
             id='account-funded-modal'
             isOpen={isModalVisible}
@@ -81,7 +80,6 @@ const ModalUnstake = ({
         >
             <Container>
                 <div className='mb-2 title'>Unstake Token</div>
-                {/* @ts-ignore */}
                 <AmountInput
                     action={'stake'}
                     value={unstakeAmount}
@@ -99,7 +97,6 @@ const ModalUnstake = ({
                     <div>Estimated received</div>
                     {!!resultAmount && !!unstakeAmount && <div>~{resultAmount} NEAR</div>}
                 </div>
-                {/* @ts-ignore */}
                 <FormButton
                     className='small'
                     disabled={!unstakeAmount || liquidUnstakeMutation.isLoading}

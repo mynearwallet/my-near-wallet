@@ -89,7 +89,6 @@ const ValidatorBoxItem = ({
             </div>
             {withCta && (
                 <CtaWrapper>
-                    {/* @ts-ignore */}
                     <FormButton
                         color='gray-gray'
                         style={buttonStyle}
@@ -97,7 +96,6 @@ const ValidatorBoxItem = ({
                     >
                         Unstake
                     </FormButton>
-                    {/* @ts-ignore */}
                     <FormButton
                         style={buttonStyle}
                         onClick={() => {

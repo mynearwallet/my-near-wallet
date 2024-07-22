@@ -77,7 +77,6 @@ const StakingForm = () => {
                     <h4>
                         <Translate id='staking.stake.amount' />
                     </h4>
-                    {/*@ts-ignore*/}
                     <FormButton
                         className='small'
                         color='light-blue'
@@ -108,7 +107,6 @@ const StakingForm = () => {
                     <h4>
                         <Translate id={'staking.stake.stakeWith'} />
                     </h4>
-                    {/*@ts-ignore*/}
                     <FormButton
                         className='small'
                         color='light-blue'
@@ -119,7 +117,6 @@ const StakingForm = () => {
                     </FormButton>
                 </div>
                 <ValidatorBoxItem validatorId={METAPOOL_CONTRACT_ID} fee='2~6' active />
-                {/*@ts-ignore*/}
                 <FormButton
                     sending={liquidStakingMutation.isLoading}
                     sendingString='staking.staking.checkingValidator'
