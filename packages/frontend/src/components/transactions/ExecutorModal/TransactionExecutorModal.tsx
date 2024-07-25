@@ -7,7 +7,10 @@ import Modal from '../../common/modal/Modal';
 import { selectSignSlice } from '../../../redux/slices/sign';
 import Card from '../../common/styled/Card.css';
 import LoadingDots from '../../common/loader/LoadingDots';
-import { transactionToHistoryUIData } from '../../../redux/slices/transactionHistory/utils';
+import {
+    getPrefixByDir,
+    transactionToHistoryUIData,
+} from '../../../redux/slices/transactionHistory/utils';
 import { selectAccountId } from '../../../redux/slices/account';
 import CONFIG from '../../../config';
 import {
@@ -15,6 +18,8 @@ import {
     transactionsProgress,
 } from '../../../redux/slices/sign/transactionExecutor';
 import FormButton from '../../common/FormButton';
+import { ETxDirection } from '../TransactionItem';
+import classNames from '../../../utils/classNames';
 
 const TransactionExecutorModal = () => {
     const signReducer = useSelector(selectSignSlice);
@@ -37,7 +42,7 @@ const TransactionExecutorModal = () => {
             id='transaction-executor-modal'
             closeButton={hasError}
             disableClose={!hasError}
-            style={{ zIndex: 1999 }}
+            style={{ zIndex: 19999 }}
             onClose={() => {
                 dispatch(
                     transactionsProgress({
@@ -67,6 +72,7 @@ const TransactionExecutorModal = () => {
                             accountId,
                             CONFIG.CURRENT_NEAR_NETWORK
                         );
+                        console.log({ txUI });
                         return (
                             <StyledCard key={i} txProgress={tx.txProgress}>
                                 <div className='card-header'>
@@ -93,6 +99,20 @@ const TransactionExecutorModal = () => {
                                     <div>
                                         <div className='card-title'>{txUI.title}</div>
                                         <div>{txUI.subtitle}</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            className={classNames([
+                                                'asset-change1',
+                                                {
+                                                    'text-green':
+                                                        txUI.dir !== ETxDirection.send,
+                                                },
+                                            ])}
+                                        >
+                                            {getPrefixByDir(txUI.dir)}
+                                            {txUI.assetChangeText}
+                                        </div>
                                     </div>
                                 </div>
                                 {!!txUI.transactionHash && (
@@ -189,5 +209,8 @@ const StyledContainer = styled.div`
     }
     .link {
         text-decoration: underline;
+    }
+    .text-green {
+        color: green;
     }
 `;

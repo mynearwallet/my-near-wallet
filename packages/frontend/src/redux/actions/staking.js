@@ -703,7 +703,7 @@ export const liquidStaking = async ({ contractId, amountInYocto, accountId }) =>
         });
     }
 
-    const result = await signAndSendTransaction({
+    const result = await dispatchTransactionExecutor({
         receiverId: METAPOOL_CONTRACT_ID,
         actions: [
             functionCall(
@@ -722,7 +722,7 @@ export const liquidUnStake = async ({ contractId, amountInYocto }) => {
     //   .mul(METAPOOL_SAFE_MINIMUM_MULTIPLIER)
     //   .toFixed(10);
 
-    const result = await signAndSendTransaction({
+    const result = await dispatchTransactionExecutor({
         receiverId: contractId,
         actions: [
             functionCall(
@@ -733,6 +733,22 @@ export const liquidUnStake = async ({ contractId, amountInYocto }) => {
                     min_expected_near: amountInYocto,
                 },
                 new BN(METAPOOL_STAKING_GAS)
+            ),
+        ],
+    });
+    return result;
+};
+
+export const delayedUnstake = async ({ contractId, amountInYocto }) => {
+    const result = await dispatchTransactionExecutor({
+        receiverId: contractId,
+        actions: [
+            functionCall(
+                'unstake',
+                {
+                    amount: amountInYocto,
+                },
+                new BN(CONFIG.STAKING_GAS_BASE * 5)
             ),
         ],
     });

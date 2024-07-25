@@ -13,6 +13,7 @@ type Props = {
     isSelectable?: boolean;
     amountString?: string;
     withCta?: boolean;
+    info?: React.ReactNode;
     handleUnstake?: () => void;
     onClick?: () => void;
 };
@@ -32,6 +33,7 @@ const ValidatorBoxItem = ({
     isSelectable,
     amountString,
     withCta,
+    info,
     handleUnstake,
     onClick,
 }: Props) => {
@@ -87,6 +89,7 @@ const ValidatorBoxItem = ({
                     </div>
                 )}
             </div>
+            {info}
             {withCta && (
                 <CtaWrapper>
                     <FormButton

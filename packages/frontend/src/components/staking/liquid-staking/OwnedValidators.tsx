@@ -11,48 +11,8 @@ import ValidatorBoxItem from '../components/ValidatorBoxItem';
 import ModalUnstake from './ModalUnstake';
 import { formatNearAmount } from '../../common/balance/helpers';
 import LoadingDots from '../../common/loader/LoadingDots';
-
-type TStakedValidator = {
-    // These are optional because we only start getting them after getting list of user's staked validators
-    totalBalance: string;
-    stakedBalance: string;
-    unstakedBalance: string;
-    unstakedStatus: boolean;
-    earning?: string;
-    unclaimedTokenRewards?: TUnclaimedTokenReward[];
-} & IValidatorDetails;
-
-type TUnclaimedTokenReward = {
-    reward: string;
-};
-
-interface IValidatorDetails {
-    validatorId: string;
-    fee: number;
-    isActive: boolean;
-    stakedNearAmount: string;
-    stakingType: EStakingType;
-    pendingUnstakePeriod: string;
-    validatorVersion: EValidatorVersion;
-    rewardTokens: TTokenApy[];
-    apy: number;
-    liquidUnstakeFee?: number;
-    tokenToReceive?: any;
-}
-
-export type TTokenApy = {
-    apy: number;
-};
-
-export enum EStakingType {
-    normal = 'normal',
-    liquid = 'liquid',
-}
-
-export enum EValidatorVersion {
-    normal = 'normal',
-    farming = 'farming',
-}
+import styled from 'styled-components';
+import { EStakingType, EValidatorVersion, TStakedValidator, TTokenApy } from './type';
 
 async function getMetapoolValidator({ accountId, tokens }): Promise<TStakedValidator> {
     const getMetapoolAsync = metapoolService.getMetrics();
@@ -131,6 +91,8 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
         enabled: !!accountId,
     });
 
+    console.log({ liquidValidatorData });
+
     const [isModalVisible, setModalVisible] = useState(false);
 
     if (isLoading) {
@@ -142,7 +104,7 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
     }
 
     return (
-        <div>
+        <Container>
             {!!+liquidValidatorData?.stakedBalance && (
                 <ValidatorBoxItem
                     validatorId={METAPOOL_CONTRACT_ID}
@@ -157,6 +119,15 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
                     fee='2~6'
                     active
                     withCta
+                    info={
+                        liquidValidatorData?.unstakedBalance && (
+                            <div className='validator-box-item__info'>
+                                You are unstaking{' '}
+                                {formatNearAmount(liquidValidatorData.unstakedBalance)}{' '}
+                                STNEAR and it usually takes 2 ~ 6 days to unstake
+                            </div>
+                        )
+                    }
                     handleUnstake={() => {
                         setModalVisible(true);
                     }}
@@ -166,12 +137,21 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
                 <ModalUnstake
                     isModalVisible={isModalVisible}
                     setModalVisible={setModalVisible}
-                    stakedBalance={liquidValidatorData?.stakedBalance}
+                    liquidValidatorData={liquidValidatorData}
                     onUnstakeCompleted={refetch}
                 />
             )}
-        </div>
+        </Container>
     );
 };
 
 export default OwnedValidators;
+
+const Container = styled.div`
+    .validator-box-item__info {
+        border: 1px solid #ddd;
+        padding: 0.8em 1em;
+        margin: 1em;
+        border-radius: 4px;
+    }
+`;

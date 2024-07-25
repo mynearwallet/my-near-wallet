@@ -7,7 +7,6 @@ import { useHistory } from 'react-router';
 import { selectAccountId } from '../../../redux/slices/account';
 import StakingForm from './StakingForm';
 import { getBalance } from '../../../redux/actions/account';
-import OwnedValidators from './OwnedValidators';
 
 const LiquidStakingContainer = () => {
     const accountId = useSelector(selectAccountId);
@@ -27,23 +26,6 @@ const LiquidStakingContainer = () => {
                     exact
                     path='/liquid-staking/:validator/stake'
                     render={(props) => <StakingForm {...props} />}
-                />
-                <Route
-                    exact
-                    path='/liquid-staking'
-                    render={() => (
-                        <>
-                            <div>Liquid Staking</div>
-                            <div>Create New Staking</div>
-                            <div>My Staked Validators</div>
-                            <div>
-                                It may take ~1 minute to display your newly staked
-                                validator.
-                            </div>
-                            <div>Metapool</div>
-                            <OwnedValidators accountId={accountId} />
-                        </>
-                    )}
                 />
             </Switch>
         </ConnectedRouter>
