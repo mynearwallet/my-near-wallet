@@ -91,8 +91,6 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
         enabled: !!accountId,
     });
 
-    console.log({ liquidValidatorData });
-
     const [isModalVisible, setModalVisible] = useState(false);
 
     if (isLoading) {

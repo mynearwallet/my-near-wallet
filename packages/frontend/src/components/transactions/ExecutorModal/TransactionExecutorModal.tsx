@@ -72,7 +72,6 @@ const TransactionExecutorModal = () => {
                             accountId,
                             CONFIG.CURRENT_NEAR_NETWORK
                         );
-                        console.log({ txUI });
                         return (
                             <StyledCard key={i} txProgress={tx.txProgress}>
                                 <div className='card-header'>
@@ -92,6 +91,11 @@ const TransactionExecutorModal = () => {
                                             {(tx.txProgress === 'signing' ||
                                                 !tx.txProgress) && <LoadingDots />}
                                             {tx.txProgress || 'pending'}
+                                        </div>
+                                    )}
+                                    {tx.txProgress === 'failed' && hasError && (
+                                        <div className='card-header__progress'>
+                                            {tx.txProgress}
                                         </div>
                                     )}
                                 </div>

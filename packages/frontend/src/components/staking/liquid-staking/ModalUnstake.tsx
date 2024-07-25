@@ -29,13 +29,14 @@ const ModalUnstake = ({
 }: Props) => {
     const { stakedBalance } = liquidValidatorData || {};
     const [unstakeAmount, setUnstakeAmount] = useState('');
-    const [resultAmount, setResultAmount] = useState('');
+    const [minUnstakeOutput, setMinUnstakeOutput] = useState('');
 
     const liquidUnstakeMutation = useMutation({
         mutationFn: async (amount: string) => {
             return await liquidUnStake({
                 contractId: METAPOOL_CONTRACT_ID,
                 amountInYocto: new BN(toYoctoNear(amount)).toString(),
+                minAmountInYocto: minUnstakeOutput,
             });
         },
         mutationKey: ['liquidUnstakeMutation'],
@@ -70,7 +71,7 @@ const ModalUnstake = ({
         },
         mutationKey: ['stNearAmountMutation'],
         onSuccess: (res) => {
-            setResultAmount(formatNearAmount(res, 5));
+            setMinUnstakeOutput(res);
         },
     });
 
@@ -116,8 +117,8 @@ const ModalUnstake = ({
                 />
                 <div className='mt-2 received'>
                     <div>Estimated received</div>
-                    {(!!resultAmount && !!unstakeAmount && (
-                        <div>~{resultAmount} NEAR</div>
+                    {(!!minUnstakeOutput && !!unstakeAmount && (
+                        <div>~{formatNearAmount(minUnstakeOutput, 5)} NEAR</div>
                     )) ||
                         '-'}
                 </div>
