@@ -42,7 +42,7 @@ const TransactionExecutorModal = () => {
             id='transaction-executor-modal'
             closeButton={hasError}
             disableClose={!hasError}
-            style={{ zIndex: 19999 }}
+            style={{ zIndex: 1999 }}
             onClose={() => {
                 dispatch(
                     transactionsProgress({

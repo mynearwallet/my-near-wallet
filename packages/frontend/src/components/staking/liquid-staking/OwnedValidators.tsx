@@ -118,7 +118,8 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
                     active
                     withCta
                     info={
-                        liquidValidatorData?.unstakedBalance && (
+                        liquidValidatorData?.unstakedBalance &&
+                        liquidValidatorData?.unstakedBalance !== '0' && (
                             <div className='validator-box-item__info'>
                                 You are unstaking{' '}
                                 {formatNearAmount(liquidValidatorData.unstakedBalance)}{' '}

@@ -36,7 +36,7 @@ const ModalUnstake = ({
             return await liquidUnStake({
                 contractId: METAPOOL_CONTRACT_ID,
                 amountInYocto: new BN(toYoctoNear(amount)).toString(),
-                minAmountInYocto: minUnstakeOutput,
+                minExpectInYocto: minUnstakeOutput,
             });
         },
         mutationKey: ['liquidUnstakeMutation'],
@@ -99,6 +99,7 @@ const ModalUnstake = ({
             }}
             disableClose={liquidUnstakeMutation.isLoading}
             closeButton
+            style={{ zIndex: 1000 }}
         >
             <Container>
                 <div className='mb-2 title'>Unstake Token</div>
