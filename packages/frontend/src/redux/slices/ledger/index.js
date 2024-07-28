@@ -201,7 +201,7 @@ const ledgerSlice = createSlice({
             set(state, ['modal', 'action'], payload.action);
             set(state, ['modal', 'textId'], 'ledgerSignTxModal.DEFAULT');
         },
-        hideLedgerModal(state, { payload, ready, error }) {
+        hideLedgerModal(state) {
             set(state, ['modal'], {});
             unset(state, ['txSigned']);
         },

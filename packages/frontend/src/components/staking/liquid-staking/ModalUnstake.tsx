@@ -3,6 +3,7 @@ import { useMutation } from 'react-query';
 import { BN } from 'bn.js';
 import styled from 'styled-components';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../common/modal/Modal';
 import AmountInput from '../components/AmountInput';
@@ -13,6 +14,7 @@ import { toYoctoNear } from '../../../utils/gasPrice';
 import FungibleTokens from '../../../services/FungibleTokens';
 import useDebouncedValue from '../../../hooks/useDebouncedValue';
 import { TStakedValidator } from './type';
+import ledgerSlice from '../../../redux/slices/ledger';
 
 type Props = {
     liquidValidatorData?: TStakedValidator;
@@ -30,6 +32,7 @@ const ModalUnstake = ({
     const { stakedBalance } = liquidValidatorData || {};
     const [unstakeAmount, setUnstakeAmount] = useState('');
     const [minUnstakeOutput, setMinUnstakeOutput] = useState('');
+    const dispatch = useDispatch();
 
     const liquidUnstakeMutation = useMutation({
         mutationFn: async (amount: string) => {
@@ -44,6 +47,9 @@ const ModalUnstake = ({
             onUnstakeCompleted();
             setModalVisible(false);
         },
+        onSettled: () => {
+            dispatch(ledgerSlice.actions.hideLedgerModal());
+        },
     });
 
     const delayedUnstakeMutation = useMutation({
@@ -57,6 +63,9 @@ const ModalUnstake = ({
         onSuccess: () => {
             onUnstakeCompleted();
             setModalVisible(false);
+        },
+        onSettled: () => {
+            dispatch(ledgerSlice.actions.hideLedgerModal());
         },
     });
 
