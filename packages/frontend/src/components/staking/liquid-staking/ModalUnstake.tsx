@@ -4,6 +4,7 @@ import { BN } from 'bn.js';
 import styled from 'styled-components';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useDispatch } from 'react-redux';
+import { Translate } from 'react-localize-redux';
 
 import Modal from '../../common/modal/Modal';
 import AmountInput from '../components/AmountInput';
@@ -111,7 +112,9 @@ const ModalUnstake = ({
             style={{ zIndex: 1000 }}
         >
             <Container>
-                <div className='mb-2 title'>Unstake Token</div>
+                <div className='mb-2 title'>
+                    <Translate id='staking.liquidStaking.unstakeToken' />
+                </div>
                 <AmountInput
                     action={'stake'}
                     value={unstakeAmount}
@@ -126,22 +129,30 @@ const ModalUnstake = ({
                     showSymbolNEAR={false}
                 />
                 <div className='mt-2 received'>
-                    <div>Estimated received</div>
+                    <div>
+                        <Translate id='staking.liquidStaking.estimatedReceived' />
+                    </div>
                     {(!!minUnstakeOutput && !!unstakeAmount && (
                         <div>~{formatNearAmount(minUnstakeOutput, 5)} NEAR</div>
                     )) ||
                         '-'}
                 </div>
                 <div className='mt-2 received'>
-                    <div>APY</div>
+                    <div>
+                        <Translate id='staking.liquidStaking.apy' />
+                    </div>
                     <div>{liquidValidatorData.apy}%</div>
                 </div>
                 <div className='mt-2 received'>
-                    <div>Liquid Unstake Fee</div>
+                    <div>
+                        <Translate id='staking.liquidStaking.liquidUnstakeFee' />
+                    </div>
                     <div>{liquidValidatorData.liquidUnstakeFee}%</div>
                 </div>
                 <div className='mt-2 received'>
-                    <div>Delayed Unstake Unlock Period</div>
+                    <div>
+                        <Translate id='staking.liquidStaking.unlockPeriod' />
+                    </div>
                     <div>2 ~ 6 days</div>
                 </div>
                 <div className='button-container'>
@@ -152,7 +163,7 @@ const ModalUnstake = ({
                             liquidUnstakeMutation.mutate(unstakeAmount);
                         }}
                     >
-                        Fast Unstake
+                        <Translate id='staking.liquidStaking.fastUnstake' />
                     </FormButton>
                     <FormButton
                         className='small px-2'
@@ -161,7 +172,7 @@ const ModalUnstake = ({
                             delayedUnstakeMutation.mutate(unstakeAmount);
                         }}
                     >
-                        Delayed Unstake
+                        <Translate id='staking.liquidStaking.delayedUnstake' />
                     </FormButton>
                 </div>
             </Container>

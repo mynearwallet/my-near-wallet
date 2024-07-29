@@ -1699,6 +1699,15 @@
             "title": "Staking",
             "totalStaked": "Staked"
         },
+        "liquidStaking": {
+            "apy": "APY",
+            "liquidUnstakeFee": "Liquid Unstake Fee",
+            "unlockPeriod": "Delayed Unstake Unlock Period",
+            "unstakeToken": "Unstake Token",
+            "fastUnstake": "Fast Unstake",
+            "delayedUnstake": "Delayed Unstake",
+            "estimatedReceived": "Estimated received"
+        },
         "unstake": {
             "beforeUnstakeDisclaimer": "Unstaked tokens will be made available pending a release period of ~52-65hrs (4 epochs).",
             "button": "Unstake Tokens",
