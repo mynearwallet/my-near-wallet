@@ -16,6 +16,7 @@ import FungibleTokens from '../../../services/FungibleTokens';
 import useDebouncedValue from '../../../hooks/useDebouncedValue';
 import { TStakedValidator } from './type';
 import ledgerSlice from '../../../redux/slices/ledger';
+import { getBalance } from '../../../redux/actions/account';
 
 type Props = {
     liquidValidatorData?: TStakedValidator;
@@ -50,6 +51,7 @@ const ModalUnstake = ({
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
+            dispatch(getBalance());
         },
     });
 
@@ -67,6 +69,7 @@ const ModalUnstake = ({
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
+            dispatch(getBalance());
         },
     });
 

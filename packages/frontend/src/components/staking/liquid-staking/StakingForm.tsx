@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Translate } from 'react-localize-redux';
 import BN from 'bn.js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router';
@@ -22,9 +22,12 @@ import { liquidStaking } from '../../../redux/actions/staking';
 import { toYoctoNear } from '../../../utils/gasPrice';
 import { selectAvailableBalance } from '../../../redux/slices/account';
 import Container from '../../common/styled/Container.css';
+import ledgerSlice from '../../../redux/slices/ledger';
+import { getBalance } from '../../../redux/actions/account';
 
 const StakingForm = () => {
     const history = useHistory();
+    const dispatch = useDispatch();
     const [amount, setAmount] = useState('');
     const staking = useSelector(selectStakingSlice);
     const availableBalance = useSelector(selectAvailableBalance);
@@ -41,6 +44,10 @@ const StakingForm = () => {
         mutationKey: ['liquidStakingMutation', amount],
         onSuccess: () => {
             history.push('/staking');
+        },
+        onSettled: () => {
+            dispatch(ledgerSlice.actions.hideLedgerModal());
+            dispatch(getBalance());
         },
     });
 
