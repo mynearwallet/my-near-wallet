@@ -30,6 +30,9 @@ import {
 } from '../redux/slices/sign';
 import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
+import AlertBanner from '../components/common/AlertBanner';
+
+const whitelistedContracts = [];
 
 const SignWrapper = () => {
     const dispatch = useDispatch();
@@ -154,65 +157,89 @@ const SignWrapper = () => {
         }
     };
 
-    // potentially malicious callback URL found
-    if (!isValidCallbackUrl) {
-        return <SignTransferInvalid />;
-    }
+    const blacklistedContracts = (transactions || [])
+        .map((tx) => tx.receiverId)
+        .filter((tx) => !whitelistedContracts.includes(tx.receiverId));
 
-    if (currentDisplay === DISPLAY.INSUFFICIENT_NETWORK_FEE) {
+    const renderContent = () => {
+        // potentially malicious callback URL found
+        if (!isValidCallbackUrl) {
+            return <SignTransferInvalid />;
+        }
+
+        if (currentDisplay === DISPLAY.INSUFFICIENT_NETWORK_FEE) {
+            return (
+                <SignTransferRetry
+                    handleRetry={handleApproveTransaction}
+                    handleCancel={handleCancelTransaction}
+                    gasLimit={signGasFee}
+                    submittingTransaction={submittingTransaction}
+                />
+            );
+        }
+
+        if (currentDisplay === DISPLAY.ACCOUNT_NOT_FOUND) {
+            return (
+                <SignTransferAccountNotFound
+                    handleCancel={handleCancelTransaction}
+                    signCallbackUrl={signCallbackUrl}
+                    signTransactionSignerId={signerId}
+                    submittingTransaction={submittingTransaction}
+                />
+            );
+        }
+
+        if (currentDisplay === DISPLAY.MULTIPLE_ACCOUNTS_IN_BATCH) {
+            return (
+                <SignTransferMultipleAccounts
+                    handleCancel={handleCancelTransaction}
+                    signCallbackUrl={signCallbackUrl}
+                    signTransactionSignerId={signerId}
+                    submittingTransaction={submittingTransaction}
+                />
+            );
+        }
+
+        if (currentDisplay === DISPLAY.TRANSACTION_DETAILS) {
+            return (
+                <SignTransactionDetailsWrapper
+                    onClickGoBack={() => setCurrentDisplay(DISPLAY.TRANSACTION_SUMMARY)}
+                    signGasFee={signGasFee}
+                />
+            );
+        }
+
         return (
-            <SignTransferRetry
-                handleRetry={handleApproveTransaction}
-                handleCancel={handleCancelTransaction}
-                gasLimit={signGasFee}
+            <SignTransactionSummaryWrapper
+                onClickCancel={handleCancelTransaction}
+                onClickApprove={handleApproveTransaction}
                 submittingTransaction={submittingTransaction}
-            />
-        );
-    }
-
-    if (currentDisplay === DISPLAY.ACCOUNT_NOT_FOUND) {
-        return (
-            <SignTransferAccountNotFound
-                handleCancel={handleCancelTransaction}
-                signCallbackUrl={signCallbackUrl}
-                signTransactionSignerId={signerId}
-                submittingTransaction={submittingTransaction}
-            />
-        );
-    }
-
-    if (currentDisplay === DISPLAY.MULTIPLE_ACCOUNTS_IN_BATCH) {
-        return (
-            <SignTransferMultipleAccounts
-                handleCancel={handleCancelTransaction}
-                signCallbackUrl={signCallbackUrl}
-                signTransactionSignerId={signerId}
-                submittingTransaction={submittingTransaction}
-            />
-        );
-    }
-
-    if (currentDisplay === DISPLAY.TRANSACTION_DETAILS) {
-        return (
-            <SignTransactionDetailsWrapper
-                onClickGoBack={() => setCurrentDisplay(DISPLAY.TRANSACTION_SUMMARY)}
                 signGasFee={signGasFee}
+                onClickMoreInformation={() =>
+                    setCurrentDisplay(DISPLAY.TRANSACTION_DETAILS)
+                }
+                onClickEditAccount={() => setCurrentDisplay(DISPLAY.ACCOUNT_SELECTION)}
+                isSignerValid={isSignerValid}
+                isValidCallbackUrl={isValidCallbackUrl}
+                privateShardInfo={privateShardInfo}
             />
         );
-    }
+    };
 
     return (
-        <SignTransactionSummaryWrapper
-            onClickCancel={handleCancelTransaction}
-            onClickApprove={handleApproveTransaction}
-            submittingTransaction={submittingTransaction}
-            signGasFee={signGasFee}
-            onClickMoreInformation={() => setCurrentDisplay(DISPLAY.TRANSACTION_DETAILS)}
-            onClickEditAccount={() => setCurrentDisplay(DISPLAY.ACCOUNT_SELECTION)}
-            isSignerValid={isSignerValid}
-            isValidCallbackUrl={isValidCallbackUrl}
-            privateShardInfo={privateShardInfo}
-        />
+        <div>
+            {!!blacklistedContracts.length && (
+                <AlertBanner
+                    title='sign.whitelistedContractWarning'
+                    data={blacklistedContracts.join(', ')}
+                    theme='alert'
+                    style={{
+                        'justify-content': 'center',
+                    }}
+                />
+            )}
+            {renderContent()}
+        </div>
     );
 };
 
