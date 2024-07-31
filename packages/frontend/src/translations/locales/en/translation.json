@@ -1556,7 +1556,8 @@
         "transferring": "Transferring",
         "unexpectedStatus": "Unexpected status",
         "unknownApp": "Unknown App",
-        "wasTransferredSuccessfully": "was transferred successfully"
+        "wasTransferredSuccessfully": "was transferred successfully",
+        "whitelistedContractWarning": "These smart contract is not whitelisted (${data}). Understand the risks before proceeding"
     },
     "signInLedger": {
         "advanced": {
