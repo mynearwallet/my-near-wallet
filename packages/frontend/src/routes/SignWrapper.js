@@ -230,8 +230,10 @@ const SignWrapper = () => {
         <div>
             {!!blacklistedContracts.length && (
                 <AlertBanner
-                    title='sign.whitelistedContractWarning'
+                    title='sign.whitelistedContract.warning'
                     data={blacklistedContracts.join(', ')}
+                    button='sign.whitelistedContract.link'
+                    linkTo='https://github.com/mynearwallet/near-whitelisted-smart-contract'
                     theme='alert'
                     style={{
                         'justify-content': 'center',
