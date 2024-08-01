@@ -1557,7 +1557,10 @@
         "unexpectedStatus": "Unexpected status",
         "unknownApp": "Unknown App",
         "wasTransferredSuccessfully": "was transferred successfully",
-        "whitelistedContractWarning": "These smart contract is not whitelisted (${data}). Understand the risks before proceeding"
+        "whitelistedContract": {
+            "warning": "These smart contract is not whitelisted (${data}). Understand the risks before proceeding.",
+            "link": "You can request to add a new smart contract to the whitelist here"
+        }
     },
     "signInLedger": {
         "advanced": {
