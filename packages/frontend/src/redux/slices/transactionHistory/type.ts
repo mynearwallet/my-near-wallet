@@ -30,6 +30,7 @@ export interface TransactionItemComponent {
     transactionHash?: string;
     hasError?: boolean;
     isNft?: boolean;
+    args?: { [key: string]: string };
 }
 
 interface ITxAction {

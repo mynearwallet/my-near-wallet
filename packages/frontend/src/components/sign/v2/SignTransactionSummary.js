@@ -10,6 +10,8 @@ import FormButtonGroup from '../../common/FormButtonGroup';
 import Container from '../../common/styled/Container.css';
 import ConnectWithApplication from '../../login/v2/ConnectWithApplication';
 import ConnectWithPrivateShard from '../../login/v2/ConnectWithPrivateShard';
+import { useSelector } from 'react-redux';
+import { selectSignTransactions } from '../../../redux/slices/sign';
 
 const StyledContainer = styled(Container)`
     &&& {
@@ -63,6 +65,7 @@ export default ({
         availableBalance &&
         transferAmount &&
         new BN(availableBalance).lt(new BN(transferAmount));
+    const transactions = useSelector(selectSignTransactions);
     return (
         <StyledContainer className='small-centered border'>
             <h3>
@@ -77,11 +80,11 @@ export default ({
                 <AlertBanner title='sign.insufficientFundsDesc' theme='warning' />
             )}
             <SignTransaction
-                transferAmount={transferAmount}
                 sender={accountLocalStorageAccountId}
                 estimatedFees={estimatedFees}
                 availableBalance={availableBalance}
                 privateShardInfo={privateShardInfo}
+                transactions={transactions}
             />
             <FormButton className='link' onClick={onClickMoreInformation}>
                 <Translate id='button.moreInformation' />
