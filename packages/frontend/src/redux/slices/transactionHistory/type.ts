@@ -46,6 +46,7 @@ interface ITxAction {
 }
 
 export type IMetaData = {
+    id: string;
     icon: string | null;
     decimals: number;
     symbol: string;

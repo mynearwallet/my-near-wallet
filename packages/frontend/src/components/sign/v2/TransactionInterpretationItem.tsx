@@ -74,10 +74,12 @@ const TransactionInterpretationItem = ({ transaction }: Props) => {
         CONFIG.CURRENT_NEAR_NETWORK
     );
 
+    const hasImage = data?.[txUIRaw.args?.nft_contract_id]?.icon || !!txUI.image;
+
     return (
         <div className='account tx-card from no-border'>
             <div className='tx-card__icon'>
-                {!!txUI.image && (
+                {hasImage && (
                     <ImageWithLoading
                         src={data?.[txUIRaw.args?.nft_contract_id]?.icon || txUI.image}
                         alt='transaction-icon'
@@ -91,17 +93,19 @@ const TransactionInterpretationItem = ({ transaction }: Props) => {
                 <div className='tx-card__subtitle'>{txUI.subtitle}</div>
             </div>
             <div className='tx-card__right'>
-                <div
-                    className={classNames([
-                        'tx-card__right__title',
-                        {
-                            'text-green': txUI.dir !== ETxDirection.send,
-                        },
-                    ])}
-                >
-                    {getPrefixByDir(txUI.dir)}
-                    {txUI.assetChangeText}
-                </div>
+                {!!txUI.assetChangeText && (
+                    <div
+                        className={classNames([
+                            'tx-card__right__title',
+                            {
+                                'text-green': txUI.dir !== ETxDirection.send,
+                            },
+                        ])}
+                    >
+                        {getPrefixByDir(txUI.dir)}
+                        {txUI.assetChangeText}
+                    </div>
+                )}
                 {!!txUI.assetChangeText2 && (
                     <div className='asset-change2'>-{txUI.assetChangeText2}</div>
                 )}

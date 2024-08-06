@@ -8,6 +8,7 @@ import {
     TxMethodName,
     methodNameShowlist,
     nearMetadata,
+    wNearMetadata,
 } from './constant';
 import {
     ETransactionStatus,
@@ -176,7 +177,10 @@ class TransferFtPattern implements TxPattern {
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceived = dir === ETxDirection.receive;
         return {
-            image: data.metaData.icon || '',
+            image:
+                data.metaData.symbol === wNearMetadata.symbol
+                    ? wNearMetadata.icon
+                    : data.metaData.icon,
             title: isReceived ? 'Received' : 'Sent',
             subtitle: isReceived
                 ? `from ${data.transaction.signer_id}`
