@@ -216,7 +216,7 @@ export default class FungibleTokens {
             ],
         };
 
-        return dispatchTransactionExecutor(txOption);
+        return account.signAndSendTransaction(txOption);
     }
 
     async transferStorageDeposit({
@@ -225,7 +225,7 @@ export default class FungibleTokens {
         receiverId,
         storageDepositAmount,
     }) {
-        return dispatchTransactionExecutor({
+        return account.signAndSendTransaction({
             receiverId: contractName,
             actions: [
                 functionCall(
