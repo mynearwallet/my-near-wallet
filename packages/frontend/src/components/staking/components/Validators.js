@@ -51,7 +51,6 @@ export default function Validators({ validators, stakeFromAccount }) {
                 </div>
             )}
             <ListWrapper>
-                <div>Liquid staking list</div>
                 <ValidatorBoxItem
                     validatorId={METAPOOL_CONTRACT_ID}
                     fee='2~6'

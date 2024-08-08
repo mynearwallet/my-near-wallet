@@ -17,6 +17,7 @@ import useDebouncedValue from '../../../hooks/useDebouncedValue';
 import { TStakedValidator } from './type';
 import ledgerSlice from '../../../redux/slices/ledger';
 import { getBalance } from '../../../redux/actions/account';
+import classNames from '../../../utils/classNames';
 
 type Props = {
     liquidValidatorData?: TStakedValidator;
@@ -24,6 +25,11 @@ type Props = {
     setModalVisible: (p: React.SetStateAction<boolean>) => void;
     onUnstakeCompleted: () => void;
 };
+
+enum UnstakeType {
+    'instant' = 'instant',
+    'delayed' = 'delayed',
+}
 
 const ModalUnstake = ({
     liquidValidatorData,
@@ -34,6 +40,7 @@ const ModalUnstake = ({
     const { stakedBalance } = liquidValidatorData || {};
     const [unstakeAmount, setUnstakeAmount] = useState('');
     const [minUnstakeOutput, setMinUnstakeOutput] = useState('');
+    const [unstakeType, setUnstakeType] = useState(UnstakeType.instant);
     const dispatch = useDispatch();
 
     const liquidUnstakeMutation = useMutation({
@@ -101,7 +108,8 @@ const ModalUnstake = ({
     const isButtonDisabled =
         !unstakeAmount ||
         liquidUnstakeMutation.isLoading ||
-        delayedUnstakeMutation.isLoading;
+        delayedUnstakeMutation.isLoading ||
+        !unstakeType;
 
     return (
         <Modal
@@ -146,36 +154,47 @@ const ModalUnstake = ({
                     </div>
                     <div>{liquidValidatorData.apy}%</div>
                 </div>
-                <div className='mt-2 received'>
-                    <div>
-                        <Translate id='staking.liquidStaking.liquidUnstakeFee' />
+                <div className='unstake-tab'>
+                    <div
+                        className={classNames([
+                            'unstake-tab__item',
+                            { active: unstakeType === UnstakeType.instant },
+                        ])}
+                        onClick={() => setUnstakeType(UnstakeType.instant)}
+                    >
+                        <div className='unstake-tab__title'>Instant Unstake</div>
+                        <div className='unstake-tab__fee'>
+                            Unstake fee: {liquidValidatorData.liquidUnstakeFee}%
+                        </div>
                     </div>
-                    <div>{liquidValidatorData.liquidUnstakeFee}%</div>
-                </div>
-                <div className='mt-2 received'>
-                    <div>
-                        <Translate id='staking.liquidStaking.unlockPeriod' />
+                    <div
+                        className={classNames([
+                            'unstake-tab__item',
+                            { active: unstakeType === UnstakeType.delayed },
+                        ])}
+                        onClick={() => setUnstakeType(UnstakeType.delayed)}
+                    >
+                        <div className='unstake-tab__title'>
+                            Delayed Unstake In 2~6 days
+                        </div>
+                        <div className='unstake-tab__fee'>Unstake fee: 0</div>
                     </div>
-                    <div>2 ~ 6 days</div>
                 </div>
                 <div className='button-container'>
                     <FormButton
-                        className='small px-2'
+                        className='button-unstake'
                         disabled={isButtonDisabled}
                         onClick={() => {
-                            liquidUnstakeMutation.mutate(unstakeAmount);
+                            unstakeType === UnstakeType.instant
+                                ? liquidUnstakeMutation.mutate(unstakeAmount)
+                                : delayedUnstakeMutation.mutate(unstakeAmount);
                         }}
                     >
-                        <Translate id='staking.liquidStaking.fastUnstake' />
-                    </FormButton>
-                    <FormButton
-                        className='small px-2'
-                        disabled={isButtonDisabled}
-                        onClick={() => {
-                            delayedUnstakeMutation.mutate(unstakeAmount);
-                        }}
-                    >
-                        <Translate id='staking.liquidStaking.delayedUnstake' />
+                        {unstakeType === UnstakeType.instant ? (
+                            <Translate id='staking.liquidStaking.fastUnstake' />
+                        ) : (
+                            <Translate id='staking.liquidStaking.delayedUnstake' />
+                        )}
                     </FormButton>
                 </div>
             </Container>
@@ -202,9 +221,26 @@ const Container = styled.div`
         display: flex;
         gap: 10px;
     }
+    .unstake-tab {
+        display: flex;
+        gap: 1em;
+        margin-top: 0.8em;
+    }
+    .unstake-tab__item {
+        border: 1px solid #bbbbbb;
+        border-radius: 6px;
+        padding: 0.8em 1.3em;
+        width: 50%;
+        cursor: pointer;
+    }
+    .unstake-tab__item.active {
+        border: 1px solid #148402;
+        color: #148402;
+    }
     &&& {
-        .small {
-            width: 170px;
+        .button-unstake {
+            height: 40px;
+            padding: 0 2em;
         }
     }
 `;

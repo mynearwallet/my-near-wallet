@@ -1658,9 +1658,9 @@
         },
         "liquidStaking": {
             "apy": "APY",
-            "delayedUnstake": "Delayed Unstake",
+            "delayedUnstake": "Start Delayed Unstake",
             "estimatedReceived": "Estimated received",
-            "fastUnstake": "Fast Unstake",
+            "fastUnstake": "Start Fast Unstake",
             "liquidUnstakeFee": "Liquid Unstake Fee",
             "unlockPeriod": "Delayed Unstake Unlock Period",
             "unstakeToken": "Unstake Token"
