@@ -8,6 +8,7 @@ import {
     TxMethodName,
     methodNameShowlist,
     nearMetadata,
+    wNearMetadata,
 } from './constant';
 import {
     ETransactionStatus,
@@ -41,6 +42,7 @@ interface TxPattern {
 type TxData = ITransactionListItem & {
     block_timestamp: string;
     metaData: IMetaData;
+    isPreTransaction?: boolean;
 };
 
 const txUtils = {
@@ -54,7 +56,10 @@ const txUtils = {
         return primaryReceipt;
     },
     getFcArgs(data: TxData) {
-        const args = this.decodeArgs(data.transaction.actions[0]?.FunctionCall?.args);
+        const args = this.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall?.args,
+            data.isPreTransaction
+        );
         return args;
     },
     getMethodName(data: TxData) {
@@ -102,10 +107,10 @@ const txUtils = {
             return ETxDirection.receive;
         }
     },
-    decodeArgs(argsParam) {
+    decodeArgs(argsParam, isPreTransaction?: boolean) {
         try {
             let args_raw;
-            if (argsParam instanceof Uint8Array) {
+            if (argsParam instanceof Uint8Array || isPreTransaction) {
                 const args_base64 = Buffer.from(argsParam);
                 const decoder = new TextDecoder();
                 args_raw = decoder.decode(args_base64);
@@ -165,11 +170,17 @@ class TransferFtPattern implements TxPattern {
     }
 
     display(data: TxData, accountId: string): TransactionItemComponent {
-        const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
+        const args = txUtils.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall.args,
+            data.isPreTransaction
+        );
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceived = dir === ETxDirection.receive;
         return {
-            image: data.metaData.icon || '',
+            image:
+                data.metaData.symbol === wNearMetadata.symbol
+                    ? wNearMetadata.icon
+                    : data.metaData.icon,
             title: isReceived ? 'Received' : 'Sent',
             subtitle: isReceived
                 ? `from ${data.transaction.signer_id}`
@@ -246,7 +257,10 @@ class SwapPattern implements TxPattern {
     }
 
     display(data: TxData): TransactionItemComponent {
-        const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
+        const args = txUtils.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall.args,
+            data.isPreTransaction
+        );
 
         let receivedAmount = '0';
         const hasError = this.hasError(data);
@@ -255,7 +269,7 @@ class SwapPattern implements TxPattern {
         data.receipts.forEach((r) => {
             const fc =
                 r.receipt.Action.actions[0]?.FunctionCall || ({} as ITxFunctionCall);
-            const args = txUtils.decodeArgs(fc.args);
+            const args = txUtils.decodeArgs(fc.args, data.isPreTransaction);
             if (this.whitelistedReceivers.includes(r.receiver_id)) {
                 receiverId = r.receiver_id;
             }
@@ -297,7 +311,10 @@ class NftPattern implements TxPattern {
         accountId: string,
         network: ENearNetwork
     ): TransactionItemComponent {
-        const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
+        const args = txUtils.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall.args,
+            data.isPreTransaction
+        );
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceivedNft = dir === ETxDirection.receive;
 
@@ -318,6 +335,7 @@ class NftPattern implements TxPattern {
             status: txUtils.getTxStatus(data),
             assetChangeText: `1 ${data.metaData.symbol}`,
             dir,
+            args,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -402,6 +420,7 @@ class NftMintPattern implements TxPattern {
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             assetChangeText: `1 ${data.metaData.symbol || ''}`,
+            args,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -419,7 +438,7 @@ class NftBuyPattern implements TxPattern {
         network: ENearNetwork
     ): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
-        let tokenId = args.id || args.token_id;
+        let tokenId = args.id || args.token_id || args.token_series_id;
         try {
             const log = JSON.parse(
                 data.receipts_outcome[0].outcome?.logs?.[0].replace('EVENT_JSON:', '') ||
@@ -442,6 +461,7 @@ class NftBuyPattern implements TxPattern {
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             assetChangeText: `1 ${data.metaData.symbol || ''}`,
+            args,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -531,7 +551,7 @@ class ClaimPattern implements TxPattern {
             const rAction = r.receipt.Action?.actions?.[0];
             const fc = rAction?.FunctionCall;
             if (fc && fc?.method_name! === TxMethodName.ft_transfer) {
-                const args = txUtils.decodeArgs(fc.args);
+                const args = txUtils.decodeArgs(fc.args, data.isPreTransaction);
                 amount = args.amount;
                 if (r.metaData) {
                     metaData = r.metaData;
@@ -714,7 +734,7 @@ class MultiActionsPattern implements TxPattern {
                 const fc =
                     r.receipt.Action.actions?.[0]?.FunctionCall ||
                     ({} as ITxFunctionCall);
-                const args = txUtils.decodeArgs(fc?.args);
+                const args = txUtils.decodeArgs(fc?.args, data.isPreTransaction);
 
                 const dir = txUtils.getTxDirection(data, accountId);
                 return {
@@ -758,7 +778,7 @@ class FunctionCallDefaultPattern implements TxPattern {
                 const fc =
                     r.receipt.Action.actions?.[0]?.FunctionCall ||
                     ({} as ITxFunctionCall);
-                const args = txUtils.decodeArgs(fc?.args);
+                const args = txUtils.decodeArgs(fc?.args, data.isPreTransaction);
                 const dir =
                     r.receipt.Action.signer_id === args.receiver_id
                         ? ETxDirection.receive
