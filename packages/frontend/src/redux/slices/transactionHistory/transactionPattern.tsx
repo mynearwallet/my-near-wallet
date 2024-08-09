@@ -246,6 +246,9 @@ class SwapPattern implements TxPattern {
 
     match(data: TxData): boolean {
         const methodName = txUtils.getMethodName(data);
+        if (data.isPreTransaction) {
+            return false;
+        }
         if (methodName !== TxMethodName.ft_transfer_call) {
             return false;
         }
@@ -516,6 +519,54 @@ class LiquidUnStakePattern implements TxPattern {
     }
 }
 
+class WrapNearPattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return methodName === TxMethodName.storage_deposit;
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        const deposit = data.transaction.actions[0]?.FunctionCall?.deposit;
+        return {
+            image: imgAppInteraction,
+            title: 'Wrap Near',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                deposit,
+                nearMetadata
+            ),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.send,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
+class UnwrapNearPattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return methodName === TxMethodName.near_withdraw;
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        const deposit = data.transaction.actions[0]?.FunctionCall?.deposit;
+        return {
+            image: imgAppInteraction,
+            title: 'Unwrap Near',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                deposit,
+                nearMetadata
+            ),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.receive,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
 // BMAPK8ENUHLsiCKCiz3DonowrEfsKxcuMZpqUxkYUGbu
 class UnStakePattern implements TxPattern {
     match(data: TxData): boolean {
@@ -617,15 +668,21 @@ class ClaimUnStakePattern implements TxPattern {
 
 class AddKeyPattern implements TxPattern {
     match(data: TxData): boolean {
-        return !!data.transaction.actions[0].AddKey?.public_key;
+        const methodName = txUtils.getMethodName(data);
+        return (
+            !!data.transaction.actions[0].AddKey?.public_key ||
+            methodName === TxMethodName.add_access_key
+        );
     }
 
     display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
+        const publicKey = action.DeleteKey.public_key;
+
         return {
             image: imgKey,
             title: 'Add Key',
-            subtitle: action.AddKey.public_key,
+            subtitle: publicKey?.data instanceof Uint8Array ? '' : publicKey,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -638,10 +695,11 @@ class DeleteKeyPattern implements TxPattern {
 
     display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
+        const publicKey = action.DeleteKey.public_key;
         return {
             image: imgKeyDelete,
             title: 'Delete Key',
-            subtitle: action.DeleteKey.public_key,
+            subtitle: publicKey?.data instanceof Uint8Array ? '' : publicKey,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -856,6 +914,8 @@ export const txPatterns: TxPattern[] = [
     new ClaimPattern(),
     new ClaimUnStakePattern(),
     new LiquidUnStakePattern(),
+    new WrapNearPattern(),
+    new UnwrapNearPattern(),
     new AddKeyPattern(),
     new DeleteKeyPattern(),
     new DeployKeyPattern(),
