@@ -8,12 +8,13 @@ import FormButton from '../../common/FormButton';
 
 type Props = {
     validatorId: string;
-    fee: string;
+    fee?: string;
     active?: boolean;
     isSelectable?: boolean;
     amountString?: string;
     withCta?: boolean;
     info?: React.ReactNode;
+    linkTo?: string;
     handleUnstake?: () => void;
     onClick?: () => void;
 };
@@ -34,6 +35,7 @@ const ValidatorBoxItem = ({
     amountString,
     withCta,
     info,
+    linkTo,
     handleUnstake,
     onClick,
 }: Props) => {
@@ -48,28 +50,30 @@ const ValidatorBoxItem = ({
                             className='name-container'
                             data-test-id='stakingPageValidatorItemName'
                         >
-                            {validatorId}
+                            <a href={linkTo} target='_blank' rel='noreferrer'>
+                                {validatorId}
+                            </a>
                         </div>
-                        {!!fee && (
-                            <div className='text-left'>
+                        <div className='text-left'>
+                            {!!fee && (
                                 <span className='fee'>
                                     {fee}% <Translate id='staking.validatorBox.fee' />{' '}
                                     -&nbsp;
                                 </span>
-                                <span>
-                                    {' '}
-                                    {active ? (
-                                        <span className='active'>
-                                            <Translate id='staking.validatorBox.state.active' />
-                                        </span>
-                                    ) : (
-                                        <span className='inactive'>
-                                            <Translate id='staking.validatorBox.state.inactive' />
-                                        </span>
-                                    )}
-                                </span>
-                            </div>
-                        )}
+                            )}
+                            <span>
+                                {' '}
+                                {active ? (
+                                    <span className='active'>
+                                        <Translate id='staking.validatorBox.state.active' />
+                                    </span>
+                                ) : (
+                                    <span className='inactive'>
+                                        <Translate id='staking.validatorBox.state.inactive' />
+                                    </span>
+                                )}
+                            </span>
+                        </div>
                     </div>
                 </div>
                 {isSelectable && (
@@ -130,6 +134,7 @@ const Container = styled.div`
     .content {
         display: flex;
         justify-content: space-around;
+        align-items: center;
     }
 
     .active {
@@ -157,6 +162,12 @@ const Container = styled.div`
         flex-direction: column;
         align-items: flex-end;
         text-align: right;
+    }
+    .badge {
+        border: 1px solid #444;
+    }
+    a {
+        color: #444;
     }
 `;
 

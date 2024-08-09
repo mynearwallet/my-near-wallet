@@ -1770,7 +1770,8 @@
                 "error": "No matching validator.",
                 "success": "Validator found!"
             },
-            "title": "Select a Validator"
+            "title": "Select a Validator",
+            "liquidStakingDescription": "Stake your Digital Assets and start earning rewards. Receive a Liquid Staking Token (LST) that represents your original Digital Asset + staking rewards. Maximize the potential, and use it across DeFi."
         }
     },
     "stakingPoolUnstaked": "This NEAR is currently in a staking pool but unstaked. It could for example be in a pending release state.",

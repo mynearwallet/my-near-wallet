@@ -109,7 +109,8 @@ const ModalUnstake = ({
         !unstakeAmount ||
         liquidUnstakeMutation.isLoading ||
         delayedUnstakeMutation.isLoading ||
-        !unstakeType;
+        !unstakeType ||
+        insufficientBalance;
 
     return (
         <Modal

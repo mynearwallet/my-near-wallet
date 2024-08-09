@@ -114,7 +114,6 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
                               }`
                             : ''
                     }
-                    fee='2~6'
                     active
                     withCta
                     info={

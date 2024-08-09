@@ -123,7 +123,7 @@ const StakingForm = () => {
                         <Translate id='button.edit' />
                     </FormButton>
                 </div>
-                <ValidatorBoxItem validatorId={METAPOOL_CONTRACT_ID} fee='2~6' active />
+                <ValidatorBoxItem validatorId={METAPOOL_CONTRACT_ID} active />
                 <FormButton
                     sending={liquidStakingMutation.isLoading}
                     sendingString='staking.staking.checkingValidator'
