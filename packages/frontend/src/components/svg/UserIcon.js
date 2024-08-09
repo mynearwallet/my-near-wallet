@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UserIcon = ({ color = '#A2A2A8', background = false, onClick }) => {
+const UserIcon = ({ color = '#A2A2A8', background = false, onClick = () => {} }) => {
     return (
         <svg
             onClick={onClick}

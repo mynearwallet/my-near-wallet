@@ -4,6 +4,20 @@ import { useSelector } from 'react-redux';
 import BalanceDisplay from './BalanceDisplay';
 import { selectNearTokenFiatValueUSD } from '../../../redux/slices/tokenFiatValues/near';
 
+interface IBalanceProps {
+    totalAmount?: string;
+    amount: string;
+    showSymbolNEAR?: boolean;
+    className?: string;
+    showBalanceInNEAR?: boolean;
+    showBalanceInUSD?: boolean;
+    showAlmostEqualSignUSD?: boolean;
+    showSignUSD?: boolean;
+    showSymbolUSD?: boolean;
+    showGenericSymbol?: boolean;
+    'data-test-id'?: string;
+}
+
 const Balance = ({
     totalAmount,
     amount,
@@ -16,7 +30,7 @@ const Balance = ({
     showSymbolUSD,
     showGenericSymbol,
     'data-test-id': testId,
-}) => {
+}: IBalanceProps) => {
     const nearTokenFiatValueUSD = useSelector(selectNearTokenFiatValueUSD);
 
     return (

@@ -15,6 +15,7 @@ const {
 } = nearApiJs;
 
 export const STAKING_AMOUNT_DEVIATION = parseNearAmount('0.00001');
+export const LIQUID_STAKING_MIN_AMOUNT = parseNearAmount('1');
 
 const STAKE_VALIDATOR_PREFIX = '__SVPRE__';
 export const ZERO = new BN('0');

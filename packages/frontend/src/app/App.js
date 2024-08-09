@@ -100,6 +100,7 @@ import {
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
 import TransactionExecutorModal from '../components/transactions/ExecutorModal/TransactionExecutorModal';
+import LiquidStakingContainer from '../components/staking/liquid-staking/LiquidStakingContainer';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -625,6 +626,10 @@ class Routing extends Component {
                                 render={() => (
                                     <StakingContainer history={this.props.history} />
                                 )}
+                            />
+                            <PrivateRoute
+                                path='/liquid-staking'
+                                render={() => <LiquidStakingContainer />}
                             />
                             <PrivateRoute
                                 exact

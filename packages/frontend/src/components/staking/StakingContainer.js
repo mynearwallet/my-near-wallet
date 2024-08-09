@@ -174,7 +174,7 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-const StakingContainer = ({ history, match }) => {
+const StakingContainer = ({ history }) => {
     const dispatch = useDispatch();
     const accountId = useSelector(selectAccountId);
     const has2fa = useSelector(selectAccountHas2fa);

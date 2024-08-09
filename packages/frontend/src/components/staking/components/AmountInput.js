@@ -14,6 +14,7 @@ const Container = styled.div`
         cursor: pointer;
         margin-top: 15px;
         display: flex;
+        align-items: center;
         justify-content: space-between;
         color: ${(props) => (props.status === '#ff585d' ? props.status : '')};
 
@@ -34,6 +35,7 @@ export default function AmountInput({
     action,
     stakeFromAccount,
     inputTestId,
+    showSymbolNEAR,
 }) {
     let validationStatus;
     if (valid) {
@@ -56,7 +58,11 @@ export default function AmountInput({
             />
             <div className='available-balance' onClick={availableClick}>
                 <Translate id={`staking.${action}.input.availableBalance`} />
-                <Balance amount={availableBalance} showBalanceInUSD={false} />
+                <Balance
+                    amount={availableBalance}
+                    showBalanceInUSD={false}
+                    showSymbolNEAR={showSymbolNEAR}
+                />
             </div>
         </Container>
     );

@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import Balance from '../../common/balance/Balance';
 import RadioButton from '../../common/radio_button/RadioButton';
 import RadioGroup from '../../common/radio_button/RadioGroup';
+import { selectAvailableBalance } from '../../../redux/slices/account';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
     > div {
@@ -47,6 +49,7 @@ const Container = styled.div`
 `;
 
 export default function SelectAccount({ accounts, onChange, selectedAccount }) {
+    const availableBalance = useSelector(selectAvailableBalance);
     return (
         <RadioGroup
             onChange={
@@ -66,7 +69,7 @@ export default function SelectAccount({ accounts, onChange, selectedAccount }) {
                                 <Translate id='staking.staking.available' />
                                 <Balance
                                     data-test-id='accountSelectAvailableBalance'
-                                    amount={account.totalUnstaked}
+                                    amount={availableBalance}
                                     showBalanceInUSD={false}
                                 />
                             </div>
