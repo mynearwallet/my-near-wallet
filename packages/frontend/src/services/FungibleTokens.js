@@ -10,7 +10,6 @@ import {
 import { getTotalGasFee } from '../utils/gasPrice';
 import { wallet } from '../utils/wallet';
 import { CoreIndexerAdapter } from './coreIndexer/CoreIndexerAdapter';
-import { dispatchTransactionExecutor } from '../redux/slices/sign/transactionExecutor';
 
 const {
     transactions: { functionCall },
@@ -272,11 +271,12 @@ export default class FungibleTokens {
     }
 
     async transformNear({ accountId, amount, toWNear }) {
+        const account = await wallet.getAccount(accountId);
         const tx = await (toWNear
             ? this.getWrapNearTx({ accountId, amount })
             : this.getUnwrapNearTx({ accountId, amount }));
 
-        return dispatchTransactionExecutor(tx);
+        return account.signAndSendTransaction(tx);
     }
 
     async _getStorageDepositActions(accountId) {
