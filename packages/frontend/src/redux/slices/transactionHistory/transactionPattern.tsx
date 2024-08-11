@@ -550,6 +550,7 @@ class UnwrapNearPattern implements TxPattern {
     }
 
     display(data: TxData): TransactionItemComponent {
+        const args = txUtils.getFcArgs(data);
         const deposit = data.transaction.actions[0]?.FunctionCall?.deposit;
         return {
             image: imgAppInteraction,
@@ -557,7 +558,7 @@ class UnwrapNearPattern implements TxPattern {
             subtitle: `with ${data.transaction.receiver_id}`,
             assetChangeText: txUtils.getAmount(
                 { ...data, metaData: null },
-                deposit,
+                args.amount || deposit,
                 nearMetadata
             ),
             status: txUtils.getTxStatus(data),
@@ -677,7 +678,7 @@ class AddKeyPattern implements TxPattern {
 
     display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
-        const publicKey = action.DeleteKey.public_key;
+        const publicKey = action.DeleteKey?.public_key;
 
         return {
             image: imgKey,
