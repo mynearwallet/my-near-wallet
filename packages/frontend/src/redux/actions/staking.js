@@ -79,7 +79,7 @@ export const { staking } = createActions({
                         await contract.get_staking_pool_account_id();
                     if (validatorId !== selectedValidatorId) {
                         if (selectedValidatorId !== null) {
-                            await dispatchTransactionExecutor({
+                            await signAndSendTransaction({
                                 receiverId: lockupId,
                                 actions: [
                                     functionCall(
@@ -91,7 +91,7 @@ export const { staking } = createActions({
                                 ],
                             });
                         }
-                        await dispatchTransactionExecutor({
+                        await signAndSendTransaction({
                             receiverId: lockupId,
                             actions: [
                                 functionCall(

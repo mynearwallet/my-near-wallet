@@ -17,6 +17,8 @@ export enum TxMethodName {
     claim = 'claim',
     withdraw_all = 'withdraw_all',
     near_withdraw = 'near_withdraw',
+    storage_deposit = 'storage_deposit',
+    add_access_key = 'add_access_key',
 }
 
 export const methodNameShowlist = [

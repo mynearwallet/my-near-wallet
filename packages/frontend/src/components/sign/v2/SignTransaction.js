@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import Balance from '../../common/balance/Balance';
 import Tooltip from '../../common/Tooltip';
+import TransactionInterpretationItem from './TransactionInterpretationItem';
 
 const StyledContainer = styled.div`
     display: flex;
@@ -93,6 +94,33 @@ const StyledContainer = styled.div`
             }
         }
     }
+    .tx-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+    }
+    .tx-card__icon {
+        align-self: center;
+        display: flex;
+        margin-right: 0.7em;
+        max-width: 34px;
+    }
+    .tx-card__content {
+        width: 70%;
+        flex-grow: 1;
+    }
+    .tx-card__subtitle {
+        font-size: 12px;
+    }
+    .tx-card__right {
+        flex-grow: 1;
+        text-align: right;
+    }
+    .tx-card__right__title {
+        font-weight: bold;
+        text-wrap: nowrap;
+    }
 `;
 
 export default ({
@@ -102,6 +130,7 @@ export default ({
     availableBalance,
     fromLabelId,
     privateShardInfo,
+    transactions,
 }) => {
     const isTransferTransaction = new BN(transferAmount).gt(new BN(0));
     return (
@@ -122,7 +151,12 @@ export default ({
                     showBalanceInUSD={!privateShardInfo}
                 />
             )}
-            <div className={`account from ${!isTransferTransaction ? 'no-border' : ''}`}>
+            {transactions.map((transaction, i) => {
+                return (
+                    <TransactionInterpretationItem key={i} transaction={transaction} />
+                );
+            })}
+            <div className={'account'}>
                 <Translate id={fromLabelId || 'transfer.from'} />
                 <div className='right'>
                     <div className='account-id'>{sender}</div>
