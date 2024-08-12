@@ -2,11 +2,25 @@ import React, { useState, useEffect } from 'react';
 import ReactDom from 'react-dom';
 
 import CloseButton from './CloseButton';
-import StyledModal from './Style.css';
+import StyledModal from './Style';
 import classNames from '../../../utils/classNames';
 import isMobile from '../../../utils/isMobile';
 
 const modalRoot = document.getElementById('modal-root');
+
+interface IModal {
+    isOpen?: boolean;
+    onClose: () => void;
+    id: string;
+    modalSize?: string;
+    modalClass?: string;
+    children: React.ReactNode;
+    closeButton?: string;
+    disableClose?: boolean;
+    mobileActionSheet?: boolean;
+    'data-test-id'?: string;
+    style?: React.CSSProperties;
+}
 
 function Modal({
     isOpen,
@@ -20,8 +34,8 @@ function Modal({
     mobileActionSheet = true,
     'data-test-id': testId,
     style,
-}) {
-    const background = React.createRef();
+}: IModal) {
+    const background = React.createRef<HTMLDivElement>();
     const [fadeType, setFadeType] = useState(null);
     const [fullScreen, setFullScreen] = useState(null);
     const body = document.querySelector('body');

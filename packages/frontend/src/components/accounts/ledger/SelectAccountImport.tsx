@@ -104,6 +104,9 @@ const Container = styled.div`
         gap: 8px;
         width: 100%;
     }
+    .account-select__account-id {
+        width: 80%;
+    }
 `;
 
 const StyledCard = styled.div<{ isSelected: boolean }>`

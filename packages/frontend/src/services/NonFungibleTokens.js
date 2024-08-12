@@ -142,7 +142,6 @@ export default class NonFungibleTokens {
 
     static transfer = async ({ accountId, contractId, tokenId, receiverId }) => {
         const account = await wallet.getAccount(accountId);
-
         return account.signAndSendTransaction({
             receiverId: contractId,
             actions: [

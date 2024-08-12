@@ -1362,7 +1362,9 @@
             "NotStarted": "Не начато",
             "Started": "Начато",
             "SuccessValue": "Успех"
-        }
+        },
+        "steps": "Шагов ${currentStepCount} из ${totalStepCount}",
+        "TransactionHash": "Хеш транзакции"
     },
     "twoFactor": {
         "active": "Включена",
