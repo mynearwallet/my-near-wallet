@@ -22,6 +22,7 @@ export const LEDGER_MODAL_STATUS = {
     CONFIRM_PUBLIC_KEY: 'confirm-public-key',
     CONFIRM_ACCOUNTS: 'confirm-accounts',
     ENTER_ACCOUNTID: 'enter-accountId',
+    SELECT_ACCOUNTS: 'select-accounts',
     SUCCESS: 'success',
 };
 
@@ -158,9 +159,6 @@ const signInWithLedger = createAsyncThunk(
     async ({ path }, { dispatch, getState }) => {
         dispatch(ledgerSlice.actions.setLedgerTxSigned({ status: true }));
         await dispatch(getLedgerAccountIds({ path })).unwrap();
-
-        const accountIds = Object.keys(selectLedgerSignInWithLedger(getState()));
-        await dispatch(signInWithLedgerAddAndSaveAccounts({ path, accountIds }));
     }
 );
 
@@ -185,6 +183,10 @@ const ledgerSlice = createSlice({
             ) {
                 set(state, ['signInWithLedger', payload.accountId, 'status'], 'pending');
             }
+        },
+        showImportLedgerList(state, { payload }) {
+            set(state, ['signInWithLedgerStatus'], LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS);
+            set(state, ['selectedImportAccountIds'], payload);
         },
         clearSignInWithLedgerModalState(state, { payload, ready, error }) {
             unset(state, ['txSigned']);
@@ -224,7 +226,7 @@ const ledgerSlice = createSlice({
         });
         builder.addCase(getLedgerAccountIds.fulfilled, (state, { payload }) => {
             unset(state, ['txSigned']);
-            set(state, ['signInWithLedgerStatus'], LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS);
+            set(state, ['signInWithLedgerStatus'], LEDGER_MODAL_STATUS.SELECT_ACCOUNTS);
             payload.forEach((accountId) =>
                 set(state, ['signInWithLedger', accountId, 'status'], 'waiting')
             );
@@ -389,6 +391,11 @@ export const selectLedgerSignInWithLedger = createSelector(
 export const selectLedgerSignInWithLedgerStatus = createSelector(
     selectLedgerSlice,
     (ledger) => ledger.signInWithLedgerStatus
+);
+
+export const selectedImportAccountIds = createSelector(
+    selectLedgerSlice,
+    (ledger) => ledger.selectedImportAccountIds
 );
 
 const selectLedgerConnection = createSelector(
