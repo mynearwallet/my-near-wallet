@@ -1,80 +1,25 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
-import { BN } from 'bn.js';
+import { useHistory } from 'react-router';
 
-import { metapoolService } from '../../../services/metapool/api';
-import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
-import FungibleTokens from '../../../services/FungibleTokens';
 import { selectAllowedTokens } from '../../../redux/slices/tokens';
 import ValidatorBoxItem from '../components/ValidatorBoxItem';
 import ModalUnstake from './ModalUnstake';
 import { formatNearAmount } from '../../common/balance/helpers';
 import LoadingDots from '../../common/loader/LoadingDots';
 import styled from 'styled-components';
-import { EStakingType, EValidatorVersion, TStakedValidator, TTokenApy } from './type';
+import { Mixpanel } from '../../../mixpanel';
+import { getMetapoolValidator } from './utils';
 
-async function getMetapoolValidator({ accountId, tokens }): Promise<TStakedValidator> {
-    const getMetapoolAsync = metapoolService.getMetrics();
-    const getTokenBalanceAsync = FungibleTokens.getBalanceOf({
-        contractName: METAPOOL_CONTRACT_ID,
-        accountId,
-    });
-
-    const unstakedBalanceAsync = FungibleTokens.viewFunctionAccount.viewFunction(
-        METAPOOL_CONTRACT_ID,
-        'get_account_unstaked_balance',
-        { account_id: accountId }
-    );
-
-    const promises = [
-        getMetapoolAsync,
-        getTokenBalanceAsync,
-        unstakedBalanceAsync,
-        // unstakedStatusAsync,
-    ];
-
-    const [
-        getMetapoolMetricsResult,
-        getTokenBalanceResult,
-        unstakedBalanceResult,
-        unstakedStatusResult,
-    ] = await Promise.all(promises);
-
-    const nearToken = tokens.find((token) => token.contractName === 'NEAR');
-    const stNearToken = tokens.find(
-        (token) => token.contractName === METAPOOL_CONTRACT_ID
-    );
-
-    const metapoolValidator: TStakedValidator = {
-        validatorId: METAPOOL_CONTRACT_ID,
-        isActive: true,
-        stakedNearAmount: getMetapoolMetricsResult.total_actually_staked.toFixed(2),
-        stakingType: EStakingType.liquid,
-        pendingUnstakePeriod: '2 ~ 6 days',
-        validatorVersion: EValidatorVersion.normal,
-        rewardTokens: [
-            {
-                ...nearToken,
-                apy: getMetapoolMetricsResult.st_near_30_day_apy,
-            } as TTokenApy,
-        ],
-        apy: getMetapoolMetricsResult.st_near_30_day_apy,
-        fee: 0,
-        liquidUnstakeFee: getMetapoolMetricsResult.nslp_current_discount,
-        tokenToReceive: stNearToken,
-        totalBalance: new BN(getTokenBalanceResult)
-            .add(new BN(unstakedBalanceResult))
-            .toString(),
-        stakedBalance: getTokenBalanceResult,
-        unstakedBalance: unstakedBalanceResult,
-        unstakedStatus: unstakedStatusResult,
-    };
-
-    return metapoolValidator;
-}
-
-const OwnedValidators = ({ accountId }: { accountId: string }) => {
+const OwnedValidators = ({
+    accountId,
+    validatorId,
+}: {
+    accountId: string;
+    validatorId: string;
+}) => {
+    const history = useHistory();
     const allowedTokens = useSelector(selectAllowedTokens);
     const {
         data: liquidValidatorData,
@@ -105,7 +50,7 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
         <Container>
             {!!+liquidValidatorData?.stakedBalance && (
                 <ValidatorBoxItem
-                    validatorId={METAPOOL_CONTRACT_ID}
+                    validatorId={validatorId}
                     amountString={
                         liquidValidatorData
                             ? `${formatNearAmount(liquidValidatorData.stakedBalance)} ${
@@ -128,6 +73,10 @@ const OwnedValidators = ({ accountId }: { accountId: string }) => {
                     }
                     handleUnstake={() => {
                         setModalVisible(true);
+                    }}
+                    onClick={() => {
+                        Mixpanel.track('STAKE Go to staked account page');
+                        history.push(`/liquid-staking/${validatorId}`);
                     }}
                 />
             )}

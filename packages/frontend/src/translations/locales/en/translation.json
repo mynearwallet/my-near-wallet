@@ -1741,7 +1741,8 @@
             "title": "Validator: <br/>${validator}",
             "unstake": "You are unstaking",
             "withdraw": "You are withdrawing",
-            "withdrawalDisclaimer": "Funds pending release will be made available after ~52-65hrs (4 epochs)"
+            "withdrawalDisclaimer": "Funds pending release will be made available after ~52-65hrs (4 epochs)",
+            "liquidWithdrawalDisclaimer": "Funds pending release will be made available after ~2-6 days"
         },
         "validatorBox": {
             "cta": "Select",

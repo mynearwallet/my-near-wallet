@@ -18,12 +18,12 @@ import {
 } from '../../../utils/staking';
 import isDecimalString from '../../../utils/isDecimalString';
 import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
-import { liquidStaking } from '../../../redux/actions/staking';
 import { toYoctoNear } from '../../../utils/gasPrice';
 import { selectAvailableBalance } from '../../../redux/slices/account';
 import Container from '../../common/styled/Container.css';
 import ledgerSlice from '../../../redux/slices/ledger';
 import { getBalance } from '../../../redux/actions/account';
+import { liquidStaking } from '../../../redux/actions/liquidStaking';
 
 const StakingForm = () => {
     const history = useHistory();

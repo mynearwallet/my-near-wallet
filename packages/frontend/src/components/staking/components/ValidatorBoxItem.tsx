@@ -15,7 +15,7 @@ type Props = {
     withCta?: boolean;
     info?: React.ReactNode;
     linkTo?: string;
-    handleUnstake?: () => void;
+    handleUnstake?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     onClick?: () => void;
 };
 
@@ -41,8 +41,12 @@ const ValidatorBoxItem = ({
 }: Props) => {
     const history = useHistory();
     return (
-        <Container onClick={onClick}>
-            <div className='validator-box' data-test-id='stakingPageValidatorItem'>
+        <Container>
+            <div
+                onClick={onClick}
+                className='validator-box'
+                data-test-id='stakingPageValidatorItem'
+            >
                 <div className='content'>
                     <UserIcon background={true} />
                     <div>

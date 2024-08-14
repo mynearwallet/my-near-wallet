@@ -9,7 +9,6 @@ import { Translate } from 'react-localize-redux';
 import Modal from '../../common/modal/Modal';
 import AmountInput from '../components/AmountInput';
 import FormButton from '../../common/FormButton';
-import { delayedUnstake, liquidUnStake } from '../../../redux/actions/staking';
 import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 import { toYoctoNear } from '../../../utils/gasPrice';
 import FungibleTokens from '../../../services/FungibleTokens';
@@ -18,6 +17,7 @@ import { TStakedValidator } from './type';
 import ledgerSlice from '../../../redux/slices/ledger';
 import { getBalance } from '../../../redux/actions/account';
 import classNames from '../../../utils/classNames';
+import { delayedUnstake, liquidUnStake } from '../../../redux/actions/liquidStaking';
 
 type Props = {
     liquidValidatorData?: TStakedValidator;
