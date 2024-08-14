@@ -4,7 +4,6 @@ import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation, useQuery } from 'react-query';
-import { useHistory } from 'react-router';
 import styled from 'styled-components';
 
 import FormButton from '../../common/FormButton';
@@ -22,16 +21,21 @@ import FungibleTokens from '../../../services/FungibleTokens';
 import useDebouncedValue from '../../../hooks/useDebouncedValue';
 import classNames from '../../../utils/classNames';
 import { getMetapoolValidator } from './utils';
+import SuccessAction from './SuccessAction';
+import { getCachedContractMetadataOrFetch } from '../../../redux/slices/tokensMetadata';
+import { selectTokensFiatValueUSD } from '../../../redux/slices/tokenFiatValues';
 
 enum UnstakeType {
     'instant' = 'instant',
     'delayed' = 'delayed',
 }
 
+const validatorId = METAPOOL_CONTRACT_ID;
+
 const UnstakeForm = () => {
-    const history = useHistory();
     const dispatch = useDispatch();
     const [unstakeAmount, setUnstakeAmount] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
     const [minUnstakeOutput, setMinUnstakeOutput] = useState('');
     const [unstakeType, setUnstakeType] = useState(UnstakeType.instant);
     const accountId = useSelector(selectAccountId);
@@ -39,14 +43,14 @@ const UnstakeForm = () => {
     const liquidUnstakeMutation = useMutation({
         mutationFn: async (amount: string) => {
             return await liquidUnStake({
-                contractId: METAPOOL_CONTRACT_ID,
+                contractId: validatorId,
                 amountInYocto: new BN(toYoctoNear(amount)).toString(),
                 minExpectInYocto: minUnstakeOutput,
             });
         },
         mutationKey: ['liquidUnstakeMutation'],
         onSuccess: () => {
-            history.push('/staking');
+            setIsSuccess(true);
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
@@ -63,7 +67,7 @@ const UnstakeForm = () => {
         },
         mutationKey: ['delayedUnstakeMutation'],
         onSuccess: () => {
-            history.push('/staking');
+            setIsSuccess(true);
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
@@ -97,6 +101,13 @@ const UnstakeForm = () => {
         enabled: !!accountId,
     });
 
+    const { data: liquidStakingMetadata } = useQuery({
+        queryKey: ['liquidStakingMetadata', accountId, validatorId],
+        queryFn: async () => {
+            return getCachedContractMetadataOrFetch(validatorId, {});
+        },
+    });
+
     const { stakedBalance } = liquidValidatorData || {};
 
     const debouncedUnstakeAmount = useDebouncedValue(unstakeAmount, 500);
@@ -108,6 +119,29 @@ const UnstakeForm = () => {
 
     const insufficientBalance =
         unstakeAmount > formatNearAmount(stakedBalance) || unstakeAmount < '0';
+    const fungibleTokenPrices = useSelector(selectTokensFiatValueUSD);
+
+    if (isSuccess) {
+        const updatedAmount = (
+            +stakedBalance - +parseNearAmount(unstakeAmount)
+        ).toString();
+        return (
+            <SuccessAction
+                action='liquidUnstake'
+                accountId={accountId}
+                stakedAmountYocto={updatedAmount}
+                unstakedAmount={unstakeAmount}
+                token={{
+                    balance: updatedAmount || '',
+                    contractName: validatorId,
+                    onChainFTMetadata: liquidStakingMetadata || {},
+                    fiatValueMetadata: {
+                        usd: fungibleTokenPrices[validatorId]?.usd,
+                    },
+                }}
+            />
+        );
+    }
 
     return (
         <StyledContainer className='small-centered'>

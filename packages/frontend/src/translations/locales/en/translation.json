@@ -1630,8 +1630,8 @@
                 "title": "Available for claim"
             },
             "pending": {
-                "liquidInfo": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 2 to 6 days after unstaking.",
                 "info": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 52 to 65 hours after unstaking.",
+                "liquidInfo": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 2 to 6 days after unstaking.",
                 "title": "Pending release"
             },
             "staked": {
@@ -1665,6 +1665,12 @@
             "liquidUnstakeFee": "Liquid Unstake Fee",
             "unlockPeriod": "Delayed Unstake Unlock Period",
             "unstakeToken": "Unstake Token"
+        },
+        "liquidUnstakeSuccess": {
+            "button": "Return to Dashboard",
+            "desc": "<b>${amount}</b> has successfully been unstaked from this validator:",
+            "descTwo": "Your tokens are pending release and will be made available within ~2-6 days.",
+            "title": "Success!"
         },
         "noValidators": {
             "title": "You are not currently staking with any validators."

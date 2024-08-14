@@ -2,34 +2,35 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { useMutation, useQuery } from 'react-query';
 import { Translate } from 'react-localize-redux';
 
 import BalanceBox from '../components/BalanceBox';
-import selectNEARAsTokenWithMetadata from '../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
 import { getMetapoolValidator } from './utils';
 import { selectAccountId } from '../../../redux/slices/account';
-import { NEAR_DECIMALS } from '../../../utils/constants';
 import { FarmingAPY } from '../components/FarmingAPY';
 import { liquidWithdrawAll } from '../../../redux/actions/liquidStaking';
 import { redirectTo } from '../../../redux/actions/account';
 import { Mixpanel } from '../../../mixpanel';
 import StakeConfirmModal from '../components/StakeConfirmModal';
+import { getCachedContractMetadataOrFetch } from '../../../redux/slices/tokensMetadata';
+import { selectTokensFiatValueUSD } from '../../../redux/slices/tokenFiatValues';
 
 const ValidatorDetail = () => {
-    const NEARAsTokenWithMetadata = useSelector(selectNEARAsTokenWithMetadata);
     const accountId = useSelector(selectAccountId);
+    const history = useHistory();
     const params = useParams();
     const dispatch = useDispatch();
     const validatorId = params.validator;
+    const fungibleTokenPrices = useSelector(selectTokensFiatValueUSD);
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const { data: liquidValidatorData, isLoading } = useQuery({
-        queryKey: ['liquidValidator', accountId],
+        queryKey: ['liquidValidator', accountId, validatorId],
         queryFn: async () => {
             return getMetapoolValidator({
                 accountId,
@@ -45,33 +46,43 @@ const ValidatorDetail = () => {
                 contractId: validatorId,
             });
         },
-        mutationKey: ['liquidWithdrawAllMutation', accountId],
+        mutationKey: ['liquidWithdrawAllMutation', accountId, validatorId],
+        onSuccess: () => {
+            history.push('/staking');
+        },
+    });
+
+    const { data: liquidStakingMetadata } = useQuery({
+        queryKey: ['liquidStakingMetadata', accountId, validatorId],
+        queryFn: async () => {
+            return getCachedContractMetadataOrFetch(validatorId, {});
+        },
     });
 
     const tokenProps = {
-        ...NEARAsTokenWithMetadata,
-        onChainFTMetadata: {
-            decimals: NEAR_DECIMALS,
-            symbol: 'STNEAR',
+        balance: liquidValidatorData?.stakedBalance || '',
+        contractName: validatorId,
+        onChainFTMetadata: liquidStakingMetadata || {},
+        fiatValueMetadata: {
+            usd: fungibleTokenPrices[validatorId]?.usd,
         },
     };
     return (
         <StyledContainer className='small-centered'>
-            <div className='validator-title'>
-                Validator: <br />
-                {validatorId}
+            <div className='head-section'>
+                <div className='validator-title'>
+                    Validator: <br />
+                    {validatorId}
+                </div>
+                <FormButton
+                    className='staking-button'
+                    trackingId='STAKE Click stake with validator button'
+                    linkTo={`/liquid-staking/${validatorId}/stake`}
+                    data-test-id='validatorPageStakeButton'
+                >
+                    <Translate id='staking.validator.button' />
+                </FormButton>
             </div>
-            <FormButton
-                className='staking-button'
-                trackingId='STAKE Click stake with validator button'
-                linkTo={`/liquid-staking/${validatorId}/stake`}
-                data-test-id='validatorPageStakeButton'
-            >
-                <Translate id='staking.validator.button' />
-            </FormButton>
-            <br />
-            <br />
-            <br />
             <FarmingAPY apy={liquidValidatorData?.apy} hideTooltip={true} />
             <BalanceBox
                 title='staking.balanceBox.staked.title'
@@ -130,7 +141,7 @@ const ValidatorDetail = () => {
                         withdrawAll.mutate();
                     }}
                     onClose={() => setShowConfirmModal(false)}
-                    loading={isLoading}
+                    loading={isLoading || withdrawAll.isLoading}
                     sendingString='withdrawing'
                 />
             )}
@@ -141,6 +152,9 @@ const ValidatorDetail = () => {
 export default ValidatorDetail;
 
 const StyledContainer = styled(Container)`
+    .head-section {
+        margin-bottom: 1.5em;
+    }
     .validator-title {
         font-size: 30px;
         font-weight: bold;
@@ -152,5 +166,8 @@ const StyledContainer = styled(Container)`
     }
     .staking-button {
         width: 100%;
+    }
+    .farming-apy {
+        margin-top: 0.5em;
     }
 `;
