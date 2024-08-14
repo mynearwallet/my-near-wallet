@@ -60,20 +60,8 @@ const OwnedValidators = ({
                             : ''
                     }
                     active
-                    withCta
-                    info={
-                        liquidValidatorData?.unstakedBalance &&
-                        liquidValidatorData?.unstakedBalance !== '0' && (
-                            <div className='validator-box-item__info'>
-                                You are unstaking{' '}
-                                {formatNearAmount(liquidValidatorData.unstakedBalance)}{' '}
-                                STNEAR and it usually takes 2 ~ 6 days to unstake
-                            </div>
-                        )
-                    }
-                    handleUnstake={() => {
-                        setModalVisible(true);
-                    }}
+                    apy={liquidValidatorData?.apy}
+                    isLiquidStaking
                     onClick={() => {
                         Mixpanel.track('STAKE Go to staked account page');
                         history.push(`/liquid-staking/${validatorId}`);

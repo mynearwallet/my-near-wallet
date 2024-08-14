@@ -1,12 +1,11 @@
 // @ts-nocheck
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useMutation, useQuery } from 'react-query';
 import { Translate } from 'react-localize-redux';
 
-import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 import BalanceBox from '../components/BalanceBox';
 import selectNEARAsTokenWithMetadata from '../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 import FormButton from '../../common/FormButton';
@@ -18,6 +17,7 @@ import { FarmingAPY } from '../components/FarmingAPY';
 import { liquidWithdrawAll } from '../../../redux/actions/liquidStaking';
 import { redirectTo } from '../../../redux/actions/account';
 import { Mixpanel } from '../../../mixpanel';
+import StakeConfirmModal from '../components/StakeConfirmModal';
 
 const ValidatorDetail = () => {
     const NEARAsTokenWithMetadata = useSelector(selectNEARAsTokenWithMetadata);
@@ -25,6 +25,8 @@ const ValidatorDetail = () => {
     const params = useParams();
     const dispatch = useDispatch();
     const validatorId = params.validator;
+
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
     const { data: liquidValidatorData, isLoading } = useQuery({
         queryKey: ['liquidValidator', accountId],
@@ -40,19 +42,10 @@ const ValidatorDetail = () => {
     const withdrawAll = useMutation({
         mutationFn: async () => {
             return await liquidWithdrawAll({
-                contractId: METAPOOL_CONTRACT_ID,
+                contractId: validatorId,
             });
         },
-        mutationKey: ['liquidWithdrawAllMutation'],
-        onSuccess: (res) => {
-            console.log({ res });
-            onUnstakeCompleted();
-            setModalVisible(false);
-        },
-        onSettled: () => {
-            dispatch(ledgerSlice.actions.hideLedgerModal());
-            dispatch(getBalance());
-        },
+        mutationKey: ['liquidWithdrawAllMutation', accountId],
     });
 
     const tokenProps = {
@@ -71,7 +64,7 @@ const ValidatorDetail = () => {
             <FormButton
                 className='staking-button'
                 trackingId='STAKE Click stake with validator button'
-                linkTo={`/liquid-staking/${METAPOOL_CONTRACT_ID}/stake`}
+                linkTo={`/liquid-staking/${validatorId}/stake`}
                 data-test-id='validatorPageStakeButton'
             >
                 <Translate id='staking.validator.button' />
@@ -92,13 +85,13 @@ const ValidatorDetail = () => {
                 button='staking.balanceBox.staked.button'
                 buttonColor='gray-red'
                 onClick={() => {
-                    dispatch(redirectTo(`/staking/${validatorId}/unstake`));
+                    dispatch(redirectTo(`/liquid-staking/${validatorId}/unstake`));
                     Mixpanel.track('UNSTAKE Click unstake button');
                 }}
             />
             <BalanceBox
                 title='staking.balanceBox.pending.title'
-                info='staking.balanceBox.pending.info'
+                info='staking.balanceBox.pending.liquidInfo'
                 token={{
                     ...tokenProps,
                     balance: !!liquidValidatorData?.unstakedStatus
@@ -121,8 +114,26 @@ const ValidatorDetail = () => {
                 buttonColor='gray-blue'
                 loading={isLoading}
                 button='staking.balanceBox.available.button'
-                onClick={withdrawAll}
+                onClick={() => {
+                    setShowConfirmModal(true);
+                }}
             />
+            {showConfirmModal && (
+                <StakeConfirmModal
+                    title='staking.validator.withdraw'
+                    label='staking.stake.from'
+                    validator={{ accountId: validatorId, active: true }}
+                    amount={liquidValidatorData?.unstakedBalance}
+                    open={showConfirmModal}
+                    onConfirm={() => {
+                        setShowConfirmModal(false);
+                        withdrawAll.mutate();
+                    }}
+                    onClose={() => setShowConfirmModal(false)}
+                    loading={isLoading}
+                    sendingString='withdrawing'
+                />
+            )}
         </StyledContainer>
     );
 };

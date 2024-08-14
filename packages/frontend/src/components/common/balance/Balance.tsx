@@ -15,6 +15,7 @@ interface IBalanceProps {
     showSignUSD?: boolean;
     showSymbolUSD?: boolean;
     showGenericSymbol?: boolean;
+    symbol?: string;
     'data-test-id'?: string;
 }
 
@@ -29,6 +30,7 @@ const Balance = ({
     showSignUSD,
     showSymbolUSD,
     showGenericSymbol,
+    symbol,
     'data-test-id': testId,
 }: IBalanceProps) => {
     const nearTokenFiatValueUSD = useSelector(selectNearTokenFiatValueUSD);
@@ -46,6 +48,7 @@ const Balance = ({
             showSignUSD={showSignUSD}
             showSymbolUSD={showSymbolUSD}
             showGenericSymbol={showGenericSymbol}
+            symbol={symbol}
             data-test-id={testId}
         />
     );

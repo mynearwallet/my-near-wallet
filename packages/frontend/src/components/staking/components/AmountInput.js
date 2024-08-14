@@ -36,6 +36,7 @@ export default function AmountInput({
     stakeFromAccount,
     inputTestId,
     showSymbolNEAR,
+    symbol,
 }) {
     let validationStatus;
     if (valid) {
@@ -62,6 +63,7 @@ export default function AmountInput({
                     amount={availableBalance}
                     showBalanceInUSD={false}
                     showSymbolNEAR={showSymbolNEAR}
+                    symbol={symbol}
                 />
             </div>
         </Container>

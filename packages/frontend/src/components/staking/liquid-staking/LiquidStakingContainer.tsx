@@ -8,6 +8,7 @@ import { selectAccountId } from '../../../redux/slices/account';
 import StakingForm from './StakingForm';
 import { getBalance } from '../../../redux/actions/account';
 import ValidatorDetail from './ValidatorDetail';
+import UnstakeForm from './UnstakeForm';
 
 const LiquidStakingContainer = () => {
     const accountId = useSelector(selectAccountId);
@@ -25,13 +26,18 @@ const LiquidStakingContainer = () => {
             <Switch>
                 <Route
                     exact
+                    path='/liquid-staking/:validator'
+                    render={(props) => <ValidatorDetail {...props} />}
+                />
+                <Route
+                    exact
                     path='/liquid-staking/:validator/stake'
                     render={(props) => <StakingForm {...props} />}
                 />
                 <Route
                     exact
-                    path='/liquid-staking/:validator'
-                    render={(props) => <ValidatorDetail {...props} />}
+                    path='/liquid-staking/:validator/unstake'
+                    render={(props) => <UnstakeForm {...props} />}
                 />
             </Switch>
         </ConnectedRouter>

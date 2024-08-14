@@ -1,47 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
-import { BN } from 'bn.js';
-import styled from 'styled-components';
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
-import { useDispatch } from 'react-redux';
 import { Translate } from 'react-localize-redux';
+import BN from 'bn.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
+import { useMutation, useQuery } from 'react-query';
+import { useHistory } from 'react-router';
+import styled from 'styled-components';
 
-import Modal from '../../common/modal/Modal';
-import AmountInput from '../components/AmountInput';
 import FormButton from '../../common/FormButton';
+import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
+import ValidatorBoxItem from '../components/ValidatorBoxItem';
+import AmountInput from '../components/AmountInput';
 import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 import { toYoctoNear } from '../../../utils/gasPrice';
-import FungibleTokens from '../../../services/FungibleTokens';
-import useDebouncedValue from '../../../hooks/useDebouncedValue';
-import { TStakedValidator } from './type';
+import { selectAccountId } from '../../../redux/slices/account';
+import Container from '../../common/styled/Container.css';
 import ledgerSlice from '../../../redux/slices/ledger';
 import { getBalance } from '../../../redux/actions/account';
-import classNames from '../../../utils/classNames';
 import { delayedUnstake, liquidUnStake } from '../../../redux/actions/liquidStaking';
-
-type Props = {
-    liquidValidatorData?: TStakedValidator;
-    isModalVisible: boolean;
-    setModalVisible: (p: React.SetStateAction<boolean>) => void;
-    onUnstakeCompleted: () => void;
-};
+import FungibleTokens from '../../../services/FungibleTokens';
+import useDebouncedValue from '../../../hooks/useDebouncedValue';
+import classNames from '../../../utils/classNames';
+import { getMetapoolValidator } from './utils';
 
 enum UnstakeType {
     'instant' = 'instant',
     'delayed' = 'delayed',
 }
 
-const ModalUnstake = ({
-    liquidValidatorData,
-    isModalVisible,
-    setModalVisible,
-    onUnstakeCompleted,
-}: Props) => {
-    const { stakedBalance } = liquidValidatorData || {};
+const UnstakeForm = () => {
+    const history = useHistory();
+    const dispatch = useDispatch();
     const [unstakeAmount, setUnstakeAmount] = useState('');
     const [minUnstakeOutput, setMinUnstakeOutput] = useState('');
     const [unstakeType, setUnstakeType] = useState(UnstakeType.instant);
-    const dispatch = useDispatch();
+    const accountId = useSelector(selectAccountId);
 
     const liquidUnstakeMutation = useMutation({
         mutationFn: async (amount: string) => {
@@ -53,8 +46,7 @@ const ModalUnstake = ({
         },
         mutationKey: ['liquidUnstakeMutation'],
         onSuccess: () => {
-            onUnstakeCompleted();
-            setModalVisible(false);
+            history.push('/staking');
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
@@ -71,8 +63,7 @@ const ModalUnstake = ({
         },
         mutationKey: ['delayedUnstakeMutation'],
         onSuccess: () => {
-            onUnstakeCompleted();
-            setModalVisible(false);
+            history.push('/staking');
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
@@ -95,6 +86,19 @@ const ModalUnstake = ({
         },
     });
 
+    const { data: liquidValidatorData } = useQuery({
+        queryKey: ['liquidValidator', accountId],
+        queryFn: async () => {
+            return getMetapoolValidator({
+                accountId,
+                tokens: [METAPOOL_CONTRACT_ID],
+            });
+        },
+        enabled: !!accountId,
+    });
+
+    const { stakedBalance } = liquidValidatorData || {};
+
     const debouncedUnstakeAmount = useDebouncedValue(unstakeAmount, 500);
     useEffect(() => {
         if (debouncedUnstakeAmount) {
@@ -105,41 +109,27 @@ const ModalUnstake = ({
     const insufficientBalance =
         unstakeAmount > formatNearAmount(stakedBalance) || unstakeAmount < '0';
 
-    const isButtonDisabled =
-        !unstakeAmount ||
-        liquidUnstakeMutation.isLoading ||
-        delayedUnstakeMutation.isLoading ||
-        !unstakeType ||
-        insufficientBalance;
-
     return (
-        <Modal
-            id='account-funded-modal'
-            isOpen={isModalVisible}
-            onClose={() => {
-                setModalVisible((prev) => !prev);
-            }}
-            disableClose={liquidUnstakeMutation.isLoading}
-            closeButton
-            style={{ zIndex: 1000 }}
-        >
-            <Container>
-                <div className='mb-2 title'>
-                    <Translate id='staking.liquidStaking.unstakeToken' />
-                </div>
+        <StyledContainer className='small-centered'>
+            <div className='send-theme'>
+                <h1>
+                    <Translate id={'staking.unstake.title'} />
+                </h1>
+                <h2>
+                    <Translate id={'staking.unstake.desc'} />
+                </h2>
                 <AmountInput
-                    action={'stake'}
+                    action={'unstake'}
                     value={unstakeAmount}
                     onChange={setUnstakeAmount}
                     valid={!unstakeAmount || !insufficientBalance}
                     availableBalance={stakedBalance}
-                    // availableClick={handleSetMax}
                     insufficientBalance={insufficientBalance}
                     disabled={false}
                     stakeFromAccount={true}
                     inputTestId='stakingAmountInput'
                     showSymbolNEAR={false}
-                    symbol=''
+                    symbol='STNEAR'
                 />
                 <div className='mt-2 received'>
                     <div>
@@ -149,12 +139,6 @@ const ModalUnstake = ({
                         <div>~{formatNearAmount(minUnstakeOutput, 5)} NEAR</div>
                     )) ||
                         '-'}
-                </div>
-                <div className='mt-2 received'>
-                    <div>
-                        <Translate id='staking.liquidStaking.apy' />
-                    </div>
-                    <div>{liquidValidatorData.apy}%</div>
                 </div>
                 <div className='unstake-tab'>
                     <div
@@ -166,7 +150,7 @@ const ModalUnstake = ({
                     >
                         <div className='unstake-tab__title'>Instant Unstake</div>
                         <div className='unstake-tab__fee'>
-                            Unstake fee: {liquidValidatorData.liquidUnstakeFee}%
+                            Unstake fee: {liquidValidatorData?.liquidUnstakeFee}%
                         </div>
                     </div>
                     <div
@@ -177,51 +161,63 @@ const ModalUnstake = ({
                         onClick={() => setUnstakeType(UnstakeType.delayed)}
                     >
                         <div className='unstake-tab__title'>
-                            Delayed Unstake In 2~6 days
+                            Delayed Unstake
+                            <br />
+                            In 2~6 days
                         </div>
                         <div className='unstake-tab__fee'>Unstake fee: 0</div>
                     </div>
                 </div>
-                <div className='button-container'>
+                <ArrowCircleIcon color={'#6AD1E3'} />
+                <div className='header-button'>
+                    <h4>
+                        <Translate id={'staking.unstake.stakeWith'} />
+                    </h4>
                     <FormButton
-                        className='button-unstake'
-                        disabled={isButtonDisabled}
-                        onClick={() => {
-                            unstakeType === UnstakeType.instant
-                                ? liquidUnstakeMutation.mutate(unstakeAmount)
-                                : delayedUnstakeMutation.mutate(unstakeAmount);
-                        }}
+                        className='small'
+                        color='light-blue'
+                        linkTo='/staking/validators'
+                        trackingId='STAKE Go to validators list page'
                     >
-                        {unstakeType === UnstakeType.instant ? (
-                            <Translate id='staking.liquidStaking.fastUnstake' />
-                        ) : (
-                            <Translate id='staking.liquidStaking.delayedUnstake' />
-                        )}
+                        <Translate id='button.edit' />
                     </FormButton>
                 </div>
-            </Container>
-        </Modal>
+                <ValidatorBoxItem validatorId={METAPOOL_CONTRACT_ID} active />
+                <FormButton
+                    sending={liquidUnstakeMutation.isLoading}
+                    sendingString='staking.staking.checkingValidator'
+                    disabled={
+                        insufficientBalance ||
+                        liquidUnstakeMutation.isLoading ||
+                        delayedUnstakeMutation.isLoading ||
+                        !unstakeAmount
+                    }
+                    onClick={() => {
+                        unstakeType === UnstakeType.instant
+                            ? liquidUnstakeMutation.mutate(unstakeAmount)
+                            : delayedUnstakeMutation.mutate(unstakeAmount);
+                    }}
+                    trackingId='STAKE/UNSTAKE Click submit stake button'
+                    data-test-id='submitStakeButton'
+                >
+                    {unstakeType === UnstakeType.instant ? (
+                        <Translate id='staking.liquidStaking.fastUnstake' />
+                    ) : (
+                        <Translate id='staking.liquidStaking.delayedUnstake' />
+                    )}
+                </FormButton>
+            </div>
+        </StyledContainer>
     );
 };
 
-export default ModalUnstake;
+export default UnstakeForm;
 
-const Container = styled.div`
-    .title {
-        font-size: 20px;
-        font-weight: bold;
-        color: #444;
-    }
-    .near-amount:after {
-        content: ' STNEAR';
-    }
+const StyledContainer = styled(Container)`
     .received {
         display: flex;
         justify-content: space-between;
-    }
-    .button-container {
-        display: flex;
-        gap: 10px;
+        margin-bottom: 2em;
     }
     .unstake-tab {
         display: flex;
@@ -238,11 +234,5 @@ const Container = styled.div`
     .unstake-tab__item.active {
         border: 1px solid #148402;
         color: #148402;
-    }
-    &&& {
-        .button-unstake {
-            height: 40px;
-            padding: 0 2em;
-        }
     }
 `;

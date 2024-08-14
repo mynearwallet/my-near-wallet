@@ -1630,6 +1630,7 @@
                 "title": "Available for claim"
             },
             "pending": {
+                "liquidInfo": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 2 to 6 days after unstaking.",
                 "info": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 52 to 65 hours after unstaking.",
                 "title": "Pending release"
             },
@@ -1735,14 +1736,14 @@
             "desc": "This is the fee paid to the validator to stake on your behalf. This fee is only charged on your rewards.",
             "errorClaimRewards": "Something went wrong during claiming your farm rewards. Please, try again later",
             "fee": "Validator Fee",
+            "liquidWithdrawalDisclaimer": "Funds pending release will be made available after ~2-6 days",
             "notWhitelistedTokenWarning": "This token has not been whitelisted by ref-finance. Proceed at your own risk.",
             "notWhitelistedValidatorWarning": "Tokens awarded by this validator have not been whitelisted by ref-finance. Proceed at your own risk.",
             "rewards": "Rewards",
             "title": "Validator: <br/>${validator}",
             "unstake": "You are unstaking",
             "withdraw": "You are withdrawing",
-            "withdrawalDisclaimer": "Funds pending release will be made available after ~52-65hrs (4 epochs)",
-            "liquidWithdrawalDisclaimer": "Funds pending release will be made available after ~2-6 days"
+            "withdrawalDisclaimer": "Funds pending release will be made available after ~52-65hrs (4 epochs)"
         },
         "validatorBox": {
             "cta": "Select",
@@ -1767,12 +1768,12 @@
             },
             "inputLabel": "Validator account ID",
             "inputPlaceholder": "validator-name.near",
+            "liquidStakingDescription": "Stake your Digital Assets and start earning rewards. Receive a Liquid Staking Token (LST) that represents your original Digital Asset + staking rewards. Maximize the potential, and use it across DeFi.",
             "search": {
                 "error": "No matching validator.",
                 "success": "Validator found!"
             },
-            "title": "Select a Validator",
-            "liquidStakingDescription": "Stake your Digital Assets and start earning rewards. Receive a Liquid Staking Token (LST) that represents your original Digital Asset + staking rewards. Maximize the potential, and use it across DeFi."
+            "title": "Select a Validator"
         }
     },
     "stakingPoolUnstaked": "This NEAR is currently in a staking pool but unstaked. It could for example be in a pending release state.",

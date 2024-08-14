@@ -105,6 +105,7 @@ const StakingForm = () => {
                     stakeFromAccount={true}
                     inputTestId='stakingAmountInput'
                     showSymbolNEAR={true}
+                    symbol=''
                 />
                 {!!amount && amount < '1' && (
                     <div style={{ color: '#ff585d' }}>Minimum 1 NEAR</div>

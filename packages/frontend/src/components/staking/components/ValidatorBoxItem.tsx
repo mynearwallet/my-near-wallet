@@ -9,12 +9,14 @@ import FormButton from '../../common/FormButton';
 type Props = {
     validatorId: string;
     fee?: string;
+    apy?: number;
     active?: boolean;
     isSelectable?: boolean;
     amountString?: string;
     withCta?: boolean;
     info?: React.ReactNode;
     linkTo?: string;
+    isLiquidStaking?: boolean;
     handleUnstake?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     onClick?: () => void;
 };
@@ -30,12 +32,14 @@ const buttonStyle = {
 const ValidatorBoxItem = ({
     validatorId,
     fee,
+    apy,
     active,
     isSelectable,
     amountString,
     withCta,
     info,
     linkTo,
+    isLiquidStaking,
     handleUnstake,
     onClick,
 }: Props) => {
@@ -51,14 +55,23 @@ const ValidatorBoxItem = ({
                     <UserIcon background={true} />
                     <div>
                         <div
-                            className='name-container'
+                            className='title-container'
                             data-test-id='stakingPageValidatorItemName'
                         >
                             <a href={linkTo} target='_blank' rel='noreferrer'>
                                 {validatorId}
                             </a>
+                            {isLiquidStaking && (
+                                <span className='liquid-staking-tag'>Liquid Staking</span>
+                            )}
                         </div>
                         <div className='text-left'>
+                            {!!apy && (
+                                <span className='apy'>
+                                    {apy}% <Translate id='staking.validator.apy' />{' '}
+                                    -&nbsp;
+                                </span>
+                            )}
                             {!!fee && (
                                 <span className='fee'>
                                     {fee}% <Translate id='staking.validatorBox.fee' />{' '}
@@ -81,7 +94,6 @@ const ValidatorBoxItem = ({
                     </div>
                 </div>
                 {isSelectable && (
-                    // @ts-ignore
                     <FormButton
                         className='validator-select-button gray-blue'
                         linkTo={`/liquid-staking/${validatorId}/stake`}
@@ -131,6 +143,19 @@ const Container = styled.div`
         align-items: center;
         justify-content: space-between;
         color: #24272a;
+        cursor: pointer;
+    }
+    .title-container {
+        display: flex;
+        align-items: center;
+    }
+    .liquid-staking-tag {
+        color: #0072ce;
+        border-radius: 4px;
+        border: 1px solid #73b5ea;
+        padding: 2px 4px;
+        margin-left: 0.7em;
+        font-size: 10px;
     }
     svg {
         margin-right: 10px;
@@ -157,6 +182,7 @@ const Container = styled.div`
         height: 34px !important;
     }
 
+    .apy,
     .fee {
         color: #a7a29e;
     }
@@ -172,6 +198,7 @@ const Container = styled.div`
     }
     a {
         color: #444;
+        text-decoration: none;
     }
 `;
 
