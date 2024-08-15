@@ -182,9 +182,16 @@ const UnstakeForm = () => {
                         ])}
                         onClick={() => setUnstakeType(UnstakeType.instant)}
                     >
-                        <div className='unstake-tab__title'>Instant Unstake</div>
+                        <div className='unstake-tab__title'>
+                            <Translate id='staking.liquidStaking.instantUnstake' />
+                        </div>
                         <div className='unstake-tab__fee'>
-                            Unstake fee: {liquidValidatorData?.liquidUnstakeFee}%
+                            <Translate
+                                id='staking.liquidStaking.unstakeFee'
+                                data={{
+                                    amount: liquidValidatorData?.liquidUnstakeFee,
+                                }}
+                            />
                         </div>
                     </div>
                     <div
@@ -195,11 +202,21 @@ const UnstakeForm = () => {
                         onClick={() => setUnstakeType(UnstakeType.delayed)}
                     >
                         <div className='unstake-tab__title'>
-                            Delayed Unstake
-                            <br />
-                            In 2~6 days
+                            <Translate
+                                id='staking.liquidStaking.delayedUnstakeFeeTitle'
+                                data={{
+                                    amount: liquidValidatorData?.liquidUnstakeFee,
+                                }}
+                            />
                         </div>
-                        <div className='unstake-tab__fee'>Unstake fee: 0</div>
+                        <div className='unstake-tab__fee'>
+                            <Translate
+                                id='staking.liquidStaking.unstakeFee'
+                                data={{
+                                    amount: 0,
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
                 <ArrowCircleIcon color={'#6AD1E3'} />

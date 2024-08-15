@@ -1664,7 +1664,10 @@
             "fastUnstake": "Start Fast Unstake",
             "liquidUnstakeFee": "Liquid Unstake Fee",
             "unlockPeriod": "Delayed Unstake Unlock Period",
-            "unstakeToken": "Unstake Token"
+            "unstakeToken": "Unstake Token",
+            "instantUnstake": "Instant Unstake",
+            "unstakeFee": "Unstake fee: ${amount}%",
+            "delayedUnstakeFeeTitle": "Delayed Unstake <br />In 2~6 days"
         },
         "liquidUnstakeSuccess": {
             "button": "Return to Dashboard",

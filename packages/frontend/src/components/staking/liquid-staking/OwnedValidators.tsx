@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 
 import { selectAllowedTokens } from '../../../redux/slices/tokens';
 import ValidatorBoxItem from '../components/ValidatorBoxItem';
-import ModalUnstake from './ModalUnstake';
 import { formatNearAmount } from '../../common/balance/helpers';
 import LoadingDots from '../../common/loader/LoadingDots';
 import styled from 'styled-components';
@@ -21,11 +20,7 @@ const OwnedValidators = ({
 }) => {
     const history = useHistory();
     const allowedTokens = useSelector(selectAllowedTokens);
-    const {
-        data: liquidValidatorData,
-        isLoading,
-        refetch,
-    } = useQuery({
+    const { data: liquidValidatorData, isLoading } = useQuery({
         queryKey: ['liquidValidator', accountId, allowedTokens],
         queryFn: async () => {
             return getMetapoolValidator({
@@ -35,8 +30,6 @@ const OwnedValidators = ({
         },
         enabled: !!accountId,
     });
-
-    const [isModalVisible, setModalVisible] = useState(false);
 
     if (isLoading) {
         return <LoadingDots />;
@@ -66,14 +59,6 @@ const OwnedValidators = ({
                         Mixpanel.track('STAKE Go to staked account page');
                         history.push(`/liquid-staking/${validatorId}`);
                     }}
-                />
-            )}
-            {!!isModalVisible && (
-                <ModalUnstake
-                    isModalVisible={isModalVisible}
-                    setModalVisible={setModalVisible}
-                    liquidValidatorData={liquidValidatorData}
-                    onUnstakeCompleted={refetch}
                 />
             )}
         </Container>
