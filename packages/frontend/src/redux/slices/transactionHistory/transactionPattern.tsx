@@ -505,11 +505,11 @@ class LiquidUnStakePattern implements TxPattern {
             title: 'Liquid Unstaked',
             subtitle: `with ${data.transaction.receiver_id}`,
             assetChangeText: txUtils.formatAmountFromMeta(
-                args.st_near_to_burn,
+                args.min_expected_near,
                 nearMetadata
             ),
             assetChangeText2: txUtils.formatAmountFromMeta(
-                args.min_expected_near,
+                args.st_near_to_burn,
                 data.metaData
             ),
             status: txUtils.getTxStatus(data),

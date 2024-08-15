@@ -14,6 +14,8 @@ import { selectFarmValidatorDataIsLoading } from '../../../redux/slices/staking/
 import FormButton from '../../common/FormButton';
 import SkeletonLoading from '../../common/SkeletonLoading';
 import Tooltip from '../../common/Tooltip';
+import OwnedValidators from '../liquid-staking/OwnedValidators';
+import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 
 export default function Staking({
     currentValidators,
@@ -174,6 +176,10 @@ export default function Staking({
             ) : (
                 <SkeletonLoading height='200px' show={true} className='account-loader' />
             )}
+            <OwnedValidators
+                accountId={activeAccount.accountId}
+                validatorId={METAPOOL_CONTRACT_ID}
+            />
         </>
     );
 }
