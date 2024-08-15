@@ -531,7 +531,6 @@ class DelayedLiquidUnStakePattern implements TxPattern {
 
     display(data: TxData): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
-        console.log(args, data);
         return {
             image: imgUnStaked,
             title: 'Delayed Unstake',
