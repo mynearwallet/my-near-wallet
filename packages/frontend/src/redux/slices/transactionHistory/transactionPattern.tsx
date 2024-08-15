@@ -29,6 +29,7 @@ import imgStaked from '../../../images/tx-staked.png';
 import imgSwap from '../../../images/tx-swap.png';
 import imgUnStaked from '../../../images/tx-unstaked.png';
 import { formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
+import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 
 interface TxPattern {
     match: (data: TxData, network: ENearNetwork) => boolean;
@@ -519,6 +520,34 @@ class LiquidUnStakePattern implements TxPattern {
     }
 }
 
+class DelayedLiquidUnStakePattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return (
+            methodName === TxMethodName.unstake &&
+            data.transaction.receiver_id === METAPOOL_CONTRACT_ID
+        );
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        const args = txUtils.getFcArgs(data);
+        console.log(args, data);
+        return {
+            image: imgUnStaked,
+            title: 'Delayed Unstake',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                args.amount,
+                nearMetadata
+            ),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.send,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
 class WrapNearPattern implements TxPattern {
     match(data: TxData): boolean {
         const methodName = txUtils.getMethodName(data);
@@ -911,6 +940,7 @@ export const txPatterns: TxPattern[] = [
     new NftMintPattern(),
     new NftBuyPattern(),
     new StakePattern(),
+    new DelayedLiquidUnStakePattern(),
     new UnStakePattern(),
     new ClaimPattern(),
     new ClaimUnStakePattern(),
