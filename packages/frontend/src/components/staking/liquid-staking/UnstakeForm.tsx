@@ -62,7 +62,7 @@ const UnstakeForm = () => {
         mutationFn: async (amount: string) => {
             return await delayedUnstake({
                 contractId: METAPOOL_CONTRACT_ID,
-                amountInYocto: new BN(toYoctoNear(amount)).toString(),
+                amountInYocto: amount,
             });
         },
         mutationKey: ['delayedUnstakeMutation'],
@@ -229,7 +229,7 @@ const UnstakeForm = () => {
                     onClick={() => {
                         unstakeType === UnstakeType.instant
                             ? liquidUnstakeMutation.mutate(unstakeAmount)
-                            : delayedUnstakeMutation.mutate(unstakeAmount);
+                            : delayedUnstakeMutation.mutate(minUnstakeOutput);
                     }}
                     trackingId='STAKE/UNSTAKE Click submit stake button'
                     data-test-id='submitStakeButton'

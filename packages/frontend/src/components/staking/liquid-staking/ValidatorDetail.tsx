@@ -18,6 +18,7 @@ import { Mixpanel } from '../../../mixpanel';
 import StakeConfirmModal from '../components/StakeConfirmModal';
 import { getCachedContractMetadataOrFetch } from '../../../redux/slices/tokensMetadata';
 import { selectTokensFiatValueUSD } from '../../../redux/slices/tokenFiatValues';
+import selectNEARAsTokenWithMetadata from '../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 
 const ValidatorDetail = () => {
     const accountId = useSelector(selectAccountId);
@@ -52,6 +53,8 @@ const ValidatorDetail = () => {
         },
     });
 
+    const NEARAsTokenWithMetadata = useSelector(selectNEARAsTokenWithMetadata);
+
     const { data: liquidStakingMetadata } = useQuery({
         queryKey: ['liquidStakingMetadata', accountId, validatorId],
         queryFn: async () => {
@@ -59,14 +62,6 @@ const ValidatorDetail = () => {
         },
     });
 
-    const tokenProps = {
-        balance: liquidValidatorData?.stakedBalance || '',
-        contractName: validatorId,
-        onChainFTMetadata: liquidStakingMetadata || {},
-        fiatValueMetadata: {
-            usd: fungibleTokenPrices[validatorId]?.usd,
-        },
-    };
     return (
         <StyledContainer className='small-centered'>
             <div className='head-section'>
@@ -88,8 +83,12 @@ const ValidatorDetail = () => {
                 title='staking.balanceBox.staked.title'
                 info='staking.balanceBox.staked.info'
                 token={{
-                    ...tokenProps,
-                    balance: liquidValidatorData?.stakedBalance,
+                    balance: liquidValidatorData?.stakedBalance || '',
+                    contractName: validatorId,
+                    onChainFTMetadata: liquidStakingMetadata || {},
+                    fiatValueMetadata: {
+                        usd: fungibleTokenPrices[validatorId]?.usd,
+                    },
                 }}
                 balanceTestId='stakingPagePendingReleaseAmount'
                 loading={isLoading}
@@ -104,7 +103,7 @@ const ValidatorDetail = () => {
                 title='staking.balanceBox.pending.title'
                 info='staking.balanceBox.pending.liquidInfo'
                 token={{
-                    ...tokenProps,
+                    ...NEARAsTokenWithMetadata,
                     balance: !!liquidValidatorData?.unstakedStatus
                         ? '0'
                         : liquidValidatorData?.unstakedBalance,
@@ -117,7 +116,7 @@ const ValidatorDetail = () => {
                 title='staking.balanceBox.available.title'
                 info='staking.balanceBox.available.info'
                 token={{
-                    ...tokenProps,
+                    ...NEARAsTokenWithMetadata,
                     balance: !!liquidValidatorData?.unstakedStatus
                         ? liquidValidatorData?.unstakedBalance
                         : '0',
