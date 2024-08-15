@@ -1660,14 +1660,14 @@
         "liquidStaking": {
             "apy": "APY",
             "delayedUnstake": "Start Delayed Unstake",
+            "delayedUnstakeFeeTitle": "Delayed Unstake <br />In 2~6 days",
             "estimatedReceived": "Estimated received",
             "fastUnstake": "Start Fast Unstake",
+            "instantUnstake": "Instant Unstake",
             "liquidUnstakeFee": "Liquid Unstake Fee",
             "unlockPeriod": "Delayed Unstake Unlock Period",
-            "unstakeToken": "Unstake Token",
-            "instantUnstake": "Instant Unstake",
             "unstakeFee": "Unstake fee: ${amount}%",
-            "delayedUnstakeFeeTitle": "Delayed Unstake <br />In 2~6 days"
+            "unstakeToken": "Unstake Token"
         },
         "liquidUnstakeSuccess": {
             "button": "Return to Dashboard",
