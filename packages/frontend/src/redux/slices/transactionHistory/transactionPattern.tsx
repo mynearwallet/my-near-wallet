@@ -485,7 +485,11 @@ class StakePattern implements TxPattern {
             image: imgStaked,
             title: 'Staked',
             subtitle: `with ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(data, deposit, nearMetadata),
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                deposit,
+                nearMetadata
+            ),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.send,
             ...txUtils.defaultDisplay(data),
