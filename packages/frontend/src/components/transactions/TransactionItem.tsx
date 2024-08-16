@@ -50,7 +50,16 @@ export const TransactionItem = (
                     <div className='content-subtitle'>
                         <div className='subtitle'>{props.subtitle}</div>
                         {!!props.assetChangeText2 && (
-                            <div className='asset-change2'>{props.assetChangeText2}</div>
+                            <div
+                                className={classNames([
+                                    'asset-change2',
+                                    {
+                                        'text-green': props.dir === ETxDirection.send,
+                                    },
+                                ])}
+                            >
+                                {props.assetChangeText2}
+                            </div>
                         )}
                     </div>
                 </div>
@@ -130,6 +139,9 @@ const StyledContainer = styled(Card)`
         .asset-change2 {
             font-size: 15px;
             text-align: right;
+            &.text-green {
+                color: green;
+            }
         }
     }
     .caption-container {

@@ -107,7 +107,16 @@ const TransactionInterpretationItem = ({ transaction }: Props) => {
                     </div>
                 )}
                 {!!txUI.assetChangeText2 && (
-                    <div className='asset-change2'>{txUI.assetChangeText2}</div>
+                    <div
+                        className={classNames([
+                            'asset-change2',
+                            {
+                                'text-green': txUI.dir === ETxDirection.send,
+                            },
+                        ])}
+                    >
+                        {txUI.assetChangeText2}
+                    </div>
                 )}
             </div>
         </div>
