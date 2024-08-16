@@ -31,8 +31,7 @@ import {
 import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 import AlertBanner from '../components/common/AlertBanner';
-
-const whitelistedContracts = [];
+import whitelistedContracts from '../utils/whitelisted-contracts.json';
 
 const SignWrapper = () => {
     const dispatch = useDispatch();
