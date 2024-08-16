@@ -22,9 +22,7 @@ import FungibleTokens from '../../../services/FungibleTokens';
 import useDebouncedValue from '../../../hooks/useDebouncedValue';
 import classNames from '../../../utils/classNames';
 import { getMetapoolValidator } from './utils';
-import SuccessAction from './SuccessAction';
-import { getCachedContractMetadataOrFetch } from '../../../redux/slices/tokensMetadata';
-import { selectTokensFiatValueUSD } from '../../../redux/slices/tokenFiatValues';
+import SuccessActionContainer from './SuccessActionContainer';
 
 enum UnstakeType {
     'instant' = 'instant',
@@ -104,13 +102,6 @@ const UnstakeForm = () => {
         enabled: !!accountId,
     });
 
-    const { data: liquidStakingMetadata } = useQuery({
-        queryKey: ['liquidStakingMetadata', accountId, validatorId],
-        queryFn: async () => {
-            return getCachedContractMetadataOrFetch(validatorId, {});
-        },
-    });
-
     const { stakedBalance } = liquidValidatorData || {};
 
     const debouncedUnstakeAmount = useDebouncedValue(unstakeAmount, 500);
@@ -122,7 +113,6 @@ const UnstakeForm = () => {
 
     const insufficientBalance =
         unstakeAmount > formatNearAmount(stakedBalance) || unstakeAmount < '0';
-    const fungibleTokenPrices = useSelector(selectTokensFiatValueUSD);
 
     const handleClickMax = () => {
         const maxAmount = formatNearAmount(stakedBalance);
@@ -132,23 +122,11 @@ const UnstakeForm = () => {
     };
 
     if (isSuccess) {
-        const updatedAmount = (
-            +stakedBalance - +parseNearAmount(unstakeAmount)
-        ).toString();
         return (
-            <SuccessAction
+            <SuccessActionContainer
                 action='liquidUnstake'
-                accountId={accountId}
-                stakedAmountYocto={updatedAmount}
-                unstakedAmount={unstakeAmount}
-                token={{
-                    balance: updatedAmount || '',
-                    contractName: validatorId,
-                    onChainFTMetadata: liquidStakingMetadata || {},
-                    fiatValueMetadata: {
-                        usd: fungibleTokenPrices[validatorId]?.usd,
-                    },
-                }}
+                validatorId={validatorId}
+                changesAmount={unstakeAmount}
             />
         );
     }

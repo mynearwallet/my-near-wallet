@@ -4,7 +4,6 @@ import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router';
 import { FinalExecutionStatus } from 'near-api-js/lib/providers';
 
 import FormButton from '../../common/FormButton';
@@ -25,9 +24,12 @@ import Container from '../../common/styled/Container.css';
 import ledgerSlice from '../../../redux/slices/ledger';
 import { getBalance } from '../../../redux/actions/account';
 import { liquidStaking } from '../../../redux/actions/liquidStaking';
+import SuccessActionContainer from './SuccessActionContainer';
+
+const validatorId = METAPOOL_CONTRACT_ID;
 
 const StakingForm = () => {
-    const history = useHistory();
+    const [isSuccess, setIsSuccess] = useState(false);
     const dispatch = useDispatch();
     const [amount, setAmount] = useState('');
     const staking = useSelector(selectStakingSlice);
@@ -37,7 +39,7 @@ const StakingForm = () => {
     const liquidStakingMutation = useMutation({
         mutationFn: async (amount: string) => {
             return await liquidStaking({
-                contractId: METAPOOL_CONTRACT_ID,
+                contractId: validatorId,
                 amountInYocto: new BN(toYoctoNear(amount)).toString(),
                 accountId: currentAccount.accoundId,
             });
@@ -45,7 +47,7 @@ const StakingForm = () => {
         mutationKey: ['liquidStakingMutation', amount],
         onSuccess: (res) => {
             if ((res?.status as FinalExecutionStatus)?.SuccessValue) {
-                history.push('/staking');
+                setIsSuccess(true);
             }
         },
         onSettled: () => {
@@ -73,6 +75,16 @@ const StakingForm = () => {
             .gt(new BN(STAKING_AMOUNT_DEVIATION)) ||
         new BN(parseNearAmount(amount)).lt(new BN(LIQUID_STAKING_MIN_AMOUNT)) ||
         !isDecimalString(amount);
+
+    if (isSuccess) {
+        return (
+            <SuccessActionContainer
+                action='stake'
+                validatorId={validatorId}
+                changesAmount={amount}
+            />
+        );
+    }
 
     return (
         <Container className='small-centered'>
