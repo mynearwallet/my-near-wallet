@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router';
+import { FinalExecutionStatus } from 'near-api-js/lib/providers';
 
 import FormButton from '../../common/FormButton';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
@@ -42,8 +43,10 @@ const StakingForm = () => {
             });
         },
         mutationKey: ['liquidStakingMutation', amount],
-        onSuccess: () => {
-            history.push('/staking');
+        onSuccess: (res) => {
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue) {
+                history.push('/staking');
+            }
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
