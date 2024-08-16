@@ -140,7 +140,12 @@ const StakingForm = () => {
                 <FormButton
                     sending={liquidStakingMutation.isLoading}
                     sendingString='staking.staking.checkingValidator'
-                    disabled={!amount || amount < '1' || liquidStakingMutation.isLoading}
+                    disabled={
+                        !amount ||
+                        amount < '1' ||
+                        liquidStakingMutation.isLoading ||
+                        +amount === 0
+                    }
                     onClick={() => {
                         liquidStakingMutation.mutate(amount);
                     }}
