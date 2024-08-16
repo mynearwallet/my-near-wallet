@@ -295,7 +295,8 @@ class SwapPattern implements TxPattern {
             title: 'Swap',
             subtitle: `via ${receiverId || data.transaction.receiver_id}`,
             assetChangeText: txUtils.formatAmountFromMeta(receivedAmount, meta),
-            assetChangeText2: txUtils.formatAmountFromMeta(args.amount, data.metaData),
+            assetChangeText2:
+                '-' + txUtils.formatAmountFromMeta(args.amount, data.metaData),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             ...txUtils.defaultDisplay(data),
@@ -481,6 +482,21 @@ class StakePattern implements TxPattern {
     display(data: TxData): TransactionItemComponent {
         const deposit = data.transaction.actions[0].FunctionCall.deposit;
 
+        let returnedAmount;
+        try {
+            for (const r of data.receipts_outcome) {
+                for (const l of r.outcome?.logs || []) {
+                    if (l.includes('EVENT_JSON')) {
+                        const log = JSON.parse(l.replace('EVENT_JSON:', '') || '{}');
+                        if (log.standard === 'nep141') {
+                            returnedAmount = log.data[0].amount;
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('parse StakePattern error');
+        }
         return {
             image: imgStaked,
             title: 'Staked',
@@ -490,6 +506,9 @@ class StakePattern implements TxPattern {
                 deposit,
                 nearMetadata
             ),
+            assetChangeText2: returnedAmount
+                ? '+' + txUtils.getAmount(data, returnedAmount, nearMetadata)
+                : '',
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.send,
             ...txUtils.defaultDisplay(data),
@@ -513,10 +532,8 @@ class LiquidUnStakePattern implements TxPattern {
                 args.min_expected_near,
                 nearMetadata
             ),
-            assetChangeText2: txUtils.formatAmountFromMeta(
-                args.st_near_to_burn,
-                data.metaData
-            ),
+            assetChangeText2:
+                '-' + txUtils.formatAmountFromMeta(args.st_near_to_burn, data.metaData),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             ...txUtils.defaultDisplay(data),
@@ -542,6 +559,30 @@ class DelayedLiquidUnStakePattern implements TxPattern {
             assetChangeText: txUtils.getAmount(
                 { ...data, metaData: null },
                 args.amount,
+                nearMetadata
+            ),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.send,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
+class NearDepositPattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return methodName === TxMethodName.near_deposit;
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        const deposit = data.transaction.actions[0]?.FunctionCall?.deposit;
+        return {
+            image: imgAppInteraction,
+            title: 'Near Deposit',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                deposit,
                 nearMetadata
             ),
             status: txUtils.getTxStatus(data),
@@ -948,6 +989,7 @@ export const txPatterns: TxPattern[] = [
     new ClaimPattern(),
     new ClaimUnStakePattern(),
     new LiquidUnStakePattern(),
+    new NearDepositPattern(),
     new WrapNearPattern(),
     new UnwrapNearPattern(),
     new AddKeyPattern(),

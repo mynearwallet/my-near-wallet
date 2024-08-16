@@ -50,7 +50,7 @@ export const TransactionItem = (
                     <div className='content-subtitle'>
                         <div className='subtitle'>{props.subtitle}</div>
                         {!!props.assetChangeText2 && (
-                            <div className='asset-change2'>-{props.assetChangeText2}</div>
+                            <div className='asset-change2'>{props.assetChangeText2}</div>
                         )}
                     </div>
                 </div>

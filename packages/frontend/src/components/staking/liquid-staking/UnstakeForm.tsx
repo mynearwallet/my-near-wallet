@@ -67,8 +67,10 @@ const UnstakeForm = () => {
             });
         },
         mutationKey: ['delayedUnstakeMutation'],
-        onSuccess: () => {
-            setIsSuccess(true);
+        onSuccess: (res) => {
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue) {
+                setIsSuccess(true);
+            }
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());

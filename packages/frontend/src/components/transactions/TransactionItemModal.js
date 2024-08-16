@@ -70,7 +70,7 @@ const TransactionItemModal = () => {
                                     </span>
                                 )}
                                 {!!tx.assetChangeText2 && (
-                                    <span className='desc'>-{tx.assetChangeText2}</span>
+                                    <span className='desc'>{tx.assetChangeText2}</span>
                                 )}
                             </div>
                         </div>
