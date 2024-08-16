@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation, useQuery } from 'react-query';
 import styled from 'styled-components';
+import { FinalExecutionStatus } from 'near-api-js/lib/providers';
 
 import FormButton from '../../common/FormButton';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
@@ -49,8 +50,10 @@ const UnstakeForm = () => {
             });
         },
         mutationKey: ['liquidUnstakeMutation'],
-        onSuccess: () => {
-            setIsSuccess(true);
+        onSuccess: (res) => {
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue) {
+                setIsSuccess(true);
+            }
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
