@@ -48,8 +48,10 @@ const ValidatorDetail = () => {
             });
         },
         mutationKey: ['liquidWithdrawAllMutation', accountId, validatorId],
-        onSuccess: () => {
-            history.push('/staking');
+        onSuccess: (res) => {
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue !== undefined) {
+                history.push('/staking');
+            }
         },
     });
 
