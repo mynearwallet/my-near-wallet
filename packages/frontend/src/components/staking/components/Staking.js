@@ -158,6 +158,10 @@ export default function Staking({
             <h3>
                 <Translate id='staking.staking.currentValidators' />
             </h3>
+            <OwnedValidators
+                accountId={activeAccount.accountId}
+                validatorId={METAPOOL_CONTRACT_ID}
+            />
             {!loadingDetails ? (
                 currentValidators.length ? (
                     <ListWrapper>
@@ -176,10 +180,6 @@ export default function Staking({
             ) : (
                 <SkeletonLoading height='200px' show={true} className='account-loader' />
             )}
-            <OwnedValidators
-                accountId={activeAccount.accountId}
-                validatorId={METAPOOL_CONTRACT_ID}
-            />
         </>
     );
 }

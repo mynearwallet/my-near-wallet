@@ -121,6 +121,13 @@ const UnstakeForm = () => {
         unstakeAmount > formatNearAmount(stakedBalance) || unstakeAmount < '0';
     const fungibleTokenPrices = useSelector(selectTokensFiatValueUSD);
 
+    const handleClickMax = () => {
+        const maxAmount = formatNearAmount(stakedBalance);
+        if (+maxAmount >= 0) {
+            setUnstakeAmount(maxAmount);
+        }
+    };
+
     if (isSuccess) {
         const updatedAmount = (
             +stakedBalance - +parseNearAmount(unstakeAmount)
@@ -152,12 +159,21 @@ const UnstakeForm = () => {
                 <h2>
                     <Translate id={'staking.unstake.desc'} />
                 </h2>
+                <FormButton
+                    onClick={handleClickMax}
+                    type='button'
+                    color='light-blue'
+                    className='max-button small'
+                >
+                    <Translate id='button.useMax' />
+                </FormButton>
                 <AmountInput
                     action={'unstake'}
                     value={unstakeAmount}
                     onChange={setUnstakeAmount}
                     valid={!unstakeAmount || !insufficientBalance}
                     availableBalance={stakedBalance}
+                    availableClick={handleClickMax}
                     insufficientBalance={insufficientBalance}
                     disabled={false}
                     stakeFromAccount={true}
@@ -285,5 +301,10 @@ const StyledContainer = styled(Container)`
     .unstake-tab__item.active {
         border: 1px solid #148402;
         color: #148402;
+    }
+    &&& {
+        .max-button {
+            margin-top: 1em;
+        }
     }
 `;
