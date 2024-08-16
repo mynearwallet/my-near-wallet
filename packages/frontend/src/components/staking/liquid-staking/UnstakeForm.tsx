@@ -49,7 +49,7 @@ const UnstakeForm = () => {
         },
         mutationKey: ['liquidUnstakeMutation'],
         onSuccess: (res) => {
-            if ((res?.status as FinalExecutionStatus)?.SuccessValue) {
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue !== undefined) {
                 setIsSuccess(true);
             }
         },
@@ -68,7 +68,8 @@ const UnstakeForm = () => {
         },
         mutationKey: ['delayedUnstakeMutation'],
         onSuccess: (res) => {
-            if ((res?.status as FinalExecutionStatus)?.SuccessValue) {
+            // result can be empty string
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue !== undefined) {
                 setIsSuccess(true);
             }
         },
