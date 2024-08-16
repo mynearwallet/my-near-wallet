@@ -81,9 +81,6 @@ const StakingForm = () => {
                     <Translate id={'staking.stake.desc'} />
                 </h2>
                 <div className='amount-header-wrapper'>
-                    <h4>
-                        <Translate id='staking.stake.amount' />
-                    </h4>
                     <FormButton
                         className='small'
                         color='light-blue'
