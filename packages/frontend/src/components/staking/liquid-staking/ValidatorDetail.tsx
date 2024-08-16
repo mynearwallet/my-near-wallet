@@ -25,7 +25,7 @@ const ValidatorDetail = () => {
     const history = useHistory();
     const params = useParams();
     const dispatch = useDispatch();
-    const validatorId = params.validator;
+    const validatorId = params.validatorId;
     const fungibleTokenPrices = useSelector(selectTokensFiatValueUSD);
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -48,8 +48,10 @@ const ValidatorDetail = () => {
             });
         },
         mutationKey: ['liquidWithdrawAllMutation', accountId, validatorId],
-        onSuccess: () => {
-            history.push('/staking');
+        onSuccess: (res) => {
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue !== undefined) {
+                history.push('/staking');
+            }
         },
     });
 

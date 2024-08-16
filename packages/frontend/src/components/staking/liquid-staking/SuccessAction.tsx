@@ -9,7 +9,7 @@ import styled from 'styled-components';
 type Props = {
     action: 'stake' | 'unstake' | 'liquidUnstake';
     stakedAmountYocto: string;
-    unstakedAmount: string;
+    changesAmount: string;
     accountId: string;
     token: any;
 };
@@ -17,7 +17,7 @@ type Props = {
 const SuccessAction = ({
     action,
     stakedAmountYocto = '',
-    unstakedAmount = '',
+    changesAmount = '',
     accountId,
     token,
 }: Props) => {
@@ -31,7 +31,7 @@ const SuccessAction = ({
                 <Translate
                     id={`staking.${action}Success.desc`}
                     data={{
-                        amount: `${unstakedAmount} ${token.onChainFTMetadata?.symbol}`,
+                        amount: `${changesAmount} ${token.onChainFTMetadata?.symbol}`,
                     }}
                 />
             </div>

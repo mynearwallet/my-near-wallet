@@ -4,7 +4,8 @@ import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation } from 'react-query';
-import { useHistory } from 'react-router';
+import { FinalExecutionStatus } from 'near-api-js/lib/providers';
+import { useParams } from 'react-router';
 
 import FormButton from '../../common/FormButton';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
@@ -24,26 +25,30 @@ import Container from '../../common/styled/Container.css';
 import ledgerSlice from '../../../redux/slices/ledger';
 import { getBalance } from '../../../redux/actions/account';
 import { liquidStaking } from '../../../redux/actions/liquidStaking';
+import SuccessActionContainer from './SuccessActionContainer';
 
 const StakingForm = () => {
-    const history = useHistory();
+    const [isSuccess, setIsSuccess] = useState(false);
     const dispatch = useDispatch();
     const [amount, setAmount] = useState('');
     const staking = useSelector(selectStakingSlice);
     const availableBalance = useSelector(selectAvailableBalance);
+    const { validatorId }: { validatorId: string } = useParams();
     const { currentAccount } = staking;
 
     const liquidStakingMutation = useMutation({
         mutationFn: async (amount: string) => {
             return await liquidStaking({
-                contractId: METAPOOL_CONTRACT_ID,
+                contractId: validatorId,
                 amountInYocto: new BN(toYoctoNear(amount)).toString(),
                 accountId: currentAccount.accoundId,
             });
         },
         mutationKey: ['liquidStakingMutation', amount],
-        onSuccess: () => {
-            history.push('/staking');
+        onSuccess: (res) => {
+            if ((res?.status as FinalExecutionStatus)?.SuccessValue) {
+                setIsSuccess(true);
+            }
         },
         onSettled: () => {
             dispatch(ledgerSlice.actions.hideLedgerModal());
@@ -70,6 +75,16 @@ const StakingForm = () => {
             .gt(new BN(STAKING_AMOUNT_DEVIATION)) ||
         new BN(parseNearAmount(amount)).lt(new BN(LIQUID_STAKING_MIN_AMOUNT)) ||
         !isDecimalString(amount);
+
+    if (isSuccess) {
+        return (
+            <SuccessActionContainer
+                action='stake'
+                validatorId={validatorId}
+                changesAmount={amount}
+            />
+        );
+    }
 
     return (
         <Container className='small-centered'>
@@ -125,7 +140,12 @@ const StakingForm = () => {
                 <FormButton
                     sending={liquidStakingMutation.isLoading}
                     sendingString='staking.staking.checkingValidator'
-                    disabled={!amount || amount < '1' || liquidStakingMutation.isLoading}
+                    disabled={
+                        !amount ||
+                        amount < '1' ||
+                        liquidStakingMutation.isLoading ||
+                        +amount === 0
+                    }
                     onClick={() => {
                         liquidStakingMutation.mutate(amount);
                     }}
