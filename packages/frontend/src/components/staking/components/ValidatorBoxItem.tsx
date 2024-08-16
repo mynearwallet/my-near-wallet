@@ -136,7 +136,7 @@ const ValidatorBoxItem = ({
 export default ValidatorBoxItem;
 
 const Container = styled.div`
-    border-top: 2px solid #f2f2f2;
+    border-bottom: 2px solid #f2f2f2;
     padding: 1em 0;
     .validator-box {
         display: flex;
