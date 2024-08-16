@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useMutation } from 'react-query';
 import { FinalExecutionStatus } from 'near-api-js/lib/providers';
+import { useParams } from 'react-router';
 
 import FormButton from '../../common/FormButton';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
@@ -26,14 +27,13 @@ import { getBalance } from '../../../redux/actions/account';
 import { liquidStaking } from '../../../redux/actions/liquidStaking';
 import SuccessActionContainer from './SuccessActionContainer';
 
-const validatorId = METAPOOL_CONTRACT_ID;
-
 const StakingForm = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const dispatch = useDispatch();
     const [amount, setAmount] = useState('');
     const staking = useSelector(selectStakingSlice);
     const availableBalance = useSelector(selectAvailableBalance);
+    const { validatorId }: { validatorId: string } = useParams();
     const { currentAccount } = staking;
 
     const liquidStakingMutation = useMutation({

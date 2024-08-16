@@ -6,6 +6,7 @@ import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useMutation, useQuery } from 'react-query';
 import styled from 'styled-components';
 import { FinalExecutionStatus } from 'near-api-js/lib/providers';
+import { useParams } from 'react-router';
 
 import FormButton from '../../common/FormButton';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
@@ -29,8 +30,6 @@ enum UnstakeType {
     'delayed' = 'delayed',
 }
 
-const validatorId = METAPOOL_CONTRACT_ID;
-
 const UnstakeForm = () => {
     const dispatch = useDispatch();
     const [unstakeAmount, setUnstakeAmount] = useState('');
@@ -38,6 +37,7 @@ const UnstakeForm = () => {
     const [minUnstakeOutput, setMinUnstakeOutput] = useState('');
     const [unstakeType, setUnstakeType] = useState(UnstakeType.instant);
     const accountId = useSelector(selectAccountId);
+    const { validatorId }: { validatorId: string } = useParams();
 
     const liquidUnstakeMutation = useMutation({
         mutationFn: async (amount: string) => {

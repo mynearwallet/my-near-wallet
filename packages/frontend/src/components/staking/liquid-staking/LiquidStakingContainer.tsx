@@ -26,17 +26,17 @@ const LiquidStakingContainer = () => {
             <Switch>
                 <Route
                     exact
-                    path='/liquid-staking/:validator'
+                    path='/liquid-staking/:validatorId'
                     render={(props) => <ValidatorDetail {...props} />}
                 />
                 <Route
                     exact
-                    path='/liquid-staking/:validator/stake'
+                    path='/liquid-staking/:validatorId/stake'
                     render={(props) => <StakingForm {...props} />}
                 />
                 <Route
                     exact
-                    path='/liquid-staking/:validator/unstake'
+                    path='/liquid-staking/:validatorId/unstake'
                     render={(props) => <UnstakeForm {...props} />}
                 />
             </Switch>
