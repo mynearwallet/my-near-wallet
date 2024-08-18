@@ -6,6 +6,7 @@ import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useMutation } from 'react-query';
 import { FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { useParams } from 'react-router';
+import styled from 'styled-components';
 
 import FormButton from '../../common/FormButton';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
@@ -87,7 +88,7 @@ const StakingForm = () => {
     }
 
     return (
-        <Container className='small-centered'>
+        <StyledContainer className='small-centered'>
             <div className='send-theme'>
                 <h1>
                     <Translate id={'staking.stake.title'} />
@@ -96,13 +97,16 @@ const StakingForm = () => {
                     <Translate id={'staking.stake.desc'} />
                 </h2>
                 <div className='amount-header-wrapper'>
+                    <h4>
+                        <Translate id='staking.stake.amount' />
+                    </h4>
                     <FormButton
-                        className='small'
-                        color='light-blue'
                         onClick={handleSetMax}
-                        data-test-id='stakingPageUseMaxButton'
+                        type='button'
+                        color='light-blue'
+                        className='max-button small'
                     >
-                        <Translate id='staking.stake.useMax' />
+                        <Translate id='button.useMax' />
                     </FormButton>
                 </div>
                 <AmountInput
@@ -155,8 +159,24 @@ const StakingForm = () => {
                     <Translate id={'staking.stake.button'} />
                 </FormButton>
             </div>
-        </Container>
+        </StyledContainer>
     );
 };
 
 export default StakingForm;
+
+const StyledContainer = styled(Container)`
+    &&& {
+        .max-button {
+            margin: 0;
+        }
+    }
+    .amount-header-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .validator-box-container {
+        border-top: 2px solid #f2f2f2;
+    }
+`;

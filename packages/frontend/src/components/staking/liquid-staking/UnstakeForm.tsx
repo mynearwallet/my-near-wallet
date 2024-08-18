@@ -144,14 +144,19 @@ const UnstakeForm = () => {
                 <h2>
                     <Translate id={'staking.unstake.desc'} />
                 </h2>
-                <FormButton
-                    onClick={handleClickMax}
-                    type='button'
-                    color='light-blue'
-                    className='max-button small'
-                >
-                    <Translate id='button.useMax' />
-                </FormButton>
+                <div className='amount-header-wrapper'>
+                    <h4>
+                        <Translate id='staking.stake.amount' />
+                    </h4>
+                    <FormButton
+                        onClick={handleClickMax}
+                        type='button'
+                        color='light-blue'
+                        className='max-button small'
+                    >
+                        <Translate id='button.useMax' />
+                    </FormButton>
+                </div>
                 <AmountInput
                     action={'unstake'}
                     value={unstakeAmount}
@@ -287,6 +292,14 @@ const StyledContainer = styled(Container)`
     .unstake-tab__item.active {
         border: 1px solid #148402;
         color: #148402;
+    }
+    .amount-header-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .validator-box-container {
+        border-top: 2px solid #f2f2f2;
     }
     &&& {
         .max-button {
