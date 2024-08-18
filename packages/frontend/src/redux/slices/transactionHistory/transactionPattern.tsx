@@ -552,25 +552,32 @@ class DelayedLiquidUnStakePattern implements TxPattern {
 
     display(data: TxData): TransactionItemComponent {
         let amount = '0';
-        try {
-            for (const r of data.receipts_outcome) {
-                for (const l of r.outcome?.logs || []) {
-                    if (l.includes('EVENT_JSON')) {
-                        const log = JSON.parse(l.replace('EVENT_JSON:', '') || '{}');
-                        if (log.standard === 'nep141') {
-                            amount = log.data[0].amount;
+        if (data.isPreTransaction) {
+            const args = txUtils.getFcArgs(data);
+            amount = args.amount;
+        } else {
+            try {
+                for (const r of data.receipts_outcome) {
+                    for (const l of r.outcome?.logs || []) {
+                        if (l.includes('EVENT_JSON')) {
+                            const log = JSON.parse(l.replace('EVENT_JSON:', '') || '{}');
+                            if (log.standard === 'nep141') {
+                                amount = log.data[0].amount;
+                            }
                         }
                     }
                 }
+            } catch (err) {
+                console.error('parse delayed unstake log error');
             }
-        } catch (err) {
-            console.error('parse nft mint log error');
         }
         return {
             image: imgUnStaked,
             title: 'Delayed Unstake',
             subtitle: `with ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(data, amount, nearMetadata),
+            assetChangeText: data.isPreTransaction
+                ? txUtils.getAmount({ ...data, metaData: null }, amount, nearMetadata)
+                : txUtils.getAmount(data, amount, nearMetadata),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.send,
             ...txUtils.defaultDisplay(data),

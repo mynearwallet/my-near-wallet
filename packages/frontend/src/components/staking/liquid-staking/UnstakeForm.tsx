@@ -38,7 +38,6 @@ const UnstakeForm = () => {
     const [unstakeType, setUnstakeType] = useState(UnstakeType.instant);
     const accountId = useSelector(selectAccountId);
     const { validatorId }: { validatorId: string } = useParams();
-    console.log({ unstakeAmount });
 
     const liquidUnstakeMutation = useMutation({
         mutationFn: async (amount: string) => {

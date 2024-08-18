@@ -68,6 +68,7 @@ const TransactionExecutorModal = () => {
                                 receipts: [],
                                 metaData: {},
                                 status: {},
+                                isPreTransaction: true,
                             },
                             accountId,
                             CONFIG.CURRENT_NEAR_NETWORK
