@@ -750,13 +750,15 @@ class ClaimUnStakePattern implements TxPattern {
             image: imgClaim,
             title: 'Claim Unstaked Near',
             subtitle: `from ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(
-                isMetapool ? { ...data, metaData: null } : data,
-                amount,
-                isMetapool ? nearMetadata : metaData
-            ),
+            assetChangeText: data.isPreTransaction
+                ? ''
+                : txUtils.getAmount(
+                      isMetapool ? { ...data, metaData: null } : data,
+                      amount,
+                      isMetapool ? nearMetadata : metaData
+                  ),
             status: txUtils.getTxStatus(data),
-            dir: ETxDirection.receive,
+            ...(!data.isPreTransaction && { dir: ETxDirection.receive }),
             ...txUtils.defaultDisplay(data),
         };
     }
