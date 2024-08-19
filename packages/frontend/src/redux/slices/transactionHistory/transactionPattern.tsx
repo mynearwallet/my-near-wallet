@@ -734,11 +734,12 @@ class ClaimUnStakePattern implements TxPattern {
         let amount = '0';
         let metaData = {};
 
+        const isMetapool = data.transaction.receiver_id === METAPOOL_CONTRACT_ID;
         for (const r of data.receipts) {
             const transfer = r.receipt.Action?.actions?.[0]?.Transfer;
             if (transfer?.deposit) {
                 amount = transfer.deposit;
-                if (r.metaData) {
+                if (r.metaData && !isMetapool) {
                     metaData = r.metaData;
                 }
                 break;
@@ -749,7 +750,11 @@ class ClaimUnStakePattern implements TxPattern {
             image: imgClaim,
             title: 'Claim Unstaked Near',
             subtitle: `from ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(data, amount, metaData),
+            assetChangeText: txUtils.getAmount(
+                isMetapool ? { ...data, metaData: null } : data,
+                amount,
+                isMetapool ? nearMetadata : metaData
+            ),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             ...txUtils.defaultDisplay(data),
