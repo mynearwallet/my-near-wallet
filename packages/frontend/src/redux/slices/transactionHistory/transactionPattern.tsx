@@ -551,16 +551,33 @@ class DelayedLiquidUnStakePattern implements TxPattern {
     }
 
     display(data: TxData): TransactionItemComponent {
-        const args = txUtils.getFcArgs(data);
+        let amount = '0';
+        if (data.isPreTransaction) {
+            const args = txUtils.getFcArgs(data);
+            amount = args.amount;
+        } else {
+            try {
+                for (const r of data.receipts_outcome) {
+                    for (const l of r.outcome?.logs || []) {
+                        if (l.includes('EVENT_JSON')) {
+                            const log = JSON.parse(l.replace('EVENT_JSON:', '') || '{}');
+                            if (log.standard === 'nep141') {
+                                amount = log.data[0].amount;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('parse delayed unstake log error');
+            }
+        }
         return {
             image: imgUnStaked,
             title: 'Delayed Unstake',
             subtitle: `with ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(
-                { ...data, metaData: null },
-                args.amount,
-                nearMetadata
-            ),
+            assetChangeText: data.isPreTransaction
+                ? txUtils.getAmount({ ...data, metaData: null }, amount, nearMetadata)
+                : txUtils.getAmount(data, amount, nearMetadata),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.send,
             ...txUtils.defaultDisplay(data),
@@ -717,11 +734,12 @@ class ClaimUnStakePattern implements TxPattern {
         let amount = '0';
         let metaData = {};
 
+        const isMetapool = data.transaction.receiver_id === METAPOOL_CONTRACT_ID;
         for (const r of data.receipts) {
             const transfer = r.receipt.Action?.actions?.[0]?.Transfer;
             if (transfer?.deposit) {
                 amount = transfer.deposit;
-                if (r.metaData) {
+                if (r.metaData && !isMetapool) {
                     metaData = r.metaData;
                 }
                 break;
@@ -732,9 +750,15 @@ class ClaimUnStakePattern implements TxPattern {
             image: imgClaim,
             title: 'Claim Unstaked Near',
             subtitle: `from ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(data, amount, metaData),
+            assetChangeText: data.isPreTransaction
+                ? ''
+                : txUtils.getAmount(
+                      isMetapool ? { ...data, metaData: null } : data,
+                      amount,
+                      isMetapool ? nearMetadata : metaData
+                  ),
             status: txUtils.getTxStatus(data),
-            dir: ETxDirection.receive,
+            ...(!data.isPreTransaction && { dir: ETxDirection.receive }),
             ...txUtils.defaultDisplay(data),
         };
     }

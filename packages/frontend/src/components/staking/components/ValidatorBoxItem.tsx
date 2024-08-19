@@ -45,7 +45,7 @@ const ValidatorBoxItem = ({
 }: Props) => {
     const history = useHistory();
     return (
-        <Container>
+        <Container className='validator-box-container'>
             <div
                 onClick={onClick}
                 className='validator-box'
