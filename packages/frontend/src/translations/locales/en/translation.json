@@ -1558,7 +1558,7 @@
         "unknownApp": "Unknown App",
         "wasTransferredSuccessfully": "was transferred successfully",
         "whitelistedContract": {
-            "warning": "These smart contract is not whitelisted (${data}). Understand the risks before proceeding.",
+            "warning": "Warning: The smart contract you are interacting with is not whitelisted (${data}).<br/>Please be aware of the potential risks and proceed with caution.",
             "link": "You can request to add a new smart contract to the whitelist here"
         }
     },
