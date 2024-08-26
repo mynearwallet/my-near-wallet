@@ -1739,6 +1739,7 @@
         "validator": {
             "activeStake": "Active Stake",
             "apy": "APY",
+            "farmApy": "Farm APY",
             "button": "Stake With Validator",
             "claimFarmRewards": "You are claiming",
             "claiming": "Claiming",
