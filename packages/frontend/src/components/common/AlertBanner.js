@@ -101,9 +101,17 @@ const Container = styled.div`
     }
 `;
 
-export default function AlertBanner({ title, button, linkTo, data, theme, children }) {
+export default function AlertBanner({
+    title,
+    button,
+    linkTo,
+    data,
+    theme,
+    style,
+    children,
+}) {
     return (
-        <Container className={classNames(['alert-banner', theme])}>
+        <Container className={classNames(['alert-banner', theme])} style={style}>
             {theme !== 'warning' ? <AlertRoundedIcon /> : <AlertTriangleIcon />}
             <div>
                 {title && <SafeTranslate id={title} data={{ data: data }} />}
