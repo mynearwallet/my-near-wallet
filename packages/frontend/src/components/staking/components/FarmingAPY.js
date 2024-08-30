@@ -40,7 +40,7 @@ const Container = styled.div`
 export function FarmingAPY({ apy, hideTooltip }) {
     return (
         <Container className='farming-apy'>
-            <Translate id='staking.validator.apy' />
+            <Translate id='staking.validator.farmApy' />
             {!hideTooltip && <Tooltip translate='staking.balanceBox.farm.info' />}
             <span className='fee'>{apy}%</span>
         </Container>
