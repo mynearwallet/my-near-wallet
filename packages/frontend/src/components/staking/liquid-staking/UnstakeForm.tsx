@@ -24,6 +24,8 @@ import useDebouncedValue from '../../../hooks/useDebouncedValue';
 import classNames from '../../../utils/classNames';
 import { getMetapoolValidator } from './utils';
 import SuccessActionContainer from './SuccessActionContainer';
+import { Mixpanel } from '../../../mixpanel';
+import isDecimalString from '../../../utils/isDecimalString';
 
 enum UnstakeType {
     'instant' = 'instant',
@@ -114,14 +116,23 @@ const UnstakeForm = () => {
         }
     }, [debouncedUnstakeAmount]);
 
-    const insufficientBalance =
-        unstakeAmount > formatNearAmount(stakedBalance) || unstakeAmount < '0';
+    const [isUseMax, setUseMax] = useState(false);
+    const displayAmount = isUseMax
+        ? formatNearAmount(stakedBalance, 5).replace(/,/g, '')
+        : unstakeAmount;
+    const invalidStakeActionAmount =
+        new BN(isUseMax ? stakedBalance : parseNearAmount(unstakeAmount))
+            .sub(new BN(stakedBalance))
+            .gt(new BN(0)) || !isDecimalString(unstakeAmount);
 
     const handleClickMax = () => {
-        const maxAmount = formatNearAmount(stakedBalance);
-        if (+maxAmount >= 0) {
-            setUnstakeAmount(maxAmount);
+        const isPositiveValue = new BN(stakedBalance).gt(new BN('0'));
+
+        if (isPositiveValue) {
+            setUnstakeAmount(formatNearAmount(stakedBalance, 5).replace(/,/g, ''));
+            setUseMax(true);
         }
+        Mixpanel.track('STAKE/UNSTAKE Use max token');
     };
 
     if (isSuccess) {
@@ -158,12 +169,15 @@ const UnstakeForm = () => {
                 </div>
                 <AmountInput
                     action={'unstake'}
-                    value={unstakeAmount}
-                    onChange={setUnstakeAmount}
-                    valid={!unstakeAmount || !insufficientBalance}
+                    value={displayAmount}
+                    onChange={(am) => {
+                        setUnstakeAmount(am);
+                        setUseMax(false);
+                    }}
+                    valid={!unstakeAmount || !invalidStakeActionAmount}
                     availableBalance={stakedBalance}
                     availableClick={handleClickMax}
-                    insufficientBalance={insufficientBalance}
+                    insufficientBalance={!!unstakeAmount && invalidStakeActionAmount}
                     disabled={false}
                     stakeFromAccount={true}
                     inputTestId='stakingAmountInput'
@@ -243,7 +257,7 @@ const UnstakeForm = () => {
                     sending={liquidUnstakeMutation.isLoading}
                     sendingString='staking.staking.checkingValidator'
                     disabled={
-                        insufficientBalance ||
+                        invalidStakeActionAmount ||
                         liquidUnstakeMutation.isLoading ||
                         delayedUnstakeMutation.isLoading ||
                         !unstakeAmount ||
