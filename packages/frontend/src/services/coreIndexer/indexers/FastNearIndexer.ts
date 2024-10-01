@@ -49,7 +49,7 @@ export class FastNearIndexer extends AbstractCoreIndexer {
         const result = await fetch(
             `${this.getBaseUrl()}/account/${accountId}/staking`
         ).then((r) => r.json());
-        return result.contract_ids || [];
+        return result.pools || [];
     }
 
     async getValidatorList(): Promise<string[]> {
