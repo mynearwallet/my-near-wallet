@@ -6,13 +6,17 @@ import { actions as ledgerActions } from '../../../redux/slices/ledger';
 import FormButton from '../../common/FormButton';
 import UserIconGrey from '../../../images/UserIconGrey';
 import IconCheck from '../../../images/IconCheck';
+import { makeAccountActive, refreshAccount } from '../../../redux/actions/account';
+import { wallet } from '../../../utils/wallet';
 
 type Props = {
-    ledgerHdPath: string;
-    ledgerAccounts: string[];
+    ledgerHdPath?: string;
+    accounts: { accountId: string; newKeyPair: string | null }[];
+    onSuccess?: () => void;
 };
 
-const SelectAccountImport = ({ ledgerHdPath, ledgerAccounts }: Props) => {
+const SelectAccountImport = ({ ledgerHdPath, accounts, onSuccess }: Props) => {
+    const accountIds = accounts.map((item) => item.accountId);
     const dispatch = useDispatch();
     const [selectedAccounts, setSelectedAccounts] = useState(
         {} as { [key: string]: boolean }
@@ -34,14 +38,29 @@ const SelectAccountImport = ({ ledgerHdPath, ledgerAccounts }: Props) => {
 
     async function handleSubmit() {
         setSubmitLoading(true);
-        await dispatch(ledgerActions.showImportLedgerList(selectedAccountIds));
-        await dispatch(
+        if (ledgerHdPath) {
+            await dispatch(ledgerActions.showImportLedgerList(selectedAccountIds));
+            await dispatch(
+                // @ts-ignore
+                ledgerActions.signInWithLedgerAddAndSaveAccounts({
+                    path: ledgerHdPath,
+                    accountIds: selectedAccountIds,
+                })
+            );
+        } else {
+            await Promise.all(
+                selectedAccountIds.map(async (accountId) => {
+                    const acc = accounts.find((item) => item.accountId === accountId);
+                    await wallet.saveAccount(accountId, acc.newKeyPair);
+                })
+            );
+
+            const accountId = selectedAccountIds[selectedAccountIds.length - 1];
+            await dispatch(makeAccountActive(accountId));
             // @ts-ignore
-            ledgerActions.signInWithLedgerAddAndSaveAccounts({
-                path: ledgerHdPath,
-                accountIds: selectedAccountIds,
-            })
-        );
+            await dispatch(refreshAccount());
+            onSuccess?.();
+        }
         setSubmitLoading(false);
     }
 
@@ -54,7 +73,7 @@ const SelectAccountImport = ({ ledgerHdPath, ledgerAccounts }: Props) => {
                 <Translate id={'importAccount.selectAccount'} />
             </div>
             <div className='account-select__wrapper'>
-                {ledgerAccounts.map((accountId) => {
+                {accountIds.map((accountId) => {
                     const isSelected = !!selectedAccounts[accountId];
                     return (
                         <StyledCard
@@ -78,6 +97,8 @@ const SelectAccountImport = ({ ledgerHdPath, ledgerAccounts }: Props) => {
             <FormButton
                 disabled={isSubmitLoading || !selectedAccountIds.length}
                 onClick={handleSubmit}
+                className='small'
+                sending={isSubmitLoading}
             >
                 <Translate id='button.continue' />
             </FormButton>
@@ -117,6 +138,7 @@ const StyledCard = styled.div<{ isSelected: boolean }>`
     cursor: pointer;
     display: flex;
     align-items: center;
+    word-break: break-word;
     &:hover {
         background-color: #fafafa;
     }
