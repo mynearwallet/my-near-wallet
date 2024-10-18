@@ -1739,12 +1739,12 @@
         "validator": {
             "activeStake": "Active Stake",
             "apy": "APY",
-            "farmApy": "Farm APY",
             "button": "Stake With Validator",
             "claimFarmRewards": "You are claiming",
             "claiming": "Claiming",
             "desc": "This is the fee paid to the validator to stake on your behalf. This fee is only charged on your rewards.",
             "errorClaimRewards": "Something went wrong during claiming your farm rewards. Please, try again later",
+            "farmApy": "Farm APY",
             "fee": "Validator Fee",
             "liquidWithdrawalDisclaimer": "Funds pending release will be made available after ~2-6 days",
             "notWhitelistedTokenWarning": "This token has not been whitelisted by ref-finance. Proceed at your own risk.",
