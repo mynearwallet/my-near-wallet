@@ -201,19 +201,19 @@ export default function ValidatorBox({
                     <div className='text-left'>
                         {isFarmingValidator && (
                             <>
-                                <span>
-                                    <Translate id='staking.validator.apy' />
-                                    &nbsp;
-                                </span>
                                 {farmAPY === null && validator.active ? (
                                     <span
                                         className='animated-dots'
                                         style={{ width: 16 }}
                                     />
                                 ) : (
-                                    <span>{farmAPY || 0}</span>
+                                    <span>{farmAPY || 0}%&nbsp;</span>
                                 )}
-                                <span>%&nbsp;-&nbsp;</span>
+                                <span>
+                                    <Translate id='staking.validator.farmApy' />
+                                    &nbsp;
+                                </span>
+                                <span>-&nbsp;</span>
                             </>
                         )}
                         <span>

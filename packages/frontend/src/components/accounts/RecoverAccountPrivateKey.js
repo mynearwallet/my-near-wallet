@@ -29,6 +29,7 @@ import Container from '../common/styled/Container.css';
 import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
 import { EWalletImportInputType } from './manual_import/type';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
+import SelectAccountImport from './ledger/SelectAccountImport';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -56,6 +57,7 @@ const StyledContainer = styled(Container)`
 const RecoverAccountPrivateKey = () => {
     const [privateKey, setPrivateKey] = useState('');
     const [recoveringAccount, setRecoveringAccount] = useState(false);
+    const [accountIdsSuccess, setAccountIdsSuccess] = useState([]);
     const localAlert = useSelector(selectStatusLocalAlert);
     const location = useLocation();
     const dispatch = useDispatch();
@@ -76,12 +78,19 @@ const RecoverAccountPrivateKey = () => {
             );
             return;
         }
+        let withRedirectToApp = true;
         await Mixpanel.withTracking(
             'IE-SP Recovery with private key',
             async () => {
                 setRecoveringAccount(true);
-                await dispatch(recoverAccountSecretKey(privateKey));
-                await dispatch(refreshAccount());
+                const { accountIdsSuccess } = await dispatch(
+                    recoverAccountSecretKey(privateKey, null, true, true, true)
+                );
+                withRedirectToApp = !accountIdsSuccess.length;
+                setAccountIdsSuccess(accountIdsSuccess);
+                if (withRedirectToApp) {
+                    await dispatch(refreshAccount());
+                }
             },
             async (e) => {
                 if (e.data?.errorCode === 'accountNotExist') {
@@ -105,6 +114,11 @@ const RecoverAccountPrivateKey = () => {
             }
         );
 
+        handleRedirect(withRedirectToApp);
+        dispatch(clearAccountState());
+    };
+
+    function handleRedirect(withRedirectToApp) {
         const fundWithExistingAccount = parseQuery(location.search, {
             parseBooleans: true,
         }).fundWithExistingAccount;
@@ -123,13 +137,25 @@ const RecoverAccountPrivateKey = () => {
                         `/linkdrop/${options.fundingContract}/${options.fundingKey}${redirectUrl}`
                     )
                 );
-            } else {
+            } else if (withRedirectToApp) {
                 dispatch(redirectToApp('/'));
             }
         }
+    }
 
-        dispatch(clearAccountState());
-    };
+    if (accountIdsSuccess.length) {
+        return (
+            <Container className='small-centered border'>
+                <SelectAccountImport
+                    accounts={accountIdsSuccess}
+                    onSuccess={() => {
+                        dispatch(refreshAccount());
+                        handleRedirect(true);
+                    }}
+                />
+            </Container>
+        );
+    }
 
     return (
         <>
