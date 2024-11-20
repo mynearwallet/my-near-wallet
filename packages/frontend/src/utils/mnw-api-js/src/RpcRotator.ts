@@ -4,6 +4,12 @@ import { ConnectionInfo, RpcOption, RpcOptionValue, RpcProviderDetail } from './
 
 const mainnetRpcOptionList: RpcOption[] = [
     {
+        id: 'meteorRpc',
+        defaultParams: {
+            url: 'https://mw.rpc.fastnear.com/',
+        },
+    },
+    {
         id: 'near',
         defaultParams: {
             url: 'https://rpc.mainnet.near.org/',
