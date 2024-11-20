@@ -2,7 +2,7 @@ import { ObjectStorage } from './ObjectStorage';
 import CONFIG from '../../../config';
 import { RpcProvider, RpcProviderDetail, RpcRotator } from '../../mnw-api-js';
 
-export interface RpcConnection {
+export interface IRpcConnection {
     id: string;
     label: string;
     data: {
