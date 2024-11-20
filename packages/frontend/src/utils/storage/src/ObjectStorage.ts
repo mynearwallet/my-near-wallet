@@ -10,7 +10,8 @@ export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
         try {
             const storedString = this.storage.getItem(this.storageKey);
 
-            if (storedString) {
+            if (storedString && this.storageKey === 'connections') {
+                // reset connection cache when there is update
                 const storedConnections = JSON.parse(storedString) as RpcConnection[];
                 if (
                     storedConnections.length !== (this.default as RpcConnection[]).length
@@ -18,6 +19,8 @@ export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
                     return this.default;
                 }
                 return storedConnections as DataType;
+            } else if (storedString) {
+                return JSON.parse(storedString) as DataType;
             }
         } catch {
             // do nothing
