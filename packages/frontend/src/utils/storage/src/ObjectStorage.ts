@@ -1,4 +1,5 @@
 import { BaseStorage } from './BaseStorage';
+import { RpcConnection } from './ConnectionsStorage';
 
 export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
     public load(): DataType {
@@ -10,7 +11,13 @@ export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
             const storedString = this.storage.getItem(this.storageKey);
 
             if (storedString) {
-                return JSON.parse(storedString) as DataType;
+                const storedConnections = JSON.parse(storedString) as RpcConnection[];
+                if (
+                    storedConnections.length !== (this.default as RpcConnection[]).length
+                ) {
+                    return this.default;
+                }
+                return storedConnections as DataType;
             }
         } catch {
             // do nothing

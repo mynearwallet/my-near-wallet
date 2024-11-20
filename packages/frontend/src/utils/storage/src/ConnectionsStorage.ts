@@ -2,7 +2,24 @@ import { ObjectStorage } from './ObjectStorage';
 import CONFIG from '../../../config';
 import { RpcProvider, RpcProviderDetail, RpcRotator } from '../../mnw-api-js';
 
+export interface RpcConnection {
+    id: string;
+    label: string;
+    data: {
+        url: string;
+    };
+    priority: number;
+}
+
 const mainnetConnections = [
+    {
+        id: 'meteorRpc',
+        label: 'Meteor Fastnear Rpc',
+        data: {
+            url: 'https://mw.rpc.fastnear.com',
+        },
+        priority: 9,
+    },
     {
         id: 'near',
         label: 'Official Near Rpc',
