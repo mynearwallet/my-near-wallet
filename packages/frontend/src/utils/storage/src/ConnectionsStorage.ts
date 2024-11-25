@@ -13,18 +13,18 @@ export interface IRpcConnection {
 
 const mainnetConnections = [
     {
-        id: 'meteorRpc',
-        label: 'Meteor Fastnear Rpc',
-        data: {
-            url: 'https://mw.rpc.fastnear.com',
-        },
-        priority: 9,
-    },
-    {
         id: 'near',
         label: 'Official Near Rpc',
         data: {
             url: 'https://rpc.mainnet.near.org',
+        },
+        priority: 9,
+    },
+    {
+        id: 'meteorRpc',
+        label: 'Meteor Fastnear Rpc',
+        data: {
+            url: 'https://mw.rpc.fastnear.com',
         },
         priority: 10,
     },
