@@ -405,6 +405,7 @@
         "priority": "Priority",
         "rpcOption": {
             "ankr": "Ankr",
+            "meteorRpc": "Meteor Fastnear Rpc",
             "custom": "Custom",
             "custom-testnet": "Custom",
             "getBlock": "GetBlock",
