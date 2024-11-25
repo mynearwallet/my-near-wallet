@@ -40,7 +40,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const LoadingWrapper = styled.div`
+const ImageContainer = styled.div`
     display: flex;
     align-items: center;
     gap: 4px;
@@ -80,12 +80,12 @@ export const FundingType: React.FunctionComponent<Props> = ({
             disabled={disabled}
         >
             <Wrapper>
-                <LoadingWrapper>
+                <ImageContainer>
                     <WrapperImg title={name}>
                         <img src={icon} alt={name} />
                     </WrapperImg>
                     {!link && <LoadingDots />}
-                </LoadingWrapper>
+                </ImageContainer>
                 {disabled ? null : <Button />}
             </Wrapper>
         </LinkWrap>
