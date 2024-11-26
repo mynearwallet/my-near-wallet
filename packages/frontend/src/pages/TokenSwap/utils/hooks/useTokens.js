@@ -34,5 +34,6 @@ export default function useTokens() {
         listOfTokensIn: Object.values(tokensIn),
         tokensOut,
         listOfTokensOut: Object.values(tokensOut),
+        isLoadingAllTokens: !Object.values(allTokens).length,
     };
 }
