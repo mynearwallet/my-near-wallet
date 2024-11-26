@@ -3,7 +3,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
 export default {
     ACCOUNT_HELPER_URL: 'https://api-testnet.nearblocks.io/v1/kitwallet',
-    ACCOUNT_KITWALLET_HELPER_URL: 'https://testnet-api.kitwallet.app',
+    ACCOUNT_KITWALLET_HELPER_URL: 'https://helper.testnet.near.org',
     ACCOUNT_ID_SUFFIX: 'testnet',
     ACCESS_KEY_FUNDING_AMOUNT: nearApiJs.utils.format.parseNearAmount('0.25'),
     BROWSER_MIXPANEL_TOKEN: '778bd24eec7329cf885f0cecfc3d4f5d',
