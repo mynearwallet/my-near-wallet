@@ -128,7 +128,10 @@ const SignInLedgerWrapper = (props) => {
                     signInWithLedgerStatus === LEDGER_MODAL_STATUS.SUCCESS) && (
                     <SelectAccountImport
                         ledgerHdPath={ledgerHdPath}
-                        ledgerAccounts={signInWithLedgerKeys}
+                        accounts={signInWithLedgerKeys.map((item) => ({
+                            accountId: item,
+                            newKeyPair: null,
+                        }))}
                     />
                 )}
                 {signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS && (

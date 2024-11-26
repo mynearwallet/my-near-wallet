@@ -34,6 +34,7 @@ import Container from '../common/styled/Container.css';
 import ModalManualImportWithButton from './manual_import/ModalManualImportWithButton';
 import { EWalletImportInputType } from './manual_import/type';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
+import SelectAccountImport from './ledger/SelectAccountImport';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -63,6 +64,7 @@ class RecoverAccountSeedPhrase extends Component {
         seedPhrase: this.props.seedPhrase,
         recoveringAccount: false,
         showCouldNotFindAccountModal: false,
+        accountIdsSuccess: [],
     };
 
     // TODO: Use some validation framework?
@@ -92,12 +94,9 @@ class RecoverAccountSeedPhrase extends Component {
 
         const { seedPhrase } = this.state;
         const {
-            location,
-            redirectTo,
             redirectToApp,
             clearAccountState,
             recoverAccountSeedPhrase,
-            refreshAccount,
             showCustomAlert,
             importZeroBalanceAccountPhrase,
             setZeroBalanceAccountImportMethod,
@@ -116,12 +115,23 @@ class RecoverAccountSeedPhrase extends Component {
             return;
         }
 
+        let withRedirectToApp = true;
         await Mixpanel.withTracking(
             'IE-SP Recovery with seed phrase',
             async () => {
                 this.setState({ recoveringAccount: true });
-                await recoverAccountSeedPhrase(seedPhrase);
-                await refreshAccount();
+                const { accountIdsSuccess } = await recoverAccountSeedPhrase(
+                    seedPhrase,
+                    null,
+                    true,
+                    true,
+                    true
+                );
+                withRedirectToApp = !accountIdsSuccess.length;
+                this.setState({ accountIdsSuccess });
+                if (withRedirectToApp) {
+                    await this.props.refreshAccount();
+                }
             },
             async (e) => {
                 if (e.data?.errorCode === 'accountNotExist') {
@@ -145,6 +155,12 @@ class RecoverAccountSeedPhrase extends Component {
             }
         );
 
+        this.handleRedirect(withRedirectToApp);
+        clearAccountState();
+    };
+
+    handleRedirect(withRedirectToApp) {
+        const { location, redirectTo, redirectToApp } = this.props;
         const fundWithExistingAccount = parseQuery(location.search, {
             parseBooleans: true,
         }).fundWithExistingAccount;
@@ -162,12 +178,11 @@ class RecoverAccountSeedPhrase extends Component {
                 redirectTo(
                     `/linkdrop/${options.fundingContract}/${options.fundingKey}${redirectUrl}`
                 );
-            } else {
+            } else if (withRedirectToApp) {
                 redirectToApp('/');
             }
         }
-        clearAccountState();
-    };
+    }
 
     render() {
         const combinedState = {
@@ -177,6 +192,19 @@ class RecoverAccountSeedPhrase extends Component {
                 this.isLegit &&
                 !(this.props.localAlert && this.props.localAlert.success === false),
         };
+
+        if (this.state.accountIdsSuccess.length) {
+            return (
+                <Container className='small-centered border'>
+                    <SelectAccountImport
+                        accounts={this.state.accountIdsSuccess}
+                        onSuccess={() => {
+                            this.handleRedirect(true);
+                        }}
+                    />
+                </Container>
+            );
+        }
 
         return (
             <>
