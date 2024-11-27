@@ -123,6 +123,9 @@ export default class NonFungibleTokens {
         }
 
         if (base_uri) {
+            if (base_uri.endsWith('/')) {
+                return `${base_uri.slice(0, -1)}/${media}`;
+            }
             return `${base_uri}/${media}`;
         }
 
