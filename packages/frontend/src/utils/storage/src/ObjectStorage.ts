@@ -1,4 +1,5 @@
 import { BaseStorage } from './BaseStorage';
+import { IRpcConnection } from './ConnectionsStorage';
 
 export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
     public load(): DataType {
@@ -9,7 +10,16 @@ export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
         try {
             const storedString = this.storage.getItem(this.storageKey);
 
-            if (storedString) {
+            if (storedString && this.storageKey === 'connections') {
+                // reset connection cache when there is update
+                const storedConnections = JSON.parse(storedString) as IRpcConnection[];
+                if (
+                    storedConnections.length !== (this.default as IRpcConnection[]).length
+                ) {
+                    return this.default;
+                }
+                return storedConnections as DataType;
+            } else if (storedString) {
                 return JSON.parse(storedString) as DataType;
             }
         } catch {

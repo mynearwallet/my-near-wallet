@@ -3,7 +3,6 @@ import huobi from '../components/buy/assets/huobi.svg';
 import kraken from '../components/buy/assets/kraken.svg';
 import monoPay from '../components/buy/assets/monoPay.svg';
 import okex from '../components/buy/assets/okex.svg';
-import payNear from '../components/buy/assets/payNear.svg';
 import rainbow from '../components/buy/assets/rainbow.svg';
 import transakLogo from '../components/buy/assets/transak.svg';
 import utorg from '../components/buy/assets/utorg.svg';
@@ -23,12 +22,6 @@ export const getPayMethods = ({
             name: 'MoonPay',
             link: signedMoonPayUrl,
             track: () => Mixpanel.track('Wallet Click Buy with Moonpay'),
-        },
-        nearPay: {
-            icon: payNear,
-            name: 'NearPay',
-            link: 'https://widget.nearpay.co/',
-            track: () => Mixpanel.track('Wallet Click Buy with Nearpay'),
         },
         utorg: {
             icon: utorg,

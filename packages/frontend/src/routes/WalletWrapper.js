@@ -22,13 +22,11 @@ import {
     selectLinkdropAmount,
     actions as linkdropActions,
 } from '../redux/slices/linkdrop';
-import { actions as nftActions } from '../redux/slices/nft';
 import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsByAccountId,
 } from '../redux/slices/recoveryMethods';
 
-const { fetchNFTs } = nftActions;
 const { setLinkdropAmount } = linkdropActions;
 const { setCreateFromImplicitSuccess, setCreateCustomName } = createFromImplicitActions;
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
@@ -54,8 +52,6 @@ const WalletWrapper = ({ tab, setTab }) => {
         if (accountId) {
             Mixpanel.identify(Mixpanel.get_distinct_id());
             Mixpanel.people.set({ relogin_date: new Date().toString() });
-
-            dispatch(fetchNFTs({ accountId }));
 
             if (userRecoveryMethods.length === 0) {
                 dispatch(fetchRecoveryMethods({ accountId }));
