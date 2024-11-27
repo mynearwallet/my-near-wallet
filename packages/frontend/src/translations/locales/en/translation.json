@@ -405,7 +405,6 @@
         "priority": "Priority",
         "rpcOption": {
             "ankr": "Ankr",
-            "meteorRpc": "Meteor Fastnear Rpc",
             "custom": "Custom",
             "custom-testnet": "Custom",
             "getBlock": "GetBlock",
@@ -413,6 +412,7 @@
             "infura-testnet": "Infura (Testnet)",
             "lava": "Lava",
             "lava-testnet": "Lava (Testnet)",
+            "meteorRpc": "Meteor Fastnear Rpc",
             "near": "NEAR",
             "near-testnet": "NEAR (Testnet)",
             "nodeReal": "NodeReal",
