@@ -2,8 +2,6 @@ import sendJson from 'fetch-send-json';
 
 import CONFIG from '../config';
 
-export const MOONPAY_BUY_URL_PREFIX = `${CONFIG.MOONPAY_BUY_URL}${CONFIG.MOONPAY_API_KEY}`;
-
 export const isMoonpayAvailable = async () => {
     const moonpayGet = (path) =>
         sendJson(
@@ -41,7 +39,7 @@ export const isMoonpayAvailable = async () => {
 
 export const getSignedUrl = async (accountId, redirectUrl) => {
     const widgetUrl =
-        `${CONFIG.MOONPAY_BUY_URL_PREFIX}` +
+        `${CONFIG.MOONPAY_BUY_URL}${CONFIG.MOONPAY_API_KEY}` +
         `&walletAddress=${encodeURIComponent(accountId)}` +
         '&currencyCode=NEAR' +
         '&baseCurrencyCode=usd' +

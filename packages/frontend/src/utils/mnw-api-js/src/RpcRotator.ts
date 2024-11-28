@@ -127,7 +127,7 @@ const testnetRpcOptionList: RpcOption[] = [
         }),
     },
     {
-        id: 'custom-testnet',
+        id: 'custom',
         userParams: ['url', 'headers'],
         generator: ({ url, headers }) => ({
             url,
@@ -176,7 +176,9 @@ export class RpcRotator {
                 connections: ConnectionInfo[],
                 rpcProviderDetail: RpcProviderDetail
             ): ConnectionInfo[] => {
-                const rpcOption: RpcOption = indexedRpcOptions[rpcProviderDetail.id];
+                const rpcOption: RpcOption =
+                    indexedRpcOptions[rpcProviderDetail.id] ||
+                    indexedRpcOptions['custom'];
 
                 if (rpcOption === undefined) {
                     throw new TypedError(

@@ -20,9 +20,11 @@ import {
     selectLedgerSignInWithLedger,
     selectLedgerSignInWithLedgerStatus,
     selectLedgerTxSigned,
+    selectedImportAccountIds,
 } from '../../../redux/slices/ledger';
 import Container from '../../common/styled/Container.css';
 import VerifyWalletDomainBanner from '../../common/VerifyWalletDomainBanner';
+import SelectAccountImport from './SelectAccountImport';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 const { signInWithLedger, clearSignInWithLedgerModalState } = ledgerActions;
@@ -43,12 +45,13 @@ const SignInLedgerWrapper = (props) => {
     const signInWithLedgerState = useSelector(selectLedgerSignInWithLedger);
     const txSigned = useSelector(selectLedgerTxSigned);
     const signInWithLedgerStatus = useSelector(selectLedgerSignInWithLedgerStatus);
+    const selectedAccountIds = useSelector(selectedImportAccountIds) || [];
 
     const signInWithLedgerKeys = Object.keys(signInWithLedgerState || {});
 
-    const ledgerAccounts = signInWithLedgerKeys.map((accountId) => ({
+    const ledgerAccounts = selectedAccountIds.map((accountId) => ({
         accountId,
-        status: signInWithLedgerState[accountId].status,
+        status: signInWithLedgerState[accountId]?.status,
     }));
 
     const accountsApproved = signInWithLedgerKeys.reduce(
@@ -66,7 +69,7 @@ const SignInLedgerWrapper = (props) => {
             signInWithLedgerState[accountId].status === 'rejected' ? a + 1 : a,
         0
     );
-    const totalAccounts = signInWithLedgerKeys.length;
+    const totalAccounts = selectedAccountIds.length;
 
     useEffect(() => {
         dispatch(clearSignInWithLedgerModalState());
@@ -121,8 +124,17 @@ const SignInLedgerWrapper = (props) => {
                     signInWithLedgerStatus === LEDGER_MODAL_STATUS.ENTER_ACCOUNTID) && (
                     <SignIn txSigned={txSigned} handleCancel={handleCancelSignIn} />
                 )}
-                {(signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS ||
+                {(signInWithLedgerStatus === LEDGER_MODAL_STATUS.SELECT_ACCOUNTS ||
                     signInWithLedgerStatus === LEDGER_MODAL_STATUS.SUCCESS) && (
+                    <SelectAccountImport
+                        ledgerHdPath={ledgerHdPath}
+                        accounts={signInWithLedgerKeys.map((item) => ({
+                            accountId: item,
+                            newKeyPair: null,
+                        }))}
+                    />
+                )}
+                {signInWithLedgerStatus === LEDGER_MODAL_STATUS.CONFIRM_ACCOUNTS && (
                     <ImportAccounts
                         accountsApproved={accountsApproved}
                         totalAccounts={totalAccounts}

@@ -31,8 +31,8 @@ const ImageWithLoading = ({
 }: {
     skip?: boolean;
     loadImageTimeout?: number;
-    style?: HTMLStyleElement;
-} & Partial<HTMLImageElement>) => {
+    style?: React.CSSProperties;
+} & Omit<Partial<HTMLImageElement>, 'style'>) => {
     const [isErrorImage, setIsErrorImage] = useState(false);
     const { isLoaded, isError } = useImageLoading({
         imageUrl: src,

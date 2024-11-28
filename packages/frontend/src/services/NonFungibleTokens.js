@@ -123,6 +123,9 @@ export default class NonFungibleTokens {
         }
 
         if (base_uri) {
+            if (base_uri.endsWith('/')) {
+                return `${base_uri.slice(0, -1)}/${media}`;
+            }
             return `${base_uri}/${media}`;
         }
 
@@ -142,7 +145,6 @@ export default class NonFungibleTokens {
 
     static transfer = async ({ accountId, contractId, tokenId, receiverId }) => {
         const account = await wallet.getAccount(accountId);
-
         return account.signAndSendTransaction({
             receiverId: contractId,
             actions: [

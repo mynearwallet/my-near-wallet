@@ -122,7 +122,8 @@ const Tooltip = ({
         return mouseDisabled || modalOnly || window.innerWidth < 992 || isMobile();
     };
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+        e.stopPropagation();
         setShow(true);
         if (!mobile && !modalOnly) {
             setMouseDisabled(true);

@@ -33,7 +33,6 @@ const RecoveryMethod = ({
                 <TitleWrapper>
                     <Title>{title}</Title>
                 </TitleWrapper>
-                {/*@ts-ignore*/}
                 <FormButton
                     {...{
                         type: 'submit',

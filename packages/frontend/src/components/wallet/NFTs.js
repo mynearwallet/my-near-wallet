@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import NFTBox from './NFTBox';
 import FormButton from '../common/FormButton';
@@ -9,6 +9,7 @@ import NearCircleIcon from '../svg/NearCircleIcon.js';
 import {
     selectLoadingOwnedToken,
     selectTokensWithMetadataForAccountId,
+    actions as nftActions,
 } from '../../redux/slices/nft';
 import LoadingDots from '../common/loader/LoadingDots';
 
@@ -71,12 +72,19 @@ const StyledLoadingContainer = styled.div`
 `;
 
 const NFTs = ({ accountId }) => {
+    const dispatch = useDispatch();
     const tokens = useSelector((state) =>
         selectTokensWithMetadataForAccountId(state, { accountId })
     );
     const isLoadingTokens = useSelector((state) =>
         selectLoadingOwnedToken(state, { accountId })
     );
+
+    useEffect(() => {
+        if (accountId) {
+            dispatch(nftActions.fetchNFTs({ accountId }));
+        }
+    }, [accountId]);
 
     const ownedTokens = tokens.filter(
         (tokenDetails) =>

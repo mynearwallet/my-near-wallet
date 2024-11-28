@@ -8,6 +8,7 @@ import {
     TxMethodName,
     methodNameShowlist,
     nearMetadata,
+    wNearMetadata,
 } from './constant';
 import {
     ETransactionStatus,
@@ -28,6 +29,7 @@ import imgStaked from '../../../images/tx-staked.png';
 import imgSwap from '../../../images/tx-swap.png';
 import imgUnStaked from '../../../images/tx-unstaked.png';
 import { formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
+import { METAPOOL_CONTRACT_ID } from '../../../services/metapool/constant';
 
 interface TxPattern {
     match: (data: TxData, network: ENearNetwork) => boolean;
@@ -41,6 +43,7 @@ interface TxPattern {
 type TxData = ITransactionListItem & {
     block_timestamp: string;
     metaData: IMetaData;
+    isPreTransaction?: boolean;
 };
 
 const txUtils = {
@@ -54,7 +57,10 @@ const txUtils = {
         return primaryReceipt;
     },
     getFcArgs(data: TxData) {
-        const args = this.decodeArgs(data.transaction.actions[0]?.FunctionCall?.args);
+        const args = this.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall?.args,
+            data.isPreTransaction
+        );
         return args;
     },
     getMethodName(data: TxData) {
@@ -102,9 +108,16 @@ const txUtils = {
             return ETxDirection.receive;
         }
     },
-    decodeArgs(args_base64) {
-        const args_raw = args_base64 ? atob(args_base64) : '';
+    decodeArgs(argsParam, isPreTransaction?: boolean) {
         try {
+            let args_raw;
+            if (argsParam instanceof Uint8Array || isPreTransaction) {
+                const args_base64 = Buffer.from(argsParam);
+                const decoder = new TextDecoder();
+                args_raw = decoder.decode(args_base64);
+            } else {
+                args_raw = argsParam ? atob(argsParam) : '';
+            }
             const args = JSON.parse(args_raw || '{}') || {};
             return args;
         } catch (err) {
@@ -158,15 +171,23 @@ class TransferFtPattern implements TxPattern {
     }
 
     display(data: TxData, accountId: string): TransactionItemComponent {
-        const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
+        const args = txUtils.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall.args,
+            data.isPreTransaction
+        );
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceived = dir === ETxDirection.receive;
         return {
-            image: data.metaData.icon || '',
+            image:
+                data.metaData.symbol === wNearMetadata.symbol
+                    ? wNearMetadata.icon
+                    : data.metaData.icon,
             title: isReceived ? 'Received' : 'Sent',
             subtitle: isReceived
                 ? `from ${data.transaction.signer_id}`
-                : `to ${args.receiver_id || args.receiverId}`,
+                : `to ${
+                      args.receiver_id || args.receiverId || data.transaction.receiver_id
+                  }`,
             status: txUtils.getTxStatus(data),
             assetChangeText: txUtils.getAmount(data, args.amount),
             dir,
@@ -219,13 +240,16 @@ class CreateAccountPattern implements TxPattern {
 class SwapPattern implements TxPattern {
     private whitelistedReceivers = ['v2.ref-finance.near', 'v1.jumbo_exchange.near'];
     private hasError(data: TxData) {
-        return data.receipts_outcome.some(
+        return data.receipts_outcome?.some(
             (r) => r.outcome.status[FinalExecutionStatusBasic.Failure]
         );
     }
 
     match(data: TxData): boolean {
         const methodName = txUtils.getMethodName(data);
+        if (data.isPreTransaction) {
+            return false;
+        }
         if (methodName !== TxMethodName.ft_transfer_call) {
             return false;
         }
@@ -237,7 +261,10 @@ class SwapPattern implements TxPattern {
     }
 
     display(data: TxData): TransactionItemComponent {
-        const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
+        const args = txUtils.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall.args,
+            data.isPreTransaction
+        );
 
         let receivedAmount = '0';
         const hasError = this.hasError(data);
@@ -246,7 +273,7 @@ class SwapPattern implements TxPattern {
         data.receipts.forEach((r) => {
             const fc =
                 r.receipt.Action.actions[0]?.FunctionCall || ({} as ITxFunctionCall);
-            const args = txUtils.decodeArgs(fc.args);
+            const args = txUtils.decodeArgs(fc.args, data.isPreTransaction);
             if (this.whitelistedReceivers.includes(r.receiver_id)) {
                 receiverId = r.receiver_id;
             }
@@ -268,7 +295,8 @@ class SwapPattern implements TxPattern {
             title: 'Swap',
             subtitle: `via ${receiverId || data.transaction.receiver_id}`,
             assetChangeText: txUtils.formatAmountFromMeta(receivedAmount, meta),
-            assetChangeText2: txUtils.formatAmountFromMeta(args.amount, data.metaData),
+            assetChangeText2:
+                '-' + txUtils.formatAmountFromMeta(args.amount, data.metaData),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             ...txUtils.defaultDisplay(data),
@@ -288,7 +316,10 @@ class NftPattern implements TxPattern {
         accountId: string,
         network: ENearNetwork
     ): TransactionItemComponent {
-        const args = txUtils.decodeArgs(data.transaction.actions[0]?.FunctionCall.args);
+        const args = txUtils.decodeArgs(
+            data.transaction.actions[0]?.FunctionCall.args,
+            data.isPreTransaction
+        );
         const dir = txUtils.getTxDirection(data, accountId);
         const isReceivedNft = dir === ETxDirection.receive;
 
@@ -309,6 +340,7 @@ class NftPattern implements TxPattern {
             status: txUtils.getTxStatus(data),
             assetChangeText: `1 ${data.metaData.symbol}`,
             dir,
+            args,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -393,6 +425,7 @@ class NftMintPattern implements TxPattern {
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             assetChangeText: `1 ${data.metaData.symbol || ''}`,
+            args,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -410,7 +443,7 @@ class NftBuyPattern implements TxPattern {
         network: ENearNetwork
     ): TransactionItemComponent {
         const args = txUtils.getFcArgs(data);
-        let tokenId = args.id || args.token_id;
+        let tokenId = args.id || args.token_id || args.token_series_id;
         try {
             const log = JSON.parse(
                 data.receipts_outcome[0].outcome?.logs?.[0].replace('EVENT_JSON:', '') ||
@@ -433,6 +466,7 @@ class NftBuyPattern implements TxPattern {
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
             assetChangeText: `1 ${data.metaData.symbol || ''}`,
+            args,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -448,11 +482,33 @@ class StakePattern implements TxPattern {
     display(data: TxData): TransactionItemComponent {
         const deposit = data.transaction.actions[0].FunctionCall.deposit;
 
+        let returnedAmount;
+        try {
+            for (const r of data.receipts_outcome) {
+                for (const l of r.outcome?.logs || []) {
+                    if (l.includes('EVENT_JSON')) {
+                        const log = JSON.parse(l.replace('EVENT_JSON:', '') || '{}');
+                        if (log.standard === 'nep141') {
+                            returnedAmount = log.data[0].amount;
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('parse StakePattern error');
+        }
         return {
             image: imgStaked,
             title: 'Staked',
             subtitle: `with ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(data, deposit, nearMetadata),
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                deposit,
+                nearMetadata
+            ),
+            assetChangeText2: returnedAmount
+                ? '+' + txUtils.getAmount(data, returnedAmount, nearMetadata)
+                : '',
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.send,
             ...txUtils.defaultDisplay(data),
@@ -473,12 +529,127 @@ class LiquidUnStakePattern implements TxPattern {
             title: 'Liquid Unstaked',
             subtitle: `with ${data.transaction.receiver_id}`,
             assetChangeText: txUtils.formatAmountFromMeta(
-                args.st_near_to_burn,
+                args.min_expected_near,
                 nearMetadata
             ),
-            assetChangeText2: txUtils.formatAmountFromMeta(
-                args.min_expected_near,
-                data.metaData
+            assetChangeText2:
+                '-' + txUtils.formatAmountFromMeta(args.st_near_to_burn, data.metaData),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.receive,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
+class DelayedLiquidUnStakePattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return (
+            methodName === TxMethodName.unstake &&
+            data.transaction.receiver_id === METAPOOL_CONTRACT_ID
+        );
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        let amount = '0';
+        if (data.isPreTransaction) {
+            const args = txUtils.getFcArgs(data);
+            amount = args.amount;
+        } else {
+            try {
+                for (const r of data.receipts_outcome) {
+                    for (const l of r.outcome?.logs || []) {
+                        if (l.includes('EVENT_JSON')) {
+                            const log = JSON.parse(l.replace('EVENT_JSON:', '') || '{}');
+                            if (log.standard === 'nep141') {
+                                amount = log.data[0].amount;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('parse delayed unstake log error');
+            }
+        }
+        return {
+            image: imgUnStaked,
+            title: 'Delayed Unstake',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: data.isPreTransaction
+                ? txUtils.getAmount({ ...data, metaData: null }, amount, nearMetadata)
+                : txUtils.getAmount(data, amount, nearMetadata),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.send,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
+class NearDepositPattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return methodName === TxMethodName.near_deposit;
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        const deposit = data.transaction.actions[0]?.FunctionCall?.deposit;
+        return {
+            image: imgAppInteraction,
+            title: 'Near Deposit',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                deposit,
+                nearMetadata
+            ),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.send,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
+class WrapNearPattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return methodName === TxMethodName.storage_deposit;
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        const deposit = data.transaction.actions[0]?.FunctionCall?.deposit;
+        return {
+            image: imgAppInteraction,
+            title: 'Wrap Near',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                deposit,
+                nearMetadata
+            ),
+            status: txUtils.getTxStatus(data),
+            dir: ETxDirection.send,
+            ...txUtils.defaultDisplay(data),
+        };
+    }
+}
+
+class UnwrapNearPattern implements TxPattern {
+    match(data: TxData): boolean {
+        const methodName = txUtils.getMethodName(data);
+        return methodName === TxMethodName.near_withdraw;
+    }
+
+    display(data: TxData): TransactionItemComponent {
+        const args = txUtils.getFcArgs(data);
+        const deposit = data.transaction.actions[0]?.FunctionCall?.deposit;
+        return {
+            image: imgAppInteraction,
+            title: 'Unwrap Near',
+            subtitle: `with ${data.transaction.receiver_id}`,
+            assetChangeText: txUtils.getAmount(
+                { ...data, metaData: null },
+                args.amount || deposit,
+                nearMetadata
             ),
             status: txUtils.getTxStatus(data),
             dir: ETxDirection.receive,
@@ -522,7 +693,7 @@ class ClaimPattern implements TxPattern {
             const rAction = r.receipt.Action?.actions?.[0];
             const fc = rAction?.FunctionCall;
             if (fc && fc?.method_name! === TxMethodName.ft_transfer) {
-                const args = txUtils.decodeArgs(fc.args);
+                const args = txUtils.decodeArgs(fc.args, data.isPreTransaction);
                 amount = args.amount;
                 if (r.metaData) {
                     metaData = r.metaData;
@@ -563,11 +734,12 @@ class ClaimUnStakePattern implements TxPattern {
         let amount = '0';
         let metaData = {};
 
+        const isMetapool = data.transaction.receiver_id === METAPOOL_CONTRACT_ID;
         for (const r of data.receipts) {
             const transfer = r.receipt.Action?.actions?.[0]?.Transfer;
             if (transfer?.deposit) {
                 amount = transfer.deposit;
-                if (r.metaData) {
+                if (r.metaData && !isMetapool) {
                     metaData = r.metaData;
                 }
                 break;
@@ -578,9 +750,15 @@ class ClaimUnStakePattern implements TxPattern {
             image: imgClaim,
             title: 'Claim Unstaked Near',
             subtitle: `from ${data.transaction.receiver_id}`,
-            assetChangeText: txUtils.getAmount(data, amount, metaData),
+            assetChangeText: data.isPreTransaction
+                ? ''
+                : txUtils.getAmount(
+                      isMetapool ? { ...data, metaData: null } : data,
+                      amount,
+                      isMetapool ? nearMetadata : metaData
+                  ),
             status: txUtils.getTxStatus(data),
-            dir: ETxDirection.receive,
+            ...(!data.isPreTransaction && { dir: ETxDirection.receive }),
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -588,15 +766,21 @@ class ClaimUnStakePattern implements TxPattern {
 
 class AddKeyPattern implements TxPattern {
     match(data: TxData): boolean {
-        return !!data.transaction.actions[0].AddKey?.public_key;
+        const methodName = txUtils.getMethodName(data);
+        return (
+            !!data.transaction.actions[0].AddKey?.public_key ||
+            methodName === TxMethodName.add_access_key
+        );
     }
 
     display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
+        const publicKey = action.DeleteKey?.public_key;
+
         return {
             image: imgKey,
             title: 'Add Key',
-            subtitle: action.AddKey.public_key,
+            subtitle: publicKey?.data instanceof Uint8Array ? '' : publicKey,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -609,10 +793,11 @@ class DeleteKeyPattern implements TxPattern {
 
     display(data: TxData): TransactionItemComponent {
         const action = data.transaction.actions[0];
+        const publicKey = action.DeleteKey.public_key;
         return {
             image: imgKeyDelete,
             title: 'Delete Key',
-            subtitle: action.DeleteKey.public_key,
+            subtitle: publicKey?.data instanceof Uint8Array ? '' : publicKey,
             ...txUtils.defaultDisplay(data),
         };
     }
@@ -705,7 +890,7 @@ class MultiActionsPattern implements TxPattern {
                 const fc =
                     r.receipt.Action.actions?.[0]?.FunctionCall ||
                     ({} as ITxFunctionCall);
-                const args = txUtils.decodeArgs(fc?.args);
+                const args = txUtils.decodeArgs(fc?.args, data.isPreTransaction);
 
                 const dir = txUtils.getTxDirection(data, accountId);
                 return {
@@ -749,7 +934,7 @@ class FunctionCallDefaultPattern implements TxPattern {
                 const fc =
                     r.receipt.Action.actions?.[0]?.FunctionCall ||
                     ({} as ITxFunctionCall);
-                const args = txUtils.decodeArgs(fc?.args);
+                const args = txUtils.decodeArgs(fc?.args, data.isPreTransaction);
                 const dir =
                     r.receipt.Action.signer_id === args.receiver_id
                         ? ETxDirection.receive
@@ -823,10 +1008,14 @@ export const txPatterns: TxPattern[] = [
     new NftMintPattern(),
     new NftBuyPattern(),
     new StakePattern(),
+    new DelayedLiquidUnStakePattern(),
     new UnStakePattern(),
     new ClaimPattern(),
     new ClaimUnStakePattern(),
     new LiquidUnStakePattern(),
+    new NearDepositPattern(),
+    new WrapNearPattern(),
+    new UnwrapNearPattern(),
     new AddKeyPattern(),
     new DeleteKeyPattern(),
     new DeployKeyPattern(),

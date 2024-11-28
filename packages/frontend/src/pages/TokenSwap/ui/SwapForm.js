@@ -23,6 +23,7 @@ import {
     NOTIFICATION_TYPE,
 } from '../utils/constants';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
+import LoadingDots from '../../../components/common/loader/LoadingDots';
 
 const mobile = isMobile();
 
@@ -303,19 +304,23 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
                     <SwapButtonWrapper>
                         <FlipButton onClick={flipInputsData} />
                     </SwapButtonWrapper>
-                    <Input
-                        value={amountOut}
-                        onSelectToken={selectTokenOut}
-                        labelId='swap.to'
-                        tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
-                        tokenIcon={tokenOut?.onChainFTMetadata?.icon}
-                        tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
-                        maxBalance={tokenOut?.balance}
-                        loading={loading}
-                        inputTestId='swapPageOutputAmountField'
-                        tokenSelectTestId='swapPageOutputTokenSelector'
-                        disabled
-                    />
+                    {tokensConfig.isLoadingAllTokens ? (
+                        <LoadingDots />
+                    ) : (
+                        <Input
+                            value={amountOut}
+                            onSelectToken={selectTokenOut}
+                            labelId='swap.to'
+                            tokenSymbol={tokenOut?.onChainFTMetadata?.symbol}
+                            tokenIcon={tokenOut?.onChainFTMetadata?.icon}
+                            tokenDecimals={tokenOut?.onChainFTMetadata?.decimals}
+                            maxBalance={tokenOut?.balance}
+                            loading={loading}
+                            inputTestId='swapPageOutputAmountField'
+                            tokenSelectTestId='swapPageOutputTokenSelector'
+                            disabled
+                        />
+                    )}
                     <Footer>
                         <SwapDetails />
 

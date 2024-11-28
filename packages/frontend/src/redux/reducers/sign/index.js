@@ -14,8 +14,10 @@ import {
     getFirstTransactionWithFunctionCallAction,
     calculateGasForSuccessTransactions,
 } from '../../slices/sign';
+import { transactionsProgress } from '../../slices/sign/transactionExecutor';
 
 const initialState = {
+    transactionsProgress: [],
     status: SIGN_STATUS.NEEDS_CONFIRMATION,
     successHashes: [],
 };
@@ -157,6 +159,33 @@ const sign = handleActions(
         [handleSignTransactions.rejected]: handleTransactionsRejected,
         [makeAccountActive]: () => {
             return initialState;
+        },
+        [transactionsProgress]: (state, { payload }) => {
+            if (payload.txs) {
+                return {
+                    ...state,
+                    transactionsProgress: payload.txs,
+                };
+            }
+            return {
+                ...state,
+                transactionsProgress: state.transactionsProgress.map((tx, i) => {
+                    const updatedTx =
+                        payload.txIndex === i
+                            ? {
+                                  txProgress: payload.txProgress,
+                                  transaction: {
+                                      ...tx.transaction,
+                                      hash: payload.hash,
+                                  },
+                              }
+                            : {};
+                    return {
+                        ...tx,
+                        ...updatedTx,
+                    };
+                }),
+            };
         },
     },
     initialState
