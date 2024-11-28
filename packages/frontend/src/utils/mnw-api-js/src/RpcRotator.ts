@@ -69,14 +69,6 @@ const mainnetRpcOptionList: RpcOption[] = [
         }),
     },
     {
-        id: 'lava',
-        userParams: ['url', 'headers'],
-        generator: ({ url, headers }) => ({
-            url,
-            headers,
-        }),
-    },
-    {
         id: 'custom',
         userParams: ['url', 'headers'],
         generator: ({ url, headers }) => ({
