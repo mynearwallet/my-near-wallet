@@ -73,7 +73,7 @@ const transactionHistorySlice = createSlice({
     },
 });
 
-async function fetchAllMetaData(state, allReceiver: string[]) {
+export async function fetchAllMetaData(state, allReceiver: string[]) {
     const res: any = await Promise.allSettled([
         ...allReceiver.map((contractName) => {
             return getCachedContractMetadataOrFetch(contractName, state);

@@ -1540,14 +1540,16 @@ export default class Wallet {
         seedPhrase,
         accountId,
         shouldCreateFullAccessKey = true,
-        shouldGetAccountIdList = true
+        shouldGetAccountIdList = true,
+        shouldSelectMultipleAccounts = false
     ) {
         const { secretKey } = parseSeedPhrase(seedPhrase);
         return await this.recoverAccountSecretKey(
             secretKey,
             accountId,
             shouldCreateFullAccessKey,
-            shouldGetAccountIdList
+            shouldGetAccountIdList,
+            shouldSelectMultipleAccounts
         );
     }
 
@@ -1556,7 +1558,8 @@ export default class Wallet {
         secretKey,
         accountId,
         shouldCreateFullAccessKey,
-        shouldGetAccountIdList = true
+        shouldGetAccountIdList = true,
+        shouldSelectMultipleAccounts
     ) {
         const keyPair: nearApiJs.utils.KeyPairEd25519 = nearApiJs.KeyPair.fromString(
             secretKey
@@ -1754,20 +1757,24 @@ export default class Wallet {
         this.connection = connectionConstructor;
 
         if (!!accountIdsSuccess.length) {
-            await Promise.all(
-                accountIdsSuccess.map(async ({ accountId, newKeyPair }) => {
-                    await this.saveAccount(accountId, newKeyPair);
-                })
-            );
+            if (!shouldSelectMultipleAccounts) {
+                await Promise.all(
+                    accountIdsSuccess.map(async ({ accountId, newKeyPair }) => {
+                        await this.saveAccount(accountId, newKeyPair);
+                    })
+                );
 
-            const accountId = accountIdsSuccess[accountIdsSuccess.length - 1].accountId;
-            store.dispatch(makeAccountActive(accountId));
+                const accountId =
+                    accountIdsSuccess[accountIdsSuccess.length - 1].accountId;
+                store.dispatch(makeAccountActive(accountId));
+            }
 
             return {
                 numberOfAccounts: accountIdsSuccess.length,
                 accountList: accountIdsSuccess
                     .flatMap((accountId) => accountId.account_id)
                     .join(', '),
+                accountIdsSuccess,
             };
         } else {
             const lastAccount = accountIdsError

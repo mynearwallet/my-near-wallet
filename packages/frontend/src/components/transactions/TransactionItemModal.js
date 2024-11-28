@@ -54,7 +54,7 @@ const TransactionItemModal = () => {
                     {!!tx.assetChangeText && (
                         <div className='item'>
                             <span>Amount</span>
-                            <div>
+                            <div className='text-right'>
                                 {!!tx.assetChangeText && (
                                     <span
                                         className={classNames([
@@ -69,8 +69,19 @@ const TransactionItemModal = () => {
                                         {tx.assetChangeText}
                                     </span>
                                 )}
+                                <br />
                                 {!!tx.assetChangeText2 && (
-                                    <span className='desc'>-{tx.assetChangeText2}</span>
+                                    <span
+                                        className={classNames([
+                                            'desc',
+                                            {
+                                                'text-green':
+                                                    tx.dir === ETxDirection.send,
+                                            },
+                                        ])}
+                                    >
+                                        {tx.assetChangeText2}
+                                    </span>
                                 )}
                             </div>
                         </div>

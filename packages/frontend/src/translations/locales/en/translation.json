@@ -412,6 +412,7 @@
             "infura-testnet": "Infura (Testnet)",
             "lava": "Lava",
             "lava-testnet": "Lava (Testnet)",
+            "meteorRpc": "Meteor Fastnear Rpc",
             "near": "NEAR",
             "near-testnet": "NEAR (Testnet)",
             "nodeReal": "NodeReal",
@@ -420,6 +421,7 @@
             "pagoda-testnet": "Pagoda (Testnet)"
         },
         "rpcProvider": "RPC Provider",
+        "select": "Set Primary",
         "url": "URL"
     },
     "connectLedger": {
@@ -688,8 +690,10 @@
         "title": "Hardware Devices"
     },
     "importAccount": {
+        "importAccount": "Import Your Account",
         "noId": "Importing account",
         "noIdFailed": "Failed to import account.",
+        "selectAccount": "Pick the wallet you'd like to import",
         "withId": "Importing account: ${accountId}",
         "withIdFailed": "Failed to import account: ${accountId}"
     },
@@ -1628,6 +1632,7 @@
             },
             "pending": {
                 "info": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 52 to 65 hours after unstaking.",
+                "liquidInfo": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 2 to 6 days after unstaking.",
                 "title": "Pending release"
             },
             "staked": {
@@ -1651,6 +1656,24 @@
             "button": "Return to Dashboard",
             "desc": "Tokens have been successfully claimed from the validator",
             "descTwo": "Your tokens are already available",
+            "title": "Success!"
+        },
+        "liquidStaking": {
+            "apy": "APY",
+            "delayedUnstake": "Start Delayed Unstake",
+            "delayedUnstakeFeeTitle": "Delayed Unstake <br />In 2~6 days",
+            "estimatedReceived": "Estimated received",
+            "fastUnstake": "Start Fast Unstake",
+            "instantUnstake": "Instant Unstake",
+            "liquidUnstakeFee": "Liquid Unstake Fee",
+            "unlockPeriod": "Delayed Unstake Unlock Period",
+            "unstakeFee": "Unstake fee: ${amount}%",
+            "unstakeToken": "Unstake Token"
+        },
+        "liquidUnstakeSuccess": {
+            "button": "Return to Dashboard",
+            "desc": "<b>${amount}</b> has successfully been unstaked from this validator:",
+            "descTwo": "Your tokens are pending release and will be made available within ~2-6 days.",
             "title": "Success!"
         },
         "noValidators": {
@@ -1722,7 +1745,9 @@
             "claiming": "Claiming",
             "desc": "This is the fee paid to the validator to stake on your behalf. This fee is only charged on your rewards.",
             "errorClaimRewards": "Something went wrong during claiming your farm rewards. Please, try again later",
+            "farmApy": "Farm APY",
             "fee": "Validator Fee",
+            "liquidWithdrawalDisclaimer": "Funds pending release will be made available after ~2-6 days",
             "notWhitelistedTokenWarning": "This token has not been whitelisted by ref-finance. Proceed at your own risk.",
             "notWhitelistedValidatorWarning": "Tokens awarded by this validator have not been whitelisted by ref-finance. Proceed at your own risk.",
             "rewards": "Rewards",
@@ -1754,6 +1779,7 @@
             },
             "inputLabel": "Validator account ID",
             "inputPlaceholder": "validator-name.near",
+            "liquidStakingDescription": "Stake your Digital Assets and start earning rewards. Receive a Liquid Staking Token (LST) that represents your original Digital Asset + staking rewards. Maximize the potential, and use it across DeFi.",
             "search": {
                 "error": "No matching validator.",
                 "success": "Validator found!"
@@ -1810,6 +1836,7 @@
     "total": "total",
     "totalBalance": "Your total balance represents all NEAR tokens under your control. In many cases, you will not have immediate access to this entire balance (e.g. if it is locked, delegated, or staked). Check your Available Balance for the NEAR you can actively use, transfer, delegate, and stake.",
     "transaction": {
+        "executeTitle": "Executing Transaction",
         "status": {
             "checkingStatus": "Checking status...",
             "Failure": "Failed",
@@ -1817,7 +1844,9 @@
             "NotStarted": "Not started",
             "Started": "Started",
             "SuccessValue": "Succeeded"
-        }
+        },
+        "steps": "Steps ${currentStepCount} of ${totalStepCount}",
+        "TransactionHash": "Transaction hash"
     },
     "transfer": {
         "estimatedFees": "Estimated fees",

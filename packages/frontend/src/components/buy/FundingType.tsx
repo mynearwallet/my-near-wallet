@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import arrow from './assets/arrow.svg';
+import LoadingDots from '../common/loader/LoadingDots';
 
 const hoverEffect = (isEnabled: boolean) =>
     isEnabled ? '&:hover { background: #f9f9f9; }' : '';
@@ -39,6 +40,12 @@ const Wrapper = styled.div`
     }
 `;
 
+const ImageContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+`;
+
 const Button = styled.div`
     background-image: url(${arrow});
     width: 24px;
@@ -73,9 +80,12 @@ export const FundingType: React.FunctionComponent<Props> = ({
             disabled={disabled}
         >
             <Wrapper>
-                <WrapperImg title={name}>
-                    <img src={icon} alt={name} />
-                </WrapperImg>
+                <ImageContainer>
+                    <WrapperImg title={name}>
+                        <img src={icon} alt={name} />
+                    </WrapperImg>
+                    {!link && <LoadingDots />}
+                </ImageContainer>
                 {disabled ? null : <Button />}
             </Wrapper>
         </LinkWrap>

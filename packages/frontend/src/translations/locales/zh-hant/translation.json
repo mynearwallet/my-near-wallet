@@ -588,8 +588,10 @@
         "title": "硬件錢包"
     },
     "importAccount": {
+        "importAccount": "匯入您的帳戶",
         "noId": "正在導入賬戶",
         "noIdFailed": "導入賬戶失敗。",
+        "selectAccount": "選擇您要匯入的錢包",
         "withId": "導入賬戶：${accountId}",
         "withIdFailed": "導入賬戶失敗：${accountId}"
     },
@@ -1685,7 +1687,9 @@
             "NotStarted": "未開始",
             "Started": "已開始",
             "SuccessValue": "成功"
-        }
+        },
+        "steps": "第 ${currentStepCount} 步，共 ${totalStepCount}",
+        "TransactionHash": "交易哈希"
     },
     "transfer": {
         "estimatedFees": "預估費用",

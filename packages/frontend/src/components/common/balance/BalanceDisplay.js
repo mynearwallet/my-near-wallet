@@ -71,11 +71,15 @@ const BalanceDisplay = ({
     showSymbolUSD,
     totalAmount,
     showGenericSymbol = false,
+    symbol,
     'data-test-id': testId,
 }) => {
     const amountToShow = amount && formatNearAmount(amount);
 
     const getSymbol = () => {
+        if (symbol) {
+            return ` ${symbol}`;
+        }
         if (showGenericSymbol) {
             return ' Ⓣ';
         }

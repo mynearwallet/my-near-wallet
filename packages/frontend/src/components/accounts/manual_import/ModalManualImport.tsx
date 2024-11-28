@@ -179,16 +179,16 @@ export const ModalManualImport = ({ importType, isVisible, setVisible }: Props) 
                     </div>
                 )}
                 <FormButtonGroup>
-                    {/* @ts-ignore */}
                     <FormButton
                         color='gray'
                         className='link'
-                        onClick={() => setVisible(false)}
+                        onClick={() => {
+                            setVisible(false);
+                        }}
                         style={{ marginTop: '20px !important' }}
                     >
                         <Translate id='button.cancel' />
                     </FormButton>
-                    {/* @ts-ignore */}
                     <FormButton
                         disabled={isLoadingValidation}
                         sending={isLoadingValidation}

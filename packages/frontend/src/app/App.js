@@ -99,6 +99,8 @@ import {
     WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
+import TransactionExecutorModal from '../components/transactions/ExecutorModal/TransactionExecutorModal';
+import LiquidStakingContainer from '../components/staking/liquid-staking/LiquidStakingContainer';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -122,7 +124,7 @@ const WEB3AUTH_FEATURE_ENABLED = true;
 
 const Container = styled.div`
     min-height: 100vh;
-    padding-bottom: 230px;
+    padding-bottom: 260px;
     padding-top: 75px;
 
     @media (max-width: 991px) {
@@ -336,6 +338,7 @@ class Routing extends Component {
                         />
                         <LedgerConfirmActionModal />
                         <LedgerConnectModal />
+                        <TransactionExecutorModal />
                         {account.requestPending !== null && (
                             <TwoFactorVerifyModal
                                 onClose={(verified, error) => {
@@ -623,6 +626,10 @@ class Routing extends Component {
                                 render={() => (
                                     <StakingContainer history={this.props.history} />
                                 )}
+                            />
+                            <PrivateRoute
+                                path='/liquid-staking'
+                                render={() => <LiquidStakingContainer />}
                             />
                             <PrivateRoute
                                 exact

@@ -190,7 +190,7 @@ export default class FungibleTokens {
             contractName,
         });
 
-        return account.signAndSendTransaction({
+        const txOption = {
             receiverId: contractName,
             actions: [
                 ...(isRegistrationRequired
@@ -213,7 +213,9 @@ export default class FungibleTokens {
                     CONFIG.TOKEN_TRANSFER_DEPOSIT
                 ),
             ],
-        });
+        };
+
+        return account.signAndSendTransaction(txOption);
     }
 
     async transferStorageDeposit({

@@ -1,4 +1,5 @@
 import BN from 'bn.js';
+import Big from 'big.js';
 
 import { wallet } from './wallet';
 
@@ -17,3 +18,5 @@ export const getTotalGasFee = async (gas) => {
 };
 
 export const formatTGasToYoctoNEAR = (tGas) => new BN(tGas * 10 ** 12).toString();
+
+export const toYoctoNear = (value = '0') => new Big(value).times(10 ** 24).toFixed();

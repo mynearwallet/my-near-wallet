@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Style = styled.div`
+const Style = styled.div<{ modalSize: string }>`
     position: fixed;
     top: 0;
     left: 0;
