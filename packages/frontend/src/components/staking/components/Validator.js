@@ -31,12 +31,13 @@ import FormButton from '../../common/FormButton';
 import SafeTranslate from '../../SafeTranslate';
 
 const renderFarmUi = ({
+    isLoading,
     farmList,
     contractMetadataByContractId,
     openModal,
     tokenPriceMetadata,
 }) => {
-    if (!farmList.length) {
+    if (isLoading) {
         // eslint-disable-next-line jsx-a11y/heading-has-content
         return <h1 className='animated-dots' />;
     }
@@ -240,6 +241,7 @@ export default function Validator({
                     />
                     {isFarmingValidator &&
                         renderFarmUi({
+                            isLoading: !!validatorFarmData?.loading,
                             farmList,
                             contractMetadataByContractId,
                             openModal,
