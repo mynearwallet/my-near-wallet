@@ -187,7 +187,7 @@ export default function Validator({
 
     const { currentAccount } = useSelector(selectStakingSlice);
     const validatorFeeQuery = useQuery({
-        queryKey: ['validator_fee', validator?.accountId, currentAccount.id],
+        queryKey: ['validator_fee', validator?.accountId, currentAccount.id, 'persist'],
         queryFn: async () => {
             const account = await wallet.getAccountBasic(currentAccount.id);
 
@@ -200,7 +200,7 @@ export default function Validator({
                 2
             ));
         },
-        staleTime: Infinity,
+        staleTime: 1000 * 60 * 60 * 24 * 7, // 1 week
         enabled: currentAccount.id && !!validator?.accountId,
     });
 
