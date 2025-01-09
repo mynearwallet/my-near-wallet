@@ -32,7 +32,7 @@ import StakingFarmContracts from '../../../services/StakingFarmContracts';
 import { FARMING_VALIDATOR_VERSION } from '../../../utils/constants';
 import FormButton from '../../common/FormButton';
 import SafeTranslate from '../../SafeTranslate';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Contract } from 'near-api-js';
 import { wallet } from '../../../utils/wallet';
 

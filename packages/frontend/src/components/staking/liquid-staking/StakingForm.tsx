@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 import BN from 'bn.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { useParams } from 'react-router';
 import styled from 'styled-components';

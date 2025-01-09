@@ -8,7 +8,7 @@ import {
 } from '../../../redux/slices/transactionHistory/utils';
 import { useSelector } from 'react-redux';
 import { selectAccountId } from '../../../redux/slices/account';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { keysToSnakeCase } from '../../../utils/object';
 import CONFIG from '../../../config';
 import { fetchAllMetaData } from '../../../redux/slices/transactionHistory';

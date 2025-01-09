@@ -14,7 +14,7 @@ import Tooltip from '../../common/Tooltip';
 import ChevronIcon from '../../svg/ChevronIcon';
 import UserIcon from '../../svg/UserIcon';
 import { selectStakingSlice } from '../../../redux/slices/staking';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { wallet } from '../../../utils/wallet';
 import { Contract } from 'near-api-js';
 

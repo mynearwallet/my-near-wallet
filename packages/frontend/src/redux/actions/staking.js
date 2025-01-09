@@ -519,13 +519,13 @@ export const { staking } = createActions({
                 ].map(({ account_id }) => account_id);
 
                 const networkId = CONFIG.CURRENT_NEAR_NETWORK;
-                const allStakingPools = await queryClient.fetchQuery({
+                const accountStakingPools = await queryClient.fetchQuery({
                     queryKey: ['account_staking_pools', networkId, accountId],
                     queryFn: () => coreIndexerAdapter.fetchAccountValidatorIds(accountId),
                     staleTime: Infinity,
                 });
                 const prefix = getValidatorRegExp(networkId);
-                accountIds = uniq([...rpcValidators, ...allStakingPools]).filter(
+                accountIds = uniq([...rpcValidators, ...accountStakingPools]).filter(
                     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
                 );
             }
