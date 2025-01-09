@@ -177,6 +177,7 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
             return coreIndexerAdapter.getNftDetailByReference(nft?.metadata?.reference);
         },
         enabled: !!nft?.metadata?.reference,
+        staleTime: 120_000,
     });
 
     const attributes = useMemo(() => {

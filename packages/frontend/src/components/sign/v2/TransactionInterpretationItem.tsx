@@ -60,6 +60,7 @@ const TransactionInterpretationItem = ({ transaction }: Props) => {
             return metaDatas;
         },
         enabled: !!transaction,
+        staleTime: 300_000,
     });
 
     const txUI = transactionToHistoryUIData(

@@ -42,7 +42,7 @@ const StakingForm = () => {
             return await liquidStaking({
                 contractId: validatorId,
                 amountInYocto: new BN(toYoctoNear(amount)).toString(),
-                accountId: currentAccount.accoundId,
+                accountId: currentAccount.accountId,
             });
         },
         mutationKey: ['liquidStakingMutation', amount],
