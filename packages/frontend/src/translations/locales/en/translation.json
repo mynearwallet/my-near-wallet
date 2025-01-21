@@ -1974,6 +1974,9 @@
             "title": "Authorization Request"
         }
     },
+    "banner": {
+        "changeMainRpcTitle": "You are not using the recommended RPC provider and could rate limited, some features might not work as intended, click here to switch provider. (Dont Show Again)"
+    },
     "verifyWalletDomainBanner": {
         "title": "Please make sure you are visiting"
     },

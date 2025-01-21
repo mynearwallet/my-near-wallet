@@ -447,6 +447,9 @@
         "importAccount": "Nhập tài khoản của bạn",
         "preferedBrowser": "Nếu đây không phải là trình duyệt bạn ưa thích,"
     },
+    "banner": {
+        "changeMainRpcTitle": "Bạn không sử dụng nhà cung cấp RPC được đề xuất và có thể bị giới hạn, một số tính năng có thể không hoạt động như mong đợi, hãy nhấp vào đây để chuyển đổi nhà cung cấp. (Không hiển thị lại)"
+    },
     "initialDeposit": {
         "claimAccount": {
             "desc": "Đã nhận được khoản nạp của bạn! Một khi đã nhận, khoản nạp sẽ được chuyển vào tài khoản mới của bạn.",

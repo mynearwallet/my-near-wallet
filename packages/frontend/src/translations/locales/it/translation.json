@@ -1636,6 +1636,9 @@
         "title": "Ci siamo quasi! Verifica il tuo nuovo account.",
         "titleNoFunding": "Ci siamo quasi! Finanzia il tuo nuovo account."
     },
+    "banner": {
+        "changeMainRpcTitle": "Non stai utilizzando il provider RPC consigliato e potresti avere una valutazione limitata, alcune funzionalità potrebbero non funzionare come previsto, fai clic qui per cambiare provider. (Non mostrare più)"
+    },
     "wallet": {
         "availableBalance": "saldo disponibile",
         "balance": "Saldo",
