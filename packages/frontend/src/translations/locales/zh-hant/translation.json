@@ -197,6 +197,9 @@
         "available": "可用餘額",
         "reserved": "費用預留"
     },
+    "banner": {
+        "changeMainRpcTitle": "您沒有使用建議的 RPC 提供程序，可能會受到速率限制，某些功能可能無法如預期運作，請按一下此處切換提供者。（不再顯示）"
+    },
     "batchExportAccounts": {
         "confirmExportModal": {
             "accountToExport": "賬戶備份",
@@ -1786,9 +1789,6 @@
         },
         "title": "只差一步！驗證你的新賬戶。",
         "titleNoFunding": "即將完成！請為新賬戶充值。"
-    },
-    "banner":{
-        "changeMainRpcTitle":"您沒有使用建議的 RPC 提供程序，可能會受到速率限制，某些功能可能無法如預期運作，請按一下此處切換提供者。（不再顯示）"
     },
     "verifyWalletDomainBanner": {
         "title": "請確認你正在訪問"

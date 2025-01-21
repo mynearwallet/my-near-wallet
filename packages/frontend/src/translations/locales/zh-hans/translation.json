@@ -197,6 +197,9 @@
         "available": "可用余额",
         "reserved": "费用预留"
     },
+    "banner": {
+        "changeMainRpcTitle": "您未使用推荐的 RPC 提供商，可能会受到限制，某些功能可能无法按预期工作，请单击此处切换提供商。（不再显示）"
+    },
     "batchExportAccounts": {
         "confirmExportModal": {
             "accountToExport": "账户备份",
@@ -1786,9 +1789,6 @@
         },
         "title": "只差一步！验证你的新账户。",
         "titleNoFunding": "即将完成！请为新账户充值。"
-    },
-    "banner":{
-        "changeMainRpcTitle":"您未使用推荐的 RPC 提供商，可能会受到限制，某些功能可能无法按预期工作，请单击此处切换提供商。（不再显示）"
     },
     "verifyWalletDomainBanner": {
         "title": "请确认你正在访问"

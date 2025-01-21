@@ -62,7 +62,7 @@ const BannerChangeRpc = () => {
         <>
             {isDirty ? (
                 <div
-                    className='bg-rose-100 text-rose-600 text-md cursor-pointer p-4 mt-2 rounded-md text-center'
+                    className='bg-rose-100 text-rose-600 text-md cursor-pointer p-4 rounded-md text-center'
                     onClick={() => location.reload()}
                 >
                     {t('connection.dirty')}
