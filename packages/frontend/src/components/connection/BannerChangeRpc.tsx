@@ -5,6 +5,7 @@ import { ConnectionsStorage } from '../../utils/storage';
 import { wallet } from '../../utils/wallet';
 import { useTranslation } from 'react-i18next';
 import closeIcon from '../../images/icon-close-gray.svg';
+import { Translate } from 'react-localize-redux';
 
 const StyledBanner = styled.div`
     position: relative;
@@ -94,12 +95,11 @@ const BannerChangeRpc = () => {
     return (
         <StyledBanner>
             <div className='banner-change-rpc'>
-                You are not using the recommended RPC provider and could rate limited,
-                some features might not work as intended,{' '}
+                <Translate id='banner.changeMainRpc.title' />.{' '}
                 <span className='clickable' onClick={handleChangeRpc}>
-                    click here
+                    <Translate id='banner.changeMainRpc.button' />
                 </span>{' '}
-                to switch provider.{' '}
+                <Translate id='banner.changeMainRpc.switchProvider' />{' '}
             </div>
             <div>
                 <div className='close-button'>

@@ -199,7 +199,11 @@
         "reserved": "Reserved for fees"
     },
     "banner": {
-        "changeMainRpcTitle": "You are not using the recommended RPC provider and could rate limited, some features might not work as intended, click here to switch provider. (Dont Show Again)"
+        "changeMainRpc": {
+            "title": "You are currently not using the recommended RPC provider, which may result in rate limits or certain features not working as expected",
+            "button": "Click here",
+            "switchProvider": "to switch to the recommended provider."
+        }
     },
     "batchExportAccounts": {
         "confirmExportModal": {

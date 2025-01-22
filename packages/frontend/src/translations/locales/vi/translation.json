@@ -178,7 +178,11 @@
         "reserved": "Dành cho các khoản phí"
     },
     "banner": {
-        "changeMainRpcTitle": "Bạn không sử dụng nhà cung cấp RPC được đề xuất và có thể bị giới hạn, một số tính năng có thể không hoạt động như mong đợi, hãy nhấp vào đây để chuyển đổi nhà cung cấp. (Không hiển thị lại)"
+        "changeMainRpc": {
+            "title": "Hiện tại bạn không sử dụng nhà cung cấp RPC được đề xuất, điều này có thể dẫn đến giới hạn tốc độ hoặc một số tính năng không hoạt động như mong đợi",
+            "button": "Nhấp vào đây",
+            "switchProvider": "để chuyển sang nhà cung cấp được đề xuất."
+        }
     },
     "button": {
         "addFunds": "Thêm quỹ tiền",

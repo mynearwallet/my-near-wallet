@@ -189,7 +189,11 @@
         "reserved": "Riservato per le commissioni"
     },
     "banner": {
-        "changeMainRpcTitle": "Non stai utilizzando il provider RPC consigliato e potresti avere una valutazione limitata, alcune funzionalità potrebbero non funzionare come previsto, fai clic qui per cambiare provider. (Non mostrare più)"
+        "changeMainRpc": {
+            "title": "Al momento non stai utilizzando il provider RPC consigliato, il che potrebbe comportare limiti di velocità o alcune funzionalità non funzionanti come previsto",
+            "button": "Clicca qui",
+            "switchProvider": "per passare al provider consigliato."
+        }
     },
     "button": {
         "acceptAndContinue": "Accetta e Continua",

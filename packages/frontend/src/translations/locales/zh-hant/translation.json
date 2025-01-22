@@ -198,7 +198,11 @@
         "reserved": "費用預留"
     },
     "banner": {
-        "changeMainRpcTitle": "您沒有使用建議的 RPC 提供程序，可能會受到速率限制，某些功能可能無法如預期運作，請按一下此處切換提供者。（不再顯示）"
+        "changeMainRpc": {
+            "title": "您目前未使用建議的 RPC 提供程序，這可能會導致速率限製或某些功能無法如預期運作",
+            "button": "單擊此處",
+            "switchProvider": "切換到建議的提供者。"
+        }
     },
     "batchExportAccounts": {
         "confirmExportModal": {
