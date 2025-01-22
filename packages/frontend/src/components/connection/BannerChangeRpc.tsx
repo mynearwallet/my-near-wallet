@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 import { RpcProviderDetail } from '../../utils/mnw-api-js';
 import { ConnectionsStorage } from '../../utils/storage';
@@ -16,10 +15,10 @@ const StyledBanner = styled.div`
         text-align: center;
         padding: 10px 20px;
         margin: -5px 0 0 0;
+    }
+    .clickable {
         cursor: pointer;
-        &:hover {
-            text-decoration: underline;
-        }
+        text-decoration: underline;
     }
 `;
 
@@ -31,6 +30,9 @@ const BannerChangeRpc = () => {
     const [isDirty, setIsDirty] = useState<boolean>(false);
     const [connections, setConnections] = useState<RpcProviderDetail[]>(
         connectionStorage.load() || []
+    );
+    const [isHidden, setHide] = useState(
+        localStorage.getItem('bannerHideChangeRpc') || false
     );
     const meteorRpcIndex = connections.findIndex((c) => c.id === 'meteorRpc');
 
@@ -58,23 +60,39 @@ const BannerChangeRpc = () => {
     if (!meteorRpcIndex || connections[0]?.id !== 'near') {
         return null;
     }
+    if (isDirty) {
+        return (
+            <div
+                className='bg-rose-100 text-rose-600 text-md cursor-pointer p-4 rounded-md text-center'
+                onClick={() => location.reload()}
+            >
+                {t('connection.dirty')}
+            </div>
+        );
+    }
+    if (isHidden) {
+        return null;
+    }
     return (
-        <>
-            {isDirty ? (
-                <div
-                    className='bg-rose-100 text-rose-600 text-md cursor-pointer p-4 rounded-md text-center'
-                    onClick={() => location.reload()}
+        <StyledBanner>
+            <div className='banner-change-rpc'>
+                You are not using the recommended RPC provider and could rate limited,
+                some features might not work as intended,{' '}
+                <span className='clickable' onClick={handleChangeRpc}>
+                    click here
+                </span>{' '}
+                to switch provider.{' '}
+                <span
+                    className='clickable'
+                    onClick={() => {
+                        setHide(true);
+                        localStorage.setItem('bannerHideChangeRpc', 'true');
+                    }}
                 >
-                    {t('connection.dirty')}
-                </div>
-            ) : (
-                <StyledBanner>
-                    <div className='banner-change-rpc' onClick={handleChangeRpc}>
-                        <Translate id='banner.changeMainRpcTitle' />
-                    </div>
-                </StyledBanner>
-            )}
-        </>
+                    (Dont Show Again)
+                </span>
+            </div>
+        </StyledBanner>
     );
 };
 
