@@ -4,21 +4,39 @@ import { RpcProviderDetail } from '../../utils/mnw-api-js';
 import { ConnectionsStorage } from '../../utils/storage';
 import { wallet } from '../../utils/wallet';
 import { useTranslation } from 'react-i18next';
+import closeIcon from '../../images/icon-close-gray.svg';
 
 const StyledBanner = styled.div`
+    position: relative;
     background-color: #fafafa;
     display: flex;
     justify-content: center;
+    align-items: center;
     .banner-change-rpc {
-        max-width: 700px;
+        max-width: 920px;
         margin: 0 auto;
         text-align: center;
-        padding: 10px 20px;
+        padding: 10px 30px;
         margin: -5px 0 0 0;
     }
     .clickable {
         cursor: pointer;
         text-decoration: underline;
+    }
+    .close-button {
+        border-radius: 20px;
+        cursor: pointer;
+        margin-left: 1em;
+        padding: 0.6em;
+        @media (max-width: 600px) {
+            margin-right: 1em;
+            position: absolute;
+            right: 0;
+            top: 1.8em;
+        }
+        img {
+            min-width: 14px;
+        }
     }
 `;
 
@@ -82,15 +100,19 @@ const BannerChangeRpc = () => {
                     click here
                 </span>{' '}
                 to switch provider.{' '}
-                <span
-                    className='clickable'
-                    onClick={() => {
-                        setHide(true);
-                        localStorage.setItem('bannerHideChangeRpc', 'true');
-                    }}
-                >
-                    (Dont Show Again)
-                </span>
+            </div>
+            <div>
+                <div className='close-button'>
+                    <img
+                        width={'14px'}
+                        src={closeIcon}
+                        alt='close'
+                        onClick={() => {
+                            setHide(true);
+                            localStorage.setItem('bannerHideChangeRpc', 'true');
+                        }}
+                    />
+                </div>
             </div>
         </StyledBanner>
     );
