@@ -198,6 +198,13 @@
         "available": "Available balance",
         "reserved": "Reserved for fees"
     },
+    "banner": {
+        "changeMainRpc": {
+            "title": "You are currently not using the recommended RPC provider, which may result in rate limits or certain features not working as expected",
+            "button": "Click here",
+            "switchProvider": "to switch to the recommended provider."
+        }
+    },
     "batchExportAccounts": {
         "confirmExportModal": {
             "accountToExport": "Account to Export",
