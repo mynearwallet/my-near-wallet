@@ -30,6 +30,7 @@ import WrapIcon from '../svg/WrapIcon';
 import { selectAllowedTokens, selectTokensLoading } from '../../redux/slices/tokens';
 import useSortedTokens from '../../hooks/useSortedTokens';
 import { selectAccountId } from '../../redux/slices/account';
+import BannerChangeRpc from '../connection/BannerChangeRpc';
 
 const StyledContainer = styled(Container)`
     @media (max-width: 991px) {
@@ -319,81 +320,87 @@ export function Wallet({
     const { dataStatus } = useSelector(selectPasswordProtectionSlice);
 
     return (
-        <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
-            {/* TODO: Style and translate this */}
-            {!dataStatus.hasEncryptedData && (
-                <AlertBanner theme={'warning'} className={'password-encryption-alert'}>
-                    <Translate id='wallet.recommendToSetPassword' />
-                    <br />
-                    <Link to='/set-password' className={'right'}>
-                        <Translate id='wallet.setUpPasswordBtn' />
-                    </Link>
-                </AlertBanner>
-            )}
+        <div>
+            <BannerChangeRpc />
+            <StyledContainer className={SHOW_NETWORK_BANNER ? 'showing-banner' : ''}>
+                {/* TODO: Style and translate this */}
+                {!dataStatus.hasEncryptedData && (
+                    <AlertBanner
+                        theme={'warning'}
+                        className={'password-encryption-alert'}
+                    >
+                        <Translate id='wallet.recommendToSetPassword' />
+                        <br />
+                        <Link to='/set-password' className={'right'}>
+                            <Translate id='wallet.setUpPasswordBtn' />
+                        </Link>
+                    </AlertBanner>
+                )}
 
-            <div className='split'>
-                <div className='left'>
-                    <div className='tab-selector'>
-                        <div
-                            className={classNames([
-                                'tab-balances',
-                                tab === 'collectibles' ? 'inactive' : '',
-                            ])}
-                            onClick={() => setTab('')}
-                        >
-                            <Translate id='wallet.balances' />
+                <div className='split'>
+                    <div className='left'>
+                        <div className='tab-selector'>
+                            <div
+                                className={classNames([
+                                    'tab-balances',
+                                    tab === 'collectibles' ? 'inactive' : '',
+                                ])}
+                                onClick={() => setTab('')}
+                            >
+                                <Translate id='wallet.balances' />
+                            </div>
+                            <div
+                                className={classNames([
+                                    'tab-collectibles',
+                                    tab !== 'collectibles' ? 'inactive' : '',
+                                ])}
+                                onClick={() => setTab('collectibles')}
+                            >
+                                <Translate id='wallet.collectibles' />
+                            </div>
                         </div>
-                        <div
-                            className={classNames([
-                                'tab-collectibles',
-                                tab !== 'collectibles' ? 'inactive' : '',
-                            ])}
-                            onClick={() => setTab('collectibles')}
-                        >
-                            <Translate id='wallet.collectibles' />
-                        </div>
+                        {tab === 'collectibles' ? (
+                            <NFTs accountId={accountId} />
+                        ) : (
+                            <FungibleTokens accountExists={accountExists} />
+                        )}
                     </div>
-                    {tab === 'collectibles' ? (
-                        <NFTs accountId={accountId} />
-                    ) : (
-                        <FungibleTokens accountExists={accountExists} />
-                    )}
+                    <div className='right'>
+                        <SidebarLight
+                            availableAccounts={accountExists && availableAccounts}
+                        />
+                        <ActivitiesWrapper />
+                    </div>
                 </div>
-                <div className='right'>
-                    <SidebarLight
-                        availableAccounts={accountExists && availableAccounts}
+                {linkdropAmount !== '0' && (
+                    <LinkDropSuccessModal
+                        onClose={handleCloseLinkdropModal}
+                        linkdropAmount={linkdropAmount}
                     />
-                    <ActivitiesWrapper />
-                </div>
-            </div>
-            {linkdropAmount !== '0' && (
-                <LinkDropSuccessModal
-                    onClose={handleCloseLinkdropModal}
-                    linkdropAmount={linkdropAmount}
-                />
-            )}
-            {createFromImplicitSuccess && (
-                <CreateFromImplicitSuccessModal
-                    onClose={handleSetCreateFromImplicitSuccess}
-                    isOpen={createFromImplicitSuccess}
-                    accountId={accountId}
-                />
-            )}
-            {createCustomName && (
-                <CreateCustomNameModal
-                    onClose={handleSetCreateCustomName}
-                    isOpen={createCustomName}
-                    accountId='satoshi.near'
-                />
-            )}
-            {zeroBalanceAccountImportMethod && (
-                <ZeroBalanceAccountImportedModal
-                    onClose={handleSetZeroBalanceAccountImportMethod}
-                    importMethod={zeroBalanceAccountImportMethod}
-                    accountId={accountId}
-                />
-            )}
-        </StyledContainer>
+                )}
+                {createFromImplicitSuccess && (
+                    <CreateFromImplicitSuccessModal
+                        onClose={handleSetCreateFromImplicitSuccess}
+                        isOpen={createFromImplicitSuccess}
+                        accountId={accountId}
+                    />
+                )}
+                {createCustomName && (
+                    <CreateCustomNameModal
+                        onClose={handleSetCreateCustomName}
+                        isOpen={createCustomName}
+                        accountId='satoshi.near'
+                    />
+                )}
+                {zeroBalanceAccountImportMethod && (
+                    <ZeroBalanceAccountImportedModal
+                        onClose={handleSetZeroBalanceAccountImportMethod}
+                        importMethod={zeroBalanceAccountImportMethod}
+                        accountId={accountId}
+                    />
+                )}
+            </StyledContainer>
+        </div>
     );
 }
 
