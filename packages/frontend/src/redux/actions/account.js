@@ -299,14 +299,27 @@ export const allowLogin = () => async (dispatch, getState) => {
         const availableKeys = await wallet.getAvailableKeys();
 
         const allKeys = availableKeys.map((key) => key.toString());
-        const parsedUrl = new URL(successUrl);
-        parsedUrl.searchParams.set('account_id', wallet.accountId);
-        if (publicKey) {
-            parsedUrl.searchParams.set('public_key', publicKey);
-        }
-        parsedUrl.searchParams.set('all_keys', allKeys.join(','));
-        if (isUrlNotJavascriptProtocol(parsedUrl.href)) {
-            window.location = parsedUrl.href;
+        console.log('Finished adding access key, allKeys: ', allKeys);
+        if (window.opener) {
+            window.opener.postMessage(
+                {
+                    status: 'success',
+                    account_id: wallet.accountId,
+                    public_key: publicKey,
+                    all_keys: allKeys,
+                },
+                '*'
+            );
+        } else {
+            const parsedUrl = new URL(successUrl);
+            parsedUrl.searchParams.set('account_id', wallet.accountId);
+            if (publicKey) {
+                parsedUrl.searchParams.set('public_key', publicKey);
+            }
+            parsedUrl.searchParams.set('all_keys', allKeys.join(','));
+            if (isUrlNotJavascriptProtocol(parsedUrl.href)) {
+                window.location = parsedUrl.href;
+            }
         }
     } else {
         await dispatch(

@@ -104,10 +104,21 @@ const SignWrapper = () => {
 
         if (signStatus === SIGN_STATUS.SUCCESS) {
             if (signCallbackUrl && !!transactionHashes.length && isValidCallbackUrl) {
-                window.location.href = addQueryParams(signCallbackUrl, {
-                    signMeta,
-                    transactionHashes: transactionHashes.join(','),
-                });
+                if (window.opener) {
+                    window.opener.postMessage(
+                        {
+                            status: 'success',
+                            signMeta,
+                            transactionHashes: transactionHashes.join(','),
+                        },
+                        '*'
+                    );
+                } else {
+                    window.location.href = addQueryParams(signCallbackUrl, {
+                        signMeta,
+                        transactionHashes: transactionHashes.join(','),
+                    });
+                }
             } else {
                 dispatch(redirectTo('/'));
             }
