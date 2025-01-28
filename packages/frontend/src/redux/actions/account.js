@@ -58,6 +58,7 @@ import {
     selectFlowLimitationAccountBalance,
     selectFlowLimitationAccountData,
 } from '../slices/flowLimitation';
+import convertUrlToSendMessage from '../../utils/convertUrlToSendMessage';
 
 const { handleFlowLimitation, handleClearflowLimitation } = flowLimitationActions;
 
@@ -299,7 +300,7 @@ export const allowLogin = () => async (dispatch, getState) => {
         const availableKeys = await wallet.getAvailableKeys();
 
         const allKeys = availableKeys.map((key) => key.toString());
-        console.log('Finished adding access key, allKeys: ', allKeys);
+
         if (window.opener) {
             window.opener.postMessage(
                 {
@@ -308,7 +309,7 @@ export const allowLogin = () => async (dispatch, getState) => {
                     public_key: publicKey,
                     all_keys: allKeys,
                 },
-                '*'
+                convertUrlToSendMessage(successUrl)
             );
         } else {
             const parsedUrl = new URL(successUrl);

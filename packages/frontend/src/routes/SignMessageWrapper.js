@@ -22,6 +22,7 @@ import {
 import { addHashParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 import { validateNonce } from '../utils/signMessage';
+import convertUrlToSendMessage from '../utils/convertUrlToSendMessage';
 
 const buildRedirectUrl = (accountUrlCallbackUrl, signedRequest, state, error) => {
     if (!error) {
@@ -60,9 +61,9 @@ const SignMessageWrapper = () => {
                         accountUrlState,
                         verifyOwnerError,
                     },
-                    '*'
+                    convertUrlToSendMessage(accountUrlCallbackUrl)
                 );
-            } 
+            }
             if (accountUrlCallbackUrl && isValidCallbackUrl) {
                 window.location.href = buildRedirectUrl(
                     accountUrlCallbackUrl,

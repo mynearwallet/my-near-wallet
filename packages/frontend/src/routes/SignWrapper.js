@@ -30,6 +30,7 @@ import {
 } from '../redux/slices/sign';
 import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
+import convertUrlToSendMessage from '../utils/convertUrlToSendMessage';
 
 const SignWrapper = () => {
     const dispatch = useDispatch();
@@ -111,7 +112,7 @@ const SignWrapper = () => {
                             signMeta,
                             transactionHashes: transactionHashes.join(','),
                         },
-                        '*'
+                        convertUrlToSendMessage(signCallbackUrl)
                     );
                 } else {
                     window.location.href = addQueryParams(signCallbackUrl, {
@@ -131,15 +132,21 @@ const SignWrapper = () => {
     };
 
     const handleCancelTransaction = async () => {
-        if(window.opener){
+        if (window.opener) {
             window.opener.postMessage(
                 {
                     status: 'failure',
                     signMeta,
-                    errorCode: signStatus !== SIGN_STATUS.ERROR?'userRejected':signErrorName|| 'unknownError',
-                    errorMessage: signStatus !== SIGN_STATUS.ERROR?'User rejected transaction':signErrorMessage.substring(0, 100) || 'Unknown error',
+                    errorCode:
+                        signStatus !== SIGN_STATUS.ERROR
+                            ? 'userRejected'
+                            : signErrorName || 'unknownError',
+                    errorMessage:
+                        signStatus !== SIGN_STATUS.ERROR
+                            ? 'User rejected transaction'
+                            : signErrorMessage.substring(0, 100) || 'Unknown error',
                 },
-                '*'
+                convertUrlToSendMessage(signCallbackUrl)
             );
         }
 
@@ -154,7 +161,7 @@ const SignWrapper = () => {
         }
 
         Mixpanel.track('SIGN Deny the transaction');
-        
+
         if (signCallbackUrl && isValidCallbackUrl) {
             if (signStatus !== SIGN_STATUS.ERROR) {
                 window.location.href = addQueryParams(signCallbackUrl, {
