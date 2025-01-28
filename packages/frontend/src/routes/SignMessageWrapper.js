@@ -51,26 +51,25 @@ const SignMessageWrapper = () => {
 
     useEffect(() => {
         if (verifyOwnerStatus === SIGN_MESSAGE_STATUS.COMPLETED) {
-            if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                if (window.opener) {
-                    window.opener.postMessage(
-                        {
-                            status: 'success',
-                            accountUrlCallbackUrl,
-                            signedRequest,
-                            accountUrlState,
-                            verifyOwnerError,
-                        },
-                        '*'
-                    );
-                } else {
-                    window.location.href = buildRedirectUrl(
+            if (window.opener) {
+                window.opener.postMessage(
+                    {
+                        status: 'success',
                         accountUrlCallbackUrl,
                         signedRequest,
                         accountUrlState,
-                        verifyOwnerError
-                    );
-                }
+                        verifyOwnerError,
+                    },
+                    '*'
+                );
+            } 
+            if (accountUrlCallbackUrl && isValidCallbackUrl) {
+                window.location.href = buildRedirectUrl(
+                    accountUrlCallbackUrl,
+                    signedRequest,
+                    accountUrlState,
+                    verifyOwnerError
+                );
             } else {
                 dispatch(redirectTo('/'));
             }
