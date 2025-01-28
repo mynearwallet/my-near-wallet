@@ -29,7 +29,6 @@ export const readyStatePromise = (store: Store) => (next) => (action: AnyAction)
             return payload;
         },
         (error) => {
-            // console.log('Error in readyStatePromise:', error.);
             console.warn('Error in background action:', error);
             Sentry.captureException(error);
             next(makeAction(true, { error: true, payload: error }));
