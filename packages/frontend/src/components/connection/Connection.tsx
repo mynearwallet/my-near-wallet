@@ -97,8 +97,13 @@ export default function ConnectionComponent() {
                             className='content-box min-h-28 w-full mt-4 bg-sky-100 border border-sky-800 rounded-xl px-5 py-3 flex flex-row'
                         >
                             <div>
-                                <div className='text-sky-800 text-xl'>
-                                    {connection.label}
+                                <div className='title-container'>
+                                    <div className='text-sky-800 text-xl'>
+                                        {connection.label}
+                                    </div>
+                                    {connection.id === 'meteorRpc' && (
+                                        <div className='recommended-tag'>Recommended</div>
+                                    )}
                                 </div>
                                 <div className='mt-1'>
                                     {t('connection.rpcProvider')}: {connection.id}
@@ -200,5 +205,17 @@ const Container = styled.div`
     button {
         height: 2rem;
         padding: 0 1.8rem;
+    }
+    .title-container {
+        display: flex;
+        gap: 0.2em;
+    }
+    .recommended-tag {
+        border: 1px solid #20cb11;
+        padding: 0.4em 0.6em;
+        margin-left: 0.6em;
+        font-size: 12px;
+        border-radius: 11px;
+        color: #20cb11;
     }
 `;

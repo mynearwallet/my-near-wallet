@@ -35,6 +35,7 @@ import {
     getStakingAccountSelected,
 } from '../../utils/localStorage';
 import Container from '../common/styled/Container.css';
+import BannerChangeRpc from '../connection/BannerChangeRpc';
 
 const StyledContainer = styled(Container)`
     h1,
@@ -255,116 +256,129 @@ const StakingContainer = ({ history }) => {
     const multipleAccounts = stakingAccounts.length > 1;
 
     return (
-        <StyledContainer className='small-centered' multipleAccounts={multipleAccounts}>
-            <ConnectedRouter history={history}>
-                <Switch>
-                    <Route
-                        exact
-                        path='/staking'
-                        render={() => (
-                            <Staking
-                                {...currentAccount}
-                                currentValidators={currentValidators}
-                                onSwitchAccount={handleSwitchAccount}
-                                accounts={stakingAccounts}
-                                activeAccount={currentAccount}
-                                accountId={accountId}
-                                loading={status.mainLoader && !stakingAccounts.length}
-                                loadingDetails={
-                                    (status.mainLoader && !stakingAccounts.length) ||
-                                    loadingBalance
-                                }
-                                hasLockup={hasLockup}
-                                stakeFromAccount={stakeFromAccount}
-                                selectedValidator={selectedValidator}
-                                multipleAccounts={multipleAccounts}
-                            />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/staking/validators'
-                        render={(props) => (
-                            <Validators
-                                {...props}
-                                validators={validators}
-                                stakeFromAccount={stakeFromAccount}
-                            />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/staking/unstake'
-                        render={(props) => (
-                            <Unstake {...props} currentValidators={currentValidators} />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/staking/withdraw'
-                        render={(props) => (
-                            <Withdraw {...props} currentValidators={currentValidators} />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/staking/:validator'
-                        render={(props) => (
-                            <Validator
-                                {...props}
-                                validator={validator}
-                                onWithdraw={handleAction}
-                                loading={status.mainLoader}
-                                selectedValidator={selectedValidator}
-                                currentValidators={currentValidators}
-                            />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/staking/:validator/stake'
-                        render={(props) => (
-                            <StakingAction
-                                {...props}
-                                action='stake'
-                                handleStakingAction={handleAction}
-                                availableBalance={totalUnstaked}
-                                validator={validator}
-                                loading={status.mainLoader}
-                                hasLedger={hasLedger}
-                                has2fa={has2fa}
-                                stakeFromAccount={stakeFromAccount}
-                                selectedValidator={selectedValidator}
-                                currentValidators={currentValidators}
-                                nearTokenFiatValueUSD={nearTokenFiatValueUSD}
-                            />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/staking/:validator/unstake'
-                        render={(props) => (
-                            <StakingAction
-                                {...props}
-                                action='unstake'
-                                handleStakingAction={handleAction}
-                                availableBalance={totalUnstaked}
-                                validator={validator}
-                                loading={status.mainLoader}
-                                hasLedger={hasLedger}
-                                has2fa={has2fa}
-                                nearTokenFiatValueUSD={nearTokenFiatValueUSD}
-                            />
-                        )}
-                    />
-                    <Route
-                        exact
-                        path='/staking/:validator/claim'
-                        render={(props) => <ClaimSuccess {...props} />}
-                    />
-                </Switch>
-            </ConnectedRouter>
-        </StyledContainer>
+        <>
+            <BannerChangeRpc />
+
+            <StyledContainer
+                className='small-centered'
+                multipleAccounts={multipleAccounts}
+            >
+                <ConnectedRouter history={history}>
+                    <Switch>
+                        <Route
+                            exact
+                            path='/staking'
+                            render={() => (
+                                <Staking
+                                    {...currentAccount}
+                                    currentValidators={currentValidators}
+                                    onSwitchAccount={handleSwitchAccount}
+                                    accounts={stakingAccounts}
+                                    activeAccount={currentAccount}
+                                    accountId={accountId}
+                                    loading={status.mainLoader && !stakingAccounts.length}
+                                    loadingDetails={
+                                        (status.mainLoader && !stakingAccounts.length) ||
+                                        loadingBalance
+                                    }
+                                    hasLockup={hasLockup}
+                                    stakeFromAccount={stakeFromAccount}
+                                    selectedValidator={selectedValidator}
+                                    multipleAccounts={multipleAccounts}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/staking/validators'
+                            render={(props) => (
+                                <Validators
+                                    {...props}
+                                    validators={validators}
+                                    stakeFromAccount={stakeFromAccount}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/staking/unstake'
+                            render={(props) => (
+                                <Unstake
+                                    {...props}
+                                    currentValidators={currentValidators}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/staking/withdraw'
+                            render={(props) => (
+                                <Withdraw
+                                    {...props}
+                                    currentValidators={currentValidators}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/staking/:validator'
+                            render={(props) => (
+                                <Validator
+                                    {...props}
+                                    validator={validator}
+                                    onWithdraw={handleAction}
+                                    loading={status.mainLoader}
+                                    selectedValidator={selectedValidator}
+                                    currentValidators={currentValidators}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/staking/:validator/stake'
+                            render={(props) => (
+                                <StakingAction
+                                    {...props}
+                                    action='stake'
+                                    handleStakingAction={handleAction}
+                                    availableBalance={totalUnstaked}
+                                    validator={validator}
+                                    loading={status.mainLoader}
+                                    hasLedger={hasLedger}
+                                    has2fa={has2fa}
+                                    stakeFromAccount={stakeFromAccount}
+                                    selectedValidator={selectedValidator}
+                                    currentValidators={currentValidators}
+                                    nearTokenFiatValueUSD={nearTokenFiatValueUSD}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/staking/:validator/unstake'
+                            render={(props) => (
+                                <StakingAction
+                                    {...props}
+                                    action='unstake'
+                                    handleStakingAction={handleAction}
+                                    availableBalance={totalUnstaked}
+                                    validator={validator}
+                                    loading={status.mainLoader}
+                                    hasLedger={hasLedger}
+                                    has2fa={has2fa}
+                                    nearTokenFiatValueUSD={nearTokenFiatValueUSD}
+                                />
+                            )}
+                        />
+                        <Route
+                            exact
+                            path='/staking/:validator/claim'
+                            render={(props) => <ClaimSuccess {...props} />}
+                        />
+                    </Switch>
+                </ConnectedRouter>
+            </StyledContainer>
+        </>
     );
 };
 

@@ -197,6 +197,13 @@
         "available": "可用餘額",
         "reserved": "費用預留"
     },
+    "banner": {
+        "changeMainRpc": {
+            "title": "您目前未使用建議的 RPC 提供程序，這可能會導致速率限製或某些功能無法如預期運作",
+            "button": "單擊此處",
+            "switchProvider": "切換到建議的提供者。"
+        }
+    },
     "batchExportAccounts": {
         "confirmExportModal": {
             "accountToExport": "賬戶備份",
