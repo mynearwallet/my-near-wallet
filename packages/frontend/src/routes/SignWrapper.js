@@ -132,7 +132,7 @@ const SignWrapper = () => {
 
     const handleCancelTransaction = async () => {
         if (window.opener) {
-            window.opener.postMessage(
+            return window.opener.postMessage(
                 {
                     status: 'failure',
                     signMeta,
