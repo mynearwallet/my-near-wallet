@@ -106,7 +106,7 @@ const SignWrapper = () => {
         if (signStatus === SIGN_STATUS.SUCCESS) {
             if (signCallbackUrl && !!transactionHashes.length && isValidCallbackUrl) {
                 if (window.opener) {
-                    window.opener.postMessage(
+                    return window.opener.postMessage(
                         {
                             status: 'success',
                             signMeta,
@@ -114,12 +114,11 @@ const SignWrapper = () => {
                         },
                         convertUrlToSendMessage(signCallbackUrl)
                     );
-                } else {
-                    window.location.href = addQueryParams(signCallbackUrl, {
-                        signMeta,
-                        transactionHashes: transactionHashes.join(','),
-                    });
                 }
+                window.location.href = addQueryParams(signCallbackUrl, {
+                    signMeta,
+                    transactionHashes: transactionHashes.join(','),
+                });
             } else {
                 dispatch(redirectTo('/'));
             }

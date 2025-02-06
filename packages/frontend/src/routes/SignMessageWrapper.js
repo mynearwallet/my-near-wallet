@@ -53,7 +53,7 @@ const SignMessageWrapper = () => {
     useEffect(() => {
         if (verifyOwnerStatus === SIGN_MESSAGE_STATUS.COMPLETED) {
             if (window.opener) {
-                window.opener.postMessage(
+                return window.opener.postMessage(
                     {
                         status: 'success',
                         accountUrlCallbackUrl,
