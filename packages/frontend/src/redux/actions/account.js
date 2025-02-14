@@ -58,6 +58,7 @@ import {
     selectFlowLimitationAccountBalance,
     selectFlowLimitationAccountData,
 } from '../slices/flowLimitation';
+import convertUrlToSendMessage from '../../utils/convertUrlToSendMessage';
 
 const { handleFlowLimitation, handleClearflowLimitation } = flowLimitationActions;
 
@@ -299,6 +300,18 @@ export const allowLogin = () => async (dispatch, getState) => {
         const availableKeys = await wallet.getAvailableKeys();
 
         const allKeys = availableKeys.map((key) => key.toString());
+
+        if (window.opener) {
+            return window.opener.postMessage(
+                {
+                    status: 'success',
+                    account_id: wallet.accountId,
+                    public_key: publicKey,
+                    all_keys: allKeys,
+                },
+                convertUrlToSendMessage(successUrl)
+            );
+        }
         const parsedUrl = new URL(successUrl);
         parsedUrl.searchParams.set('account_id', wallet.accountId);
         if (publicKey) {
