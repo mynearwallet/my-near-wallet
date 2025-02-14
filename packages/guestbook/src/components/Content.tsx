@@ -222,7 +222,7 @@ const Content: React.FC = () => {
                 message: 'test message for verification',
                 nonce: Buffer.from('30990309-30990309-390A303-292090'),
                 recipient: 'test.app',
-                callbackUrl: 'http://localhost:4200',
+                callbackUrl: window.opener ? undefined : 'http://localhost:4200',
             });
 
             if (signature) {
