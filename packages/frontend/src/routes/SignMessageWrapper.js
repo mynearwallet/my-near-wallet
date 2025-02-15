@@ -83,7 +83,7 @@ const SignMessageWrapper = () => {
                 message: accountUrlMessage,
                 nonce: accountUrlNonce,
                 recipient: accountUrlRecipient,
-                callbackUrl: accountUrlCallbackUrl,
+                callbackUrl: window.opener ? undefined : accountUrlCallbackUrl,
             })
         );
 
