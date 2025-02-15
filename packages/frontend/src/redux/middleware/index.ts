@@ -22,6 +22,7 @@ export const readyStatePromise = (store: Store) => (next) => (action: AnyAction)
     }
 
     next(makeAction(false));
+
     return action.payload.then(
         (payload) => {
             next(makeAction(true, { payload }));

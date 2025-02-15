@@ -13,7 +13,10 @@ const schema = {
     },
 };
 
-const isBase64 = (value: string) => /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(value);
+const isBase64 = (value: string) =>
+    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(
+        value
+    );
 
 export const validateNonce = (nonce?: string) => {
     if (nonce && isBase64(nonce)) {
@@ -31,7 +34,9 @@ export const messageToSign = (data: {
     recipient: string;
     callbackUrl?: string;
 }) => {
-    const nonce = isBase64(data.nonce) ? Buffer.from(data.nonce, 'base64') : Buffer.from(data.nonce);
+    const nonce = isBase64(data.nonce)
+        ? Buffer.from(data.nonce, 'base64')
+        : Buffer.from(data.nonce);
     const payload = {
         tag: 2147484061,
         ...data,

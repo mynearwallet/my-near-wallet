@@ -22,6 +22,7 @@ import {
 import { addHashParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 import { validateNonce } from '../utils/signMessage';
+import convertUrlToSendMessage from '../utils/convertUrlToSendMessage';
 
 const buildRedirectUrl = (accountUrlCallbackUrl, signedRequest, state, error) => {
     if (!error) {
@@ -51,6 +52,18 @@ const SignMessageWrapper = () => {
 
     useEffect(() => {
         if (verifyOwnerStatus === SIGN_MESSAGE_STATUS.COMPLETED) {
+            if (window.opener) {
+                return window.opener.postMessage(
+                    {
+                        status: 'success',
+                        accountUrlCallbackUrl,
+                        signedRequest,
+                        accountUrlState,
+                        verifyOwnerError,
+                    },
+                    convertUrlToSendMessage(accountUrlCallbackUrl)
+                );
+            }
             if (accountUrlCallbackUrl && isValidCallbackUrl) {
                 window.location.href = buildRedirectUrl(
                     accountUrlCallbackUrl,
@@ -70,7 +83,7 @@ const SignMessageWrapper = () => {
                 message: accountUrlMessage,
                 nonce: accountUrlNonce,
                 recipient: accountUrlRecipient,
-                callbackUrl: accountUrlCallbackUrl,
+                callbackUrl: window.opener ? undefined : accountUrlCallbackUrl,
             })
         );
 

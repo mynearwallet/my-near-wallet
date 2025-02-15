@@ -4,9 +4,14 @@ import { parseSeedPhrase } from 'near-seed-phrase';
 import CONFIG from '../config';
 import { CoreIndexerAdapter } from '../services/coreIndexer/CoreIndexerAdapter';
 
-export async function getAccountIds(publicKey, waitAllIndexer?:boolean) {
-    const coreIndexerAdapter = CoreIndexerAdapter.getInstance(CONFIG.CURRENT_NEAR_NETWORK);
-    return await coreIndexerAdapter.fetchAccountIdsByPublicKeyFromAllIndexers(publicKey, waitAllIndexer);
+export async function getAccountIds(publicKey, waitAllIndexer?: boolean) {
+    const coreIndexerAdapter = CoreIndexerAdapter.getInstance(
+        CONFIG.CURRENT_NEAR_NETWORK
+    );
+    return await coreIndexerAdapter.fetchAccountIdsByPublicKeyFromAllIndexers(
+        publicKey,
+        waitAllIndexer
+    );
 }
 
 export async function getAccountIdsBySeedPhrase(seedPhrase) {
