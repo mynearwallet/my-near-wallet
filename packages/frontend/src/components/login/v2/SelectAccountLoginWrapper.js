@@ -18,6 +18,7 @@ import {
 } from '../../../redux/slices/account';
 import { selectAvailableAccounts } from '../../../redux/slices/availableAccounts';
 import { isUrlNotJavascriptProtocol } from '../../../utils/helper-api';
+import convertUrlToSendMessage from '../../../utils/convertUrlToSendMessage';
 
 export default ({
     loginAccessType,
@@ -56,6 +57,16 @@ export default ({
             onClickCancel={() => {
                 Mixpanel.track('LOGIN Click deny button');
                 if (failureUrl && failureAndSuccessUrlsAreValid) {
+                    if (window.opener) {
+                        return window.opener.postMessage(
+                            {
+                                status: 'failure',
+                                errorCode: 'USER_CANCELLED',
+                                errorMessage: 'User cancelled the Action',
+                            },
+                            convertUrlToSendMessage(failureUrl)
+                        );
+                    }
                     window.location.href = failureUrl;
                 } else {
                     dispatch(redirectToApp());
