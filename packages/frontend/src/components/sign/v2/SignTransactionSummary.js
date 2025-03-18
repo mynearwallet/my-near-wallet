@@ -66,6 +66,15 @@ export default ({
         transferAmount &&
         new BN(availableBalance).lt(new BN(transferAmount));
     const transactions = useSelector(selectSignTransactions);
+
+    const hasFullAccessKeyAction = transactions.some((transaction) =>
+        transaction.actions.some(
+            (action) =>
+                action.enum === 'addKey' &&
+                action?.addKey?.accessKey?.permission?.enum === 'fullAccess'
+        )
+    );
+
     return (
         <StyledContainer className='small-centered border'>
             <h3>
@@ -78,6 +87,9 @@ export default ({
             )}
             {insufficientBalance && (
                 <AlertBanner title='sign.insufficientFundsDesc' theme='warning' />
+            )}
+            {hasFullAccessKeyAction && (
+                <AlertBanner title='sign.addFullAccessKey' theme='warning' />
             )}
             <SignTransaction
                 sender={accountLocalStorageAccountId}
@@ -100,6 +112,7 @@ export default ({
                 <FormButton
                     onClick={onClickApprove}
                     disabled={
+                        hasFullAccessKeyAction ||
                         submittingTransaction ||
                         insufficientBalance ||
                         !isValidCallbackUrl ||

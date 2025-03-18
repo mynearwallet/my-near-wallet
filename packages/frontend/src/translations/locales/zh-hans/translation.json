@@ -1416,6 +1416,7 @@
         "function": "方法：",
         "gasLimit": "Gas 限制",
         "hereAreSomeDetails": "这里是能够帮助你的一些信息。",
+        "addFullAccessKey": "检测到完整访问密钥：似乎有外部应用程序试图在此交易中将完整访问密钥添加到您的帐户。这将允许他们清空您的帐户。我们正在阻止此交易的执行。",
         "insufficientFunds": "资产不足",
         "insufficientFundsDesc": "你没有足够的可用 NEAR 完成该操作。",
         "invalidTransaction": {
