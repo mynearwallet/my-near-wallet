@@ -1535,7 +1535,7 @@
         "function": "Function:",
         "gasLimit": "Gas Limit",
         "hereAreSomeDetails": "Here are some details that will help you.",
-        "addFullAccessKey": "An external application is trying to add a full access key to your account. This would allow them to drain your account. For security reasons, we are blocking the execution of this transaction.",
+        "addFullAccessKey": "An external application is asking you to add a Full Access Key, which would give them total and complete control over your account. For security reasons, we are blocking the execution of this transaction.",
         "insufficientFunds": "Insufficient Funds",
         "insufficientFundsDesc": "You do not have enough available NEAR to complete this transaction.",
         "invalidTransaction": {
