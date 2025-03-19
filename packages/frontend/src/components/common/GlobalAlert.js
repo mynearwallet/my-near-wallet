@@ -184,7 +184,7 @@ const GlobalAlertNew = ({
 }) => {
     const [closing, setClosing] = useState(false);
     const [alerts, setAlerts] = useState([]);
-    const zendeskBaseURL = 'https://nearhelp.zendesk.com/hc/';
+    const helpDeskBaseURL = 'https://help.mynearwallet.com/en/';
 
     const handleClose = (type) => {
         setClosing(type);
@@ -278,9 +278,9 @@ const GlobalAlertNew = ({
                                                                     msgCode.includes(
                                                                         'Sorry an error has occurred'
                                                                     )
-                                                                        ? `${zendeskBaseURL}${
+                                                                        ? `${helpDeskBaseURL}${
                                                                               alert.errorMessage
-                                                                                  ? `search?query=${encodeURIComponent(
+                                                                                  ? `search?q=${encodeURIComponent(
                                                                                         alert.errorMessage.substring(
                                                                                             0,
                                                                                             500
@@ -288,7 +288,7 @@ const GlobalAlertNew = ({
                                                                                     )}`
                                                                                   : ''
                                                                           }`
-                                                                        : `${zendeskBaseURL}search?query=${encodeURIComponent(
+                                                                        : `${helpDeskBaseURL}search?q=${encodeURIComponent(
                                                                               msgCode.substring(
                                                                                   0,
                                                                                   500
