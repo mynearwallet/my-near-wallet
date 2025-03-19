@@ -1280,7 +1280,6 @@
         "function": "Funzione:",
         "gasLimit": "Limite del gas",
         "hereAreSomeDetails": "Ecco alcuni dettagli che ti aiuteranno.",
-        "addFullAccessKey": "Chiave di accesso completo rilevata: sembra che un'app esterna stia cercando di aggiungere una chiave di accesso completo al tuo account in questa transazione. Questo permetterebbe loro di svuotare il tuo account. Stiamo impedendo l'esecuzione di questa transazione.",
         "insufficientFunds": "Fondi insufficienti",
         "insufficientFundsDesc": "Non hai abbastanza disponibilità di NEAR per completare questa transazione.",
         "invalidTransaction": {
