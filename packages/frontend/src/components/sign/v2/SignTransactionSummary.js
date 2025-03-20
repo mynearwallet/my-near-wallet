@@ -112,7 +112,6 @@ export default ({
                 <FormButton
                     onClick={onClickApprove}
                     disabled={
-                        hasFullAccessKeyAction ||
                         submittingTransaction ||
                         insufficientBalance ||
                         !isValidCallbackUrl ||
