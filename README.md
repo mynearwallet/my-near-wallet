@@ -1,6 +1,6 @@
 # NEAR Wallet
 
-[![Build Status](https://travis-ci.com/near/near-wallet.svg?branch=master)](https://travis-ci.com/near/near-wallet)
+[![Build Status](https://github.com/mynearwallet/my-near-wallet/actions/workflows/codeql.yml/badge.svg)](https://github.com/mynearwallet/my-near-wallet/actions)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/near/near-wallet)
 
 This is in-browser web-based wallet for working with NEAR accounts. This wallet stores account keys in open text using the localStorage on user's machine.
