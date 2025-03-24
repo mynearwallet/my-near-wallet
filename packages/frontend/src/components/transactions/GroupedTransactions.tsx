@@ -14,9 +14,10 @@ import {
 
 type Props = {
     transactions: ITransactionListItem[];
+    isFullpage?: boolean;
 };
 
-const GroupedTransactions = ({ transactions }: Props) => {
+const GroupedTransactions = ({ transactions, isFullpage }: Props) => {
     const accountId = useSelector(selectAccountId);
     const tx = transactions.map((transaction) =>
         transactionToHistoryUIData(transaction, accountId, CONFIG.NETWORK_ID)
@@ -32,6 +33,7 @@ const GroupedTransactions = ({ transactions }: Props) => {
                     return (
                         <TransactionItem
                             key={`${transaction.transactionHash}`}
+                            isFullpage={isFullpage}
                             onClick={() =>
                                 dispatch(
                                     transactionHistoryActions.setSelectedTx(

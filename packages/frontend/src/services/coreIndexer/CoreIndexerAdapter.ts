@@ -6,6 +6,7 @@ import {
 import { FastNearIndexer } from './indexers/FastNearIndexer';
 import { NearblocksV3Indexer } from './indexers/NearblocksV3Indexer';
 import { MintbaseIndexer } from './indexers/MintbaseIndexer';
+import { MeteorBackendIndexer } from './indexers/MeteorBackendIndexer';
 import uniq from 'lodash.uniq';
 import CONFIG from '../../config';
 import { NftDetail } from './types/coreIndexer.type';
@@ -23,6 +24,7 @@ export class CoreIndexerAdapter {
             new FastNearIndexer(network),
             new NearblocksV3Indexer(network),
             new MintbaseIndexer(network),
+            new MeteorBackendIndexer(network),
         ];
         const supportedIndexers = indexers.filter((indexer) =>
             indexer.networkSupported.includes(network)
@@ -167,6 +169,20 @@ export class CoreIndexerAdapter {
                 .map((indexer) => indexer.getNftDetailByReference(referenceId))
         ).catch(() => {
             return {};
+        });
+    }
+
+    async getAccountTransactions(props): Promise<string[]> {
+        return await Promise.any(
+            this.indexersInQueue
+                .filter((indexer) =>
+                    indexer.methodsSupported.includes(
+                        E_CoreIndexerAvailableMethods.getAccountTransactions
+                    )
+                )
+                .map((indexer) => indexer.getAccountTransactions(props))
+        ).catch(() => {
+            return [];
         });
     }
 }

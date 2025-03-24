@@ -870,13 +870,6 @@ class DelegatePattern implements TxPattern {
     }
 }
 
-function TxSubtitle({ texts }) {
-    return `${!!texts[0] && texts[0]}
-            ${texts[1]}
-            ${texts[2]}
-            ${texts[3]}`;
-}
-
 class MultiActionsPattern implements TxPattern {
     match(data: TxData): boolean {
         return data.transaction.actions.length > 1;
@@ -955,9 +948,7 @@ class FunctionCallDefaultPattern implements TxPattern {
         return {
             image: imgAppInteraction,
             title: 'App Interaction',
-            subtitle: TxSubtitle({
-                texts: ['Called', methodName, 'on', data.transaction.receiver_id],
-            }),
+            subtitle: `Called ${methodName} on ${data.transaction.receiver_id}`,
             status: txUtils.getTxStatus(data),
             // assetChangeText:
             //   subCard.length === 1
