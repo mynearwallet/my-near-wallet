@@ -13,8 +13,7 @@ export class MeteorBackendIndexer extends AbstractCoreIndexer {
 
     protected getBaseUrl(): string {
         return this.network === ENearNetwork.mainnet
-            ? // ? 'https://backend-v2.meteorwallet.app/api/indexer'
-              'http://localhost:4000/api/indexer'
+            ? 'https://backend-v2.meteorwallet.app/api/indexer'
             : new NearblocksV1Indexer(ENearNetwork.testnet).getBaseUrl();
     }
 
