@@ -50,7 +50,10 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
                 callbackUrl,
             });
 
-            const signed = await wallet.signMessage(encodedMessage, accountId);
+            const signed = await wallet.signMessageNonFundedAccount(
+                encodedMessage,
+                accountId
+            );
 
             if (signed.signed.publicKey.toString() !== publicKey.toString()) {
                 throw new Error(

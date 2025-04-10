@@ -1883,10 +1883,52 @@ export default class Wallet {
         };
     }
 
+    async signMessageAllowNonFundedAccount(message, accountId = this.accountId) {
+        try {
+            const account = await this.getAccount(accountId);
+            const signer = account.signerIgnoringLedger || account.connection.signer;
+            const signed = await signer.signMessage(
+                Buffer.from(message),
+                accountId,
+                CONFIG.NETWORK_ID
+            );
+            return {
+                accountId,
+                signed,
+            };
+        } catch (err) {
+            console.warn(err);
+        }
+        const signer = new nearApiJs.InMemorySigner(this.keyStore);
+        const signed = await signer.signMessage(
+            Buffer.from(message),
+            accountId,
+            CONFIG.NETWORK_ID
+        );
+        return {
+            accountId,
+            signed,
+        };
+    }
+
     async getPublicKey(accountId = this.accountId) {
-        const account = await this.getAccount(accountId);
-        const signer = account.signerIgnoringLedger || account.connection.signer;
-        return signer.getPublicKey(accountId, CONFIG.NETWORK_ID);
+        try {
+            const account = await this.getAccount(accountId);
+            const signer = account.signerIgnoringLedger || account.connection.signer;
+            return signer.getPublicKey(accountId, CONFIG.NETWORK_ID);
+        } catch (err) {
+            console.warn(err);
+        }
+
+        // if account not exist, using other way to get publickey
+        const keyPair = await this.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
+        if (!keyPair) {
+            throw new WalletError(
+                `No key found for account: ${accountId}`,
+                'getPublicKey.noKey'
+            );
+        }
+        return keyPair.getPublicKey();
     }
 }
 
