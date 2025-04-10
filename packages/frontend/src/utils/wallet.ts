@@ -1912,6 +1912,12 @@ export default class Wallet {
     }
 
     async getPublicKey(accountId = this.accountId) {
+        const account = await this.getAccount(accountId);
+        const signer = account.signerIgnoringLedger || account.connection.signer;
+        return signer.getPublicKey(accountId, CONFIG.NETWORK_ID);
+    }
+
+    async getPublicKeyAllowNonFundedAccount(accountId = this.accountId) {
         try {
             const account = await this.getAccount(accountId);
             const signer = account.signerIgnoringLedger || account.connection.signer;
