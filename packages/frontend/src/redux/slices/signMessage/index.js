@@ -50,7 +50,7 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
                 callbackUrl,
             });
 
-            const signed = await wallet.signMessageAllowNonFundedAccount(
+            const signed = await wallet.signMessageAllowNonFundedAccountAndVerify(
                 encodedMessage,
                 accountId
             );
