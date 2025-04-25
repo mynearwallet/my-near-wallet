@@ -252,6 +252,7 @@ export const redirectToApp = (fallback) => async (dispatch, getState) => {
 
 export const allowLogin = () => async (dispatch, getState) => {
     try {
+        dispatch(activeAccountActions.setLoginError({ isError: false }));
         const contractId = selectAccountUrlContractId(getState());
         const publicKey = selectAccountUrlPublicKey(getState());
         const methodNames = selectAccountUrlMethodNames(getState());
@@ -348,6 +349,7 @@ export const allowLogin = () => async (dispatch, getState) => {
             dispatch(redirectTo('/authorized-apps', { globalAlertPreventClear: true }));
         }
     } catch (err) {
+        dispatch(activeAccountActions.setLoginError({ isError: true }));
         dispatch(
             showCustomAlert({
                 success: false,
