@@ -304,6 +304,7 @@ export const allowLogin = () => async (dispatch, getState) => {
             const allKeys = availableKeys.map((key) => key.toString());
 
             if (window.opener) {
+                console.log('triggered window.opener');
                 return window.opener.postMessage(
                     {
                         status: 'success',
