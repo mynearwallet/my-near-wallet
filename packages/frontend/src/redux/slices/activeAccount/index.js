@@ -6,6 +6,7 @@ const SLICE_NAME = 'activeAccount';
 
 const initialState = {
     accountId: '',
+    isLoginError: '',
 };
 
 const activeAccountSlice = createSlice({
@@ -15,6 +16,10 @@ const activeAccountSlice = createSlice({
         setAccountId(state, { payload }) {
             const { accountId } = payload;
             set(state, ['accountId'], accountId);
+        },
+        setLoginError(state, { payload }) {
+            const { isError } = payload;
+            set(state, ['isLoginError'], isError);
         },
     },
 });
@@ -31,4 +36,8 @@ const selectActiveAccountSlice = (state) => state.accounts[activeAccountSlice.na
 export const selectActiveAccountId = createSelector(
     selectActiveAccountSlice,
     (activeAccount) => activeAccount.accountId
+);
+export const selectLoginError = createSelector(
+    selectActiveAccountSlice,
+    (activeAccount) => activeAccount.isLoginError
 );
