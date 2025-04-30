@@ -1,10 +1,10 @@
 import { stringifyUrl } from 'query-string';
 
-import { NearBlocksTxnsResponse } from './type';
 import CONFIG from '../../config';
 import sendJson from '../../tmp_fetch_send_json';
 import { CUSTOM_REQUEST_HEADERS } from '../../utils/constants';
 import { accountsByPublicKey } from '@mintbase-js/data';
+import { coreIndexerAdapter } from '../coreIndexer/CoreIndexerAdapter';
 
 export default {
     listAccountsByPublicKey: (publicKey): Promise<string[]> => {
@@ -142,22 +142,30 @@ export default {
             },
         }).then((res) => res.json());
     },
-    listTransactions: (
+    listTransactions: async (
         accountId: string,
         page: number,
-        perPage: number
-    ): Promise<NearBlocksTxnsResponse> => {
+        pageSize: number
+    ): Promise<string[]> => {
+        if (CONFIG.IS_MAINNET) {
+            return await coreIndexerAdapter.getAccountTransactions({
+                accountId,
+                page,
+                pageSize,
+            });
+        }
         const url = `${CONFIG.INDEXER_NEARBLOCK_SERVICE_URL}/v1/account/${accountId}/txns`;
-        return sendJson(
+        const res = await sendJson(
             'GET',
             stringifyUrl({
                 url,
                 query: {
                     order: 'desc',
                     page,
-                    per_page: perPage,
+                    per_page: pageSize,
                 },
             })
         );
+        return res.txns.map((tx) => tx.transaction_hash);
     },
 };

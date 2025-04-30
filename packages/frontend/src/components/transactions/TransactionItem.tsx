@@ -22,6 +22,7 @@ export const TransactionItem = (
     props: TransactionItemComponent & {
         onClick: () => void;
         onClickTransactionHash: () => void;
+        isFullpage?: boolean;
     }
 ) => {
     return (
@@ -48,7 +49,16 @@ export const TransactionItem = (
                         )}
                     </div>
                     <div className='content-subtitle'>
-                        <div className='subtitle'>{props.subtitle}</div>
+                        <div
+                            className={classNames([
+                                'subtitle',
+                                {
+                                    isFullpage: props.isFullpage,
+                                },
+                            ])}
+                        >
+                            {props.subtitle}
+                        </div>
                         {!!props.assetChangeText2 && (
                             <div
                                 className={classNames([
@@ -123,6 +133,9 @@ const StyledContainer = styled(Card)`
             overflow: hidden;
             max-width: 170px;
             text-wrap: nowrap;
+        }
+        .subtitle.isFullpage {
+            max-width: 80%;
         }
         @media (min-width: 992px) {
             .subtitle {

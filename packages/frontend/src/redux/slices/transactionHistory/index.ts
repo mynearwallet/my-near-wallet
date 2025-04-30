@@ -5,11 +5,14 @@ import uniqBy from 'lodash.uniqby';
 import { providers } from 'near-api-js';
 
 import { nearMetadata, wNearMetadata } from './constant';
-import { IMetaData, ITransactionListItem } from './type';
+import { IMetaData, ITransactionDetail, ITransactionListItem } from './type';
 import CONFIG from '../../../config';
 import { listTransactions } from '../../../services/indexer';
 import { getCachedContractMetadataOrFetch } from '../tokensMetadata';
 import NonFungibleTokens from '../../../services/NonFungibleTokens';
+import { queryClient } from '../../../utils/query/queryClient';
+import { BlockResult } from 'near-api-js/lib/providers/provider';
+import { wallet } from '../../../utils/wallet';
 
 /****************************/
 // Var declarations
@@ -59,6 +62,9 @@ const transactionHistorySlice = createSlice({
         setSelectedTx(state, actions) {
             state.selectedTx = actions.payload;
         },
+        setHasMore(state, actions) {
+            state.hasMore = actions.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchTransactions.pending, (state) => {
@@ -79,7 +85,12 @@ export async function fetchAllMetaData(state, allReceiver: string[]) {
             return getCachedContractMetadataOrFetch(contractName, state);
         }),
         ...allReceiver.map((contractName) => {
-            return NonFungibleTokens.getMetadata(contractName);
+            return queryClient.fetchQuery({
+                queryKey: ['nftMetadata', 'persist', contractName],
+                queryFn: (): Promise<BlockResult> =>
+                    NonFungibleTokens.getMetadata(contractName),
+                staleTime: Infinity,
+            });
         }),
     ]);
     const metas: { [key: string]: IMetaData } = {};
@@ -99,9 +110,8 @@ const fetchTransactions = createAsyncThunk(
         const { setTransactions, addTransactions } = transactionHistorySlice.actions;
 
         const indexerTransactions = await listTransactions(accountId, page, PER_PAGE);
-        const transactionsHashs: string[] = uniq(
-            indexerTransactions.txns.map((item) => item.transaction_hash)
-        );
+
+        const transactionsHashs: string[] = uniq(indexerTransactions);
         const transactionsRaw = await Promise.allSettled(
             transactionsHashs.map((txHash) => {
                 return getTransactionDetail({ txHash, accountId });
@@ -132,14 +142,11 @@ const fetchTransactions = createAsyncThunk(
             .map((item) => {
                 const action = item.transaction.actions[0];
                 const isNear = action.Transfer;
-                const indexerTransaction = indexerTransactions.txns.find(
-                    (t) => t.transaction_hash === item.transaction.hash
-                );
                 const delegateReceiverId =
                     action.Delegate?.delegate_action.receiver_id || '';
                 return {
                     ...item,
-                    block_timestamp: indexerTransaction?.block_timestamp,
+                    block_timestamp: item.block_timestamp,
                     transaction_hash: item.transaction.hash,
                     receipts: item.receipts.map((r) => {
                         const isNear = r.receipt.Action.actions[0]?.Transfer;
@@ -171,14 +178,54 @@ export const transactionHistoryActions = {
     ...transactionHistorySlice.actions,
 };
 
-export const getTransactionDetail = ({
+export const getTransactionDetail = async ({
     txHash,
     accountId,
-}): Promise<ITransactionListItem> => {
-    const provider = new providers.JsonRpcProvider({
+}): Promise<Omit<ITransactionListItem, 'metaData'>> => {
+    const archivalProvider = new providers.JsonRpcProvider({
         url: CONFIG.NODE_ARCHIVAL_URL,
     });
-    return provider.sendJsonRpc('EXPERIMENTAL_tx_status', [txHash, accountId]);
+    const detailRes = await queryClient.fetchQuery({
+        queryKey: ['getTransactionDetail', 'persist', txHash],
+        queryFn: (): Promise<ITransactionDetail> =>
+            archivalProvider.sendJsonRpc('EXPERIMENTAL_tx_status', [txHash, accountId]),
+        staleTime: Infinity,
+        retry: 0,
+    });
+
+    let block: BlockResult | undefined;
+
+    block = await queryClient.fetchQuery({
+        queryKey: ['getBlock', 'persist', detailRes.transaction_outcome.block_hash],
+        queryFn: (): Promise<BlockResult> =>
+            wallet.connection.provider.block({
+                blockId: detailRes.transaction_outcome.block_hash,
+            }),
+        staleTime: Infinity,
+    });
+
+    try {
+        if (!block || !block?.header?.timestamp) {
+            block = await queryClient.fetchQuery({
+                queryKey: ['getBlockArchival', detailRes.transaction_outcome.block_hash],
+                queryFn: (): Promise<BlockResult> =>
+                    archivalProvider.block({
+                        blockId: detailRes.transaction_outcome.block_hash,
+                    }),
+                staleTime: Infinity,
+                retry: 0,
+            });
+        }
+    } catch (err) {
+        console.error(err);
+    }
+
+    return {
+        ...detailRes,
+        block_timestamp: block ? block.header.timestamp.toString() : '',
+        transaction_hash: detailRes.transaction.hash,
+        gas_price: block.header.gas_price,
+    };
 };
 export default transactionHistorySlice;
 

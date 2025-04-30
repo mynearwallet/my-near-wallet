@@ -1,6 +1,7 @@
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 
 import { TxMethodName } from './constant';
+import { ExecutionOutcomeWithIdView } from 'near-api-js/lib/providers/provider';
 
 export enum ETransactionStatus {
     success = 'success',
@@ -80,9 +81,19 @@ interface WithReceipt {
     receipts: IReceipt[];
 }
 
-export interface ITransactionDetail extends FinalExecutionOutcome, WithReceipt {}
+export interface ITransactionDetail extends FinalExecutionOutcomeView, WithReceipt {}
 
-export interface ITransactionListItem extends FinalExecutionOutcome, WithReceipt {
+export interface ITransactionListItem extends FinalExecutionOutcomeView, WithReceipt {
     metaData: IMetaData;
     receipts: IReceipt[];
+    block_timestamp: string;
+    transaction_hash: string;
+    gas_price: string;
+}
+
+export interface FinalExecutionOutcomeView extends FinalExecutionOutcome {
+    status: FinalExecutionOutcome['status'];
+    transaction: any;
+    transaction_outcome: ExecutionOutcomeWithIdView;
+    receipts_outcome: ExecutionOutcomeWithIdView[];
 }

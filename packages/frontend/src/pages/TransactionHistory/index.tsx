@@ -17,14 +17,14 @@ const TransactionHistory = () => {
     const dispatch = useDispatch();
     const accountId = useSelector(selectAccountId);
     const { transactions, isLoading, hasMore } = useSelector(transactionHistorySelector);
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
 
     if (!transactions) {
         return null;
     }
 
     function loadMore() {
-        if (accountId && !isLoading) {
+        if (accountId && !isLoading && transactions.length > 0) {
             // @ts-ignore:next-line
             dispatch(transactionHistoryActions.fetchTransactions({ accountId, page }));
             setPage((p) => p + 1);
@@ -33,7 +33,7 @@ const TransactionHistory = () => {
 
     // reset on change account
     useEffect(() => {
-        setPage(0);
+        setPage(1);
         dispatch(transactionHistoryActions.setTransactions([]));
         // @ts-ignore:next-line
         dispatch(transactionHistoryActions.fetchTransactions({ accountId, page: 1 }));
@@ -46,7 +46,7 @@ const TransactionHistory = () => {
                     <Translate id='dashboard.activity' />
                 </h2>
                 <InfiniteScroll
-                    pageStart={0}
+                    pageStart={1}
                     loadMore={loadMore}
                     hasMore={hasMore}
                     loader={
@@ -55,7 +55,7 @@ const TransactionHistory = () => {
                         </div>
                     }
                 >
-                    <GroupedTransactions transactions={transactions} />
+                    <GroupedTransactions transactions={transactions} isFullpage />
                 </InfiniteScroll>
                 <TransactionItemModal />
             </StyledContainer>

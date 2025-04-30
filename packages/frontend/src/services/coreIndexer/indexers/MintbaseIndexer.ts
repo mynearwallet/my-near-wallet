@@ -82,4 +82,8 @@ export class MintbaseIndexer extends AbstractCoreIndexer {
             ...meta.reference_blob,
         };
     }
+
+    async getAccountTransactions(): Promise<string[]> {
+        return [];
+    }
 }

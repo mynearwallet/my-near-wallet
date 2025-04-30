@@ -14,7 +14,7 @@ export class NearblocksV1Indexer extends AbstractCoreIndexer {
         E_CoreIndexerAvailableMethods.getAccountFtList,
     ];
 
-    protected getBaseUrl(): string {
+    getBaseUrl(): string {
         return this.network === ENearNetwork.mainnet
             ? 'https://api.nearblocks.io/v1'
             : 'https://api-testnet.nearblocks.io/v1';
@@ -78,6 +78,10 @@ export class NearblocksV1Indexer extends AbstractCoreIndexer {
 
     async getNftDetailByReference() {
         return {};
+    }
+
+    async getAccountTransactions(): Promise<string[]> {
+        return [];
     }
 }
 

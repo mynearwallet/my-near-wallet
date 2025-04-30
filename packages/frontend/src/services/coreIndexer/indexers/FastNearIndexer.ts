@@ -68,6 +68,10 @@ export class FastNearIndexer extends AbstractCoreIndexer {
     async getNftDetailByReference() {
         return {};
     }
+
+    async getAccountTransactions(): Promise<string[]> {
+        return [];
+    }
 }
 
 interface Response_getAccountIdListFromPublicKey {
