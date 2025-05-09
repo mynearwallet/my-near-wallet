@@ -251,38 +251,89 @@ export const redirectToApp = (fallback) => async (dispatch, getState) => {
 };
 
 export const allowLogin = () => async (dispatch, getState) => {
-    const contractId = selectAccountUrlContractId(getState());
-    const publicKey = selectAccountUrlPublicKey(getState());
-    const methodNames = selectAccountUrlMethodNames(getState());
-    const title = selectAccountUrlTitle(getState());
-    const successUrl = selectAccountUrlSuccessUrl(getState());
+    try {
+        dispatch(activeAccountActions.setLoginError({ isError: false }));
+        const contractId = selectAccountUrlContractId(getState());
+        const publicKey = selectAccountUrlPublicKey(getState());
+        const methodNames = selectAccountUrlMethodNames(getState());
+        const title = selectAccountUrlTitle(getState());
+        const successUrl = selectAccountUrlSuccessUrl(getState());
 
-    const shardInfo = selectAccountUrlPrivateShard(getState());
+        const shardInfo = selectAccountUrlPrivateShard(getState());
 
-    if (shardInfo) {
-        const calimeroConfig = {
-            shardId: shardInfo.shardId,
-            calimeroUrl: CONFIG.CALIMERO_URL,
-            rpcEndpoint: shardInfo.shardRpc,
-            walletNetworkId: CONFIG.NETWORK_ID,
-        };
+        if (shardInfo) {
+            const calimeroConfig = {
+                shardId: shardInfo.shardId,
+                calimeroUrl: CONFIG.CALIMERO_URL,
+                rpcEndpoint: shardInfo.shardRpc,
+                walletNetworkId: CONFIG.NETWORK_ID,
+            };
 
-        const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
-        const xSignature = await wallet.generatePrivateShardXSignature(shardInfo);
+            const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
+            const xSignature = await wallet.generatePrivateShardXSignature(shardInfo);
 
-        await calimeroWalletUtils.syncAccount(wallet.accountId, xSignature);
-    }
+            await calimeroWalletUtils.syncAccount(wallet.accountId, xSignature);
+        }
 
-    const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
-    const shardInfoWithAuth = shardInfo
-        ? {
-              ...shardInfo,
-              xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
-          }
-        : shardInfo;
+        const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
+        const shardInfoWithAuth = shardInfo
+            ? {
+                  ...shardInfo,
+                  xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
+              }
+            : shardInfo;
 
-    if (successUrl) {
-        if (publicKey) {
+        if (successUrl) {
+            if (publicKey) {
+                await dispatch(
+                    withAlert(
+                        addAccessKeyAction(
+                            wallet.accountId,
+                            contractId,
+                            publicKey,
+                            false,
+                            methodNames,
+                            shardInfoWithAuth
+                        ),
+                        { onlyError: true }
+                    )
+                );
+            }
+            const availableKeys = await wallet.getAvailableKeys();
+
+            const allKeys = availableKeys.map((key) => key.toString());
+
+            if (window.opener) {
+                console.log('triggered window.opener');
+                return window.opener.postMessage(
+                    {
+                        status: 'success',
+                        account_id: wallet.accountId,
+                        public_key: publicKey,
+                        all_keys: allKeys,
+                    },
+                    convertUrlToSendMessage(successUrl)
+                );
+            }
+            const parsedUrl = new URL(successUrl);
+            parsedUrl.searchParams.set('account_id', wallet.accountId);
+            if (publicKey) {
+                parsedUrl.searchParams.set('public_key', publicKey);
+            }
+            parsedUrl.searchParams.set('all_keys', allKeys.join(','));
+            if (isUrlNotJavascriptProtocol(parsedUrl.href)) {
+                window.location = parsedUrl.href;
+            } else {
+                dispatch(
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        errorMessage:
+                            'Redirect blocked: The URL contains javascript and cannot be processed',
+                    })
+                );
+            }
+        } else {
             await dispatch(
                 withAlert(
                     addAccessKeyAction(
@@ -293,49 +344,20 @@ export const allowLogin = () => async (dispatch, getState) => {
                         methodNames,
                         shardInfoWithAuth
                     ),
-                    { onlyError: true }
+                    { data: { title } }
                 )
             );
+            dispatch(redirectTo('/authorized-apps', { globalAlertPreventClear: true }));
         }
-        const availableKeys = await wallet.getAvailableKeys();
-
-        const allKeys = availableKeys.map((key) => key.toString());
-
-        if (window.opener) {
-            return window.opener.postMessage(
-                {
-                    status: 'success',
-                    account_id: wallet.accountId,
-                    public_key: publicKey,
-                    all_keys: allKeys,
-                },
-                convertUrlToSendMessage(successUrl)
-            );
-        }
-        const parsedUrl = new URL(successUrl);
-        parsedUrl.searchParams.set('account_id', wallet.accountId);
-        if (publicKey) {
-            parsedUrl.searchParams.set('public_key', publicKey);
-        }
-        parsedUrl.searchParams.set('all_keys', allKeys.join(','));
-        if (isUrlNotJavascriptProtocol(parsedUrl.href)) {
-            window.location = parsedUrl.href;
-        }
-    } else {
-        await dispatch(
-            withAlert(
-                addAccessKeyAction(
-                    wallet.accountId,
-                    contractId,
-                    publicKey,
-                    false,
-                    methodNames,
-                    shardInfoWithAuth
-                ),
-                { data: { title } }
-            )
+    } catch (err) {
+        dispatch(activeAccountActions.setLoginError({ isError: true }));
+        dispatch(
+            showCustomAlert({
+                success: false,
+                messageCodeHeader: 'error',
+                errorMessage: err.message,
+            })
         );
-        dispatch(redirectTo('/authorized-apps', { globalAlertPreventClear: true }));
     }
 };
 
