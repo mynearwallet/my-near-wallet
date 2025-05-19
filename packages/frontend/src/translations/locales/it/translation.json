@@ -1337,7 +1337,7 @@
         "desc": "Avvertenza: questa è una versione pre-release del NEAR Wallet. Potrebbero esserci bug e questi bug possono portare alla perdita di fondi. Continuando a utilizzare questa versione, accetti di comprendere e accettare questi rischi e che il team di NEAR Wallet non sarà in grado di aiutarti.",
         "title": "Avvertenza: questa è una versione non definitiva di Wallet. Utilizzare a proprio rischio!"
     },
-    "stakedBalance": "Questo NEAR viene utilizzato attivamente per supportare un validatore e proteggere la rete. Quando decidi di togliere dallo staking i tuoi NEAR, ci vorrà del tempo prima che venga mostrato nel tuo saldo disponibile, poiché NEAR impiega 4 epoche (~52-65 ore) per sbloccare i NEAR.",
+    "stakedBalance": "Questo NEAR viene utilizzato attivamente per supportare un validatore e proteggere la rete. Quando decidi di togliere dallo staking i tuoi NEAR, ci vorrà del tempo prima che venga mostrato nel tuo saldo disponibile, poiché NEAR impiega 4 epoche (~28-48 ore) per sbloccare i NEAR.",
     "staking": {
         "alertBanner": {
             "button": "Visualizza validatore corrente",
@@ -1439,7 +1439,7 @@
         "unstakeSuccess": {
             "button": "Torna alla Dashboard",
             "desc": "<b>${amount}</b> è stato riscosso con successo da questo validatore:",
-            "descTwo": "I tuoi token sono in attesa di rilascio e saranno resi disponibili entro ~52-65 ore (4 epoche).",
+            "descTwo": "I tuoi token sono in attesa di rilascio e saranno resi disponibili entro ~28-48 ore (4 epoche).",
             "title": "Successo!"
         },
         "validator": {

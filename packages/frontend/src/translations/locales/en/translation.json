@@ -1609,7 +1609,7 @@
         "desc": "Warning: This is a pre-release version of the NEAR Wallet. There may be bugs, and these bugs may lead to loss of funds. By continuing to use this version, you agree that you understand and accept these risks, and understand that the NEAR Wallet team will be unable to help you.",
         "title": "Warning: This is a pre-release version of Wallet. Use at your own risk!"
     },
-    "stakedBalance": "This NEAR is actively being used to back a validator and secure the network. When you decide to unstake this NEAR, it will take some time to be shown in your Available Balance, as NEAR takes 4 epochs (~52-65 hours) to unstake.",
+    "stakedBalance": "This NEAR is actively being used to back a validator and secure the network. When you decide to unstake this NEAR, it will take some time to be shown in your Available Balance, as NEAR takes 4 epochs (~28-48 hours) to unstake.",
     "staking": {
         "alertBanner": {
             "button": "View Current Validator",
@@ -1727,7 +1727,7 @@
             "totalStaked": "Staked"
         },
         "unstake": {
-            "beforeUnstakeDisclaimer": "Unstaked tokens will be made available pending a release period of ~52-65hrs (4 epochs).",
+            "beforeUnstakeDisclaimer": "Unstaked tokens will be made available pending a release period of ~28-48hrs (4 epochs).",
             "button": "Unstake Tokens",
             "confirm": "You are unstaking",
             "desc": "Enter the number of tokens you would like to unstake from your current validator.",
@@ -1741,7 +1741,7 @@
         "unstakeSuccess": {
             "button": "Return to Dashboard",
             "desc": "<b>${amount}</b> has successfully been unstaked from this validator:",
-            "descTwo": "Your tokens are pending release and will be made available within ~52-65hrs (4 epochs).",
+            "descTwo": "Your tokens are pending release and will be made available within ~28-48hrs (4 epochs).",
             "title": "Success!"
         },
         "validator": {
@@ -1761,7 +1761,7 @@
             "title": "Validator: <br/>${validator}",
             "unstake": "You are unstaking",
             "withdraw": "You are withdrawing",
-            "withdrawalDisclaimer": "Funds pending release will be made available after ~52-65hrs (4 epochs)"
+            "withdrawalDisclaimer": "Funds pending release will be made available after ~28-48hrs (4 epochs)"
         },
         "validatorBox": {
             "cta": "Select",
