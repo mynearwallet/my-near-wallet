@@ -1638,7 +1638,7 @@
                 "title": "Available for claim"
             },
             "pending": {
-                "info": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 52 to 65 hours after unstaking.",
+                "info": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 28 to 48 hours after unstaking.",
                 "liquidInfo": "These tokens have been unstaked, but are not yet ready to withdraw. Tokens are ready to withdraw 2 to 6 days after unstaking.",
                 "title": "Pending release"
             },

@@ -1263,7 +1263,7 @@
                 "title": "Çekilebilir bakiye"
             },
             "pending": {
-                "info": "Bu tokenler katılımdan çıkartıldı, ancak henüz çekilmeye hazır değiller. Tokenler, katılımdan çekildikten 52 ila 65 saat sonra çekilmeye hazır olur.",
+                "info": "Bu tokenler katılımdan çıkartıldı, ancak henüz çekilmeye hazır değiller. Tokenler, katılımdan çekildikten 28 ila 48 saat sonra çekilmeye hazır olur.",
                 "title": "Hazırlanan tutar"
             },
             "staked": {

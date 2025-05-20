@@ -1362,7 +1362,7 @@
                 "info": "Questo validatore offre le ricompense dello staking in un token che non è NEAR."
             },
             "pending": {
-                "info": "I token non sono più in staking, ma non sono ancora pronti per essere ritirati. I token sono pronti per il ritiro da 52 a 65 ore dopo l'annullamento dello staking.",
+                "info": "I token non sono più in staking, ma non sono ancora pronti per essere ritirati. I token sono pronti per il ritiro da 28 a 48 ore dopo l'annullamento dello staking.",
                 "title": "In attesa del rilascio"
             },
             "staked": {
