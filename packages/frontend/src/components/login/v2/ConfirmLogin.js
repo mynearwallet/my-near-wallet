@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Translate } from 'react-localize-redux';
 
 import ConnectWithPrivateShard from './ConnectWithPrivateShard';
@@ -13,6 +13,8 @@ import FormButtonGroup from '../../common/FormButtonGroup';
 import Container from '../../common/styled/Container.css';
 import SafeTranslate from '../../SafeTranslate';
 import SwapGraphic from '../../svg/SwapGraphic';
+import { useSelector } from 'react-redux';
+import { selectLoginError } from '../../../redux/slices/activeAccount';
 
 export default ({
     signedInAccountId,
@@ -27,9 +29,18 @@ export default ({
     privateShardInfo,
 }) => {
     const [loggingIn, setLoggingIn] = useState(false);
+    const [loginRetryCount, setLoginRetryCount] = useState(0);
     const [showGrantFullAccessModal, setShowGrantFullAccessModal] = useState(false);
+    const isLoginError = useSelector(selectLoginError);
+
+    useEffect(() => {
+        if (isLoginError) {
+            setLoggingIn(false);
+        }
+    }, [loginRetryCount, isLoginError]);
 
     const handleClickConnect = async () => {
+        setLoginRetryCount((s) => s + 1);
         try {
             setLoggingIn(true);
             await onClickConnect();

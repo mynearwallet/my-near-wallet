@@ -35,9 +35,8 @@ export default ({
             contractId={contractId}
             onClickCancel={onClickCancel}
             onClickConnect={() => {
-                return Mixpanel.withTracking('LOGIN', () => {
-                    return dispatch(allowLogin());
-                });
+                dispatch(allowLogin());
+                return Mixpanel.withTracking('LOGIN', () => {});
             }}
             contractIdUrl={contractIdUrl}
             successUrlIsValid={successUrlIsValid}

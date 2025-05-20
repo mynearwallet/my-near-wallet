@@ -41,7 +41,7 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
         const { dispatch, getState } = thunkAPI;
         try {
             const accountId = selectAccountId(getState());
-            const publicKey = await wallet.getPublicKey(accountId);
+            const publicKey = await wallet.getPublicKeyAllowNonFundedAccount(accountId);
 
             const encodedMessage = messageToSign({
                 message,
@@ -50,7 +50,10 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
                 callbackUrl,
             });
 
-            const signed = await wallet.signMessage(encodedMessage, accountId);
+            const signed = await wallet.signMessageAllowNonFundedAccountAndVerify(
+                encodedMessage,
+                accountId
+            );
 
             if (signed.signed.publicKey.toString() !== publicKey.toString()) {
                 throw new Error(
