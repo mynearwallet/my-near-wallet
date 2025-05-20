@@ -1535,7 +1535,7 @@
         "function": "Function:",
         "gasLimit": "Gas Limit",
         "hereAreSomeDetails": "Here are some details that will help you.",
-        "addFullAccessKey": "An external application is asking you to add a Full Access Key, which would give them total and complete control over your account. Please proceed with extreme caution, and cancel if you are not sure what is happening",
+        "addFullAccessKey": "An external application is asking you to add a Full Access Key, which would give them complete control over your account. Please proceed with caution, and cancel if you are not sure what is happening",
         "insufficientFunds": "Insufficient Funds",
         "insufficientFundsDesc": "You do not have enough available NEAR to complete this transaction.",
         "invalidTransaction": {
