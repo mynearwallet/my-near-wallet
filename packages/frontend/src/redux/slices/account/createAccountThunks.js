@@ -44,10 +44,10 @@ export const addLocalKeyAndFinishSetup = createAsyncThunk(
             } else {
                 const contractName = null;
                 const fullAccess = true;
-                await wallet.postSignedJson('/account/seedPhraseAdded', {
-                    accountId,
-                    publicKey: publicKey.toString(),
-                });
+                // await wallet.postSignedJson('/account/seedPhraseAdded', {
+                //     accountId,
+                //     publicKey: publicKey.toString(),
+                // });
                 try {
                     await wallet.addAccessKey(
                         accountId,
