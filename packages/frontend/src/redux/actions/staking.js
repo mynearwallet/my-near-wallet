@@ -505,27 +505,33 @@ export const { staking } = createActions({
             },
             ({ accountId, isOwner }) => ({ accountId, isOwner }),
         ],
-        GET_VALIDATORS: async (accountIds, accountId) => {
-            const { current_validators, next_validators, current_proposals } =
-                await getRecentEpochValidators();
-            const currentValidators = shuffle(current_validators).map(
-                ({ account_id }) => account_id
-            );
-            if (!accountIds) {
-                const rpcValidators = [
-                    ...current_validators,
-                    ...next_validators,
-                    ...current_proposals,
-                ].map(({ account_id }) => account_id);
+        GET_VALIDATORS: async (validatorIds, accountId) => {
+            // const { current_validators, next_validators, current_proposals } =
+            //     await getRecentEpochValidators();
+            const networkId = CONFIG.CURRENT_NEAR_NETWORK;
+            const rpcValidators = await queryClient.fetchQuery({
+                queryKey: ['validators', networkId],
+                queryFn: () => coreIndexerAdapter.fetchValidatorIds(),
+            });
+            // const currentValidators = shuffle(current_validators).map(
+            //     ({ account_id }) => account_id
+            // );
+            console.log({rpcValidators});
+            let accountStakingPools = [];
+            if (!validatorIds) {
+                // const rpcValidators = [
+                //     ...current_validators,
+                //     ...next_validators,
+                //     ...current_proposals,
+                // ].map(({ account_id }) => account_id);
 
-                const networkId = CONFIG.CURRENT_NEAR_NETWORK;
-                const accountStakingPools = await queryClient.fetchQuery({
+                accountStakingPools = await queryClient.fetchQuery({
                     queryKey: ['account_staking_pools', networkId, accountId],
                     queryFn: () => coreIndexerAdapter.fetchAccountValidatorIds(accountId),
                     staleTime: Infinity,
                 });
                 const prefix = getValidatorRegExp(networkId);
-                accountIds = uniq([...rpcValidators, ...accountStakingPools]).filter(
+                validatorIds = uniq([...rpcValidators, ...accountStakingPools]).filter(
                     (v) => v.indexOf('nfvalidator') === -1 && v.match(prefix)
                 );
             }
@@ -534,40 +540,48 @@ export const { staking } = createActions({
 
             return (
                 await Promise.all(
-                    accountIds.map(async (account_id) => {
+                    validatorIds.map(async (validatorId) => {
                         try {
-                            const contract = new Contract(
-                                currentAccount,
-                                account_id,
-                                stakingMethods
-                            );
-                            const validator = {
-                                accountId: account_id,
-                                active: currentValidators.includes(account_id),
-                                contract,
-                            };
-                            // const fee = (validator.fee =
-                            //     await validator.contract.get_reward_fee_fraction());
-                            const fee = (validator.fee = {
-                                numerator: 0,
-                                denominator: 1,
-                                percentage: 0,
-                            });
-                            fee.percentage = +(
-                                (fee.numerator / fee.denominator) *
-                                100
-                            ).toFixed(2);
-                            const networkId = CONFIG.CURRENT_NEAR_NETWORK;
+                            if (accountStakingPools.includes(validatorId)) {
+                                const contract = new Contract(
+                                    currentAccount,
+                                    validatorId,
+                                    stakingMethods
+                                );
+                                const validator = {
+                                    accountId: validatorId,
+                                    active: rpcValidators.includes(validatorId),
+                                    contract,
+                                };
 
-                            validator.version = getValidationVersion(
-                                networkId,
-                                validator.accountId
-                            );
-                            return validator;
+                                // const fee = (validator.fee =
+                                //     await validator.contract.get_reward_fee_fraction());
+                                const fee = (validator.fee = {
+                                    numerator: 0,
+                                    denominator: 1,
+                                    percentage: 0,
+                                });
+                                fee.percentage = +(
+                                    (fee.numerator / fee.denominator) *
+                                    100
+                                ).toFixed(2);
+                                const networkId = CONFIG.CURRENT_NEAR_NETWORK;
+
+                                validator.version = getValidationVersion(
+                                    networkId,
+                                    validator.accountId
+                                );
+                                return validator;
+                            }
+                            return {
+                                accountId: validatorId,
+                                active: rpcValidators.includes(validatorId),
+                                contract: null,
+                            };
                         } catch (e) {
                             console.warn(
                                 'Error getting fee for validator %s: %s',
-                                account_id,
+                                validatorId,
                                 e
                             );
                         }
