@@ -12,10 +12,7 @@ import { NftMetadataResponse } from '../types/mintbaseIndexer.type';
 export class MintbaseIndexer extends AbstractCoreIndexer {
     networkSupported = [ENearNetwork.mainnet, ENearNetwork.testnet];
     priority = 3;
-    methodsSupported = [
-        E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey,
-        E_CoreIndexerAvailableMethods.getNftDetailByReference,
-    ];
+    methodsSupported = [E_CoreIndexerAvailableMethods.getNftDetailByReference];
     gqlClient = new GraphQLClient(this.getBaseUrl(), {
         headers: {
             'content-type': 'application/json',
@@ -41,7 +38,7 @@ export class MintbaseIndexer extends AbstractCoreIndexer {
         if (error || !data || data.length === 0) {
             console.error(error);
             throw new Error(
-                `Error: FastNear failed to capture account fungible token list for account id: ${publicKey}`
+                `Error: Mintbase failed to capture account fungible token list for account id: ${publicKey}`
             );
         }
         return data;
