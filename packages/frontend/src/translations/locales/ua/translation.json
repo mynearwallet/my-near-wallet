@@ -1386,7 +1386,7 @@
                 "info": "Даний валідатор видає нагороду від стейкінгу не у NEAR токенах."
             },
             "pending": {
-                "info": "Ці токени знято зі стейкінгу, але ще не можуть бути виведені. Токенам потрібно від 52 до 65 годин на виведення зі стейкінгу.",
+                "info": "Ці токени знято зі стейкінгу, але ще не можуть бути виведені. Токенам потрібно від 28 до 48 годин на виведення зі стейкінгу.",
                 "title": "Очікується зняття"
             },
             "staked": {
@@ -1469,7 +1469,7 @@
         "unstakeSuccess": {
             "button": "Return to Dashboard",
             "desc": "<b>${amount}</b> has successfully been unstaked from this validator:",
-            "descTwo": "Your tokens are pending release and will be made available within ~52-65hrs (4 epochs).",
+            "descTwo": "Your tokens are pending release and will be made available within ~28-48hrs (4 epochs).",
             "title": "Success!"
         },
         "validator": {
@@ -1487,7 +1487,7 @@
             "title": "Валідатор: <br/>${validator}",
             "unstake": "Ви знімаєте зі стейкінгу",
             "withdraw": "Ви виводите",
-            "withdrawalDisclaimer": "Токени стануть доступними для виведення після періоду очікування виходу зі стейкінгу, який займає ~52-65 годин (4 епохи)."
+            "withdrawalDisclaimer": "Токени стануть доступними для виведення після періоду очікування виходу зі стейкінгу, який займає ~28-48 годин (4 епохи)."
         },
         "validatorBox": {
             "cta": "Виберіть",
