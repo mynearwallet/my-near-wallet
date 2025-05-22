@@ -1127,7 +1127,7 @@ export default class Wallet {
 
         let accountIds;
         try {
-            const waitAllIndexer = true;
+            const waitAllIndexer = false;
             accountIds = await getAccountIds(publicKey, waitAllIndexer);
         } catch (error) {
             if (error.name === 'AbortError') {
