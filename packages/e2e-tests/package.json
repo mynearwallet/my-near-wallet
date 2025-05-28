@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@pagerduty/pdjs": "^2.2.0",
-    "@playwright/test": "^1.37.1",
+    "@playwright/test": "^1.52.0",
     "bip39-light": "^1.0.7",
     "bn.js": "^5.2.0",
     "colors": "^1.4.0",

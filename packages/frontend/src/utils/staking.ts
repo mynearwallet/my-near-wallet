@@ -203,7 +203,7 @@ function getUniqueAccountIdsFromEpochValidatorInfo(
 
 export const getRecentEpochValidators = async () => {
     return await queryClient.fetchQuery({
-        queryKey: ['recent_provider_validators', 'persist'],
+        queryKey: ['recent_provider_validators', 'persist', CONFIG.CURRENT_NEAR_NETWORK],
         queryFn: () => wallet.connection.provider.validators(null),
         staleTime: 1000 * 60 * 60 * 24, // 1 day
     });
@@ -219,7 +219,7 @@ const getValidatorIdsFromIndexer = async (accountId: string): Promise<string[]> 
 
 export const getValidatorIds = async (accountId: string): Promise<string[]> => {
     const [validatorIdsRpc, validatorIdsIndexer] = await Promise.all([
-        getValidatorIdsFromRpc(),
+        [],
         getValidatorIdsFromIndexer(accountId),
     ]);
     return uniq([...validatorIdsRpc, ...validatorIdsIndexer]);
