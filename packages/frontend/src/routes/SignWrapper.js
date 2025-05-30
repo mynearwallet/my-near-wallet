@@ -106,6 +106,12 @@ const SignWrapper = () => {
         if (signStatus === SIGN_STATUS.SUCCESS) {
             if (signCallbackUrl && !!transactionHashes.length && isValidCallbackUrl) {
                 if (window.opener) {
+                    setTimeout(() => {
+                        window.location.href = addQueryParams(signCallbackUrl, {
+                            signMeta,
+                            transactionHashes: transactionHashes.join(','),
+                        });
+                    }, 3000);
                     return window.opener.postMessage(
                         {
                             status: 'success',
@@ -130,25 +136,7 @@ const SignWrapper = () => {
         await dispatch(handleSignTransactions());
     };
 
-    const handleCancelTransaction = async () => {
-        if (window.opener) {
-            return window.opener.postMessage(
-                {
-                    status: 'failure',
-                    signMeta,
-                    errorCode:
-                        signStatus !== SIGN_STATUS.ERROR
-                            ? 'userRejected'
-                            : signErrorName || 'unknownError',
-                    errorMessage:
-                        signStatus !== SIGN_STATUS.ERROR
-                            ? 'User rejected transaction'
-                            : signErrorMessage.substring(0, 100) || 'Unknown error',
-                },
-                convertUrlToSendMessage(signCallbackUrl)
-            );
-        }
-
+    const cancelTransactionRedirect = () => {
         if (privateShardInfo) {
             const encounter = addQueryParams(signCallbackUrl, {
                 signMeta,
@@ -182,6 +170,31 @@ const SignWrapper = () => {
         } else {
             dispatch(redirectTo('/'));
         }
+    };
+
+    const handleCancelTransaction = async () => {
+        if (window.opener) {
+            setTimeout(() => {
+                cancelTransactionRedirect();
+            }, 3000);
+            return window.opener.postMessage(
+                {
+                    status: 'failure',
+                    signMeta,
+                    errorCode:
+                        signStatus !== SIGN_STATUS.ERROR
+                            ? 'userRejected'
+                            : signErrorName || 'unknownError',
+                    errorMessage:
+                        signStatus !== SIGN_STATUS.ERROR
+                            ? 'User rejected transaction'
+                            : signErrorMessage.substring(0, 100) || 'Unknown error',
+                },
+                convertUrlToSendMessage(signCallbackUrl)
+            );
+        }
+
+        cancelTransactionRedirect();
     };
 
     // potentially malicious callback URL found

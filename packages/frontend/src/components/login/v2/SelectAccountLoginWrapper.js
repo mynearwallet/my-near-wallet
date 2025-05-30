@@ -58,6 +58,9 @@ export default ({
                 Mixpanel.track('LOGIN Click deny button');
                 if (failureUrl && failureAndSuccessUrlsAreValid) {
                     if (window.opener) {
+                        setTimeout(() => {
+                            window.location.href = failureUrl;
+                        }, 3000);
                         return window.opener.postMessage(
                             {
                                 status: 'failure',

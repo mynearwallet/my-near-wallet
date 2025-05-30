@@ -305,6 +305,12 @@ export const allowLogin = () => async (dispatch, getState) => {
 
             if (window.opener) {
                 console.log('triggered window.opener');
+
+                // window.opener may have a value for certain users, such as those using browser extensions. Therefore, we have added a timeout redirect fallback
+                setTimeout(() => {
+                    loginRedirect({ successUrl, publicKey, allKeys, dispatch });
+                }, 3000);
+
                 return window.opener.postMessage(
                     {
                         status: 'success',
@@ -315,24 +321,7 @@ export const allowLogin = () => async (dispatch, getState) => {
                     convertUrlToSendMessage(successUrl)
                 );
             }
-            const parsedUrl = new URL(successUrl);
-            parsedUrl.searchParams.set('account_id', wallet.accountId);
-            if (publicKey) {
-                parsedUrl.searchParams.set('public_key', publicKey);
-            }
-            parsedUrl.searchParams.set('all_keys', allKeys.join(','));
-            if (isUrlNotJavascriptProtocol(parsedUrl.href)) {
-                window.location = parsedUrl.href;
-            } else {
-                dispatch(
-                    showCustomAlert({
-                        success: false,
-                        messageCodeHeader: 'error',
-                        errorMessage:
-                            'Redirect blocked: The URL contains javascript and cannot be processed',
-                    })
-                );
-            }
+            loginRedirect({ successUrl, publicKey, allKeys, dispatch });
         } else {
             await dispatch(
                 withAlert(
@@ -360,6 +349,27 @@ export const allowLogin = () => async (dispatch, getState) => {
         );
     }
 };
+
+function loginRedirect({ successUrl, publicKey, allKeys, dispatch }) {
+    const parsedUrl = new URL(successUrl);
+    parsedUrl.searchParams.set('account_id', wallet.accountId);
+    if (publicKey) {
+        parsedUrl.searchParams.set('public_key', publicKey);
+    }
+    parsedUrl.searchParams.set('all_keys', allKeys.join(','));
+    if (isUrlNotJavascriptProtocol(parsedUrl.href)) {
+        window.location = parsedUrl.href;
+    } else {
+        dispatch(
+            showCustomAlert({
+                success: false,
+                messageCodeHeader: 'error',
+                errorMessage:
+                    'Redirect blocked: The URL contains javascript and cannot be processed',
+            })
+        );
+    }
+}
 
 const twoFactorMethod = async (method, wallet, args) => {
     const account = await wallet.getAccount(wallet.accountId);
