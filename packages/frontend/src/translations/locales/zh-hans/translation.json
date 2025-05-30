@@ -1507,7 +1507,7 @@
                 "title": "可领取"
             },
             "pending": {
-                "info": "这些通证并未质押，但还不可提现。通常在赎回质押后 52 - 65 小时变为可提现。",
+                "info": "这些通证并未质押，但还不可提现。通常在赎回质押后 28 - 48 小时变为可提现。",
                 "title": "请求释放"
             },
             "staked": {
@@ -1577,7 +1577,7 @@
             "totalStaked": "总质押"
         },
         "unstake": {
-            "beforeUnstakeDisclaimer": "赎回质押通证通常在赎回质押后 52 - 65 小时释放。",
+            "beforeUnstakeDisclaimer": "赎回质押通证通常在赎回质押后 28 - 48 小时释放。",
             "button": "赎回质押通证",
             "confirm": "你正在赎回质押",
             "desc": "请输入计划赎回质押的 NEAR 通证数量。",
@@ -1591,7 +1591,7 @@
         "unstakeSuccess": {
             "button": "返回质押页",
             "desc": "你质押的 <b>${amount}</b> 已经成功从验证节点的质押池释放：",
-            "descTwo": "你的通证请求释放将会在 52 - 65 小时释放。",
+            "descTwo": "你的通证请求释放将会在 28 - 48 小时释放。",
             "title": "成功！"
         },
         "validator": {
@@ -1609,7 +1609,7 @@
             "title": "验证节点：<br/> @${validator}",
             "unstake": "你正在赎回质押",
             "withdraw": "你正在提现",
-            "withdrawalDisclaimer": "请求释放的资金将会在 52 - 65 小时内释放。"
+            "withdrawalDisclaimer": "请求释放的资金将会在 28 - 48 小时内释放。"
         },
         "validatorBox": {
             "cta": "选择",

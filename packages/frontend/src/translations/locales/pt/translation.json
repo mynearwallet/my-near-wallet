@@ -1305,7 +1305,7 @@
                 "info": "This validator grants staking rewards in a token other than NEAR."
             },
             "pending": {
-                "info": "Esses tokens foram removidos de stake, mas ainda não estão disponíveis para serem sacados. Tokens ficam disponíveis entre 52 a 65 horas após a remoção.",
+                "info": "Esses tokens foram removidos de stake, mas ainda não estão disponíveis para serem sacados. Tokens ficam disponíveis entre 28 a 48 horas após a remoção.",
                 "title": "Aguardando liberação"
             },
             "staked": {
