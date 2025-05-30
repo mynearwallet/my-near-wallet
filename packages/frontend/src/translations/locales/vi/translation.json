@@ -1218,7 +1218,7 @@
         "desc": "Cảnh báo: Đây là phiên bản phát hành trước của Ví. Sử dụng có các rủi ro nhất định. Có thể có lỗi và những lỗi này có thể dẫn đến mất tiền. Bằng cách tiếp tục sử dụng phiên bản này, bạn đồng ý rằng bạn hiểu và chấp nhận những rủi ro này, đồng thời hiểu rằng đội ngũ NEAR Wallet sẽ không thể hỗ trợ bạn.",
         "title": "Cảnh báo: Đây là phiên bản phát hành trước của Ví. Sử dụng có các rủi ro nhất định!"
     },
-    "stakedBalance": "NEAR này đang tích cực được sử dụng để hỗ trợ validator và bảo mật mạng lưới. Khi bạn quyết định unstake NEAR, sẽ mất một khoảng thời gian để hiển thị trong số dư khả dụng của bạn, khoảng 4 epochs (~ 52 đến 65 giờ) để unstake.",
+    "stakedBalance": "NEAR này đang tích cực được sử dụng để hỗ trợ validator và bảo mật mạng lưới. Khi bạn quyết định unstake NEAR, sẽ mất một khoảng thời gian để hiển thị trong số dư khả dụng của bạn, khoảng 4 epochs (~ 28 đến 48 giờ) để unstake.",
     "staking": {
         "alertBanner": {
             "button": "Xem validator hiện tại",
@@ -1243,7 +1243,7 @@
                 "info": "Validator này cấp phần thưởng stake bằng token không phải là NEAR."
             },
             "pending": {
-                "info": "Các token này đã được unstake, nhưng vẫn chưa sẵn sàng để rút. Việc rút sẽ khả dụng từ 52 đến 65 giờ sau khi unstake.",
+                "info": "Các token này đã được unstake, nhưng vẫn chưa sẵn sàng để rút. Việc rút sẽ khả dụng từ 28 đến 48 giờ sau khi unstake.",
                 "title": "Đang chờ phát hành"
             },
             "staked": {
@@ -1306,7 +1306,7 @@
             "totalStaked": "Đã stake"
         },
         "unstake": {
-            "beforeUnstakeDisclaimer": "Unstake token sẽ có sẵn trong khoảng thời gian từ 52 đến 65 giờ (4 epochs).",
+            "beforeUnstakeDisclaimer": "Unstake token sẽ có sẵn trong khoảng thời gian từ 28 đến 48 giờ (4 epochs).",
             "button": "Unstake Token",
             "confirm": "Bạn đang unstake",
             "desc": "Nhập số lượng token bạn muốn unstake khỏi validator.",
@@ -1320,7 +1320,7 @@
         "unstakeSuccess": {
             "button": "Quay lại trang tổng quan",
             "desc": "<b>${amount}</b> đã được unstake thành công khỏi validator này:",
-            "descTwo": "Các token của bạn đang chờ phát hành và sẽ có sẵn trong ~ 52 đến 65 giờ (4 epochs).",
+            "descTwo": "Các token của bạn đang chờ phát hành và sẽ có sẵn trong ~ 28 đến 48 giờ (4 epochs).",
             "title": "Thành công!"
         },
         "validator": {
@@ -1330,7 +1330,7 @@
             "title": "Validator: <br/>${validator}",
             "unstake": "Bạn đang unstake",
             "withdraw": "Bạn đang rút tiền",
-            "withdrawalDisclaimer": "Các token của bạn đang chờ phát hành và sẽ có sẵn trong ~ 52 đến 65 giờ (4 epochs)"
+            "withdrawalDisclaimer": "Các token của bạn đang chờ phát hành và sẽ có sẵn trong ~ 28 đến 48 giờ (4 epochs)"
         },
         "validatorBox": {
             "cta": "Chọn",

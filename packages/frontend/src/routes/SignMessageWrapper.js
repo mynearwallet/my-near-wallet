@@ -53,6 +53,18 @@ const SignMessageWrapper = () => {
     useEffect(() => {
         if (verifyOwnerStatus === SIGN_MESSAGE_STATUS.COMPLETED) {
             if (window.opener) {
+                setTimeout(() => {
+                    if (accountUrlCallbackUrl && isValidCallbackUrl) {
+                        window.location.href = buildRedirectUrl(
+                            accountUrlCallbackUrl,
+                            signedRequest,
+                            accountUrlState,
+                            verifyOwnerError
+                        );
+                    } else {
+                        dispatch(redirectTo('/'));
+                    }
+                }, 3000);
                 return window.opener.postMessage(
                     {
                         status: 'success',

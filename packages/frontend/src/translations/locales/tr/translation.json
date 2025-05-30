@@ -1242,7 +1242,7 @@
         "desc": "Uyarı: Bu, NEAR Cüzdanının yayın öncesi sürümüdür. Hatalar olabilir ve bu hatalar para kaybına neden olabilir. Bu sürümü kullanmaya devam ederek, bu riskleri anladığınızı ve kabul ettiğinizi ve NEAR Cüzdan ekibinin size yardımcı olamayacağını kabul etmiş olursunuz..",
         "title": "Uyarı: Bu, Cüzdan'ın yayın öncesi sürümüdür. Riskler size aittir!"
     },
-    "stakedBalance": "NEAR, bir validatörü desteklemek ve ağın güvenliğini sağlamak için aktif olarak kullanılmaktadır. Bu NEAR'dan katılımınızı geri almak istediğinizde; bu işlem, 4 döngü (~52-65 saat) sürdüğünden, Kullanılabilir Bakiyenizde görünmesi biraz zaman alacaktır.",
+    "stakedBalance": "NEAR, bir validatörü desteklemek ve ağın güvenliğini sağlamak için aktif olarak kullanılmaktadır. Bu NEAR'dan katılımınızı geri almak istediğinizde; bu işlem, 4 döngü (~28-48 saat) sürdüğünden, Kullanılabilir Bakiyenizde görünmesi biraz zaman alacaktır.",
     "staking": {
         "alertBanner": {
             "button": "Mevcut Validatörü Görüntüle",
@@ -1263,7 +1263,7 @@
                 "title": "Çekilebilir bakiye"
             },
             "pending": {
-                "info": "Bu tokenler katılımdan çıkartıldı, ancak henüz çekilmeye hazır değiller. Tokenler, katılımdan çekildikten 52 ila 65 saat sonra çekilmeye hazır olur.",
+                "info": "Bu tokenler katılımdan çıkartıldı, ancak henüz çekilmeye hazır değiller. Tokenler, katılımdan çekildikten 28 ila 48 saat sonra çekilmeye hazır olur.",
                 "title": "Hazırlanan tutar"
             },
             "staked": {
@@ -1326,7 +1326,7 @@
             "totalStaked": "Katılım sağlandı"
         },
         "unstake": {
-            "beforeUnstakeDisclaimer": "Katılımdan çıkmış tokenler ~52-65 saat (4 döngü) zaman diliminde hazırlanan tutar bölümünde kullanıma sunulacaktır.",
+            "beforeUnstakeDisclaimer": "Katılımdan çıkmış tokenler ~28-48 saat (4 döngü) zaman diliminde hazırlanan tutar bölümünde kullanıma sunulacaktır.",
             "button": "Tokenleri katılımdan çıkartın",
             "confirm": "Katılımdan çıkıyorsunuz",
             "desc": "Mevcut validatörünüzde katılımdan çıkarmak istediğiniz token miktarını giriniz.",
@@ -1340,7 +1340,7 @@
         "unstakeSuccess": {
             "button": "Gösterge Tablosuna Dön",
             "desc": "Başarıyla bu validatörün katılımından çıktınız:<b>${amount}</b>",
-            "descTwo": "Tokenleriniz hazırlanan bölümde ve ~52-65 saat içerisinde kullanımınıza sunulacak.",
+            "descTwo": "Tokenleriniz hazırlanan bölümde ve ~28-48 saat içerisinde kullanımınıza sunulacak.",
             "title": "Başarılı!"
         },
         "validator": {
@@ -1350,7 +1350,7 @@
             "title": "Validatör: <br/>${validator}",
             "unstake": "Katılımdan çıkıyorsunuz",
             "withdraw": "Paranızı çekiyorsunuz",
-            "withdrawalDisclaimer": "Hazırlamaya alınan paranız ~52-65 saat sonra kullanımınıza sunulacaktır"
+            "withdrawalDisclaimer": "Hazırlamaya alınan paranız ~28-48 saat sonra kullanımınıza sunulacaktır"
         },
         "validatorBox": {
             "cta": "Seç",
