@@ -1507,7 +1507,7 @@
                 "title": "可領取"
             },
             "pending": {
-                "info": "這些通證並未質押，但還不可提現。通常在贖回質押後 52 - 65 小時變為可提現。",
+                "info": "這些通證並未質押，但還不可提現。通常在贖回質押後 28 - 48 小時變為可提現。",
                 "title": "請求釋放"
             },
             "staked": {
@@ -1577,7 +1577,7 @@
             "totalStaked": "總質押"
         },
         "unstake": {
-            "beforeUnstakeDisclaimer": "贖回質押通證通常在贖回質押後 52 - 65 小時釋放。",
+            "beforeUnstakeDisclaimer": "贖回質押通證通常在贖回質押後 28 - 48 小時釋放。",
             "button": "贖回質押通證",
             "confirm": "你正在贖回質押",
             "desc": "請輸入計劃贖回質押的 NEAR 通證數量。",
@@ -1591,7 +1591,7 @@
         "unstakeSuccess": {
             "button": "返回質押頁",
             "desc": "你質押的 <b>${amount}</b> 已經成功從驗證節點的質押池釋放：",
-            "descTwo": "你的通證請求釋放將會在 52 - 65 小時釋放。",
+            "descTwo": "你的通證請求釋放將會在 28 - 48 小時釋放。",
             "title": "成功！"
         },
         "validator": {
@@ -1609,7 +1609,7 @@
             "title": "驗證節點：<br/> @${validator}",
             "unstake": "你正在贖回質押",
             "withdraw": "你正在提現",
-            "withdrawalDisclaimer": "請求釋放的資金將會在 52 - 65 小時內釋放。"
+            "withdrawalDisclaimer": "請求釋放的資金將會在 28 - 48 小時內釋放。"
         },
         "validatorBox": {
             "cta": "選擇",
