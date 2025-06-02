@@ -11,11 +11,9 @@ export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
             const storedString = this.storage.getItem(this.storageKey);
 
             if (storedString && this.storageKey === 'connections') {
-                // reset connection cache when there is update
+                // reset connection cache when no connections
                 const storedConnections = JSON.parse(storedString) as IRpcConnection[];
-                if (
-                    storedConnections.length !== (this.default as IRpcConnection[]).length
-                ) {
+                if (!storedConnections.length) {
                     return this.default;
                 }
                 return storedConnections as DataType;

@@ -63,6 +63,14 @@ const testnetConnections = [
         },
         priority: 10,
     },
+    {
+        id: 'fastnear-testnet',
+        label: 'Fastnear Rpc',
+        data: {
+            url: 'https://test.rpc.fastnear.com',
+        },
+        priority: 11,
+    },
 ];
 
 export const defaultConnections = CONFIG.NEAR_WALLET_ENV.startsWith('mainnet')
