@@ -11,9 +11,14 @@ export abstract class ObjectStorage<DataType> extends BaseStorage<DataType> {
             const storedString = this.storage.getItem(this.storageKey);
 
             if (storedString && this.storageKey === 'connections') {
-                // reset connection cache when no connections
+                // Reset connection cache for users returning to the site from before the default connections selector feature was introduced
                 const storedConnections = JSON.parse(storedString) as IRpcConnection[];
-                if (!storedConnections.length) {
+                const defaultConnections = this.default as IRpcConnection[];
+                // Only reset if stored connections do NOT contain all default connections (legacy users)
+                const isLegacy = !defaultConnections.every((def) =>
+                    storedConnections.some((conn) => conn.id === def.id)
+                );
+                if (isLegacy) {
                     return this.default;
                 }
                 return storedConnections as DataType;
