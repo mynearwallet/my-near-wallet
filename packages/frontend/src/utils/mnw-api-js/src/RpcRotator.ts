@@ -34,6 +34,11 @@ const mainnetRpcOptionList: RpcOption[] = [
         defaultParams: {
             url: 'https://rpc.ankr.com/near/',
         },
+        userParams: ['apiKey'],
+        generator: ({ url, headers, apiKey }) => ({
+            url: url.replace('<api_key>', apiKey),
+            headers: headers,
+        }),
     },
     {
         id: 'getBlock',
