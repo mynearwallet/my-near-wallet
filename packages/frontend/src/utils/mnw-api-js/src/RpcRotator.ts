@@ -34,6 +34,11 @@ const mainnetRpcOptionList: RpcOption[] = [
         defaultParams: {
             url: 'https://rpc.ankr.com/near/',
         },
+        userParams: ['apiKey'],
+        generator: ({ url, headers, apiKey }) => ({
+            url: url.replace('<api_key>', apiKey),
+            headers: headers,
+        }),
     },
     {
         id: 'getBlock',
@@ -99,17 +104,6 @@ const testnetRpcOptionList: RpcOption[] = [
     //         },
     //     }),
     // },
-    {
-        id: 'infura-testnet',
-        defaultParams: {
-            url: 'https://near-testnet.infura.io/v3/API-KEY',
-        },
-        userParams: ['apiKey'],
-        generator: ({ url, headers, apiKey }) => ({
-            url: url.replace('API-KEY', apiKey),
-            headers,
-        }),
-    },
     {
         id: 'lava-testnet',
         userParams: ['url', 'headers'],
