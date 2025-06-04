@@ -57,11 +57,19 @@ const mainnetConnections = [
 const testnetConnections = [
     {
         id: 'near-testnet',
-        label: 'Default Connection',
+        label: 'Official Near Testnet Rpc',
         data: {
             url: 'https://rpc.testnet.near.org',
         },
         priority: 10,
+    },
+    {
+        id: 'fastnear-testnet',
+        label: 'Fastnear Testnet Rpc',
+        data: {
+            url: 'https://test.rpc.fastnear.com',
+        },
+        priority: 11,
     },
 ];
 
