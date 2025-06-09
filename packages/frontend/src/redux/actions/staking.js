@@ -695,12 +695,7 @@ export const updateStaking =
 
         if (!selectStakingAllValidatorsLength(getState())) {
             const validators = await queryClient.fetchQuery({
-                queryKey: [
-                    'validators',
-                    accountId,
-                    CONFIG.CURRENT_NEAR_NETWORK,
-                    'testnet',
-                ],
+                queryKey: ['validators', accountId, CONFIG.CURRENT_NEAR_NETWORK],
                 queryFn: () => staking.getValidators(null, accountId),
                 staleTime: Infinity,
             });

@@ -238,7 +238,6 @@ async function getAccountBalance(limitedAccountData = false) {
     }
 
     const validatorIds = await getValidatorIds(this.accountId, true);
-    console.log({ validatorIds }, this.accountId);
     let stakedBalanceMainAccount = new BN(0);
     await Promise.all(
         validatorIds.map(async (validator_id) => {
