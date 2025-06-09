@@ -86,7 +86,7 @@ export async function updateStakedBalance(validatorId, account_id, contract) {
 }
 
 export async function getStakingDeposits(accountId: string) {
-    const validatorIds = await getValidatorIds(accountId);
+    const validatorIds = await getValidatorIds(accountId, true);
     const account = wallet.getAccountBasic(accountId);
     let validatorWithBalance = await Promise.all(
         validatorIds.map(async (validatorId) => {
@@ -217,10 +217,14 @@ const getValidatorIdsFromIndexer = async (accountId: string): Promise<string[]> 
     return await coreIndexerAdapter.fetchAccountValidatorIds(accountId);
 };
 
-export const getValidatorIds = async (accountId: string): Promise<string[]> => {
-    const [validatorIdsRpc, validatorIdsIndexer] = await Promise.all([
-        [],
+export const getValidatorIds = async (
+    accountId: string,
+    onlyOwnedValidators?: boolean
+): Promise<string[]> => {
+    const promises = [
+        onlyOwnedValidators ? Promise.resolve([]) : getValidatorIdsFromRpc(),
         getValidatorIdsFromIndexer(accountId),
-    ]);
+    ];
+    const [validatorIdsRpc, validatorIdsIndexer] = await Promise.all(promises);
     return uniq([...validatorIdsRpc, ...validatorIdsIndexer]);
 };

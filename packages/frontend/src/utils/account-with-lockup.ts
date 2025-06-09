@@ -205,7 +205,7 @@ async function accountExists(connection, accountId) {
 
 export function getLockupAccountId(accountId) {
     if (CONFIG.REACT_APP_USE_TESTINGLOCKUP && accountId.length < 64) {
-        return `testinglockup.${accountId}`;
+        return `lock.${accountId}`;
     }
     return (
         // @ts-ignore: Ignoring this error for now while fixing balance not showing
@@ -237,7 +237,8 @@ async function getAccountBalance(limitedAccountData = false) {
         };
     }
 
-    const validatorIds = await getValidatorIds(this.accountId);
+    const validatorIds = await getValidatorIds(this.accountId, true);
+    console.log({ validatorIds }, this.accountId);
     let stakedBalanceMainAccount = new BN(0);
     await Promise.all(
         validatorIds.map(async (validator_id) => {

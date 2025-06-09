@@ -111,7 +111,7 @@ class E2eTestAccount {
             throw new Error('Account needs to be initialized to spawn sub accounts');
         }
         // creates a testinglockup subaccount with a lockup_timestamp (locked until) in 1 minute with a release_duration (period to linearly unlock) of 1 minute
-        const lockupSubaccountId = `testinglockup.${this.accountId}`;
+        const lockupSubaccountId = `lock.${this.accountId}`;
         const lockupSubaccountSeedphrase = getTestAccountSeedPhrase(lockupSubaccountId);
         const lockupWasm = await fetchLockupContract({ v2Wasm });
         let minuteInNanosBN = new BN('1').mul(new BN('60000000000'));

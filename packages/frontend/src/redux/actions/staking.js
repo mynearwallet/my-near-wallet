@@ -661,10 +661,7 @@ export const handleStakingAction =
         const currentAccountId = selectStakingCurrentAccountAccountId(getState());
 
         let isLockup = currentAccountId.endsWith(`.${CONFIG.LOCKUP_ACCOUNT_ID_SUFFIX}`);
-        if (
-            CONFIG.REACT_APP_USE_TESTINGLOCKUP &&
-            currentAccountId.startsWith('testinglockup.')
-        ) {
+        if (CONFIG.REACT_APP_USE_TESTINGLOCKUP && currentAccountId.startsWith('lock.')) {
             isLockup = true;
         }
 
@@ -698,7 +695,12 @@ export const updateStaking =
 
         if (!selectStakingAllValidatorsLength(getState())) {
             const validators = await queryClient.fetchQuery({
-                queryKey: ['validators', accountId],
+                queryKey: [
+                    'validators',
+                    accountId,
+                    CONFIG.CURRENT_NEAR_NETWORK,
+                    'testnet',
+                ],
                 queryFn: () => staking.getValidators(null, accountId),
                 staleTime: Infinity,
             });
