@@ -85,6 +85,12 @@ const mainnetRpcOptionList: RpcOption[] = [
 
 const testnetRpcOptionList: RpcOption[] = [
     {
+        id: 'fastnear-testnet',
+        defaultParams: {
+            url: 'https://test.rpc.fastnear.com',
+        },
+    },
+    {
         id: 'near-testnet',
         defaultParams: {
             url: 'https://rpc.testnet.near.org/',
