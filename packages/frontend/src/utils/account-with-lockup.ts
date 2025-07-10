@@ -249,6 +249,9 @@ async function getAccountBalance(limitedAccountData = false) {
                     .catch((err) => {
                         if (
                             // Means the validators  don't have contract deployed, or don't support staking
+                            err.message.includes(
+                                'CompilationError(PrepareError(Deserialization))'
+                            ) ||
                             err.message.includes('CompilationError(CodeDoesNotExist') ||
                             err.message.includes('MethodResolveError(MethodNotFound)')
                         ) {
