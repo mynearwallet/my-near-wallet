@@ -1249,7 +1249,11 @@ export default class Wallet {
 
     async getAvailableKeys() {
         const keyPair = await this.keyStore.getKey(CONFIG.NETWORK_ID, this.accountId);
-        const availableKeys = [keyPair.publicKey];
+        const availableKeys = [];
+        if (keyPair?.publicKey) {
+            console.log('getAvailableKeys: no publickey found');
+            availableKeys.push(keyPair.publicKey);
+        }
         const ledgerKey = await this.getLedgerKey(this.accountId);
         if (ledgerKey) {
             availableKeys.push(ledgerKey.toString());
