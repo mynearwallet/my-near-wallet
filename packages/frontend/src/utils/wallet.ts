@@ -1251,8 +1251,9 @@ export default class Wallet {
         const keyPair = await this.keyStore.getKey(CONFIG.NETWORK_ID, this.accountId);
         const availableKeys = [];
         if (keyPair?.publicKey) {
-            console.log('getAvailableKeys: no publickey found');
             availableKeys.push(keyPair.publicKey);
+        } else {
+            console.log('getAvailableKeys: no publickey found2');
         }
         const ledgerKey = await this.getLedgerKey(this.accountId);
         if (ledgerKey) {

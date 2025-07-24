@@ -289,7 +289,7 @@ export const allowLogin = () => async (dispatch, getState) => {
 
         if (successUrl) {
             if (publicKey) {
-                const { addAccessKeyAction, shardInfoWithAuth } = getCalimeroShard({
+                const { addAccessKeyAction, shardInfoWithAuth } = await getCalimeroShard({
                     shardInfo,
                 });
                 await dispatch(
@@ -331,7 +331,7 @@ export const allowLogin = () => async (dispatch, getState) => {
             loginRedirect({ successUrl, publicKey, allKeys, dispatch });
         } else {
             try {
-                const { addAccessKeyAction, shardInfoWithAuth } = getCalimeroShard({
+                const { addAccessKeyAction, shardInfoWithAuth } = await getCalimeroShard({
                     shardInfo,
                 });
                 await dispatch(
