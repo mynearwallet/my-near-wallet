@@ -250,6 +250,32 @@ export const redirectToApp = (fallback) => async (dispatch, getState) => {
     );
 };
 
+async function getCalimeroShard({ shardInfo }) {
+    if (shardInfo) {
+        const calimeroConfig = {
+            shardId: shardInfo.shardId,
+            calimeroUrl: CONFIG.CALIMERO_URL,
+            rpcEndpoint: shardInfo.shardRpc,
+            walletNetworkId: CONFIG.NETWORK_ID,
+        };
+
+        const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
+        const xSignature = await wallet.generatePrivateShardXSignature(shardInfo);
+
+        await calimeroWalletUtils.syncAccount(wallet.accountId, xSignature);
+    }
+
+    const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
+    const shardInfoWithAuth = shardInfo
+        ? {
+              ...shardInfo,
+              xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
+          }
+        : shardInfo;
+
+    return { addAccessKeyAction, shardInfoWithAuth };
+}
+
 export const allowLogin = () => async (dispatch, getState) => {
     try {
         dispatch(activeAccountActions.setLoginError({ isError: false }));
@@ -261,30 +287,11 @@ export const allowLogin = () => async (dispatch, getState) => {
 
         const shardInfo = selectAccountUrlPrivateShard(getState());
 
-        if (shardInfo) {
-            const calimeroConfig = {
-                shardId: shardInfo.shardId,
-                calimeroUrl: CONFIG.CALIMERO_URL,
-                rpcEndpoint: shardInfo.shardRpc,
-                walletNetworkId: CONFIG.NETWORK_ID,
-            };
-
-            const calimeroWalletUtils = CalimeroWalletUtils.init(calimeroConfig);
-            const xSignature = await wallet.generatePrivateShardXSignature(shardInfo);
-
-            await calimeroWalletUtils.syncAccount(wallet.accountId, xSignature);
-        }
-
-        const addAccessKeyAction = shardInfo ? addShardAccessKey : addAccessKey;
-        const shardInfoWithAuth = shardInfo
-            ? {
-                  ...shardInfo,
-                  xSignature: await wallet.generatePrivateShardXSignature(shardInfo),
-              }
-            : shardInfo;
-
         if (successUrl) {
             if (publicKey) {
+                const { addAccessKeyAction, shardInfoWithAuth } = await getCalimeroShard({
+                    shardInfo,
+                });
                 await dispatch(
                     withAlert(
                         addAccessKeyAction(
@@ -323,19 +330,32 @@ export const allowLogin = () => async (dispatch, getState) => {
             }
             loginRedirect({ successUrl, publicKey, allKeys, dispatch });
         } else {
-            await dispatch(
-                withAlert(
-                    addAccessKeyAction(
-                        wallet.accountId,
-                        contractId,
-                        publicKey,
-                        false,
-                        methodNames,
-                        shardInfoWithAuth
-                    ),
-                    { data: { title } }
-                )
-            );
+            try {
+                const { addAccessKeyAction, shardInfoWithAuth } = await getCalimeroShard({
+                    shardInfo,
+                });
+                await dispatch(
+                    withAlert(
+                        addAccessKeyAction(
+                            wallet.accountId,
+                            contractId,
+                            publicKey,
+                            false,
+                            methodNames,
+                            shardInfoWithAuth
+                        ),
+                        { data: { title } }
+                    )
+                );
+            } catch (err) {
+                dispatch(
+                    showCustomAlert({
+                        success: false,
+                        messageCodeHeader: 'error',
+                        errorMessage: 'error shard addAccessKeyAction' + err.message,
+                    })
+                );
+            }
             dispatch(redirectTo('/authorized-apps', { globalAlertPreventClear: true }));
         }
     } catch (err) {

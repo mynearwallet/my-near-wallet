@@ -52,7 +52,17 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
 
             const signed = await wallet.signMessageAllowNonFundedAccountAndVerify(
                 encodedMessage,
-                accountId
+                accountId,
+                (error) => {
+                    dispatch(
+                        showCustomAlert({
+                            success: false,
+                            messageCodeHeader: 'error',
+                            messageCode: `reduxActions.${error.code}`,
+                            errorMessage: error.message,
+                        })
+                    );
+                }
             );
 
             if (signed.signed.publicKey.toString() !== publicKey.toString()) {
