@@ -194,7 +194,7 @@ export default class Wallet {
                             'connectLedger.noClient'
                         );
                     }
-                    const signature = await client.sign(message, path);
+                    const signature = await client.signMessageNep413(message, path);
                     await store.dispatch(
                         setLedgerTxSigned({
                             status: true,
@@ -1898,7 +1898,7 @@ export default class Wallet {
             };
         } catch (err) {
             console.warn(err);
-            if (err.message.includes('Ledger device')) {
+            if (err.message.includes('Ledger')) {
                 throw err;
             }
         }
@@ -1912,7 +1912,7 @@ export default class Wallet {
 
         const signer = new nearApiJs.InMemorySigner(this.keyStore);
         const signed = await signer.signMessage(
-            Buffer.from(message),
+            new Uint8Array(message.buffer, message.byteOffset, message.byteLength),
             accountId,
             CONFIG.NETWORK_ID
         );
@@ -1944,6 +1944,9 @@ export default class Wallet {
             return signer.getPublicKey(accountId, CONFIG.NETWORK_ID);
         } catch (err) {
             console.warn(err);
+            if (err.message.includes('Ledger')) {
+                throw err;
+            }
         }
 
         // if account not exist, using other way to get publickey

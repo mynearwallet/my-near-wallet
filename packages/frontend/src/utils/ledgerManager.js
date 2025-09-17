@@ -72,7 +72,7 @@ function bip32PathToBytes(path) {
     return Buffer.concat(
         parts
             .map((part) =>
-                part.endsWith("'")
+                part.endsWith('')
                     ? Math.abs(parseInt(part.slice(0, -1))) | 0x80000000
                     : Math.abs(parseInt(part))
             )
@@ -88,6 +88,7 @@ function bip32PathToBytes(path) {
 }
 
 const networkId = 'W'.charCodeAt(0);
+// eslint-disable-next-line quotes
 const DEFAULT_PATH = "44'/397'/0'/0'/1'";
 async function createClient(transport) {
     return {
@@ -108,10 +109,15 @@ async function createClient(transport) {
             );
             return Buffer.from(response.subarray(0, -2));
         },
-        async sign(transactionData, path) {
+        async signMessageNep413(transactionData, path) {
             // NOTE: getVersion call allows to reset state to avoid starting from partially filled buffer
-            const version = await this.getVersion();
-            console.info('Ledger app version:', version);
+            const response = await this.transport.send(0x80, 6, 0, 0);
+            const [major, minor] = Array.from(response);
+            if (major <= 2 && minor < 3) {
+                throw new Error(
+                    'You need to update your Ledger NEAR app to the latest version'
+                );
+            }
 
             path = path || DEFAULT_PATH;
             transactionData = Buffer.from(transactionData);
