@@ -1898,6 +1898,9 @@ export default class Wallet {
             };
         } catch (err) {
             console.warn(err);
+            if (err.message.includes('Ledger device')) {
+                throw err;
+            }
         }
         const keyPair = await this.keyStore.getKey(CONFIG.NETWORK_ID, accountId);
         if (!keyPair) {
