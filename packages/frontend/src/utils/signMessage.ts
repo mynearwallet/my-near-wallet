@@ -5,7 +5,6 @@ import * as borsh from 'borsh';
 //
 const schema = {
     struct: {
-        tag: 'u32',
         message: 'string',
         nonce: { array: { type: 'u8', len: 32 } },
         recipient: 'string',
@@ -38,7 +37,6 @@ export const messageToSign = (data: {
         ? Buffer.from(data.nonce, 'base64')
         : Buffer.from(data.nonce);
     const payload = {
-        tag: 2147484061,
         ...data,
         nonce,
     };
