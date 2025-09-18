@@ -1,15 +1,16 @@
-import { BorshSchema, borshSerialize } from 'borsher';
+import * as borsh from 'borsh';
 
 //
 // https://github.com/near/NEPs/blob/master/neps/nep-0413.md
 //
-
-export const messageNep413BorshSchema = BorshSchema.Struct({
-    message: BorshSchema.String,
-    nonce: BorshSchema.Array(BorshSchema.u8, 32),
-    recipient: BorshSchema.String,
-    callbackUrl: BorshSchema.Option(BorshSchema.String),
-});
+const schema = {
+    struct: {
+        message: 'string',
+        nonce: { array: { type: 'u8', len: 32 } },
+        recipient: 'string',
+        callbackUrl: { option: 'string' },
+    },
+};
 
 const isBase64 = (value: string) =>
     /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(
@@ -23,6 +24,9 @@ export const validateNonce = (nonce?: string) => {
     return nonce && nonce.length === 32;
 };
 
+export const serialize = (value) => borsh.serialize(schema, value);
+export const deserialize = (value) => borsh.deserialize(schema, value);
+
 export const messageToSign = (data: {
     message: string;
     nonce: string;
@@ -33,10 +37,9 @@ export const messageToSign = (data: {
         ? Buffer.from(data.nonce, 'base64')
         : Buffer.from(data.nonce);
     const payload = {
-        tag: 2147484061,
         ...data,
         nonce,
     };
 
-    return borshSerialize(messageNep413BorshSchema, payload);
+    return serialize(payload);
 };
