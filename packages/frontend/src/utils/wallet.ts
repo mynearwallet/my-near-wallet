@@ -180,7 +180,7 @@ export default class Wallet {
 
                 return await getSignerIgnoringLedger().getPublicKey(accountId, networkId);
             },
-            async signMessage(message, accountId, networkId) {
+            async signMessage(message, accountId, networkId, isNep413) {
                 if (await wallet.getLedgerKey(accountId)) {
                     wallet.dispatchShowLedgerModal(true);
                     const path = getLedgerHDPath(accountId);
@@ -194,7 +194,7 @@ export default class Wallet {
                             'connectLedger.noClient'
                         );
                     }
-                    const signature = await client.signMessageNep413(message, path);
+                    const signature = await client.signMessage(message, path, isNep413);
                     await store.dispatch(
                         setLedgerTxSigned({
                             status: true,
@@ -1890,7 +1890,8 @@ export default class Wallet {
             const signed = await signer.signMessage(
                 Buffer.from(message),
                 accountId,
-                CONFIG.NETWORK_ID
+                CONFIG.NETWORK_ID,
+                true
             );
             return {
                 accountId,
