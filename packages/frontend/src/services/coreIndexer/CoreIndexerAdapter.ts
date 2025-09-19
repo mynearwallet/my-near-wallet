@@ -80,9 +80,13 @@ export class CoreIndexerAdapter {
         waitAllIndexer?: boolean
     ): Promise<string[]> {
         return new Promise(async (masterResolve) => {
-            const promises = this.indexersInQueue.map((indexer) =>
-                indexer.getAccountIdListFromPublicKey(publicKey)
-            );
+            const promises = this.indexersInQueue
+                .filter((indexer) =>
+                    indexer.methodsSupported.includes(
+                        E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey
+                    )
+                )
+                .map((indexer) => indexer.getAccountIdListFromPublicKey(publicKey));
             const results = await Promise.allSettled(
                 promises.map((promise) =>
                     promise.then((data) => {
