@@ -9,10 +9,7 @@ import { CUSTOM_REQUEST_HEADERS } from '../../../utils/constants';
 export class NearblocksV1Indexer extends AbstractCoreIndexer {
     networkSupported = [ENearNetwork.mainnet, ENearNetwork.testnet];
     priority = 4;
-    methodsSupported = [
-        E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey,
-        E_CoreIndexerAvailableMethods.getAccountFtList,
-    ];
+    methodsSupported = [E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey];
 
     protected getBaseUrl(): string {
         return this.network === ENearNetwork.mainnet
