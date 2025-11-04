@@ -1,6 +1,5 @@
 import * as nearAPI from 'near-api-js';
 
-import { listLikelyNfts } from './indexer';
 import CONFIG from '../config';
 import { wallet } from '../utils/wallet';
 
@@ -12,10 +11,6 @@ const functionCall = nearAPI.transactions.functionCall;
 export default class NonFungibleTokens {
     // View functions are not signed, so do not require a real account!
     static viewFunctionAccount = wallet.getAccountBasic('dontcare');
-
-    static getLikelyTokenContracts = async (accountId) => {
-        return listLikelyNfts(accountId);
-    };
 
     static getMetadata = async (contractName) => {
         return this.viewFunctionAccount.viewFunction(contractName, 'nft_metadata');
