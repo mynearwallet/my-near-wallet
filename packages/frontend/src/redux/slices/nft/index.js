@@ -10,6 +10,7 @@ import initialStatusState from '../../reducerStatus/initialState/initialStatusSt
 import { createParameterSelector } from '../../selectors/topLevel';
 import { coreIndexerAdapter } from '../../../services/coreIndexer/CoreIndexerAdapter';
 import { keepLastUniqueDataWithProperty } from '../../../utils/array';
+import { nftBlacklisted } from './nft_blacklisted.static';
 
 const { getMetadata, getToken, getTokens, getNumberOfTokens } = NonFungibleTokens;
 
@@ -457,6 +458,21 @@ export const selectTokensWithMetadataForAccountId = createSelector(
 
         return (
             Object.entries(ownedTokensByContractName)
+                .filter(([contractName, ownedTokensMetadata]) => {
+                    if (
+                        nftBlacklisted.some(
+                            (item) =>
+                                item.Collection === contractName ||
+                                (item.Token?.[0] === contractName &&
+                                    item.ownedTokensMetadata?.some(
+                                        (t) => t.token_id === item.Token?.[1]
+                                    ))
+                        )
+                    ) {
+                        return false;
+                    }
+                    return true;
+                })
                 // First, sort the tokens this account owns by their contract's `name` metadata - NOT their contract name itself
                 .sort(([contractNameA], [contractNameB]) => {
                     const contractMetadataNameA =
