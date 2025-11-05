@@ -181,7 +181,7 @@ const fetchTransactions = createAsyncThunk(
                         success: false,
                         messageCodeHeader: 'error',
                         errorMessage:
-                            "You've reached the limit for viewing older transaction history. Please try again later.",
+                            'You have reached the limit for viewing older transaction history. Please try again later.',
                     })
                 );
             }
