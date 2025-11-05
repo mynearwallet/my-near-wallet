@@ -1883,15 +1883,25 @@ export default class Wallet {
         };
     }
 
-    async signMessageAllowNonFundedAccountAndVerify(message, accountId = this.accountId) {
+    async signMessageAllowNonFundedAccountAndVerify(
+        message,
+        accountId = this.accountId,
+        isLedger
+    ) {
         try {
             const account = await this.getAccount(accountId);
             const signer = account.signerIgnoringLedger || account.connection.signer;
             const signed = await signer.signMessage(
-                Buffer.from(message),
+                isLedger
+                    ? new Uint8Array(
+                          message.buffer,
+                          message.byteOffset,
+                          message.byteLength
+                      )
+                    : Buffer.from(message),
                 accountId,
                 CONFIG.NETWORK_ID,
-                true
+                isLedger
             );
             return {
                 accountId,

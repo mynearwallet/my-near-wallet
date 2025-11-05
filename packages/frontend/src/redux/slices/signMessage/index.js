@@ -43,16 +43,21 @@ export const handleAuthorizationRequestConfirmed = createAsyncThunk(
             const accountId = selectAccountId(getState());
             const publicKey = await wallet.getPublicKeyAllowNonFundedAccount(accountId);
 
-            const encodedMessage = messageToSign({
-                message,
-                nonce,
-                recipient,
-                callbackUrl,
-            });
+            const isLedger = !!(await wallet.getLedgerKey(accountId));
+            const encodedMessage = messageToSign(
+                {
+                    message,
+                    nonce,
+                    recipient,
+                    callbackUrl,
+                },
+                isLedger
+            );
 
             const signed = await wallet.signMessageAllowNonFundedAccountAndVerify(
                 encodedMessage,
-                accountId
+                accountId,
+                isLedger
             );
 
             if (signed.signed.publicKey.toString() !== publicKey.toString()) {
