@@ -1604,6 +1604,8 @@
         "howItWorksDescription": "You are signing authorization for these actions. A relayer service will submit this transaction to NEAR and pay the gas fees on your behalf. Your account will NOT be charged any NEAR for gas.",
         "invalidRequest": "Invalid Request",
         "invalidRequestMessage": "The delegate action request is invalid and cannot be processed.",
+        "ledgerConfirmMessage": "Please review and confirm the transaction on your Ledger device. Make sure the details match what you see on screen.",
+        "ledgerConfirmTitle": "Confirm on Ledger",
         "requestedBy": "Requested By",
         "subtitle": "Sign this action to be submitted by a relayer",
         "title": "Approve Meta-Transaction"

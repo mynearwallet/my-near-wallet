@@ -30,6 +30,7 @@ import {
     createSignedDelegateAction,
     parseActionsFromQuery,
     validateDelegateActionParams,
+    isLedgerAccount,
 } from '../utils/wallet/delegateAction';
 
 const SIGN_STATUS = {
@@ -48,6 +49,14 @@ const SignDelegateActionWrapper = () => {
     const [error, setError] = useState(null);
     const [params, setParams] = useState(null);
     const [parseError, setParseError] = useState(null);
+    const [isLedger, setIsLedger] = useState(false);
+
+    // Check if account uses Ledger
+    useEffect(() => {
+        if (accountId) {
+            isLedgerAccount(accountId).then(setIsLedger);
+        }
+    }, [accountId]);
 
     // Parse URL parameters on mount
     useEffect(() => {
@@ -195,6 +204,7 @@ const SignDelegateActionWrapper = () => {
             onApprove={handleApprove}
             onCancel={handleCancel}
             disableApprove={!accountId}
+            isLedger={isLedger}
         />
     );
 };

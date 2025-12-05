@@ -48,6 +48,35 @@ const StyledContainer = styled(Container)`
         letter-spacing: 0.5px;
     }
 
+    .ledger-badge {
+        display: inline-block;
+        background: #1a1a2e;
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 8px;
+        margin-left: 8px;
+        letter-spacing: 0.5px;
+    }
+
+    .ledger-info {
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+        border-radius: 8px;
+        padding: 14px;
+        margin: 20px 0;
+        font-size: 13px;
+        color: #92400e;
+        line-height: 1.5;
+
+        strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+    }
+
     .details-card {
         background: #fff;
         border-radius: 8px;
@@ -173,6 +202,7 @@ const SignDelegateAction = ({
     onApprove,
     onCancel,
     disableApprove,
+    isLedger,
 }) => {
     return (
         <StyledContainer className='small-centered border brs-8 bsw-l'>
@@ -183,8 +213,13 @@ const SignDelegateAction = ({
                 <div className='subtitle'>
                     <Translate id='signDelegateAction.subtitle' />
                 </div>
-                <div className='gasless-badge'>
-                    <Translate id='signDelegateAction.gaslessBadge' />
+                <div>
+                    <span className='gasless-badge'>
+                        <Translate id='signDelegateAction.gaslessBadge' />
+                    </span>
+                    {isLedger && (
+                        <span className='ledger-badge'>Ledger</span>
+                    )}
                 </div>
             </div>
 
@@ -233,6 +268,15 @@ const SignDelegateAction = ({
                 </strong>
                 <SafeTranslate id='signDelegateAction.howItWorksDescription' />
             </div>
+
+            {isLedger && signing && (
+                <div className='ledger-info'>
+                    <strong>
+                        <Translate id='signDelegateAction.ledgerConfirmTitle' />
+                    </strong>
+                    <Translate id='signDelegateAction.ledgerConfirmMessage' />
+                </div>
+            )}
 
             {error && <div className='error-box'>{error}</div>}
 

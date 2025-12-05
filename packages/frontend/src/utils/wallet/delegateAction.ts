@@ -13,6 +13,8 @@ import { sha256 } from 'js-sha256';
 
 import CONFIG from '../../config';
 import { wallet } from '../wallet';
+import { store } from '../..';
+import { actions as ledgerActions } from '../../redux/slices/ledger';
 
 // NEP-366 prefix for delegate action signing
 const DELEGATE_ACTION_PREFIX = 2170703681;
@@ -44,6 +46,7 @@ export interface SignedDelegateActionResult {
     serialized: string;
     publicKey: string;
     accountId: string;
+    isLedger: boolean;
 }
 
 /**
@@ -143,13 +146,41 @@ export async function createSignedDelegateAction({
     dataToSign.set(prefixArray);
     dataToSign.set(messageHash, prefixArray.length);
 
-    // Sign the data
-    // TODO: Add Ledger support in a follow-up PR. Currently only supports browser key signing.
-    const { signature } = await wallet.signer.signMessage(
-        dataToSign,
-        accountId,
-        CONFIG.NETWORK_ID
-    );
+    // Check if this is a Ledger account
+    const isLedger = !!(await wallet.getLedgerKey(accountId));
+
+    let signature: Uint8Array;
+
+    if (isLedger) {
+        // Show Ledger modal for user to confirm on device
+        wallet.dispatchShowLedgerModal(true);
+
+        try {
+            // For Ledger, sign without the NEP-366 prefix as the device handles it
+            // The Ledger NEAR app expects raw message data
+            const result = await wallet.signer.signMessage(
+                messageHash,
+                accountId,
+                CONFIG.NETWORK_ID
+            );
+            signature = result.signature;
+        } catch (error) {
+            // Hide modal and re-throw
+            store.dispatch(ledgerActions.checkAndHideLedgerModal());
+            throw error;
+        }
+
+        // Hide Ledger modal after successful signing
+        store.dispatch(ledgerActions.checkAndHideLedgerModal());
+    } else {
+        // Non-Ledger: sign with full data including prefix
+        const result = await wallet.signer.signMessage(
+            dataToSign,
+            accountId,
+            CONFIG.NETWORK_ID
+        );
+        signature = result.signature;
+    }
 
     // Create the signed delegate action payload
     const signedDelegateAction = {
@@ -173,6 +204,7 @@ export async function createSignedDelegateAction({
         serialized,
         publicKey: publicKey.toString(),
         accountId,
+        isLedger,
     };
 }
 
@@ -241,4 +273,12 @@ export function isFungibleTokenTransfer(action: ActionParam): boolean {
     return (
         action.methodName === 'ft_transfer' || action.methodName === 'ft_transfer_call'
     );
+}
+
+/**
+ * Checks if the given account uses a Ledger hardware wallet
+ */
+export async function isLedgerAccount(accountId: string): Promise<boolean> {
+    const ledgerKey = await wallet.getLedgerKey(accountId);
+    return !!ledgerKey;
 }
