@@ -4,6 +4,10 @@
  * This module enables gasless transactions on NEAR by allowing users to sign
  * DelegateActions that can be submitted by a relayer who pays the gas fees.
  *
+ * IMPORTANT: This implementation uses JSON serialization for simplicity.
+ * For production use with standard NEP-366 relayers, borsh serialization
+ * should be used to ensure signature compatibility.
+ *
  * @see https://github.com/near/NEPs/pull/366
  * @see https://docs.near.org/chain-abstraction/meta-transactions
  */
@@ -60,7 +64,7 @@ export async function createSignedDelegateAction({
     accountId,
     receiverId,
     actions,
-    blockHeightTtl = 100,
+    blockHeightTtl = 1000, // ~17 minutes at 1 block/sec
 }: CreateSignedDelegateActionParams): Promise<SignedDelegateActionResult> {
     // Get current block height for maxBlockHeight
     const block = await wallet.connection.provider.block({ finality: 'final' });
@@ -89,8 +93,10 @@ export async function createSignedDelegateAction({
             if (typeof action.args === 'string') {
                 try {
                     args = JSON.parse(action.args);
-                } catch {
-                    args = {};
+                } catch (e) {
+                    throw new Error(
+                        `Invalid JSON in action args for ${action.methodName}: ${action.args}`
+                    );
                 }
             } else {
                 args = action.args || {};
@@ -156,10 +162,10 @@ export async function createSignedDelegateAction({
         wallet.dispatchShowLedgerModal(true);
 
         try {
-            // For Ledger, sign without the NEP-366 prefix as the device handles it
-            // The Ledger NEAR app expects raw message data
+            // Sign the full payload (prefix + hash) - same as non-Ledger
+            // The wallet.signer.signMessage handles Ledger routing internally
             const result = await wallet.signer.signMessage(
-                messageHash,
+                dataToSign,
                 accountId,
                 CONFIG.NETWORK_ID
             );
