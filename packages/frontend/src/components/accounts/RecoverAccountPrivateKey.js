@@ -1,6 +1,6 @@
 import { KeyPair } from 'near-api-js';
 import { parse as parseQuery, stringify } from 'query-string';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Translate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
@@ -30,6 +30,7 @@ import ModalManualImportWithButton from './manual_import/ModalManualImportWithBu
 import { EWalletImportInputType } from './manual_import/type';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 import SelectAccountImport from './ledger/SelectAccountImport';
+import { session_storage_key } from '../../utils/storage/session_storage_key.constant';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -58,12 +59,19 @@ const RecoverAccountPrivateKey = () => {
     const [privateKey, setPrivateKey] = useState('');
     const [recoveringAccount, setRecoveringAccount] = useState(false);
     const [accountIdsSuccess, setAccountIdsSuccess] = useState([]);
+    const pendingRedirectRef = useRef(null);
     const localAlert = useSelector(selectStatusLocalAlert);
     const location = useLocation();
     const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Capture to avoid pending redirect race conditions
+        pendingRedirectRef.current = JSON.parse(
+            sessionStorage.getItem(session_storage_key.PENDING_DAPP_REDIRECT) || 'null'
+        );
+
         try {
             KeyPair.fromString(privateKey);
         } catch (err) {
@@ -138,7 +146,26 @@ const RecoverAccountPrivateKey = () => {
                     )
                 );
             } else if (withRedirectToApp) {
-                dispatch(redirectToApp('/'));
+                const pendingRedirect =
+                    pendingRedirectRef.current ||
+                    JSON.parse(
+                        sessionStorage.getItem(
+                            session_storage_key.PENDING_DAPP_REDIRECT
+                        ) || 'null'
+                    );
+
+                if (pendingRedirect && pendingRedirect.redirect_url) {
+                    dispatch(
+                        redirectTo(
+                            `${pendingRedirect.redirect_url}?${stringify(
+                                pendingRedirect
+                            )}`,
+                            { globalAlertPreventClear: true }
+                        )
+                    );
+                } else {
+                    dispatch(redirectToApp('/'));
+                }
             }
         }
     }

@@ -2,7 +2,7 @@ import { ConnectedRouter, getRouter } from 'connected-react-router';
 import isString from 'lodash.isstring';
 import { parseSeedPhrase } from 'near-seed-phrase';
 import PropTypes from 'prop-types';
-import { stringify } from 'query-string';
+import { parse, stringify } from 'query-string';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { withLocalize } from 'react-localize-redux';
@@ -90,17 +90,22 @@ import translations_vi from '../translations/locales/vi/translation.json';
 import translations_zh_hans from '../translations/locales/zh-hans/translation.json';
 import translations_zh_hant from '../translations/locales/zh-hant/translation.json';
 import classNames from '../utils/classNames';
+import { saveState } from '../utils/sessionStorage';
 import getBrowserLocale from '../utils/getBrowserLocale';
 import { reportUiActiveMixpanelThrottled } from '../utils/reportUiActiveMixpanelThrottled';
 import ScrollToTop from '../utils/ScrollToTop';
 import {
+    KEY_ACTIVE_ACCOUNT_ID,
     WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS,
     WALLET_LOGIN_URL,
-    WALLET_SIGN_URL,
     WALLET_SEND_MONEY_URL,
+    WALLET_SIGN_MESSAGE_URL,
+    WALLET_SIGN_URL,
+    WALLET_VERIFY_OWNER_URL,
 } from '../utils/wallet';
 import TransactionExecutorModal from '../components/transactions/ExecutorModal/TransactionExecutorModal';
 import LiquidStakingContainer from '../components/staking/liquid-staking/LiquidStakingContainer';
+import { session_storage_key } from '../utils/storage/session_storage_key.constant';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -156,6 +161,32 @@ const Container = styled.div`
 class Routing extends Component {
     constructor(props) {
         super(props);
+
+        // Save dApp URL params before PrivateRoute redirects to /
+        const routerLocation = this.props.router?.location;
+        if (routerLocation) {
+            const page = routerLocation.pathname.split('/')[1];
+            if (
+                [
+                    WALLET_LOGIN_URL,
+                    WALLET_SIGN_URL,
+                    WALLET_SIGN_MESSAGE_URL,
+                    WALLET_VERIFY_OWNER_URL,
+                ].includes(page) &&
+                routerLocation.search &&
+                !localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID)
+            ) {
+                const dappParams = {
+                    ...parse(routerLocation.search),
+                    redirect_url: routerLocation.pathname,
+                };
+                saveState(dappParams);
+                sessionStorage.setItem(
+                    session_storage_key.PENDING_DAPP_REDIRECT,
+                    JSON.stringify(dappParams)
+                );
+            }
+        }
 
         this.pollTokenFiatValue = null;
 
@@ -257,6 +288,26 @@ class Routing extends Component {
             prevProps.account.accountId !== account.accountId &&
             account.accountId !== undefined
         ) {
+            const pendingRedirect = JSON.parse(
+                sessionStorage.getItem(session_storage_key.PENDING_DAPP_REDIRECT) ||
+                    'null'
+            );
+            if (
+                !prevProps.account.accountId &&
+                pendingRedirect &&
+                pendingRedirect.redirect_url &&
+                pendingRedirect.redirect_url !== '/'
+            ) {
+                sessionStorage.removeItem(session_storage_key.PENDING_DAPP_REDIRECT);
+                this.props.history.push({
+                    pathname: pendingRedirect.redirect_url,
+                    search: `?${stringify(pendingRedirect)}`,
+                    state: { globalAlertPreventClear: true },
+                });
+                this.props.handleRefreshUrl();
+                return;
+            }
+
             this.props.getTokenWhiteList(account.accountId);
         }
 
