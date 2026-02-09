@@ -323,10 +323,7 @@ export const initiateSetupForZeroBalanceAccountPhrase = createAsyncThunk(
                         `Public key ${recoveryKeyPair.publicKey.toString()} has previously been added as recovery method to account. Continuing setup...`
                     );
                 } else {
-                    throw new WalletError(
-                        e,
-                        'initiateSetupForZeroBalanceAccountPhrase.error'
-                    );
+                    console.warn('Failed to notify helper about seed phrase added', e);
                 }
             }
             await wallet.importZeroBalanceAccount(implicitAccountId, recoveryKeyPair);
@@ -362,10 +359,7 @@ export const initiateSetupForZeroBalanceAccountLedger = createAsyncThunk(
                         `Ledger public key ${ledgerPublicKey.toString()} has previously been added as recovery method to account. Continuing setup...`
                     );
                 } else {
-                    throw new WalletError(
-                        e,
-                        'initiateSetupForZeroBalanceAccountLedger.error'
-                    );
+                    console.warn('Failed to notify helper about seed phrase added', e);
                 }
             }
             await setKeyMeta(ledgerPublicKey, { type: 'ledger' });
