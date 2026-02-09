@@ -30,7 +30,7 @@ import ModalManualImportWithButton from './manual_import/ModalManualImportWithBu
 import { EWalletImportInputType } from './manual_import/type';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 import SelectAccountImport from './ledger/SelectAccountImport';
-import { session_storage_key } from '../../utils/storage/session_storage_key.constant';
+import { loadState } from '../../utils/sessionStorage';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -68,9 +68,7 @@ const RecoverAccountPrivateKey = () => {
         e.preventDefault();
 
         // Capture to avoid pending redirect race conditions
-        pendingRedirectRef.current = JSON.parse(
-            sessionStorage.getItem(session_storage_key.PENDING_DAPP_REDIRECT) || 'null'
-        );
+        pendingRedirectRef.current = loadState();
 
         try {
             KeyPair.fromString(privateKey);
@@ -146,13 +144,7 @@ const RecoverAccountPrivateKey = () => {
                     )
                 );
             } else if (withRedirectToApp) {
-                const pendingRedirect =
-                    pendingRedirectRef.current ||
-                    JSON.parse(
-                        sessionStorage.getItem(
-                            session_storage_key.PENDING_DAPP_REDIRECT
-                        ) || 'null'
-                    );
+                const pendingRedirect = pendingRedirectRef.current || loadState();
 
                 if (pendingRedirect && pendingRedirect.redirect_url) {
                     dispatch(

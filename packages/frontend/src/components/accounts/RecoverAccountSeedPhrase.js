@@ -35,7 +35,7 @@ import ModalManualImportWithButton from './manual_import/ModalManualImportWithBu
 import { EWalletImportInputType } from './manual_import/type';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 import SelectAccountImport from './ledger/SelectAccountImport';
-import { session_storage_key } from '../../utils/storage/session_storage_key.constant';
+import { loadState } from '../../utils/sessionStorage';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -93,9 +93,7 @@ class RecoverAccountSeedPhrase extends Component {
             return false;
         }
 
-        this.pendingRedirect = JSON.parse(
-            sessionStorage.getItem(session_storage_key.PENDING_DAPP_REDIRECT) || 'null'
-        );
+        this.pendingRedirect = loadState();
 
         const { seedPhrase } = this.state;
         const {
@@ -184,13 +182,7 @@ class RecoverAccountSeedPhrase extends Component {
                     `/linkdrop/${options.fundingContract}/${options.fundingKey}${redirectUrl}`
                 );
             } else if (withRedirectToApp) {
-                const pendingRedirect =
-                    this.pendingRedirect ||
-                    JSON.parse(
-                        sessionStorage.getItem(
-                            session_storage_key.PENDING_DAPP_REDIRECT
-                        ) || 'null'
-                    );
+                const pendingRedirect = this.pendingRedirect || loadState();
 
                 if (pendingRedirect && pendingRedirect.redirect_url) {
                     this.props.history.push({

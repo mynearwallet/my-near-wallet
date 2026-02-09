@@ -90,7 +90,7 @@ import translations_vi from '../translations/locales/vi/translation.json';
 import translations_zh_hans from '../translations/locales/zh-hans/translation.json';
 import translations_zh_hant from '../translations/locales/zh-hant/translation.json';
 import classNames from '../utils/classNames';
-import { saveState } from '../utils/sessionStorage';
+import { saveState, loadState, clearState } from '../utils/sessionStorage';
 import getBrowserLocale from '../utils/getBrowserLocale';
 import { reportUiActiveMixpanelThrottled } from '../utils/reportUiActiveMixpanelThrottled';
 import ScrollToTop from '../utils/ScrollToTop';
@@ -105,7 +105,6 @@ import {
 } from '../utils/wallet';
 import TransactionExecutorModal from '../components/transactions/ExecutorModal/TransactionExecutorModal';
 import LiquidStakingContainer from '../components/staking/liquid-staking/LiquidStakingContainer';
-import { session_storage_key } from '../utils/storage/session_storage_key.constant';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
 
@@ -181,10 +180,6 @@ class Routing extends Component {
                     redirect_url: routerLocation.pathname,
                 };
                 saveState(dappParams);
-                sessionStorage.setItem(
-                    session_storage_key.PENDING_DAPP_REDIRECT,
-                    JSON.stringify(dappParams)
-                );
             }
         }
 
@@ -288,17 +283,14 @@ class Routing extends Component {
             prevProps.account.accountId !== account.accountId &&
             account.accountId !== undefined
         ) {
-            const pendingRedirect = JSON.parse(
-                sessionStorage.getItem(session_storage_key.PENDING_DAPP_REDIRECT) ||
-                    'null'
-            );
+            const pendingRedirect = loadState();
             if (
                 !prevProps.account.accountId &&
                 pendingRedirect &&
                 pendingRedirect.redirect_url &&
                 pendingRedirect.redirect_url !== '/'
             ) {
-                sessionStorage.removeItem(session_storage_key.PENDING_DAPP_REDIRECT);
+                clearState();
                 this.props.history.push({
                     pathname: pendingRedirect.redirect_url,
                     search: `?${stringify(pendingRedirect)}`,
