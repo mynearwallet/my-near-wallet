@@ -112,7 +112,9 @@ const SignWrapper = () => {
                 });
                 if (window.opener) {
                     setTimeout(() => {
-                        dispatch(externalRedirectActions.showExternalRedirect(successUrl));
+                        dispatch(
+                            externalRedirectActions.showExternalRedirect(successUrl)
+                        );
                     }, 3000);
                     return window.opener.postMessage(
                         {
@@ -149,21 +151,22 @@ const SignWrapper = () => {
         Mixpanel.track('SIGN Deny the transaction');
 
         if (signCallbackUrl && isValidCallbackUrl) {
-            const cancelUrl = signStatus !== SIGN_STATUS.ERROR
-                ? addQueryParams(signCallbackUrl, {
-                    signMeta,
-                    errorCode: encodeURIComponent('userRejected'),
-                    errorMessage: encodeURIComponent('User rejected transaction'),
-                })
-                : addQueryParams(signCallbackUrl, {
-                    signMeta,
-                    errorCode:
-                        encodeURIComponent(signErrorName) ||
-                        encodeURIComponent('unknownError'),
-                    errorMessage:
-                        encodeURIComponent(signErrorMessage.substring(0, 100)) ||
-                        encodeURIComponent('Unknown error'),
-                });
+            const cancelUrl =
+                signStatus !== SIGN_STATUS.ERROR
+                    ? addQueryParams(signCallbackUrl, {
+                          signMeta,
+                          errorCode: encodeURIComponent('userRejected'),
+                          errorMessage: encodeURIComponent('User rejected transaction'),
+                      })
+                    : addQueryParams(signCallbackUrl, {
+                          signMeta,
+                          errorCode:
+                              encodeURIComponent(signErrorName) ||
+                              encodeURIComponent('unknownError'),
+                          errorMessage:
+                              encodeURIComponent(signErrorMessage.substring(0, 100)) ||
+                              encodeURIComponent('Unknown error'),
+                      });
             dispatch(externalRedirectActions.showExternalRedirect(cancelUrl));
         } else {
             dispatch(redirectTo('/'));
@@ -226,6 +229,13 @@ const SignWrapper = () => {
         return (
             <SignTransferMultipleAccounts
                 handleCancel={handleCancelTransaction}
+                onReturnToApp={() => {
+                    if (isValidCallbackUrl && signCallbackUrl) {
+                        dispatch(
+                            externalRedirectActions.showExternalRedirect(signCallbackUrl)
+                        );
+                    }
+                }}
                 signCallbackUrl={signCallbackUrl}
                 signTransactionSignerId={signerId}
                 submittingTransaction={submittingTransaction}

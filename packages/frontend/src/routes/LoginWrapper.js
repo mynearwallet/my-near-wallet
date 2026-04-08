@@ -1,14 +1,13 @@
 import { getLocation } from 'connected-react-router';
 import { parse } from 'query-string';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import ConfirmLoginWrapper from '../components/login/v2/ConfirmLoginWrapper';
 import InvalidContractId from '../components/login/v2/InvalidContractId';
 import SelectAccountLoginWrapper from '../components/login/v2/SelectAccountLoginWrapper';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
-import { useDispatch } from 'react-redux';
 import {
     selectAccountLocalStorageAccountId,
     selectAccountUrlPrivateShard,
@@ -60,7 +59,9 @@ const LoginWrapper = () => {
                         { contract_id: contractId }
                     );
                     if (isUrlNotJavascriptProtocol(failureUrl)) {
-                        dispatch(externalRedirectActions.showExternalRedirect(failureUrl));
+                        dispatch(
+                            externalRedirectActions.showExternalRedirect(failureUrl)
+                        );
                     }
                 }}
             />

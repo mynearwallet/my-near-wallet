@@ -3,7 +3,6 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import DangerIcon from '../../images/icon-danger-circle.svg';
-import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import SafeTranslate from '../SafeTranslate';
@@ -51,6 +50,7 @@ const CustomContainer = styled(Container)`
 
 const SignTransferMultipleAccounts = ({
     handleCancel,
+    onReturnToApp,
     signCallbackUrl,
     submittingTransaction,
     signTransactionSignerId,
@@ -79,11 +79,7 @@ const SignTransferMultipleAccounts = ({
                 <Translate id='button.cancel' />
             </FormButton>
             <FormButton
-                onClick={() => {
-                    if (isUrlNotJavascriptProtocol(signCallbackUrl)) {
-                        window.location.href = signCallbackUrl;
-                    }
-                }}
+                onClick={onReturnToApp}
                 disabled={submittingTransaction}
                 sending={submittingTransaction}
             >
