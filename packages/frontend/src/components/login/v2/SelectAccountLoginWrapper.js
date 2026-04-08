@@ -17,6 +17,7 @@ import {
     selectAccountUrlPrivateShard,
 } from '../../../redux/slices/account';
 import { selectAvailableAccounts } from '../../../redux/slices/availableAccounts';
+import { actions as externalRedirectActions } from '../../../redux/slices/externalRedirect';
 import { isUrlNotJavascriptProtocol } from '../../../utils/helper-api';
 import convertUrlToSendMessage from '../../../utils/convertUrlToSendMessage';
 
@@ -59,7 +60,7 @@ export default ({
                 if (failureUrl && failureAndSuccessUrlsAreValid) {
                     if (window.opener) {
                         setTimeout(() => {
-                            window.location.href = failureUrl;
+                            dispatch(externalRedirectActions.showExternalRedirect(failureUrl));
                         }, 3000);
                         return window.opener.postMessage(
                             {
@@ -70,7 +71,7 @@ export default ({
                             convertUrlToSendMessage(failureUrl)
                         );
                     }
-                    window.location.href = failureUrl;
+                    dispatch(externalRedirectActions.showExternalRedirect(failureUrl));
                 } else {
                     dispatch(redirectToApp());
                 }
