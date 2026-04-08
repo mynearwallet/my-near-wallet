@@ -19,6 +19,7 @@ import {
     selectSignMessageError,
     SIGN_MESSAGE_STATUS,
 } from '../redux/slices/signMessage';
+import { actions as externalRedirectActions } from '../redux/slices/externalRedirect';
 import { addHashParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 import { validateNonce } from '../utils/signMessage';
@@ -55,12 +56,9 @@ const SignMessageWrapper = () => {
             if (window.opener) {
                 setTimeout(() => {
                     if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                        window.location.href = buildRedirectUrl(
-                            accountUrlCallbackUrl,
-                            signedRequest,
-                            accountUrlState,
-                            verifyOwnerError
-                        );
+                        dispatch(externalRedirectActions.showExternalRedirect(
+                            buildRedirectUrl(accountUrlCallbackUrl, signedRequest, accountUrlState, verifyOwnerError)
+                        ));
                     } else {
                         dispatch(redirectTo('/'));
                     }
@@ -77,12 +75,9 @@ const SignMessageWrapper = () => {
                 );
             }
             if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                window.location.href = buildRedirectUrl(
-                    accountUrlCallbackUrl,
-                    signedRequest,
-                    accountUrlState,
-                    verifyOwnerError
-                );
+                dispatch(externalRedirectActions.showExternalRedirect(
+                    buildRedirectUrl(accountUrlCallbackUrl, signedRequest, accountUrlState, verifyOwnerError)
+                ));
             } else {
                 dispatch(redirectTo('/'));
             }

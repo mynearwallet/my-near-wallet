@@ -8,10 +8,12 @@ import InvalidContractId from '../components/login/v2/InvalidContractId';
 import SelectAccountLoginWrapper from '../components/login/v2/SelectAccountLoginWrapper';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
+import { useDispatch } from 'react-redux';
 import {
     selectAccountLocalStorageAccountId,
     selectAccountUrlPrivateShard,
 } from '../redux/slices/account';
+import { actions as externalRedirectActions } from '../redux/slices/externalRedirect';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
 export const LOGIN_ACCESS_TYPES = {
@@ -21,6 +23,7 @@ export const LOGIN_ACCESS_TYPES = {
 
 const LoginWrapper = () => {
     const [confirmLogin, setConfirmLogin] = useState(false);
+    const dispatch = useDispatch();
 
     const location = useSelector(getLocation);
     const URLParams = parse(location.search);
@@ -57,7 +60,7 @@ const LoginWrapper = () => {
                         { contract_id: contractId }
                     );
                     if (isUrlNotJavascriptProtocol(failureUrl)) {
-                        window.location.href = failureUrl;
+                        dispatch(externalRedirectActions.showExternalRedirect(failureUrl));
                     }
                 }}
             />

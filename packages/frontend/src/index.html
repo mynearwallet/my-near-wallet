@@ -9,6 +9,37 @@
         />
         <meta name="theme-color" content="#000000" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <!--
+            Content Security Policy:
+            - object-src 'none'  : blocks Flash and other plugin content
+            - base-uri 'self'    : prevents base-tag hijacking attacks
+            - script-src includes 'unsafe-inline' due to the inline recaptchaOptions
+              script below and because react-google-recaptcha injects scripts at runtime.
+              If that script is moved into the bundle, 'unsafe-inline' can be removed.
+            - connect-src https: wss: allows all TLS API/RPC/WS calls (NEAR RPC,
+              indexers, Sentry, Mixpanel, MoonPay, etc.) without maintaining a
+              fragile allowlist that breaks on new integrations.
+        -->
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="
+                default-src 'self';
+                script-src 'self' 'unsafe-inline'
+                    https://www.google.com
+                    https://www.gstatic.com
+                    https://recaptcha.net
+                    https://sdk.gleap.io;
+                connect-src 'self' https: wss:;
+                img-src 'self' data: https: blob:;
+                style-src 'self' 'unsafe-inline';
+                font-src 'self' data:;
+                frame-src
+                    https://www.google.com
+                    https://recaptcha.net;
+                object-src 'none';
+                base-uri 'self';
+            "
+        />
         <meta
             name="google-site-verification"
             content="CLYr3n4Y0ZCVgjur0noRGJzN4VxPsHOaNJzydYQ0IF0"

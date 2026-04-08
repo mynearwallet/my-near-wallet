@@ -2139,5 +2139,12 @@
             "desc": "Add a Ledger limited access key to the wallet to manage multiple recovery methods.",
             "title": "Your account is now active!"
         }
+    },
+    "externalRedirectModal": {
+        "title": "You're leaving MyNearWallet",
+        "desc": "You are about to be redirected to an external site:",
+        "warning": "Make sure you trust this destination before continuing.",
+        "cancel": "Cancel",
+        "continue": "Continue to site"
     }
 }

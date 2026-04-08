@@ -17,6 +17,7 @@ import {
     VERIFY_OWNER_STATUS,
     selectVerifyOwnerError,
 } from '../redux/slices/verifyOwner';
+import { actions as externalRedirectActions } from '../redux/slices/externalRedirect';
 import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 
@@ -44,12 +45,9 @@ const VerifyOwnerWrapper = () => {
     useEffect(() => {
         if (verifyOwnerStatus === VERIFY_OWNER_STATUS.COMPLETED) {
             if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                window.location.href = buildRedirectUrl(
-                    accountUrlCallbackUrl,
-                    accountUrlMeta,
-                    signedRequest,
-                    verifyOwnerError
-                );
+                dispatch(externalRedirectActions.showExternalRedirect(
+                    buildRedirectUrl(accountUrlCallbackUrl, accountUrlMeta, signedRequest, verifyOwnerError)
+                ));
             } else {
                 dispatch(redirectTo('/'));
             }
