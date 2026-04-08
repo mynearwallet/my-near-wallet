@@ -2,6 +2,7 @@ import { connectRouter } from 'connected-react-router';
 import { localizeReducer } from 'react-localize-redux';
 
 import account from '../reducers/account';
+import externalRedirectSlice from '../slices/externalRedirect';
 import allAccounts from '../reducers/allAccounts';
 import sign from '../reducers/sign';
 import signMessage from '../reducers/signMessage';
@@ -49,4 +50,5 @@ export default (history) => ({
     [ledgerSlice.name]: ledgerSlice.reducer,
     [swapSlice.name]: swapSlice.reducer,
     [passwordProtectedWallet.name]: passwordProtectedWallet.reducer,
+    [externalRedirectSlice.name]: externalRedirectSlice.reducer,
 });

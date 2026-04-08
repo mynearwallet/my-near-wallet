@@ -15,6 +15,7 @@ import {
 import { clearLocalAlert } from '../../redux/actions/status';
 import { selectAccountSlice } from '../../redux/slices/account';
 import { actions as linkdropActions } from '../../redux/slices/linkdrop';
+import { actions as externalRedirectActions } from '../../redux/slices/externalRedirect';
 import { selectActionsPending, selectStatusMainLoader } from '../../redux/slices/status';
 import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
 import LoadingDots from '../common/loader/LoadingDots';
@@ -123,7 +124,7 @@ class LinkdropLanding extends Component {
         } = this.props;
         await claimLinkdropToAccount(fundingContract, fundingKey);
         if (url?.redirectUrl && isUrlNotJavascriptProtocol(url?.redirectUrl)) {
-            window.location = `${url.redirectUrl}?accountId=${accountId}`;
+            this.props.showExternalRedirect(`${url.redirectUrl}?accountId=${accountId}`);
         } else {
             setLinkdropAmount(this.state.keyInfo.yoctoNEAR);
             redirectTo('/');
@@ -204,6 +205,7 @@ const mapDispatchToProps = {
     redirectTo,
     handleRefreshUrl,
     setLinkdropAmount,
+    showExternalRedirect: externalRedirectActions.showExternalRedirect,
 };
 
 const mapStateToProps = (state, { match }) => ({

@@ -20,6 +20,7 @@ import CreateAccountLanding from '../components/accounts/create/landing/CreateAc
 import VerifyAccountWrapper from '../components/accounts/create/verify_account/VerifyAccountWrapper';
 import CreateAccountWithRouter from '../components/accounts/CreateAccount';
 import LedgerConfirmActionModal from '../components/accounts/ledger/LedgerConfirmActionModal';
+import ExternalRedirectModal from '../components/common/ExternalRedirectModal';
 import LedgerConnectModal from '../components/accounts/ledger/LedgerConnectModal/LedgerConnectModalWrapper';
 import SetupLedgerWithRouter from '../components/accounts/ledger/SetupLedger';
 import SetupLedgerSuccessWithRouter from '../components/accounts/ledger/SetupLedgerSuccess';
@@ -337,6 +338,7 @@ class Routing extends Component {
                             onClose={this.closeTransferPopup}
                         />
                         <LedgerConfirmActionModal />
+                        <ExternalRedirectModal />
                         <LedgerConnectModal />
                         <TransactionExecutorModal />
                         {account.requestPending !== null && (

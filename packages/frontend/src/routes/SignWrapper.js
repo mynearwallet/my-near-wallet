@@ -28,6 +28,7 @@ import {
     selectSignTransactions,
     selectSignTransactionsBatchIsValid,
 } from '../redux/slices/sign';
+import { actions as externalRedirectActions } from '../redux/slices/externalRedirect';
 import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 import convertUrlToSendMessage from '../utils/convertUrlToSendMessage';
@@ -105,12 +106,15 @@ const SignWrapper = () => {
 
         if (signStatus === SIGN_STATUS.SUCCESS) {
             if (signCallbackUrl && !!transactionHashes.length && isValidCallbackUrl) {
+                const successUrl = addQueryParams(signCallbackUrl, {
+                    signMeta,
+                    transactionHashes: transactionHashes.join(','),
+                });
                 if (window.opener) {
                     setTimeout(() => {
-                        window.location.href = addQueryParams(signCallbackUrl, {
-                            signMeta,
-                            transactionHashes: transactionHashes.join(','),
-                        });
+                        dispatch(
+                            externalRedirectActions.showExternalRedirect(successUrl)
+                        );
                     }, 3000);
                     return window.opener.postMessage(
                         {
@@ -121,10 +125,7 @@ const SignWrapper = () => {
                         convertUrlToSendMessage(signCallbackUrl)
                     );
                 }
-                window.location.href = addQueryParams(signCallbackUrl, {
-                    signMeta,
-                    transactionHashes: transactionHashes.join(','),
-                });
+                dispatch(externalRedirectActions.showExternalRedirect(successUrl));
             } else {
                 dispatch(redirectTo('/'));
             }
@@ -143,30 +144,30 @@ const SignWrapper = () => {
                 errorCode: encodeURIComponent('userRejected'),
                 errorMessage: encodeURIComponent('User rejected transaction'),
             });
-            window.location.href = encounter;
+            dispatch(externalRedirectActions.showExternalRedirect(encounter));
             return;
         }
 
         Mixpanel.track('SIGN Deny the transaction');
 
         if (signCallbackUrl && isValidCallbackUrl) {
-            if (signStatus !== SIGN_STATUS.ERROR) {
-                window.location.href = addQueryParams(signCallbackUrl, {
-                    signMeta,
-                    errorCode: encodeURIComponent('userRejected'),
-                    errorMessage: encodeURIComponent('User rejected transaction'),
-                });
-            } else {
-                window.location.href = addQueryParams(signCallbackUrl, {
-                    signMeta,
-                    errorCode:
-                        encodeURIComponent(signErrorName) ||
-                        encodeURIComponent('unknownError'),
-                    errorMessage:
-                        encodeURIComponent(signErrorMessage.substring(0, 100)) ||
-                        encodeURIComponent('Unknown error'),
-                });
-            }
+            const cancelUrl =
+                signStatus !== SIGN_STATUS.ERROR
+                    ? addQueryParams(signCallbackUrl, {
+                          signMeta,
+                          errorCode: encodeURIComponent('userRejected'),
+                          errorMessage: encodeURIComponent('User rejected transaction'),
+                      })
+                    : addQueryParams(signCallbackUrl, {
+                          signMeta,
+                          errorCode:
+                              encodeURIComponent(signErrorName) ||
+                              encodeURIComponent('unknownError'),
+                          errorMessage:
+                              encodeURIComponent(signErrorMessage.substring(0, 100)) ||
+                              encodeURIComponent('Unknown error'),
+                      });
+            dispatch(externalRedirectActions.showExternalRedirect(cancelUrl));
         } else {
             dispatch(redirectTo('/'));
         }
@@ -228,6 +229,13 @@ const SignWrapper = () => {
         return (
             <SignTransferMultipleAccounts
                 handleCancel={handleCancelTransaction}
+                onReturnToApp={() => {
+                    if (isValidCallbackUrl && signCallbackUrl) {
+                        dispatch(
+                            externalRedirectActions.showExternalRedirect(signCallbackUrl)
+                        );
+                    }
+                }}
                 signCallbackUrl={signCallbackUrl}
                 signTransactionSignerId={signerId}
                 submittingTransaction={submittingTransaction}

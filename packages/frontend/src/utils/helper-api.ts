@@ -21,13 +21,15 @@ export async function getAccountIdsBySeedPhrase(seedPhrase) {
     return getAccountIds(publicKey);
 }
 
+const BLOCKED_URL_PROTOCOLS = new Set(['javascript:', 'data:', 'blob:', 'vbscript:']);
+
 export function isUrlNotJavascriptProtocol(url) {
     if (!url) {
         return true;
     }
     try {
         const urlProtocol = new URL(url).protocol;
-        if (urlProtocol === 'javascript:') {
+        if (BLOCKED_URL_PROTOCOLS.has(urlProtocol)) {
             console.log(
                 'Invalid URL protocol:',
                 urlProtocol,

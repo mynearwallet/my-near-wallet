@@ -11,6 +11,7 @@ import {
     redirectTo,
     clearAccountState,
 } from '../../../redux/actions/account';
+import { actions as externalRedirectActions } from '../../../redux/slices/externalRedirect';
 import { isUrlNotJavascriptProtocol } from '../../../utils/helper-api';
 
 const AutoImportWrapper = ({ secretKey, accountId, mixpanelImportType }) => {
@@ -34,7 +35,7 @@ const AutoImportWrapper = ({ secretKey, accountId, mixpanelImportType }) => {
                 dispatch(clearAccountState());
 
                 if (successUrl && isUrlNotJavascriptProtocol(successUrl)) {
-                    window.location.href = successUrl;
+                    dispatch(externalRedirectActions.showExternalRedirect(successUrl));
                     return;
                 }
 
@@ -49,7 +50,7 @@ const AutoImportWrapper = ({ secretKey, accountId, mixpanelImportType }) => {
 
     const redirectToFailureUrl = () => {
         if (isUrlNotJavascriptProtocol(failureUrl)) {
-            window.location.href = failureUrl;
+            dispatch(externalRedirectActions.showExternalRedirect(failureUrl));
         }
     };
 

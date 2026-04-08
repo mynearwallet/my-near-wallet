@@ -11,6 +11,7 @@ import {
 import { showCustomAlert } from './status';
 import CONFIG from '../../config';
 import { actions as activeAccountActions } from '../../redux/slices/activeAccount';
+import { actions as externalRedirectActions } from '../../redux/slices/externalRedirect';
 import { showAlert } from '../../utils/alerts';
 import { isUrlNotJavascriptProtocol } from '../../utils/helper-api';
 import { loadState, saveState, clearState } from '../../utils/sessionStorage';
@@ -358,7 +359,7 @@ function loginRedirect({ successUrl, publicKey, allKeys, dispatch }) {
     }
     parsedUrl.searchParams.set('all_keys', allKeys.join(','));
     if (isUrlNotJavascriptProtocol(parsedUrl.href)) {
-        window.location = parsedUrl.href;
+        dispatch(externalRedirectActions.showExternalRedirect(parsedUrl.href));
     } else {
         dispatch(
             showCustomAlert({
@@ -650,7 +651,7 @@ export const finishAccountSetup = () => async (dispatch, getState) => {
 
     if (redirectUrl) {
         if (isUrlNotJavascriptProtocol(redirectUrl)) {
-            window.location = `${redirectUrl}?accountId=${accountId}`;
+            dispatch(externalRedirectActions.showExternalRedirect(`${redirectUrl}?accountId=${accountId}`));
         } else {
             dispatch(handleRefreshUrl());
             dispatch(
