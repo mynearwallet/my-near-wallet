@@ -10,7 +10,7 @@ const STORAGE_KEY = 'sunsetNoticeLastShownAt';
 // Show the notice at most once every 4 days.
 const SHOW_INTERVAL_MS = 4 * 24 * 60 * 60 * 1000;
 // Where the "Learn more" button takes the user.
-const LEARN_MORE_URL = 'https://www.mynearwallet.com';
+const LEARN_MORE_URL = 'https://www.mynearwallet.com/sunset';
 
 const Container = styled.div`
     text-align: left;
