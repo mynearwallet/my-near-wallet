@@ -92,6 +92,7 @@ import translations_zh_hans from '../translations/locales/zh-hans/translation.js
 import translations_zh_hant from '../translations/locales/zh-hant/translation.json';
 import classNames from '../utils/classNames';
 import getBrowserLocale from '../utils/getBrowserLocale';
+import SunsetNotice from './SunsetNotice';
 import { reportUiActiveMixpanelThrottled } from '../utils/reportUiActiveMixpanelThrottled';
 import ScrollToTop from '../utils/ScrollToTop';
 import {
@@ -332,6 +333,7 @@ class Routing extends Component {
                         <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
+                        <SunsetNotice />
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}
