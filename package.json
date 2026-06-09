@@ -15,7 +15,9 @@
     "guestbook": "cd packages/guestbook && yarn install --frozen-lockfile && yarn dev",
     "test:e2e": "cd packages/e2e-tests && yarn e2e",
     "prepare": "husky install",
-    "release": "lerna version --conventional-commits"
+    "release": "lerna version --conventional-commits",
+    "clean-files": "bunx glcl",
+    "clean-cache-files": "bunx glcl -f glob-list.caches.clean"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.0",
