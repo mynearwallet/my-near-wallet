@@ -4,23 +4,19 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false,
         "forceConsistentCasingInFileNames": true,
-
         "skipLibCheck": true,
         "esModuleInterop": true,
         "isolatedModules": true,
         "lib": ["dom", "es2020", "ES2021.Promise"],
         "module": "ESNext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
-
         "allowJs": true,
         "checkJs": false,
         "target": "es2020",
         "jsx": "react-jsx",
-
         "inlineSources": false,
         "preserveWatchOutput": true,
-
         "outDir": "./dist",
         "rootDir": "./src"
     },
