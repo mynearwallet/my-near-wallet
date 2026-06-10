@@ -29,12 +29,12 @@ const SuccessAction = ({
                 <Translate id={`staking.${action}Success.title`} />
             </h1>
             <div className='desc' data-test-id='stakingSuccessMessage'>
+                {/* @ts-ignore */}
                 <SafeTranslate
                     id={`staking.${action}Success.desc`}
                     data={{
                         amount: `${changesAmount} ${token.onChainFTMetadata?.symbol}`,
                     }}
-                    children={undefined}
                 />
             </div>
             {/* @ts-ignore */}

@@ -206,12 +206,12 @@ const UnstakeForm = () => {
                             <Translate id='staking.liquidStaking.instantUnstake' />
                         </div>
                         <div className='unstake-tab__fee'>
+                            {/* @ts-ignore */}
                             <SafeTranslate
                                 id='staking.liquidStaking.unstakeFee'
                                 data={{
                                     amount: liquidValidatorData?.liquidUnstakeFee,
                                 }}
-                                children={undefined}
                             />
                         </div>
                     </div>
@@ -223,12 +223,12 @@ const UnstakeForm = () => {
                         onClick={() => setUnstakeType(UnstakeType.delayed)}
                     >
                         <div className='unstake-tab__title'>
+                            {/* @ts-ignore */}
                             <SafeTranslate
                                 id='staking.liquidStaking.delayedUnstakeFeeTitle'
                                 data={{
                                     amount: liquidValidatorData?.liquidUnstakeFee,
                                 }}
-                                children={undefined}
                             />
                         </div>
                         <div className='unstake-tab__fee'>
