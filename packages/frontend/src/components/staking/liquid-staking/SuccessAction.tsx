@@ -5,6 +5,7 @@ import ValidatorBox from '../components/ValidatorBox';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
 import styled from 'styled-components';
+import SafeTranslate from '../../SafeTranslate';
 
 type Props = {
     action: 'stake' | 'unstake' | 'liquidUnstake';
@@ -28,11 +29,12 @@ const SuccessAction = ({
                 <Translate id={`staking.${action}Success.title`} />
             </h1>
             <div className='desc' data-test-id='stakingSuccessMessage'>
-                <Translate
+                <SafeTranslate
                     id={`staking.${action}Success.desc`}
                     data={{
                         amount: `${changesAmount} ${token.onChainFTMetadata?.symbol}`,
                     }}
+                    children={undefined}
                 />
             </div>
             {/* @ts-ignore */}

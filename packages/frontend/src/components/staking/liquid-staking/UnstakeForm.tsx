@@ -26,6 +26,7 @@ import { getMetapoolValidator } from './utils';
 import SuccessActionContainer from './SuccessActionContainer';
 import { Mixpanel } from '../../../mixpanel';
 import isDecimalString from '../../../utils/isDecimalString';
+import SafeTranslate from '../../SafeTranslate';
 
 enum UnstakeType {
     'instant' = 'instant',
@@ -205,11 +206,12 @@ const UnstakeForm = () => {
                             <Translate id='staking.liquidStaking.instantUnstake' />
                         </div>
                         <div className='unstake-tab__fee'>
-                            <Translate
+                            <SafeTranslate
                                 id='staking.liquidStaking.unstakeFee'
                                 data={{
                                     amount: liquidValidatorData?.liquidUnstakeFee,
                                 }}
+                                children={undefined}
                             />
                         </div>
                     </div>
@@ -221,11 +223,12 @@ const UnstakeForm = () => {
                         onClick={() => setUnstakeType(UnstakeType.delayed)}
                     >
                         <div className='unstake-tab__title'>
-                            <Translate
+                            <SafeTranslate
                                 id='staking.liquidStaking.delayedUnstakeFeeTitle'
                                 data={{
                                     amount: liquidValidatorData?.liquidUnstakeFee,
                                 }}
+                                children={undefined}
                             />
                         </div>
                         <div className='unstake-tab__fee'>
