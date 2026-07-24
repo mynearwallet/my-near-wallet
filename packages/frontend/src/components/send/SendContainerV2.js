@@ -127,7 +127,9 @@ const SendContainerV2 = ({
         }
     }, [getUniqueTokenIdentity(selectedToken)]);
 
-    useEffect(() => window.scrollTo(0, 0), [activeView]);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [activeView]);
 
     useEffect(() => {
         setActiveView(VIEWS.ENTER_AMOUNT);
