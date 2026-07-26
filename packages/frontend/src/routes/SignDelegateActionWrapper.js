@@ -32,6 +32,7 @@ import SignDelegateActionInvalid from '../components/sign-delegate-action/SignDe
 import { Mixpanel } from '../mixpanel';
 import { redirectTo } from '../redux/actions/account';
 import { selectAccountId } from '../redux/slices/account';
+import { actions as externalRedirectActions } from '../redux/slices/externalRedirect';
 import { addQueryParams } from '../utils/buildUrl';
 import { isUrlNotJavascriptProtocol } from '../utils/helper-api';
 import convertUrlToSendMessage from '../utils/convertUrlToSendMessage';
@@ -172,13 +173,12 @@ const SignDelegateActionWrapper = () => {
                 signedDelegateAction: result.serialized,
             };
 
+            const successUrl = addQueryParams(params.callbackUrl, callbackParams);
+
             // Handle popup window case
             if (window.opener) {
                 setTimeout(() => {
-                    window.location.href = addQueryParams(
-                        params.callbackUrl,
-                        callbackParams
-                    );
+                    dispatch(externalRedirectActions.showExternalRedirect(successUrl));
                 }, 1500);
                 return window.opener.postMessage(
                     {
@@ -190,26 +190,27 @@ const SignDelegateActionWrapper = () => {
             }
 
             // Regular redirect
-            window.location.href = addQueryParams(params.callbackUrl, callbackParams);
+            dispatch(externalRedirectActions.showExternalRedirect(successUrl));
         } catch (err) {
             console.error('Failed to sign delegate action:', err);
             Mixpanel.track('SIGN_DELEGATE_ACTION error', { error: err.message });
             setError(err.message);
             setStatus(SIGN_STATUS.ERROR);
         }
-    }, [params, accountId]);
+    }, [params, accountId, dispatch]);
 
     // Reports a failure back to the requesting dapp, so it is never left waiting on a
     // callback that will not arrive.
     const rejectWith = useCallback(
         (errorParams) => {
             if (params?.callbackUrl && isValidCallbackUrl) {
+                const errorUrl = addQueryParams(params.callbackUrl, errorParams);
+
                 // Handle popup window case
                 if (window.opener) {
                     setTimeout(() => {
-                        window.location.href = addQueryParams(
-                            params.callbackUrl,
-                            errorParams
+                        dispatch(
+                            externalRedirectActions.showExternalRedirect(errorUrl)
                         );
                     }, 1500);
                     return window.opener.postMessage(
@@ -221,7 +222,7 @@ const SignDelegateActionWrapper = () => {
                     );
                 }
 
-                window.location.href = addQueryParams(params.callbackUrl, errorParams);
+                dispatch(externalRedirectActions.showExternalRedirect(errorUrl));
             } else {
                 dispatch(redirectTo('/'));
             }
