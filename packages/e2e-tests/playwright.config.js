@@ -2,15 +2,17 @@ require('dotenv').config();
 const { devices } = require('@playwright/test');
 
 const config = {
+    testDir: './',
+    testMatch: '**/*.spec.js',
     fullyParallel: false,
     expect: {
         timeout: 60 * 1000, // unit is ms, default is 5s
     },
-    globalSetup: require.resolve('./global-setup.js'),
-    reporter: [
-        ['./reporters/WalletE2eLogsReporter.js', { logger: console }],
-        ['./reporters/pagerduty-reporter.js'],
-    ],
+    // globalSetup: require.resolve('./global-setup.js'),
+    // reporter: [
+    //     ['./reporters/WalletE2eLogsReporter.js', { logger: console }],
+    //     ['./reporters/pagerduty-reporter.js'],
+    // ],
     timeout: 5 * 60 * 1000,
     use: {
         actionTimeout: 30 * 1000,

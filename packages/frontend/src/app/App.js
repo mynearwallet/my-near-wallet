@@ -77,6 +77,7 @@ import LoginWrapper from '../routes/LoginWrapper';
 import SetupLedgerNewAccountWrapper from '../routes/SetupLedgerNewAccountWrapper';
 import SetupPassphraseNewAccountWrapper from '../routes/SetupPassphraseNewAccountWrapper';
 import SetupRecoveryImplicitAccountWrapper from '../routes/SetupRecoveryImplicitAccountWrapper';
+import SignDelegateActionWrapper from '../routes/SignDelegateActionWrapper';
 import SignMessageWrapper from '../routes/SignMessageWrapper';
 import SignWrapper from '../routes/SignWrapper';
 import VerifyOwnerWrapper from '../routes/VerifyOwnerWrapper';
@@ -667,6 +668,11 @@ class Routing extends Component {
                                 exact
                                 path='/sign-message'
                                 component={SignMessageWrapper}
+                            />
+                            <PrivateRoute
+                                exact
+                                path='/sign-delegate-action'
+                                component={SignDelegateActionWrapper}
                             />
                             {WEB3AUTH_FEATURE_ENABLED && (
                                 <PrivateRoute

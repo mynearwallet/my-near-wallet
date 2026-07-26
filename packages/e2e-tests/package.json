@@ -29,6 +29,7 @@
     "e2e:swap-near-nep141": "npx playwright test ./swap/near-with-nep141.spec.js --project=Desktop_Chromium",
     "e2e:swap-wnear-nep141": "npx playwright test ./swap/wnear-with-nep141.spec.js --project=Desktop_Chromium",
     "e2e:swap-nep141-nep141": "npx playwright test ./swap/nep141-with-nep141.spec.js --project=Desktop_Chromium",
+    "e2e:sign-delegate-action": "node ../../node_modules/@playwright/test/cli.js test ./signDelegateAction/ --project=Desktop_Chromium",
     "e2e:debug": "PWDEBUG=1 npx playwright test",
     "e2e:ui": "npx playwright test --ui --headed"
   },

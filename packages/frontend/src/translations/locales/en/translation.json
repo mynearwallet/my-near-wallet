@@ -330,6 +330,7 @@
         "setupPhrase": "Setup Recovery Phrase",
         "sign": "Sign",
         "signIn": "Sign In",
+        "signing": "Signing...",
         "signingIn": "Signing In",
         "signInLedger": "Sign in with Ledger",
         "skip": "Skip",
@@ -1599,7 +1600,25 @@
                 "waiting": "Up next"
             }
         },
-        "one": "Before importing your accounts, you’ll need to grant NEAR Wallet permission to access them."
+        "one": "Before importing your accounts, you'll need to grant NEAR Wallet permission to access them."
+    },
+    "signDelegateAction": {
+        "actionsToExecute": "Actions to Execute",
+        "contract": "Contract",
+        "deposit": "Deposit",
+        "fromAccount": "From Account",
+        "gaslessBadge": "GASLESS - You pay $0 in fees",
+        "howItWorks": "How this works:",
+        "howItWorksDescription": "You are signing authorization for these actions. A relayer service will submit this transaction to NEAR and pay the gas fees on your behalf. Your account will NOT be charged any NEAR for gas.",
+        "invalidRequest": "Invalid Request",
+        "invalidRequestMessage": "The delegate action request is invalid and cannot be processed.",
+        "ledgerNotSupported": "Ledger is not supported yet for meta-transactions. Please use an account whose key is stored in this wallet.",
+        "maxBlockHeight": "Max Block Height",
+        "nonce": "Nonce",
+        "requestedBy": "Requested By",
+        "signerPublicKey": "Signing Key",
+        "subtitle": "Sign this action to be submitted by a relayer",
+        "title": "Approve Meta-Transaction"
     },
     "signMessage": {
         "invalidRequest": {
