@@ -4,29 +4,31 @@ import styled from 'styled-components';
 
 const AccountExportBannerContainer = styled.section`
     margin-bottom: 28px;
+    margin-top: 16px;
 `;
 
 const AccountExportBannerContent = styled.div`
     align-items: center;
     background: linear-gradient(105deg, #6686f4 0%, #65bfe0 100%);
-    border-radius: 20px;
+    border-radius: 16px;
     display: flex;
     justify-content: space-between;
-    padding: 24px 42px;
+    padding: 32px 42px;
 
     @media (max-width: 600px) {
         align-items: stretch;
-        border-radius: 14px;
+        border-radius: 12px;
         flex-direction: column;
-        padding: 20px;
+        padding: 16px 20px;
     }
 `;
 
 const BannerCopy = styled.div`
+    color: #fff;
     max-width: 740px;
 `;
 
-const BannerTitle = styled.h2`
+const BannerTitle = styled.div`
     color: #fff;
     font-size: 20px;
     font-weight: 700;
@@ -34,10 +36,10 @@ const BannerTitle = styled.h2`
     margin: 0;
 `;
 
-const BannerDescription = styled.p`
+const BannerDescription = styled.div`
     color: #fff;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 21px;
     margin: 6px 0 0;
 `;
