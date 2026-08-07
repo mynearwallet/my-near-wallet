@@ -1,0 +1,8 @@
+diff --git a/node_modules/use-immer/dist/use-immer.module.js b/node_modules/use-immer/dist/use-immer.module.js
+index 7b0dcdd..69aff55 100644
+--- a/node_modules/use-immer/dist/use-immer.module.js
++++ b/node_modules/use-immer/dist/use-immer.module.js
+@@ -1,2 +1 @@
+-import n,{freeze as r}from"immer";import{useState as t,useCallback as o,useMemo as f,useReducer as u}from"react";function i(f){var u=t(function(){return r("function"==typeof f?f():f,!0)}),i=u[1];return[u[0],o(function(t){i("function"==typeof t?n(t):r(t))},[])]}function e(r,t,o){var i=f(function(){return n(r)},[r]);return u(i,t,o)}export{i as useImmer,e as useImmerReducer};
+-//# sourceMappingURL=use-immer.module.js.map
++import{produce as n,freeze as r}from"immer";import{useState as t,useCallback as o,useMemo as f,useReducer as u}from"react";function i(f){var u=t(function(){return r("function"==typeof f?f():f,!0)}),i=u[1];return[u[0],o(function(t){i("function"==typeof t?n(t):r(t))},[])]}function e(r,t,o){var i=f(function(){return n(r)},[r]);return u(i,t,o)}export{i as useImmer,e as useImmerReducer};
