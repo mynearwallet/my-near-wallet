@@ -1,0 +1,60 @@
+diff --git a/node_modules/@meteorwallet/sdk/dist/index.cjs b/node_modules/@meteorwallet/sdk/dist/index.cjs
+index 1748814..7774c0b 100644
+--- a/node_modules/@meteorwallet/sdk/dist/index.cjs
++++ b/node_modules/@meteorwallet/sdk/dist/index.cjs
+@@ -50,10 +50,10 @@ let _near_js_accounts = require("@near-js/accounts");
+ require("@near-js/keystores");
+ let _near_js_providers = require("@near-js/providers");
+ let _near_js_types = require("@near-js/types");
+-let near_api_js = require("near-api-js");
++let near_api_js = require("near-api-js-v6");
+ let _near_js_utils = require("@near-js/utils");
+-let _noble_hashes_sha512 = require("@noble/hashes/sha512");
+-let _noble_hashes_utils = require("@noble/hashes/utils");
++let _noble_hashes_sha512 = _noble_hashes_sha2_js;
++let _noble_hashes_utils = require("@noble/hashes/utils.js");
+ let secp256k1 = require("secp256k1");
+ secp256k1 = __toESM(secp256k1);
+ let _noble_post_quantum_ml_dsa_js = require("@noble/post-quantum/ml-dsa.js");
+diff --git a/node_modules/@meteorwallet/sdk/dist/index.d.ts b/node_modules/@meteorwallet/sdk/dist/index.d.ts
+index c3b85bb..c5d9687 100644
+--- a/node_modules/@meteorwallet/sdk/dist/index.d.ts
++++ b/node_modules/@meteorwallet/sdk/dist/index.d.ts
+@@ -16,9 +16,9 @@ import { KeyStore } from "@near-js/keystores";
+ import { JsonRpcProvider } from "@near-js/providers";
+ import * as _near_js_types0 from "@near-js/types";
+ import { AccessKeyInfoView, Enum, FinalExecutionOutcome } from "@near-js/types";
+-import { ConnectConfig, utils } from "near-api-js";
++import { ConnectConfig, utils } from "near-api-js-v6";
+ import { z } from "zod";
+-import { FinalExecutionOutcome as FinalExecutionOutcome$1 } from "near-api-js/lib/providers/index.js";
++import { FinalExecutionOutcome as FinalExecutionOutcome$1 } from "near-api-js-v6/lib/providers/index.js";
+ 
+ //#region src/envConfig.d.ts
+ interface IEnvConfig {
+diff --git a/node_modules/@meteorwallet/sdk/dist/index.js b/node_modules/@meteorwallet/sdk/dist/index.js
+index d8bb4a4..6be2c85 100644
+--- a/node_modules/@meteorwallet/sdk/dist/index.js
++++ b/node_modules/@meteorwallet/sdk/dist/index.js
+@@ -12,7 +12,7 @@ import { EPartnerBridgeStep, EPartnerClientStatus, PartnerBridgeClient, PartnerB
+ import { KeyPair, KeyPairEd25519, KeyType, PublicKey } from "@near-js/crypto";
+ import { DelegateAction, SCHEMA, Signature, SignedDelegate, Transaction, buildDelegateAction, createTransaction } from "@near-js/transactions";
+ import { isActionPayload_Result_JsonObject } from "@nice-code/action";
+-import { sha256 } from "@noble/hashes/sha2.js";
++import { sha256, sha512 } from "@noble/hashes/sha2.js";
+ import { base64, base64url } from "@scure/base";
+ import { deserialize, serialize } from "borsh";
+ import { EStorageAdapterType, StorageAdapter } from "@nice-code/util";
+@@ -21,10 +21,9 @@ import { Account } from "@near-js/accounts";
+ import { KeyStore } from "@near-js/keystores";
+ import { JsonRpcProvider } from "@near-js/providers";
+ import { Enum } from "@near-js/types";
+-import { utils } from "near-api-js";
++import { utils } from "near-api-js-v6";
+ import { baseDecode, baseEncode } from "@near-js/utils";
+-import { sha512 } from "@noble/hashes/sha512";
+-import { concatBytes, randomBytes, utf8ToBytes } from "@noble/hashes/utils";
++import { concatBytes, randomBytes, utf8ToBytes } from "@noble/hashes/utils.js";
+ import secp256k1 from "secp256k1";
+ import { ml_dsa65 } from "@noble/post-quantum/ml-dsa.js";
+ import { z } from "zod";

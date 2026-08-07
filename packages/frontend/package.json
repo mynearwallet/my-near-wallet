@@ -24,6 +24,7 @@
         "prepush": "concurrently \"yarn run test\"",
         "precommit": "node .githooks/format-json-script.mjs",
         "preinstall": "npx only-allow yarn",
+        "postinstall": "cd ../.. && patch-package",
         "type-check": "tsc --noEmit"
     },
     "browserslist": [
@@ -40,6 +41,7 @@
         "@headlessui/react": "^1.7.16",
         "@ledgerhq/hw-transport-u2f": "^5.34.0",
         "@meteorwallet/meteor-near-sdk": "3.3.0",
+        "@meteorwallet/sdk": "3.0.1",
         "@mintbase-js/data": "^0.5.5-beta.2",
         "@near-wallet-selector/account-export": "^7.6.1",
         "@reduxjs/toolkit": "1.9.5",
@@ -79,6 +81,7 @@
         "lodash.update": "^4.10.2",
         "mixpanel-browser": "^2.41.0",
         "near-api-js": "0.45.1",
+        "near-api-js-v6": "npm:near-api-js@6.2.5",
         "near-ledger-js": "^0.2.1",
         "near-seed-phrase": "^0.2.0",
         "node-cache": "^5.1.2",
