@@ -6,7 +6,15 @@ import FormButton from '../common/FormButton';
 import LoadingDots from '../common/loader/LoadingDots';
 import Container from '../common/styled/Container.css';
 import AccountExportAccountList from './AccountExportAccountList';
-import { loadExportableAccounts, MAX_EXPORTABLE_ACCOUNTS } from './accountExportAccounts';
+import {
+    loadExportableAccounts,
+    loadExportAccountSecrets,
+    MAX_EXPORTABLE_ACCOUNTS,
+} from './accountExportAccounts';
+import {
+    meteorNetworkId,
+    promptMeteorAccountTransfer,
+} from '../../services/meteorConnect';
 
 const AccountExportPage = styled(Container)`
     &&& {
@@ -73,7 +81,9 @@ export default function AccountExportSelect() {
     const [accounts, setAccounts] = useState([]);
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isExporting, setIsExporting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [exportMessage, setExportMessage] = useState('');
 
     useEffect(() => {
         let isMounted = true;
@@ -114,6 +124,7 @@ export default function AccountExportSelect() {
     );
 
     const handleAccountSelection = (accountId) => {
+        setExportMessage('');
         setSelectedAccountIds((currentSelectedAccountIds) => {
             if (currentSelectedAccountIds.includes(accountId)) {
                 return currentSelectedAccountIds.filter((id) => id !== accountId);
@@ -125,6 +136,40 @@ export default function AccountExportSelect() {
 
             return [...currentSelectedAccountIds, accountId];
         });
+    };
+
+    const handleExportSelectedAccounts = async () => {
+        setIsExporting(true);
+        setErrorMessage('');
+        setExportMessage('');
+
+        try {
+            const accountsToExport = await loadExportAccountSecrets(selectedAccountIds);
+            const outcome = await promptMeteorAccountTransfer({
+                accounts: accountsToExport,
+                networkId: meteorNetworkId,
+            });
+
+            if (outcome.status === 'imported') {
+                setExportMessage('Your accounts were imported into Meteor Wallet.');
+            } else if (outcome.status === 'declined') {
+                setExportMessage('The account transfer was declined in Meteor Wallet.');
+            } else if (outcome.status === 'expired') {
+                setExportMessage('The account transfer expired. You can try again.');
+            } else if (outcome.status === 'failed') {
+                setErrorMessage(
+                    'The account transfer could not be completed. Please try again.'
+                );
+            }
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error
+                    ? error.message
+                    : 'Could not start the account transfer.'
+            );
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     return (
@@ -147,9 +192,19 @@ export default function AccountExportSelect() {
                         />
                     )}
                     {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+                    {exportMessage && <p>{exportMessage}</p>}
                 </div>
                 <div className='buttons-bottom-buttons'>
-                    <FormButton disabled>Export Selected Accounts</FormButton>
+                    <FormButton
+                        disabled={
+                            isLoading || isExporting || selectedAccountIds.length === 0
+                        }
+                        onClick={() => void handleExportSelectedAccounts()}
+                    >
+                        {isExporting
+                            ? 'Opening Meteor Connect…'
+                            : 'Export Selected Accounts'}
+                    </FormButton>
                     <FormButton
                         className='link'
                         color='gray'
