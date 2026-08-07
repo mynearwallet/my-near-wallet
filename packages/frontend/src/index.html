@@ -29,7 +29,8 @@
                     https://www.gstatic.com
                     https://recaptcha.net
                     https://messenger-app.gleap.io
-                    https://sdk.gleap.io;
+                    https://sdk.gleap.io
+                    https://static.cloudflareinsights.com;
                 connect-src 'self' https: wss:;
                 img-src 'self' data: https: blob:;
                 style-src 'self' 'unsafe-inline'
@@ -75,5 +76,37 @@
             window.recaptchaOptions = { useRecaptchaNet: true };
         </script>
         <script type="module" src="./index.tsx"></script>
+        <!-- Cloudflare Web Analytics -->
+        <script type="module" type="application/javascript">
+            // These routes carry key material (seed phrases, funding keys) in
+            // the URL path or hash. The beacon reports location.pathname on
+            // load and on SPA navigation, so it must never load in a session
+            // that starts on one of them (utils/sentry.js scrubs the same
+            // URLs from Sentry for the same reason).
+            var sensitivePathPrefixes = [
+                '/recover-with-link',
+                '/recover-seed-phrase',
+                '/auto-import-seed-phrase',
+                '/auto-import-secret-key',
+                '/linkdrop',
+                '/create/',
+                '/set-recovery',
+            ];
+            var path = window.location.pathname;
+            var isSensitive = sensitivePathPrefixes.some(function (prefix) {
+                return path.indexOf(prefix) === 0;
+            });
+            if (!isSensitive) {
+                var beacon = document.createElement('script');
+                beacon.type = 'module';
+                beacon.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+                beacon.setAttribute(
+                    'data-cf-beacon',
+                    '{"token": "ef4718e7a1a3469cab4d6228ca066aba"}'
+                );
+                document.body.appendChild(beacon);
+            }
+        </script>
+        <!-- End Cloudflare Web Analytics -->
     </body>
 </html>
