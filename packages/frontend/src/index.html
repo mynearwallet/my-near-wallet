@@ -29,7 +29,8 @@
                     https://www.gstatic.com
                     https://recaptcha.net
                     https://messenger-app.gleap.io
-                    https://sdk.gleap.io;
+                    https://sdk.gleap.io
+                    https://static.cloudflareinsights.com;
                 connect-src 'self' https: wss:;
                 img-src 'self' data: https: blob:;
                 style-src 'self' 'unsafe-inline'
@@ -75,5 +76,12 @@
             window.recaptchaOptions = { useRecaptchaNet: true };
         </script>
         <script type="module" src="./index.tsx"></script>
+        <!-- Cloudflare Web Analytics -->
+        <script
+            type="module"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "ef4718e7a1a3469cab4d6228ca066aba"}'
+        ></script>
+        <!-- End Cloudflare Web Analytics -->
     </body>
 </html>
