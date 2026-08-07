@@ -23,3 +23,19 @@ export const loadExportableAccounts = async () => {
         })
     );
 };
+
+export const loadExportAccountSecrets = async (accountIds) =>
+    Promise.all(
+        accountIds.map(async (accountId) => {
+            const keyPair = await wallet.getLocalKeyPair(accountId);
+
+            if (keyPair == null) {
+                throw new Error(`No local key is available for ${accountId}.`);
+            }
+
+            return {
+                accountId,
+                privateKey: keyPair.toString(),
+            };
+        })
+    );
