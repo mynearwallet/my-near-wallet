@@ -1,0 +1,12 @@
+diff --git a/node_modules/@meteorwallet/sdk/node_modules/nanoid/package.json b/node_modules/@meteorwallet/sdk/node_modules/nanoid/package.json
+index 032de3b..1d4053b 100644
+--- a/node_modules/@meteorwallet/sdk/node_modules/nanoid/package.json
++++ b/node_modules/@meteorwallet/sdk/node_modules/nanoid/package.json
+@@ -37,6 +37,6 @@
+     "./index.js": "./index.browser.js"
+   },
+   "bin": "./bin/nanoid.js",
+-  "sideEffects": false,
++
+   "types": "./index.d.ts"
+ }
