@@ -1,0 +1,12 @@
+diff --git a/node_modules/nanoid/package.json b/node_modules/nanoid/package.json
+index 7194982..ff125d0 100644
+--- a/node_modules/nanoid/package.json
++++ b/node_modules/nanoid/package.json
+@@ -19,7 +19,6 @@
+   ],
+   "bin": "./bin/nanoid.js",
+   "type": "module",
+-  "sideEffects": false,
+   "browser": {
+     "./index.js": "./index.browser.js"
+   },
