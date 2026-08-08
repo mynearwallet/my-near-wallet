@@ -63,6 +63,7 @@ import Terms from '../components/terms/Terms';
 import './index.css';
 import WalletMigration from '../components/wallet-migration/WalletMigration';
 import AccountExportSelect from '../components/account-export/AccountExportSelect';
+import AccountExportSuccess from '../components/account-export/AccountExportSuccess';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
@@ -582,6 +583,11 @@ class Routing extends Component {
                                 exact
                                 path='/export-accounts/select'
                                 component={AccountExportSelect}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/success'
+                                component={AccountExportSuccess}
                             />
                             <PasswordProtectedRoute
                                 exact

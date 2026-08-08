@@ -15,6 +15,7 @@ import {
     meteorNetworkId,
     promptMeteorAccountTransfer,
 } from '../../services/meteorConnect';
+import { saveAccountExportSuccess } from './accountExportSuccessState';
 
 const AccountExportPage = styled(Container)`
     &&& {
@@ -139,6 +140,8 @@ export default function AccountExportSelect() {
     };
 
     const handleExportSelectedAccounts = async () => {
+        let didNavigateToSuccess = false;
+
         setIsExporting(true);
         setErrorMessage('');
         setExportMessage('');
@@ -151,7 +154,11 @@ export default function AccountExportSelect() {
             });
 
             if (outcome.status === 'imported') {
-                setExportMessage('Your accounts were imported into Meteor Wallet.');
+                didNavigateToSuccess = true;
+                saveAccountExportSuccess(selectedAccountIds);
+                history.push('/export-accounts/success', {
+                    accountIds: selectedAccountIds,
+                });
             } else if (outcome.status === 'declined') {
                 setExportMessage('The account transfer was declined in Meteor Wallet.');
             } else if (outcome.status === 'expired') {
@@ -168,7 +175,9 @@ export default function AccountExportSelect() {
                     : 'Could not start the account transfer.'
             );
         } finally {
-            setIsExporting(false);
+            if (!didNavigateToSuccess) {
+                setIsExporting(false);
+            }
         }
     };
 
