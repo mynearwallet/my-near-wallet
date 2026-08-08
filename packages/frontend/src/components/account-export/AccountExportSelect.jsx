@@ -6,16 +6,7 @@ import FormButton from '../common/FormButton';
 import LoadingDots from '../common/loader/LoadingDots';
 import Container from '../common/styled/Container.css';
 import AccountExportAccountList from './AccountExportAccountList';
-import {
-    loadExportableAccounts,
-    loadExportAccountSecrets,
-    MAX_EXPORTABLE_ACCOUNTS,
-} from './accountExportAccounts';
-import {
-    meteorNetworkId,
-    promptMeteorAccountTransfer,
-} from '../../services/meteorConnect';
-import { saveAccountExportSuccess } from './accountExportSuccessState';
+import { loadExportableAccounts, MAX_EXPORTABLE_ACCOUNTS } from './accountExportAccounts';
 
 const AccountExportPage = styled(Container)`
     &&& {
@@ -82,9 +73,7 @@ export default function AccountExportSelect() {
     const [accounts, setAccounts] = useState([]);
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [isExporting, setIsExporting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [exportMessage, setExportMessage] = useState('');
 
     useEffect(() => {
         let isMounted = true;
@@ -125,7 +114,6 @@ export default function AccountExportSelect() {
     );
 
     const handleAccountSelection = (accountId) => {
-        setExportMessage('');
         setSelectedAccountIds((currentSelectedAccountIds) => {
             if (currentSelectedAccountIds.includes(accountId)) {
                 return currentSelectedAccountIds.filter((id) => id !== accountId);
@@ -139,46 +127,10 @@ export default function AccountExportSelect() {
         });
     };
 
-    const handleExportSelectedAccounts = async () => {
-        let didNavigateToSuccess = false;
-
-        setIsExporting(true);
-        setErrorMessage('');
-        setExportMessage('');
-
-        try {
-            const accountsToExport = await loadExportAccountSecrets(selectedAccountIds);
-            const outcome = await promptMeteorAccountTransfer({
-                accounts: accountsToExport,
-                networkId: meteorNetworkId,
-            });
-
-            if (outcome.status === 'imported') {
-                didNavigateToSuccess = true;
-                saveAccountExportSuccess(selectedAccountIds);
-                history.push('/export-accounts/success', {
-                    accountIds: selectedAccountIds,
-                });
-            } else if (outcome.status === 'declined') {
-                setExportMessage('The account transfer was declined in Meteor Wallet.');
-            } else if (outcome.status === 'expired') {
-                setExportMessage('The account transfer expired. You can try again.');
-            } else if (outcome.status === 'failed') {
-                setErrorMessage(
-                    'The account transfer could not be completed. Please try again.'
-                );
-            }
-        } catch (error) {
-            setErrorMessage(
-                error instanceof Error
-                    ? error.message
-                    : 'Could not start the account transfer.'
-            );
-        } finally {
-            if (!didNavigateToSuccess) {
-                setIsExporting(false);
-            }
-        }
+    const handleExportSelectedAccounts = () => {
+        history.push('/export-accounts/method', {
+            accountIds: selectedAccountIds,
+        });
     };
 
     return (
@@ -201,18 +153,13 @@ export default function AccountExportSelect() {
                         />
                     )}
                     {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-                    {exportMessage && <p>{exportMessage}</p>}
                 </div>
                 <div className='buttons-bottom-buttons'>
                     <FormButton
-                        disabled={
-                            isLoading || isExporting || selectedAccountIds.length === 0
-                        }
+                        disabled={isLoading || selectedAccountIds.length === 0}
                         onClick={() => void handleExportSelectedAccounts()}
                     >
-                        {isExporting
-                            ? 'Opening Meteor Connect…'
-                            : 'Export Selected Accounts'}
+                        Export Selected Accounts
                     </FormButton>
                     <FormButton
                         className='link'

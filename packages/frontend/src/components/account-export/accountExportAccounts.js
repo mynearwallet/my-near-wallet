@@ -24,7 +24,7 @@ export const loadExportableAccounts = async () => {
     );
 };
 
-export const loadExportAccountSecrets = async (accountIds) =>
+export const loadExportAccountSecrets = (accountIds) =>
     Promise.all(
         accountIds.map(async (accountId) => {
             const keyPair = await wallet.getLocalKeyPair(accountId);
