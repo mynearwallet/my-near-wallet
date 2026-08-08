@@ -6,19 +6,49 @@ export const meteorNetworkId =
 const isTestnet = meteorNetworkId === 'testnet';
 const meteorConnect = new MeteorConnect();
 
+const LIVE_BRIDGE_BACKEND_URL = 'https://mc.meteorwallet.app';
+
 let initializePromise;
 
-const getPartnerMetadata = () => ({
-    name: 'My NEAR Wallet',
-    description: 'Export your selected NEAR accounts to Meteor Wallet.',
-    iconUrl: `${window.location.origin}/favicon.svg`,
-    originUrl: window.location.origin,
-});
+const getPartnerMetadata = () => {
+    const origin = window.location.origin;
+    return {
+        name: 'My NEAR Wallet',
+        description: 'Export your selected NEAR accounts to Meteor Wallet.',
+        // The bridge backend only accepts https icon URLs — omit the icon on http dev origins.
+        ...(origin.startsWith('https://') ? { iconUrl: `${origin}/favicon.svg` } : {}),
+        originUrl: origin,
+    };
+};
 
-const getLocalBridgeConfig = () =>
-    window.location.hostname === 'localhost'
-        ? { backendUrl: 'http://localhost:8787' }
-        : {};
+/**
+ * Same convention as the Meteor Wallet web frontend: always use the live bridge backend —
+ * including local dev — so dev runs exercise the real infrastructure. Development builds may
+ * override it for local-backend testing with an explicit `?mcBackend=<url>` query param
+ * (`?mcBackend=local` is shorthand for the local wrangler backend on :8787). Production builds
+ * ignore the param entirely: a link must never choose the backend in production.
+ */
+const resolveBridgeBackendUrl = () => {
+    if (process.env.NODE_ENV === 'production' || typeof window === 'undefined') {
+        return LIVE_BRIDGE_BACKEND_URL;
+    }
+    const requested = new URL(window.location.href).searchParams.get('mcBackend');
+    if (requested == null) {
+        return LIVE_BRIDGE_BACKEND_URL;
+    }
+    const backendUrl = requested === 'local' ? 'http://localhost:8787' : requested;
+    try {
+        const url = new URL(backendUrl);
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+            return LIVE_BRIDGE_BACKEND_URL;
+        }
+        // eslint-disable-next-line no-console
+        console.info(`[MeteorConnect] dev backend override via ?mcBackend= → ${backendUrl}`);
+        return backendUrl;
+    } catch {
+        return LIVE_BRIDGE_BACKEND_URL;
+    }
+};
 
 const initializeMeteorConnect = () => {
     initializePromise ??= meteorConnect
@@ -26,7 +56,7 @@ const initializeMeteorConnect = () => {
             storage: webpage_local_storage,
             mobileBridge: {
                 enabled: true,
-                ...getLocalBridgeConfig(),
+                backendUrl: resolveBridgeBackendUrl(),
                 meteorAppId: isTestnet
                     ? EMeteorAppId.meteor_wallet_mobile_dev
                     : EMeteorAppId.meteor_wallet_mobile,
