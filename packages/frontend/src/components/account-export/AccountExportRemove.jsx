@@ -139,7 +139,7 @@ export default function AccountExportRemove() {
 
             const remainingAccountIds = Object.keys(walletAccounts);
             if (remainingAccountIds.length === 0) {
-                window.location.reload();
+                window.location.assign('/');
                 return;
             }
 
