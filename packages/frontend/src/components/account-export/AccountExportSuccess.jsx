@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
-import ExportAccountSelectedIcon from '../svg/ExportAccountSelectedIcon';
+import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
 import {
     clearAccountExportSuccess,
     getAccountExportSuccess,
@@ -21,56 +21,17 @@ const AccountExportSuccessPage = styled(Container)`
     }
 `;
 
-const AccountSection = styled.section`
-    background: #fafafa;
-    border-radius: 8px;
-    margin-top: 10px;
-    padding: 15px;
-`;
-
-const AccountSectionTitle = styled.p`
-    color: #72727a;
-    font-size: 14px;
-    line-height: 20px;
-    margin: 0 0 10px;
-`;
-
-const AccountRow = styled.div`
-    align-items: center;
-    background: #f0f0f1;
-    border-radius: 8px;
-    display: flex;
-    min-height: 54px;
-    padding: 15px;
-
-    & + & {
-        margin-top: 8px;
-    }
-
-    .account-id {
-        flex: 1;
-        font-size: 16px;
-        font-weight: 600;
-        line-height: 20px;
-        min-width: 0;
-        overflow-wrap: anywhere;
-        word-break: break-word;
-    }
-
-    .selection-indicator {
-        flex: 0 0 20px;
-        height: 20px;
-        margin-left: 20px;
-        width: 20px;
-    }
-`;
-
 const Buttons = styled.div`
     margin-top: 48px;
 
     > button {
         margin-top: 14px;
         width: 100%;
+    }
+
+    .return-to-wallet {
+        margin-top: 14px;
+        text-align: center;
     }
 `;
 
@@ -97,24 +58,31 @@ export default function AccountExportSuccess() {
                     Your selected accounts have been securely exported and imported into
                     Meteor Wallet.
                 </h2>
-                <AccountSection>
-                    <AccountSectionTitle>Exported Accounts</AccountSectionTitle>
-                    {accountIds.map((accountId) => (
-                        <AccountRow key={accountId}>
-                            <span className='account-id'>{accountId}</span>
-                            <ExportAccountSelectedIcon className='selection-indicator' />
-                        </AccountRow>
-                    ))}
-                </AccountSection>
+                <AccountExportSelectedAccountList
+                    accountIds={accountIds}
+                    title='Exported Accounts'
+                />
                 <Buttons>
                     <FormButton
+                        color='red'
                         onClick={() => {
-                            clearAccountExportSuccess();
-                            history.replace('/');
+                            history.push('/export-accounts/remove', { accountIds });
                         }}
                     >
-                        Return to MyNearWallet
+                        Remove Exported Account from MyNearWallet
                     </FormButton>
+                    <div className='return-to-wallet'>
+                        <FormButton
+                            className='link'
+                            color='gray'
+                            onClick={() => {
+                                clearAccountExportSuccess();
+                                history.replace('/');
+                            }}
+                        >
+                            Return to MyNearWallet
+                        </FormButton>
+                    </div>
                 </Buttons>
             </div>
         </AccountExportSuccessPage>

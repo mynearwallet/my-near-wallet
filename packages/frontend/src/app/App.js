@@ -66,6 +66,7 @@ import AccountExportSelect from '../components/account-export/AccountExportSelec
 import AccountExportSuccess from '../components/account-export/AccountExportSuccess';
 import AccountExportMethod from '../components/account-export/AccountExportMethod';
 import AccountExportManual from '../components/account-export/AccountExportManual';
+import AccountExportRemove from '../components/account-export/AccountExportRemove';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import TokenSwap from '../pages/TokenSwap';
@@ -590,6 +591,11 @@ class Routing extends Component {
                                 exact
                                 path='/export-accounts/success'
                                 component={AccountExportSuccess}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/remove'
+                                component={AccountExportRemove}
                             />
                             <PasswordProtectedRoute
                                 exact

@@ -152,10 +152,6 @@ export default function AccountExportMethod() {
                 setErrorMessage('The account transfer was declined in Meteor Wallet.');
             } else if (outcome.status === 'expired') {
                 setErrorMessage('The account transfer expired. You can try again.');
-            } else {
-                setErrorMessage(
-                    'The account transfer could not be completed. Please try again.'
-                );
             }
         } catch (error) {
             setErrorMessage(
