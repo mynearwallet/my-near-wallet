@@ -28,6 +28,7 @@ export default {
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: parseBooleanFromShell(
         process.env.HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL
     ),
+    IS_DEVELOPMENT: process.env.NODE_ENV === 'development',
     IS_MAINNET: [ENVIRONMENT.MAINNET, ENVIRONMENT.MAINNET_STAGING].some(
         (env) => env === NEAR_WALLET_ENV
     ),

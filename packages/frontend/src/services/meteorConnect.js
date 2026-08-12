@@ -29,7 +29,7 @@ const getPartnerMetadata = () => {
  * ignore the param entirely: a link must never choose the backend in production.
  */
 const resolveBridgeBackendUrl = () => {
-    if (process.env.NODE_ENV === 'production' || typeof window === 'undefined') {
+    if (!CONFIG.IS_DEVELOPMENT || typeof window === 'undefined') {
         return LIVE_BRIDGE_BACKEND_URL;
     }
     const requested = new URL(window.location.href).searchParams.get('mcBackend');
