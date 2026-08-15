@@ -55,6 +55,7 @@ const StyledContainer = styled.div`
             text-align: justify;
             text-color: #272729;
             margin: 0 12px 12px 12px;
+            word-wrap: break-word;
         }
     }
 

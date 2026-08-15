@@ -35,6 +35,7 @@ import ModalManualImportWithButton from './manual_import/ModalManualImportWithBu
 import { EWalletImportInputType } from './manual_import/type';
 import VerifyWalletDomainBanner from '../common/VerifyWalletDomainBanner';
 import SelectAccountImport from './ledger/SelectAccountImport';
+import { loadState } from '../../utils/sessionStorage';
 
 const { setZeroBalanceAccountImportMethod } = importZeroBalanceAccountActions;
 
@@ -91,6 +92,8 @@ class RecoverAccountSeedPhrase extends Component {
             Mixpanel.track('IE-SP Recover seed phrase link not valid');
             return false;
         }
+
+        this.pendingRedirect = loadState();
 
         const { seedPhrase } = this.state;
         const {
@@ -179,7 +182,17 @@ class RecoverAccountSeedPhrase extends Component {
                     `/linkdrop/${options.fundingContract}/${options.fundingKey}${redirectUrl}`
                 );
             } else if (withRedirectToApp) {
-                redirectToApp('/');
+                const pendingRedirect = this.pendingRedirect || loadState();
+
+                if (pendingRedirect && pendingRedirect.redirect_url) {
+                    this.props.history.push({
+                        pathname: pendingRedirect.redirect_url,
+                        search: `?${stringify(pendingRedirect)}`,
+                        state: { globalAlertPreventClear: true },
+                    });
+                } else {
+                    redirectToApp('/');
+                }
             }
         }
     }

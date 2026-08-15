@@ -47,6 +47,10 @@ export const WALLET_CREATE_NEW_ACCOUNT_FLOW_URLS = [
     'verify-account',
     'initial-deposit',
     'setup-ledger',
+    'setup-passphrase-new-account',
+    'setup-ledger-new-account',
+    'set-recovery-implicit-account',
+    'create-implicit-account',
 ];
 export const WALLET_LOGIN_URL = 'login';
 export const WALLET_SIGN_URL = 'sign';
