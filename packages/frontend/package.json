@@ -85,6 +85,7 @@
         "near-ledger-js": "^0.2.1",
         "near-seed-phrase": "^0.2.0",
         "node-cache": "^5.1.2",
+        "posthog-js": "^1.417.3",
         "prop-types": "^15.7.2",
         "qrcode.react": "^1.0.1",
         "query-string": "^7.0.0",

@@ -69,6 +69,7 @@ import AccountExportManual from '../components/account-export/AccountExportManua
 import AccountExportRemove from '../components/account-export/AccountExportRemove';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
+import { PostHog } from '../posthog';
 import TokenSwap from '../pages/TokenSwap';
 import TransactionHistory from '../pages/TransactionHistory';
 import * as accountActions from '../redux/actions/account';
@@ -242,6 +243,7 @@ class Routing extends Component {
         refreshAccount();
 
         history.listen(async () => {
+            PostHog.capturePageview();
             handleRedirectUrl(this.props.router.location);
             handleClearUrl();
             if (
