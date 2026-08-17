@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { getMeteorNewKeyTransferSessions } from '../../services/meteorConnect';
 
 const AccountExportBannerContainer = styled.section`
     margin-bottom: 28px;
@@ -73,6 +74,19 @@ const BannerLink = styled(Link)`
 `;
 
 export default function AccountExportBanner() {
+    let pendingSession;
+    try {
+        pendingSession = getMeteorNewKeyTransferSessions()
+            .slice()
+            .reverse()
+            .find(
+                (session) =>
+                    !session.accounts?.length ||
+                    session.accounts.some((row) => row.state !== 'local_source_cleaned')
+            );
+    } catch {
+        pendingSession = undefined;
+    }
     return (
         <AccountExportBannerContainer>
             <AccountExportBannerContent>
@@ -83,7 +97,20 @@ export default function AccountExportBanner() {
                         accessing them securely.
                     </BannerDescription>
                 </BannerCopy>
-                <BannerLink to='/export-accounts/select'>Export Accounts</BannerLink>
+                <BannerLink
+                    to={
+                        pendingSession
+                            ? {
+                                  pathname: '/export-accounts/new-key-progress',
+                                  state: {
+                                      clientTransferId: pendingSession.clientTransferId,
+                                  },
+                              }
+                            : '/export-accounts/select'
+                    }
+                >
+                    {pendingSession ? 'Resume Account Transfer' : 'Export Accounts'}
+                </BannerLink>
             </AccountExportBannerContent>
         </AccountExportBannerContainer>
     );

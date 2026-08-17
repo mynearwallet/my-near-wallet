@@ -2119,6 +2119,54 @@
         }
     },
     "warning": "Warning",
+    "newKeyTransfer": {
+        "advancedDescription": "Advanced: sends encrypted existing account key material through the legacy bridge flow. Use the new-key method above when possible.",
+        "checkCleanup": "Check exact source-key cleanup",
+        "continueExistingSecret": "Continue with existing-secret transfer",
+        "description": "Recommended. Meteor creates a fresh signer locally; no private key or recovery phrase crosses the bridge.",
+        "eligibility": {
+            "algorithmUnsupported": "Only Ed25519 source keys are supported.",
+            "ledgerUnsupported": "Ledger-backed source accounts are not supported by this transfer.",
+            "noLocalKey": "No plain local signing key is available.",
+            "notFullAccess": "Full access key not found.",
+            "twoFactorUnsupported": "2FA/multisig accounts are not supported. Disable 2FA first or use manual export.",
+            "verificationFailed": "Could not verify the access key. Try again later."
+        },
+        "hideAdvanced": "Hide advanced existing-secret transfer",
+        "manualDescription": "Reveal and copy your private keys.",
+        "manualTitle": "Export Manually",
+        "meteorMobile": "Meteor Mobile",
+        "meteorWeb": "Meteor Web",
+        "methodHeading": "How would you like to export?",
+        "methodSubheading": "Choose how you want to access and export your accounts.",
+        "progress": {
+            "completeTitle": "New-Key Transfer Complete",
+            "genericError": "The transfer could not continue.",
+            "intro": "Destination activation, Meteor recovery/import, exact source-key removal, and local cleanup are tracked separately. Closing this page does not erase the session.",
+            "pendingTitle": "New-Key Transfer Progress",
+            "privateSupportReference": "Private support reference: {{id}}",
+            "rejected": "Meteor could not prepare this account: {{issue}}",
+            "resume": "Resume transfer",
+            "return": "Return to My NEAR Wallet",
+            "revokeButton": "Revoke this destination key",
+            "revokeDescription": "The destination key is active but its authorization proof cannot be recovered. Revoke exactly this key before retrying:",
+            "selectedWallet": "Selected wallet: {{wallet}}",
+            "status": {
+                "addKeyFinalized": "Destination key was added; Meteor verification is pending.",
+                "addKeyIntent": "Destination AddKey is ready to submit.",
+                "addKeySubmitted": "AddKey submission is being reconciled.",
+                "cleanupPending": "Destination is ready. Exact source-key cleanup is still pending in Meteor.",
+                "default": "Waiting to add the destination key.",
+                "localCleaned": "Destination ready and exact local source key cleaned.",
+                "sourceAbsent": "The exact source key is absent on-chain; local cleanup remains."
+            },
+            "viewAnother": "View another pending session",
+            "working": "Working…"
+        },
+        "showAdvanced": "Show advanced existing-secret transfer",
+        "start": "Start recommended transfer",
+        "title": "Meteor Connect — New Keys"
+    },
     "zeroBalance": {
         "addLedgerKey": {
             "error": {

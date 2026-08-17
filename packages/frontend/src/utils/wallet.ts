@@ -966,6 +966,26 @@ export default class Wallet {
         }
     }
 
+    /** Remove only the local signer proven absent on-chain by the new-key transfer journal. */
+    async removeLocalKeyIfMatches(accountId, expectedPublicKey) {
+        const keyPair = await this.getLocalKeyPair(accountId);
+        if (keyPair == null) {
+            return false;
+        }
+        const actualPublicKey = keyPair.getPublicKey().toString();
+        if (actualPublicKey !== expectedPublicKey) {
+            throw new Error('The locally stored source key changed; refusing cleanup.');
+        }
+
+        if (storedWalletDataActions.getStatus().hasEncryptedData) {
+            await this.updateEncryptedAccountList(accountId, 'remove');
+        } else {
+            await this.keyStore.removeKey(CONFIG.NETWORK_ID, accountId);
+        }
+        localStorage.removeItem(`keyMeta:${actualPublicKey}`);
+        return true;
+    }
+
     /********************************
      recovering a second account attempts to call this method with the currently logged in account and not the tempKeyStore
      ********************************/
@@ -1259,6 +1279,10 @@ export default class Wallet {
 
     getAccountBasic(accountId) {
         return new nearApiJs.Account(this.connection, accountId);
+    }
+
+    async hasTwoFactorEnabled(accountId) {
+        return TwoFactor.has2faEnabled(this.getAccountBasic(accountId));
     }
 
     async getAccount(accountId, limitedAccountData = false) {

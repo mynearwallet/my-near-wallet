@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import ExportAccountSelectedIcon from '../svg/ExportAccountSelectedIcon';
@@ -92,10 +93,22 @@ const EmptyState = styled.p`
     margin: 0;
 `;
 
-const getUnavailableAccountMessage = (availability) =>
-    availability === 'verification_failed'
-        ? 'Could not verify the access key. Try again later.'
-        : 'Full access key not found';
+const getUnavailableAccountMessage = (availability, t) => {
+    switch (availability) {
+        case 'verification_failed':
+            return t('newKeyTransfer.eligibility.verificationFailed');
+        case 'two_factor_unsupported':
+            return t('newKeyTransfer.eligibility.twoFactorUnsupported');
+        case 'ledger_unsupported':
+            return t('newKeyTransfer.eligibility.ledgerUnsupported');
+        case 'algorithm_unsupported':
+            return t('newKeyTransfer.eligibility.algorithmUnsupported');
+        case 'no_local_key':
+            return t('newKeyTransfer.eligibility.noLocalKey');
+        default:
+            return t('newKeyTransfer.eligibility.notFullAccess');
+    }
+};
 
 const SelectableAccountRow = ({ accountId, isSelected, onSelect }) => (
     <AccountRow
@@ -116,13 +129,13 @@ const SelectableAccountRow = ({ accountId, isSelected, onSelect }) => (
     </AccountRow>
 );
 
-const UnavailableAccountRow = ({ accountId, availability }) => (
+const UnavailableAccountRow = ({ accountId, availability, t }) => (
     <AccountRow>
         <div className='account-details'>
             <div className='account-id'>{accountId}</div>
             <div className='status'>
                 <ExportAccountUnavailableIcon className='unavailable-icon' />
-                {getUnavailableAccountMessage(availability)}
+                {getUnavailableAccountMessage(availability, t)}
             </div>
         </div>
     </AccountRow>
@@ -134,6 +147,7 @@ export default function AccountExportAccountList({
     selectedAccountIds,
     onAccountSelection,
 }) {
+    const { t } = useTranslation();
     return (
         <>
             <AccountSection>
@@ -163,6 +177,7 @@ export default function AccountExportAccountList({
                             key={accountId}
                             accountId={accountId}
                             availability={availability}
+                            t={t}
                         />
                     ))}
                 </AccountSection>

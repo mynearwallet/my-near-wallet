@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
     meteorNetworkId,
     promptMeteorAccountTransfer,
+    startMeteorNewKeyAccountTransfer,
 } from '../../services/meteorConnect';
 import Container from '../common/styled/Container.css';
 import MeteorConnectIcon from '../svg/MeteorConnectIcon';
 import exportManualIcon from '../svg/Vector.svg';
-import { loadExportAccountSecrets } from './accountExportAccounts';
+import {
+    loadExportAccountSecrets,
+    loadNewKeyTransferAccounts,
+} from './accountExportAccounts';
 import { saveAccountExportSuccess } from './accountExportSuccessState';
 
 const ExportMethodPage = styled(Container)`
@@ -119,11 +124,14 @@ const ErrorMessage = styled.p`
 `;
 
 export default function AccountExportMethod() {
+    const { t } = useTranslation();
     const history = useHistory();
     const location = useLocation();
     const accountIds = location.state?.accountIds;
     const [isExporting, setIsExporting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [selectedPlatform, setSelectedPlatform] = useState('mobile');
+    const [showAdvanced, setShowAdvanced] = useState(false);
 
     useEffect(() => {
         if (!Array.isArray(accountIds) || accountIds.length === 0) {
@@ -131,7 +139,30 @@ export default function AccountExportMethod() {
         }
     }, [accountIds, history]);
 
-    const handleMeteorConnect = async () => {
+    const handleNewKeyTransfer = async () => {
+        setIsExporting(true);
+        setErrorMessage('');
+        try {
+            const accounts = await loadNewKeyTransferAccounts(accountIds);
+            const session = await startMeteorNewKeyAccountTransfer({
+                accounts,
+                networkId: meteorNetworkId,
+                targetPlatform: selectedPlatform,
+            });
+            history.push('/export-accounts/new-key-progress', {
+                clientTransferId: session.clientTransferId,
+            });
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error
+                    ? error.message
+                    : 'Could not start the new-key account transfer.'
+            );
+            setIsExporting(false);
+        }
+    };
+
+    const handleExistingSecretTransfer = async () => {
         let didNavigateToSuccess = false;
 
         setIsExporting(true);
@@ -173,22 +204,47 @@ export default function AccountExportMethod() {
     return (
         <ExportMethodPage className='method-page'>
             <div className='send-theme'>
-                <h1>How would you like to export?</h1>
-                <h2>Choose how you want to access and export your accounts.</h2>
+                <h1>{t('newKeyTransfer.methodHeading')}</h1>
+                <h2>{t('newKeyTransfer.methodSubheading')}</h2>
                 <MethodList>
                     <MethodButton
+                        as='div'
                         className='meteor-connect'
-                        disabled={isExporting}
-                        onClick={() => void handleMeteorConnect()}
                     >
                         <span className='method-icon-slot'>
                             <MeteorConnectIcon className='method-icon meteor-connect-icon' />
                         </span>
-                        <span className='method-title'>Meteor Connect</span>
+                        <span className='method-title'>{t('newKeyTransfer.title')}</span>
                         <span className='method-description'>
-                            Connect with Meteor to select and export your accounts
-                            securely.
+                            {t('newKeyTransfer.description')}
                         </span>
+                        <label>
+                            <input
+                                type='radio'
+                                name='meteor-platform'
+                                value='mobile'
+                                checked={selectedPlatform === 'mobile'}
+                                onChange={() => setSelectedPlatform('mobile')}
+                            />{' '}
+                            {t('newKeyTransfer.meteorMobile')}
+                        </label>
+                        <label>
+                            <input
+                                type='radio'
+                                name='meteor-platform'
+                                value='web'
+                                checked={selectedPlatform === 'web'}
+                                onChange={() => setSelectedPlatform('web')}
+                            />{' '}
+                            {t('newKeyTransfer.meteorWeb')}
+                        </label>
+                        <button
+                            type='button'
+                            disabled={isExporting}
+                            onClick={() => void handleNewKeyTransfer()}
+                        >
+                            {t('newKeyTransfer.start')}
+                        </button>
                     </MethodButton>
                     <MethodButton
                         className='manual-export'
@@ -204,12 +260,33 @@ export default function AccountExportMethod() {
                                 src={exportManualIcon}
                             />
                         </span>
-                        <span className='method-title'>Export Manually</span>
+                        <span className='method-title'>{t('newKeyTransfer.manualTitle')}</span>
                         <span className='method-description'>
-                            Reveal and copy your private keys.
+                            {t('newKeyTransfer.manualDescription')}
                         </span>
                     </MethodButton>
                 </MethodList>
+                <button
+                    type='button'
+                    disabled={isExporting}
+                    onClick={() => setShowAdvanced((current) => !current)}
+                >
+                    {t(showAdvanced ? 'newKeyTransfer.hideAdvanced' : 'newKeyTransfer.showAdvanced')}
+                </button>
+                {showAdvanced && (
+                    <div>
+                        <p>
+                            {t('newKeyTransfer.advancedDescription')}
+                        </p>
+                        <button
+                            type='button'
+                            disabled={isExporting}
+                            onClick={() => void handleExistingSecretTransfer()}
+                        >
+                            {t('newKeyTransfer.continueExistingSecret')}
+                        </button>
+                    </div>
+                )}
                 {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
             </div>
         </ExportMethodPage>
