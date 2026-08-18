@@ -2121,7 +2121,6 @@
     "warning": "Warning",
     "newKeyTransfer": {
         "advancedDescription": "Advanced: sends encrypted existing account key material through the legacy bridge flow. Use the new-key method above when possible.",
-        "checkCleanup": "Check exact source-key cleanup",
         "continueExistingSecret": "Continue with existing-secret transfer",
         "description": "Recommended. Meteor creates a fresh signer locally; no private key or recovery phrase crosses the bridge.",
         "eligibility": {
@@ -2140,6 +2139,7 @@
         "methodHeading": "How would you like to export?",
         "methodSubheading": "Choose how you want to access and export your accounts.",
         "progress": {
+            "checkCleanup": "Check exact source-key cleanup",
             "completeTitle": "New-Key Transfer Complete",
             "genericError": "The transfer could not continue.",
             "intro": "Destination activation, Meteor recovery/import, exact source-key removal, and local cleanup are tracked separately. Closing this page does not erase the session.",

@@ -8,6 +8,7 @@ export const meteorNetworkId =
 const isTestnet = meteorNetworkId === 'testnet';
 const meteorConnect = new MeteorConnect();
 const NEW_KEY_TRANSFER_JOURNAL_KEY = 'mnw:new-key-transfer:v1';
+const NEW_KEY_TRANSFER_BROWSER_LOCK = 'my-near-wallet::new-key-transfer-journal::v1';
 const MIN_ADD_KEY_BALANCE_YOCTO = 2_000_000_000_000_000_000_000n;
 
 const LIVE_BRIDGE_BACKEND_URL = 'https://mc.meteorwallet.app';
@@ -25,6 +26,13 @@ const withJournalLock = async (operation) => {
     journalLocks.set(NEW_KEY_TRANSFER_JOURNAL_KEY, queued);
     await previous;
     try {
+        if (typeof navigator !== 'undefined' && navigator.locks != null) {
+            return await navigator.locks.request(
+                NEW_KEY_TRANSFER_BROWSER_LOCK,
+                { mode: 'exclusive' },
+                operation
+            );
+        }
         return await operation();
     } finally {
         release();
@@ -67,7 +75,9 @@ const resolveBridgeBackendUrl = () => {
             return LIVE_BRIDGE_BACKEND_URL;
         }
         // eslint-disable-next-line no-console
-        console.info(`[MeteorConnect] dev backend override via ?mcBackend= → ${backendUrl}`);
+        console.info(
+            `[MeteorConnect] dev backend override via ?mcBackend= → ${backendUrl}`
+        );
         return backendUrl;
     } catch {
         return LIVE_BRIDGE_BACKEND_URL;
@@ -131,6 +141,18 @@ const createOpaqueId = () => {
 };
 
 const OPAQUE_ID_PATTERN = /^[A-Za-z0-9_-]{22,128}$/;
+// Mirrors this wallet's pinned near-api-js-era account-id rules (utils.validateAccountId does not
+// exist in near-api-js 0.45).
+const NEAR_ACCOUNT_ID_PATTERN = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
+const START_ISSUES = new Set([
+    'account_not_found',
+    'source_key_not_found',
+    'source_key_not_full_access',
+    'rpc_lookup_failed',
+    'pending_transfer_conflict',
+    'key_generation_failed',
+    'secure_storage_failed',
+]);
 const NEW_KEY_ROW_STATES = new Set([
     undefined,
     'add_key_intent',
@@ -147,6 +169,39 @@ const NEW_KEY_SESSION_PHASES = new Set([
     'start_requested',
     'start_result_committed',
 ]);
+const HASH_REQUIRED_STATES = new Set([
+    'add_key_finalized',
+    'verify_requested',
+    'activation_verified',
+    'destination_ready_source_cleanup_pending',
+    'source_key_absent',
+    'local_source_cleaned',
+]);
+const SDK_INTENT_REQUIRED_STATES = new Set([
+    'add_key_submitted',
+    ...HASH_REQUIRED_STATES,
+]);
+
+const rowKey = ({ networkId, accountId }) => `${networkId}:${accountId}`;
+
+const asRecord = (value) =>
+    value != null && typeof value === 'object' && !Array.isArray(value) ? value : null;
+
+const hasOnlyKeys = (record, allowedKeys) => {
+    const allowed = new Set(allowedKeys);
+    return Object.keys(record).every((key) => allowed.has(key));
+};
+
+const isSafeTimestamp = (value) => Number.isSafeInteger(value) && value > 0;
+
+const isNearAccountId = (value) =>
+    typeof value === 'string' &&
+    value.length >= 2 &&
+    value.length <= 64 &&
+    NEAR_ACCOUNT_ID_PATTERN.test(value);
+
+const safeLocalError = (error, fallback) =>
+    (error instanceof Error ? error.message : fallback).slice(0, 512);
 
 const isNearPublicKey = (value) => {
     if (typeof value !== 'string' || !value.startsWith('ed25519:')) return false;
@@ -157,29 +212,109 @@ const isNearPublicKey = (value) => {
     }
 };
 
+const isNearTransactionHash = (value) => {
+    if (typeof value !== 'string' || value.length > 64) return false;
+    try {
+        const decoded = nearApiJs.utils.serialize.base_decode(value);
+        return (
+            decoded.length === 32 &&
+            nearApiJs.utils.serialize.base_encode(decoded) === value
+        );
+    } catch {
+        return false;
+    }
+};
+
+const isSerializedVerifyPublicKey = (value) => {
+    const prefix = 'ed25519::raw_base64::';
+    if (typeof value !== 'string' || !value.startsWith(prefix)) return false;
+    try {
+        const encoded = value.slice(prefix.length);
+        const decoded = atob(encoded);
+        return decoded.length === 32 && btoa(decoded) === encoded;
+    } catch {
+        return false;
+    }
+};
+
+const isWalletConnection = (value) => {
+    const connection = asRecord(value);
+    return (
+        connection != null &&
+        hasOnlyKeys(connection, [
+            'executionTarget',
+            'schemaVersion',
+            'bridgeEnvironmentId',
+            'meteorAppId',
+            'partnerClientId',
+            'walletVerifyPublicKey',
+        ]) &&
+        connection.executionTarget === 'v2_bridge_mobile' &&
+        connection.schemaVersion === 1 &&
+        typeof connection.bridgeEnvironmentId === 'string' &&
+        connection.bridgeEnvironmentId.length >= 1 &&
+        connection.bridgeEnvironmentId.length <= 256 &&
+        Object.values(EMeteorAppId).includes(connection.meteorAppId) &&
+        typeof connection.partnerClientId === 'string' &&
+        connection.partnerClientId.length >= 1 &&
+        connection.partnerClientId.length <= 256 &&
+        isSerializedVerifyPublicKey(connection.walletVerifyPublicKey)
+    );
+};
+
 const isRequestedAccount = (value) =>
     value != null &&
+    hasOnlyKeys(value, ['blockchainId', 'networkId', 'accountId', 'sourcePublicKey']) &&
     value.blockchainId === 'near' &&
     (value.networkId === 'mainnet' || value.networkId === 'testnet') &&
-    typeof value.accountId === 'string' &&
-    nearApiJs.utils.validateAccountId(value.accountId) &&
+    isNearAccountId(value.accountId) &&
     isNearPublicKey(value.sourcePublicKey);
 
 const isTransferRow = (value, requestedByKey) => {
     if (
         value == null ||
+        !hasOnlyKeys(value, [
+            'blockchainId',
+            'networkId',
+            'accountId',
+            'sourcePublicKey',
+            'destinationPublicKey',
+            'destinationSignerType',
+            'updatedAt',
+            'state',
+            'sdkIntentCommitted',
+            'recovery',
+            'lastError',
+            'addKeyTransactionHash',
+            'revocationIntent',
+        ]) ||
         value.blockchainId !== 'near' ||
         (value.networkId !== 'mainnet' && value.networkId !== 'testnet') ||
-        typeof value.accountId !== 'string' ||
-        !nearApiJs.utils.validateAccountId(value.accountId) ||
+        !isNearAccountId(value.accountId) ||
         !isNearPublicKey(value.sourcePublicKey) ||
         !isNearPublicKey(value.destinationPublicKey) ||
         value.sourcePublicKey === value.destinationPublicKey ||
+        (value.destinationSignerType !== 'seed_phrase' &&
+            value.destinationSignerType !== 'ledger') ||
+        !isSafeTimestamp(value.updatedAt) ||
         !NEW_KEY_ROW_STATES.has(value.state) ||
         (value.recovery != null && value.recovery !== 'revoke_destination_key') ||
-        (value.sdkIntentCommitted != null && typeof value.sdkIntentCommitted !== 'boolean') ||
+        (value.sdkIntentCommitted != null &&
+            typeof value.sdkIntentCommitted !== 'boolean') ||
         (value.revocationIntent != null && typeof value.revocationIntent !== 'boolean') ||
-        (value.addKeyTransactionHash != null && typeof value.addKeyTransactionHash !== 'string')
+        (value.lastError != null &&
+            (typeof value.lastError !== 'string' || value.lastError.length > 512)) ||
+        (value.addKeyTransactionHash != null &&
+            !isNearTransactionHash(value.addKeyTransactionHash)) ||
+        (value.addKeyTransactionHash != null && !HASH_REQUIRED_STATES.has(value.state)) ||
+        (HASH_REQUIRED_STATES.has(value.state) &&
+            !isNearTransactionHash(value.addKeyTransactionHash)) ||
+        (SDK_INTENT_REQUIRED_STATES.has(value.state) &&
+            value.sdkIntentCommitted !== true) ||
+        (value.recovery != null &&
+            (value.state !== 'add_key_submitted' ||
+                value.addKeyTransactionHash != null)) ||
+        (value.revocationIntent === true && value.recovery !== 'revoke_destination_key')
     ) {
         return false;
     }
@@ -187,9 +322,32 @@ const isTransferRow = (value, requestedByKey) => {
     return requested?.sourcePublicKey === value.sourcePublicKey;
 };
 
+const isRejectedRow = (value, requestedByKey) =>
+    value != null &&
+    hasOnlyKeys(value, ['blockchainId', 'networkId', 'accountId', 'ok', 'issue']) &&
+    value.blockchainId === 'near' &&
+    (value.networkId === 'mainnet' || value.networkId === 'testnet') &&
+    isNearAccountId(value.accountId) &&
+    value.ok === false &&
+    START_ISSUES.has(value.issue) &&
+    requestedByKey.has(rowKey(value));
+
 const isNewKeyTransferSession = (session) => {
     if (
         session == null ||
+        !hasOnlyKeys(session, [
+            'formatVersion',
+            'clientTransferId',
+            'targetPlatform',
+            'phase',
+            'requestedAccounts',
+            'accounts',
+            'rejectedAccounts',
+            'createdAt',
+            'updatedAt',
+            'transferSessionId',
+            'walletConnection',
+        ]) ||
         session.formatVersion !== 1 ||
         !OPAQUE_ID_PATTERN.test(session.clientTransferId || '') ||
         (session.targetPlatform !== 'web' &&
@@ -204,8 +362,9 @@ const isNewKeyTransferSession = (session) => {
         session.accounts.length > 30 ||
         !Array.isArray(session.rejectedAccounts) ||
         session.rejectedAccounts.length > 30 ||
-        !Number.isSafeInteger(session.createdAt) ||
-        !Number.isSafeInteger(session.updatedAt)
+        !isSafeTimestamp(session.createdAt) ||
+        !isSafeTimestamp(session.updatedAt) ||
+        session.updatedAt < session.createdAt
     ) {
         return false;
     }
@@ -215,26 +374,69 @@ const isNewKeyTransferSession = (session) => {
     ) {
         return false;
     }
-    if (session.accounts.length > 0 && !OPAQUE_ID_PATTERN.test(session.transferSessionId || '')) {
+    if (
+        session.accounts.length > 0 &&
+        !OPAQUE_ID_PATTERN.test(session.transferSessionId || '')
+    ) {
         return false;
     }
     const requestedByKey = new Map(
         session.requestedAccounts.map((account) => [rowKey(account), account])
     );
     if (requestedByKey.size !== session.requestedAccounts.length) return false;
-    if (!session.accounts.every((row) => isTransferRow(row, requestedByKey))) return false;
-    return new Set(session.accounts.map(rowKey)).size === session.accounts.length;
+    if (session.phase === 'created' || session.phase === 'start_requested') {
+        return (
+            session.transferSessionId == null &&
+            session.walletConnection == null &&
+            session.accounts.length === 0 &&
+            session.rejectedAccounts.length === 0
+        );
+    }
+    if (!isWalletConnection(session.walletConnection)) return false;
+    if (!OPAQUE_ID_PATTERN.test(session.transferSessionId || '')) return false;
+    if (!session.accounts.every((row) => isTransferRow(row, requestedByKey)))
+        return false;
+    if (
+        session.accounts.some(
+            (row) =>
+                row.updatedAt < session.createdAt || row.updatedAt > session.updatedAt
+        )
+    ) {
+        return false;
+    }
+    if (!session.rejectedAccounts.every((row) => isRejectedRow(row, requestedByKey)))
+        return false;
+    const resultKeys = [...session.accounts, ...session.rejectedAccounts].map(rowKey);
+    if (new Set(resultKeys).size !== resultKeys.length) return false;
+    if (
+        resultKeys.length !== requestedByKey.size ||
+        resultKeys.some((key) => !requestedByKey.has(key))
+    ) {
+        return false;
+    }
+    const destinationKeys = new Set(
+        session.accounts.map((row) => row.destinationPublicKey)
+    );
+    const signerTypes = new Set(session.accounts.map((row) => row.destinationSignerType));
+    return destinationKeys.size <= 1 && signerTypes.size <= 1;
 };
 
-const assertNewKeyTransferJournal = (journal) => {
+export const assertNewKeyTransferJournal = (journal) => {
+    const committedTransferSessionIds = Array.isArray(journal?.sessions)
+        ? journal.sessions
+              .map((session) => session?.transferSessionId)
+              .filter((value) => value != null)
+        : [];
     if (
         journal == null ||
+        !hasOnlyKeys(journal, ['formatVersion', 'sessions']) ||
         journal.formatVersion !== 1 ||
         !Array.isArray(journal.sessions) ||
         journal.sessions.length > 100 ||
         !journal.sessions.every(isNewKeyTransferSession) ||
         new Set(journal.sessions.map((session) => session.clientTransferId)).size !==
-            journal.sessions.length
+            journal.sessions.length ||
+        new Set(committedTransferSessionIds).size !== committedTransferSessionIds.length
     ) {
         throw new Error('The local new-key transfer journal is corrupt.');
     }
@@ -264,8 +466,6 @@ const replaceNewKeySession = (session) => {
     journal.sessions.push(session);
     saveNewKeyJournal(journal);
 };
-
-const rowKey = ({ networkId, accountId }) => `${networkId}:${accountId}`;
 
 const getSession = (clientTransferId) =>
     loadNewKeyJournal().sessions.find(
@@ -327,7 +527,9 @@ const preflightAddKeyBalance = async (row) => {
 const outcomeTransactionHash = (outcome) => {
     const hash = outcome?.transaction_outcome?.id;
     if (typeof hash !== 'string' || hash.length === 0) {
-        throw new Error('The finalized AddKey result did not contain a transaction hash.');
+        throw new Error(
+            'The finalized AddKey result did not contain a transaction hash.'
+        );
     }
     return hash;
 };
@@ -386,8 +588,7 @@ const addDestinationKey = async (session, row) => {
             row.lastError =
                 'The destination key already exists, but key presence is not authorization proof. Revoke it before restarting.';
         } else {
-            row.lastError =
-                error instanceof Error ? error.message : 'AddKey submission failed.';
+            row.lastError = safeLocalError(error, 'AddKey submission failed.');
         }
         row.updatedAt = Date.now();
         replaceNewKeySession(session);
@@ -430,7 +631,8 @@ const verifyFinalizedDestinationKeys = async (session) => {
                 row.lastError = undefined;
             } else {
                 row.state = 'add_key_finalized';
-                row.lastError = output?.issue || 'Destination activation was not verified.';
+                row.lastError =
+                    output?.issue || 'Destination activation was not verified.';
             }
             row.updatedAt = Date.now();
             replaceNewKeySession(session);
@@ -438,8 +640,7 @@ const verifyFinalizedDestinationKeys = async (session) => {
     } catch (error) {
         for (const row of ready) {
             row.state = 'add_key_finalized';
-            row.lastError =
-                error instanceof Error ? error.message : 'Verification could not be completed.';
+            row.lastError = safeLocalError(error, 'Verification could not be completed.');
             row.updatedAt = Date.now();
         }
         replaceNewKeySession(session);
@@ -447,7 +648,9 @@ const verifyFinalizedDestinationKeys = async (session) => {
 };
 
 const reconcileSourceCleanup = async (session) => {
-    for (const row of session.accounts.filter((item) => item.state === 'activation_verified')) {
+    for (const row of session.accounts.filter(
+        (item) => item.state === 'activation_verified'
+    )) {
         row.state = 'destination_ready_source_cleanup_pending';
         row.updatedAt = Date.now();
         replaceNewKeySession(session);
@@ -467,7 +670,9 @@ const reconcileSourceCleanup = async (session) => {
         row.updatedAt = Date.now();
         replaceNewKeySession(session);
     }
-    for (const row of session.accounts.filter((item) => item.state === 'source_key_absent')) {
+    for (const row of session.accounts.filter(
+        (item) => item.state === 'source_key_absent'
+    )) {
         await wallet.removeLocalKeyIfMatches(row.accountId, row.sourcePublicKey);
         row.state = 'local_source_cleaned';
         row.updatedAt = Date.now();
@@ -476,7 +681,9 @@ const reconcileSourceCleanup = async (session) => {
 };
 
 const continueNewKeyTransfer = async (session, sourceAccounts) => {
-    const sourceById = new Map(sourceAccounts.map((account) => [account.accountId, account]));
+    const sourceById = new Map(
+        sourceAccounts.map((account) => [account.accountId, account])
+    );
     if (session.phase === 'created' || session.phase === 'start_requested') {
         session.phase = 'start_requested';
         session.updatedAt = Date.now();
@@ -492,10 +699,16 @@ const continueNewKeyTransfer = async (session, sourceAccounts) => {
             .filter((row) => row.ok)
             .map((row) => {
                 const source = sourceById.get(row.accountId);
-                if (!source || source.sourcePublicKey !== session.requestedAccounts.find(
-                    (candidate) => candidate.accountId === row.accountId
-                )?.sourcePublicKey) {
-                    throw new Error(`The staged source key for ${row.accountId} changed.`);
+                if (
+                    !source ||
+                    source.sourcePublicKey !==
+                        session.requestedAccounts.find(
+                            (candidate) => candidate.accountId === row.accountId
+                        )?.sourcePublicKey
+                ) {
+                    throw new Error(
+                        `The staged source key for ${row.accountId} changed.`
+                    );
                 }
                 return {
                     blockchainId: 'near',
@@ -514,7 +727,11 @@ const continueNewKeyTransfer = async (session, sourceAccounts) => {
     }
 
     for (const row of session.accounts) {
-        if (row.state == null || row.state === 'add_key_intent' || row.state === 'add_key_submitted') {
+        if (
+            row.state == null ||
+            row.state === 'add_key_intent' ||
+            row.state === 'add_key_submitted'
+        ) {
             await addDestinationKey(session, row);
         }
     }
