@@ -68,6 +68,9 @@ import AccountExportMethod from '../components/account-export/AccountExportMetho
 import AccountExportManual from '../components/account-export/AccountExportManual';
 import AccountExportRemove from '../components/account-export/AccountExportRemove';
 import AccountExportNewKeyProgress from '../components/account-export/AccountExportNewKeyProgress';
+import AccountExportNewKeyReady from '../components/account-export/AccountExportNewKeyReady';
+import AccountExportNewKeyActivation from '../components/account-export/AccountExportNewKeyActivation';
+import AccountExportNewKeyActivated from '../components/account-export/AccountExportNewKeyActivated';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
 import { PostHog } from '../posthog';
@@ -609,6 +612,21 @@ class Routing extends Component {
                                 exact
                                 path='/export-accounts/new-key-progress'
                                 component={AccountExportNewKeyProgress}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-ready'
+                                component={AccountExportNewKeyReady}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-activation'
+                                component={AccountExportNewKeyActivation}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-activated'
+                                component={AccountExportNewKeyActivated}
                             />
                             <PasswordProtectedRoute
                                 exact
