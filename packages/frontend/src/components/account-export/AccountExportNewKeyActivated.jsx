@@ -24,11 +24,6 @@ const Buttons = styled.div`
         margin-top: 14px;
         width: 100%;
     }
-
-    .return-to-wallet {
-        margin-top: 14px;
-        text-align: center;
-    }
 `;
 
 export default function AccountExportNewKeyActivated() {
@@ -60,22 +55,13 @@ export default function AccountExportNewKeyActivated() {
                 />
                 <Buttons>
                     <FormButton
-                        color='red'
+                        color='blue'
                         onClick={() => {
                             history.push('/export-accounts/remove', { accountIds });
                         }}
                     >
-                        Remove Exported Account from MyNearWallet
+                        Return to Meteor Wallet
                     </FormButton>
-                    <div className='return-to-wallet'>
-                        <FormButton
-                            className='link'
-                            color='gray'
-                            onClick={() => history.replace('/')}
-                        >
-                            Return to MyNearWallet
-                        </FormButton>
-                    </div>
                 </Buttons>
             </div>
         </ActivatedPage>

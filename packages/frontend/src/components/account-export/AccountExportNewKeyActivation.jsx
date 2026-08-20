@@ -33,6 +33,34 @@ const AccountSectionTitle = styled.p`
     margin: 0 0 10px;
 `;
 
+const ActivationProgress = styled.div`
+    margin-bottom: 24px;
+    margin-top: 18px;
+`;
+
+const ActivationProgressTrack = styled.div`
+    background: #e4e4e8;
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+`;
+
+const ActivationProgressFill = styled.div`
+    background: #0072ce;
+    border-radius: inherit;
+    height: 100%;
+    transition: width 200ms ease;
+`;
+
+const ActivationProgressLabel = styled.p`
+    color: #000000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    margin: 10px 0 0;
+    text-align: center;
+`;
+
 const AccountRow = styled.div`
     background: #f0f0f1;
     border-radius: 8px;
@@ -129,10 +157,7 @@ export default function AccountExportNewKeyActivation() {
     const accountIds = location.state?.accountIds;
     const [activationStates, setActivationStates] = useState(() =>
         Object.fromEntries(
-            mockActivationRows.map(({ accountId, status }) => [
-                accountId,
-                status,
-            ])
+            mockActivationRows.map(({ accountId, status }) => [accountId, status])
         )
     );
 
@@ -188,13 +213,26 @@ export default function AccountExportNewKeyActivation() {
         }));
     };
 
+    const completedCount = mockActivationRows.filter(
+        ({ accountId }) => activationStates[accountId] === 'confirmed'
+    ).length;
+    const completionPercentage = (completedCount / mockActivationRows.length) * 100;
+
     return (
         <ActivationPage className='small-centered'>
             <div className='send-theme'>
                 <h1>Activating Meteor Keys</h1>
-                <h2>
-                    The new Meteor keys are being added to your selected accounts.
-                </h2>
+                <h2>The new Meteor keys are being added to your selected accounts.</h2>
+                <ActivationProgress>
+                    <ActivationProgressTrack>
+                        <ActivationProgressFill
+                            style={{ width: `${completionPercentage}%` }}
+                        />
+                    </ActivationProgressTrack>
+                    <ActivationProgressLabel>
+                        {completedCount} of {mockActivationRows.length} Completed
+                    </ActivationProgressLabel>
+                </ActivationProgress>
                 <AccountSection>
                     <AccountSectionTitle>Account Status</AccountSectionTitle>
                     {mockActivationRows.map(({ accountId, status: initialStatus }) => {
@@ -207,8 +245,8 @@ export default function AccountExportNewKeyActivation() {
                                         status === 'failed'
                                             ? 'failed'
                                             : status === 'confirmed'
-                                                ? 'confirmed'
-                                                : 'pending'
+                                            ? 'confirmed'
+                                            : 'pending'
                                     }
                                 >
                                     <StatusIconSlot>{statusIcon(status)}</StatusIconSlot>
