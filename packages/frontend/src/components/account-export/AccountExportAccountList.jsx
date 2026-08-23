@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { newKeyTransferEligibilityKey } from '../../services/newKeyTransferState';
 import ExportAccountSelectedIcon from '../svg/ExportAccountSelectedIcon';
 import ExportAccountUnavailableIcon from '../svg/ExportAccountUnavailableIcon';
 
@@ -93,22 +94,8 @@ const EmptyState = styled.p`
     margin: 0;
 `;
 
-const getUnavailableAccountMessage = (availability, t) => {
-    switch (availability) {
-        case 'verification_failed':
-            return t('newKeyTransfer.eligibility.verificationFailed');
-        case 'two_factor_unsupported':
-            return t('newKeyTransfer.eligibility.twoFactorUnsupported');
-        case 'ledger_unsupported':
-            return t('newKeyTransfer.eligibility.ledgerUnsupported');
-        case 'algorithm_unsupported':
-            return t('newKeyTransfer.eligibility.algorithmUnsupported');
-        case 'no_local_key':
-            return t('newKeyTransfer.eligibility.noLocalKey');
-        default:
-            return t('newKeyTransfer.eligibility.notFullAccess');
-    }
-};
+const getUnavailableAccountMessage = (availability, t) =>
+    t(newKeyTransferEligibilityKey(availability));
 
 const SelectableAccountRow = ({ accountId, isSelected, onSelect }) => (
     <AccountRow

@@ -1,10 +1,15 @@
-import React, { useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { clearMeteorNewKeyAccountTransfer } from '../../services/meteorConnect';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import ExportAccountUnavailableIcon from '../svg/ExportAccountUnavailableIcon';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
+import { newKeyTransferIssueKey } from '../../services/newKeyTransferState';
+import useNewKeyTransfer from './useNewKeyTransfer';
 
 const NewKeyReadyPage = styled(Container)`
     max-width: 500px;
@@ -17,51 +22,197 @@ const NewKeyReadyPage = styled(Container)`
     }
 `;
 
+const Explainer = styled.p`
+    color: #72727a;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 24px 0 0;
+    text-align: center;
+`;
+
+const RefusedSection = styled.section`
+    background: #fff6f6;
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 15px;
+`;
+
+const RefusedSectionTitle = styled.p`
+    color: #72727a;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0 0 10px;
+`;
+
+const RefusedRow = styled.div`
+    align-items: flex-start;
+    background: #ffe9e9;
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+
+    & + & {
+        margin-top: 8px;
+    }
+
+    .refused-icon {
+        flex: 0 0 20px;
+        height: 20px;
+        width: 20px;
+    }
+
+    .account-id {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 20px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .issue {
+        color: #dc1f25;
+        font-size: 12px;
+        line-height: 18px;
+        margin-top: 4px;
+    }
+`;
+
+const ErrorMessage = styled.p`
+    color: #dc1f25;
+    margin: 20px 0 0;
+    text-align: center;
+`;
+
 const Buttons = styled.div`
     margin-top: 48px;
+    text-align: center;
 
     > button {
         width: 100%;
     }
+
+    .secondary {
+        margin-top: 8px;
+    }
 `;
 
+/**
+ * Step 1 done: Meteor has minted a destination key for each account it accepted, and nothing is
+ * on-chain yet. This screen is the last point at which walking away costs nothing.
+ */
 export default function AccountExportNewKeyReady() {
+    const { t } = useTranslation();
     const history = useHistory();
-    const location = useLocation();
-    const accountIds = location.state?.accountIds;
+    const { summary, isLoading, errorMessage } = useNewKeyTransfer({
+        redirectWhenVerified: true,
+    });
+    const [isLeaving, setIsLeaving] = useState(false);
 
-    useEffect(() => {
-        if (!Array.isArray(accountIds) || accountIds.length === 0) {
-            history.replace('/export-accounts/select');
+    /**
+     * Drop a transfer Meteor accepted nothing for on the way out. Nothing was minted and nothing
+     * reached a chain, so there is no recovery state to preserve — and leaving the record behind
+     * would make the next attempt discard it silently instead of starting clean.
+     */
+    const startOver = async () => {
+        setIsLeaving(true);
+        try {
+            await clearMeteorNewKeyAccountTransfer(summary.clientTransferId);
+        } catch {
+            // Not clearable means it holds real state after all; the next start sweeps it.
         }
-    }, [accountIds, history]);
+        history.replace('/export-accounts/select');
+    };
 
-    if (!Array.isArray(accountIds) || accountIds.length === 0) {
-        return null;
+    if (isLoading || summary == null) {
+        return (
+            <NewKeyReadyPage className='small-centered'>
+                <div className='send-theme'>
+                    <h1>{t('newKeyTransfer.ready.title')}</h1>
+                    <h2>{errorMessage || t('newKeyTransfer.loading')}</h2>
+                </div>
+            </NewKeyReadyPage>
+        );
     }
+
+    const { accepted, refused, acceptedNothing } = summary;
 
     return (
         <NewKeyReadyPage className='small-centered'>
             <div className='send-theme'>
-                <h1>Meteor Keys Are Ready</h1>
+                <h1>
+                    {t(
+                        acceptedNothing
+                            ? 'newKeyTransfer.ready.noneTitle'
+                            : 'newKeyTransfer.ready.title'
+                    )}
+                </h1>
                 <h2>
-                    Meteor Wallet has created new access keys for your selected accounts.
-                    Review and activate them to continue the transfer.
+                    {t(
+                        acceptedNothing
+                            ? 'newKeyTransfer.ready.noneSubtitle'
+                            : 'newKeyTransfer.ready.subtitle'
+                    )}
                 </h2>
-                <AccountExportSelectedAccountList
-                    accountIds={accountIds}
-                    title='Accounts Ready to Activate'
-                />
+
+                {accepted.length > 0 && (
+                    <AccountExportSelectedAccountList
+                        accountIds={accepted.map((account) => account.accountId)}
+                        title={t('newKeyTransfer.ready.acceptedTitle')}
+                    />
+                )}
+
+                {refused.length > 0 && (
+                    <RefusedSection>
+                        <RefusedSectionTitle>
+                            {t('newKeyTransfer.ready.refusedTitle')}
+                        </RefusedSectionTitle>
+                        {refused.map((account) => (
+                            <RefusedRow key={account.accountId}>
+                                <ExportAccountUnavailableIcon className='refused-icon' />
+                                <div>
+                                    <div className='account-id'>{account.accountId}</div>
+                                    <div className='issue'>
+                                        {t(newKeyTransferIssueKey(account.issue))}
+                                    </div>
+                                </div>
+                            </RefusedRow>
+                        ))}
+                    </RefusedSection>
+                )}
+
+                {!acceptedNothing && (
+                    <Explainer>{t('newKeyTransfer.ready.explainer')}</Explainer>
+                )}
+                {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+
                 <Buttons>
-                    <FormButton
-                        onClick={() =>
-                            history.push('/export-accounts/new-key-activation', {
-                                accountIds,
-                            })
-                        }
-                    >
-                        Activate New Keys
-                    </FormButton>
+                    {acceptedNothing ? (
+                        <FormButton disabled={isLeaving} onClick={() => void startOver()}>
+                            {t('newKeyTransfer.ready.startOver')}
+                        </FormButton>
+                    ) : (
+                        <>
+                            <FormButton
+                                onClick={() =>
+                                    history.push('/export-accounts/new-key-activation', {
+                                        clientTransferId: summary.clientTransferId,
+                                    })
+                                }
+                            >
+                                {t('newKeyTransfer.ready.activate')}
+                            </FormButton>
+                            <div className='secondary'>
+                                <FormButton
+                                    className='link'
+                                    color='gray'
+                                    onClick={() => history.replace('/')}
+                                >
+                                    {t('newKeyTransfer.ready.cancel')}
+                                </FormButton>
+                            </div>
+                        </>
+                    )}
                 </Buttons>
             </div>
         </NewKeyReadyPage>

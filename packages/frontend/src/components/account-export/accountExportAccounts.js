@@ -45,7 +45,15 @@ export const loadNewKeyTransferAccounts = async (accountIds) => {
         accountIds.map(async (accountId) => {
             const account = byId.get(accountId);
             if (account?.availability !== 'available' || !account.sourcePublicKey) {
-                throw new Error(`${accountId} is not eligible for a new-key transfer.`);
+                // Carry the reason, not just the refusal: "not eligible" reads as a permanent
+                // property of the account when the usual cause is a transient RPC failure the
+                // user only has to retry.
+                const error = new Error(
+                    `${accountId} is not eligible for a new-key transfer.`
+                );
+                error.accountId = accountId;
+                error.availability = account?.availability || 'verification_failed';
+                throw error;
             }
             const keyPair = await wallet.getLocalKeyPair(accountId);
             if (keyPair == null || keyPair.getPublicKey().toString() !== account.sourcePublicKey) {

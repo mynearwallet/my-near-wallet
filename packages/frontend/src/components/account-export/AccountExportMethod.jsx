@@ -3,11 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import CONFIG from '../../config';
 import {
     meteorNetworkId,
     promptMeteorAccountTransfer,
     startMeteorNewKeyAccountTransfer,
 } from '../../services/meteorConnect';
+import {
+    describeNewKeyTransferError,
+    newKeyTransferEligibilityKey,
+} from '../../services/newKeyTransferState';
+import Checkbox from '../common/Checkbox';
+import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import MeteorConnectIcon from '../svg/MeteorConnectIcon';
 import exportManualIcon from '../svg/Vector.svg';
@@ -102,6 +109,13 @@ const MethodButton = styled.button`
         margin-top: 8px;
     }
 
+    .method-status {
+        font-size: 14px;
+        line-height: 21px;
+        margin-top: 20px;
+        opacity: 0.85;
+    }
+
     &.meteor-connect {
         background: #5380f5;
         color: #fff;
@@ -114,6 +128,39 @@ const MethodButton = styled.button`
         .method-icon {
             color: #5380f5;
         }
+    }
+`;
+
+const DevTarget = styled.label`
+    align-items: center;
+    color: #72727a;
+    cursor: pointer;
+    display: flex;
+    font-size: 13px;
+    gap: 10px;
+    justify-content: center;
+    line-height: 20px;
+    margin-top: 24px;
+
+    > div {
+        flex: 0 0 20px;
+    }
+`;
+
+const Advanced = styled.div`
+    margin-top: 40px;
+    text-align: center;
+
+    .advanced-description {
+        color: #72727a;
+        font-size: 13px;
+        line-height: 20px;
+        margin: 16px auto 0;
+        max-width: 520px;
+    }
+
+    .advanced-action {
+        margin-top: 12px;
     }
 `;
 
@@ -130,7 +177,11 @@ export default function AccountExportMethod() {
     const accountIds = location.state?.accountIds;
     const [isExporting, setIsExporting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [selectedPlatform, setSelectedPlatform] = useState('mobile');
+    /**
+     * Meteor Wallet V1 (the web wallet) is the only supported destination for now, so there is no
+     * platform to choose. A development build may retarget the link at a locally served wallet.
+     */
+    const [useLocalDevWallet, setUseLocalDevWallet] = useState(false);
     const [showAdvanced, setShowAdvanced] = useState(false);
 
     useEffect(() => {
@@ -147,17 +198,29 @@ export default function AccountExportMethod() {
             const session = await startMeteorNewKeyAccountTransfer({
                 accounts,
                 networkId: meteorNetworkId,
-                targetPlatform: selectedPlatform,
+                targetPlatform: useLocalDevWallet ? 'web_local_dev' : 'web',
             });
-            history.push('/export-accounts/new-key-progress', {
+            // Meteor has answered and its destination keys are journaled; which accounts it
+            // accepted is read from the session on the next screen, not passed through history.
+            history.push('/export-accounts/new-key-ready', {
                 clientTransferId: session.clientTransferId,
             });
         } catch (error) {
-            setErrorMessage(
-                error instanceof Error
-                    ? error.message
-                    : 'Could not start the new-key account transfer.'
-            );
+            if (error?.availability != null) {
+                // Local eligibility, decided before Meteor was asked anything — name the account
+                // and the actual reason rather than a generic transfer failure.
+                setErrorMessage(
+                    t('newKeyTransfer.ineligible', {
+                        accountId: error.accountId,
+                        reason: t(newKeyTransferEligibilityKey(error.availability)),
+                    })
+                );
+            } else {
+                const { i18nKey, fallback } = describeNewKeyTransferError(error);
+                setErrorMessage(
+                    i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError')
+                );
+            }
             setIsExporting(false);
         }
     };
@@ -208,8 +271,9 @@ export default function AccountExportMethod() {
                 <h2>{t('newKeyTransfer.methodSubheading')}</h2>
                 <MethodList>
                     <MethodButton
-                        as='div'
                         className='meteor-connect'
+                        disabled={isExporting}
+                        onClick={() => void handleNewKeyTransfer()}
                     >
                         <span className='method-icon-slot'>
                             <MeteorConnectIcon className='method-icon meteor-connect-icon' />
@@ -218,33 +282,11 @@ export default function AccountExportMethod() {
                         <span className='method-description'>
                             {t('newKeyTransfer.description')}
                         </span>
-                        <label>
-                            <input
-                                type='radio'
-                                name='meteor-platform'
-                                value='mobile'
-                                checked={selectedPlatform === 'mobile'}
-                                onChange={() => setSelectedPlatform('mobile')}
-                            />{' '}
-                            {t('newKeyTransfer.meteorMobile')}
-                        </label>
-                        <label>
-                            <input
-                                type='radio'
-                                name='meteor-platform'
-                                value='web'
-                                checked={selectedPlatform === 'web'}
-                                onChange={() => setSelectedPlatform('web')}
-                            />{' '}
-                            {t('newKeyTransfer.meteorWeb')}
-                        </label>
-                        <button
-                            type='button'
-                            disabled={isExporting}
-                            onClick={() => void handleNewKeyTransfer()}
-                        >
-                            {t('newKeyTransfer.start')}
-                        </button>
+                        {isExporting && (
+                            <span className='method-status'>
+                                {t('newKeyTransfer.starting')}
+                            </span>
+                        )}
                     </MethodButton>
                     <MethodButton
                         className='manual-export'
@@ -260,34 +302,60 @@ export default function AccountExportMethod() {
                                 src={exportManualIcon}
                             />
                         </span>
-                        <span className='method-title'>{t('newKeyTransfer.manualTitle')}</span>
+                        <span className='method-title'>
+                            {t('newKeyTransfer.manualTitle')}
+                        </span>
                         <span className='method-description'>
                             {t('newKeyTransfer.manualDescription')}
                         </span>
                     </MethodButton>
                 </MethodList>
-                <button
-                    type='button'
-                    disabled={isExporting}
-                    onClick={() => setShowAdvanced((current) => !current)}
-                >
-                    {t(showAdvanced ? 'newKeyTransfer.hideAdvanced' : 'newKeyTransfer.showAdvanced')}
-                </button>
-                {showAdvanced && (
-                    <div>
-                        <p>
-                            {t('newKeyTransfer.advancedDescription')}
-                        </p>
-                        <button
-                            type='button'
+
+                {CONFIG.IS_DEVELOPMENT && (
+                    <DevTarget>
+                        <Checkbox
+                            checked={useLocalDevWallet}
                             disabled={isExporting}
-                            onClick={() => void handleExistingSecretTransfer()}
-                        >
-                            {t('newKeyTransfer.continueExistingSecret')}
-                        </button>
-                    </div>
+                            onChange={(event) =>
+                                setUseLocalDevWallet(event.target.checked)
+                            }
+                        />
+                        <span>{t('newKeyTransfer.localDevTarget')}</span>
+                    </DevTarget>
                 )}
+
                 {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+
+                <Advanced>
+                    <FormButton
+                        className='link'
+                        color='gray'
+                        disabled={isExporting}
+                        onClick={() => setShowAdvanced((current) => !current)}
+                    >
+                        {t(
+                            showAdvanced
+                                ? 'newKeyTransfer.hideAdvanced'
+                                : 'newKeyTransfer.showAdvanced'
+                        )}
+                    </FormButton>
+                    {showAdvanced && (
+                        <>
+                            <p className='advanced-description'>
+                                {t('newKeyTransfer.advancedDescription')}
+                            </p>
+                            <div className='advanced-action'>
+                                <FormButton
+                                    color='gray'
+                                    disabled={isExporting}
+                                    onClick={() => void handleExistingSecretTransfer()}
+                                >
+                                    {t('newKeyTransfer.continueExistingSecret')}
+                                </FormButton>
+                            </div>
+                        </>
+                    )}
+                </Advanced>
             </div>
         </ExportMethodPage>
     );

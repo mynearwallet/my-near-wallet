@@ -16,6 +16,9 @@ jest.mock('../../utils/wallet', () => ({
     getKeyMeta: mockGetKeyMeta,
 }));
 
+// Deliberately below the mocks: their factories close over the `mock*` consts above, which
+// babel-jest does not hoist — importing first would load the real wallet module.
+// eslint-disable-next-line import/first
 import { loadExportableAccounts, loadNewKeyTransferAccounts } from './accountExportAccounts';
 
 describe('new-key account-transfer eligibility', () => {
@@ -37,8 +40,12 @@ describe('new-key account-transfer eligibility', () => {
         ];
         mockWallet.keyStore.getAccounts.mockResolvedValue(ids);
         mockWallet.getLocalKeyPair.mockImplementation(async (accountId) => {
-            if (accountId === 'missing.testnet') return null;
-            if (accountId === 'secp.testnet') return makeKeyPair('secp256k1:unsupported');
+            if (accountId === 'missing.testnet') {
+                return null;
+            }
+            if (accountId === 'secp.testnet') {
+                return makeKeyPair('secp256k1:unsupported');
+            }
             return makeKeyPair(`ed25519:${accountId}`);
         });
         mockGetKeyMeta.mockImplementation(async (publicKey) => ({
@@ -63,6 +70,19 @@ describe('new-key account-transfer eligibility', () => {
         expect(rows.find((row) => row.accountId === 'ready.testnet').sourcePublicKey).toBe(
             'ed25519:ready.testnet'
         );
+    });
+
+    it('carries the eligibility reason when an account cannot be transferred', async () => {
+        // A failed access-key lookup is transient, and the screen has words for it — but only if
+        // the reason survives the throw.
+        mockWallet.keyStore.getAccounts.mockResolvedValue(['alice.testnet']);
+        mockWallet.getLocalKeyPair.mockResolvedValue(makeKeyPair('ed25519:alice'));
+        mockGetKeyMeta.mockRejectedValue(new Error('rpc down'));
+
+        await expect(loadNewKeyTransferAccounts(['alice.testnet'])).rejects.toMatchObject({
+            accountId: 'alice.testnet',
+            availability: 'verification_failed',
+        });
     });
 
     it('refuses staging when the exact selected source key changes after eligibility', async () => {

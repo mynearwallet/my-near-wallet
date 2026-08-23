@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { getMeteorNewKeyTransferSessions } from '../../services/meteorConnect';
+import {
+    findResumableNewKeyTransfer,
+    summarizeNewKeyTransferSession,
+} from '../../services/newKeyTransferState';
 
 const AccountExportBannerContainer = styled.section`
     margin-bottom: 28px;
@@ -73,20 +78,43 @@ const BannerLink = styled(Link)`
     }
 `;
 
+/**
+ * Where an unfinished transfer picks up. Once an AddKey intent is journaled the destination keys
+ * may already be live on-chain, so resuming belongs on the activation screen — which asks the
+ * journal what is actually left rather than re-offering keys that are already in flight.
+ */
+const resumeRoute = (summary) =>
+    summary == null
+        ? '/export-accounts/select'
+        : {
+              pathname: summary.hasAddKeyIntent
+                  ? '/export-accounts/new-key-activation'
+                  : '/export-accounts/new-key-ready',
+              state: { clientTransferId: summary.clientTransferId },
+          };
+
 export default function AccountExportBanner() {
-    let pendingSession;
-    try {
-        pendingSession = getMeteorNewKeyTransferSessions()
-            .slice()
-            .reverse()
-            .find(
-                (session) =>
-                    !session.accounts?.length ||
-                    session.accounts.some((row) => row.state !== 'local_source_cleaned')
-            );
-    } catch {
-        pendingSession = undefined;
-    }
+    const [pendingSummary, setPendingSummary] = useState(null);
+
+    useEffect(() => {
+        let isActive = true;
+        void (async () => {
+            try {
+                const sessions = await getMeteorNewKeyTransferSessions();
+                const resumable = findResumableNewKeyTransfer(sessions);
+                if (isActive) {
+                    setPendingSummary(summarizeNewKeyTransferSession(resumable));
+                }
+            } catch {
+                // A journal this banner cannot read is not something to shout about here; the
+                // export screens report it properly. Offer the ordinary entry point.
+            }
+        })();
+        return () => {
+            isActive = false;
+        };
+    }, []);
+
     return (
         <AccountExportBannerContainer>
             <AccountExportBannerContent>
@@ -97,19 +125,8 @@ export default function AccountExportBanner() {
                         accessing them securely.
                     </BannerDescription>
                 </BannerCopy>
-                <BannerLink
-                    to={
-                        pendingSession
-                            ? {
-                                  pathname: '/export-accounts/new-key-progress',
-                                  state: {
-                                      clientTransferId: pendingSession.clientTransferId,
-                                  },
-                              }
-                            : '/export-accounts/select'
-                    }
-                >
-                    {pendingSession ? 'Resume Account Transfer' : 'Export Accounts'}
+                <BannerLink to={resumeRoute(pendingSummary)}>
+                    {pendingSummary ? 'Resume Account Transfer' : 'Export Accounts'}
                 </BannerLink>
             </AccountExportBannerContent>
         </AccountExportBannerContainer>

@@ -1,5 +1,5 @@
 diff --git a/node_modules/@meteorwallet/sdk/dist/index.cjs b/node_modules/@meteorwallet/sdk/dist/index.cjs
-index 1748814..7774c0b 100644
+index 4590a21..a2a4e12 100644
 --- a/node_modules/@meteorwallet/sdk/dist/index.cjs
 +++ b/node_modules/@meteorwallet/sdk/dist/index.cjs
 @@ -50,10 +50,10 @@ let _near_js_accounts = require("@near-js/accounts");
@@ -17,10 +17,10 @@ index 1748814..7774c0b 100644
  secp256k1 = __toESM(secp256k1);
  let _noble_post_quantum_ml_dsa_js = require("@noble/post-quantum/ml-dsa.js");
 diff --git a/node_modules/@meteorwallet/sdk/dist/index.d.ts b/node_modules/@meteorwallet/sdk/dist/index.d.ts
-index c3b85bb..c5d9687 100644
+index b01dda2..8a59421 100644
 --- a/node_modules/@meteorwallet/sdk/dist/index.d.ts
 +++ b/node_modules/@meteorwallet/sdk/dist/index.d.ts
-@@ -16,9 +16,9 @@ import { KeyStore } from "@near-js/keystores";
+@@ -15,9 +15,9 @@ import { KeyStore } from "@near-js/keystores";
  import { JsonRpcProvider } from "@near-js/providers";
  import * as _near_js_types0 from "@near-js/types";
  import { AccessKeyInfoView, Enum, FinalExecutionOutcome } from "@near-js/types";
@@ -33,18 +33,18 @@ index c3b85bb..c5d9687 100644
  //#region src/envConfig.d.ts
  interface IEnvConfig {
 diff --git a/node_modules/@meteorwallet/sdk/dist/index.js b/node_modules/@meteorwallet/sdk/dist/index.js
-index d8bb4a4..6be2c85 100644
+index c8e8619..97017e0 100644
 --- a/node_modules/@meteorwallet/sdk/dist/index.js
 +++ b/node_modules/@meteorwallet/sdk/dist/index.js
-@@ -12,7 +12,7 @@ import { EPartnerBridgeStep, EPartnerClientStatus, PartnerBridgeClient, PartnerB
+@@ -10,7 +10,7 @@ import QRCodeStyling from "qr-code-styling";
+ import { TRANSFER_ACCOUNTS_MAX_SECRETS_PER_ACCOUNT, getServerRequiredWalletCapabilities, newKeyTransferAccountIdentityKey, vAccountBasicData, vMeteorAppId, vNewKeyTransferOpaqueId, vNewKeyTransferVerifyActiveInputV1, vSerializedCryptoKeyDataEd25519_Raw } from "@meteorwallet/connect-shared/internal";
  import { KeyPair, KeyPairEd25519, KeyType, PublicKey } from "@near-js/crypto";
  import { DelegateAction, SCHEMA, Signature, SignedDelegate, Transaction, buildDelegateAction, createTransaction } from "@near-js/transactions";
- import { isActionPayload_Result_JsonObject } from "@nice-code/action";
 -import { sha256 } from "@noble/hashes/sha2.js";
 +import { sha256, sha512 } from "@noble/hashes/sha2.js";
  import { base64, base64url } from "@scure/base";
  import { deserialize, serialize } from "borsh";
- import { EStorageAdapterType, StorageAdapter } from "@nice-code/util";
+ import * as v from "valibot";
 @@ -21,10 +21,9 @@ import { Account } from "@near-js/accounts";
  import { KeyStore } from "@near-js/keystores";
  import { JsonRpcProvider } from "@near-js/providers";

@@ -2056,40 +2056,41 @@
     "@types/mdx" "^2.0.0"
     "@types/react" ">=16"
 
-"@meteorwallet/connect-shared@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/connect-shared/-/connect-shared-0.9.0.tgz#df8973f3b5d8ca474d03c7682d2d15b775569fcd"
-  integrity sha512-Sr52fqHPDKec65Zbvpnbpz4FJatFAOSDOydbjcY8MCi07ULCkeE24oru2aXJgYsq7f2JtIXCQyoW8xleYIc7aw==
+"@meteorwallet/connect-shared@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/connect-shared/-/connect-shared-0.13.0.tgz#267af468e0b785cdbc8f7337ac4426327c41a728"
+  integrity sha512-R+Hg7uYO7miEBzbt8DrxY29QlWjm8e2TUTgVtX221g5gK+B1zSZJTGWA7X+BK6gq+F0A2X7+OyJj64rDJoiUag==
   dependencies:
     "@meteorwallet/utils" "^1.31.0"
-    "@nice-code/action" "0.77.0"
-    "@nice-code/common-errors" "0.77.0"
-    "@nice-code/error" "0.77.0"
-    "@nice-code/realm" "0.77.0"
-    "@nice-code/state" "0.77.0"
-    "@nice-code/util" "0.77.0"
-    "@noble/hashes" "^2.0.1"
+    "@nice-code/action" "0.86.0"
+    "@nice-code/common-errors" "0.86.0"
+    "@nice-code/error" "0.86.0"
+    "@nice-code/realm" "0.86.0"
+    "@nice-code/state" "0.86.0"
+    "@nice-code/util" "0.86.0"
+    "@noble/ed25519" "3.0.1"
+    "@noble/hashes" "2.0.1"
     "@scure/base" "2.0.0"
     http-status-codes "^2.3.0"
-    valibot "^1.4.1"
+    valibot "^1.4.2"
 
-"@meteorwallet/connect@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/connect/-/connect-0.9.0.tgz#b598c68cbe5f5bf843b5d197436a8a695ecf8119"
-  integrity sha512-KAXmrow/ZhB6P3zfXixzIvI+e1fdR/foOUzAhBFYvUx3TdYZ9TsURuThPJ+wyFb53I613Re1u/YhG3gBt2Zfmw==
+"@meteorwallet/connect@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/connect/-/connect-0.13.0.tgz#c4c19951e3b5d2e136097311964291ac590527f2"
+  integrity sha512-QdpKdPKr8Ki5y2Q3Bz0I9Su2DbzYaZcXetqDSANHXuxPMUIXrBWBox8tI/LLNpaBmF/GwXYn131MSzoVAWca8Q==
   dependencies:
-    "@meteorwallet/connect-shared" "0.9.0"
-    "@nice-code/action" "0.77.0"
-    "@nice-code/common-errors" "0.77.0"
-    "@nice-code/error" "0.77.0"
-    "@nice-code/realm" "0.77.0"
-    "@nice-code/state" "0.77.0"
-    "@nice-code/util" "0.77.0"
-    "@nice-code/wire" "0.77.0"
+    "@meteorwallet/connect-shared" "0.13.0"
+    "@nice-code/action" "0.86.0"
+    "@nice-code/common-errors" "0.86.0"
+    "@nice-code/error" "0.86.0"
+    "@nice-code/realm" "0.86.0"
+    "@nice-code/state" "0.86.0"
+    "@nice-code/util" "0.86.0"
+    "@nice-code/wire" "0.86.0"
     "@scure/base" "2.0.0"
-    hono "^4.12.23"
+    hono "^4.12.27"
     nanoid "^5.1.11"
-    valibot "^1.4.1"
+    valibot "^1.4.2"
 
 "@meteorwallet/errors@1.28.0-0":
   version "1.28.0-0"
@@ -2104,15 +2105,15 @@
   resolved "https://registry.yarnpkg.com/@meteorwallet/meteor-near-sdk/-/meteor-near-sdk-3.3.0.tgz#22c8d099058a2fa9074f5949f69d0c4aebd8efb0"
   integrity sha512-NlDVS8HDyLbGJRtJC9cPfLdArgaTmiQTj8loKejhkOE7sOGtgfVVheos8qapcpdl96ZnqLbaUPHmLVmyKu9wBg==
 
-"@meteorwallet/sdk@3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-3.0.1.tgz#4927af93f9e8d35f825ee7997997c5ff5689e2a7"
-  integrity sha512-7Do2yVLZOKuRqqmCdfIy5tSQB5BlhEFUcHL/9yMCzUksWPzjeAg8/fJNXh2sTTh+hdV1dheIpJ249HLoJzExAQ==
+"@meteorwallet/sdk@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-3.2.0.tgz#c684cc691ededa19129446b2f1e6e4f873b21cc1"
+  integrity sha512-Qjr2gOFMlfijnmm26mKpk8OuWzYq7/LVhnTWg3szHEgBYwZmxgvrUkeP3GpqQ/t/xHraQeg34KdtEWbChogXgw==
   dependencies:
     "@lit/context" "1.1.6"
     "@lit/task" "1.0.3"
-    "@meteorwallet/connect" "0.9.0"
-    "@meteorwallet/connect-shared" "0.9.0"
+    "@meteorwallet/connect" "0.13.0"
+    "@meteorwallet/connect-shared" "0.13.0"
     "@meteorwallet/errors" "1.28.0-0"
     "@meteorwallet/utils" "1.28.0-0"
     "@near-js/accounts" "2.2.5"
@@ -2124,9 +2125,7 @@
     "@near-js/transactions" "2.2.5"
     "@near-js/types" "2.2.5"
     "@near-js/utils" "2.2.5"
-    "@nice-code/action" "0.77.0"
-    "@nice-code/realm" "0.77.0"
-    "@nice-code/util" "0.77.0"
+    "@nice-code/util" "0.86.0"
     "@noble/hashes" "2.0.1"
     "@noble/post-quantum" "^0.6.1"
     "@scure/base" "2.0.0"
@@ -2615,15 +2614,15 @@
     "@near-wallet-selector/core" "8.9.1"
     bn.js "5.2.1"
 
-"@nice-code/action@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/action/-/action-0.77.0.tgz#e504cf57fc6eee25e15b18b6ec3a106577b358d2"
-  integrity sha512-I5EDP/+IqcNDhJ6l4lsZBnrj4HuzzQvXEC/4XXHMviEONCY9SVaUUgPtyxqYGRVOh/gCWjinN18orn4Yal6d+A==
+"@nice-code/action@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/action/-/action-0.86.0.tgz#d5ef12ea8c6cfb2591348ea6191e6b79a6402577"
+  integrity sha512-Zs/oiLqcuYM2TsjDjJlLFMA7iewiH2Sq1jdZaOJdOD0RknJu7i5uW5FfFtXIrNeWALRDFA4LwfbPKoNEL76m6w==
   dependencies:
-    "@nice-code/common-errors" "0.77.0"
-    "@nice-code/error" "0.77.0"
-    "@nice-code/util" "0.77.0"
-    "@nice-code/wire" "0.77.0"
+    "@nice-code/common-errors" "0.86.0"
+    "@nice-code/error" "0.86.0"
+    "@nice-code/util" "0.86.0"
+    "@nice-code/wire" "0.86.0"
     "@standard-schema/spec" "^1.1.0"
     "@tanstack/react-virtual" "^3.14.5"
     http-status-codes "^2.3.0"
@@ -2633,67 +2632,68 @@
     source-map-js "^1.2.1"
     std-env "^4.1.0"
 
-"@nice-code/common-errors@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/common-errors/-/common-errors-0.77.0.tgz#1f75c2451cc998107161710c45eb26627e19fb09"
-  integrity sha512-BpB9XbqCEa5wl9EOMy2V7hvqsHX00NQ6piFrPdt5XJ0kIIlhvkxF10Hspia6YacAio/qvUHTjGBsLAVBDWPyXw==
+"@nice-code/common-errors@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/common-errors/-/common-errors-0.86.0.tgz#7bfcab6fcaa2a7de9ba7fd291641b73b4d7f24f1"
+  integrity sha512-xGFU2ChVyVzveB2R4HR3oaGHrQBvyxtrI1xbffo67ftLEEoqekmjXBLp0Tm1lWxIiUw+pcVHcMBAUcse72TSsA==
   dependencies:
     "@hono/standard-validator" "^0.2.3"
-    "@nice-code/error" "0.77.0"
+    "@nice-code/error" "0.86.0"
     "@standard-schema/spec" "^1.1.0"
     http-status-codes "^2.3.0"
 
-"@nice-code/devtools-core@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/devtools-core/-/devtools-core-0.77.0.tgz#1bcb4b0cbd6c4c3615bc30d80f29a32b6993c5a4"
-  integrity sha512-9cSCe5ZXU2ViM3JSWbiEcftCJmVPB53ab/uHQy6Pe9GfNOkIdnQ2N140R/izAiwK/EvzWs4URLNF2kn0FF29oQ==
+"@nice-code/devtools-core@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/devtools-core/-/devtools-core-0.86.0.tgz#1b56c1a9fbe6e1d07648fccb7aaf19277c535173"
+  integrity sha512-kRZzdUKb1+MiKUSTAydsP/xQMXhWM1nqap3zS1/G4quSLDBHLv23PkTNcx0BO3Lwj1I7i2nYUDYYXX5HHFhE2A==
 
-"@nice-code/error@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/error/-/error-0.77.0.tgz#dbdcbd856e9bdff8a29d9816f9c3b2d05399f680"
-  integrity sha512-FkKJifD1wtGMtokCoC2nluj7E0ecT9OPZFFYWzO7g6iK+DNpidWxyMJdoiWVAFFA2ZsCifeXejAh23r3uSWhzQ==
+"@nice-code/error@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/error/-/error-0.86.0.tgz#3677914948eb458f32ea9b9397d08354746f620d"
+  integrity sha512-EX4NIXU9k6fAdGe27iwMpl4pm5f4ANQyuBJgxkIyLnlgkD5beT/9z5aJN5a1kUQuJIlOxNdevqhxruaSyfBpKg==
 
-"@nice-code/realm@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/realm/-/realm-0.77.0.tgz#1303c75ae20c8d415deaa4fbf77f5b538c52eb71"
-  integrity sha512-uiXiW1nKpWydZuQj3dua7WSTE33SQV3BjQHNuGvTBm/D2ojgCQuMCE2yWGIFX4U98VvVJdKMAdOOjTp3yAdUOw==
+"@nice-code/realm@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/realm/-/realm-0.86.0.tgz#954407c3ce7fdfd5209e8584aa71ba83ef8a6249"
+  integrity sha512-Q6e/y/gBuiBAvMYA/BxEf9csWTstPvvBtYPo2nPZXDW1qx2QFgHb/XQjpksHj1qjpqXcgTFMZqcWsHl+H92pWg==
   dependencies:
-    "@nice-code/common-errors" "0.77.0"
-    "@nice-code/error" "0.77.0"
-    "@nice-code/state" "0.77.0"
-    "@nice-code/util" "0.77.0"
-    "@nice-code/wire" "0.77.0"
+    "@nice-code/common-errors" "0.86.0"
+    "@nice-code/error" "0.86.0"
+    "@nice-code/state" "0.86.0"
+    "@nice-code/util" "0.86.0"
+    "@nice-code/wire" "0.86.0"
     "@standard-schema/spec" "^1.1.0"
     immer "11.1.11"
     msgpackr "2.0.4"
 
-"@nice-code/state@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/state/-/state-0.77.0.tgz#3cbfc0442ea9d51a6bf78223316fc990d560a548"
-  integrity sha512-SFLFZBYciW4QaW5rHtlp8yt+QR6pRe4TNnUsBol73kOcg8mC0Ogb+tESMn7SXvrsP8AK3hFc45vjAHz+zmsdMQ==
+"@nice-code/state@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/state/-/state-0.86.0.tgz#3ce212f031160d4d1c10e538131b953253d30342"
+  integrity sha512-P6kIIdE1EwkYmu68m8v/cxux+VylmeE9uPghDj73Z62B4xyVtZsdUdcyOzMUgs73r1ur6iOauRIrH6uqjrRLNg==
   dependencies:
-    "@nice-code/devtools-core" "0.77.0"
-    "@nice-code/error" "0.77.0"
+    "@nice-code/devtools-core" "0.86.0"
+    "@nice-code/error" "0.86.0"
     "@tanstack/react-virtual" "^3.14.5"
     fast-equals "6.0.0"
     immer "11.1.11"
 
-"@nice-code/util@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/util/-/util-0.77.0.tgz#14979331e92128e2fe0b6e0c23c139380db4d110"
-  integrity sha512-+BbQ9j8W1B3MF3l5RT2ToqsVBmAqu109er1o0oXQ1nF3jXAoGYf4gsF6ZvjgNoX4XieXJvEussoZIw7gxEvN4Q==
+"@nice-code/util@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/util/-/util-0.86.0.tgz#b30858cd8f7b72bd1478ea2ce3ae6e9c68fab780"
+  integrity sha512-yydYpjDXvsW2VQSChVb4ylJ3kP20fqXZIT9OoapN8PyPDcd/7oI7R9tyPC1HxcOI+iM5fiNIz/+nF9VblHV93g==
   dependencies:
     "@scure/base" "^2.2.0"
+    "@standard-schema/spec" "^1.1.0"
     nanoid "^5.1.16"
     valibot "^1.4.2"
 
-"@nice-code/wire@0.77.0":
-  version "0.77.0"
-  resolved "https://registry.yarnpkg.com/@nice-code/wire/-/wire-0.77.0.tgz#f3d023b1cc4268ec7b4e95c726d9933b9550f89f"
-  integrity sha512-c6EOESNQR9dygbTqyDza/r8EsKt7fSxSoVwpfiUVH+IWjvHi7ahVjaJUeNbSq9FLuFCFcurWDZdVUD70bFOf3Q==
+"@nice-code/wire@0.86.0":
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/@nice-code/wire/-/wire-0.86.0.tgz#c21c3a82ca8fcf06ad5b035f774afac8b1a764f3"
+  integrity sha512-JXW6ktvqUju7HBFNuYwYw/W6CezFcbazml1AUutEtGKWrhGgIvvmTl9b7ZbBng1DrI6mPzQdbSCc4pa7PvLCWA==
   dependencies:
-    "@nice-code/error" "0.77.0"
-    "@nice-code/util" "0.77.0"
+    "@nice-code/error" "0.86.0"
+    "@nice-code/util" "0.86.0"
     msgpackr "2.0.4"
     nanoid "^5.1.16"
 
@@ -2721,6 +2721,11 @@
   dependencies:
     "@noble/hashes" "2.2.0"
 
+"@noble/ed25519@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@noble/ed25519/-/ed25519-3.0.1.tgz#d285ef37dd97cb4733593e269aaff1932a54c80f"
+  integrity sha512-t/T8LuK0ym8ALQudCCQCtrRdMSxBnRgHXw+wg+YsSlE6d+on7sX3flqlSJ2mOs9xEuchM36kj9SuX5MG7pXQMA==
+
 "@noble/hashes@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.5.0.tgz#abadc5ca20332db2b1b2aa3e496e9af1213570b0"
@@ -2745,11 +2750,6 @@
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.8.0.tgz#cee43d801fcef9644b11b8194857695acd5f815a"
   integrity sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==
-
-"@noble/hashes@^2.0.1":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-2.3.0.tgz#505fd39c3134a37e67c8c4e6c6049a496154879c"
-  integrity sha512-oN+QwyX7VSHotibwubG3kpzbwKrfnyR6OOO+3Nk/53ADL7FmgHHz4TgrbaYKvvOw09u6QTx0oiH1cNCIOuN0CQ==
 
 "@noble/post-quantum@^0.6.1":
   version "0.6.1"
@@ -10217,10 +10217,10 @@ hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.0.1, hoist-non-react-
   dependencies:
     react-is "^16.7.0"
 
-hono@^4.12.23:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/hono/-/hono-4.13.1.tgz#d4a606b792954d07a6215d12c01b7cf59da03cbc"
-  integrity sha512-kdJoFVv2xmayw6cY09H7AbMJMt8Jn5jdlEdXsP7AGBdF2DIptVlKlOLKXP41yPip4/a3yQPv9gVcJYI8YY04dw==
+hono@^4.12.27:
+  version "4.13.3"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.13.3.tgz#9715a35f637115f7455287ce6fdddcab21653d6b"
+  integrity sha512-r8AO2mYHoLxSHkgafNeC/BXyb2vWRxD3jem4Ts+ptav8oTG5FIRifAjuJEmZI4bSvvc2ns0GxmIYiZnHqN3mMw==
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
@@ -13185,7 +13185,7 @@ node-gyp-build@^4.3.0:
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.7.1.tgz#cd7d2eb48e594874053150a9418ac85af83ca8f7"
   integrity sha512-wTSrZ+8lsRRa3I3H8Xr65dLWSgCvY2l4AOnaeKdPA9TB/WYMPaTcrzf3rXvFoVvjKNVnu0CcWSx54qq9GKRUYg==
 
-node-gyp@^9.0.0:
+node-gyp@9.3.1, node-gyp@^9.0.0:
   version "9.3.1"
   resolved "https://registry.yarnpkg.com/node-gyp/-/node-gyp-9.3.1.tgz#1e19f5f290afcc9c46973d68700cbd21a96192e4"
   integrity sha512-4Q16ZCqq3g8awk6UplT7AuxQ35XN4R/yf/+wSAwcBUAjg7l58RTactWaP8fIDTi0FzI7YcVLujwExakZlfWkXg==
@@ -17260,7 +17260,7 @@ v8-to-istanbul@^9.0.1:
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^2.0.0"
 
-valibot@1.4.2, valibot@^1.4.1, valibot@^1.4.2:
+valibot@1.4.2, valibot@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/valibot/-/valibot-1.4.2.tgz#da857781187f170aeaf4498d463d25028615b0d6"
   integrity sha512-gjdCvJ6d3RyHAneqxMYMW9QMCwYMb3jpOO0IyHZV1bnRHFBHrX3VkIILt5XYR0WhwHiH7Mty8ovuPZ/O3gamrg==
