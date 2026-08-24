@@ -994,6 +994,13 @@
         "advancedDescription": "Advanced: sends encrypted existing account key material through the legacy bridge flow. Use the new-key method above when possible.",
         "continueExistingSecret": "Continue with existing-secret transfer",
         "description": "Recommended. Meteor creates a fresh key for each account; no private key or recovery phrase ever leaves this wallet.",
+        "destination": {
+            "heading": "Where should these accounts go?",
+            "mobileDescription": "Open the transfer in the Meteor mobile app.",
+            "mobileTitle": "Meteor Mobile",
+            "webDescription": "Open the transfer in Meteor Wallet in your browser.",
+            "webTitle": "Meteor Web"
+        },
         "eligibility": {
             "algorithmUnsupported": "Only Ed25519 source keys are supported.",
             "ledgerUnsupported": "Ledger-backed source accounts are not supported by this transfer.",
@@ -1013,8 +1020,8 @@
             "resolveNow": "Resolve this transfer",
             "revokeAccountMismatch": "That account is not part of this transfer, so nothing was changed.",
             "revokeChainRequired": "MyNearWallet could not reach the NEAR network to confirm the key was removed. Nothing was changed — try again once you are back online.",
-            "revokeDestinationKeyPresent": "Meteor Wallet’s key is still on the account, so this transfer cannot be closed yet. Remove the key and wait for the NEAR network to confirm it, then try again.",
             "revokedAccountsRequired": "No account was named for removal, so nothing was changed.",
+            "revokeDestinationKeyPresent": "Meteor Wallet’s key is still on the account, so this transfer cannot be closed yet. Remove the key and wait for the NEAR network to confirm it, then try again.",
             "sessionNotFound": "This transfer is no longer available. Start it again from your account list.",
             "startResultConflict": "Another transfer is still recorded on this device. Finish or resolve it before starting a new one.",
             "startResultDiscardFailed": "The transfer record on this device could not be cleared safely, so it was left untouched. Resolve it before starting another transfer.",
