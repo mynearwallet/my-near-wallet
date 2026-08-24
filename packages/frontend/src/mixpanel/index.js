@@ -19,7 +19,9 @@ function buildTrackingProps() {
 // BROWSER_POSTHOG_KEY is configured), so existing call sites feed both
 // analytics backends without modification.
 let Mixpanel = {
-    get_distinct_id: () => {},
+    get_distinct_id: () => {
+        return PostHog.get_distinct_id();
+    },
     identify: (id) => {
         PostHog.identify(id);
     },
@@ -65,7 +67,10 @@ if (CONFIG.BROWSER_MIXPANEL_TOKEN) {
     mixpanel.register({ timestamp: new Date().toString(), $referrer: document.referrer });
     Mixpanel = {
         get_distinct_id: () => {
-            return mixpanel.get_distinct_id();
+            // mix panel is dead in this project, this is more of a analytics wrapper now
+            // we should return the posthog distinct id instead.
+            return PostHog.get_distinct_id();
+            // return mixpanel.get_distinct_id();
         },
         identify: (id) => {
             mixpanel.identify(id);
