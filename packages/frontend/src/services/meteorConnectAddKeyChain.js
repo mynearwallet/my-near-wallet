@@ -67,6 +67,37 @@ const assertCanAffordAddKey = async (account, accountId) => {
     }
 };
 
+/**
+ * Remove a destination key from its account, signed by the EXACT source key that granted it.
+ *
+ * The recovery step behind `destination_key_present_unproven`: the key is on the account but
+ * nothing binds it to a transfer, so it has to come off before the fenced record can be retired.
+ * Deliberately routed through `getExactSourceAccount` rather than the wallet's default signer —
+ * the same fail-closed key isolation the AddKey used, so a wallet that has since lost the source
+ * key says so instead of removing the key with some other authority.
+ */
+export const removeDestinationKeyWithSourceSigner = async (operation) => {
+    const account = await getExactSourceAccount(operation);
+    return account.deleteKey(nearApiJs.utils.PublicKey.from(operation.destinationPublicKey));
+};
+
+/**
+ * Whether an RPC rejection means "this transaction can never be accepted", as opposed to any other
+ * failure. NEAR reports it as an `InvalidTxError::Expired` variant; the exact envelope differs
+ * between RPC shapes, so this checks the serialized error for the marker rather than one path.
+ */
+const isExpiredTransactionError = (error) => {
+    const serialized =
+        error instanceof Error ? `${error.message}` : JSON.stringify(error ?? '');
+    let detail = '';
+    try {
+        detail = JSON.stringify(error?.cause ?? error ?? '');
+    } catch {
+        detail = '';
+    }
+    return /\bExpired\b/.test(serialized) || /"Expired"/.test(detail);
+};
+
 export const createWalletAddKeyChain = () => ({
     getAccessKeys: (job) =>
         wallet.connection.provider.query({
@@ -106,4 +137,31 @@ export const createWalletAddKeyChain = () => ({
             sender_account_id: job.accountId,
             wait_until: 'FINAL',
         }),
+
+    /**
+     * Whether these exact signed bytes can never be accepted any more.
+     *
+     * Only the reconciliation state machine calls this, and only to separate "has not landed yet"
+     * from "can no longer land". Without a definitive answer the SDK stays `ambiguous` rather than
+     * retiring a fenced operation that could still take effect — which is safe but leaves the
+     * user stuck, so answering it is what makes recovery possible at all.
+     *
+     * The answer comes from the chain, not from a clock: re-submitting the identical bytes is
+     * idempotent (if the transaction already landed the node says so, and it is the same
+     * transaction hash either way), and NEAR reports a transaction whose block hash has fallen
+     * outside the validity window as `Expired`. Anything else — including a network failure — is
+     * reported as "not known to be dead".
+     */
+    isSignedTransactionExpired: async (job, signed) => {
+        try {
+            await wallet.connection.provider.sendJsonRpc('send_tx', {
+                signed_tx_base64: signed.signedTransactionBase64,
+                wait_until: 'EXECUTED_OPTIMISTIC',
+            });
+            // It was accepted. Whatever else is true, it is not expired.
+            return false;
+        } catch (error) {
+            return isExpiredTransactionError(error);
+        }
+    },
 });

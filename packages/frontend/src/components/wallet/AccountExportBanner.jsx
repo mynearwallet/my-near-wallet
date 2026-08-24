@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -94,6 +95,7 @@ const resumeRoute = (summary) =>
           };
 
 export default function AccountExportBanner() {
+    const { t } = useTranslation();
     const [pendingSummary, setPendingSummary] = useState(null);
 
     useEffect(() => {
@@ -119,14 +121,17 @@ export default function AccountExportBanner() {
         <AccountExportBannerContainer>
             <AccountExportBannerContent>
                 <BannerCopy>
-                    <BannerTitle>MyNearWallet Is Sunsetting</BannerTitle>
+                    <BannerTitle>{t('accountExport.banner.title')}</BannerTitle>
                     <BannerDescription>
-                        MyNearWallet is being sunset. Export your accounts to continue
-                        accessing them securely.
+                        {t('accountExport.banner.description')}
                     </BannerDescription>
                 </BannerCopy>
                 <BannerLink to={resumeRoute(pendingSummary)}>
-                    {pendingSummary ? 'Resume Account Transfer' : 'Export Accounts'}
+                    {t(
+                        pendingSummary
+                            ? 'accountExport.banner.resume'
+                            : 'accountExport.banner.export'
+                    )}
                 </BannerLink>
             </AccountExportBannerContent>
         </AccountExportBannerContainer>

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { newKeyTransferEligibilityKey } from '../../services/newKeyTransferState';
 import ExportAccountSelectedIcon from '../svg/ExportAccountSelectedIcon';
 import ExportAccountUnavailableIcon from '../svg/ExportAccountUnavailableIcon';
+import { MAX_EXPORTABLE_ACCOUNTS } from './accountExportAccounts';
 
 const AccountSection = styled.section`
     background: #fafafa;
@@ -139,7 +140,7 @@ export default function AccountExportAccountList({
         <>
             <AccountSection>
                 <AccountSectionTitle>
-                    Select one or more accounts to export ( Max 30 )
+                    {t('accountExport.list.selectPrompt', { max: MAX_EXPORTABLE_ACCOUNTS })}
                 </AccountSectionTitle>
                 {availableAccounts.length > 0 ? (
                     availableAccounts.map(({ accountId }) => (
@@ -151,13 +152,13 @@ export default function AccountExportAccountList({
                         />
                     ))
                 ) : (
-                    <EmptyState>No accounts are available for export.</EmptyState>
+                    <EmptyState>{t('accountExport.list.empty')}</EmptyState>
                 )}
             </AccountSection>
             {unavailableAccounts.length > 0 && (
                 <AccountSection>
                     <AccountSectionTitle>
-                        The following accounts are not available
+                        {t('accountExport.list.unavailableTitle')}
                     </AccountSectionTitle>
                     {unavailableAccounts.map(({ accountId, availability }) => (
                         <UnavailableAccountRow

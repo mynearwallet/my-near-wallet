@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -36,6 +37,7 @@ const Buttons = styled.div`
 `;
 
 export default function AccountExportSuccess() {
+    const { t } = useTranslation();
     const history = useHistory();
     const location = useLocation();
     const accountIds = location.state?.accountIds || getAccountExportSuccess();
@@ -53,14 +55,11 @@ export default function AccountExportSuccess() {
     return (
         <AccountExportSuccessPage className='small-centered'>
             <div className='send-theme'>
-                <h1>Accounts Exported Successfully</h1>
-                <h2>
-                    Your selected accounts have been securely exported and imported into
-                    Meteor Wallet.
-                </h2>
+                <h1>{t('accountExport.success.title')}</h1>
+                <h2>{t('accountExport.success.subtitle')}</h2>
                 <AccountExportSelectedAccountList
                     accountIds={accountIds}
-                    title='Exported Accounts'
+                    title={t('accountExport.success.listTitle')}
                 />
                 <Buttons>
                     <FormButton
@@ -69,7 +68,7 @@ export default function AccountExportSuccess() {
                             history.push('/export-accounts/remove', { accountIds });
                         }}
                     >
-                        Remove Exported Account from MyNearWallet
+                        {t('accountExport.success.removeFromWallet')}
                     </FormButton>
                     <div className='return-to-wallet'>
                         <FormButton
@@ -80,7 +79,7 @@ export default function AccountExportSuccess() {
                                 history.replace('/');
                             }}
                         >
-                            Return to MyNearWallet
+                            {t('accountExport.returnToWallet')}
                         </FormButton>
                     </div>
                 </Buttons>

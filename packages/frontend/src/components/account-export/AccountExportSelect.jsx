@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -69,6 +70,7 @@ const getInitiallySelectedAccountIds = (accounts) =>
         .map(({ accountId }) => accountId);
 
 export default function AccountExportSelect() {
+    const { t } = useTranslation();
     const history = useHistory();
     const [accounts, setAccounts] = useState([]);
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
@@ -90,7 +92,7 @@ export default function AccountExportSelect() {
                 setSelectedAccountIds(getInitiallySelectedAccountIds(loadedAccounts));
             } catch {
                 if (isMounted) {
-                    setErrorMessage('Could not check your account access keys.');
+                    setErrorMessage(t('accountExport.select.accessKeyCheckFailed'));
                 }
             } finally {
                 if (isMounted) {
@@ -137,12 +139,12 @@ export default function AccountExportSelect() {
         <AccountExportPage className='small-centered'>
             <div className='buttons-bottom'>
                 <div className='send-theme'>
-                    <h1>Export Accounts</h1>
-                    <h2>Review the accounts that will be securely exported.</h2>
+                    <h1>{t('accountExport.select.title')}</h1>
+                    <h2>{t('accountExport.select.subtitle')}</h2>
                     {isLoading ? (
                         <LoadingState>
                             <LoadingDots />
-                            <p>Checking your accounts…</p>
+                            <p>{t('accountExport.select.checking')}</p>
                         </LoadingState>
                     ) : errorMessage ? null : (
                         <AccountExportAccountList
@@ -159,14 +161,14 @@ export default function AccountExportSelect() {
                         disabled={isLoading || selectedAccountIds.length === 0}
                         onClick={() => void handleExportSelectedAccounts()}
                     >
-                        Export Selected Accounts
+                        {t('accountExport.select.exportSelected')}
                     </FormButton>
                     <FormButton
                         className='link'
                         color='gray'
                         onClick={() => history.push('/')}
                     >
-                        Cancel
+                        {t('accountExport.select.cancel')}
                     </FormButton>
                 </div>
             </div>

@@ -11,6 +11,7 @@ import {
 } from '../../services/meteorConnect';
 import {
     describeNewKeyTransferError,
+    NEW_KEY_TRANSFER_RECOVERY_ROUTE,
     newKeyTransferEligibilityKey,
 } from '../../services/newKeyTransferState';
 import Checkbox from '../common/Checkbox';
@@ -164,10 +165,22 @@ const Advanced = styled.div`
     }
 `;
 
-const ErrorMessage = styled.p`
+const ErrorMessage = styled.div`
     color: #dc1f25;
     margin: 20px 0 0;
     text-align: center;
+`;
+
+/** The raw SDK id. Support searches for it; a user never has to read it. */
+const SupportCode = styled.div`
+    color: #72727a;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 18px;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+    user-select: all;
+    word-break: break-all;
 `;
 
 export default function AccountExportMethod() {
@@ -177,6 +190,14 @@ export default function AccountExportMethod() {
     const accountIds = location.state?.accountIds;
     const [isExporting, setIsExporting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    /** The raw SDK id behind `errorMessage`, shown as fine print so support can search for it. */
+    const [errorCode, setErrorCode] = useState('');
+    /**
+     * Whether the failure is the global fence. Offering "try again" here is offering something the
+     * SDK guarantees will fail — the only real route forward is reconciliation
+     * (REVIEW-consumer-implementation B-04/M-03).
+     */
+    const [isFencedError, setIsFencedError] = useState(false);
     /**
      * Meteor Wallet V1 (the web wallet) is the only supported destination for now, so there is no
      * platform to choose. A development build may retarget the link at a locally served wallet.
@@ -193,6 +214,8 @@ export default function AccountExportMethod() {
     const handleNewKeyTransfer = async () => {
         setIsExporting(true);
         setErrorMessage('');
+        setErrorCode('');
+        setIsFencedError(false);
         try {
             const accounts = await loadNewKeyTransferAccounts(accountIds);
             const session = await startMeteorNewKeyAccountTransfer({
@@ -216,10 +239,13 @@ export default function AccountExportMethod() {
                     })
                 );
             } else {
-                const { i18nKey, fallback } = describeNewKeyTransferError(error);
+                const { i18nKey, fallback, code, isFenced } =
+                    describeNewKeyTransferError(error);
                 setErrorMessage(
                     i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError')
                 );
+                setErrorCode(code);
+                setIsFencedError(isFenced);
             }
             setIsExporting(false);
         }
@@ -230,6 +256,8 @@ export default function AccountExportMethod() {
 
         setIsExporting(true);
         setErrorMessage('');
+        setErrorCode('');
+        setIsFencedError(false);
 
         try {
             const accounts = await loadExportAccountSecrets(accountIds);
@@ -243,16 +271,17 @@ export default function AccountExportMethod() {
                 saveAccountExportSuccess(accountIds);
                 history.push('/export-accounts/success', { accountIds });
             } else if (outcome.status === 'declined') {
-                setErrorMessage('The account transfer was declined in Meteor Wallet.');
+                setErrorMessage(t('newKeyTransfer.existingSecret.declined'));
             } else if (outcome.status === 'expired') {
-                setErrorMessage('The account transfer expired. You can try again.');
+                setErrorMessage(t('newKeyTransfer.existingSecret.expired'));
             }
         } catch (error) {
+            // Translated copy first, the SDK id as fine print — never the raw id as the sentence.
+            const { i18nKey, code } = describeNewKeyTransferError(error);
             setErrorMessage(
-                error instanceof Error
-                    ? error.message
-                    : 'Could not start the account transfer.'
+                i18nKey ? t(i18nKey) : t('newKeyTransfer.existingSecret.startFailed')
             );
+            setErrorCode(code);
         } finally {
             if (!didNavigateToSuccess) {
                 setIsExporting(false);
@@ -324,7 +353,26 @@ export default function AccountExportMethod() {
                     </DevTarget>
                 )}
 
-                {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+                {errorMessage && (
+                    <ErrorMessage>
+                        {errorMessage}
+                        {errorCode && (
+                            <SupportCode>
+                                {t('newKeyTransfer.supportCode', { code: errorCode })}
+                            </SupportCode>
+                        )}
+                        {isFencedError && (
+                            <FormButton
+                                className='link'
+                                onClick={() =>
+                                    history.push(NEW_KEY_TRANSFER_RECOVERY_ROUTE)
+                                }
+                            >
+                                {t('newKeyTransfer.error.resolveNow')}
+                            </FormButton>
+                        )}
+                    </ErrorMessage>
+                )}
 
                 <Advanced>
                     <FormButton

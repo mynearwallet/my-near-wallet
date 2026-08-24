@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import ClickToCopy from '../common/ClickToCopy';
@@ -211,6 +212,7 @@ const CredentialRow = ({
 };
 
 export default function AccountExportManual({ history, location }) {
+    const { t } = useTranslation();
     const accountIds = location.state?.accountIds;
     const [credentialsByAccountId, setCredentialsByAccountId] = useState({});
     const [revealedCredentials, setRevealedCredentials] = useState({});
@@ -251,7 +253,7 @@ export default function AccountExportManual({ history, location }) {
                     setErrorMessage(
                         error instanceof Error
                             ? error.message
-                            : 'Could not load your account credentials.'
+                            : t('accountExport.manual.credentialsFailed')
                     );
                 }
             } finally {
@@ -306,12 +308,9 @@ export default function AccountExportManual({ history, location }) {
         <ManualExportPage className='small-centered'>
             <div className='buttons-bottom'>
                 <div className='send-theme'>
-                    <h1>Export Manually</h1>
-                    <h2>Reveal and copy the private key for your selected accounts.</h2>
-                    <Warning>
-                        Keep this information private. Anyone with access to these
-                        credentials can access and control your accounts.
-                    </Warning>
+                    <h1>{t('accountExport.manual.title')}</h1>
+                    <h2>{t('accountExport.manual.subtitle')}</h2>
+                    <Warning>{t('accountExport.manual.warning')}</Warning>
                     {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
                     <AccountList>
                         {accountIds.map((accountId, index) => {
@@ -322,7 +321,9 @@ export default function AccountExportManual({ history, location }) {
                             return (
                                 <AccountCard key={accountId}>
                                     <CredentialRow
-                                        label={`Account ${index + 1}`}
+                                        label={t('accountExport.manual.accountLabel', {
+                                            index: index + 1,
+                                        })}
                                         value={accountId}
                                     />
                                     <CredentialRow
@@ -332,7 +333,7 @@ export default function AccountExportManual({ history, location }) {
                                         }
                                         isCopyable={Boolean(credentials?.privateKey)}
                                         isLoading={isLoadingCredentials}
-                                        label='Private key'
+                                        label={t('accountExport.manual.privateKeyLabel')}
                                         onToggle={() =>
                                             void toggleCredential(accountId, 'privateKey')
                                         }
@@ -350,14 +351,14 @@ export default function AccountExportManual({ history, location }) {
                 </div>
                 <div className='buttons-bottom-buttons'>
                     <FormButton onClick={() => history.push('/')}>
-                        Back to wallet
+                        {t('accountExport.manual.backToWallet')}
                     </FormButton>
                     <FormButton
                         className='link'
                         color='gray'
                         onClick={() => history.goBack()}
                     >
-                        Back
+                        {t('accountExport.manual.back')}
                     </FormButton>
                 </div>
             </div>

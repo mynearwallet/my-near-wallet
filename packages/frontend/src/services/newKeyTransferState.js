@@ -73,8 +73,12 @@ export const findResumableNewKeyTransfer = (sessions) =>
         .find((session) => session.startOutput != null && !isNewKeyTransferFinished(session));
 
 /**
- * SDK error codes that a user can actually act on. Anything absent falls back to the SDK's own
- * message, which is written for a human in the cases that matter (the AddKey journal's are).
+ * Every public SDK error id this flow can surface, mapped to stable user copy.
+ *
+ * Falling back to the SDK's raw `Error.message` put machine-only strings such as
+ * `new_key_transfer_add_key_account_mismatch` in front of users
+ * (REVIEW-consumer-implementation M-03). The raw code is still returned separately, as a copyable
+ * support detail — it is genuinely useful to support, and genuinely useless as primary copy.
  */
 const ERROR_MESSAGE_KEYS = {
     new_key_transfer_unavailable: 'newKeyTransfer.error.unavailable',
@@ -87,17 +91,53 @@ const ERROR_MESSAGE_KEYS = {
     new_key_transfer_journal_corrupt: 'newKeyTransfer.error.journalCorrupt',
     new_key_transfer_wallet_binding_missing: 'newKeyTransfer.error.walletBindingMissing',
     new_key_transfer_client_id_conflict: 'newKeyTransfer.error.clientIdConflict',
+    new_key_transfer_start_result_discard_failed:
+        'newKeyTransfer.error.startResultDiscardFailed',
+    new_key_transfer_verify_before_add_key_intent:
+        'newKeyTransfer.error.verifyBeforeAddKeyIntent',
+    new_key_transfer_add_key_account_mismatch: 'newKeyTransfer.error.addKeyAccountMismatch',
+    new_key_transfer_add_key_chain_required: 'newKeyTransfer.error.addKeyChainRequired',
+    new_key_transfer_revoke_account_mismatch: 'newKeyTransfer.error.revokeAccountMismatch',
+    new_key_transfer_revoked_accounts_required: 'newKeyTransfer.error.revokedAccountsRequired',
+    new_key_transfer_revoke_chain_required: 'newKeyTransfer.error.revokeChainRequired',
+    new_key_transfer_revoke_destination_key_present:
+        'newKeyTransfer.error.revokeDestinationKeyPresent',
     // Raised by this wallet, not the SDK: the AddKey journal holds the exact proof Meteor must be
     // asked with, and a regenerated one is refused.
     new_key_transfer_verification_proof_missing:
         'newKeyTransfer.error.verificationProofMissing',
 };
 
-/** `{ i18nKey }` when the code is one we have words for, otherwise `{ fallback }`. */
+/**
+ * Codes whose only honest next step is the reconciliation screen.
+ *
+ * These are the global fence: resuming refuses because the binding record is gone, and starting
+ * again refuses because the fence is global. Anything that offers "start again" here is offering
+ * something the SDK guarantees will fail.
+ */
+const FENCED_ERROR_CODES = new Set([
+    'new_key_transfer_orphaned_add_key_recovery',
+    'new_key_transfer_recovery_required',
+    'new_key_transfer_start_result_discard_failed',
+    'new_key_transfer_journal_corrupt',
+]);
+
+/** Where a user should be sent to resolve a fenced transfer. */
+export const NEW_KEY_TRANSFER_RECOVERY_ROUTE = '/export-accounts/new-key-recovery';
+
+/**
+ * `{ i18nKey }` when the code is one we have words for, otherwise `{ fallback }`.
+ *
+ * `code` is always the raw SDK id and is meant to be rendered as fine print for support, never as
+ * the sentence a user reads. `isFenced` says the only route forward is the reconciliation screen.
+ */
 export const describeNewKeyTransferError = (error) => {
     const message = error instanceof Error ? error.message : String(error || '');
     const i18nKey = ERROR_MESSAGE_KEYS[message];
-    return i18nKey ? { i18nKey } : { fallback: message };
+    const isFenced = FENCED_ERROR_CODES.has(message);
+    return i18nKey
+        ? { i18nKey, code: message, isFenced }
+        : { fallback: message, code: message, isFenced };
 };
 
 /** Per-account refusal reasons Meteor may return from the start turn. */

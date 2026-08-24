@@ -68,6 +68,7 @@ import AccountExportMethod from '../components/account-export/AccountExportMetho
 import AccountExportManual from '../components/account-export/AccountExportManual';
 import AccountExportRemove from '../components/account-export/AccountExportRemove';
 import AccountExportNewKeyReady from '../components/account-export/AccountExportNewKeyReady';
+import AccountExportNewKeyRecovery from '../components/account-export/AccountExportNewKeyRecovery';
 import AccountExportNewKeyActivation from '../components/account-export/AccountExportNewKeyActivation';
 import AccountExportNewKeyActivated from '../components/account-export/AccountExportNewKeyActivated';
 import CONFIG from '../config';
@@ -621,6 +622,11 @@ class Routing extends Component {
                                 exact
                                 path='/export-accounts/new-key-activated'
                                 component={AccountExportNewKeyActivated}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-recovery'
+                                component={AccountExportNewKeyRecovery}
                             />
                             <PasswordProtectedRoute
                                 exact

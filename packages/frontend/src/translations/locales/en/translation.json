@@ -133,6 +133,54 @@
             "error": "You entered the incorrect word"
         }
     },
+    "accountExport": {
+        "banner": {
+            "description": "MyNearWallet is being sunset. Export your accounts to continue accessing them securely.",
+            "export": "Export Accounts",
+            "resume": "Resume Account Transfer",
+            "title": "MyNearWallet Is Sunsetting"
+        },
+        "list": {
+            "empty": "No accounts are available for export.",
+            "selectPrompt": "Select one or more accounts to export (max {{max}})",
+            "unavailableTitle": "The following accounts are not available"
+        },
+        "manual": {
+            "accountLabel": "Account {{index}}",
+            "back": "Back",
+            "backToWallet": "Back to wallet",
+            "credentialsFailed": "MyNearWallet could not load your account credentials.",
+            "privateKeyLabel": "Private key",
+            "subtitle": "Reveal and copy the private key for your selected accounts.",
+            "title": "Export Manually",
+            "warning": "Keep this information private. Anyone with access to these credentials can access and control your accounts."
+        },
+        "remove": {
+            "confirmAccess": "I confirm that I can access the selected accounts in Meteor Wallet.",
+            "failed": "MyNearWallet could not remove all selected accounts. Please try again.",
+            "listTitle": "Accounts to Remove",
+            "removeSelected": "Remove Selected Accounts",
+            "removing": "Removing selected accounts…",
+            "title": "Remove accounts from MyNearWallet",
+            "warningConfirmFirst": "Only remove your accounts after you’ve confirmed that they were successfully transferred and you can access them in Meteor Wallet.",
+            "warningPermanent": "Removing an account will permanently delete its locally stored account data and keys from MyNearWallet. This action cannot be undone."
+        },
+        "returnToWallet": "Return to MyNearWallet",
+        "select": {
+            "accessKeyCheckFailed": "MyNearWallet could not check your account access keys.",
+            "cancel": "Cancel",
+            "checking": "Checking your accounts…",
+            "exportSelected": "Export Selected Accounts",
+            "subtitle": "Review the accounts that will be securely exported.",
+            "title": "Export Accounts"
+        },
+        "success": {
+            "listTitle": "Exported Accounts",
+            "removeFromWallet": "Remove Exported Account from MyNearWallet",
+            "subtitle": "Your selected accounts have been securely exported and imported into Meteor Wallet.",
+            "title": "Accounts Exported Successfully"
+        }
+    },
     "accountSelector": {
         "noAccountDesc": "You’re not currently signed in to any alternate accounts.",
         "signInButton": "Import a Different Account"
@@ -917,6 +965,7 @@
         },
         "activation": {
             "cancel": "Back to my wallet",
+            "finishLater": "Finish later",
             "keepOpen": "Keep this page open until every account is confirmed.",
             "progress": "{{completed}} of {{total}} Completed",
             "retry": "Try Again",
@@ -954,17 +1003,31 @@
             "verificationFailed": "Could not verify the access key. Try again later."
         },
         "error": {
+            "addKeyAccountMismatch": "This transfer does not cover that account, so no key change was made. Start the transfer again from your account list.",
+            "addKeyChainRequired": "MyNearWallet could not reach the NEAR network to sign the key change. Check your connection and try again.",
             "clientIdConflict": "This transfer was started with different accounts. Start it again from your account list.",
             "journalCorrupt": "The transfer record stored on this device could not be read safely.",
             "noAccountsReady": "No account in this transfer is ready to activate.",
             "orphanedAddKey": "A partly submitted key change is still recorded on this device and must be resolved before another transfer can start. Contact support with the reference below.",
             "recoveryRequired": "This transfer has already added keys on the NEAR blockchain, so it cannot simply be discarded.",
+            "resolveNow": "Resolve this transfer",
+            "revokeAccountMismatch": "That account is not part of this transfer, so nothing was changed.",
+            "revokeChainRequired": "MyNearWallet could not reach the NEAR network to confirm the key was removed. Nothing was changed — try again once you are back online.",
+            "revokeDestinationKeyPresent": "Meteor Wallet’s key is still on the account, so this transfer cannot be closed yet. Remove the key and wait for the NEAR network to confirm it, then try again.",
+            "revokedAccountsRequired": "No account was named for removal, so nothing was changed.",
             "sessionNotFound": "This transfer is no longer available. Start it again from your account list.",
             "startResultConflict": "Another transfer is still recorded on this device. Finish or resolve it before starting a new one.",
+            "startResultDiscardFailed": "The transfer record on this device could not be cleared safely, so it was left untouched. Resolve it before starting another transfer.",
             "startResultMissing": "This transfer’s activation record is missing, so it cannot be resumed safely. Start it again from your account list.",
             "unavailable": "Transfers to Meteor Wallet are not available in this build.",
             "verificationProofMissing": "The proof needed to confirm this transfer with Meteor Wallet is missing. Start it again from your account list.",
+            "verifyBeforeAddKeyIntent": "This account’s new key has not been added on the NEAR blockchain yet, so it cannot be confirmed with Meteor Wallet.",
             "walletBindingMissing": "Meteor Wallet did not identify itself when answering. Start the transfer again."
+        },
+        "existingSecret": {
+            "declined": "The account transfer was declined in Meteor Wallet.",
+            "expired": "The account transfer expired. You can try again.",
+            "startFailed": "MyNearWallet could not start the account transfer."
         },
         "genericError": "The transfer could not continue.",
         "hideAdvanced": "Hide advanced existing-secret transfer",
@@ -990,6 +1053,7 @@
             "activate": "Activate New Keys",
             "cancel": "Back to my wallet",
             "explainer": "Activating adds Meteor’s new key to each account on the NEAR blockchain. Your existing keys are never sent anywhere and keep working until you choose to remove them.",
+            "finishLater": "Finish later",
             "noneSubtitle": "Meteor Wallet could not prepare any of the selected accounts. Resolve the reasons below and try again.",
             "noneTitle": "No Accounts Could Be Prepared",
             "refusedTitle": "Not Included in This Transfer",
@@ -997,9 +1061,41 @@
             "subtitle": "Meteor Wallet created a new access key for each account below. Activate them to finish the transfer.",
             "title": "Meteor Keys Are Ready"
         },
+        "recovery": {
+            "archive": "Close this record",
+            "archiveRefused": "Meteor Wallet’s key is still on the account. Wait for the NEAR blockchain to confirm the removal, then try again.",
+            "check": "Check the NEAR blockchain",
+            "continue": "Back to account selection",
+            "detail": {
+                "access_keys_unreadable": "The account’s keys could not be read from the NEAR blockchain.",
+                "signed_transaction_may_still_land": "The signed key change could still be accepted by the NEAR blockchain, so it is not safe to close this record yet.",
+                "transaction_expiry_unknown": "MyNearWallet could not establish whether the signed key change can still be accepted."
+            },
+            "fieldDestinationKey": "Meteor Wallet key",
+            "fieldSourceKey": "Your signing key",
+            "fieldTransaction": "Transaction",
+            "finishLater": "Finish later",
+            "journalUnreadable": "The transfer record stored on this device could not be read, so the affected accounts cannot be listed here. Contact support with the reference below — do not clear your browser data, it holds the only record of what happened.",
+            "removeKey": "Remove Meteor Wallet’s key",
+            "resolvedSubtitle": "This device has no unfinished key changes. You can start a transfer again.",
+            "resolvedTitle": "Nothing Left to Resolve",
+            "status": {
+                "ambiguous": "The NEAR blockchain could not confirm either way just now. Nothing was changed — try again shortly.",
+                "destination_key_absent": "The key change never took effect and can no longer be accepted. This record can be closed.",
+                "destination_key_present_unproven": "Meteor Wallet’s key is on this account, but nothing proves this transfer put it there. Remove it with your own key to close this out.",
+                "finalized": "The key change did complete on the NEAR blockchain. This transfer can be continued from your account list.",
+                "not_found": "Already resolved."
+            },
+            "statusUnchecked": "Not checked yet. Checking only reads the NEAR blockchain — nothing is signed or sent.",
+            "subtitle": "A key change was signed on this device but never confirmed. It has to be resolved before another transfer can start.",
+            "supportExplainer": "If none of the steps above resolve this, contact support and quote the reference. Starting a new transfer will keep being refused until this one is resolved.",
+            "supportReferenceLabel": "Support reference",
+            "title": "Resolve an Unfinished Key Change"
+        },
         "showAdvanced": "Show advanced existing-secret transfer",
         "start": "Transfer to Meteor Wallet",
         "starting": "Opening Meteor Wallet…",
+        "supportCode": "Support code: {{code}}",
         "supportReference": "Support reference: {{id}}",
         "title": "Transfer to Meteor Wallet"
     },

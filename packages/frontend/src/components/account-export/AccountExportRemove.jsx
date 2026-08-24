@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -104,6 +105,7 @@ const getExistingAccountIds = (accountIds) => {
 };
 
 export default function AccountExportRemove() {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const history = useHistory();
     const location = useLocation();
@@ -146,7 +148,7 @@ export default function AccountExportRemove() {
             dispatch(switchAccount({ accountId: remainingAccountIds[0] }));
             history.replace('/');
         } catch {
-            setErrorMessage('Could not remove all selected accounts. Please try again.');
+            setErrorMessage(t('accountExport.remove.failed'));
             setIsRemoving(false);
         }
     };
@@ -158,32 +160,22 @@ export default function AccountExportRemove() {
     return (
         <AccountExportRemovePage className='small-centered'>
             <div className='send-theme'>
-                <h1>Remove accounts from MyNearWallet</h1>
+                <h1>{t('accountExport.remove.title')}</h1>
                 <WarningBox>
                     <ExportAccountRemovalWarningIcon className='warning-icon' />
-                    <p>
-                        Only remove your accounts after you’ve confirmed that they were
-                        successfully transferred and you can access them in Meteor Wallet.
-                    </p>
-                    <p>
-                        Removing an account will permanently delete its locally stored
-                        account data and keys from MyNearWallet. This action cannot be
-                        undone.
-                    </p>
+                    <p>{t('accountExport.remove.warningConfirmFirst')}</p>
+                    <p>{t('accountExport.remove.warningPermanent')}</p>
                 </WarningBox>
                 <AccountExportSelectedAccountList
                     accountIds={accountIds}
-                    title='Accounts to Remove'
+                    title={t('accountExport.remove.listTitle')}
                 />
                 <ConfirmationLabel>
                     <Checkbox
                         checked={hasConfirmedAccess}
                         onChange={(event) => setHasConfirmedAccess(event.target.checked)}
                     />
-                    <span>
-                        I confirm that I <strong>can access</strong> the selected accounts{' '}
-                        <strong>in Meteor Wallet</strong>.
-                    </span>
+                    <span>{t('accountExport.remove.confirmAccess')}</span>
                 </ConfirmationLabel>
                 {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
                 <Buttons>
@@ -192,9 +184,11 @@ export default function AccountExportRemove() {
                         disabled={!hasConfirmedAccess || isRemoving}
                         onClick={() => void removeSelectedAccounts()}
                     >
-                        {isRemoving
-                            ? 'Removing selected accounts…'
-                            : 'Remove Selected Accounts'}
+                        {t(
+                            isRemoving
+                                ? 'accountExport.remove.removing'
+                                : 'accountExport.remove.removeSelected'
+                        )}
                     </FormButton>
                     <div className='return-to-wallet'>
                         <FormButton
@@ -203,7 +197,7 @@ export default function AccountExportRemove() {
                             disabled={isRemoving}
                             onClick={returnToMyNearWallet}
                         >
-                            Return to MyNearWallet
+                            {t('accountExport.returnToWallet')}
                         </FormButton>
                     </div>
                 </Buttons>

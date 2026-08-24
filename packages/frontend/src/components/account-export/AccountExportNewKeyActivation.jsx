@@ -417,7 +417,7 @@ export default function AccountExportNewKeyActivation() {
                                 color='gray'
                                 onClick={() => history.replace('/')}
                             >
-                                {t('newKeyTransfer.activation.cancel')}
+                                {t('newKeyTransfer.activation.finishLater')}
                             </FormButton>
                         </div>
                     </Buttons>

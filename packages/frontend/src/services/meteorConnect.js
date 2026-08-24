@@ -6,7 +6,10 @@ import {
     webpage_local_storage,
 } from '@meteorwallet/sdk';
 
-import { createWalletAddKeyChain } from './meteorConnectAddKeyChain';
+import {
+    createWalletAddKeyChain,
+    removeDestinationKeyWithSourceSigner,
+} from './meteorConnectAddKeyChain';
 import CONFIG from '../config';
 
 export const meteorNetworkId =
@@ -276,3 +279,67 @@ export const clearMeteorNewKeyAccountTransfer = async (clientTransferId) => {
     await initializeMeteorConnect();
     await newKeyTransfer().clear(clientTransferId);
 };
+
+/* ────────────────────────────────────────────────────────────────────────────────────────────
+ * Fenced-transfer reconciliation
+ *
+ * A journaled `transaction_signed` AddKey whose start-result record is gone is fail-closed on
+ * purpose: the bytes may still land, so nothing new may start and the row must not be cleared.
+ * Before this, that was the whole story a user got — the resume route refused, starting again
+ * refused, and the error copy pointed at a support reference that was never rendered. The browser
+ * profile was stranded for good (REVIEW-consumer-implementation B-04).
+ *
+ * The SDK now exposes the evidence and a chain-backed state machine. Nothing here decides
+ * anything: it reads the report, advances one operation at a time, and archives only what the SDK
+ * itself has re-proven absent on-chain.
+ * ──────────────────────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * What is fencing this device, in non-secret terms: the affected accounts, the source and
+ * destination public keys, the transaction hashes, and a stable support reference to quote.
+ * `{ fenced: false }` when there is nothing to resolve.
+ */
+export const getMeteorNewKeyReconciliationReport = async () => {
+    await initializeMeteorConnect();
+    return newKeyTransfer().getReconciliationReport();
+};
+
+/**
+ * Advance ONE fenced operation as far as the chain allows. Never signs, never broadcasts a new
+ * transaction; the only change it can make is promoting a proven AddKey to finalized.
+ *
+ * Returns the SDK's status verbatim — `finalized`, `destination_key_present_unproven`,
+ * `destination_key_absent`, `ambiguous`, `not_found` — because each one means a different next
+ * step for the user and collapsing them would put us back where we started.
+ */
+export const reconcileMeteorNewKeyFencedOperation = async (operation) => {
+    await initializeMeteorConnect();
+    return newKeyTransfer().reconcileFencedOperation({
+        operation,
+        chain: createWalletAddKeyChain(),
+    });
+};
+
+/**
+ * Retire a fenced operation. The SDK re-proves on-chain absence of the exact destination key
+ * first, so this cannot be used to clear the fence by asserting the key is gone — only by it
+ * actually being gone.
+ */
+export const archiveMeteorNewKeyFencedOperation = async (operation) => {
+    await initializeMeteorConnect();
+    return newKeyTransfer().archiveReconciledOperation({
+        operation,
+        chain: createWalletAddKeyChain(),
+    });
+};
+
+/**
+ * Remove a destination key this wallet granted, using the account's own SOURCE full-access key.
+ *
+ * This is the step behind `destination_key_present_unproven`: the key is on the account but
+ * nothing binds it to a transfer, so it must come off before the record can be retired. The
+ * removal is an ordinary DeleteKey signed locally — the SDK is not involved and never sees the
+ * signing material.
+ */
+export const removeMeteorNewKeyDestinationKey = async (operation) =>
+    removeDestinationKeyWithSourceSigner(operation);

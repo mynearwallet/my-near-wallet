@@ -8,7 +8,11 @@ import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import ExportAccountUnavailableIcon from '../svg/ExportAccountUnavailableIcon';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
-import { newKeyTransferIssueKey } from '../../services/newKeyTransferState';
+import {
+    describeNewKeyTransferError,
+    NEW_KEY_TRANSFER_RECOVERY_ROUTE,
+    newKeyTransferIssueKey,
+} from '../../services/newKeyTransferState';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const NewKeyReadyPage = styled(Container)`
@@ -78,10 +82,22 @@ const RefusedRow = styled.div`
     }
 `;
 
-const ErrorMessage = styled.p`
+const ErrorMessage = styled.div`
     color: #dc1f25;
     margin: 20px 0 0;
     text-align: center;
+`;
+
+/** The raw SDK id. Support searches for it; a user never has to read it. */
+const SupportCode = styled.div`
+    color: #72727a;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 18px;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+    user-select: all;
+    word-break: break-all;
 `;
 
 const Buttons = styled.div`
@@ -104,10 +120,11 @@ const Buttons = styled.div`
 export default function AccountExportNewKeyReady() {
     const { t } = useTranslation();
     const history = useHistory();
-    const { summary, isLoading, errorMessage } = useNewKeyTransfer({
+    const { summary, isLoading, errorMessage, setErrorMessage } = useNewKeyTransfer({
         redirectWhenVerified: true,
     });
     const [isLeaving, setIsLeaving] = useState(false);
+    const [clearFailure, setClearFailure] = useState(null);
 
     /**
      * Drop a transfer Meteor accepted nothing for on the way out. Nothing was minted and nothing
@@ -116,10 +133,20 @@ export default function AccountExportNewKeyReady() {
      */
     const startOver = async () => {
         setIsLeaving(true);
+        setClearFailure(null);
         try {
             await clearMeteorNewKeyAccountTransfer(summary.clientTransferId);
-        } catch {
-            // Not clearable means it holds real state after all; the next start sweeps it.
+        } catch (error) {
+            // Not clearable means it holds REAL recovery state — a signed AddKey, or a journal that
+            // could not be read. Swallowing that and navigating away sent the user back to account
+            // selection to hit the same fence again with no idea why
+            // (REVIEW-consumer-implementation §6.3). Say what happened, and offer the one route
+            // that can actually resolve it.
+            const { i18nKey, fallback, code, isFenced } = describeNewKeyTransferError(error);
+            setErrorMessage(i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError'));
+            setClearFailure({ code, isFenced });
+            setIsLeaving(false);
+            return;
         }
         history.replace('/export-accounts/select');
     };
@@ -184,7 +211,26 @@ export default function AccountExportNewKeyReady() {
                 {!acceptedNothing && (
                     <Explainer>{t('newKeyTransfer.ready.explainer')}</Explainer>
                 )}
-                {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+                {errorMessage && (
+                    <ErrorMessage>
+                        {errorMessage}
+                        {clearFailure?.code && (
+                            <SupportCode>
+                                {t('newKeyTransfer.supportCode', { code: clearFailure.code })}
+                            </SupportCode>
+                        )}
+                        {clearFailure?.isFenced && (
+                            <FormButton
+                                className='link'
+                                onClick={() =>
+                                    history.push(NEW_KEY_TRANSFER_RECOVERY_ROUTE)
+                                }
+                            >
+                                {t('newKeyTransfer.error.resolveNow')}
+                            </FormButton>
+                        )}
+                    </ErrorMessage>
+                )}
 
                 <Buttons>
                     {acceptedNothing ? (
@@ -208,7 +254,7 @@ export default function AccountExportNewKeyReady() {
                                     color='gray'
                                     onClick={() => history.replace('/')}
                                 >
-                                    {t('newKeyTransfer.ready.cancel')}
+                                    {t('newKeyTransfer.ready.finishLater')}
                                 </FormButton>
                             </div>
                         </>

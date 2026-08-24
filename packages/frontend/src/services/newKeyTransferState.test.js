@@ -187,12 +187,50 @@ describe('findResumableNewKeyTransfer', () => {
 });
 
 describe('describeNewKeyTransferError', () => {
-    it('maps a known SDK code to a translation key', () => {
+    it('maps a known SDK code to a translation key, and keeps the code for support', () => {
+        // REVIEW-consumer-implementation M-03: the raw id is still returned, but only as a
+        // copyable support detail — never as the sentence a user reads.
         expect(
             describeNewKeyTransferError(
                 new Error('new_key_transfer_start_result_journal_missing')
             )
-        ).toEqual({ i18nKey: 'newKeyTransfer.error.startResultMissing' });
+        ).toEqual({
+            i18nKey: 'newKeyTransfer.error.startResultMissing',
+            code: 'new_key_transfer_start_result_journal_missing',
+            isFenced: false,
+        });
+    });
+
+    it('maps every public SDK error id the flow can raise', () => {
+        // These six reached the UI as raw machine strings before M-03.
+        const codes = [
+            'new_key_transfer_start_result_discard_failed',
+            'new_key_transfer_verify_before_add_key_intent',
+            'new_key_transfer_add_key_account_mismatch',
+            'new_key_transfer_add_key_chain_required',
+            'new_key_transfer_revoke_account_mismatch',
+            'new_key_transfer_revoked_accounts_required',
+        ];
+        for (const code of codes) {
+            const described = describeNewKeyTransferError(new Error(code));
+            expect(described.i18nKey).toBeTruthy();
+            expect(described.fallback).toBeUndefined();
+        }
+    });
+
+    it('flags the codes whose only route forward is reconciliation', () => {
+        // Offering "start again" for these is offering something the SDK guarantees will fail.
+        expect(
+            describeNewKeyTransferError(
+                new Error('new_key_transfer_orphaned_add_key_recovery')
+            ).isFenced
+        ).toBe(true);
+        expect(
+            describeNewKeyTransferError(new Error('new_key_transfer_journal_corrupt')).isFenced
+        ).toBe(true);
+        expect(
+            describeNewKeyTransferError(new Error('new_key_transfer_session_not_found')).isFenced
+        ).toBe(false);
     });
 
     it('passes an unmapped message through so the SDK can speak for itself', () => {
@@ -202,6 +240,8 @@ describe('describeNewKeyTransferError', () => {
             'alice.testnet exact signed AddKey transaction is saved, but broadcast is ambiguous.';
         expect(describeNewKeyTransferError(new Error(message))).toEqual({
             fallback: message,
+            code: message,
+            isFenced: false,
         });
     });
 });

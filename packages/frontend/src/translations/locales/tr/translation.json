@@ -110,6 +110,54 @@
             "error": "yanlış kelime girdiniz"
         }
     },
+    "accountExport": {
+        "returnToWallet": "MyNearWallet'a dön",
+        "banner": {
+            "title": "MyNearWallet kapanıyor",
+            "description": "MyNearWallet kapatılıyor. Hesaplarınıza güvenle erişmeye devam etmek için onları dışa aktarın.",
+            "resume": "Hesap aktarımına devam et",
+            "export": "Hesapları dışa aktar"
+        },
+        "select": {
+            "title": "Hesapları dışa aktar",
+            "subtitle": "Güvenle dışa aktarılacak hesapları gözden geçirin.",
+            "checking": "Hesaplarınız kontrol ediliyor…",
+            "accessKeyCheckFailed": "MyNearWallet hesaplarınızın erişim anahtarlarını kontrol edemedi.",
+            "exportSelected": "Seçili hesapları dışa aktar",
+            "cancel": "İptal"
+        },
+        "list": {
+            "selectPrompt": "Dışa aktarmak için bir veya daha fazla hesap seçin (en fazla {{max}})",
+            "empty": "Dışa aktarılabilecek hesap yok.",
+            "unavailableTitle": "Aşağıdaki hesaplar kullanılamıyor"
+        },
+        "success": {
+            "title": "Hesaplar başarıyla dışa aktarıldı",
+            "subtitle": "Seçtiğiniz hesaplar güvenle dışa aktarıldı ve Meteor Wallet'a aktarıldı.",
+            "listTitle": "Dışa aktarılan hesaplar",
+            "removeFromWallet": "Dışa aktarılan hesabı MyNearWallet'tan kaldır"
+        },
+        "remove": {
+            "title": "Hesapları MyNearWallet'tan kaldır",
+            "warningConfirmFirst": "Hesaplarınızı yalnızca başarıyla aktarıldıklarını ve Meteor Wallet'ta erişebildiğinizi doğruladıktan sonra kaldırın.",
+            "warningPermanent": "Bir hesabı kaldırmak, yerel olarak saklanan hesap verilerini ve anahtarları MyNearWallet'tan kalıcı olarak siler. Bu işlem geri alınamaz.",
+            "listTitle": "Kaldırılacak hesaplar",
+            "confirmAccess": "Seçili hesaplara Meteor Wallet'ta erişebildiğimi onaylıyorum.",
+            "removeSelected": "Seçili hesapları kaldır",
+            "removing": "Seçili hesaplar kaldırılıyor…",
+            "failed": "MyNearWallet seçili hesapların tümünü kaldıramadı. Lütfen yeniden deneyin."
+        },
+        "manual": {
+            "title": "Elle dışa aktar",
+            "subtitle": "Seçtiğiniz hesapların özel anahtarını görüntüleyip kopyalayın.",
+            "warning": "Bu bilgileri gizli tutun. Bu kimlik bilgilerine erişen herkes hesaplarınıza erişebilir ve onları kontrol edebilir.",
+            "credentialsFailed": "MyNearWallet hesap kimlik bilgilerinizi yükleyemedi.",
+            "accountLabel": "Hesap {{index}}",
+            "privateKeyLabel": "Özel anahtar",
+            "backToWallet": "Cüzdana dön",
+            "back": "Geri"
+        }
+    },
     "accountSelector": {
         "noAccountDesc": "Şu anda herhangi bir alternatif hesapta oturum açmadınız.",
         "signInButton": "Farklı Bir Hesabı İçe Aktar"
@@ -1600,5 +1648,150 @@
             "noWithdraw": "Validatörden bekleyen bakiye çekilemiyor"
         }
     },
-    "warning": "Uyarı"
+    "warning": "Uyarı",
+    "newKeyTransfer": {
+        "title": "Meteor Wallet'a aktar",
+        "description": "Önerilen. Meteor her hesap için yeni bir anahtar oluşturur; hiçbir özel anahtar veya kurtarma ifadesi bu cüzdandan çıkmaz.",
+        "methodHeading": "Nasıl dışa aktarmak istersiniz?",
+        "methodSubheading": "Hesaplarınıza nasıl erişip onları nasıl dışa aktaracağınızı seçin.",
+        "start": "Meteor Wallet'a aktar",
+        "starting": "Meteor Wallet açılıyor…",
+        "loading": "Aktarım yükleniyor…",
+        "genericError": "Aktarıma devam edilemedi.",
+        "ineligible": "{{accountId}} şu anda aktarılamıyor. {{reason}}",
+        "supportReference": "Destek referansı: {{id}}",
+        "supportCode": "Destek kodu: {{code}}",
+        "showAdvanced": "Mevcut anahtarla gelişmiş aktarımı göster",
+        "hideAdvanced": "Mevcut anahtarla gelişmiş aktarımı gizle",
+        "advancedDescription": "Gelişmiş: mevcut hesap anahtarlarının şifrelenmiş verisini eski köprü akışıyla gönderir. Mümkün olduğunda yukarıdaki yeni anahtar yöntemini kullanın.",
+        "continueExistingSecret": "Mevcut anahtarla aktarıma devam et",
+        "manualTitle": "Elle dışa aktar",
+        "manualDescription": "Özel anahtarlarınızı görüntüleyip kopyalayın.",
+        "localDevTarget": "Yerel olarak çalışan bir Meteor Wallet'a gönder (geliştirme)",
+        "existingSecret": {
+            "declined": "Hesap aktarımı Meteor Wallet'ta reddedildi.",
+            "expired": "Hesap aktarımının süresi doldu. Yeniden deneyebilirsiniz.",
+            "startFailed": "MyNearWallet hesap aktarımını başlatamadı."
+        },
+        "error": {
+            "addKeyAccountMismatch": "Bu aktarım o hesabı kapsamıyor, bu yüzden hiçbir anahtar değiştirilmedi. Aktarımı hesap listenizden yeniden başlatın.",
+            "addKeyChainRequired": "MyNearWallet anahtar değişikliğini imzalamak için NEAR ağına ulaşamadı. Bağlantınızı kontrol edip yeniden deneyin.",
+            "clientIdConflict": "Bu aktarım farklı hesaplarla başlatılmıştı. Hesap listenizden yeniden başlatın.",
+            "journalCorrupt": "Bu cihazda saklanan aktarım kaydı güvenli biçimde okunamadı.",
+            "noAccountsReady": "Bu aktarımdaki hiçbir hesap etkinleştirmeye hazır değil.",
+            "orphanedAddKey": "Bu cihazda kısmen gönderilmiş bir anahtar değişikliği kayıtlı; başka bir aktarım başlatılabilmesi için önce çözülmesi gerekiyor. Aşağıdaki referansla destek ekibine başvurun.",
+            "recoveryRequired": "Bu aktarım NEAR blok zincirine zaten anahtar ekledi, bu yüzden öylece atılamaz.",
+            "resolveNow": "Bu aktarımı çöz",
+            "revokeAccountMismatch": "O hesap bu aktarımın parçası değil, bu yüzden hiçbir şey değişmedi.",
+            "revokeChainRequired": "MyNearWallet anahtarın kaldırıldığını doğrulamak için NEAR ağına ulaşamadı. Hiçbir şey değişmedi — çevrimiçi olduğunuzda yeniden deneyin.",
+            "revokeDestinationKeyPresent": "Meteor Wallet'ın anahtarı hâlâ hesapta, bu yüzden bu aktarım henüz kapatılamaz. Anahtarı kaldırın, NEAR ağının onaylamasını bekleyin ve yeniden deneyin.",
+            "revokedAccountsRequired": "Kaldırılacak hesap belirtilmedi, bu yüzden hiçbir şey değişmedi.",
+            "sessionNotFound": "Bu aktarım artık kullanılamıyor. Hesap listenizden yeniden başlatın.",
+            "startResultConflict": "Bu cihazda hâlâ başka bir aktarım kayıtlı. Yenisini başlatmadan önce onu tamamlayın veya çözün.",
+            "startResultDiscardFailed": "Bu cihazdaki aktarım kaydı güvenli biçimde temizlenemedi ve olduğu gibi bırakıldı. Başka bir aktarım başlatmadan önce çözün.",
+            "startResultMissing": "Bu aktarımın etkinleştirme kaydı eksik, bu yüzden güvenle sürdürülemez. Hesap listenizden yeniden başlatın.",
+            "unavailable": "Meteor Wallet'a aktarımlar bu sürümde kullanılamıyor.",
+            "verificationProofMissing": "Bu aktarımı Meteor Wallet ile doğrulamak için gereken kanıt eksik. Hesap listenizden yeniden başlatın.",
+            "verifyBeforeAddKeyIntent": "Bu hesabın yeni anahtarı henüz NEAR blok zincirine eklenmedi, bu yüzden Meteor Wallet ile doğrulanamaz.",
+            "walletBindingMissing": "Meteor Wallet yanıt verirken kendini tanıtmadı. Aktarımı yeniden başlatın."
+        },
+        "eligibility": {
+            "algorithmUnsupported": "Yalnızca Ed25519 kaynak anahtarları destekleniyor.",
+            "ledgerUnsupported": "Ledger tabanlı kaynak hesaplar bu aktarımda desteklenmiyor.",
+            "noLocalKey": "Kullanılabilir düz bir yerel imzalama anahtarı yok.",
+            "notFullAccess": "Tam erişim anahtarı bulunamadı.",
+            "twoFactorUnsupported": "2FA/çoklu imza hesapları desteklenmiyor. Önce 2FA'yı kapatın ya da elle dışa aktarmayı kullanın.",
+            "verificationFailed": "Erişim anahtarı doğrulanamadı. Daha sonra yeniden deneyin."
+        },
+        "issue": {
+            "account_not_found": "Meteor Wallet bu hesabı NEAR blok zincirinde bulamadı.",
+            "key_generation_failed": "Meteor Wallet bu hesap için yeni bir anahtar oluşturamadı.",
+            "pending_transfer_conflict": "Bu hesabın Meteor Wallet'ta tamamlanmamış bir aktarımı zaten var. Orada tamamlayın veya iptal edin, sonra yeniden deneyin.",
+            "rpc_lookup_failed": "Meteor Wallet bu hesabı kontrol etmek için NEAR blok zincirine ulaşamadı. Birazdan yeniden deneyin.",
+            "secure_storage_failed": "Meteor Wallet bu hesabın yeni anahtarını güvenle saklayamadı.",
+            "source_key_not_found": "Bu cüzdanın bu hesap için kullandığı anahtar artık hesapta değil.",
+            "source_key_not_full_access": "Bu cüzdanın bu hesap için kullandığı anahtar tam erişim anahtarı değil.",
+            "unknown": "Meteor Wallet bu hesabı hazırlayamadı."
+        },
+        "activationIssue": {
+            "account_not_in_session": "Bu hesap, Meteor Wallet'a sorulan aktarımın parçası değildi.",
+            "activation_not_found": "Meteor'un yeni anahtarı bu hesapta bulunamadı.",
+            "activation_not_full_access": "Meteor'un yeni anahtarı tam erişim olmadan eklendi.",
+            "invalid_add_key_transaction": "Meteor'un anahtarını ekleyen işlem doğrulanamadı.",
+            "rpc_lookup_failed": "Meteor Wallet bu hesabı doğrulamak için NEAR blok zincirine ulaşamadı. Birazdan yeniden deneyin.",
+            "session_not_found": "Meteor Wallet bu aktarımı artık tanımıyor. Yeniden başlatın.",
+            "source_signer_mismatch": "Meteor'un anahtarı, bu aktarımın başladığı anahtardan farklı bir anahtarla eklendi.",
+            "unknown": "Meteor Wallet bu hesabı doğrulayamadı."
+        },
+        "ready": {
+            "title": "Meteor anahtarları hazır",
+            "subtitle": "Meteor Wallet aşağıdaki her hesap için yeni bir erişim anahtarı oluşturdu. Aktarımı tamamlamak için bunları etkinleştirin.",
+            "noneTitle": "Hiçbir hesap hazırlanamadı",
+            "noneSubtitle": "Meteor Wallet seçilen hesapların hiçbirini hazırlayamadı. Aşağıdaki nedenleri giderip yeniden deneyin.",
+            "acceptedTitle": "Etkinleştirmeye hazır hesaplar",
+            "refusedTitle": "Bu aktarıma dahil edilmedi",
+            "explainer": "Etkinleştirme, Meteor'un yeni anahtarını NEAR blok zincirindeki her hesaba ekler. Mevcut anahtarlarınız hiçbir yere gönderilmez ve siz kaldırmayı seçene kadar çalışmaya devam eder.",
+            "activate": "Yeni anahtarları etkinleştir",
+            "cancel": "Cüzdanıma dön",
+            "finishLater": "Sonra tamamla",
+            "startOver": "Hesap seçimine dön"
+        },
+        "activation": {
+            "title": "Meteor anahtarları etkinleştiriliyor",
+            "subtitle": "Yeni Meteor anahtarları seçtiğiniz hesaplara ekleniyor.",
+            "statusTitle": "Hesap durumu",
+            "progress": "{{total}} hesabın {{completed}} tanesi tamamlandı",
+            "keepOpen": "Tüm hesaplar doğrulanana kadar bu sayfayı açık tutun.",
+            "retry": "Yeniden dene",
+            "cancel": "Cüzdanıma dön",
+            "finishLater": "Sonra tamamla"
+        },
+        "activationStatus": {
+            "waiting": "Bekliyor",
+            "adding": "Anahtar ekleniyor…",
+            "added": "Anahtar eklendi",
+            "verifying": "Meteor ile doğrulanıyor…",
+            "confirmed": "Doğrulandı",
+            "failed": "Başarısız"
+        },
+        "activated": {
+            "title": "Meteor anahtarları etkinleştirildi",
+            "subtitle": "Meteor Wallet yeni anahtarları blok zincirinde doğruladı. Meteor Wallet'taki kalan adımları tamamlayın ve buradan bir şey kaldırmadan önce hesaplarınıza orada erişebildiğinizi kontrol edin.",
+            "unconfirmedTitle": "Doğrulanmadı",
+            "listTitle": "Etkinleştirilen hesaplar",
+            "keep": "Şimdilik kalsın",
+            "remove": "Hesapları MyNearWallet'tan kaldır"
+        },
+        "recovery": {
+            "title": "Tamamlanmamış bir anahtar değişikliğini çöz",
+            "subtitle": "Bu cihazda bir anahtar değişikliği imzalandı ama hiç doğrulanmadı. Başka bir aktarım başlatılabilmesi için çözülmesi gerekiyor.",
+            "journalUnreadable": "Bu cihazda saklanan aktarım kaydı okunamadı, bu yüzden etkilenen hesaplar burada listelenemiyor. Aşağıdaki referansla destek ekibine başvurun — tarayıcı verilerinizi temizlemeyin, olanların tek kaydı orada.",
+            "supportReferenceLabel": "Destek referansı",
+            "supportExplainer": "Yukarıdaki adımların hiçbiri sorunu çözmezse destek ekibine başvurun ve referansı belirtin. Bu çözülene kadar yeni bir aktarım başlatma isteği reddedilmeye devam edecek.",
+            "fieldTransaction": "İşlem",
+            "fieldDestinationKey": "Meteor Wallet anahtarı",
+            "fieldSourceKey": "İmzalama anahtarınız",
+            "statusUnchecked": "Henüz kontrol edilmedi. Kontrol yalnızca NEAR blok zincirini okur — hiçbir şey imzalanmaz veya gönderilmez.",
+            "status": {
+                "finalized": "Anahtar değişikliği NEAR blok zincirinde tamamlanmış. Bu aktarıma hesap listenizden devam edilebilir.",
+                "destination_key_present_unproven": "Meteor Wallet'ın anahtarı bu hesapta, ancak oraya bu aktarımın koyduğunu gösteren bir kanıt yok. Konuyu kapatmak için kendi anahtarınızla kaldırın.",
+                "destination_key_absent": "Anahtar değişikliği hiç geçerli olmadı ve artık kabul edilemez. Bu kayıt kapatılabilir.",
+                "ambiguous": "NEAR blok zinciri şu an için ne doğrulayabildi ne de reddedebildi. Hiçbir şey değişmedi — birazdan yeniden deneyin.",
+                "not_found": "Zaten çözüldü."
+            },
+            "detail": {
+                "signed_transaction_may_still_land": "İmzalanmış anahtar değişikliği NEAR blok zinciri tarafından hâlâ kabul edilebilir, bu yüzden bu kaydı şimdi kapatmak güvenli değil.",
+                "transaction_expiry_unknown": "MyNearWallet, imzalanmış anahtar değişikliğinin hâlâ kabul edilip edilemeyeceğini belirleyemedi.",
+                "access_keys_unreadable": "Hesabın anahtarları NEAR blok zincirinden okunamadı."
+            },
+            "check": "NEAR blok zincirinde kontrol et",
+            "removeKey": "Meteor Wallet'ın anahtarını kaldır",
+            "archive": "Bu kaydı kapat",
+            "archiveRefused": "Meteor Wallet'ın anahtarı hâlâ hesapta. NEAR blok zincirinin kaldırmayı onaylamasını bekleyip yeniden deneyin.",
+            "resolvedTitle": "Çözülecek bir şey yok",
+            "resolvedSubtitle": "Bu cihazda tamamlanmamış anahtar değişikliği yok. Yeniden bir aktarım başlatabilirsiniz.",
+            "continue": "Hesap seçimine dön",
+            "finishLater": "Sonra tamamla"
+        }
+    }
 }
