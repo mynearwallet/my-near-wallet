@@ -10,11 +10,34 @@ import {
     createWalletAddKeyChain,
     removeDestinationKeyWithSourceSigner,
 } from './meteorConnectAddKeyChain';
+import { resolveMeteorConnectEnvironment } from './meteorConnectEnvironment';
 import CONFIG from '../config';
 
 export const meteorNetworkId =
     CONFIG.CURRENT_NEAR_NETWORK === 'mainnet' ? 'mainnet' : 'testnet';
-const isTestnet = meteorNetworkId === 'testnet';
+/**
+ * Which Meteor Connect environment this build belongs to — ONE decision that both the bridge
+ * backend and the Meteor wallet app id are derived from, immediately below.
+ *
+ * They have to agree, and previously they could not: the app id followed the NEAR network while
+ * the backend followed the BUILD MODE (`NODE_ENV`). A staging build is bundled with
+ * `NODE_ENV=production`, so it dialled the production bridge while still asking for the dev
+ * Meteor wallet — and the production bridge answers new sessions with a non-retryable
+ * `session_disabled` (503) until the rollout gate opens. Nothing worked, and the reason was
+ * invisible.
+ *
+ * The environment follows the NEAR network because the wallet app id already did, and the two are
+ * genuinely coupled: the bridge issues the link that opens the Meteor wallet, so a session created
+ * on one environment can only be claimed by the wallet of that same environment.
+ *
+ *   testnet  → development bridge  +  dev Meteor wallet  (wallet-dev.meteorwallet.app)
+ *   mainnet  → production bridge   +  production Meteor wallet  (wallet.meteorwallet.app)
+ *
+ * This also keeps real mainnet key material away from the development bridge, which is why the
+ * mapping is on the network and not on "is this a staging deployment".
+ */
+const meteorConnectEnvironment = resolveMeteorConnectEnvironment(meteorNetworkId);
+
 const meteorConnect = new MeteorConnect();
 
 let initializePromise;
@@ -33,22 +56,25 @@ const getPartnerMetadata = () => {
 /**
  * Which Meteor Connect bridge backend this build dials.
  *
- * A production build always dials production and ignores the query param entirely: a link must
- * never be able to choose which host this wallet hands a transfer to. A development build dials
- * the development backend — the same one the Meteor SDK harness and a locally served Meteor
- * Wallet meet on — and may be pointed elsewhere with `?mcBackend=<url>`, where `local` is
- * shorthand for the wrangler backend served from this page's own host.
+ * The host comes from `meteorConnectEnvironment` above, so it always matches the Meteor wallet
+ * this build asks for. The URLs themselves come from the SDK's own `METEOR_CONNECT_BACKENDS`
+ * rather than being spelled out here, so a backend move arrives with an SDK upgrade instead of as
+ * a silent mismatch.
  *
- * The URLs come from the SDK's own `METEOR_CONNECT_BACKENDS` rather than being spelled out here,
- * so a backend move arrives with an SDK upgrade instead of as a silent mismatch.
+ * `?mcBackend=<url>` stays gated on a LOCAL development build (`CONFIG.IS_DEVELOPMENT`, i.e.
+ * `NODE_ENV=development`) and is deliberately NOT extended to deployed testnet/staging builds: a
+ * link must never be able to choose which host this wallet hands a transfer to, and a deployed
+ * build is reached by following links. `local` is shorthand for the wrangler backend served from
+ * this page's own host.
  */
 const resolveBridgeBackendUrl = () => {
+    const environmentUrl = METEOR_CONNECT_BACKENDS[meteorConnectEnvironment];
     if (!CONFIG.IS_DEVELOPMENT || typeof window === 'undefined') {
-        return METEOR_CONNECT_BACKENDS.production;
+        return environmentUrl;
     }
     const requested = new URL(window.location.href).searchParams.get('mcBackend');
     if (requested == null) {
-        return METEOR_CONNECT_BACKENDS.development;
+        return environmentUrl;
     }
     const backendUrl =
         requested === 'local'
@@ -57,7 +83,7 @@ const resolveBridgeBackendUrl = () => {
     try {
         const url = new URL(backendUrl);
         if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-            return METEOR_CONNECT_BACKENDS.development;
+            return environmentUrl;
         }
         // eslint-disable-next-line no-console
         console.info(
@@ -65,7 +91,7 @@ const resolveBridgeBackendUrl = () => {
         );
         return backendUrl;
     } catch {
-        return METEOR_CONNECT_BACKENDS.development;
+        return environmentUrl;
     }
 };
 
@@ -76,9 +102,14 @@ const initializeMeteorConnect = () => {
             mobileBridge: {
                 enabled: true,
                 backendUrl: resolveBridgeBackendUrl(),
-                meteorAppId: isTestnet
-                    ? EMeteorAppId.meteor_wallet_mobile_dev
-                    : EMeteorAppId.meteor_wallet_mobile,
+                // Same `meteorConnectEnvironment` the backend URL above is derived from — the
+                // SDK maps this mobile id onto the matching WEB wallet for a "web" transfer
+                // target (`meteor_wallet_mobile_dev` → `meteor_wallet_web_dev`), so this one
+                // value decides both the app the bridge links to and the app the bridge is on.
+                meteorAppId:
+                    meteorConnectEnvironment === 'development'
+                        ? EMeteorAppId.meteor_wallet_mobile_dev
+                        : EMeteorAppId.meteor_wallet_mobile,
                 partnerMetadata: getPartnerMetadata(),
                 transferAccounts: {
                     enabled: true,
