@@ -1,4 +1,7 @@
 {
     "*.{js,jsx,ts,tsx}": ["eslint", "prettier --write"],
-    "*.{json, md}": ["prettier --write"]
+    "*.{json,md}": [
+        "node packages/frontend/.githooks/format-json-script.mjs",
+        "prettier --write"
+    ]
 }

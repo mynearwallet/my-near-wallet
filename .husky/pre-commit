@@ -1,6 +1,6 @@
 #!/bin/sh
-# This runs the precommit script on any modified packages
+# Run checks and formatters only against files staged for this commit.
+. "$(dirname "$0")/node-path.sh"
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
-npx lerna run --concurrency 1 --stream precommit --exclude-dependents
+./node_modules/.bin/lint-staged
