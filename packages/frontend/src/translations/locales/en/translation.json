@@ -1059,6 +1059,7 @@
             "acceptedTitle": "Accounts Ready to Activate",
             "activate": "Activate New Keys",
             "cancel": "Back to my wallet",
+            "cancelTransfer": "Cancel this transfer",
             "explainer": "Activating adds Meteor’s new key to each account on the NEAR blockchain. Your existing keys are never sent anywhere and keep working until you choose to remove them.",
             "finishLater": "Finish later",
             "noneSubtitle": "Meteor Wallet could not prepare any of the selected accounts. Resolve the reasons below and try again.",

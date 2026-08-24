@@ -143,8 +143,11 @@ export default function AccountExportNewKeyReady() {
             // selection to hit the same fence again with no idea why
             // (REVIEW-consumer-implementation §6.3). Say what happened, and offer the one route
             // that can actually resolve it.
-            const { i18nKey, fallback, code, isFenced } = describeNewKeyTransferError(error);
-            setErrorMessage(i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError'));
+            const { i18nKey, fallback, code, isFenced } =
+                describeNewKeyTransferError(error);
+            setErrorMessage(
+                i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError')
+            );
             setClearFailure({ code, isFenced });
             setIsLeaving(false);
             return;
@@ -217,7 +220,9 @@ export default function AccountExportNewKeyReady() {
                         {errorMessage}
                         {clearFailure?.code && (
                             <SupportCode>
-                                {t('newKeyTransfer.supportCode', { code: clearFailure.code })}
+                                {t('newKeyTransfer.supportCode', {
+                                    code: clearFailure.code,
+                                })}
                             </SupportCode>
                         )}
                         {clearFailure?.isFenced && (
@@ -257,6 +262,16 @@ export default function AccountExportNewKeyReady() {
                                     onClick={() => history.replace('/')}
                                 >
                                     {t('newKeyTransfer.ready.finishLater')}
+                                </FormButton>
+                            </div>
+                            <div className='secondary'>
+                                <FormButton
+                                    className='link'
+                                    color='red'
+                                    disabled={isLeaving}
+                                    onClick={() => void startOver()}
+                                >
+                                    {t('newKeyTransfer.ready.cancelTransfer')}
                                 </FormButton>
                             </div>
                         </>
