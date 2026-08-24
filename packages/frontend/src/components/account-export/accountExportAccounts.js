@@ -8,31 +8,48 @@ export const loadExportableAccounts = async () => {
 
     return Promise.all(
         accountIds.map(async (accountId) => {
+            let sourcePublicKey;
             try {
                 const keyPair = await wallet.getLocalKeyPair(accountId);
                 if (keyPair == null) {
                     return { accountId, availability: 'no_local_key' };
                 }
-                const publicKey = keyPair.getPublicKey().toString();
-                const keyMeta = await getKeyMeta(publicKey);
+                sourcePublicKey = keyPair.getPublicKey().toString();
+                const keyMeta = await getKeyMeta(sourcePublicKey);
                 if (keyMeta.type === 'ledger') {
-                    return { accountId, availability: 'ledger_unsupported' };
+                    return {
+                        accountId,
+                        sourcePublicKey,
+                        availability: 'ledger_unsupported',
+                    };
                 }
-                if (!publicKey.startsWith('ed25519:')) {
-                    return { accountId, availability: 'algorithm_unsupported' };
+                if (!sourcePublicKey.startsWith('ed25519:')) {
+                    return {
+                        accountId,
+                        sourcePublicKey,
+                        availability: 'algorithm_unsupported',
+                    };
                 }
                 if (await wallet.hasTwoFactorEnabled(accountId)) {
-                    return { accountId, availability: 'two_factor_unsupported' };
+                    return {
+                        accountId,
+                        sourcePublicKey,
+                        availability: 'two_factor_unsupported',
+                    };
                 }
                 const hasFullAccessKey = await wallet.isFullAccessKey(accountId, keyPair);
 
                 return {
                     accountId,
-                    sourcePublicKey: publicKey,
+                    sourcePublicKey,
                     availability: hasFullAccessKey ? 'available' : 'not_full_access',
                 };
             } catch {
-                return { accountId, availability: 'verification_failed' };
+                return {
+                    accountId,
+                    ...(sourcePublicKey ? { sourcePublicKey } : {}),
+                    availability: 'verification_failed',
+                };
             }
         })
     );
@@ -56,7 +73,10 @@ export const loadNewKeyTransferAccounts = async (accountIds) => {
                 throw error;
             }
             const keyPair = await wallet.getLocalKeyPair(accountId);
-            if (keyPair == null || keyPair.getPublicKey().toString() !== account.sourcePublicKey) {
+            if (
+                keyPair == null ||
+                keyPair.getPublicKey().toString() !== account.sourcePublicKey
+            ) {
                 throw new Error(`The selected source key for ${accountId} changed.`);
             }
             return { accountId, sourcePublicKey: account.sourcePublicKey, keyPair };
@@ -75,6 +95,7 @@ export const loadExportAccountSecrets = (accountIds) =>
 
             return {
                 accountId,
+                publicKey: keyPair.getPublicKey().toString(),
                 privateKey: keyPair.toString(),
             };
         })

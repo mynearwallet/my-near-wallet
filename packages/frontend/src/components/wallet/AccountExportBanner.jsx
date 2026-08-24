@@ -8,6 +8,7 @@ import {
     findResumableNewKeyTransfer,
     summarizeNewKeyTransferSession,
 } from '../../services/newKeyTransferState';
+import { trackMigrationEntryClicked } from '../account-export/accountExportAnalytics';
 
 const AccountExportBannerContainer = styled.section`
     margin-bottom: 28px;
@@ -126,7 +127,17 @@ export default function AccountExportBanner() {
                         {t('accountExport.banner.description')}
                     </BannerDescription>
                 </BannerCopy>
-                <BannerLink to={resumeRoute(pendingSummary)}>
+                <BannerLink
+                    to={resumeRoute(pendingSummary)}
+                    onClick={() =>
+                        trackMigrationEntryClicked({
+                            entry: pendingSummary ? 'resume' : 'start',
+                            resumeStage: pendingSummary?.hasAddKeyIntent
+                                ? 'activation'
+                                : 'ready',
+                        })
+                    }
+                >
                     {t(
                         pendingSummary
                             ? 'accountExport.banner.resume'

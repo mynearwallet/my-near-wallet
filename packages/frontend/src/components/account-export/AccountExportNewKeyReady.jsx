@@ -13,6 +13,7 @@ import {
     NEW_KEY_TRANSFER_RECOVERY_ROUTE,
     newKeyTransferIssueKey,
 } from '../../services/newKeyTransferState';
+import { trackMigrationActivationRequested } from './accountExportAnalytics';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const NewKeyReadyPage = styled(Container)`
@@ -240,11 +241,12 @@ export default function AccountExportNewKeyReady() {
                     ) : (
                         <>
                             <FormButton
-                                onClick={() =>
+                                onClick={() => {
+                                    trackMigrationActivationRequested(accepted);
                                     history.push('/export-accounts/new-key-activation', {
                                         clientTransferId: summary.clientTransferId,
-                                    })
-                                }
+                                    });
+                                }}
                             >
                                 {t('newKeyTransfer.ready.activate')}
                             </FormButton>

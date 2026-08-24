@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -6,6 +6,14 @@ import ClickToCopy from '../common/ClickToCopy';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import CopyIcon from '../svg/CopyIcon';
+import {
+    trackManualCredentialCopied,
+    trackManualCredentialsFailed,
+    trackManualCredentialsLoaded,
+    trackManualMigrationExited,
+    trackManualMigrationOpened,
+    trackManualPrivateKeyRevealed,
+} from './accountExportAnalytics';
 import { loadExportAccountSecrets } from './accountExportAccounts';
 import { createPrivateKeyMask } from './accountExportManual.utils';
 
@@ -162,6 +170,7 @@ const CredentialRow = ({
     isHidden = false,
     isLoading = false,
     isCopyable = true,
+    onCopy,
     onToggle,
 }) => {
     const canCopy = isCopyable && Boolean(copyValue) && !isLoading;
@@ -172,7 +181,7 @@ const CredentialRow = ({
             <CredentialHeader>
                 <CredentialLabel>{label}</CredentialLabel>
                 {canCopy ? (
-                    <CopyControl copy={copyValue}>
+                    <CopyControl copy={copyValue} onClick={onCopy}>
                         <CopyIcon />
                         Copy
                     </CopyControl>
@@ -218,10 +227,18 @@ export default function AccountExportManual({ history, location }) {
     const [revealedCredentials, setRevealedCredentials] = useState({});
     const [isLoadingCredentials, setIsLoadingCredentials] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+    const didTrackOpen = useRef(false);
+    const trackedReveals = useRef(new Set());
+    const trackedCopies = useRef(new Set());
 
     useEffect(() => {
         if (!Array.isArray(accountIds) || accountIds.length === 0) {
             history.replace('/export-accounts/select');
+            return;
+        }
+        if (!didTrackOpen.current) {
+            didTrackOpen.current = true;
+            trackManualMigrationOpened(accountIds);
         }
     }, [accountIds, history]);
 
@@ -233,6 +250,7 @@ export default function AccountExportManual({ history, location }) {
                 const credentials = await loadExportAccountSecrets(accountIds);
 
                 if (isMounted) {
+                    trackManualCredentialsLoaded(credentials);
                     setCredentialsByAccountId(
                         credentials.reduce(
                             (credentialsById, accountCredentials) => ({
@@ -250,6 +268,7 @@ export default function AccountExportManual({ history, location }) {
                 }
             } catch (error) {
                 if (isMounted) {
+                    trackManualCredentialsFailed(error);
                     setErrorMessage(
                         error instanceof Error
                             ? error.message
@@ -291,6 +310,14 @@ export default function AccountExportManual({ history, location }) {
             return;
         }
 
+        if (credentialName === 'privateKey' && !trackedReveals.current.has(accountId)) {
+            trackedReveals.current.add(accountId);
+            trackManualPrivateKeyRevealed({
+                account: credentials,
+                selectedCount: accountIds.length,
+            });
+        }
+
         setRevealedCredentials((currentCredentials) => ({
             ...currentCredentials,
             [accountId]: {
@@ -298,6 +325,21 @@ export default function AccountExportManual({ history, location }) {
                 [credentialName]: true,
             },
         }));
+    };
+
+    const trackCredentialCopyOnce = (accountId, credentialType) => {
+        const identity = `${accountId}:${credentialType}`;
+        if (trackedCopies.current.has(identity)) {
+            return;
+        }
+        trackedCopies.current.add(identity);
+        trackManualCredentialCopied({
+            credentialType,
+            account: {
+                accountId,
+                publicKey: credentialsByAccountId[accountId]?.publicKey,
+            },
+        });
     };
 
     if (!Array.isArray(accountIds) || accountIds.length === 0) {
@@ -324,6 +366,12 @@ export default function AccountExportManual({ history, location }) {
                                         label={t('accountExport.manual.accountLabel', {
                                             index: index + 1,
                                         })}
+                                        onCopy={() =>
+                                            trackCredentialCopyOnce(
+                                                accountId,
+                                                'account_id'
+                                            )
+                                        }
                                         value={accountId}
                                     />
                                     <CredentialRow
@@ -334,6 +382,12 @@ export default function AccountExportManual({ history, location }) {
                                         isCopyable={Boolean(credentials?.privateKey)}
                                         isLoading={isLoadingCredentials}
                                         label={t('accountExport.manual.privateKeyLabel')}
+                                        onCopy={() =>
+                                            trackCredentialCopyOnce(
+                                                accountId,
+                                                'private_key'
+                                            )
+                                        }
                                         onToggle={() =>
                                             void toggleCredential(accountId, 'privateKey')
                                         }
@@ -350,13 +404,21 @@ export default function AccountExportManual({ history, location }) {
                     </AccountList>
                 </div>
                 <div className='buttons-bottom-buttons'>
-                    <FormButton onClick={() => history.push('/')}>
+                    <FormButton
+                        onClick={() => {
+                            trackManualMigrationExited('wallet');
+                            history.push('/');
+                        }}
+                    >
                         {t('accountExport.manual.backToWallet')}
                     </FormButton>
                     <FormButton
                         className='link'
                         color='gray'
-                        onClick={() => history.goBack()}
+                        onClick={() => {
+                            trackManualMigrationExited('method_selection');
+                            history.goBack();
+                        }}
                     >
                         {t('accountExport.manual.back')}
                     </FormButton>

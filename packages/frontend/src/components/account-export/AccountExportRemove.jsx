@@ -12,6 +12,10 @@ import Container from '../common/styled/Container.css';
 import ExportAccountRemovalWarningIcon from '../svg/ExportAccountRemovalWarningIcon';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
 import {
+    trackMigrationLocalRemovalFailed,
+    trackMigrationLocalRemovalSucceeded,
+} from './accountExportAnalytics';
+import {
     clearAccountExportSuccess,
     getAccountExportSuccess,
 } from './accountExportSuccessState';
@@ -140,6 +144,10 @@ export default function AccountExportRemove() {
             clearAccountExportSuccess();
 
             const remainingAccountIds = Object.keys(walletAccounts);
+            trackMigrationLocalRemovalSucceeded({
+                accountIds: accountIdsToRemove,
+                remainingCount: remainingAccountIds.length,
+            });
             if (remainingAccountIds.length === 0) {
                 window.location.assign('/');
                 return;
@@ -147,7 +155,11 @@ export default function AccountExportRemove() {
 
             dispatch(switchAccount({ accountId: remainingAccountIds[0] }));
             history.replace('/');
-        } catch {
+        } catch (error) {
+            trackMigrationLocalRemovalFailed({
+                accountIds,
+                error,
+            });
             setErrorMessage(t('accountExport.remove.failed'));
             setIsRemoving(false);
         }

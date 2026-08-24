@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -6,6 +6,10 @@ import styled from 'styled-components';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
+import {
+    trackMigrationCleanupSelected,
+    trackNewKeyMigrationCompleted,
+} from './accountExportAnalytics';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const ActivatedPage = styled(Container)`
@@ -71,7 +75,23 @@ const Buttons = styled.div`
 export default function AccountExportNewKeyActivated() {
     const { t } = useTranslation();
     const history = useHistory();
-    const { summary, isLoading, errorMessage } = useNewKeyTransfer({ fallback: 'latest' });
+    const { summary, isLoading, errorMessage } = useNewKeyTransfer({
+        fallback: 'latest',
+    });
+    const didTrackCompletion = useRef(false);
+
+    useEffect(() => {
+        if (summary == null || didTrackCompletion.current) {
+            return;
+        }
+        didTrackCompletion.current = true;
+        const confirmed = summary.accepted.filter((account) => account.isVerified);
+        const unconfirmed = summary.accepted.filter((account) => !account.isVerified);
+        trackNewKeyMigrationCompleted({
+            confirmed,
+            unconfirmed,
+        });
+    }, [summary]);
 
     if (isLoading || summary == null) {
         return (
@@ -117,11 +137,15 @@ export default function AccountExportNewKeyActivated() {
                     <FormButton
                         color='blue'
                         disabled={confirmed.length === 0}
-                        onClick={() =>
+                        onClick={() => {
+                            trackMigrationCleanupSelected({
+                                action: 'remove',
+                                accounts: confirmed,
+                            });
                             history.push('/export-accounts/remove', {
                                 accountIds: confirmed.map((account) => account.accountId),
-                            })
-                        }
+                            });
+                        }}
                     >
                         {t('newKeyTransfer.activated.remove')}
                     </FormButton>
@@ -129,7 +153,13 @@ export default function AccountExportNewKeyActivated() {
                         <FormButton
                             className='link'
                             color='gray'
-                            onClick={() => history.replace('/')}
+                            onClick={() => {
+                                trackMigrationCleanupSelected({
+                                    action: 'keep',
+                                    accounts: confirmed,
+                                });
+                                history.replace('/');
+                            }}
                         >
                             {t('newKeyTransfer.activated.keep')}
                         </FormButton>

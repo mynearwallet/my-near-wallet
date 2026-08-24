@@ -20,6 +20,12 @@ import Container from '../common/styled/Container.css';
 import MeteorConnectIcon from '../svg/MeteorConnectIcon';
 import exportManualIcon from '../svg/Vector.svg';
 import {
+    trackMigrationMethodSelected,
+    trackNewKeyPrepareFailed,
+    trackNewKeyPrepareStarted,
+    trackNewKeyPrepareSucceeded,
+} from './accountExportAnalytics';
+import {
     loadExportAccountSecrets,
     loadNewKeyTransferAccounts,
 } from './accountExportAccounts';
@@ -212,6 +218,8 @@ export default function AccountExportMethod() {
     }, [accountIds, history]);
 
     const handleNewKeyTransfer = async () => {
+        trackMigrationMethodSelected('new_key', accountIds);
+        trackNewKeyPrepareStarted(accountIds);
         setIsExporting(true);
         setErrorMessage('');
         setErrorCode('');
@@ -225,10 +233,20 @@ export default function AccountExportMethod() {
             });
             // Meteor has answered and its destination keys are journaled; which accounts it
             // accepted is read from the session on the next screen, not passed through history.
+            const rows = session.startOutput?.accounts || [];
+            trackNewKeyPrepareSucceeded({
+                accounts,
+                accepted: rows.filter(({ ok }) => ok),
+                refused: rows.filter(({ ok }) => !ok),
+            });
             history.push('/export-accounts/new-key-ready', {
                 clientTransferId: session.clientTransferId,
             });
         } catch (error) {
+            trackNewKeyPrepareFailed({
+                stage: error?.availability != null ? 'eligibility' : 'meteor_start',
+                error,
+            });
             if (error?.availability != null) {
                 // Local eligibility, decided before Meteor was asked anything — name the account
                 // and the actual reason rather than a generic transfer failure.
@@ -320,9 +338,10 @@ export default function AccountExportMethod() {
                     <MethodButton
                         className='manual-export'
                         disabled={isExporting}
-                        onClick={() =>
-                            history.push('/export-accounts/manual', { accountIds })
-                        }
+                        onClick={() => {
+                            trackMigrationMethodSelected('manual', accountIds);
+                            history.push('/export-accounts/manual', { accountIds });
+                        }}
                     >
                         <span className='method-icon-slot'>
                             <img

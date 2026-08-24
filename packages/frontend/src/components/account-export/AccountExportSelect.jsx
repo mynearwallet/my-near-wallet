@@ -7,6 +7,11 @@ import FormButton from '../common/FormButton';
 import LoadingDots from '../common/loader/LoadingDots';
 import Container from '../common/styled/Container.css';
 import AccountExportAccountList from './AccountExportAccountList';
+import {
+    trackMigrationAccountsScanned,
+    trackMigrationAccountsScanFailed,
+    trackMigrationAccountsSubmitted,
+} from './accountExportAnalytics';
 import { loadExportableAccounts, MAX_EXPORTABLE_ACCOUNTS } from './accountExportAccounts';
 
 const AccountExportPage = styled(Container)`
@@ -90,9 +95,11 @@ export default function AccountExportSelect() {
 
                 setAccounts(loadedAccounts);
                 setSelectedAccountIds(getInitiallySelectedAccountIds(loadedAccounts));
-            } catch {
+                trackMigrationAccountsScanned(loadedAccounts);
+            } catch (error) {
                 if (isMounted) {
                     setErrorMessage(t('accountExport.select.accessKeyCheckFailed'));
+                    trackMigrationAccountsScanFailed(error);
                 }
             } finally {
                 if (isMounted) {
@@ -130,6 +137,10 @@ export default function AccountExportSelect() {
     };
 
     const handleExportSelectedAccounts = () => {
+        const selectedAccounts = accounts.filter(({ accountId }) =>
+            selectedAccountIds.includes(accountId)
+        );
+        trackMigrationAccountsSubmitted(selectedAccounts);
         history.push('/export-accounts/method', {
             accountIds: selectedAccountIds,
         });

@@ -17,6 +17,11 @@ import LoadingSpinner from '../common/loader/LoadingSpinner';
 import Container from '../common/styled/Container.css';
 import ExportAccountSelectedIcon from '../svg/ExportAccountSelectedIcon';
 import ExportAccountUnavailableIcon from '../svg/ExportAccountUnavailableIcon';
+import {
+    trackMigrationActivationFailed,
+    trackMigrationActivationFinished,
+    trackMigrationActivationStarted,
+} from './accountExportAnalytics';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const ActivationPage = styled(Container)`
@@ -217,6 +222,18 @@ export default function AccountExportNewKeyActivation() {
     const [isRunning, setIsRunning] = useState(false);
     const [failureMessage, setFailureMessage] = useState('');
     const hasAutoStarted = useRef(false);
+    const statusesRef = useRef({});
+
+    const updateStatuses = useCallback((nextOrUpdater) => {
+        setStatuses((current) => {
+            const next =
+                typeof nextOrUpdater === 'function'
+                    ? nextOrUpdater(current)
+                    : nextOrUpdater;
+            statusesRef.current = next;
+            return next;
+        });
+    }, []);
 
     const describeFailure = useCallback(
         (error) => {
@@ -228,18 +245,23 @@ export default function AccountExportNewKeyActivation() {
 
     const runActivation = useCallback(
         async (transferSessionId, accountIds) => {
+            trackMigrationActivationStarted({
+                accounts:
+                    summary?.accepted || accountIds.map((accountId) => ({ accountId })),
+            });
             setIsRunning(true);
             setFailureMessage('');
             setIssues({});
+            let activationStage = 'add_keys';
             try {
                 if (!(await hasJournaledMeteorNewKeyVerification(transferSessionId))) {
-                    setStatuses(setEvery(accountIds, 'waiting'));
+                    updateStatuses(setEvery(accountIds, 'waiting'));
                     await runMeteorNewKeyAddKeys({
                         transferSessionId,
                         // Submissions are strictly sequential, so the account this fires for
                         // starting means every earlier one has already finalized.
                         onProgress: ({ accountId }) =>
-                            setStatuses((current) => {
+                            updateStatuses((current) => {
                                 const next = { ...current };
                                 for (const id of accountIds) {
                                     if (next[id] === 'adding') {
@@ -250,9 +272,10 @@ export default function AccountExportNewKeyActivation() {
                                 return next;
                             }),
                     });
-                    setStatuses(setEvery(accountIds, 'added'));
+                    updateStatuses(setEvery(accountIds, 'added'));
                 }
-                setStatuses(setEvery(accountIds, 'verifying'));
+                activationStage = 'verification';
+                updateStatuses(setEvery(accountIds, 'verifying'));
 
                 const { output } = await verifyMeteorNewKeyAccountTransfer({
                     transferSessionId,
@@ -266,8 +289,12 @@ export default function AccountExportNewKeyActivation() {
                         nextIssues[account.accountId] = account.issue;
                     }
                 }
-                setStatuses((current) => ({ ...current, ...nextStatuses }));
+                updateStatuses((current) => ({ ...current, ...nextStatuses }));
                 setIssues(nextIssues);
+                trackMigrationActivationFinished({
+                    accounts: summary?.accepted,
+                    outputAccounts: output.accounts,
+                });
 
                 if (accountIds.every((id) => nextStatuses[id] === 'confirmed')) {
                     history.replace('/export-accounts/new-key-activated', {
@@ -281,22 +308,28 @@ export default function AccountExportNewKeyActivation() {
                 // rows that got somewhere real, and fail only the ones still mid-flight; calling
                 // an account "Failed" when its key is live on-chain would be a lie the user acts
                 // on. Retrying reconciles whatever is already journaled.
-                setStatuses((current) =>
-                    Object.fromEntries(
-                        accountIds.map((accountId) => [
-                            accountId,
-                            current[accountId] === 'confirmed' || current[accountId] === 'added'
-                                ? current[accountId]
-                                : 'failed',
-                        ])
-                    )
+                const failureStatuses = Object.fromEntries(
+                    accountIds.map((accountId) => [
+                        accountId,
+                        statusesRef.current[accountId] === 'confirmed' ||
+                        statusesRef.current[accountId] === 'added'
+                            ? statusesRef.current[accountId]
+                            : 'failed',
+                    ])
                 );
+                updateStatuses(failureStatuses);
+                trackMigrationActivationFailed({
+                    stage: activationStage,
+                    error,
+                    statuses: failureStatuses,
+                    accounts: summary?.accepted,
+                });
             } finally {
                 setIsRunning(false);
                 await reload();
             }
         },
-        [describeFailure, history, reload, summary]
+        [describeFailure, history, reload, summary, updateStatuses]
     );
 
     const acceptedIds = summary?.accepted.map((account) => account.accountId);
@@ -393,9 +426,7 @@ export default function AccountExportNewKeyActivation() {
                 </AccountSection>
 
                 {isRunning && (
-                    <KeepOpenNote>
-                        {t('newKeyTransfer.activation.keepOpen')}
-                    </KeepOpenNote>
+                    <KeepOpenNote>{t('newKeyTransfer.activation.keepOpen')}</KeepOpenNote>
                 )}
                 {failureMessage && <ErrorMessage>{failureMessage}</ErrorMessage>}
 
