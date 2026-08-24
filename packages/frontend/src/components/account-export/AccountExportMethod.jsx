@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import CONFIG from '../../config';
 import {
     meteorNetworkId,
-    promptMeteorAccountTransfer,
+    // promptMeteorAccountTransfer,
     startMeteorNewKeyAccountTransfer,
 } from '../../services/meteorConnect';
 import {
@@ -26,10 +26,10 @@ import {
     trackNewKeyPrepareSucceeded,
 } from './accountExportAnalytics';
 import {
-    loadExportAccountSecrets,
+    // loadExportAccountSecrets,
     loadNewKeyTransferAccounts,
 } from './accountExportAccounts';
-import { saveAccountExportSuccess } from './accountExportSuccessState';
+// import { saveAccountExportSuccess } from './accountExportSuccessState';
 
 const ExportMethodPage = styled(Container)`
     &.method-page {
@@ -154,22 +154,22 @@ const DevTarget = styled.label`
     }
 `;
 
-const Advanced = styled.div`
-    margin-top: 40px;
-    text-align: center;
+// const Advanced = styled.div`
+//     margin-top: 40px;
+//     text-align: center;
 
-    .advanced-description {
-        color: #72727a;
-        font-size: 13px;
-        line-height: 20px;
-        margin: 16px auto 0;
-        max-width: 520px;
-    }
+//     .advanced-description {
+//         color: #72727a;
+//         font-size: 13px;
+//         line-height: 20px;
+//         margin: 16px auto 0;
+//         max-width: 520px;
+//     }
 
-    .advanced-action {
-        margin-top: 12px;
-    }
-`;
+//     .advanced-action {
+//         margin-top: 12px;
+//     }
+// `;
 
 const ErrorMessage = styled.div`
     color: #dc1f25;
@@ -209,7 +209,7 @@ export default function AccountExportMethod() {
      * platform to choose. A development build may retarget the link at a locally served wallet.
      */
     const [useLocalDevWallet, setUseLocalDevWallet] = useState(false);
-    const [showAdvanced, setShowAdvanced] = useState(false);
+    // const [showAdvanced, setShowAdvanced] = useState(false);
 
     useEffect(() => {
         if (!Array.isArray(accountIds) || accountIds.length === 0) {
@@ -269,43 +269,43 @@ export default function AccountExportMethod() {
         }
     };
 
-    const handleExistingSecretTransfer = async () => {
-        let didNavigateToSuccess = false;
+    // const handleExistingSecretTransfer = async () => {
+    //     let didNavigateToSuccess = false;
 
-        setIsExporting(true);
-        setErrorMessage('');
-        setErrorCode('');
-        setIsFencedError(false);
+    //     setIsExporting(true);
+    //     setErrorMessage('');
+    //     setErrorCode('');
+    //     setIsFencedError(false);
 
-        try {
-            const accounts = await loadExportAccountSecrets(accountIds);
-            const outcome = await promptMeteorAccountTransfer({
-                accounts,
-                networkId: meteorNetworkId,
-            });
+    //     try {
+    //         const accounts = await loadExportAccountSecrets(accountIds);
+    //         const outcome = await promptMeteorAccountTransfer({
+    //             accounts,
+    //             networkId: meteorNetworkId,
+    //         });
 
-            if (outcome.status === 'imported') {
-                didNavigateToSuccess = true;
-                saveAccountExportSuccess(accountIds);
-                history.push('/export-accounts/success', { accountIds });
-            } else if (outcome.status === 'declined') {
-                setErrorMessage(t('newKeyTransfer.existingSecret.declined'));
-            } else if (outcome.status === 'expired') {
-                setErrorMessage(t('newKeyTransfer.existingSecret.expired'));
-            }
-        } catch (error) {
-            // Translated copy first, the SDK id as fine print — never the raw id as the sentence.
-            const { i18nKey, code } = describeNewKeyTransferError(error);
-            setErrorMessage(
-                i18nKey ? t(i18nKey) : t('newKeyTransfer.existingSecret.startFailed')
-            );
-            setErrorCode(code);
-        } finally {
-            if (!didNavigateToSuccess) {
-                setIsExporting(false);
-            }
-        }
-    };
+    //         if (outcome.status === 'imported') {
+    //             didNavigateToSuccess = true;
+    //             saveAccountExportSuccess(accountIds);
+    //             history.push('/export-accounts/success', { accountIds });
+    //         } else if (outcome.status === 'declined') {
+    //             setErrorMessage(t('newKeyTransfer.existingSecret.declined'));
+    //         } else if (outcome.status === 'expired') {
+    //             setErrorMessage(t('newKeyTransfer.existingSecret.expired'));
+    //         }
+    //     } catch (error) {
+    //         // Translated copy first, the SDK id as fine print — never the raw id as the sentence.
+    //         const { i18nKey, code } = describeNewKeyTransferError(error);
+    //         setErrorMessage(
+    //             i18nKey ? t(i18nKey) : t('newKeyTransfer.existingSecret.startFailed')
+    //         );
+    //         setErrorCode(code);
+    //     } finally {
+    //         if (!didNavigateToSuccess) {
+    //             setIsExporting(false);
+    //         }
+    //     }
+    // };
 
     if (!Array.isArray(accountIds) || accountIds.length === 0) {
         return null;
@@ -393,7 +393,7 @@ export default function AccountExportMethod() {
                     </ErrorMessage>
                 )}
 
-                <Advanced>
+                {/* <Advanced>
                     <FormButton
                         className='link'
                         color='gray'
@@ -422,7 +422,7 @@ export default function AccountExportMethod() {
                             </div>
                         </>
                     )}
-                </Advanced>
+                </Advanced> */}
             </div>
         </ExportMethodPage>
     );
