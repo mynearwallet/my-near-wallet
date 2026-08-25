@@ -44,7 +44,8 @@
     "util": "^0.12.3"
   },
   "resolutions": {
-    "node-gyp": "9.3.1"
+    "node-gyp": "9.3.1",
+    "@parcel/watcher": "2.5.6"
   },
   "@parcel/resolver-default": {
     "packageExports": true
