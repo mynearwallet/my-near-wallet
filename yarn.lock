@@ -2092,10 +2092,10 @@
     nanoid "^5.1.11"
     valibot "^1.4.2"
 
-"@meteorwallet/meteor-near-sdk@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/meteor-near-sdk/-/meteor-near-sdk-3.3.0.tgz#22c8d099058a2fa9074f5949f69d0c4aebd8efb0"
-  integrity sha512-NlDVS8HDyLbGJRtJC9cPfLdArgaTmiQTj8loKejhkOE7sOGtgfVVheos8qapcpdl96ZnqLbaUPHmLVmyKu9wBg==
+"@meteorwallet/meteor-near-sdk@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/meteor-near-sdk/-/meteor-near-sdk-3.4.0.tgz#71bb9a4e1ad3b592ec79d148079031593dfcde7f"
+  integrity sha512-ZM/aJ7bhA6xpDr4SyUstwcfJScWEL5n6evbWdb9w58EGh+BeM9J307onZs5ZDnvAcPECrw3pkq2UTCd9DnyP1A==
 
 "@meteorwallet/sdk@3.5.0":
   version "3.5.0"
