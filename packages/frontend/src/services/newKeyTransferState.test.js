@@ -533,7 +533,7 @@ describe('AddKeyJournalError localization', () => {
 describe('contract version skew mapping', () => {
     it('maps the typed bridge-session ids to the refresh copy', () => {
         const typed = new Error(
-            "The action's declared recovery contract does not match the server-resolved contract — update the client or backend contract version"
+            'The action\'s declared recovery contract does not match the server-resolved contract — update the client or backend contract version'
         );
         typed.ids = ['recovery_contract_mismatch'];
         expect(describeNewKeyTransferError(typed)).toEqual({
@@ -551,7 +551,7 @@ describe('contract version skew mapping', () => {
 
     it('still catches the skew when only the protocol sentence survives a boundary', () => {
         const flattened = new Error(
-            "The action's declared recovery contract does not match the server-resolved contract — update the client or backend contract version"
+            'The action\'s declared recovery contract does not match the server-resolved contract — update the client or backend contract version'
         );
         expect(describeNewKeyTransferError(flattened)).toEqual({
             i18nKey: 'newKeyTransfer.error.versionSkew',
