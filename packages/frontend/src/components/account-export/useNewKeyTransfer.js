@@ -6,6 +6,7 @@ import { getMeteorNewKeyTransferSessions } from '../../services/meteorConnect';
 import {
     describeNewKeyTransferError,
     findResumableNewKeyTransfer,
+    findSecuredNewKeyTransfer,
     summarizeNewKeyTransferSession,
 } from '../../services/newKeyTransferState';
 
@@ -17,8 +18,10 @@ import {
  * durable SDK journal, not router state, is the source of truth: the id is only a hint, and a
  * screen reached without one falls back to the newest transfer that still has work left.
  *
- * `fallback: 'latest'` is for the screen that runs AFTER a transfer is finished, which by
- * definition no longer has work left and would otherwise never find itself.
+ * `fallback: 'secured'` is for the completion screen, which by definition no longer has work left
+ * and would otherwise never find itself. It resolves to the newest transfer with at least one
+ * SECURED account — never the raw latest session, which after a failed later attempt is a
+ * different transfer than the one the user finished (MNW-4).
  */
 export default function useNewKeyTransfer({
     fallback = 'resumable',
@@ -42,8 +45,8 @@ export default function useNewKeyTransfer({
                     sessions.find(
                         (candidate) => candidate.clientTransferId === requestedId
                     )) ||
-                (fallback === 'latest'
-                    ? sessions[sessions.length - 1]
+                (fallback === 'secured'
+                    ? findSecuredNewKeyTransfer(sessions)
                     : findResumableNewKeyTransfer(sessions));
             setSession(found || null);
             setErrorMessage('');

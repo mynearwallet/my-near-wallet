@@ -59,11 +59,62 @@ const getExactSourceAccount = async (job) => {
 };
 
 const assertCanAffordAddKey = async (account, accountId) => {
-    const { amount } = await account.state();
-    if (new BN(amount).lt(MIN_ADD_KEY_BALANCE_YOCTO)) {
+    // AVAILABLE balance, deliberately: `state().amount` counts locked and storage-staked NEAR the
+    // transaction cannot actually spend, so a staked-up account passed the check and then failed
+    // on-chain (MNW-10).
+    const { available } = await account.getAccountBalance();
+    if (new BN(available).lt(MIN_ADD_KEY_BALANCE_YOCTO)) {
         throw new Error(
             `${accountId} does not have enough available NEAR to add Meteor's access key.`
         );
+    }
+};
+
+/**
+ * Balance-check EVERY account in the selection before the first AddKey is signed (MNW-10). A
+ * transfer that discovers an empty account halfway through its broadcasts is left half on-chain —
+ * recoverable, but never worth walking into when one batched read prevents it.
+ */
+export const assertSelectionCanAffordAddKeys = async (accountIds) => {
+    const insufficient = [];
+    for (const accountId of accountIds) {
+        try {
+            const account = await wallet.getAccountBasic(accountId);
+            const { available } = await account.getAccountBalance();
+            if (new BN(available).lt(MIN_ADD_KEY_BALANCE_YOCTO)) {
+                insufficient.push(accountId);
+            }
+        } catch {
+            // Unreadable is not provably insufficient; the per-job check will decide with the
+            // authority of the signing path itself.
+        }
+    }
+    if (insufficient.length > 0) {
+        const error = new Error('new_key_transfer_insufficient_balance_for_add_keys');
+        error.accountIds = insufficient;
+        throw error;
+    }
+};
+
+/**
+ * Whether the exact SOURCE key is absent from the account at finality. `true` only on the RPC's
+ * own does-not-exist answer — an unreachable RPC is unknown, never absent.
+ */
+export const isSourceKeyAbsentOnChain = async ({ accountId, sourcePublicKey }) => {
+    try {
+        await wallet.connection.provider.query({
+            request_type: 'view_access_key',
+            account_id: accountId,
+            public_key: sourcePublicKey,
+            finality: 'final',
+        });
+        return false;
+    } catch (error) {
+        const serialized =
+            error instanceof Error
+                ? `${error.type ?? ''} ${error.message}`
+                : String(error);
+        return /AccessKeyDoesNotExist|does not exist while viewing/.test(serialized);
     }
 };
 
@@ -78,7 +129,9 @@ const assertCanAffordAddKey = async (account, accountId) => {
  */
 export const removeDestinationKeyWithSourceSigner = async (operation) => {
     const account = await getExactSourceAccount(operation);
-    return account.deleteKey(nearApiJs.utils.PublicKey.from(operation.destinationPublicKey));
+    return account.deleteKey(
+        nearApiJs.utils.PublicKey.from(operation.destinationPublicKey)
+    );
 };
 
 /**

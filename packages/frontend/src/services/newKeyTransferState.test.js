@@ -1,9 +1,13 @@
 import {
+    describeNewKeyTransferActivationRow,
     describeNewKeyTransferError,
     findResumableNewKeyTransfer,
+    findSecuredNewKeyTransfer,
     isNewKeyTransferFinished,
+    newKeyStartInputFingerprint,
     newKeyTransferAccountIdentity,
     newKeyTransferEligibilityKey,
+    resolveNewKeyStartReplayPlan,
     summarizeNewKeyTransferSession,
 } from './newKeyTransferState';
 
@@ -41,7 +45,12 @@ const makeSession = ({
     canonicalInputHash: 'hash',
     startRequest: { formatVersion: 1, clientTransferId, accounts: [] },
     startOutput: withStartOutput
-        ? { formatVersion: 1, clientTransferId, transferSessionId: `${clientTransferId}-session`, accounts }
+        ? {
+              formatVersion: 1,
+              clientTransferId,
+              transferSessionId: `${clientTransferId}-session`,
+              accounts,
+          }
         : undefined,
     addKeyIntentAccounts,
     verifiedAccounts,
@@ -143,7 +152,9 @@ describe('isNewKeyTransferFinished', () => {
     it('counts a transfer nothing was accepted for as finished', () => {
         expect(
             isNewKeyTransferFinished(
-                makeSession({ accounts: [refusedRow('alice.testnet', 'account_not_found')] })
+                makeSession({
+                    accounts: [refusedRow('alice.testnet', 'account_not_found')],
+                })
             )
         ).toBe(true);
     });
@@ -180,7 +191,9 @@ describe('findResumableNewKeyTransfer', () => {
     it('returns nothing when every transfer is finished', () => {
         expect(
             findResumableNewKeyTransfer([
-                makeSession({ accounts: [refusedRow('alice.testnet', 'rpc_lookup_failed')] }),
+                makeSession({
+                    accounts: [refusedRow('alice.testnet', 'rpc_lookup_failed')],
+                }),
             ])
         ).toBeUndefined();
     });
@@ -226,10 +239,12 @@ describe('describeNewKeyTransferError', () => {
             ).isFenced
         ).toBe(true);
         expect(
-            describeNewKeyTransferError(new Error('new_key_transfer_journal_corrupt')).isFenced
+            describeNewKeyTransferError(new Error('new_key_transfer_journal_corrupt'))
+                .isFenced
         ).toBe(true);
         expect(
-            describeNewKeyTransferError(new Error('new_key_transfer_session_not_found')).isFenced
+            describeNewKeyTransferError(new Error('new_key_transfer_session_not_found'))
+                .isFenced
         ).toBe(false);
     });
 
@@ -260,5 +275,257 @@ describe('newKeyTransferEligibilityKey', () => {
         expect(newKeyTransferEligibilityKey('something_new')).toBe(
             'newKeyTransfer.eligibility.notFullAccess'
         );
+    });
+});
+
+describe('stabilization SD4/SD6 readers', () => {
+    const securedSession = (overrides = {}) =>
+        makeSession({
+            phase: 'verification_pending_wallet',
+            accounts: [readyRow('alice.testnet'), readyRow('bob.testnet')],
+            addKeyIntentAccounts: [identity('alice.testnet'), identity('bob.testnet')],
+            verifiedAccounts: [identity('alice.testnet'), identity('bob.testnet')],
+            ...overrides,
+        });
+
+    it('splits verified into secured and pending-completion, and never rounds pending up', () => {
+        const session = securedSession();
+        session.securedAccounts = [identity('alice.testnet')];
+        session.pendingCompletionAccounts = [identity('bob.testnet')];
+        const summary = summarizeNewKeyTransferSession(session);
+        const alice = summary.accepted.find((row) => row.accountId === 'alice.testnet');
+        const bob = summary.accepted.find((row) => row.accountId === 'bob.testnet');
+        expect(alice).toMatchObject({
+            isVerified: true,
+            isSecured: true,
+            isPendingCompletion: false,
+        });
+        expect(bob).toMatchObject({
+            isVerified: true,
+            isSecured: false,
+            isPendingCompletion: true,
+        });
+        expect(summary.securedCount).toBe(1);
+        expect(summary.pendingCompletionCount).toBe(1);
+        expect(summary.isFullySecured).toBe(false);
+        expect(summary.isAwaitingWalletCompletion).toBe(true);
+    });
+
+    it('keeps a pending-wallet transfer UNFINISHED so resume and Check status stay offered', () => {
+        const session = securedSession();
+        session.securedAccounts = [identity('alice.testnet')];
+        session.pendingCompletionAccounts = [identity('bob.testnet')];
+        expect(isNewKeyTransferFinished(session)).toBe(false);
+        expect(findResumableNewKeyTransfer([session])).toBe(session);
+    });
+
+    it('joins the start request so each accepted row carries its exact source key', () => {
+        const session = makeSession();
+        session.startRequest.accounts = [
+            {
+                blockchainId: 'near',
+                networkId: 'testnet',
+                accountId: 'alice.testnet',
+                sourcePublicKey: 'ed25519:4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi',
+            },
+        ];
+        const summary = summarizeNewKeyTransferSession(session);
+        expect(summary.accepted[0].sourcePublicKey).toBe(
+            'ed25519:4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi'
+        );
+    });
+
+    it('finds the newest transfer with a secured account for the completion screen fallback', () => {
+        const finished = securedSession({ clientTransferId: 'transfer-finished' });
+        finished.securedAccounts = [identity('alice.testnet'), identity('bob.testnet')];
+        finished.phase = 'destination_keys_verified';
+        const failedLater = makeSession({
+            clientTransferId: 'transfer-failed-later',
+            accounts: [refusedRow('carol.testnet', 'account_not_found')],
+        });
+        // The raw latest session is the failed one; the completion screen must find the transfer
+        // the user actually finished (MNW-4).
+        expect(findSecuredNewKeyTransfer([finished, failedLater])).toBe(finished);
+        expect(findSecuredNewKeyTransfer([failedLater])).toBeUndefined();
+    });
+});
+
+describe('describeNewKeyTransferActivationRow', () => {
+    it('treats secured as the only success and carries the SD13 liveness fact', () => {
+        expect(
+            describeNewKeyTransferActivationRow({
+                activation: 'secured',
+                liveness: 'confirmed',
+            })
+        ).toEqual({ status: 'confirmed', livenessConfirmed: true });
+        expect(
+            describeNewKeyTransferActivationRow({
+                activation: 'secured',
+                liveness: 'skipped',
+            })
+        ).toEqual({ status: 'confirmed', livenessConfirmed: false });
+    });
+
+    it('renders each pending completion fact with its own next step', () => {
+        expect(
+            describeNewKeyTransferActivationRow({
+                activation: 'verified_pending_completion',
+                pendingFact: 'import_incomplete',
+            })
+        ).toEqual({
+            status: 'pendingWallet',
+            pendingKey: 'newKeyTransfer.pending.importIncomplete',
+        });
+        expect(
+            describeNewKeyTransferActivationRow({
+                activation: 'verified_pending_completion',
+                pendingFact: 'liveness_check_failed',
+            })
+        ).toEqual({
+            status: 'pendingWallet',
+            pendingKey: 'newKeyTransfer.pending.livenessCheckFailed',
+        });
+    });
+
+    it('keeps a refusal a refusal, with its issue', () => {
+        expect(
+            describeNewKeyTransferActivationRow({
+                activation: 'not_verified',
+                issue: 'activation_not_found',
+            })
+        ).toEqual({ status: 'failed', issue: 'activation_not_found' });
+    });
+});
+
+describe('stabilization SD7 start replay plan', () => {
+    const fingerprint = newKeyStartInputFingerprint({
+        accounts: [
+            { accountId: 'alice.testnet', sourcePublicKey: 'ed25519:AAA' },
+            { accountId: 'bob.testnet', sourcePublicKey: 'ed25519:BBB' },
+        ],
+        networkId: 'testnet',
+        targetPlatform: 'web',
+    });
+
+    it('replays a stashed id for the identical request, and only then', () => {
+        expect(
+            resolveNewKeyStartReplayPlan({
+                stored: { clientTransferId: 'stashed-id', inputFingerprint: fingerprint },
+                inputFingerprint: fingerprint,
+            })
+        ).toEqual({ clientTransferId: 'stashed-id', isReplay: true });
+        expect(
+            resolveNewKeyStartReplayPlan({ stored: null, inputFingerprint: fingerprint })
+        ).toEqual({ clientTransferId: undefined, isReplay: false });
+        expect(
+            resolveNewKeyStartReplayPlan({
+                stored: { clientTransferId: 'stashed-id', inputFingerprint: 'different' },
+                inputFingerprint: fingerprint,
+            })
+        ).toEqual({ clientTransferId: undefined, isReplay: false });
+    });
+
+    it('fingerprints the same selection identically regardless of account order', () => {
+        const reordered = newKeyStartInputFingerprint({
+            accounts: [
+                { accountId: 'bob.testnet', sourcePublicKey: 'ed25519:BBB' },
+                { accountId: 'alice.testnet', sourcePublicKey: 'ed25519:AAA' },
+            ],
+            networkId: 'testnet',
+            targetPlatform: 'web',
+        });
+        expect(reordered).toBe(fingerprint);
+        const differentTarget = newKeyStartInputFingerprint({
+            accounts: [{ accountId: 'alice.testnet', sourcePublicKey: 'ed25519:AAA' }],
+            networkId: 'testnet',
+            targetPlatform: 'mobile',
+        });
+        expect(differentTarget).not.toBe(fingerprint);
+    });
+});
+
+describe('stabilization SD11 typed-error coverage', () => {
+    it('maps every code on the SDK typed error surface, including the SD4 additions', () => {
+        // Mirror of the SDK's NEW_KEY_TRANSFER_ERROR_CODES (meteor-sdk-v1
+        // new_key_transfer_errors.ts). Extend BOTH when a code is added there.
+        const sdkCodes = [
+            'new_key_transfer_unavailable',
+            'new_key_transfer_client_id_conflict',
+            'new_key_transfer_orphaned_add_key_recovery',
+            'new_key_transfer_wallet_binding_missing',
+            'new_key_transfer_wallet_connection_missing',
+            'new_key_transfer_session_not_found',
+            'new_key_transfer_start_result_journal_missing',
+            'new_key_transfer_start_result_conflict',
+            'new_key_transfer_start_result_referenced',
+            'new_key_transfer_start_result_discard_failed',
+            'new_key_transfer_no_accounts_ready',
+            'new_key_transfer_add_key_account_mismatch',
+            'new_key_transfer_add_key_chain_required',
+            'new_key_transfer_journal_corrupt',
+            'new_key_transfer_journal_retention_required',
+            'new_key_transfer_verify_before_add_key_intent',
+            'new_key_transfer_verify_hash_mismatch',
+            'new_key_transfer_verify_session_update_failed',
+            'new_key_transfer_recovery_required',
+            'new_key_transfer_revoke_chain_required',
+            'new_key_transfer_revoke_destination_key_present',
+            'new_key_transfer_revoked_accounts_required',
+            'new_key_transfer_revoke_account_mismatch',
+            'new_key_transfer_session_not_terminal',
+        ];
+        for (const code of sdkCodes) {
+            const described = describeNewKeyTransferError(new Error(code));
+            expect(`${code}:${Boolean(described.i18nKey)}`).toBe(`${code}:true`);
+        }
+    });
+});
+
+describe('AddKeyJournalError localization', () => {
+    const journalError = (code) => {
+        const error = new Error('host-neutral SDK copy');
+        error.name = 'AddKeyJournalError';
+        error.code = code;
+        return error;
+    };
+
+    it('maps every journal code to grouped user copy, keeping the raw code for support', () => {
+        // Mirror of the SDK's TAddKeyJournalErrorCode union. Extend BOTH on additions there.
+        const codes = [
+            'journal_unreadable',
+            'journal_unsupported_shape',
+            'journal_duplicate_operations',
+            'journal_operation_conflict',
+            'journal_record_mismatch',
+            'journal_persist_failed',
+            'access_keys_malformed',
+            'destination_key_unproven',
+            'source_key_missing',
+            'source_key_not_full_access',
+            'signed_transaction_invalid',
+            'broadcast_ambiguous',
+            'finalized_proof_invalid',
+            'start_result_conflict',
+            'start_result_corrupt',
+            'start_result_persist_failed',
+            'start_result_clear_failed',
+            'pending_verify_conflict',
+            'pending_verify_corrupt',
+            'pending_verify_persist_failed',
+        ];
+        for (const code of codes) {
+            const described = describeNewKeyTransferError(journalError(code));
+            expect(`${code}:${Boolean(described.i18nKey)}`).toBe(`${code}:true`);
+            expect(described.code).toBe(code);
+        }
+    });
+
+    it('passes an unknown journal code through with its own message', () => {
+        const described = describeNewKeyTransferError(journalError('brand_new_code'));
+        expect(described).toEqual({
+            fallback: 'host-neutral SDK copy',
+            code: 'brand_new_code',
+            isFenced: false,
+        });
     });
 });

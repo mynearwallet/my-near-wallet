@@ -264,16 +264,21 @@ export default function AccountExportNewKeyReady() {
                                     {t('newKeyTransfer.ready.finishLater')}
                                 </FormButton>
                             </div>
-                            <div className='secondary'>
-                                <FormButton
-                                    className='link'
-                                    color='red'
-                                    disabled={isLeaving}
-                                    onClick={() => void startOver()}
-                                >
-                                    {t('newKeyTransfer.ready.cancelTransfer')}
-                                </FormButton>
-                            </div>
+                            {/* Once an AddKey intent is journaled the destination key may be
+                                live on-chain — cancelling is no longer an honest offer (MNW-7);
+                                the SDK would refuse it anyway. */}
+                            {!summary.hasAddKeyIntent && (
+                                <div className='secondary'>
+                                    <FormButton
+                                        className='link'
+                                        color='red'
+                                        disabled={isLeaving}
+                                        onClick={() => void startOver()}
+                                    >
+                                        {t('newKeyTransfer.ready.cancelTransfer')}
+                                    </FormButton>
+                                </div>
+                            )}
                         </>
                     )}
                 </Buttons>

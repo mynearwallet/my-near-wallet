@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import CONFIG from '../../config';
 import {
+    hasPendingMeteorNewKeyStart,
     meteorNetworkId,
     // promptMeteorAccountTransfer,
     startMeteorNewKeyAccountTransfer,
@@ -278,6 +279,16 @@ export default function AccountExportMethod() {
         }
     }, [accountIds, history]);
 
+    /**
+     * Stabilization SD7: a start interrupted by bridge/session expiry left its durable id
+     * stashed, and calling start again REPLAYS it — Meteor resumes exactly where the user was
+     * (typically mid-way through confirming the recovery phrase) instead of minting a second set
+     * of destination keys. The button below says "Continue" when that is what a click will do.
+     */
+    const [hasInterruptedStart, setHasInterruptedStart] = useState(() =>
+        hasPendingMeteorNewKeyStart()
+    );
+
     const handleNewKeyTransfer = async () => {
         trackMigrationMethodSelected('new_key', accountIds);
         trackNewKeyPrepareStarted(accountIds);
@@ -326,6 +337,9 @@ export default function AccountExportMethod() {
                 setErrorCode(code);
                 setIsFencedError(isFenced);
             }
+            // The failed attempt's durable id (if any) is stashed by the service; re-clicking
+            // replays it, and the copy should say so.
+            setHasInterruptedStart(hasPendingMeteorNewKeyStart());
             setIsExporting(false);
         }
     };
@@ -386,9 +400,19 @@ export default function AccountExportMethod() {
                         <span className='method-icon-slot'>
                             <MeteorConnectIcon className='method-icon meteor-connect-icon' />
                         </span>
-                        <span className='method-title'>{t('newKeyTransfer.title')}</span>
+                        <span className='method-title'>
+                            {t(
+                                hasInterruptedStart
+                                    ? 'newKeyTransfer.continueTitle'
+                                    : 'newKeyTransfer.title'
+                            )}
+                        </span>
                         <span className='method-description'>
-                            {t('newKeyTransfer.description')}
+                            {t(
+                                hasInterruptedStart
+                                    ? 'newKeyTransfer.continueDescription'
+                                    : 'newKeyTransfer.description'
+                            )}
                         </span>
                         {isExporting && (
                             <span className='method-status'>

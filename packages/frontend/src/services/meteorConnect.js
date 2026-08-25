@@ -7,10 +7,16 @@ import {
 } from '@meteorwallet/sdk';
 
 import {
+    assertSelectionCanAffordAddKeys,
     createWalletAddKeyChain,
+    isSourceKeyAbsentOnChain,
     removeDestinationKeyWithSourceSigner,
 } from './meteorConnectAddKeyChain';
 import { resolveMeteorConnectEnvironment } from './meteorConnectEnvironment';
+import {
+    newKeyStartInputFingerprint,
+    resolveNewKeyStartReplayPlan,
+} from './newKeyTransferState';
 import CONFIG from '../config';
 
 export const meteorNetworkId =
@@ -202,7 +208,8 @@ const discardLeftoverStartResult = async () => {
     }
     const stale = (await newKeyTransfer().getSessions()).find(
         (session) =>
-            session.startOutput?.transferSessionId === startResult.output.transferSessionId
+            session.startOutput?.transferSessionId ===
+            startResult.output.transferSessionId
     );
     if (stale == null) {
         // Nothing to clear it through; `start` will refuse with its own conflict error rather
@@ -223,8 +230,44 @@ const discardLeftoverStartResult = async () => {
 };
 
 /**
+ * Where the durable start id lives between an interrupted start and its replay (stabilization
+ * SD7). Meteor journals its half of a start under the client transfer id — including the
+ * committed-but-unconfirmed state where the user is mid-way through confirming the recovery
+ * phrase when the bridge session expires. Retrying with the SAME id resumes that exact state;
+ * retrying with a fresh one asks Meteor to mint a second set of destination keys.
+ */
+const PENDING_START_STORAGE_KEY = 'mnw:newKeyTransfer:pendingStart:v1';
+
+const readPendingStart = () => {
+    try {
+        const raw = window.localStorage.getItem(PENDING_START_STORAGE_KEY);
+        return raw == null ? null : JSON.parse(raw);
+    } catch {
+        return null;
+    }
+};
+
+const writePendingStart = (value) => {
+    try {
+        if (value == null) {
+            window.localStorage.removeItem(PENDING_START_STORAGE_KEY);
+        } else {
+            window.localStorage.setItem(PENDING_START_STORAGE_KEY, JSON.stringify(value));
+        }
+    } catch {
+        // Quota or privacy-mode failure: the transfer still works, only expiry-replay degrades —
+        // a retry after expiry will mint fresh keys, which Meteor's own recovery screen can
+        // discard. Never let bookkeeping break the transfer itself.
+    }
+};
+
+/**
  * Ask Meteor to mint destination keys for these accounts. Returns the SDK session; the caller
  * reads which accounts were accepted from `session.startOutput`.
+ *
+ * A failed attempt leaves its id stashed; calling this again with the SAME accounts and target
+ * replays that id (SD7), so a bridge expiry while the user was mid-confirmation in Meteor costs
+ * nothing. The interim screen's "Continue" button is exactly this call, repeated.
  */
 export const startMeteorNewKeyAccountTransfer = async ({
     accounts,
@@ -237,17 +280,72 @@ export const startMeteorNewKeyAccountTransfer = async ({
             `Select between 1 and ${MAX_NEW_KEY_TRANSFER_ACCOUNTS} eligible accounts.`
         );
     }
-    await discardLeftoverStartResult();
-
-    const result = await newKeyTransfer().start({
+    const inputFingerprint = newKeyStartInputFingerprint({
+        accounts,
+        networkId,
         targetPlatform,
+    });
+    const plan = resolveNewKeyStartReplayPlan({
+        stored: readPendingStart(),
+        inputFingerprint,
+    });
+    if (!plan.isReplay) {
+        // The leftover-result sweep stays OFF the replay path: on a replay, the wallet side may
+        // hold this very transfer mid-confirmation, and its earlier sessions are what the replay
+        // converges with. Sweeping belongs only to a genuinely new request.
+        await discardLeftoverStartResult();
+    }
+
+    const request = {
+        targetPlatform,
+        ...(plan.clientTransferId != null
+            ? { clientTransferId: plan.clientTransferId }
+            : {}),
         accounts: accounts.map(({ accountId, sourcePublicKey }) => ({
             blockchainId: 'near',
             networkId,
             accountId,
             sourcePublicKey,
         })),
-    });
+    };
+
+    let result;
+    try {
+        // Stash BEFORE asking: the id must survive a crash between Meteor journaling its half and
+        // this wallet hearing the answer. The SDK generates the id when we did not supply one, so
+        // a first attempt stashes after the call instead.
+        if (plan.clientTransferId != null) {
+            writePendingStart({
+                clientTransferId: plan.clientTransferId,
+                inputFingerprint,
+            });
+        }
+        result = await newKeyTransfer().start(request);
+    } catch (error) {
+        if (plan.clientTransferId == null) {
+            // First attempt failed and the SDK generated the id internally. If it journaled a
+            // session before failing, stash ITS id so the retry replays instead of re-minting.
+            try {
+                const sessions = await newKeyTransfer().getSessions();
+                const interrupted = sessions[sessions.length - 1];
+                if (
+                    interrupted != null &&
+                    interrupted.startOutput == null &&
+                    interrupted.phase === 'start_pending'
+                ) {
+                    writePendingStart({
+                        clientTransferId: interrupted.clientTransferId,
+                        inputFingerprint,
+                    });
+                }
+            } catch {
+                // The stash is an optimization for replay; failing to read sessions here must
+                // not mask the start error itself.
+            }
+        }
+        throw error;
+    }
+    writePendingStart(null);
 
     // A transfer Meteor accepted nothing for is deliberately NOT discarded here: its refusal
     // reasons are the only thing the user can act on, and they live in the session. It cannot
@@ -256,12 +354,37 @@ export const startMeteorNewKeyAccountTransfer = async ({
     return result.session;
 };
 
+/** Whether an interrupted start is waiting to be replayed (drives the "Continue" affordance). */
+export const hasPendingMeteorNewKeyStart = () => readPendingStart() != null;
+
+/** Drop the stashed start id — the deliberate "start over" half of SD7. The wallet side is
+ * released separately via `clearMeteorNewKeyAccountTransfer`, which sweeps by the same id. */
+export const discardPendingMeteorNewKeyStart = () => writePendingStart(null);
+
 /**
  * Sign and broadcast every pending AddKey for one transfer, then durably record the verification
  * request. `onProgress` reports 1-based position across the accounts still to submit.
+ *
+ * Before the FIRST broadcast, the whole selection is balance-checked at once (available balance,
+ * not total — MNW-10): finding out on account four that account four cannot pay leaves a transfer
+ * half on-chain, which the journal survives but the user should never be walked into.
  */
 export const runMeteorNewKeyAddKeys = async ({ transferSessionId, onProgress }) => {
     await initializeMeteorConnect();
+    const session = (await newKeyTransfer().getSessions()).find(
+        (candidate) => candidate.startOutput?.transferSessionId === transferSessionId
+    );
+    const hasJournaledIntent = (session?.addKeyIntentAccounts || []).length > 0;
+    if (session != null && !hasJournaledIntent) {
+        // Only before anything is journaled: on a resume, some AddKeys may already be signed or
+        // live, and a balance dip must not block reconciling them. The per-job check inside the
+        // chain seam still guards each remaining signature.
+        await assertSelectionCanAffordAddKeys(
+            (session.startOutput?.accounts || [])
+                .filter((row) => row.ok)
+                .map((row) => row.accountId)
+        );
+    }
     return newKeyTransfer().runAddKeys({
         transferSessionId,
         chain: createWalletAddKeyChain(),
@@ -277,8 +400,10 @@ export const runMeteorNewKeyAddKeys = async ({ transferSessionId, onProgress }) 
  */
 export const hasJournaledMeteorNewKeyVerification = async (transferSessionId) => {
     const { pendingVerification } = await getRecoveryState();
-    return pendingVerification != null &&
-        pendingVerification.transferSessionId === transferSessionId;
+    return (
+        pendingVerification != null &&
+        pendingVerification.transferSessionId === transferSessionId
+    );
 };
 
 /**
@@ -302,14 +427,46 @@ export const verifyMeteorNewKeyAccountTransfer = async ({ transferSessionId }) =
 };
 
 /**
+ * Re-ask Meteor for the current per-account state of a verified transfer (stabilization SD8).
+ *
+ * Verification is idempotent and convergent: a row Meteor answered `verified_pending_completion`
+ * for — import unfinished, or the working-account test transfer failed — is finished on Meteor's
+ * side by exactly this call. The journaled proof is reused verbatim; the SDK opens a fresh
+ * session when the original hold is gone.
+ */
+export const checkMeteorNewKeyTransferStatus = async ({ transferSessionId }) =>
+    verifyMeteorNewKeyAccountTransfer({ transferSessionId });
+
+/**
  * Forget a transfer that never reached a chain. Refused by the SDK once an AddKey intent is
  * journaled — at that point the destination key may be live and the record is a recovery fence,
  * not clutter.
  */
 export const clearMeteorNewKeyAccountTransfer = async (clientTransferId) => {
     await initializeMeteorConnect();
+    discardPendingMeteorNewKeyStart();
     await newKeyTransfer().clear(clientTransferId);
 };
+
+/**
+ * Retire a fully secured transfer out of the live journal (stabilization SD10). The SDK refuses
+ * anything not terminal, so this can never hide unfinished work; it is how the journal's capacity
+ * check is answered without deleting history.
+ */
+export const archiveMeteorNewKeyTransfer = async (clientTransferId) => {
+    await initializeMeteorConnect();
+    await newKeyTransfer().archiveCompletedSession(clientTransferId);
+};
+
+/**
+ * Whether an account's OLD source key is still on the account at finality (stabilization §6.2).
+ *
+ * Meteor's cleanup step removes the source key from the other side; this wallet must OBSERVE that
+ * absence before suggesting local-key deletion or calling anything "cleaned" — a local guess
+ * would let the user delete their only working key on the strength of nothing.
+ */
+export const isMeteorNewKeySourceKeyAbsent = async ({ accountId, sourcePublicKey }) =>
+    isSourceKeyAbsentOnChain({ accountId, sourcePublicKey });
 
 /* ────────────────────────────────────────────────────────────────────────────────────────────
  * Fenced-transfer reconciliation

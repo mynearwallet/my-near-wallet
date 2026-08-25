@@ -9,6 +9,7 @@ import {
     verifyMeteorNewKeyAccountTransfer,
 } from '../../services/meteorConnect';
 import {
+    describeNewKeyTransferActivationRow,
     describeNewKeyTransferError,
     newKeyTransferActivationIssueKey,
 } from '../../services/newKeyTransferState';
@@ -165,12 +166,15 @@ const Buttons = styled.div`
     }
 `;
 
-/** How full the bar is for one account. `failed` contributes nothing — it is not progress. */
+/** How full the bar is for one account. `failed` contributes nothing — it is not progress.
+ * `pendingWallet` (stabilization SD4) is close but deliberately not full: the key is proven, and
+ * Meteor still owes completion work that Check status converges. */
 const STATUS_WEIGHT = {
     waiting: 0,
     adding: 0.25,
     added: 0.6,
     verifying: 0.8,
+    pendingWallet: 0.9,
     confirmed: 1,
     failed: 0,
 };
@@ -219,6 +223,10 @@ export default function AccountExportNewKeyActivation() {
     });
     const [statuses, setStatuses] = useState({});
     const [issues, setIssues] = useState({});
+    /** Per-account i18n key for a `verified_pending_completion` row's outstanding fact (SD4). */
+    const [pendingFacts, setPendingFacts] = useState({});
+    /** Per-account SD13 fact: Meteor additionally confirmed a real signed test transfer. */
+    const [livenessFacts, setLivenessFacts] = useState({});
     const [isRunning, setIsRunning] = useState(false);
     const [failureMessage, setFailureMessage] = useState('');
     const hasAutoStarted = useRef(false);
@@ -252,6 +260,7 @@ export default function AccountExportNewKeyActivation() {
             setIsRunning(true);
             setFailureMessage('');
             setIssues({});
+            setPendingFacts({});
             let activationStage = 'add_keys';
             try {
                 if (!(await hasJournaledMeteorNewKeyVerification(transferSessionId))) {
@@ -280,17 +289,36 @@ export default function AccountExportNewKeyActivation() {
                 const { output } = await verifyMeteorNewKeyAccountTransfer({
                     transferSessionId,
                 });
+                // Stabilization SD4: three-way rows. `secured` is the only success; a
+                // `verified_pending_completion` row is proven but NOT finished — Meteor still
+                // owes its import or the working-account test — and re-running this exact
+                // verification (the Check status button) is what converges it.
                 const nextStatuses = {};
                 const nextIssues = {};
+                const nextPendingFacts = {};
+                const nextLiveness = {};
                 for (const account of output.accounts) {
-                    const verified = account.activation === 'verified';
-                    nextStatuses[account.accountId] = verified ? 'confirmed' : 'failed';
-                    if (!verified) {
-                        nextIssues[account.accountId] = account.issue;
+                    const row = describeNewKeyTransferActivationRow(account);
+                    nextStatuses[account.accountId] =
+                        row.status === 'confirmed'
+                            ? 'confirmed'
+                            : row.status === 'pendingWallet'
+                            ? 'pendingWallet'
+                            : 'failed';
+                    if (row.status === 'failed') {
+                        nextIssues[account.accountId] = row.issue;
+                    }
+                    if (row.status === 'pendingWallet') {
+                        nextPendingFacts[account.accountId] = row.pendingKey;
+                    }
+                    if (row.status === 'confirmed' && row.livenessConfirmed) {
+                        nextLiveness[account.accountId] = true;
                     }
                 }
                 updateStatuses((current) => ({ ...current, ...nextStatuses }));
                 setIssues(nextIssues);
+                setPendingFacts(nextPendingFacts);
+                setLivenessFacts(nextLiveness);
                 trackMigrationActivationFinished({
                     accounts: summary?.accepted,
                     outputAccounts: output.accounts,
@@ -312,6 +340,7 @@ export default function AccountExportNewKeyActivation() {
                     accountIds.map((accountId) => [
                         accountId,
                         statusesRef.current[accountId] === 'confirmed' ||
+                        statusesRef.current[accountId] === 'pendingWallet' ||
                         statusesRef.current[accountId] === 'added'
                             ? statusesRef.current[accountId]
                             : 'failed',
@@ -365,6 +394,12 @@ export default function AccountExportNewKeyActivation() {
     const confirmedCount = accounts.filter(
         (account) => statuses[account.accountId] === 'confirmed'
     ).length;
+    const hasPendingWalletRows = accounts.some(
+        (account) => statuses[account.accountId] === 'pendingWallet'
+    );
+    // Journaled facts, not this run's statuses: secured survives a reload, and the "view secured"
+    // affordance must too.
+    const securedCount = summary.securedCount;
     const completionPercentage =
         accounts.length === 0
             ? 0
@@ -409,8 +444,19 @@ export default function AccountExportNewKeyActivation() {
                                     <StatusIconSlot>{statusIcon(status)}</StatusIconSlot>
                                     <span>
                                         {t(`newKeyTransfer.activationStatus.${status}`)}
+                                        {livenessFacts[account.accountId]
+                                            ? ` — ${t(
+                                                  'newKeyTransfer.livenessConfirmed'
+                                              )}`
+                                            : ''}
                                     </span>
                                 </StatusLine>
+                                {pendingFacts[account.accountId] && (
+                                    <StatusLine className='pending'>
+                                        <StatusIconSlot />
+                                        <span>{t(pendingFacts[account.accountId])}</span>
+                                    </StatusLine>
+                                )}
                                 {issues[account.accountId] && (
                                     <div className='issue'>
                                         {t(
@@ -440,8 +486,35 @@ export default function AccountExportNewKeyActivation() {
                                 )
                             }
                         >
-                            {t('newKeyTransfer.activation.retry')}
+                            {t(
+                                // Once the AddKeys are journaled-complete, this button only
+                                // re-asks Meteor (stabilization SD8) — say so, instead of
+                                // implying the on-chain work will run again.
+                                hasPendingWalletRows || summary.isAwaitingWalletCompletion
+                                    ? 'newKeyTransfer.activation.checkStatus'
+                                    : 'newKeyTransfer.activation.retry'
+                            )}
                         </FormButton>
+                        {securedCount > 0 && (
+                            <div className='secondary'>
+                                <FormButton
+                                    className='link'
+                                    onClick={() =>
+                                        history.push(
+                                            '/export-accounts/new-key-activated',
+                                            {
+                                                clientTransferId:
+                                                    summary.clientTransferId,
+                                            }
+                                        )
+                                    }
+                                >
+                                    {t('newKeyTransfer.activation.viewSecured', {
+                                        count: securedCount,
+                                    })}
+                                </FormButton>
+                            </div>
+                        )}
                         <div className='secondary'>
                             <FormButton
                                 className='link'

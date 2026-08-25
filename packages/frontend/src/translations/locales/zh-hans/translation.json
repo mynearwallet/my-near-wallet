@@ -134,51 +134,51 @@
         }
     },
     "accountExport": {
-        "returnToWallet": "返回 MyNearWallet",
         "banner": {
-            "title": "MyNearWallet 即将停止服务",
             "description": "MyNearWallet 即将停止服务。请导出你的账户，以便继续安全地使用它们。",
+            "export": "导出账户",
             "resume": "继续账户转移",
-            "export": "导出账户"
-        },
-        "select": {
-            "title": "导出账户",
-            "subtitle": "请确认将被安全导出的账户。",
-            "checking": "正在检查你的账户…",
-            "accessKeyCheckFailed": "MyNearWallet 无法检查你的账户访问密钥。",
-            "exportSelected": "导出所选账户",
-            "cancel": "取消"
+            "title": "MyNearWallet 即将停止服务"
         },
         "list": {
-            "selectPrompt": "选择一个或多个要导出的账户（最多 {{max}} 个）",
             "empty": "没有可导出的账户。",
+            "selectPrompt": "选择一个或多个要导出的账户（最多 {{max}} 个）",
             "unavailableTitle": "以下账户不可用"
         },
-        "success": {
-            "title": "账户导出成功",
-            "subtitle": "你选择的账户已被安全导出并导入 Meteor Wallet。",
-            "listTitle": "已导出的账户",
-            "removeFromWallet": "从 MyNearWallet 移除已导出的账户"
+        "manual": {
+            "accountLabel": "账户 {{index}}",
+            "back": "返回",
+            "backToWallet": "返回钱包",
+            "credentialsFailed": "MyNearWallet 无法加载你的账户凭据。",
+            "privateKeyLabel": "私钥",
+            "subtitle": "显示并复制所选账户的私钥。",
+            "title": "手动导出",
+            "warning": "请妥善保管这些信息。任何拿到这些凭据的人都能访问并控制你的账户。"
         },
         "remove": {
-            "title": "从 MyNearWallet 移除账户",
-            "warningConfirmFirst": "请在确认账户已成功转移、并且你能在 Meteor Wallet 中访问它们之后，再移除账户。",
-            "warningPermanent": "移除账户会永久删除 MyNearWallet 中本地保存的账户数据和密钥。此操作无法撤销。",
-            "listTitle": "将被移除的账户",
             "confirmAccess": "我确认可以在 Meteor Wallet 中访问所选账户。",
+            "failed": "MyNearWallet 未能移除全部所选账户。请重试。",
+            "listTitle": "将被移除的账户",
             "removeSelected": "移除所选账户",
             "removing": "正在移除所选账户…",
-            "failed": "MyNearWallet 未能移除全部所选账户。请重试。"
+            "title": "从 MyNearWallet 移除账户",
+            "warningConfirmFirst": "请在确认账户已成功转移、并且你能在 Meteor Wallet 中访问它们之后，再移除账户。",
+            "warningPermanent": "移除账户会永久删除 MyNearWallet 中本地保存的账户数据和密钥。此操作无法撤销。"
         },
-        "manual": {
-            "title": "手动导出",
-            "subtitle": "显示并复制所选账户的私钥。",
-            "warning": "请妥善保管这些信息。任何拿到这些凭据的人都能访问并控制你的账户。",
-            "credentialsFailed": "MyNearWallet 无法加载你的账户凭据。",
-            "accountLabel": "账户 {{index}}",
-            "privateKeyLabel": "私钥",
-            "backToWallet": "返回钱包",
-            "back": "返回"
+        "returnToWallet": "返回 MyNearWallet",
+        "select": {
+            "accessKeyCheckFailed": "MyNearWallet 无法检查你的账户访问密钥。",
+            "cancel": "取消",
+            "checking": "正在检查你的账户…",
+            "exportSelected": "导出所选账户",
+            "subtitle": "请确认将被安全导出的账户。",
+            "title": "导出账户"
+        },
+        "success": {
+            "listTitle": "已导出的账户",
+            "removeFromWallet": "从 MyNearWallet 移除已导出的账户",
+            "subtitle": "你选择的账户已被安全导出并导入 Meteor Wallet。",
+            "title": "账户导出成功"
         }
     },
     "accountSelector": {
@@ -839,6 +839,191 @@
         "desc": "当前钱包（和网络）仅供测试。测试网通证和其他资产均无价值。测试网账户不会迁移至主网。",
         "header": "NEAR 测试钱包",
         "title": "测试网钱包"
+    },
+    "newKeyTransfer": {
+        "activated": {
+            "archive": "归档此转移记录",
+            "checkStatus": "检查转移状态",
+            "inProgressSubtitle": "您的新密钥已在链上激活，但 Meteor Wallet 尚未完成对每个账户的保管。请在 Meteor Wallet 中完成剩余步骤，然后使用“检查状态”。在每个账户都妥善保管之前，移除旧密钥保持锁定。",
+            "inProgressTitle": "密钥已激活——正在 Meteor Wallet 中完成",
+            "keep": "暂时保留",
+            "listTitle": "已妥善保管的账户",
+            "loadingTitle": "转移状态",
+            "remove": "从 MyNearWallet 移除账户",
+            "sourceKeyRemoved": "已通过 Meteor Wallet 移除的旧密钥：{{count}}",
+            "subtitle": "每个账户都已妥善保管：Meteor Wallet 已在链上证明每个新密钥、完整确认其恢复短语并导入账户。在此处移除任何内容之前，请先确认您能在 Meteor Wallet 中访问您的账户。",
+            "title": "账户已在 Meteor Wallet 中妥善保管",
+            "unconfirmedTitle": "仍在保管中"
+        },
+        "activation": {
+            "cancel": "返回我的钱包",
+            "checkStatus": "检查状态",
+            "finishLater": "稍后完成",
+            "keepOpen": "在所有账户确认完成前，请保持本页面打开。",
+            "progress": "已完成 {{completed}} / {{total}}",
+            "retry": "重试",
+            "statusTitle": "账户状态",
+            "subtitle": "正在把新的 Meteor 密钥添加到你选择的账户。",
+            "title": "正在激活 Meteor 密钥",
+            "viewSecured": "查看已妥善保管的账户（{{count}}）"
+        },
+        "activationIssue": {
+            "account_not_in_session": "该账户不属于向 Meteor Wallet 询问的那次转移。",
+            "activation_not_found": "在该账户上未找到 Meteor 的新密钥。",
+            "activation_not_full_access": "Meteor 的新密钥被添加时不具备完全访问权限。",
+            "invalid_add_key_transaction": "无法验证添加 Meteor 密钥的那笔交易。",
+            "rpc_lookup_failed": "Meteor Wallet 无法连接 NEAR 区块链来确认该账户。请稍后重试。",
+            "session_not_found": "Meteor Wallet 已不再识别本次转移。请重新开始。",
+            "source_signer_mismatch": "Meteor 的密钥是由与本次转移起始密钥不同的另一把密钥添加的。",
+            "unknown": "Meteor Wallet 无法确认该账户。"
+        },
+        "activationStatus": {
+            "added": "密钥已添加",
+            "adding": "正在添加密钥…",
+            "confirmed": "已妥善保管",
+            "failed": "失败",
+            "pendingWallet": "正在 Meteor Wallet 中完成…",
+            "verifying": "正在与 Meteor 确认…",
+            "waiting": "等待中"
+        },
+        "advancedDescription": "高级：通过旧版桥接流程发送加密后的现有账户密钥材料。请尽量使用上方的新密钥方式。",
+        "continueDescription": "先前的转移在完成前被中断。继续即可——Meteor Wallet 会从您上次停下的地方接着进行。",
+        "continueExistingSecret": "继续使用现有密钥转移",
+        "continueTitle": "继续转移到 Meteor Wallet",
+        "description": "推荐方式。Meteor 会为每个账户创建一把新密钥；任何私钥或助记词都不会离开本钱包。",
+        "destination": {
+            "heading": "这些账户应转移到哪里？",
+            "mobileDescription": "在 Meteor 移动应用中打开转移。",
+            "mobileTitle": "Meteor 移动版",
+            "webDescription": "在浏览器中的 Meteor Wallet 打开转移。",
+            "webTitle": "Meteor 网页版"
+        },
+        "eligibility": {
+            "algorithmUnsupported": "仅支持 Ed25519 来源密钥。",
+            "ledgerUnsupported": "本次转移不支持基于 Ledger 的来源账户。",
+            "noLocalKey": "没有可用的普通本地签名密钥。",
+            "notFullAccess": "未找到完全访问权限密钥。",
+            "twoFactorUnsupported": "不支持启用 2FA/多签的账户。请先关闭 2FA，或改用手动导出。",
+            "verificationFailed": "无法验证访问密钥。请稍后重试。"
+        },
+        "error": {
+            "addKeyAccountMismatch": "本次转移不包含该账户，因此没有更改任何密钥。请从账户列表重新开始转移。",
+            "addKeyChainRequired": "MyNearWallet 无法连接 NEAR 网络来签署密钥更改。请检查网络连接后重试。",
+            "clientIdConflict": "本次转移最初使用的是其他账户。请从账户列表重新开始。",
+            "insufficientBalanceForAddKeys": "部分所选账户没有足够的可用 NEAR 来添加 Meteor 的密钥。请为其充值或取消选择后重试。",
+            "journalCorrupt": "无法安全读取本设备上保存的转移记录。",
+            "journalRetentionRequired": "此设备上的转移历史已满。请归档一笔已完成的转移，然后重试。",
+            "noAccountsReady": "本次转移中没有账户可供激活。",
+            "orphanedAddKey": "本设备上仍有一次只提交了一部分的密钥更改，必须先处理完才能开始新的转移。请联系支持并提供下方的编号。",
+            "recoveryRequired": "本次转移已在 NEAR 区块链上添加了密钥，因此不能直接丢弃。",
+            "resolveNow": "处理这次转移",
+            "revokeAccountMismatch": "该账户不属于本次转移，因此没有任何更改。",
+            "revokeChainRequired": "MyNearWallet 无法连接 NEAR 网络来确认密钥已被移除。没有任何更改——请在恢复联网后重试。",
+            "revokedAccountsRequired": "没有指定要移除的账户，因此没有任何更改。",
+            "revokeDestinationKeyPresent": "Meteor Wallet 的密钥仍在该账户上，因此这次转移还不能结束。请移除该密钥，等待 NEAR 网络确认后重试。",
+            "sessionNotFound": "本次转移已不可用。请从账户列表重新开始。",
+            "sessionNotTerminal": "此转移仍有未完成的账户，暂时无法归档。",
+            "startResultConflict": "本设备上仍记录着另一次转移。请先完成或处理它，再开始新的转移。",
+            "startResultDiscardFailed": "本设备上的转移记录无法被安全清除，因此原样保留。请先处理它，再开始新的转移。",
+            "startResultMissing": "本次转移的激活记录缺失，无法安全继续。请从账户列表重新开始。",
+            "startResultReferenced": "此转移已准备的密钥仍被一个进行中的转移引用，无法丢弃。",
+            "unavailable": "此版本不支持转移到 Meteor Wallet。",
+            "verificationProofMissing": "缺少与 Meteor Wallet 确认本次转移所需的凭证。请从账户列表重新开始。",
+            "verifyBeforeAddKeyIntent": "该账户的新密钥尚未添加到 NEAR 区块链，因此无法与 Meteor Wallet 确认。",
+            "verifyHashMismatch": "正在核对的激活与此转移自身的链上记录不符。请携带下方代码联系支持。",
+            "verifySessionUpdateFailed": "Meteor Wallet 已回应，但在此设备上保存结果失败。请再次运行“检查状态”以完成。",
+            "walletBindingMissing": "Meteor Wallet 在回应时没有表明自己的身份。请重新开始转移。",
+            "walletConnectionMissing": "此转移缺少与 Meteor Wallet 的连接。请使用“检查状态”，通过新会话重新连接。"
+        },
+        "existingSecret": {
+            "declined": "该账户转移在 Meteor Wallet 中被拒绝。",
+            "expired": "该账户转移已过期。你可以重试。",
+            "startFailed": "MyNearWallet 无法开始账户转移。"
+        },
+        "genericError": "转移无法继续。",
+        "hideAdvanced": "隐藏使用现有密钥的高级转移",
+        "ineligible": "{{accountId}} 目前无法转移。{{reason}}",
+        "issue": {
+            "account_not_found": "Meteor Wallet 在 NEAR 区块链上找不到该账户。",
+            "key_generation_failed": "Meteor Wallet 无法为该账户创建新密钥。",
+            "pending_transfer_conflict": "该账户在 Meteor Wallet 中已有一次未完成的转移。请先在那边完成或取消，然后重试。",
+            "rpc_lookup_failed": "Meteor Wallet 无法连接 NEAR 区块链来检查该账户。请稍后重试。",
+            "secure_storage_failed": "Meteor Wallet 无法安全保存该账户的新密钥。",
+            "source_key_not_found": "本钱包用于该账户的密钥已不在该账户上。",
+            "source_key_not_full_access": "本钱包用于该账户的密钥不是完全访问权限密钥。",
+            "unknown": "Meteor Wallet 无法准备该账户。"
+        },
+        "journalError": {
+            "broadcastAmbiguous": "网络的回应不明确。没有任何丢失——请重试，钱包会核对已经上链的内容。",
+            "chainDataInvalid": "网络返回了此钱包无法安全验证的数据。未做任何更改——请稍后重试。",
+            "conflict": "此转移的记录与另一笔转移冲突。请重试；若再次发生，请携带下方代码联系支持。",
+            "destinationKeyUnproven": "此账户上存在一个无法证明属于此转移的 Meteor 密钥。请先在恢复页面处理后再继续。",
+            "persistFailed": "在此设备上保存转移进度失败。请清理浏览器存储空间后重试——没有任何内容丢失。",
+            "sourceKeyUnavailable": "此账户的确切签名密钥已不在此钱包中，因此无法在这里签署此步骤。",
+            "unreadable": "无法安全读取此转移在设备上的日志。未做任何更改——请携带下方代码联系支持。"
+        },
+        "livenessConfirmed": "测试转账已确认",
+        "loading": "正在加载转移…",
+        "localDevTarget": "发送到本地运行的 Meteor Wallet（开发）",
+        "manualDescription": "显示并复制你的私钥。",
+        "manualTitle": "手动导出",
+        "methodHeading": "你希望如何导出？",
+        "methodSubheading": "选择访问并导出账户的方式。",
+        "pending": {
+            "importIncomplete": "Meteor Wallet 仍在完成此账户的导入。请稍后使用“检查状态”。",
+            "livenessCheckFailed": "Meteor Wallet 对此账户的测试交易失败。请使用“检查状态”重试。"
+        },
+        "ready": {
+            "acceptedTitle": "可激活的账户",
+            "activate": "激活新密钥",
+            "cancel": "返回我的钱包",
+            "cancelTransfer": "取消此转移",
+            "explainer": "激活会把 Meteor 的新密钥添加到 NEAR 区块链上的每个账户。你现有的密钥不会被发送到任何地方，并会一直有效，直到你自己选择移除它们。",
+            "finishLater": "稍后完成",
+            "noneSubtitle": "Meteor Wallet 无法准备你选择的任何账户。请解决下方列出的原因后重试。",
+            "noneTitle": "没有账户可以准备",
+            "refusedTitle": "未包含在本次转移中",
+            "startOver": "返回账户选择",
+            "subtitle": "Meteor Wallet 已为下列每个账户创建了一把新的访问密钥。激活它们即可完成转移。",
+            "title": "Meteor 密钥已就绪"
+        },
+        "recovery": {
+            "archive": "关闭这条记录",
+            "archiveRefused": "Meteor Wallet 的密钥仍在该账户上。请等待 NEAR 区块链确认移除后重试。",
+            "check": "在 NEAR 区块链上检查",
+            "continue": "返回账户选择",
+            "detail": {
+                "access_keys_unreadable": "无法从 NEAR 区块链读取该账户的密钥。",
+                "signed_transaction_may_still_land": "已签名的密钥更改仍可能被 NEAR 区块链接受，因此现在关闭这条记录并不安全。",
+                "transaction_expiry_unknown": "MyNearWallet 无法确定已签名的密钥更改是否仍可能被接受。"
+            },
+            "fieldDestinationKey": "Meteor Wallet 密钥",
+            "fieldSourceKey": "你的签名密钥",
+            "fieldTransaction": "交易",
+            "finishLater": "稍后完成",
+            "journalUnreadable": "无法读取本设备上保存的转移记录，因此这里无法列出受影响的账户。请联系支持并提供下方编号——不要清除浏览器数据，那里保存着此事唯一的记录。",
+            "removeKey": "移除 Meteor Wallet 的密钥",
+            "resolvedSubtitle": "本设备上没有未完成的密钥更改。你可以重新开始转移。",
+            "resolvedTitle": "没有需要处理的事项",
+            "status": {
+                "ambiguous": "NEAR 区块链目前无法给出确定结论。没有任何更改——请稍后重试。",
+                "destination_key_absent": "该密钥更改从未生效，且已无法再被接受。可以关闭这条记录。",
+                "destination_key_present_unproven": "Meteor Wallet 的密钥就在该账户上，但没有证据表明是本次转移添加的。请用你自己的密钥将其移除以了结此事。",
+                "finalized": "该密钥更改确实已在 NEAR 区块链上完成。可以从账户列表继续本次转移。",
+                "not_found": "已处理完成。"
+            },
+            "statusUnchecked": "尚未检查。检查只会读取 NEAR 区块链——不会签名，也不会发送任何内容。",
+            "subtitle": "本设备上有一次密钥更改已被签名但从未确认。必须先处理它，才能开始新的转移。",
+            "supportExplainer": "如果上述步骤都无法解决，请联系支持并提供该编号。在此问题处理完成前，开始新的转移会一直被拒绝。",
+            "supportReferenceLabel": "支持编号",
+            "title": "处理一次未完成的密钥更改"
+        },
+        "showAdvanced": "显示使用现有密钥的高级转移",
+        "start": "转移到 Meteor Wallet",
+        "starting": "正在打开 Meteor Wallet…",
+        "supportCode": "支持代码：{{code}}",
+        "supportReference": "支持编号：{{id}}",
+        "title": "转移到 Meteor Wallet"
     },
     "NFTDetail": {
         "attributes": "属性",
@@ -1970,151 +2155,6 @@
             "confirmOnLedger": "请在 Ledger 设备上确认该操作。",
             "desc": "添加 Ledger 受限访问密钥至钱包来管理多个恢复方式。",
             "title": "你的账户已经激活！"
-        }
-    },
-    "newKeyTransfer": {
-        "title": "转移到 Meteor Wallet",
-        "description": "推荐方式。Meteor 会为每个账户创建一把新密钥；任何私钥或助记词都不会离开本钱包。",
-        "methodHeading": "你希望如何导出？",
-        "methodSubheading": "选择访问并导出账户的方式。",
-        "start": "转移到 Meteor Wallet",
-        "starting": "正在打开 Meteor Wallet…",
-        "loading": "正在加载转移…",
-        "genericError": "转移无法继续。",
-        "ineligible": "{{accountId}} 目前无法转移。{{reason}}",
-        "supportReference": "支持编号：{{id}}",
-        "supportCode": "支持代码：{{code}}",
-        "showAdvanced": "显示使用现有密钥的高级转移",
-        "hideAdvanced": "隐藏使用现有密钥的高级转移",
-        "advancedDescription": "高级：通过旧版桥接流程发送加密后的现有账户密钥材料。请尽量使用上方的新密钥方式。",
-        "continueExistingSecret": "继续使用现有密钥转移",
-        "manualTitle": "手动导出",
-        "manualDescription": "显示并复制你的私钥。",
-        "localDevTarget": "发送到本地运行的 Meteor Wallet（开发）",
-        "existingSecret": {
-            "declined": "该账户转移在 Meteor Wallet 中被拒绝。",
-            "expired": "该账户转移已过期。你可以重试。",
-            "startFailed": "MyNearWallet 无法开始账户转移。"
-        },
-        "error": {
-            "addKeyAccountMismatch": "本次转移不包含该账户，因此没有更改任何密钥。请从账户列表重新开始转移。",
-            "addKeyChainRequired": "MyNearWallet 无法连接 NEAR 网络来签署密钥更改。请检查网络连接后重试。",
-            "clientIdConflict": "本次转移最初使用的是其他账户。请从账户列表重新开始。",
-            "journalCorrupt": "无法安全读取本设备上保存的转移记录。",
-            "noAccountsReady": "本次转移中没有账户可供激活。",
-            "orphanedAddKey": "本设备上仍有一次只提交了一部分的密钥更改，必须先处理完才能开始新的转移。请联系支持并提供下方的编号。",
-            "recoveryRequired": "本次转移已在 NEAR 区块链上添加了密钥，因此不能直接丢弃。",
-            "resolveNow": "处理这次转移",
-            "revokeAccountMismatch": "该账户不属于本次转移，因此没有任何更改。",
-            "revokeChainRequired": "MyNearWallet 无法连接 NEAR 网络来确认密钥已被移除。没有任何更改——请在恢复联网后重试。",
-            "revokeDestinationKeyPresent": "Meteor Wallet 的密钥仍在该账户上，因此这次转移还不能结束。请移除该密钥，等待 NEAR 网络确认后重试。",
-            "revokedAccountsRequired": "没有指定要移除的账户，因此没有任何更改。",
-            "sessionNotFound": "本次转移已不可用。请从账户列表重新开始。",
-            "startResultConflict": "本设备上仍记录着另一次转移。请先完成或处理它，再开始新的转移。",
-            "startResultDiscardFailed": "本设备上的转移记录无法被安全清除，因此原样保留。请先处理它，再开始新的转移。",
-            "startResultMissing": "本次转移的激活记录缺失，无法安全继续。请从账户列表重新开始。",
-            "unavailable": "此版本不支持转移到 Meteor Wallet。",
-            "verificationProofMissing": "缺少与 Meteor Wallet 确认本次转移所需的凭证。请从账户列表重新开始。",
-            "verifyBeforeAddKeyIntent": "该账户的新密钥尚未添加到 NEAR 区块链，因此无法与 Meteor Wallet 确认。",
-            "walletBindingMissing": "Meteor Wallet 在回应时没有表明自己的身份。请重新开始转移。"
-        },
-        "eligibility": {
-            "algorithmUnsupported": "仅支持 Ed25519 来源密钥。",
-            "ledgerUnsupported": "本次转移不支持基于 Ledger 的来源账户。",
-            "noLocalKey": "没有可用的普通本地签名密钥。",
-            "notFullAccess": "未找到完全访问权限密钥。",
-            "twoFactorUnsupported": "不支持启用 2FA/多签的账户。请先关闭 2FA，或改用手动导出。",
-            "verificationFailed": "无法验证访问密钥。请稍后重试。"
-        },
-        "issue": {
-            "account_not_found": "Meteor Wallet 在 NEAR 区块链上找不到该账户。",
-            "key_generation_failed": "Meteor Wallet 无法为该账户创建新密钥。",
-            "pending_transfer_conflict": "该账户在 Meteor Wallet 中已有一次未完成的转移。请先在那边完成或取消，然后重试。",
-            "rpc_lookup_failed": "Meteor Wallet 无法连接 NEAR 区块链来检查该账户。请稍后重试。",
-            "secure_storage_failed": "Meteor Wallet 无法安全保存该账户的新密钥。",
-            "source_key_not_found": "本钱包用于该账户的密钥已不在该账户上。",
-            "source_key_not_full_access": "本钱包用于该账户的密钥不是完全访问权限密钥。",
-            "unknown": "Meteor Wallet 无法准备该账户。"
-        },
-        "activationIssue": {
-            "account_not_in_session": "该账户不属于向 Meteor Wallet 询问的那次转移。",
-            "activation_not_found": "在该账户上未找到 Meteor 的新密钥。",
-            "activation_not_full_access": "Meteor 的新密钥被添加时不具备完全访问权限。",
-            "invalid_add_key_transaction": "无法验证添加 Meteor 密钥的那笔交易。",
-            "rpc_lookup_failed": "Meteor Wallet 无法连接 NEAR 区块链来确认该账户。请稍后重试。",
-            "session_not_found": "Meteor Wallet 已不再识别本次转移。请重新开始。",
-            "source_signer_mismatch": "Meteor 的密钥是由与本次转移起始密钥不同的另一把密钥添加的。",
-            "unknown": "Meteor Wallet 无法确认该账户。"
-        },
-        "ready": {
-            "title": "Meteor 密钥已就绪",
-            "subtitle": "Meteor Wallet 已为下列每个账户创建了一把新的访问密钥。激活它们即可完成转移。",
-            "noneTitle": "没有账户可以准备",
-            "noneSubtitle": "Meteor Wallet 无法准备你选择的任何账户。请解决下方列出的原因后重试。",
-            "acceptedTitle": "可激活的账户",
-            "refusedTitle": "未包含在本次转移中",
-            "explainer": "激活会把 Meteor 的新密钥添加到 NEAR 区块链上的每个账户。你现有的密钥不会被发送到任何地方，并会一直有效，直到你自己选择移除它们。",
-            "activate": "激活新密钥",
-            "cancel": "返回我的钱包",
-            "finishLater": "稍后完成",
-            "startOver": "返回账户选择"
-        },
-        "activation": {
-            "title": "正在激活 Meteor 密钥",
-            "subtitle": "正在把新的 Meteor 密钥添加到你选择的账户。",
-            "statusTitle": "账户状态",
-            "progress": "已完成 {{completed}} / {{total}}",
-            "keepOpen": "在所有账户确认完成前，请保持本页面打开。",
-            "retry": "重试",
-            "cancel": "返回我的钱包",
-            "finishLater": "稍后完成"
-        },
-        "activationStatus": {
-            "waiting": "等待中",
-            "adding": "正在添加密钥…",
-            "added": "密钥已添加",
-            "verifying": "正在与 Meteor 确认…",
-            "confirmed": "已确认",
-            "failed": "失败"
-        },
-        "activated": {
-            "title": "Meteor 密钥已激活",
-            "subtitle": "Meteor Wallet 已在区块链上确认了新密钥。请在 Meteor Wallet 中完成剩余步骤，并确认你能在那里访问账户，然后再从这里移除任何东西。",
-            "unconfirmedTitle": "未确认",
-            "listTitle": "已激活的账户",
-            "keep": "暂时保留",
-            "remove": "从 MyNearWallet 移除账户"
-        },
-        "recovery": {
-            "title": "处理一次未完成的密钥更改",
-            "subtitle": "本设备上有一次密钥更改已被签名但从未确认。必须先处理它，才能开始新的转移。",
-            "journalUnreadable": "无法读取本设备上保存的转移记录，因此这里无法列出受影响的账户。请联系支持并提供下方编号——不要清除浏览器数据，那里保存着此事唯一的记录。",
-            "supportReferenceLabel": "支持编号",
-            "supportExplainer": "如果上述步骤都无法解决，请联系支持并提供该编号。在此问题处理完成前，开始新的转移会一直被拒绝。",
-            "fieldTransaction": "交易",
-            "fieldDestinationKey": "Meteor Wallet 密钥",
-            "fieldSourceKey": "你的签名密钥",
-            "statusUnchecked": "尚未检查。检查只会读取 NEAR 区块链——不会签名，也不会发送任何内容。",
-            "status": {
-                "finalized": "该密钥更改确实已在 NEAR 区块链上完成。可以从账户列表继续本次转移。",
-                "destination_key_present_unproven": "Meteor Wallet 的密钥就在该账户上，但没有证据表明是本次转移添加的。请用你自己的密钥将其移除以了结此事。",
-                "destination_key_absent": "该密钥更改从未生效，且已无法再被接受。可以关闭这条记录。",
-                "ambiguous": "NEAR 区块链目前无法给出确定结论。没有任何更改——请稍后重试。",
-                "not_found": "已处理完成。"
-            },
-            "detail": {
-                "signed_transaction_may_still_land": "已签名的密钥更改仍可能被 NEAR 区块链接受，因此现在关闭这条记录并不安全。",
-                "transaction_expiry_unknown": "MyNearWallet 无法确定已签名的密钥更改是否仍可能被接受。",
-                "access_keys_unreadable": "无法从 NEAR 区块链读取该账户的密钥。"
-            },
-            "check": "在 NEAR 区块链上检查",
-            "removeKey": "移除 Meteor Wallet 的密钥",
-            "archive": "关闭这条记录",
-            "archiveRefused": "Meteor Wallet 的密钥仍在该账户上。请等待 NEAR 区块链确认移除后重试。",
-            "resolvedTitle": "没有需要处理的事项",
-            "resolvedSubtitle": "本设备上没有未完成的密钥更改。你可以重新开始转移。",
-            "continue": "返回账户选择",
-            "finishLater": "稍后完成"
         }
     }
 }

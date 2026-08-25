@@ -118,51 +118,51 @@
         }
     },
     "accountExport": {
-        "returnToWallet": "Quay lại MyNearWallet",
         "banner": {
-            "title": "MyNearWallet sắp ngừng hoạt động",
             "description": "MyNearWallet đang được ngừng hoạt động. Hãy xuất các tài khoản của bạn để tiếp tục truy cập chúng một cách an toàn.",
+            "export": "Xuất tài khoản",
             "resume": "Tiếp tục chuyển tài khoản",
-            "export": "Xuất tài khoản"
-        },
-        "select": {
-            "title": "Xuất tài khoản",
-            "subtitle": "Xem lại các tài khoản sẽ được xuất một cách an toàn.",
-            "checking": "Đang kiểm tra tài khoản của bạn…",
-            "accessKeyCheckFailed": "MyNearWallet không kiểm tra được khóa truy cập của các tài khoản của bạn.",
-            "exportSelected": "Xuất các tài khoản đã chọn",
-            "cancel": "Hủy"
+            "title": "MyNearWallet sắp ngừng hoạt động"
         },
         "list": {
-            "selectPrompt": "Chọn một hoặc nhiều tài khoản để xuất (tối đa {{max}})",
             "empty": "Không có tài khoản nào khả dụng để xuất.",
+            "selectPrompt": "Chọn một hoặc nhiều tài khoản để xuất (tối đa {{max}})",
             "unavailableTitle": "Các tài khoản sau không khả dụng"
         },
-        "success": {
-            "title": "Đã xuất tài khoản thành công",
-            "subtitle": "Các tài khoản bạn chọn đã được xuất an toàn và nhập vào Meteor Wallet.",
-            "listTitle": "Tài khoản đã xuất",
-            "removeFromWallet": "Gỡ tài khoản đã xuất khỏi MyNearWallet"
+        "manual": {
+            "accountLabel": "Tài khoản {{index}}",
+            "back": "Quay lại",
+            "backToWallet": "Quay lại ví",
+            "credentialsFailed": "MyNearWallet không tải được thông tin đăng nhập tài khoản của bạn.",
+            "privateKeyLabel": "Khóa riêng tư",
+            "subtitle": "Hiện và sao chép khóa riêng tư của các tài khoản bạn đã chọn.",
+            "title": "Xuất thủ công",
+            "warning": "Hãy giữ kín thông tin này. Bất kỳ ai có được các thông tin này đều có thể truy cập và kiểm soát tài khoản của bạn."
         },
         "remove": {
-            "title": "Gỡ tài khoản khỏi MyNearWallet",
-            "warningConfirmFirst": "Chỉ gỡ tài khoản sau khi bạn đã xác nhận chúng được chuyển thành công và bạn truy cập được trong Meteor Wallet.",
-            "warningPermanent": "Gỡ một tài khoản sẽ xóa vĩnh viễn dữ liệu và khóa lưu cục bộ của tài khoản đó khỏi MyNearWallet. Hành động này không thể hoàn tác.",
-            "listTitle": "Tài khoản sẽ gỡ",
             "confirmAccess": "Tôi xác nhận mình truy cập được các tài khoản đã chọn trong Meteor Wallet.",
+            "failed": "MyNearWallet không gỡ được tất cả tài khoản đã chọn. Vui lòng thử lại.",
+            "listTitle": "Tài khoản sẽ gỡ",
             "removeSelected": "Gỡ các tài khoản đã chọn",
             "removing": "Đang gỡ các tài khoản đã chọn…",
-            "failed": "MyNearWallet không gỡ được tất cả tài khoản đã chọn. Vui lòng thử lại."
+            "title": "Gỡ tài khoản khỏi MyNearWallet",
+            "warningConfirmFirst": "Chỉ gỡ tài khoản sau khi bạn đã xác nhận chúng được chuyển thành công và bạn truy cập được trong Meteor Wallet.",
+            "warningPermanent": "Gỡ một tài khoản sẽ xóa vĩnh viễn dữ liệu và khóa lưu cục bộ của tài khoản đó khỏi MyNearWallet. Hành động này không thể hoàn tác."
         },
-        "manual": {
-            "title": "Xuất thủ công",
-            "subtitle": "Hiện và sao chép khóa riêng tư của các tài khoản bạn đã chọn.",
-            "warning": "Hãy giữ kín thông tin này. Bất kỳ ai có được các thông tin này đều có thể truy cập và kiểm soát tài khoản của bạn.",
-            "credentialsFailed": "MyNearWallet không tải được thông tin đăng nhập tài khoản của bạn.",
-            "accountLabel": "Tài khoản {{index}}",
-            "privateKeyLabel": "Khóa riêng tư",
-            "backToWallet": "Quay lại ví",
-            "back": "Quay lại"
+        "returnToWallet": "Quay lại MyNearWallet",
+        "select": {
+            "accessKeyCheckFailed": "MyNearWallet không kiểm tra được khóa truy cập của các tài khoản của bạn.",
+            "cancel": "Hủy",
+            "checking": "Đang kiểm tra tài khoản của bạn…",
+            "exportSelected": "Xuất các tài khoản đã chọn",
+            "subtitle": "Xem lại các tài khoản sẽ được xuất một cách an toàn.",
+            "title": "Xuất tài khoản"
+        },
+        "success": {
+            "listTitle": "Tài khoản đã xuất",
+            "removeFromWallet": "Gỡ tài khoản đã xuất khỏi MyNearWallet",
+            "subtitle": "Các tài khoản bạn chọn đã được xuất an toàn và nhập vào Meteor Wallet.",
+            "title": "Đã xuất tài khoản thành công"
         }
     },
     "actions": {
@@ -671,6 +671,191 @@
         "desc": "Ví này (và mạng lưới) chỉ dành cho mục đích thử nghiệm. Token và các tài sản khác không có giá trị. Các tài khoản được tạo không thể chuyển sang Mainnet.",
         "header": "NEAR thử nghiệm Ví",
         "title": "Ví chỉ thử nghiệm"
+    },
+    "newKeyTransfer": {
+        "activated": {
+            "archive": "Lưu trữ bản ghi chuyển này",
+            "checkStatus": "Kiểm tra trạng thái chuyển",
+            "inProgressSubtitle": "Các khóa mới của bạn đã hoạt động trên chuỗi, nhưng Meteor Wallet chưa hoàn tất việc bảo đảm mọi tài khoản. Hãy hoàn thành các bước còn lại trong Meteor Wallet, rồi dùng Kiểm tra trạng thái. Việc gỡ khóa cũ vẫn bị khóa cho đến khi mọi tài khoản được bảo đảm.",
+            "inProgressTitle": "Khóa đã hoạt động — đang hoàn tất trong Meteor Wallet",
+            "keep": "Tạm giữ lại",
+            "listTitle": "Tài khoản đã bảo đảm",
+            "loadingTitle": "Trạng thái chuyển",
+            "remove": "Gỡ tài khoản khỏi MyNearWallet",
+            "sourceKeyRemoved": "Khóa cũ đã được gỡ qua Meteor Wallet: {{count}}",
+            "subtitle": "Mọi tài khoản đã được bảo đảm: Meteor Wallet đã chứng minh từng khóa mới trên chuỗi, xác nhận đầy đủ cụm từ khôi phục và nhập tài khoản. Hãy kiểm tra bạn có thể truy cập tài khoản trong Meteor Wallet trước khi gỡ bất cứ thứ gì ở đây.",
+            "title": "Tài khoản đã được bảo đảm trong Meteor Wallet",
+            "unconfirmedTitle": "Vẫn đang được bảo đảm"
+        },
+        "activation": {
+            "cancel": "Quay lại ví của tôi",
+            "checkStatus": "Kiểm tra trạng thái",
+            "finishLater": "Hoàn tất sau",
+            "keepOpen": "Hãy giữ trang này mở cho tới khi mọi tài khoản được xác nhận.",
+            "progress": "Đã xong {{completed}}/{{total}}",
+            "retry": "Thử lại",
+            "statusTitle": "Trạng thái tài khoản",
+            "subtitle": "Các khóa Meteor mới đang được thêm vào những tài khoản bạn đã chọn.",
+            "title": "Đang kích hoạt khóa Meteor",
+            "viewSecured": "Xem các tài khoản đã bảo đảm ({{count}})"
+        },
+        "activationIssue": {
+            "account_not_in_session": "Tài khoản này không thuộc phiên chuyển mà Meteor Wallet được hỏi.",
+            "activation_not_found": "Không tìm thấy khóa mới của Meteor trên tài khoản này.",
+            "activation_not_full_access": "Khóa mới của Meteor được thêm mà không có toàn quyền.",
+            "invalid_add_key_transaction": "Không thể xác minh giao dịch đã thêm khóa của Meteor.",
+            "rpc_lookup_failed": "Meteor Wallet không kết nối được tới chuỗi khối NEAR để xác nhận tài khoản này. Hãy thử lại sau ít phút.",
+            "session_not_found": "Meteor Wallet không còn nhận ra phiên chuyển này. Hãy bắt đầu lại.",
+            "source_signer_mismatch": "Khóa của Meteor được thêm bằng một khóa khác với khóa đã bắt đầu phiên chuyển này.",
+            "unknown": "Meteor Wallet không xác nhận được tài khoản này."
+        },
+        "activationStatus": {
+            "added": "Đã thêm khóa",
+            "adding": "Đang thêm khóa…",
+            "confirmed": "Đã bảo đảm",
+            "failed": "Thất bại",
+            "pendingWallet": "Đang hoàn tất trong Meteor Wallet…",
+            "verifying": "Đang xác nhận với Meteor…",
+            "waiting": "Đang chờ"
+        },
+        "advancedDescription": "Nâng cao: gửi dữ liệu khóa tài khoản hiện có đã mã hóa qua luồng cầu nối cũ. Hãy dùng phương thức khóa mới ở trên khi có thể.",
+        "continueDescription": "Một lần chuyển trước đó đã bị gián đoạn trước khi hoàn tất. Hãy tiếp tục — Meteor Wallet sẽ tiếp nối đúng chỗ bạn dừng lại.",
+        "continueExistingSecret": "Tiếp tục chuyển bằng khóa hiện có",
+        "continueTitle": "Tiếp tục chuyển sang Meteor Wallet",
+        "description": "Được khuyến nghị. Meteor tạo một khóa mới cho từng tài khoản; không có khóa riêng tư hay cụm từ khôi phục nào rời khỏi ví này.",
+        "destination": {
+            "heading": "Các tài khoản này nên chuyển đến đâu?",
+            "mobileDescription": "Mở lần chuyển trong ứng dụng di động Meteor.",
+            "mobileTitle": "Meteor Mobile",
+            "webDescription": "Mở lần chuyển trong Meteor Wallet trên trình duyệt của bạn.",
+            "webTitle": "Meteor Web"
+        },
+        "eligibility": {
+            "algorithmUnsupported": "Chỉ hỗ trợ khóa nguồn Ed25519.",
+            "ledgerUnsupported": "Phiên chuyển này không hỗ trợ tài khoản nguồn dùng Ledger.",
+            "noLocalKey": "Không có khóa ký cục bộ thông thường khả dụng.",
+            "notFullAccess": "Không tìm thấy khóa toàn quyền.",
+            "twoFactorUnsupported": "Không hỗ trợ tài khoản dùng 2FA/đa chữ ký. Hãy tắt 2FA trước hoặc dùng xuất thủ công.",
+            "verificationFailed": "Không thể xác minh khóa truy cập. Hãy thử lại sau."
+        },
+        "error": {
+            "addKeyAccountMismatch": "Phiên chuyển này không bao gồm tài khoản đó, nên không có khóa nào bị thay đổi. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
+            "addKeyChainRequired": "MyNearWallet không kết nối được tới mạng NEAR để ký thay đổi khóa. Hãy kiểm tra kết nối và thử lại.",
+            "clientIdConflict": "Phiên chuyển này đã được bắt đầu với các tài khoản khác. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
+            "insufficientBalanceForAddKeys": "Một số tài khoản được chọn không đủ NEAR khả dụng để thêm khóa của Meteor. Hãy nạp thêm hoặc bỏ chọn chúng, rồi thử lại.",
+            "journalCorrupt": "Không thể đọc an toàn bản ghi phiên chuyển được lưu trên thiết bị này.",
+            "journalRetentionRequired": "Lịch sử chuyển trên thiết bị này đã đầy. Hãy lưu trữ một lần chuyển đã hoàn tất rồi thử lại.",
+            "noAccountsReady": "Không có tài khoản nào trong phiên chuyển này sẵn sàng để kích hoạt.",
+            "orphanedAddKey": "Trên thiết bị này còn một thay đổi khóa đã gửi dở dang, cần được xử lý trước khi bắt đầu phiên chuyển khác. Hãy liên hệ hỗ trợ kèm mã tham chiếu bên dưới.",
+            "recoveryRequired": "Phiên chuyển này đã thêm khóa lên chuỗi khối NEAR, nên không thể bỏ đi một cách đơn giản.",
+            "resolveNow": "Xử lý phiên chuyển này",
+            "revokeAccountMismatch": "Tài khoản đó không thuộc phiên chuyển này, nên không có gì thay đổi.",
+            "revokeChainRequired": "MyNearWallet không kết nối được tới mạng NEAR để xác nhận khóa đã được gỡ. Không có gì thay đổi — hãy thử lại khi có kết nối.",
+            "revokedAccountsRequired": "Không có tài khoản nào được chỉ định để gỡ, nên không có gì thay đổi.",
+            "revokeDestinationKeyPresent": "Khóa của Meteor Wallet vẫn còn trên tài khoản, nên chưa thể đóng phiên chuyển này. Hãy gỡ khóa, chờ mạng NEAR xác nhận rồi thử lại.",
+            "sessionNotFound": "Phiên chuyển này không còn khả dụng. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
+            "sessionNotTerminal": "Lần chuyển này vẫn còn tài khoản chưa hoàn tất nên chưa thể lưu trữ.",
+            "startResultConflict": "Trên thiết bị này vẫn còn một phiên chuyển khác. Hãy hoàn tất hoặc xử lý nó trước khi bắt đầu phiên mới.",
+            "startResultDiscardFailed": "Không thể xóa an toàn bản ghi phiên chuyển trên thiết bị này nên nó được giữ nguyên. Hãy xử lý trước khi bắt đầu phiên chuyển khác.",
+            "startResultMissing": "Bản ghi kích hoạt của phiên chuyển này bị thiếu nên không thể tiếp tục an toàn. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
+            "startResultReferenced": "Các khóa đã chuẩn bị của lần chuyển này vẫn được một lần chuyển đang hoạt động tham chiếu và không thể loại bỏ.",
+            "unavailable": "Bản dựng này không hỗ trợ chuyển sang Meteor Wallet.",
+            "verificationProofMissing": "Thiếu bằng chứng cần thiết để xác nhận phiên chuyển này với Meteor Wallet. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
+            "verifyBeforeAddKeyIntent": "Khóa mới của tài khoản này chưa được thêm lên chuỗi khối NEAR, nên chưa thể xác nhận với Meteor Wallet.",
+            "verifyHashMismatch": "Kích hoạt đang được kiểm tra không khớp với bản ghi trên chuỗi của chính lần chuyển này. Hãy liên hệ hỗ trợ kèm mã bên dưới.",
+            "verifySessionUpdateFailed": "Meteor Wallet đã trả lời, nhưng việc lưu kết quả trên thiết bị này thất bại. Hãy chạy Kiểm tra trạng thái lần nữa để hoàn tất.",
+            "walletBindingMissing": "Meteor Wallet không tự nhận diện khi trả lời. Hãy bắt đầu lại phiên chuyển.",
+            "walletConnectionMissing": "Kết nối Meteor Wallet của lần chuyển này bị thiếu. Hãy dùng Kiểm tra trạng thái để kết nối lại qua một phiên mới."
+        },
+        "existingSecret": {
+            "declined": "Việc chuyển tài khoản đã bị từ chối trong Meteor Wallet.",
+            "expired": "Phiên chuyển tài khoản đã hết hạn. Bạn có thể thử lại.",
+            "startFailed": "MyNearWallet không thể bắt đầu việc chuyển tài khoản."
+        },
+        "genericError": "Không thể tiếp tục việc chuyển.",
+        "hideAdvanced": "Ẩn cách chuyển nâng cao bằng khóa hiện có",
+        "ineligible": "Hiện chưa thể chuyển {{accountId}}. {{reason}}",
+        "issue": {
+            "account_not_found": "Meteor Wallet không tìm thấy tài khoản này trên chuỗi khối NEAR.",
+            "key_generation_failed": "Meteor Wallet không tạo được khóa mới cho tài khoản này.",
+            "pending_transfer_conflict": "Tài khoản này đã có một phiên chuyển chưa hoàn tất trong Meteor Wallet. Hãy hoàn tất hoặc hủy ở đó rồi thử lại.",
+            "rpc_lookup_failed": "Meteor Wallet không kết nối được tới chuỗi khối NEAR để kiểm tra tài khoản này. Hãy thử lại sau ít phút.",
+            "secure_storage_failed": "Meteor Wallet không lưu được an toàn khóa mới cho tài khoản này.",
+            "source_key_not_found": "Khóa của ví này cho tài khoản đó không còn trên tài khoản nữa.",
+            "source_key_not_full_access": "Khóa của ví này cho tài khoản đó không phải là khóa toàn quyền.",
+            "unknown": "Meteor Wallet không chuẩn bị được tài khoản này."
+        },
+        "journalError": {
+            "broadcastAmbiguous": "Câu trả lời của mạng không rõ ràng. Không có gì bị mất — hãy thử lại, ví sẽ đối soát những gì đã lên chuỗi.",
+            "chainDataInvalid": "Mạng trả về dữ liệu mà ví này không thể xác minh an toàn. Không có gì bị thay đổi — hãy thử lại sau giây lát.",
+            "conflict": "Bản ghi của lần chuyển này xung đột với một lần chuyển khác. Hãy thử lại; nếu lặp lại, liên hệ hỗ trợ kèm mã bên dưới.",
+            "destinationKeyUnproven": "Tài khoản này có một khóa Meteor mà không có bằng chứng thuộc về lần chuyển này. Hãy xử lý trên màn hình khôi phục trước khi tiếp tục.",
+            "persistFailed": "Không thể lưu tiến trình chuyển trên thiết bị này. Hãy giải phóng bộ nhớ trình duyệt rồi thử lại — không có gì bị mất.",
+            "sourceKeyUnavailable": "Khóa ký chính xác cho tài khoản này không còn trong ví này, nên bước này không thể được ký tại đây.",
+            "unreadable": "Không thể đọc an toàn nhật ký của lần chuyển này trên thiết bị. Không có gì bị thay đổi — hãy liên hệ hỗ trợ kèm mã bên dưới."
+        },
+        "livenessConfirmed": "đã xác nhận giao dịch thử",
+        "loading": "Đang tải phiên chuyển…",
+        "localDevTarget": "Gửi tới Meteor Wallet chạy cục bộ (phát triển)",
+        "manualDescription": "Hiện và sao chép khóa riêng tư của bạn.",
+        "manualTitle": "Xuất thủ công",
+        "methodHeading": "Bạn muốn xuất bằng cách nào?",
+        "methodSubheading": "Chọn cách bạn muốn truy cập và xuất các tài khoản của mình.",
+        "pending": {
+            "importIncomplete": "Meteor Wallet vẫn đang hoàn tất việc nhập tài khoản này. Hãy dùng Kiểm tra trạng thái sau giây lát.",
+            "livenessCheckFailed": "Giao dịch thử của Meteor Wallet cho tài khoản này đã thất bại. Hãy dùng Kiểm tra trạng thái để thử lại."
+        },
+        "ready": {
+            "acceptedTitle": "Tài khoản sẵn sàng kích hoạt",
+            "activate": "Kích hoạt khóa mới",
+            "cancel": "Quay lại ví của tôi",
+            "cancelTransfer": "Hủy lần chuyển này",
+            "explainer": "Kích hoạt sẽ thêm khóa mới của Meteor vào từng tài khoản trên chuỗi khối NEAR. Các khóa hiện có của bạn không được gửi đi đâu cả và vẫn hoạt động cho tới khi bạn chọn gỡ bỏ chúng.",
+            "finishLater": "Hoàn tất sau",
+            "noneSubtitle": "Meteor Wallet không chuẩn bị được tài khoản nào trong số đã chọn. Hãy xử lý các lý do bên dưới rồi thử lại.",
+            "noneTitle": "Không chuẩn bị được tài khoản nào",
+            "refusedTitle": "Không nằm trong phiên chuyển này",
+            "startOver": "Quay lại chọn tài khoản",
+            "subtitle": "Meteor Wallet đã tạo một khóa truy cập mới cho từng tài khoản bên dưới. Hãy kích hoạt để hoàn tất việc chuyển.",
+            "title": "Khóa Meteor đã sẵn sàng"
+        },
+        "recovery": {
+            "archive": "Đóng bản ghi này",
+            "archiveRefused": "Khóa của Meteor Wallet vẫn còn trên tài khoản. Hãy chờ chuỗi khối NEAR xác nhận việc gỡ rồi thử lại.",
+            "check": "Kiểm tra trên chuỗi khối NEAR",
+            "continue": "Quay lại chọn tài khoản",
+            "detail": {
+                "access_keys_unreadable": "Không đọc được các khóa của tài khoản từ chuỗi khối NEAR.",
+                "signed_transaction_may_still_land": "Thay đổi khóa đã ký vẫn có thể được chuỗi khối NEAR chấp nhận, nên đóng bản ghi này lúc này là không an toàn.",
+                "transaction_expiry_unknown": "MyNearWallet không xác định được liệu thay đổi khóa đã ký còn có thể được chấp nhận hay không."
+            },
+            "fieldDestinationKey": "Khóa Meteor Wallet",
+            "fieldSourceKey": "Khóa ký của bạn",
+            "fieldTransaction": "Giao dịch",
+            "finishLater": "Hoàn tất sau",
+            "journalUnreadable": "Không đọc được bản ghi phiên chuyển lưu trên thiết bị này, nên không thể liệt kê các tài khoản liên quan tại đây. Hãy liên hệ hỗ trợ kèm mã tham chiếu bên dưới — đừng xóa dữ liệu trình duyệt, đó là dấu vết duy nhất về những gì đã xảy ra.",
+            "removeKey": "Gỡ khóa của Meteor Wallet",
+            "resolvedSubtitle": "Thiết bị này không còn thay đổi khóa dang dở. Bạn có thể bắt đầu lại một phiên chuyển.",
+            "resolvedTitle": "Không còn gì để xử lý",
+            "status": {
+                "ambiguous": "Hiện chuỗi khối NEAR chưa thể xác nhận theo chiều nào. Không có gì thay đổi — hãy thử lại sau ít phút.",
+                "destination_key_absent": "Thay đổi khóa chưa từng có hiệu lực và không còn được chấp nhận nữa. Có thể đóng bản ghi này.",
+                "destination_key_present_unproven": "Khóa của Meteor Wallet đang ở trên tài khoản này, nhưng không có gì chứng minh phiên chuyển này đã thêm nó. Hãy dùng khóa của bạn để gỡ nó và khép lại việc này.",
+                "finalized": "Thay đổi khóa đã hoàn tất trên chuỗi khối NEAR. Có thể tiếp tục phiên chuyển này từ danh sách tài khoản của bạn.",
+                "not_found": "Đã xử lý xong."
+            },
+            "statusUnchecked": "Chưa kiểm tra. Việc kiểm tra chỉ đọc chuỗi khối NEAR — không ký và không gửi gì cả.",
+            "subtitle": "Một thay đổi khóa đã được ký trên thiết bị này nhưng chưa bao giờ được xác nhận. Cần xử lý trước khi bắt đầu phiên chuyển khác.",
+            "supportExplainer": "Nếu không bước nào ở trên xử lý được, hãy liên hệ hỗ trợ và cung cấp mã tham chiếu. Việc bắt đầu phiên chuyển mới sẽ tiếp tục bị từ chối cho tới khi phiên này được xử lý.",
+            "supportReferenceLabel": "Mã tham chiếu hỗ trợ",
+            "title": "Xử lý thay đổi khóa còn dang dở"
+        },
+        "showAdvanced": "Hiện cách chuyển nâng cao bằng khóa hiện có",
+        "start": "Chuyển sang Meteor Wallet",
+        "starting": "Đang mở Meteor Wallet…",
+        "supportCode": "Mã hỗ trợ: {{code}}",
+        "supportReference": "Mã tham chiếu hỗ trợ: {{id}}",
+        "title": "Chuyển sang Meteor Wallet"
     },
     "NFTDetail": {
         "attributes": "Thuộc tính",
@@ -1558,150 +1743,5 @@
             "noWithdraw": "Không thể rút số dư đang chờ xử lý từ validator"
         }
     },
-    "warning": "Cảnh báo",
-    "newKeyTransfer": {
-        "title": "Chuyển sang Meteor Wallet",
-        "description": "Được khuyến nghị. Meteor tạo một khóa mới cho từng tài khoản; không có khóa riêng tư hay cụm từ khôi phục nào rời khỏi ví này.",
-        "methodHeading": "Bạn muốn xuất bằng cách nào?",
-        "methodSubheading": "Chọn cách bạn muốn truy cập và xuất các tài khoản của mình.",
-        "start": "Chuyển sang Meteor Wallet",
-        "starting": "Đang mở Meteor Wallet…",
-        "loading": "Đang tải phiên chuyển…",
-        "genericError": "Không thể tiếp tục việc chuyển.",
-        "ineligible": "Hiện chưa thể chuyển {{accountId}}. {{reason}}",
-        "supportReference": "Mã tham chiếu hỗ trợ: {{id}}",
-        "supportCode": "Mã hỗ trợ: {{code}}",
-        "showAdvanced": "Hiện cách chuyển nâng cao bằng khóa hiện có",
-        "hideAdvanced": "Ẩn cách chuyển nâng cao bằng khóa hiện có",
-        "advancedDescription": "Nâng cao: gửi dữ liệu khóa tài khoản hiện có đã mã hóa qua luồng cầu nối cũ. Hãy dùng phương thức khóa mới ở trên khi có thể.",
-        "continueExistingSecret": "Tiếp tục chuyển bằng khóa hiện có",
-        "manualTitle": "Xuất thủ công",
-        "manualDescription": "Hiện và sao chép khóa riêng tư của bạn.",
-        "localDevTarget": "Gửi tới Meteor Wallet chạy cục bộ (phát triển)",
-        "existingSecret": {
-            "declined": "Việc chuyển tài khoản đã bị từ chối trong Meteor Wallet.",
-            "expired": "Phiên chuyển tài khoản đã hết hạn. Bạn có thể thử lại.",
-            "startFailed": "MyNearWallet không thể bắt đầu việc chuyển tài khoản."
-        },
-        "error": {
-            "addKeyAccountMismatch": "Phiên chuyển này không bao gồm tài khoản đó, nên không có khóa nào bị thay đổi. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
-            "addKeyChainRequired": "MyNearWallet không kết nối được tới mạng NEAR để ký thay đổi khóa. Hãy kiểm tra kết nối và thử lại.",
-            "clientIdConflict": "Phiên chuyển này đã được bắt đầu với các tài khoản khác. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
-            "journalCorrupt": "Không thể đọc an toàn bản ghi phiên chuyển được lưu trên thiết bị này.",
-            "noAccountsReady": "Không có tài khoản nào trong phiên chuyển này sẵn sàng để kích hoạt.",
-            "orphanedAddKey": "Trên thiết bị này còn một thay đổi khóa đã gửi dở dang, cần được xử lý trước khi bắt đầu phiên chuyển khác. Hãy liên hệ hỗ trợ kèm mã tham chiếu bên dưới.",
-            "recoveryRequired": "Phiên chuyển này đã thêm khóa lên chuỗi khối NEAR, nên không thể bỏ đi một cách đơn giản.",
-            "resolveNow": "Xử lý phiên chuyển này",
-            "revokeAccountMismatch": "Tài khoản đó không thuộc phiên chuyển này, nên không có gì thay đổi.",
-            "revokeChainRequired": "MyNearWallet không kết nối được tới mạng NEAR để xác nhận khóa đã được gỡ. Không có gì thay đổi — hãy thử lại khi có kết nối.",
-            "revokeDestinationKeyPresent": "Khóa của Meteor Wallet vẫn còn trên tài khoản, nên chưa thể đóng phiên chuyển này. Hãy gỡ khóa, chờ mạng NEAR xác nhận rồi thử lại.",
-            "revokedAccountsRequired": "Không có tài khoản nào được chỉ định để gỡ, nên không có gì thay đổi.",
-            "sessionNotFound": "Phiên chuyển này không còn khả dụng. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
-            "startResultConflict": "Trên thiết bị này vẫn còn một phiên chuyển khác. Hãy hoàn tất hoặc xử lý nó trước khi bắt đầu phiên mới.",
-            "startResultDiscardFailed": "Không thể xóa an toàn bản ghi phiên chuyển trên thiết bị này nên nó được giữ nguyên. Hãy xử lý trước khi bắt đầu phiên chuyển khác.",
-            "startResultMissing": "Bản ghi kích hoạt của phiên chuyển này bị thiếu nên không thể tiếp tục an toàn. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
-            "unavailable": "Bản dựng này không hỗ trợ chuyển sang Meteor Wallet.",
-            "verificationProofMissing": "Thiếu bằng chứng cần thiết để xác nhận phiên chuyển này với Meteor Wallet. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
-            "verifyBeforeAddKeyIntent": "Khóa mới của tài khoản này chưa được thêm lên chuỗi khối NEAR, nên chưa thể xác nhận với Meteor Wallet.",
-            "walletBindingMissing": "Meteor Wallet không tự nhận diện khi trả lời. Hãy bắt đầu lại phiên chuyển."
-        },
-        "eligibility": {
-            "algorithmUnsupported": "Chỉ hỗ trợ khóa nguồn Ed25519.",
-            "ledgerUnsupported": "Phiên chuyển này không hỗ trợ tài khoản nguồn dùng Ledger.",
-            "noLocalKey": "Không có khóa ký cục bộ thông thường khả dụng.",
-            "notFullAccess": "Không tìm thấy khóa toàn quyền.",
-            "twoFactorUnsupported": "Không hỗ trợ tài khoản dùng 2FA/đa chữ ký. Hãy tắt 2FA trước hoặc dùng xuất thủ công.",
-            "verificationFailed": "Không thể xác minh khóa truy cập. Hãy thử lại sau."
-        },
-        "issue": {
-            "account_not_found": "Meteor Wallet không tìm thấy tài khoản này trên chuỗi khối NEAR.",
-            "key_generation_failed": "Meteor Wallet không tạo được khóa mới cho tài khoản này.",
-            "pending_transfer_conflict": "Tài khoản này đã có một phiên chuyển chưa hoàn tất trong Meteor Wallet. Hãy hoàn tất hoặc hủy ở đó rồi thử lại.",
-            "rpc_lookup_failed": "Meteor Wallet không kết nối được tới chuỗi khối NEAR để kiểm tra tài khoản này. Hãy thử lại sau ít phút.",
-            "secure_storage_failed": "Meteor Wallet không lưu được an toàn khóa mới cho tài khoản này.",
-            "source_key_not_found": "Khóa của ví này cho tài khoản đó không còn trên tài khoản nữa.",
-            "source_key_not_full_access": "Khóa của ví này cho tài khoản đó không phải là khóa toàn quyền.",
-            "unknown": "Meteor Wallet không chuẩn bị được tài khoản này."
-        },
-        "activationIssue": {
-            "account_not_in_session": "Tài khoản này không thuộc phiên chuyển mà Meteor Wallet được hỏi.",
-            "activation_not_found": "Không tìm thấy khóa mới của Meteor trên tài khoản này.",
-            "activation_not_full_access": "Khóa mới của Meteor được thêm mà không có toàn quyền.",
-            "invalid_add_key_transaction": "Không thể xác minh giao dịch đã thêm khóa của Meteor.",
-            "rpc_lookup_failed": "Meteor Wallet không kết nối được tới chuỗi khối NEAR để xác nhận tài khoản này. Hãy thử lại sau ít phút.",
-            "session_not_found": "Meteor Wallet không còn nhận ra phiên chuyển này. Hãy bắt đầu lại.",
-            "source_signer_mismatch": "Khóa của Meteor được thêm bằng một khóa khác với khóa đã bắt đầu phiên chuyển này.",
-            "unknown": "Meteor Wallet không xác nhận được tài khoản này."
-        },
-        "ready": {
-            "title": "Khóa Meteor đã sẵn sàng",
-            "subtitle": "Meteor Wallet đã tạo một khóa truy cập mới cho từng tài khoản bên dưới. Hãy kích hoạt để hoàn tất việc chuyển.",
-            "noneTitle": "Không chuẩn bị được tài khoản nào",
-            "noneSubtitle": "Meteor Wallet không chuẩn bị được tài khoản nào trong số đã chọn. Hãy xử lý các lý do bên dưới rồi thử lại.",
-            "acceptedTitle": "Tài khoản sẵn sàng kích hoạt",
-            "refusedTitle": "Không nằm trong phiên chuyển này",
-            "explainer": "Kích hoạt sẽ thêm khóa mới của Meteor vào từng tài khoản trên chuỗi khối NEAR. Các khóa hiện có của bạn không được gửi đi đâu cả và vẫn hoạt động cho tới khi bạn chọn gỡ bỏ chúng.",
-            "activate": "Kích hoạt khóa mới",
-            "cancel": "Quay lại ví của tôi",
-            "finishLater": "Hoàn tất sau",
-            "startOver": "Quay lại chọn tài khoản"
-        },
-        "activation": {
-            "title": "Đang kích hoạt khóa Meteor",
-            "subtitle": "Các khóa Meteor mới đang được thêm vào những tài khoản bạn đã chọn.",
-            "statusTitle": "Trạng thái tài khoản",
-            "progress": "Đã xong {{completed}}/{{total}}",
-            "keepOpen": "Hãy giữ trang này mở cho tới khi mọi tài khoản được xác nhận.",
-            "retry": "Thử lại",
-            "cancel": "Quay lại ví của tôi",
-            "finishLater": "Hoàn tất sau"
-        },
-        "activationStatus": {
-            "waiting": "Đang chờ",
-            "adding": "Đang thêm khóa…",
-            "added": "Đã thêm khóa",
-            "verifying": "Đang xác nhận với Meteor…",
-            "confirmed": "Đã xác nhận",
-            "failed": "Thất bại"
-        },
-        "activated": {
-            "title": "Đã kích hoạt khóa Meteor",
-            "subtitle": "Meteor Wallet đã xác nhận các khóa mới trên chuỗi khối. Hãy hoàn tất các bước còn lại trong Meteor Wallet và kiểm tra bạn truy cập được tài khoản ở đó trước khi gỡ bỏ bất cứ thứ gì tại đây.",
-            "unconfirmedTitle": "Chưa xác nhận",
-            "listTitle": "Tài khoản đã kích hoạt",
-            "keep": "Tạm giữ lại",
-            "remove": "Gỡ tài khoản khỏi MyNearWallet"
-        },
-        "recovery": {
-            "title": "Xử lý thay đổi khóa còn dang dở",
-            "subtitle": "Một thay đổi khóa đã được ký trên thiết bị này nhưng chưa bao giờ được xác nhận. Cần xử lý trước khi bắt đầu phiên chuyển khác.",
-            "journalUnreadable": "Không đọc được bản ghi phiên chuyển lưu trên thiết bị này, nên không thể liệt kê các tài khoản liên quan tại đây. Hãy liên hệ hỗ trợ kèm mã tham chiếu bên dưới — đừng xóa dữ liệu trình duyệt, đó là dấu vết duy nhất về những gì đã xảy ra.",
-            "supportReferenceLabel": "Mã tham chiếu hỗ trợ",
-            "supportExplainer": "Nếu không bước nào ở trên xử lý được, hãy liên hệ hỗ trợ và cung cấp mã tham chiếu. Việc bắt đầu phiên chuyển mới sẽ tiếp tục bị từ chối cho tới khi phiên này được xử lý.",
-            "fieldTransaction": "Giao dịch",
-            "fieldDestinationKey": "Khóa Meteor Wallet",
-            "fieldSourceKey": "Khóa ký của bạn",
-            "statusUnchecked": "Chưa kiểm tra. Việc kiểm tra chỉ đọc chuỗi khối NEAR — không ký và không gửi gì cả.",
-            "status": {
-                "finalized": "Thay đổi khóa đã hoàn tất trên chuỗi khối NEAR. Có thể tiếp tục phiên chuyển này từ danh sách tài khoản của bạn.",
-                "destination_key_present_unproven": "Khóa của Meteor Wallet đang ở trên tài khoản này, nhưng không có gì chứng minh phiên chuyển này đã thêm nó. Hãy dùng khóa của bạn để gỡ nó và khép lại việc này.",
-                "destination_key_absent": "Thay đổi khóa chưa từng có hiệu lực và không còn được chấp nhận nữa. Có thể đóng bản ghi này.",
-                "ambiguous": "Hiện chuỗi khối NEAR chưa thể xác nhận theo chiều nào. Không có gì thay đổi — hãy thử lại sau ít phút.",
-                "not_found": "Đã xử lý xong."
-            },
-            "detail": {
-                "signed_transaction_may_still_land": "Thay đổi khóa đã ký vẫn có thể được chuỗi khối NEAR chấp nhận, nên đóng bản ghi này lúc này là không an toàn.",
-                "transaction_expiry_unknown": "MyNearWallet không xác định được liệu thay đổi khóa đã ký còn có thể được chấp nhận hay không.",
-                "access_keys_unreadable": "Không đọc được các khóa của tài khoản từ chuỗi khối NEAR."
-            },
-            "check": "Kiểm tra trên chuỗi khối NEAR",
-            "removeKey": "Gỡ khóa của Meteor Wallet",
-            "archive": "Đóng bản ghi này",
-            "archiveRefused": "Khóa của Meteor Wallet vẫn còn trên tài khoản. Hãy chờ chuỗi khối NEAR xác nhận việc gỡ rồi thử lại.",
-            "resolvedTitle": "Không còn gì để xử lý",
-            "resolvedSubtitle": "Thiết bị này không còn thay đổi khóa dang dở. Bạn có thể bắt đầu lại một phiên chuyển.",
-            "continue": "Quay lại chọn tài khoản",
-            "finishLater": "Hoàn tất sau"
-        }
-    }
+    "warning": "Cảnh báo"
 }

@@ -956,22 +956,30 @@
     },
     "newKeyTransfer": {
         "activated": {
+            "archive": "Archive this transfer record",
+            "checkStatus": "Check transfer status",
+            "inProgressSubtitle": "Your new keys are active on-chain, but Meteor Wallet has not finished securing every account. Finish the remaining steps in Meteor Wallet, then use Check status. Removing old keys stays locked until every account is secured.",
+            "inProgressTitle": "Keys Active — Finishing in Meteor Wallet",
             "keep": "Keep them for now",
-            "listTitle": "Activated Accounts",
+            "listTitle": "Secured Accounts",
+            "loadingTitle": "Transfer Status",
             "remove": "Remove accounts from MyNearWallet",
-            "subtitle": "Meteor Wallet has confirmed the new keys on-chain. Finish the remaining steps in Meteor Wallet, then check you can access your accounts there before removing anything here.",
-            "title": "Meteor Keys Activated",
-            "unconfirmedTitle": "Not Confirmed"
+            "sourceKeyRemoved": "Old keys already removed via Meteor Wallet: {{count}}",
+            "subtitle": "Every account is secured: Meteor Wallet proved each new key on-chain, confirmed its recovery phrase in full, and imported the account. Check you can access your accounts in Meteor Wallet before removing anything here.",
+            "title": "Accounts Secured in Meteor Wallet",
+            "unconfirmedTitle": "Still Being Secured"
         },
         "activation": {
             "cancel": "Back to my wallet",
+            "checkStatus": "Check status",
             "finishLater": "Finish later",
             "keepOpen": "Keep this page open until every account is confirmed.",
             "progress": "{{completed}} of {{total}} Completed",
             "retry": "Try Again",
             "statusTitle": "Account Status",
             "subtitle": "The new Meteor keys are being added to your selected accounts.",
-            "title": "Activating Meteor Keys"
+            "title": "Activating Meteor Keys",
+            "viewSecured": "View secured accounts ({{count}})"
         },
         "activationIssue": {
             "account_not_in_session": "This account was not part of the transfer Meteor Wallet was asked about.",
@@ -986,13 +994,16 @@
         "activationStatus": {
             "added": "Key added",
             "adding": "Adding key…",
-            "confirmed": "Confirmed",
+            "confirmed": "Secured",
             "failed": "Failed",
+            "pendingWallet": "Finishing in Meteor Wallet…",
             "verifying": "Confirming with Meteor…",
             "waiting": "Waiting"
         },
         "advancedDescription": "Advanced: sends encrypted existing account key material through the legacy bridge flow. Use the new-key method above when possible.",
+        "continueDescription": "An earlier transfer was interrupted before it finished. Continue it — Meteor Wallet picks up exactly where you left off.",
         "continueExistingSecret": "Continue with existing-secret transfer",
+        "continueTitle": "Continue transfer to Meteor Wallet",
         "description": "Recommended. Meteor creates a fresh key for each account; no private key or recovery phrase ever leaves this wallet.",
         "destination": {
             "heading": "Where should these accounts go?",
@@ -1013,7 +1024,9 @@
             "addKeyAccountMismatch": "This transfer does not cover that account, so no key change was made. Start the transfer again from your account list.",
             "addKeyChainRequired": "MyNearWallet could not reach the NEAR network to sign the key change. Check your connection and try again.",
             "clientIdConflict": "This transfer was started with different accounts. Start it again from your account list.",
+            "insufficientBalanceForAddKeys": "Some selected accounts do not have enough available NEAR to add Meteor's key. Top them up or deselect them, then retry.",
             "journalCorrupt": "The transfer record stored on this device could not be read safely.",
+            "journalRetentionRequired": "The transfer history on this device is full. Archive a completed transfer, then try again.",
             "noAccountsReady": "No account in this transfer is ready to activate.",
             "orphanedAddKey": "A partly submitted key change is still recorded on this device and must be resolved before another transfer can start. Contact support with the reference below.",
             "recoveryRequired": "This transfer has already added keys on the NEAR blockchain, so it cannot simply be discarded.",
@@ -1023,13 +1036,18 @@
             "revokedAccountsRequired": "No account was named for removal, so nothing was changed.",
             "revokeDestinationKeyPresent": "Meteor Wallet’s key is still on the account, so this transfer cannot be closed yet. Remove the key and wait for the NEAR network to confirm it, then try again.",
             "sessionNotFound": "This transfer is no longer available. Start it again from your account list.",
+            "sessionNotTerminal": "This transfer still has unfinished accounts and cannot be archived yet.",
             "startResultConflict": "Another transfer is still recorded on this device. Finish or resolve it before starting a new one.",
             "startResultDiscardFailed": "The transfer record on this device could not be cleared safely, so it was left untouched. Resolve it before starting another transfer.",
             "startResultMissing": "This transfer’s activation record is missing, so it cannot be resumed safely. Start it again from your account list.",
+            "startResultReferenced": "This transfer's prepared keys are still referenced by an active transfer and cannot be discarded.",
             "unavailable": "Transfers to Meteor Wallet are not available in this build.",
             "verificationProofMissing": "The proof needed to confirm this transfer with Meteor Wallet is missing. Start it again from your account list.",
             "verifyBeforeAddKeyIntent": "This account’s new key has not been added on the NEAR blockchain yet, so it cannot be confirmed with Meteor Wallet.",
-            "walletBindingMissing": "Meteor Wallet did not identify itself when answering. Start the transfer again."
+            "verifyHashMismatch": "The activation being checked does not match this transfer's own on-chain record. Contact support with the code below.",
+            "verifySessionUpdateFailed": "Meteor Wallet answered, but saving the result on this device failed. Run Check status again to finish.",
+            "walletBindingMissing": "Meteor Wallet did not identify itself when answering. Start the transfer again.",
+            "walletConnectionMissing": "This transfer's Meteor Wallet connection is missing. Use Check status to reconnect through a fresh session."
         },
         "existingSecret": {
             "declined": "The account transfer was declined in Meteor Wallet.",
@@ -1049,12 +1067,26 @@
             "source_key_not_full_access": "This wallet’s key for this account is not a full access key.",
             "unknown": "Meteor Wallet could not prepare this account."
         },
+        "journalError": {
+            "broadcastAmbiguous": "The network's answer was ambiguous. Nothing is lost — retry, and the wallet reconciles whatever already landed.",
+            "chainDataInvalid": "The network returned data this wallet could not verify safely. Nothing was changed — retry in a moment.",
+            "conflict": "This transfer's records conflict with another transfer's. Retry; if it happens again, contact support with the code below.",
+            "destinationKeyUnproven": "A Meteor key is on this account without proof it belongs to this transfer. Resolve it on the recovery screen before continuing.",
+            "persistFailed": "Saving transfer progress on this device failed. Free up browser storage and retry — nothing was lost.",
+            "sourceKeyUnavailable": "The exact signing key for this account is no longer available in this wallet, so this step cannot be signed here.",
+            "unreadable": "This transfer's on-device journal could not be read safely. Nothing was changed — contact support with the code below."
+        },
+        "livenessConfirmed": "test transfer confirmed",
         "loading": "Loading transfer…",
         "localDevTarget": "Send to a locally served Meteor Wallet (development)",
         "manualDescription": "Reveal and copy your private keys.",
         "manualTitle": "Export Manually",
         "methodHeading": "How would you like to export?",
         "methodSubheading": "Choose how you want to access and export your accounts.",
+        "pending": {
+            "importIncomplete": "Meteor Wallet is still finishing this account's import. Use Check status in a moment.",
+            "livenessCheckFailed": "Meteor Wallet's test transaction for this account failed. Use Check status to retry it."
+        },
         "ready": {
             "acceptedTitle": "Accounts Ready to Activate",
             "activate": "Activate New Keys",
