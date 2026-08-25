@@ -783,6 +783,7 @@
             "verifyBeforeAddKeyIntent": "Bu hesabın yeni anahtarı henüz NEAR blok zincirine eklenmedi, bu yüzden Meteor Wallet ile doğrulanamaz.",
             "verifyHashMismatch": "Kontrol edilen etkinleştirme, bu aktarımın kendi zincir kaydıyla eşleşmiyor. Aşağıdaki kodla desteğe başvurun.",
             "verifySessionUpdateFailed": "Meteor Wallet yanıt verdi, ancak sonuç bu cihaza kaydedilemedi. Bitirmek için Durumu kontrol et'i yeniden çalıştırın.",
+            "versionSkew": "Bu sayfa, aktarım hizmetinin beklediğinden daha eski bir MyNearWallet sürümünü çalıştırıyor. Sayfayı yenileyin (veya bu sekmeyi kapatıp yeniden açın) ve tekrar deneyin — aktarımınız güvende ve kaldığı yerden devam edecek.",
             "walletBindingMissing": "Meteor Wallet yanıt verirken kendini tanıtmadı. Aktarımı yeniden başlatın.",
             "walletConnectionMissing": "Bu aktarımın Meteor Wallet bağlantısı eksik. Yeni bir oturumla yeniden bağlanmak için Durumu kontrol et'i kullanın."
         },

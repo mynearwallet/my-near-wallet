@@ -764,6 +764,7 @@
             "verifyBeforeAddKeyIntent": "Khóa mới của tài khoản này chưa được thêm lên chuỗi khối NEAR, nên chưa thể xác nhận với Meteor Wallet.",
             "verifyHashMismatch": "Kích hoạt đang được kiểm tra không khớp với bản ghi trên chuỗi của chính lần chuyển này. Hãy liên hệ hỗ trợ kèm mã bên dưới.",
             "verifySessionUpdateFailed": "Meteor Wallet đã trả lời, nhưng việc lưu kết quả trên thiết bị này thất bại. Hãy chạy Kiểm tra trạng thái lần nữa để hoàn tất.",
+            "versionSkew": "Trang này đang chạy phiên bản MyNearWallet cũ hơn so với dịch vụ chuyển yêu cầu. Hãy tải lại trang (hoặc đóng rồi mở lại tab này) và thử lại — lần chuyển của bạn vẫn an toàn và sẽ tiếp tục.",
             "walletBindingMissing": "Meteor Wallet không tự nhận diện khi trả lời. Hãy bắt đầu lại phiên chuyển.",
             "walletConnectionMissing": "Kết nối Meteor Wallet của lần chuyển này bị thiếu. Hãy dùng Kiểm tra trạng thái để kết nối lại qua một phiên mới."
         },

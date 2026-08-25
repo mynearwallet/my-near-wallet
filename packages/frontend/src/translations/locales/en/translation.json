@@ -1046,6 +1046,7 @@
             "verifyBeforeAddKeyIntent": "This account’s new key has not been added on the NEAR blockchain yet, so it cannot be confirmed with Meteor Wallet.",
             "verifyHashMismatch": "The activation being checked does not match this transfer's own on-chain record. Contact support with the code below.",
             "verifySessionUpdateFailed": "Meteor Wallet answered, but saving the result on this device failed. Run Check status again to finish.",
+            "versionSkew": "This page is running an older version of MyNearWallet than the transfer service expects. Refresh the page (or close and reopen this tab), then try again — your transfer is safe and will resume.",
             "walletBindingMissing": "Meteor Wallet did not identify itself when answering. Start the transfer again.",
             "walletConnectionMissing": "This transfer's Meteor Wallet connection is missing. Use Check status to reconnect through a fresh session."
         },

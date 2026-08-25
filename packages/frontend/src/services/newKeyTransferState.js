@@ -216,12 +216,61 @@ const ADD_KEY_JOURNAL_ERROR_KEYS = {
 };
 
 /**
+ * Bridge/backend refusals that mean CLIENT AND SERVER ARE RUNNING DIFFERENT CONTRACT VERSIONS —
+ * the signed-binding checks doing their job across a version skew. For a real user this happens
+ * with a stale cached bundle after a deployment (or an old tab left open across an upgrade), and
+ * the honest remedy is always the same: load the current code and try again. Without this
+ * mapping, the raw protocol sentence ("update the client or backend contract version") reached
+ * users verbatim — found live in Phase 6 qualification.
+ */
+const VERSION_SKEW_ERROR_IDS = new Set([
+    'recovery_contract_mismatch',
+    'request_hash_mismatch',
+]);
+
+const versionSkewIdOf = (error) => {
+    if (error == null || typeof error !== 'object') {
+        return undefined;
+    }
+    const ids = Array.isArray(error.ids) ? error.ids : [];
+    const matched = ids.find((id) => VERSION_SKEW_ERROR_IDS.has(id));
+    if (matched != null) {
+        return matched;
+    }
+    // Some boundaries flatten the typed error to its message; match BOTH the current sentences
+    // and the pre-0.16.0 ones — already-deployed backends keep emitting the old copy for as long
+    // as they run.
+    const message = typeof error.message === 'string' ? error.message : '';
+    if (
+        message.includes('does not match the server-resolved contract') ||
+        message.includes('recovery contract mismatch')
+    ) {
+        return 'recovery_contract_mismatch';
+    }
+    if (
+        message.includes('does not match the server-validated request') ||
+        message.includes('signed request hash mismatch')
+    ) {
+        return 'request_hash_mismatch';
+    }
+    return undefined;
+};
+
+/**
  * `{ i18nKey }` when the code is one we have words for, otherwise `{ fallback }`.
  *
  * `code` is always the raw SDK id and is meant to be rendered as fine print for support, never as
  * the sentence a user reads. `isFenced` says the only route forward is the reconciliation screen.
  */
 export const describeNewKeyTransferError = (error) => {
+    const versionSkewId = versionSkewIdOf(error);
+    if (versionSkewId != null) {
+        return {
+            i18nKey: 'newKeyTransfer.error.versionSkew',
+            code: versionSkewId,
+            isFenced: false,
+        };
+    }
     // AddKeyJournalError carries a typed `code` beside a host-neutral English message; the code,
     // not the message, is what this wallet localizes (MNW-11).
     if (error != null && error.name === 'AddKeyJournalError' && error.code != null) {

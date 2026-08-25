@@ -932,6 +932,7 @@
             "verifyBeforeAddKeyIntent": "该账户的新密钥尚未添加到 NEAR 区块链，因此无法与 Meteor Wallet 确认。",
             "verifyHashMismatch": "正在核对的激活与此转移自身的链上记录不符。请携带下方代码联系支持。",
             "verifySessionUpdateFailed": "Meteor Wallet 已回应，但在此设备上保存结果失败。请再次运行“检查状态”以完成。",
+            "versionSkew": "此页面运行的 MyNearWallet 版本低于转移服务的要求。请刷新页面（或关闭并重新打开此标签页）后重试——您的转移是安全的，并将继续进行。",
             "walletBindingMissing": "Meteor Wallet 在回应时没有表明自己的身份。请重新开始转移。",
             "walletConnectionMissing": "此转移缺少与 Meteor Wallet 的连接。请使用“检查状态”，通过新会话重新连接。"
         },

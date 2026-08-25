@@ -932,6 +932,7 @@
             "verifyBeforeAddKeyIntent": "該賬戶的新密鑰尚未添加到 NEAR 區塊鏈，因此無法與 Meteor Wallet 確認。",
             "verifyHashMismatch": "正在核對的啟用與此轉移自身的鏈上記錄不符。請攜帶下方代碼聯絡支援。",
             "verifySessionUpdateFailed": "Meteor Wallet 已回應，但在此裝置上儲存結果失敗。請再次執行「檢查狀態」以完成。",
+            "versionSkew": "此頁面執行的 MyNearWallet 版本低於轉移服務的要求。請重新整理頁面（或關閉並重新開啟此分頁）後重試——您的轉移是安全的，並將繼續進行。",
             "walletBindingMissing": "Meteor Wallet 在回應時沒有表明自己的身份。請重新開始轉移。",
             "walletConnectionMissing": "此轉移缺少與 Meteor Wallet 的連線。請使用「檢查狀態」，透過新工作階段重新連線。"
         },

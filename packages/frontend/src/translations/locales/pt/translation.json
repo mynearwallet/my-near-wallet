@@ -806,6 +806,7 @@
             "verifyBeforeAddKeyIntent": "A nova chave desta conta ainda não foi adicionada na blockchain NEAR, portanto não pode ser confirmada com a Meteor Wallet.",
             "verifyHashMismatch": "A ativação a verificar não corresponde ao registo on-chain desta transferência. Contacte o suporte com o código abaixo.",
             "verifySessionUpdateFailed": "A Meteor Wallet respondeu, mas guardar o resultado neste dispositivo falhou. Execute Verificar estado novamente para concluir.",
+            "versionSkew": "Esta página está a executar uma versão da MyNearWallet mais antiga do que a esperada pelo serviço de transferência. Atualize a página (ou feche e reabra este separador) e tente novamente — a sua transferência está segura e será retomada.",
             "walletBindingMissing": "A Meteor Wallet não se identificou ao responder. Inicie a transferência novamente.",
             "walletConnectionMissing": "Falta a ligação desta transferência à Meteor Wallet. Use Verificar estado para religar através de uma nova sessão."
         },

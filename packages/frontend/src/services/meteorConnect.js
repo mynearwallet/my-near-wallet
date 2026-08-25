@@ -73,13 +73,64 @@ const getPartnerMetadata = () => {
  * build is reached by following links. `local` is shorthand for the wrangler backend served from
  * this page's own host.
  */
+/**
+ * Where a `?mcBackend=` choice survives between page loads. The override used to be read from the
+ * URL once at module init, so ANY navigation that dropped the query — the login redirect above
+ * all — silently flipped a development session back to the DEPLOYED dev backend mid-transfer.
+ * Against a locally upgraded protocol that surfaces as a baffling contract-version refusal
+ * (Phase 6 qualification). Sticky-until-cleared is the honest semantics for a dev override:
+ * `?mcBackend=local` turns it on, `?mcBackend=default` turns it off.
+ */
+const DEV_BACKEND_OVERRIDE_STORAGE_KEY = 'mnw:meteorConnect:mcBackend';
+
+const readStoredDevBackendChoice = () => {
+    try {
+        return window.localStorage.getItem(DEV_BACKEND_OVERRIDE_STORAGE_KEY);
+    } catch {
+        return null;
+    }
+};
+
+const writeStoredDevBackendChoice = (value) => {
+    try {
+        if (value == null) {
+            window.localStorage.removeItem(DEV_BACKEND_OVERRIDE_STORAGE_KEY);
+        } else {
+            window.localStorage.setItem(DEV_BACKEND_OVERRIDE_STORAGE_KEY, value);
+        }
+    } catch {
+        // Storage failure only costs stickiness; the URL parameter still works per load.
+    }
+};
+
 const resolveBridgeBackendUrl = () => {
     const environmentUrl = METEOR_CONNECT_BACKENDS[meteorConnectEnvironment];
     if (!CONFIG.IS_DEVELOPMENT || typeof window === 'undefined') {
         return environmentUrl;
     }
-    const requested = new URL(window.location.href).searchParams.get('mcBackend');
+    const fromUrl = new URL(window.location.href).searchParams.get('mcBackend');
+    if (fromUrl === 'default') {
+        writeStoredDevBackendChoice(null);
+    } else if (fromUrl != null) {
+        writeStoredDevBackendChoice(fromUrl);
+    }
+    /**
+     * Priority: explicit URL param, then the remembered choice, then the BUILD-TIME default.
+     * The env default is what a dev server started with `REACT_APP_MC_BACKEND=local` uses for
+     * every load — immune to login redirects, fresh tabs, and new-account entry points, all of
+     * which dropped the URL param and silently sent qualification traffic to the deployed dev
+     * backend (Phase 6, twice).
+     */
+    const requested =
+        fromUrl === 'default'
+            ? null
+            : fromUrl ??
+              readStoredDevBackendChoice() ??
+              CONFIG.MC_BACKEND_DEFAULT ??
+              null;
     if (requested == null) {
+        // eslint-disable-next-line no-console
+        console.info(`[MeteorConnect] backend: ${environmentUrl} (environment default)`);
         return environmentUrl;
     }
     const backendUrl =
@@ -93,7 +144,9 @@ const resolveBridgeBackendUrl = () => {
         }
         // eslint-disable-next-line no-console
         console.info(
-            `[MeteorConnect] dev backend override via ?mcBackend= → ${backendUrl}`
+            `[MeteorConnect] backend: ${backendUrl} (dev override "${requested}"${
+                fromUrl == null ? ', remembered from a previous load' : ''
+            }; clear with ?mcBackend=default)`
         );
         return backendUrl;
     } catch {
