@@ -897,7 +897,7 @@
             "noLocalKey": "沒有可用的普透本地簽名密鑰。",
             "notFullAccess": "未找到完全訪問權限密鑰。",
             "twoFactorUnsupported": "不支持啟用 2FA/多簽的賬戶。請先關閉 2FA，或改用手動導出。",
-            "verificationFailed": "無法驗證訪問密鑰。請稍後重試。"
+            "verificationFailed": "暫時無法檢查該帳戶的金鑰（網路問題）——帳戶沒有任何變更。請稍後重試。"
         },
         "error": {
             "addKeyAccountMismatch": "本次轉移不包含該賬戶，因此沒有更改任何密鑰。請從賬戶列表重新開始轉移。",
@@ -909,6 +909,7 @@
             "noAccountsReady": "本次轉移中沒有賬戶可供激活。",
             "orphanedAddKey": "本設備上仍有一次只提交了一部分的密鑰更改，必須先處理完才能開始新的轉移。請聯繫支持並提供下方的編號。",
             "recoveryRequired": "本次轉移已在 NEAR 區塊鏈上添加了密鑰，因此不能直接丟棄。",
+            "refusedSourceKeyRemoval": "為安全起見，一個清理步驟被拒絕，因為它指向了該帳戶自己的存取金鑰。沒有任何金鑰被變更。請聯絡支援並提供下方代碼。",
             "resolveNow": "處理這次轉移",
             "revokeAccountMismatch": "該賬戶不屬於本次轉移，因此沒有任何更改。",
             "revokeChainRequired": "MyNearWallet 無法連接 NEAR 網絡來確認密鑰已被移除。沒有任何更改——請在恢復聯網後重試。",

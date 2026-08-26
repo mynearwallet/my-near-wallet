@@ -748,7 +748,7 @@
             "noLocalKey": "Kullanılabilir düz bir yerel imzalama anahtarı yok.",
             "notFullAccess": "Tam erişim anahtarı bulunamadı.",
             "twoFactorUnsupported": "2FA/çoklu imza hesapları desteklenmiyor. Önce 2FA'yı kapatın ya da elle dışa aktarmayı kullanın.",
-            "verificationFailed": "Erişim anahtarı doğrulanamadı. Daha sonra yeniden deneyin."
+            "verificationFailed": "Hesap anahtarları şu anda kontrol edilemedi (ağ sorunu) — hesapta hiçbir şey değiştirilmedi. Birazdan tekrar deneyin."
         },
         "error": {
             "addKeyAccountMismatch": "Bu aktarım o hesabı kapsamıyor, bu yüzden hiçbir anahtar değiştirilmedi. Aktarımı hesap listenizden yeniden başlatın.",
@@ -760,6 +760,7 @@
             "noAccountsReady": "Bu aktarımdaki hiçbir hesap etkinleştirmeye hazır değil.",
             "orphanedAddKey": "Bu cihazda kısmen gönderilmiş bir anahtar değişikliği kayıtlı; başka bir aktarım başlatılabilmesi için önce çözülmesi gerekiyor. Aşağıdaki referansla destek ekibine başvurun.",
             "recoveryRequired": "Bu aktarım NEAR blok zincirine zaten anahtar ekledi, bu yüzden öylece atılamaz.",
+            "refusedSourceKeyRemoval": "Güvenlik için, bu hesabın kendi erişim anahtarına işaret eden bir temizleme adımı reddedildi. Hiçbir anahtar değiştirilmedi. Destek ekibiyle iletişime geçin ve aşağıdaki kodu belirtin.",
             "resolveNow": "Bu aktarımı çöz",
             "revokeAccountMismatch": "O hesap bu aktarımın parçası değil, bu yüzden hiçbir şey değişmedi.",
             "revokeChainRequired": "MyNearWallet anahtarın kaldırıldığını doğrulamak için NEAR ağına ulaşamadı. Hiçbir şey değişmedi — çevrimiçi olduğunuzda yeniden deneyin.",

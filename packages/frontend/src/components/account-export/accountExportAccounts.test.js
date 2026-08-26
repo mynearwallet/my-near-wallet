@@ -19,7 +19,10 @@ jest.mock('../../utils/wallet', () => ({
 // Deliberately below the mocks: their factories close over the `mock*` consts above, which
 // babel-jest does not hoist — importing first would load the real wallet module.
 // eslint-disable-next-line import/first
-import { loadExportableAccounts, loadNewKeyTransferAccounts } from './accountExportAccounts';
+import {
+    loadExportableAccounts,
+    loadNewKeyTransferAccounts,
+} from './accountExportAccounts';
 
 describe('new-key account-transfer eligibility', () => {
     beforeEach(() => {
@@ -59,7 +62,9 @@ describe('new-key account-transfer eligibility', () => {
         );
 
         const rows = await loadExportableAccounts();
-        expect(Object.fromEntries(rows.map((row) => [row.accountId, row.availability]))).toEqual({
+        expect(
+            Object.fromEntries(rows.map((row) => [row.accountId, row.availability]))
+        ).toEqual({
             'ready.testnet': 'available',
             'missing.testnet': 'no_local_key',
             'ledger.testnet': 'ledger_unsupported',
@@ -67,9 +72,9 @@ describe('new-key account-transfer eligibility', () => {
             'two-factor.testnet': 'two_factor_unsupported',
             'function-call.testnet': 'not_full_access',
         });
-        expect(rows.find((row) => row.accountId === 'ready.testnet').sourcePublicKey).toBe(
-            'ed25519:ready.testnet'
-        );
+        expect(
+            rows.find((row) => row.accountId === 'ready.testnet').sourcePublicKey
+        ).toBe('ed25519:ready.testnet');
     });
 
     it('carries the eligibility reason when an account cannot be transferred', async () => {
@@ -79,10 +84,32 @@ describe('new-key account-transfer eligibility', () => {
         mockWallet.getLocalKeyPair.mockResolvedValue(makeKeyPair('ed25519:alice'));
         mockGetKeyMeta.mockRejectedValue(new Error('rpc down'));
 
-        await expect(loadNewKeyTransferAccounts(['alice.testnet'])).rejects.toMatchObject({
-            accountId: 'alice.testnet',
-            availability: 'verification_failed',
-        });
+        await expect(loadNewKeyTransferAccounts(['alice.testnet'])).rejects.toMatchObject(
+            {
+                accountId: 'alice.testnet',
+                availability: 'verification_failed',
+            }
+        );
+    });
+
+    it('retries a failed probe once before reporting verification_failed', async () => {
+        // A single failed RPC read is far more often rate limiting than anything about the
+        // account — rendering it as "cannot be transferred" scared users about their keys.
+        mockWallet.keyStore.getAccounts.mockResolvedValue(['alice.testnet']);
+        mockWallet.getLocalKeyPair.mockResolvedValue(makeKeyPair('ed25519:alice'));
+        mockWallet.isFullAccessKey
+            .mockRejectedValueOnce(new Error('429 rate limited'))
+            .mockResolvedValueOnce(true);
+
+        const rows = await loadExportableAccounts();
+        expect(rows).toEqual([
+            {
+                accountId: 'alice.testnet',
+                sourcePublicKey: 'ed25519:alice',
+                availability: 'available',
+            },
+        ]);
+        expect(mockWallet.isFullAccessKey).toHaveBeenCalledTimes(2);
     });
 
     it('refuses staging when the exact selected source key changes after eligibility', async () => {

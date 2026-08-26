@@ -1011,7 +1011,7 @@
             "noLocalKey": "No plain local signing key is available.",
             "notFullAccess": "Full access key not found.",
             "twoFactorUnsupported": "2FA/multisig accounts are not supported. Disable 2FA first or use manual export.",
-            "verificationFailed": "Could not verify the access key. Try again later."
+            "verificationFailed": "The account keys could not be checked right now (network issue) — nothing on the account was changed. Try again in a moment."
         },
         "error": {
             "addKeyAccountMismatch": "This transfer does not cover that account, so no key change was made. Start the transfer again from your account list.",
@@ -1023,6 +1023,7 @@
             "noAccountsReady": "No account in this transfer is ready to activate.",
             "orphanedAddKey": "A partly submitted key change is still recorded on this device and must be resolved before another transfer can start. Contact support with the reference below.",
             "recoveryRequired": "This transfer has already added keys on the NEAR blockchain, so it cannot simply be discarded.",
+            "refusedSourceKeyRemoval": "For safety, a cleanup step was refused because it pointed at this account's own access key. No keys were changed. Contact support and quote the code below.",
             "resolveNow": "Resolve this transfer",
             "revokeAccountMismatch": "That account is not part of this transfer, so nothing was changed.",
             "revokeChainRequired": "MyNearWallet could not reach the NEAR network to confirm the key was removed. Nothing was changed — try again once you are back online.",

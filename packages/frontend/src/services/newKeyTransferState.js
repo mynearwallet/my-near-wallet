@@ -175,6 +175,11 @@ const ERROR_MESSAGE_KEYS = {
     // cannot be resolved from the session's own records — never guess which key to remove.
     new_key_transfer_start_over_unresolvable:
         'newKeyTransfer.error.startOverUnresolvable',
+    // Raised by this wallet's chain seam, right before a cleanup DeleteKey would be signed: the
+    // key it was asked to remove is the user's OWN source key. Refused unconditionally — cancel
+    // may only ever remove the key Meteor minted.
+    new_key_transfer_refused_source_key_removal:
+        'newKeyTransfer.error.refusedSourceKeyRemoval',
 };
 
 /**
@@ -436,6 +441,13 @@ export const resolveNewKeyStartOverPlan = ({ session }) => {
         const row = rowsByIdentity.get(identity);
         const requested = requestedByIdentity.get(identity);
         if (row?.destinationPublicKey == null || requested?.sourcePublicKey == null) {
+            return { kind: 'refuse_unresolvable' };
+        }
+        if (row.destinationPublicKey === requested.sourcePublicKey) {
+            // A record claiming Meteor's minted key IS the user's own source key can only be
+            // corrupt or confused — acting on it would point the revocation DeleteKey at the
+            // user's signing key. Refuse outright; the chain seam re-checks the same invariant
+            // right before signing, but a corrupt record should never get that far.
             return { kind: 'refuse_unresolvable' };
         }
         accounts.push({

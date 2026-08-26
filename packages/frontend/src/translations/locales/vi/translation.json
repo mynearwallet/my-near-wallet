@@ -729,7 +729,7 @@
             "noLocalKey": "Không có khóa ký cục bộ thông thường khả dụng.",
             "notFullAccess": "Không tìm thấy khóa toàn quyền.",
             "twoFactorUnsupported": "Không hỗ trợ tài khoản dùng 2FA/đa chữ ký. Hãy tắt 2FA trước hoặc dùng xuất thủ công.",
-            "verificationFailed": "Không thể xác minh khóa truy cập. Hãy thử lại sau."
+            "verificationFailed": "Hiện không thể kiểm tra các khóa của tài khoản (sự cố mạng) — không có gì trên tài khoản bị thay đổi. Vui lòng thử lại sau giây lát."
         },
         "error": {
             "addKeyAccountMismatch": "Phiên chuyển này không bao gồm tài khoản đó, nên không có khóa nào bị thay đổi. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
@@ -741,6 +741,7 @@
             "noAccountsReady": "Không có tài khoản nào trong phiên chuyển này sẵn sàng để kích hoạt.",
             "orphanedAddKey": "Trên thiết bị này còn một thay đổi khóa đã gửi dở dang, cần được xử lý trước khi bắt đầu phiên chuyển khác. Hãy liên hệ hỗ trợ kèm mã tham chiếu bên dưới.",
             "recoveryRequired": "Phiên chuyển này đã thêm khóa lên chuỗi khối NEAR, nên không thể bỏ đi một cách đơn giản.",
+            "refusedSourceKeyRemoval": "Vì an toàn, một bước dọn dẹp đã bị từ chối vì nó trỏ tới chính khóa truy cập của tài khoản này. Không có khóa nào bị thay đổi. Hãy liên hệ hỗ trợ và cung cấp mã bên dưới.",
             "resolveNow": "Xử lý phiên chuyển này",
             "revokeAccountMismatch": "Tài khoản đó không thuộc phiên chuyển này, nên không có gì thay đổi.",
             "revokeChainRequired": "MyNearWallet không kết nối được tới mạng NEAR để xác nhận khóa đã được gỡ. Không có gì thay đổi — hãy thử lại khi có kết nối.",

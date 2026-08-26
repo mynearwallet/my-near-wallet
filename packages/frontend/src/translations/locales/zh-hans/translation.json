@@ -897,7 +897,7 @@
             "noLocalKey": "没有可用的普通本地签名密钥。",
             "notFullAccess": "未找到完全访问权限密钥。",
             "twoFactorUnsupported": "不支持启用 2FA/多签的账户。请先关闭 2FA，或改用手动导出。",
-            "verificationFailed": "无法验证访问密钥。请稍后重试。"
+            "verificationFailed": "暂时无法检查该账户的密钥（网络问题）——账户没有任何更改。请稍后重试。"
         },
         "error": {
             "addKeyAccountMismatch": "本次转移不包含该账户，因此没有更改任何密钥。请从账户列表重新开始转移。",
@@ -909,6 +909,7 @@
             "noAccountsReady": "本次转移中没有账户可供激活。",
             "orphanedAddKey": "本设备上仍有一次只提交了一部分的密钥更改，必须先处理完才能开始新的转移。请联系支持并提供下方的编号。",
             "recoveryRequired": "本次转移已在 NEAR 区块链上添加了密钥，因此不能直接丢弃。",
+            "refusedSourceKeyRemoval": "为安全起见，一个清理步骤被拒绝，因为它指向了该账户自己的访问密钥。没有任何密钥被更改。请联系支持并提供下方代码。",
             "resolveNow": "处理这次转移",
             "revokeAccountMismatch": "该账户不属于本次转移，因此没有任何更改。",
             "revokeChainRequired": "MyNearWallet 无法连接 NEAR 网络来确认密钥已被移除。没有任何更改——请在恢复联网后重试。",

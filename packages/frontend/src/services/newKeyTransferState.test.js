@@ -654,6 +654,26 @@ describe('resolveNewKeyStartOverPlan', () => {
             kind: 'refuse_unresolvable',
         });
     });
+
+    it('fails closed when a record claims the minted key IS the user source key', () => {
+        // A revocation planned off this record would point its DeleteKey at the key the user
+        // signs with. The chain seam refuses the same thing right before signing; the planner
+        // must never produce the instruction in the first place.
+        const session = withSourceKeys(
+            makeSession({
+                accounts: [
+                    {
+                        ...readyRow('alice.testnet'),
+                        destinationPublicKey: 'ed25519:source-alice.testnet',
+                    },
+                ],
+                addKeyIntentAccounts: [identity('alice.testnet')],
+            })
+        );
+        expect(resolveNewKeyStartOverPlan({ session })).toEqual({
+            kind: 'refuse_unresolvable',
+        });
+    });
 });
 
 describe('start-over refusal copy', () => {

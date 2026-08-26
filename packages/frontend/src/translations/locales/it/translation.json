@@ -796,7 +796,7 @@
             "noLocalKey": "Non è disponibile una chiave di firma locale semplice.",
             "notFullAccess": "Chiave ad accesso completo non trovata.",
             "twoFactorUnsupported": "Gli account con 2FA/multisig non sono supportati. Disattiva prima la 2FA oppure usa l’esportazione manuale.",
-            "verificationFailed": "Non è stato possibile verificare la chiave di accesso. Riprova più tardi."
+            "verificationFailed": "Non è stato possibile controllare le chiavi dell account in questo momento (problema di rete): nulla è stato modificato sull account. Riprova tra un momento."
         },
         "error": {
             "addKeyAccountMismatch": "Questo trasferimento non riguarda quell’account, quindi nessuna chiave è stata modificata. Riavvia il trasferimento dal tuo elenco account.",
@@ -808,6 +808,7 @@
             "noAccountsReady": "Nessun account di questo trasferimento è pronto per l’attivazione.",
             "orphanedAddKey": "Su questo dispositivo risulta una modifica di chiave inviata solo in parte, che va risolta prima di poter avviare un altro trasferimento. Contatta l’assistenza indicando il riferimento qui sotto.",
             "recoveryRequired": "Questo trasferimento ha già aggiunto chiavi sulla blockchain NEAR, quindi non può essere semplicemente scartato.",
+            "refusedSourceKeyRemoval": "Per sicurezza, un passaggio di pulizia è stato rifiutato perché puntava alla chiave di accesso dell account stesso. Nessuna chiave è stata modificata. Contatta il supporto citando il codice qui sotto.",
             "resolveNow": "Risolvi questo trasferimento",
             "revokeAccountMismatch": "Quell’account non fa parte di questo trasferimento, quindi non è stato modificato nulla.",
             "revokeChainRequired": "MyNearWallet non è riuscito a raggiungere la rete NEAR per confermare la rimozione della chiave. Non è stato modificato nulla: riprova quando sarai di nuovo online.",

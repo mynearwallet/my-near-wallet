@@ -178,10 +178,23 @@ export const waitForDestinationKeyAbsence = async ({
  * key says so instead of removing the key with some other authority.
  */
 export const removeDestinationKeyWithSourceSigner = async (operation) => {
+    // Hard invariant at the ONE place a transfer-cleanup DeleteKey is signed: the key being
+    // removed must never be the user's own signing key. `getExactSourceAccount` below proves the
+    // LOCAL key equals `sourcePublicKey`, so refusing a destination equal to the source is what
+    // makes "cancel can only remove the key Meteor minted" true no matter what any upstream
+    // record claims. Both sides are normalized through PublicKey so a formatting difference
+    // (base58 with or without the `ed25519:` prefix) can never slip the same key past the check.
+    const destinationPublicKey = nearApiJs.utils.PublicKey.from(
+        operation.destinationPublicKey
+    ).toString();
+    const sourcePublicKey = nearApiJs.utils.PublicKey.from(
+        operation.sourcePublicKey
+    ).toString();
+    if (destinationPublicKey === sourcePublicKey) {
+        throw new Error('new_key_transfer_refused_source_key_removal');
+    }
     const account = await getExactSourceAccount(operation);
-    return account.deleteKey(
-        nearApiJs.utils.PublicKey.from(operation.destinationPublicKey)
-    );
+    return account.deleteKey(nearApiJs.utils.PublicKey.from(destinationPublicKey));
 };
 
 /**
