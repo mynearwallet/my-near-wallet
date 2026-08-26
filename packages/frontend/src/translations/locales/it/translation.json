@@ -822,6 +822,8 @@
             "revokeDestinationKeyPresent": "La chiave di Meteor Wallet è ancora sull’account, quindi questo trasferimento non può ancora essere chiuso. Rimuovi la chiave, attendi la conferma della rete NEAR e riprova.",
             "sessionNotFound": "Questo trasferimento non è più disponibile. Riavvialo dal tuo elenco account.",
             "sessionNotTerminal": "Questo trasferimento ha ancora account non completati e non può ancora essere archiviato.",
+            "startOverSecuredRows": "Alcuni account sono già protetti in Meteor Wallet, quindi questo trasferimento non può più essere annullato da qui. Usa Verifica stato per completarlo, poi archivialo — potrai rimuovere gli account in Meteor Wallet in seguito.",
+            "startOverUnresolvable": "I dati di questo trasferimento sono incompleti, quindi non può essere annullato automaticamente in sicurezza. Contatta l'assistenza citando il codice qui sotto.",
             "startResultConflict": "Su questo dispositivo risulta ancora un altro trasferimento. Completalo o risolvilo prima di avviarne uno nuovo.",
             "startResultDiscardFailed": "Il registro del trasferimento su questo dispositivo non è stato cancellato in modo sicuro ed è stato lasciato intatto. Risolvilo prima di avviare un altro trasferimento.",
             "startResultMissing": "Manca il registro di attivazione di questo trasferimento, quindi non può essere ripreso in sicurezza. Riavvialo dal tuo elenco account.",
@@ -921,6 +923,15 @@
         "showAdvanced": "Mostra il trasferimento avanzato con chiavi esistenti",
         "start": "Trasferisci a Meteor Wallet",
         "starting": "Apertura di Meteor Wallet…",
+        "startOver": {
+            "confirm": "Rimuovi le nuove chiavi e ricomincia",
+            "discardPending": "Scarta il trasferimento interrotto e ricomincia da zero",
+            "keep": "Mantieni questo trasferimento",
+            "link": "Annulla questo trasferimento e ricomincia",
+            "removing": "Rimozione delle nuove chiavi… ({{completed}}/{{total}})",
+            "warningBody": "Questa operazione rimuove la chiave di accesso del nuovo wallet da ogni account di questo trasferimento, firmando con la chiave già custodita qui. I tuoi account e le chiavi esistenti restano esattamente come sono. Dopo potrai avviare un nuovo trasferimento verso qualsiasi wallet.",
+            "warningTitle": "Rimuovere le nuove chiavi e ricominciare?"
+        },
         "supportCode": "Codice assistenza: {{code}}",
         "supportReference": "Riferimento assistenza: {{id}}",
         "title": "Trasferisci a Meteor Wallet"

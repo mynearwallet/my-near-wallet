@@ -923,6 +923,8 @@
             "revokeDestinationKeyPresent": "Meteor Wallet 的密鑰仍在該賬戶上，因此這次轉移還不能結束。請移除該密鑰，等待 NEAR 網絡確認後重試。",
             "sessionNotFound": "本次轉移已不可用。請從賬戶列表重新開始。",
             "sessionNotTerminal": "此轉移仍有未完成的帳戶，暫時無法封存。",
+            "startOverSecuredRows": "部分帳戶已在 Meteor Wallet 中受到保護，因此無法再從此處放棄此轉移。請使用「檢查狀態」完成轉移並封存——之後可以在 Meteor Wallet 中移除這些帳戶。",
+            "startOverUnresolvable": "此轉移的紀錄不完整，無法安全地自動放棄。請聯絡支援並提供下方代碼。",
             "startResultConflict": "本設備上仍記錄著另一次轉移。請先完成或處理它，再開始新的轉移。",
             "startResultDiscardFailed": "本設備上的轉移記錄無法被安全清除，因此原樣保留。請先處理它，再開始新的轉移。",
             "startResultMissing": "本次轉移的激活記錄缺失，無法安全繼續。請從賬戶列表重新開始。",
@@ -1022,6 +1024,15 @@
         "showAdvanced": "顯示使用現有密鑰的高級轉移",
         "start": "轉移到 Meteor Wallet",
         "starting": "正在打開 Meteor Wallet…",
+        "startOver": {
+            "confirm": "移除新金鑰並重新開始",
+            "discardPending": "放棄中斷的轉移並重新開始",
+            "keep": "保留此轉移",
+            "link": "取消此轉移並重新開始",
+            "removing": "正在移除新金鑰…（{{completed}}/{{total}}）",
+            "warningBody": "此操作會使用您在此處已持有的金鑰簽署，從此轉移中的每個帳戶移除新錢包的存取金鑰。您的帳戶與現有金鑰保持不變。之後您可以向任何錢包發起新的轉移。",
+            "warningTitle": "移除新金鑰並重新開始？"
+        },
         "supportCode": "支持代碼：{{code}}",
         "supportReference": "支持編號：{{id}}",
         "title": "轉移到 Meteor Wallet"

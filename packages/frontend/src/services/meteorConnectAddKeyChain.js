@@ -119,6 +119,56 @@ export const isSourceKeyAbsentOnChain = async ({ accountId, sourcePublicKey }) =
 };
 
 /**
+ * Whether the exact DESTINATION key is absent from the account at finality. Same fail-closed
+ * reading as the source-key check above: `true` only on the RPC's own does-not-exist answer.
+ */
+export const isDestinationKeyAbsentOnChain = async ({
+    accountId,
+    destinationPublicKey,
+}) => {
+    try {
+        await wallet.connection.provider.query({
+            request_type: 'view_access_key',
+            account_id: accountId,
+            public_key: destinationPublicKey,
+            finality: 'final',
+        });
+        return false;
+    } catch (error) {
+        const serialized =
+            error instanceof Error
+                ? `${error.type ?? ''} ${error.message}`
+                : String(error);
+        return /AccessKeyDoesNotExist|does not exist while viewing/.test(serialized);
+    }
+};
+
+const DESTINATION_KEY_ABSENCE_ATTEMPTS = 12;
+const DESTINATION_KEY_ABSENCE_DELAY_MILLIS = 2500;
+
+/**
+ * Wait until a just-removed destination key is provably gone AT FINALITY. `deleteKey` returns on
+ * an optimistic execution, but the SDK's revocation acknowledgement re-proves absence at finality
+ * before it releases anything — asking it a moment too early would refuse a removal that in fact
+ * landed. Bounded: a timeout surfaces as the SDK's own still-present code so the caller renders
+ * one consistent "try again in a moment" message.
+ */
+export const waitForDestinationKeyAbsence = async ({
+    accountId,
+    destinationPublicKey,
+}) => {
+    for (let attempt = 0; attempt < DESTINATION_KEY_ABSENCE_ATTEMPTS; attempt += 1) {
+        if (await isDestinationKeyAbsentOnChain({ accountId, destinationPublicKey })) {
+            return;
+        }
+        await new Promise((resolve) =>
+            setTimeout(resolve, DESTINATION_KEY_ABSENCE_DELAY_MILLIS)
+        );
+    }
+    throw new Error('new_key_transfer_revoke_destination_key_present');
+};
+
+/**
  * Remove a destination key from its account, signed by the EXACT source key that granted it.
  *
  * The recovery step behind `destination_key_present_unproven`: the key is on the account but

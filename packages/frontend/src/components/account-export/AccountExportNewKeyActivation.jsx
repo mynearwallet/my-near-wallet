@@ -23,6 +23,7 @@ import {
     trackMigrationActivationFinished,
     trackMigrationActivationStarted,
 } from './accountExportAnalytics';
+import NewKeyTransferStartOverControl from './NewKeyTransferStartOverControl';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const ActivationPage = styled(Container)`
@@ -524,6 +525,11 @@ export default function AccountExportNewKeyActivation() {
                                 {t('newKeyTransfer.activation.finishLater')}
                             </FormButton>
                         </div>
+                        {/* The honest late-cancel: remove the new keys with the source signer,
+                            then discard — so a user is never locked into a destination wallet
+                            by a transfer that has not secured anything yet. Renders nothing
+                            once any account is secured. */}
+                        <NewKeyTransferStartOverControl summary={summary} />
                     </Buttons>
                 )}
             </div>

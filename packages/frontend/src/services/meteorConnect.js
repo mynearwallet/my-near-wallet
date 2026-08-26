@@ -9,12 +9,15 @@ import {
 import {
     assertSelectionCanAffordAddKeys,
     createWalletAddKeyChain,
+    isDestinationKeyAbsentOnChain,
     isSourceKeyAbsentOnChain,
     removeDestinationKeyWithSourceSigner,
+    waitForDestinationKeyAbsence,
 } from './meteorConnectAddKeyChain';
 import { resolveMeteorConnectEnvironment } from './meteorConnectEnvironment';
 import {
     newKeyStartInputFingerprint,
+    resolveNewKeyStartOverPlan,
     resolveNewKeyStartReplayPlan,
 } from './newKeyTransferState';
 import CONFIG from '../config';
@@ -499,6 +502,89 @@ export const clearMeteorNewKeyAccountTransfer = async (clientTransferId) => {
     await initializeMeteorConnect();
     discardPendingMeteorNewKeyStart();
     await newKeyTransfer().clear(clientTransferId);
+};
+
+/**
+ * Abandon one transfer — at any stage short of Meteor having SECURED accounts — so the user can
+ * start again, with a different destination wallet if they like.
+ *
+ * The pure planner (`resolveNewKeyStartOverPlan`) decides what abandoning costs here:
+ *
+ * - nothing journaled → drop the stashed replay id (and sweep a crash-window orphaned start
+ *   result so the NEXT start cannot die on `start_result_conflict`);
+ * - session but no AddKey intent → the SDK's own `clear()`;
+ * - intent journaled, nothing secured → the honest late-cancel: remove each destination key with
+ *   the account's own SOURCE key, wait until each removal is provable at finality, let the SDK
+ *   acknowledge the revocation (it re-proves absence itself — an assurance is never enough), then
+ *   clear the record;
+ * - anything secured, or records that cannot be resolved → refuse with a typed code the screens
+ *   have real copy for.
+ *
+ * `onProgress` reports 1-based key-removal progress. Idempotent per stage: a key already absent
+ * is skipped, and a rerun after a partial failure resumes with the keys still present.
+ */
+export const startOverMeteorNewKeyTransfer = async ({
+    clientTransferId,
+    onProgress,
+} = {}) => {
+    await initializeMeteorConnect();
+    const targetId = clientTransferId ?? readPendingStart()?.clientTransferId ?? null;
+    discardPendingMeteorNewKeyStart();
+    const session =
+        targetId == null
+            ? null
+            : (await newKeyTransfer().getSessions()).find(
+                  (candidate) => candidate.clientTransferId === targetId
+              );
+    const plan = resolveNewKeyStartOverPlan({ session });
+    if (plan.kind === 'refuse_secured') {
+        throw new Error('new_key_transfer_start_over_secured_rows');
+    }
+    if (plan.kind === 'refuse_unresolvable') {
+        throw new Error('new_key_transfer_start_over_unresolvable');
+    }
+    if (plan.kind === 'discard_stash_only') {
+        try {
+            await newKeyTransfer().discardOrphanedStartResult();
+        } catch (error) {
+            // A result some OTHER session references is that session's live state — the normal
+            // start-path sweep owns it. Anything else (a protected journal above all) is a real
+            // fence and must surface, not vanish under "start over".
+            if (
+                !(error instanceof Error) ||
+                error.message !== 'new_key_transfer_start_result_referenced'
+            ) {
+                throw error;
+            }
+        }
+        return { revokedAccountIds: [] };
+    }
+    if (plan.kind === 'clear') {
+        await newKeyTransfer().clear(plan.clientTransferId);
+        return { revokedAccountIds: [] };
+    }
+    // revoke_then_clear — the destination keys may be live on-chain.
+    const revokedAccountIds = [];
+    const total = plan.accounts.length;
+    for (const [index, account] of plan.accounts.entries()) {
+        onProgress?.({ accountId: account.accountId, index: index + 1, total });
+        if (!(await isDestinationKeyAbsentOnChain(account))) {
+            await removeDestinationKeyWithSourceSigner(account);
+            await waitForDestinationKeyAbsence(account);
+            revokedAccountIds.push(account.accountId);
+        }
+    }
+    await newKeyTransfer().markDestinationKeysRevoked({
+        transferSessionId: plan.transferSessionId,
+        accounts: plan.accounts.map(({ blockchainId, networkId, accountId }) => ({
+            blockchainId,
+            networkId,
+            accountId,
+        })),
+        chain: createWalletAddKeyChain(),
+    });
+    await newKeyTransfer().clear(plan.clientTransferId);
+    return { revokedAccountIds };
 };
 
 /**

@@ -168,6 +168,13 @@ const ERROR_MESSAGE_KEYS = {
     // transfer never runs out of gas money halfway through its broadcasts.
     new_key_transfer_insufficient_balance_for_add_keys:
         'newKeyTransfer.error.insufficientBalanceForAddKeys',
+    // Raised by this wallet's start-over planner: accounts Meteor already SECURED cannot be
+    // silently unwound from here — their keys are what the imported accounts run on.
+    new_key_transfer_start_over_secured_rows: 'newKeyTransfer.error.startOverSecuredRows',
+    // Raised by this wallet's start-over planner: an intent row whose destination or source key
+    // cannot be resolved from the session's own records — never guess which key to remove.
+    new_key_transfer_start_over_unresolvable:
+        'newKeyTransfer.error.startOverUnresolvable',
 };
 
 /**
@@ -374,3 +381,70 @@ export const newKeyStartInputFingerprint = ({ accounts, networkId, targetPlatfor
             .map(({ accountId, sourcePublicKey }) => `${accountId}::${sourcePublicKey}`)
             .sort(),
     });
+
+/**
+ * What "start over" honestly means for one transfer, decided from the session's own records.
+ * Pure: the caller owns storage, chain work, and the SDK calls the plan names.
+ *
+ * The freedom this exists for: a user must be able to abandon a transfer and start again — with
+ * a different destination wallet if they like — at ANY stage short of Meteor having secured
+ * accounts. The stages differ in what abandoning costs:
+ *
+ * - `discard_stash_only` — no session (an interrupted start that never journaled): dropping the
+ *   stashed replay id is the whole job.
+ * - `clear` — a session with no AddKey intent: nothing reached a chain; the SDK's `clear()` is
+ *   safe and sufficient.
+ * - `revoke_then_clear` — intent journaled but nothing secured: the destination keys may be live
+ *   on-chain, so each one is removed with the account's own SOURCE key, the SDK acknowledges the
+ *   revocation (re-proving absence itself), and only then is the record cleared. `accounts` lists
+ *   every intent row with the exact keys involved.
+ * - `refuse_secured` — Meteor already secured at least one account: those keys are what the
+ *   imported accounts run on, so unwinding from here would break them. The honest exits are
+ *   Check status → archive, or removing the accounts in Meteor first.
+ * - `refuse_unresolvable` — an intent row whose destination or source key cannot be recovered
+ *   from the session's own records. Never guess which key to remove; fail closed to support.
+ */
+export const resolveNewKeyStartOverPlan = ({ session }) => {
+    if (session == null) {
+        return { kind: 'discard_stash_only' };
+    }
+    const hasAddKeyIntent = (session.addKeyIntentAccounts || []).length > 0;
+    if (!hasAddKeyIntent) {
+        return { kind: 'clear', clientTransferId: session.clientTransferId };
+    }
+    if ((session.securedAccounts || []).length > 0) {
+        return { kind: 'refuse_secured' };
+    }
+    const requestedByIdentity = new Map(
+        (session.startRequest?.accounts || []).map((account) => [
+            newKeyTransferAccountIdentity(account),
+            account,
+        ])
+    );
+    const rowsByIdentity = new Map(
+        (session.startOutput?.accounts || [])
+            .filter((row) => row.ok)
+            .map((row) => [newKeyTransferAccountIdentity(row), row])
+    );
+    const accounts = [];
+    for (const identity of session.addKeyIntentAccounts) {
+        const row = rowsByIdentity.get(identity);
+        const requested = requestedByIdentity.get(identity);
+        if (row?.destinationPublicKey == null || requested?.sourcePublicKey == null) {
+            return { kind: 'refuse_unresolvable' };
+        }
+        accounts.push({
+            blockchainId: row.blockchainId,
+            networkId: row.networkId,
+            accountId: row.accountId,
+            sourcePublicKey: requested.sourcePublicKey,
+            destinationPublicKey: row.destinationPublicKey,
+        });
+    }
+    return {
+        kind: 'revoke_then_clear',
+        clientTransferId: session.clientTransferId,
+        transferSessionId: session.startOutput?.transferSessionId,
+        accounts,
+    };
+};

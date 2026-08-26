@@ -7,6 +7,7 @@ import {
     newKeyStartInputFingerprint,
     newKeyTransferAccountIdentity,
     newKeyTransferEligibilityKey,
+    resolveNewKeyStartOverPlan,
     resolveNewKeyStartReplayPlan,
     summarizeNewKeyTransferSession,
 } from './newKeyTransferState';
@@ -533,7 +534,7 @@ describe('AddKeyJournalError localization', () => {
 describe('contract version skew mapping', () => {
     it('maps the typed bridge-session ids to the refresh copy', () => {
         const typed = new Error(
-            'The action\'s declared recovery contract does not match the server-resolved contract — update the client or backend contract version'
+            "The action's declared recovery contract does not match the server-resolved contract — update the client or backend contract version"
         );
         typed.ids = ['recovery_contract_mismatch'];
         expect(describeNewKeyTransferError(typed)).toEqual({
@@ -551,11 +552,131 @@ describe('contract version skew mapping', () => {
 
     it('still catches the skew when only the protocol sentence survives a boundary', () => {
         const flattened = new Error(
-            'The action\'s declared recovery contract does not match the server-resolved contract — update the client or backend contract version'
+            "The action's declared recovery contract does not match the server-resolved contract — update the client or backend contract version"
         );
         expect(describeNewKeyTransferError(flattened)).toEqual({
             i18nKey: 'newKeyTransfer.error.versionSkew',
             code: 'recovery_contract_mismatch',
+            isFenced: false,
+        });
+    });
+});
+
+describe('resolveNewKeyStartOverPlan', () => {
+    /** Give the fixture the start-request half of the join: one source key per accepted row. */
+    const withSourceKeys = (session) => ({
+        ...session,
+        startRequest: {
+            ...session.startRequest,
+            accounts: session.startOutput.accounts
+                .filter((row) => row.ok)
+                .map(({ blockchainId, networkId, accountId }) => ({
+                    blockchainId,
+                    networkId,
+                    accountId,
+                    sourcePublicKey: `ed25519:source-${accountId}`,
+                })),
+        },
+    });
+
+    it('is stash-discard only when there is no session at all', () => {
+        expect(resolveNewKeyStartOverPlan({ session: null })).toEqual({
+            kind: 'discard_stash_only',
+        });
+    });
+
+    it('clears directly while no AddKey intent is journaled', () => {
+        expect(resolveNewKeyStartOverPlan({ session: makeSession() })).toEqual({
+            kind: 'clear',
+            clientTransferId: 'transfer-1',
+        });
+    });
+
+    it('refuses once any account is secured — those keys run the imported accounts', () => {
+        const session = {
+            ...withSourceKeys(
+                makeSession({ addKeyIntentAccounts: [identity('alice.testnet')] })
+            ),
+            securedAccounts: [identity('alice.testnet')],
+        };
+        expect(resolveNewKeyStartOverPlan({ session })).toEqual({
+            kind: 'refuse_secured',
+        });
+    });
+
+    it('plans a revoke of every intent row with its exact keys, then the clear', () => {
+        const session = withSourceKeys(
+            makeSession({
+                accounts: [readyRow('alice.testnet'), readyRow('bob.testnet')],
+                addKeyIntentAccounts: [
+                    identity('alice.testnet'),
+                    identity('bob.testnet'),
+                ],
+            })
+        );
+        const plan = resolveNewKeyStartOverPlan({ session });
+        expect(plan.kind).toBe('revoke_then_clear');
+        expect(plan.clientTransferId).toBe('transfer-1');
+        expect(plan.transferSessionId).toBe('transfer-1-session');
+        expect(plan.accounts).toEqual([
+            {
+                blockchainId: 'near',
+                networkId: 'testnet',
+                accountId: 'alice.testnet',
+                sourcePublicKey: 'ed25519:source-alice.testnet',
+                destinationPublicKey: readyRow('alice.testnet').destinationPublicKey,
+            },
+            {
+                blockchainId: 'near',
+                networkId: 'testnet',
+                accountId: 'bob.testnet',
+                sourcePublicKey: 'ed25519:source-bob.testnet',
+                destinationPublicKey: readyRow('bob.testnet').destinationPublicKey,
+            },
+        ]);
+    });
+
+    it('fails closed when an intent row has no accepted output row to name its key', () => {
+        const session = withSourceKeys(
+            makeSession({
+                accounts: [readyRow('alice.testnet')],
+                addKeyIntentAccounts: [identity('ghost.testnet')],
+            })
+        );
+        expect(resolveNewKeyStartOverPlan({ session })).toEqual({
+            kind: 'refuse_unresolvable',
+        });
+    });
+
+    it('fails closed when the start request no longer names the source key', () => {
+        // The fixture's startRequest has no accounts — the join has nothing to sign with.
+        const session = makeSession({
+            addKeyIntentAccounts: [identity('alice.testnet')],
+        });
+        expect(resolveNewKeyStartOverPlan({ session })).toEqual({
+            kind: 'refuse_unresolvable',
+        });
+    });
+});
+
+describe('start-over refusal copy', () => {
+    it('maps both local refusal codes to their translations', () => {
+        expect(
+            describeNewKeyTransferError(
+                new Error('new_key_transfer_start_over_secured_rows')
+            )
+        ).toEqual({
+            i18nKey: 'newKeyTransfer.error.startOverSecuredRows',
+            code: 'new_key_transfer_start_over_secured_rows',
+            isFenced: false,
+        });
+        expect(
+            describeNewKeyTransferError(
+                new Error('new_key_transfer_start_over_unresolvable')
+            )
+        ).toEqual({
+            i18nKey: 'newKeyTransfer.error.startOverUnresolvable',
+            code: 'new_key_transfer_start_over_unresolvable',
             isFenced: false,
         });
     });

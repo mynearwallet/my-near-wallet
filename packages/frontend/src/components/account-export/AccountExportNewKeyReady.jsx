@@ -14,6 +14,7 @@ import {
     newKeyTransferIssueKey,
 } from '../../services/newKeyTransferState';
 import { trackMigrationActivationRequested } from './accountExportAnalytics';
+import NewKeyTransferStartOverControl from './NewKeyTransferStartOverControl';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const NewKeyReadyPage = styled(Container)`
@@ -264,10 +265,12 @@ export default function AccountExportNewKeyReady() {
                                     {t('newKeyTransfer.ready.finishLater')}
                                 </FormButton>
                             </div>
-                            {/* Once an AddKey intent is journaled the destination key may be
-                                live on-chain — cancelling is no longer an honest offer (MNW-7);
-                                the SDK would refuse it anyway. */}
-                            {!summary.hasAddKeyIntent && (
+                            {/* Before an AddKey intent is journaled, cancelling costs nothing
+                                and clears immediately. Once the intent exists the destination
+                                key may be live on-chain, so the plain discard stays withheld
+                                (MNW-7) — the control below offers the HONEST version instead:
+                                remove the keys with the source signer, then clear. */}
+                            {!summary.hasAddKeyIntent ? (
                                 <div className='secondary'>
                                     <FormButton
                                         className='link'
@@ -278,6 +281,11 @@ export default function AccountExportNewKeyReady() {
                                         {t('newKeyTransfer.ready.cancelTransfer')}
                                     </FormButton>
                                 </div>
+                            ) : (
+                                <NewKeyTransferStartOverControl
+                                    summary={summary}
+                                    disabled={isLeaving}
+                                />
                             )}
                         </>
                     )}

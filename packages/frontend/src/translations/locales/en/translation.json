@@ -1037,6 +1037,8 @@
             "revokeDestinationKeyPresent": "Meteor Wallet’s key is still on the account, so this transfer cannot be closed yet. Remove the key and wait for the NEAR network to confirm it, then try again.",
             "sessionNotFound": "This transfer is no longer available. Start it again from your account list.",
             "sessionNotTerminal": "This transfer still has unfinished accounts and cannot be archived yet.",
+            "startOverSecuredRows": "Some accounts are already secured in Meteor Wallet, so this transfer can no longer be discarded from here. Use Check status to finish it, then archive it — you can remove the accounts in Meteor Wallet afterwards.",
+            "startOverUnresolvable": "This transfer's records are incomplete, so it cannot be safely discarded automatically. Contact support and quote the code below.",
             "startResultConflict": "Another transfer is still recorded on this device. Finish or resolve it before starting a new one.",
             "startResultDiscardFailed": "The transfer record on this device could not be cleared safely, so it was left untouched. Resolve it before starting another transfer.",
             "startResultMissing": "This transfer’s activation record is missing, so it cannot be resumed safely. Start it again from your account list.",
@@ -1136,6 +1138,15 @@
         "showAdvanced": "Show advanced existing-secret transfer",
         "start": "Transfer to Meteor Wallet",
         "starting": "Opening Meteor Wallet…",
+        "startOver": {
+            "confirm": "Remove new keys and start over",
+            "discardPending": "Discard the interrupted transfer and start fresh",
+            "keep": "Keep this transfer",
+            "link": "Cancel this transfer and start over",
+            "removing": "Removing new keys… ({{completed}}/{{total}})",
+            "warningBody": "This removes the new wallet's access key from each account in this transfer, signed with the key you already hold here. Your accounts and existing keys stay exactly as they are. Afterwards you can start a fresh transfer to any wallet.",
+            "warningTitle": "Remove the new keys and start over?"
+        },
         "supportCode": "Support code: {{code}}",
         "supportReference": "Support reference: {{id}}",
         "title": "Transfer to Meteor Wallet"

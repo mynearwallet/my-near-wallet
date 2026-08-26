@@ -923,6 +923,8 @@
             "revokeDestinationKeyPresent": "Meteor Wallet 的密钥仍在该账户上，因此这次转移还不能结束。请移除该密钥，等待 NEAR 网络确认后重试。",
             "sessionNotFound": "本次转移已不可用。请从账户列表重新开始。",
             "sessionNotTerminal": "此转移仍有未完成的账户，暂时无法归档。",
+            "startOverSecuredRows": "部分账户已在 Meteor Wallet 中受到保护，因此无法再从此处放弃此转移。请使用“检查状态”完成转移并归档——之后可以在 Meteor Wallet 中移除这些账户。",
+            "startOverUnresolvable": "此转移的记录不完整，无法安全地自动放弃。请联系支持并提供下方代码。",
             "startResultConflict": "本设备上仍记录着另一次转移。请先完成或处理它，再开始新的转移。",
             "startResultDiscardFailed": "本设备上的转移记录无法被安全清除，因此原样保留。请先处理它，再开始新的转移。",
             "startResultMissing": "本次转移的激活记录缺失，无法安全继续。请从账户列表重新开始。",
@@ -1022,6 +1024,15 @@
         "showAdvanced": "显示使用现有密钥的高级转移",
         "start": "转移到 Meteor Wallet",
         "starting": "正在打开 Meteor Wallet…",
+        "startOver": {
+            "confirm": "移除新密钥并重新开始",
+            "discardPending": "放弃中断的转移并重新开始",
+            "keep": "保留此转移",
+            "link": "取消此转移并重新开始",
+            "removing": "正在移除新密钥…（{{completed}}/{{total}}）",
+            "warningBody": "此操作会使用您在此处已持有的密钥签名，从此转移中的每个账户移除新钱包的访问密钥。您的账户和现有密钥保持不变。之后您可以向任意钱包发起新的转移。",
+            "warningTitle": "移除新密钥并重新开始？"
+        },
         "supportCode": "支持代码：{{code}}",
         "supportReference": "支持编号：{{id}}",
         "title": "转移到 Meteor Wallet"

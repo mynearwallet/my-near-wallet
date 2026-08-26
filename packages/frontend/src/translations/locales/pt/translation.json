@@ -797,6 +797,8 @@
             "revokeDestinationKeyPresent": "A chave da Meteor Wallet ainda está na conta, portanto esta transferência ainda não pode ser encerrada. Remova a chave, aguarde a confirmação da rede NEAR e tente novamente.",
             "sessionNotFound": "Esta transferência não está mais disponível. Inicie-a novamente pela sua lista de contas.",
             "sessionNotTerminal": "Esta transferência ainda tem contas por concluir e ainda não pode ser arquivada.",
+            "startOverSecuredRows": "Algumas contas já estão protegidas na Meteor Wallet, então esta transferência já não pode ser descartada daqui. Use Verificar estado para concluí-la e depois arquive — você pode remover as contas na Meteor Wallet depois.",
+            "startOverUnresolvable": "Os registros desta transferência estão incompletos, então ela não pode ser descartada automaticamente com segurança. Contate o suporte citando o código abaixo.",
             "startResultConflict": "Ainda há outra transferência registrada neste dispositivo. Conclua-a ou resolva-a antes de iniciar uma nova.",
             "startResultDiscardFailed": "O registro da transferência neste dispositivo não pôde ser limpo com segurança e foi mantido intacto. Resolva-o antes de iniciar outra transferência.",
             "startResultMissing": "O registro de ativação desta transferência está ausente, portanto ela não pode ser retomada com segurança. Inicie-a novamente pela sua lista de contas.",
@@ -896,6 +898,15 @@
         "showAdvanced": "Mostrar transferência avançada com chaves existentes",
         "start": "Transferir para a Meteor Wallet",
         "starting": "Abrindo a Meteor Wallet…",
+        "startOver": {
+            "confirm": "Remover as novas chaves e recomeçar",
+            "discardPending": "Descartar a transferência interrompida e começar de novo",
+            "keep": "Manter esta transferência",
+            "link": "Cancelar esta transferência e recomeçar",
+            "removing": "Removendo as novas chaves… ({{completed}}/{{total}})",
+            "warningBody": "Isto remove a chave de acesso da nova carteira de cada conta desta transferência, assinando com a chave que você já guarda aqui. Suas contas e chaves existentes permanecem exatamente como estão. Depois você pode iniciar uma nova transferência para qualquer carteira.",
+            "warningTitle": "Remover as novas chaves e recomeçar?"
+        },
         "supportCode": "Código de suporte: {{code}}",
         "supportReference": "Referência de suporte: {{id}}",
         "title": "Transferir para a Meteor Wallet"

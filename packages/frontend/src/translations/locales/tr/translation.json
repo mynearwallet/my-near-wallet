@@ -774,6 +774,8 @@
             "revokeDestinationKeyPresent": "Meteor Wallet'ın anahtarı hâlâ hesapta, bu yüzden bu aktarım henüz kapatılamaz. Anahtarı kaldırın, NEAR ağının onaylamasını bekleyin ve yeniden deneyin.",
             "sessionNotFound": "Bu aktarım artık kullanılamıyor. Hesap listenizden yeniden başlatın.",
             "sessionNotTerminal": "Bu aktarımda hâlâ tamamlanmamış hesaplar var; henüz arşivlenemez.",
+            "startOverSecuredRows": "Bazı hesaplar Meteor Wallet'ta zaten güvence altına alındı, bu yüzden bu aktarım artık buradan iptal edilemez. Durumu kontrol et ile tamamlayın, sonra arşivleyin — hesapları daha sonra Meteor Wallet'tan kaldırabilirsiniz.",
+            "startOverUnresolvable": "Bu aktarımın kayıtları eksik olduğundan otomatik olarak güvenle iptal edilemez. Aşağıdaki kodu belirterek destek ekibiyle iletişime geçin.",
             "startResultConflict": "Bu cihazda hâlâ başka bir aktarım kayıtlı. Yenisini başlatmadan önce onu tamamlayın veya çözün.",
             "startResultDiscardFailed": "Bu cihazdaki aktarım kaydı güvenli biçimde temizlenemedi ve olduğu gibi bırakıldı. Başka bir aktarım başlatmadan önce çözün.",
             "startResultMissing": "Bu aktarımın etkinleştirme kaydı eksik, bu yüzden güvenle sürdürülemez. Hesap listenizden yeniden başlatın.",
@@ -873,6 +875,15 @@
         "showAdvanced": "Mevcut anahtarla gelişmiş aktarımı göster",
         "start": "Meteor Wallet'a aktar",
         "starting": "Meteor Wallet açılıyor…",
+        "startOver": {
+            "confirm": "Yeni anahtarları kaldır ve baştan başla",
+            "discardPending": "Yarıda kalan aktarımı sil ve yeniden başla",
+            "keep": "Bu aktarımı koru",
+            "link": "Bu aktarımı iptal et ve baştan başla",
+            "removing": "Yeni anahtarlar kaldırılıyor… ({{completed}}/{{total}})",
+            "warningBody": "Bu işlem, bu aktarımdaki her hesaptan yeni cüzdanın erişim anahtarını, burada zaten sahip olduğunuz anahtarla imzalayarak kaldırır. Hesaplarınız ve mevcut anahtarlarınız olduğu gibi kalır. Ardından istediğiniz cüzdana yeni bir aktarım başlatabilirsiniz.",
+            "warningTitle": "Yeni anahtarlar kaldırılıp baştan mı başlansın?"
+        },
         "supportCode": "Destek kodu: {{code}}",
         "supportReference": "Destek referansı: {{id}}",
         "title": "Meteor Wallet'a aktar"

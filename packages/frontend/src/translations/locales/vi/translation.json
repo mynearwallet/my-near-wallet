@@ -755,6 +755,8 @@
             "revokeDestinationKeyPresent": "Khóa của Meteor Wallet vẫn còn trên tài khoản, nên chưa thể đóng phiên chuyển này. Hãy gỡ khóa, chờ mạng NEAR xác nhận rồi thử lại.",
             "sessionNotFound": "Phiên chuyển này không còn khả dụng. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
             "sessionNotTerminal": "Lần chuyển này vẫn còn tài khoản chưa hoàn tất nên chưa thể lưu trữ.",
+            "startOverSecuredRows": "Một số tài khoản đã được bảo vệ trong Meteor Wallet, nên không thể hủy lần chuyển này từ đây nữa. Dùng Kiểm tra trạng thái để hoàn tất, sau đó lưu trữ — bạn có thể xóa các tài khoản trong Meteor Wallet sau.",
+            "startOverUnresolvable": "Hồ sơ của lần chuyển này không đầy đủ nên không thể hủy tự động một cách an toàn. Hãy liên hệ hỗ trợ và cung cấp mã bên dưới.",
             "startResultConflict": "Trên thiết bị này vẫn còn một phiên chuyển khác. Hãy hoàn tất hoặc xử lý nó trước khi bắt đầu phiên mới.",
             "startResultDiscardFailed": "Không thể xóa an toàn bản ghi phiên chuyển trên thiết bị này nên nó được giữ nguyên. Hãy xử lý trước khi bắt đầu phiên chuyển khác.",
             "startResultMissing": "Bản ghi kích hoạt của phiên chuyển này bị thiếu nên không thể tiếp tục an toàn. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
@@ -854,6 +856,15 @@
         "showAdvanced": "Hiện cách chuyển nâng cao bằng khóa hiện có",
         "start": "Chuyển sang Meteor Wallet",
         "starting": "Đang mở Meteor Wallet…",
+        "startOver": {
+            "confirm": "Xóa các khóa mới và bắt đầu lại",
+            "discardPending": "Bỏ lần chuyển bị gián đoạn và bắt đầu lại từ đầu",
+            "keep": "Giữ lần chuyển này",
+            "link": "Hủy lần chuyển này và bắt đầu lại",
+            "removing": "Đang xóa các khóa mới… ({{completed}}/{{total}})",
+            "warningBody": "Thao tác này xóa khóa truy cập của ví mới khỏi từng tài khoản trong lần chuyển này, được ký bằng khóa bạn đang giữ tại đây. Tài khoản và các khóa hiện có của bạn được giữ nguyên. Sau đó bạn có thể bắt đầu một lần chuyển mới sang bất kỳ ví nào.",
+            "warningTitle": "Xóa các khóa mới và bắt đầu lại?"
+        },
         "supportCode": "Mã hỗ trợ: {{code}}",
         "supportReference": "Mã tham chiếu hỗ trợ: {{id}}",
         "title": "Chuyển sang Meteor Wallet"

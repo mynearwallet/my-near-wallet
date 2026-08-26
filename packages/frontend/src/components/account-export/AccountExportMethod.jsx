@@ -9,6 +9,7 @@ import {
     meteorNetworkId,
     // promptMeteorAccountTransfer,
     startMeteorNewKeyAccountTransfer,
+    startOverMeteorNewKeyTransfer,
 } from '../../services/meteorConnect';
 import {
     describeNewKeyTransferError,
@@ -137,6 +138,11 @@ const MethodButton = styled.button`
             color: #5380f5;
         }
     }
+`;
+
+const DiscardPendingRow = styled.div`
+    margin-top: 8px;
+    text-align: center;
 `;
 
 const DestinationChoice = styled.div`
@@ -288,6 +294,32 @@ export default function AccountExportMethod() {
     const [hasInterruptedStart, setHasInterruptedStart] = useState(() =>
         hasPendingMeteorNewKeyStart()
     );
+
+    /**
+     * Drop the interrupted attempt entirely — stash, wallet-side session, and any crash-window
+     * start result — so the next click starts a genuinely fresh transfer to whatever destination
+     * is selected. (Merely selecting different accounts or a different destination also starts
+     * fresh — the replay is fingerprint-matched — but the user should never have to know that.)
+     */
+    const discardInterruptedStart = async () => {
+        setIsExporting(true);
+        setErrorMessage('');
+        setErrorCode('');
+        setIsFencedError(false);
+        try {
+            await startOverMeteorNewKeyTransfer();
+        } catch (error) {
+            const { i18nKey, fallback, code, isFenced } =
+                describeNewKeyTransferError(error);
+            setErrorMessage(
+                i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError')
+            );
+            setErrorCode(code);
+            setIsFencedError(isFenced);
+        }
+        setHasInterruptedStart(hasPendingMeteorNewKeyStart());
+        setIsExporting(false);
+    };
 
     const handleNewKeyTransfer = async () => {
         trackMigrationMethodSelected('new_key', accountIds);
@@ -443,6 +475,19 @@ export default function AccountExportMethod() {
                         </span>
                     </MethodButton>
                 </MethodList>
+
+                {hasInterruptedStart && (
+                    <DiscardPendingRow>
+                        <FormButton
+                            className='link'
+                            color='red'
+                            disabled={isExporting}
+                            onClick={() => void discardInterruptedStart()}
+                        >
+                            {t('newKeyTransfer.startOver.discardPending')}
+                        </FormButton>
+                    </DiscardPendingRow>
+                )}
 
                 <DestinationChoice>
                     <div className='destination-heading'>
