@@ -131,7 +131,7 @@
     },
     "accountExport": {
         "banner": {
-            "description": "A MyNearWallet está sendo descontinuada. Exporte suas contas para continuar acessando-as com segurança.",
+            "description": "A MyNearWallet está sendo descontinuada e será totalmente encerrada até o fim de 2026. Migre suas contas para a Meteor Wallet para continuar acessando-as com segurança.",
             "export": "Exportar contas",
             "resume": "Retomar a transferência de contas",
             "title": "A MyNearWallet está sendo descontinuada"
@@ -145,8 +145,11 @@
             "accountLabel": "Conta {{index}}",
             "back": "Voltar",
             "backToWallet": "Voltar para a carteira",
+            "copy": "Copiar",
             "credentialsFailed": "A MyNearWallet não conseguiu carregar as credenciais das suas contas.",
+            "loadingCredentials": "Carregando credenciais…",
             "privateKeyLabel": "Chave privada",
+            "reveal": "Revelar",
             "subtitle": "Revele e copie a chave privada das contas selecionadas.",
             "title": "Exportar manualmente",
             "warning": "Mantenha estas informações privadas. Qualquer pessoa com acesso a estas credenciais pode acessar e controlar suas contas."
@@ -167,7 +170,8 @@
             "cancel": "Cancelar",
             "checking": "Verificando suas contas…",
             "exportSelected": "Exportar contas selecionadas",
-            "subtitle": "Revise as contas que serão exportadas com segurança.",
+            "sharedRecoveryPhraseWarning": "Todas as contas selecionadas usarão uma única frase de recuperação compartilhada na Meteor Wallet.",
+            "subtitle": "Selecione e revise as contas que deseja exportar.",
             "title": "Exportar contas"
         },
         "success": {
@@ -723,21 +727,24 @@
             "keep": "Manter por enquanto",
             "listTitle": "Contas protegidas",
             "loadingTitle": "Estado da transferência",
+            "removalRisk": "Remover uma chave de acesso total é uma ação de alto risco. Faça isso somente depois de confirmar que suas contas foram migradas.",
+            "removalWarning": "Depois de confirmar o acesso às suas contas, você pode remover as chaves de acesso antigas diretamente na Meteor Wallet.",
             "remove": "Remover contas da MyNearWallet",
             "sourceKeyRemoved": "Chaves antigas já removidas através da Meteor Wallet: {{count}}",
-            "subtitle": "Todas as contas estão protegidas: a Meteor Wallet comprovou cada nova chave on-chain, confirmou integralmente a frase de recuperação e importou a conta. Confirme que consegue aceder às suas contas na Meteor Wallet antes de remover algo aqui.",
+            "subtitle": "Todas as contas estão protegidas. A Meteor Wallet verificou cada nova chave on-chain, confirmou a frase de recuperação e importou suas contas com sucesso.",
             "title": "Contas protegidas na Meteor Wallet",
             "unconfirmedTitle": "Ainda a ser protegidas"
         },
         "activation": {
+            "activatedStatusTitle": "Contas ativadas",
+            "activatedTitle": "Chaves da Meteor ativadas",
             "cancel": "Voltar para minha carteira",
             "checkStatus": "Verificar estado",
             "finishLater": "Concluir mais tarde",
-            "keepOpen": "Mantenha esta página aberta até que todas as contas estejam confirmadas.",
             "progress": "{{completed}} de {{total}} concluídas",
             "retry": "Tentar novamente",
             "statusTitle": "Status das contas",
-            "subtitle": "As novas chaves da Meteor estão sendo adicionadas às contas selecionadas.",
+            "subtitle": "As novas chaves da Meteor estão sendo adicionadas às contas selecionadas. Mantenha esta página aberta até que todas as contas estejam confirmadas.",
             "title": "Ativando as chaves da Meteor",
             "verifyKeys": "Verificar chaves",
             "viewSecured": "Ver contas protegidas ({{count}})"
@@ -844,20 +851,27 @@
             "importIncomplete": "A Meteor Wallet ainda está a concluir a importação desta conta. Use Verificar estado daqui a pouco.",
             "livenessCheckFailed": "A transação de teste da Meteor Wallet para esta conta falhou. Use Verificar estado para tentar novamente."
         },
+        "progressLabel": "Progresso da transferência de contas",
+        "progressSteps": {
+            "activated": "Verificar chaves",
+            "activating": "Ativar chaves",
+            "ready": "Início",
+            "secured": "Concluído"
+        },
         "ready": {
             "acceptedTitle": "Contas prontas para ativação",
             "activate": "Ativar as novas chaves",
             "cancel": "Voltar para minha carteira",
             "cancelTransfer": "Cancelar esta transferência",
-            "explainer": "A ativação adiciona a nova chave da Meteor a cada conta na blockchain NEAR. Suas chaves atuais nunca são enviadas a lugar nenhum e continuam funcionando até que você decida removê-las.",
             "finishLater": "Concluir mais tarde",
             "noneSubtitle": "A Meteor Wallet não conseguiu preparar nenhuma das contas selecionadas. Resolva os motivos abaixo e tente novamente.",
             "noneTitle": "Nenhuma conta pôde ser preparada",
             "refusedTitle": "Não incluídas nesta transferência",
             "startOver": "Voltar para a seleção de contas",
-            "subtitle": "A Meteor Wallet criou uma nova chave de acesso para cada conta abaixo. Ative-as para concluir a transferência.",
+            "subtitle": "A Meteor Wallet criou uma nova chave de acesso para cada conta abaixo. A ativação adiciona a nova chave da Meteor a cada conta na blockchain NEAR. Suas chaves existentes nunca são enviadas e continuam funcionando até que você escolha removê-las.",
             "title": "As chaves da Meteor estão prontas"
         },
+        "recommended": "Recomendado",
         "recovery": {
             "archive": "Encerrar este registro",
             "archiveRefused": "A chave da Meteor Wallet ainda está na conta. Aguarde a blockchain NEAR confirmar a remoção e tente novamente.",

@@ -119,7 +119,7 @@
     },
     "accountExport": {
         "banner": {
-            "description": "MyNearWallet đang được ngừng hoạt động. Hãy xuất các tài khoản của bạn để tiếp tục truy cập chúng một cách an toàn.",
+            "description": "MyNearWallet đang dần ngừng hoạt động và sẽ đóng hoàn toàn vào cuối năm 2026. Hãy chuyển tài khoản sang Meteor Wallet để tiếp tục truy cập an toàn.",
             "export": "Xuất tài khoản",
             "resume": "Tiếp tục chuyển tài khoản",
             "title": "MyNearWallet sắp ngừng hoạt động"
@@ -133,8 +133,11 @@
             "accountLabel": "Tài khoản {{index}}",
             "back": "Quay lại",
             "backToWallet": "Quay lại ví",
+            "copy": "Sao chép",
             "credentialsFailed": "MyNearWallet không tải được thông tin đăng nhập tài khoản của bạn.",
+            "loadingCredentials": "Đang tải thông tin đăng nhập…",
             "privateKeyLabel": "Khóa riêng tư",
+            "reveal": "Hiển thị",
             "subtitle": "Hiện và sao chép khóa riêng tư của các tài khoản bạn đã chọn.",
             "title": "Xuất thủ công",
             "warning": "Hãy giữ kín thông tin này. Bất kỳ ai có được các thông tin này đều có thể truy cập và kiểm soát tài khoản của bạn."
@@ -155,7 +158,8 @@
             "cancel": "Hủy",
             "checking": "Đang kiểm tra tài khoản của bạn…",
             "exportSelected": "Xuất các tài khoản đã chọn",
-            "subtitle": "Xem lại các tài khoản sẽ được xuất một cách an toàn.",
+            "sharedRecoveryPhraseWarning": "Tất cả tài khoản đã chọn sẽ dùng chung một cụm từ khôi phục trong Meteor Wallet.",
+            "subtitle": "Chọn và xem lại các tài khoản bạn muốn xuất.",
             "title": "Xuất tài khoản"
         },
         "success": {
@@ -681,21 +685,24 @@
             "keep": "Tạm giữ lại",
             "listTitle": "Tài khoản đã bảo đảm",
             "loadingTitle": "Trạng thái chuyển",
+            "removalRisk": "Gỡ khóa toàn quyền là một thao tác có rủi ro cao. Chỉ thực hiện sau khi xác nhận rằng các tài khoản của bạn đã được chuyển.",
+            "removalWarning": "Sau khi xác nhận có thể truy cập các tài khoản, bạn có thể gỡ các khóa truy cập cũ trực tiếp trong Meteor Wallet.",
             "remove": "Gỡ tài khoản khỏi MyNearWallet",
             "sourceKeyRemoved": "Khóa cũ đã được gỡ qua Meteor Wallet: {{count}}",
-            "subtitle": "Mọi tài khoản đã được bảo đảm: Meteor Wallet đã chứng minh từng khóa mới trên chuỗi, xác nhận đầy đủ cụm từ khôi phục và nhập tài khoản. Hãy kiểm tra bạn có thể truy cập tài khoản trong Meteor Wallet trước khi gỡ bất cứ thứ gì ở đây.",
+            "subtitle": "Mọi tài khoản đều đã được bảo đảm. Meteor Wallet đã xác minh từng khóa mới trên chuỗi, xác nhận cụm từ khôi phục và nhập thành công các tài khoản của bạn.",
             "title": "Tài khoản đã được bảo đảm trong Meteor Wallet",
             "unconfirmedTitle": "Vẫn đang được bảo đảm"
         },
         "activation": {
+            "activatedStatusTitle": "Tài khoản đã kích hoạt",
+            "activatedTitle": "Khóa Meteor đã được kích hoạt",
             "cancel": "Quay lại ví của tôi",
             "checkStatus": "Kiểm tra trạng thái",
             "finishLater": "Hoàn tất sau",
-            "keepOpen": "Hãy giữ trang này mở cho tới khi mọi tài khoản được xác nhận.",
             "progress": "Đã xong {{completed}}/{{total}}",
             "retry": "Thử lại",
             "statusTitle": "Trạng thái tài khoản",
-            "subtitle": "Các khóa Meteor mới đang được thêm vào những tài khoản bạn đã chọn.",
+            "subtitle": "Các khóa Meteor mới đang được thêm vào những tài khoản bạn đã chọn. Hãy giữ trang này mở cho tới khi mọi tài khoản được xác nhận.",
             "title": "Đang kích hoạt khóa Meteor",
             "verifyKeys": "Xác minh khóa",
             "viewSecured": "Xem các tài khoản đã bảo đảm ({{count}})"
@@ -802,20 +809,27 @@
             "importIncomplete": "Meteor Wallet vẫn đang hoàn tất việc nhập tài khoản này. Hãy dùng Kiểm tra trạng thái sau giây lát.",
             "livenessCheckFailed": "Giao dịch thử của Meteor Wallet cho tài khoản này đã thất bại. Hãy dùng Kiểm tra trạng thái để thử lại."
         },
+        "progressLabel": "Tiến trình chuyển tài khoản",
+        "progressSteps": {
+            "activated": "Xác minh khóa",
+            "activating": "Kích hoạt khóa",
+            "ready": "Bắt đầu",
+            "secured": "Hoàn tất"
+        },
         "ready": {
             "acceptedTitle": "Tài khoản sẵn sàng kích hoạt",
             "activate": "Kích hoạt khóa mới",
             "cancel": "Quay lại ví của tôi",
             "cancelTransfer": "Hủy lần chuyển này",
-            "explainer": "Kích hoạt sẽ thêm khóa mới của Meteor vào từng tài khoản trên chuỗi khối NEAR. Các khóa hiện có của bạn không được gửi đi đâu cả và vẫn hoạt động cho tới khi bạn chọn gỡ bỏ chúng.",
             "finishLater": "Hoàn tất sau",
             "noneSubtitle": "Meteor Wallet không chuẩn bị được tài khoản nào trong số đã chọn. Hãy xử lý các lý do bên dưới rồi thử lại.",
             "noneTitle": "Không chuẩn bị được tài khoản nào",
             "refusedTitle": "Không nằm trong phiên chuyển này",
             "startOver": "Quay lại chọn tài khoản",
-            "subtitle": "Meteor Wallet đã tạo một khóa truy cập mới cho từng tài khoản bên dưới. Hãy kích hoạt để hoàn tất việc chuyển.",
+            "subtitle": "Meteor Wallet đã tạo một khóa truy cập mới cho từng tài khoản bên dưới. Việc kích hoạt sẽ thêm khóa mới của Meteor vào từng tài khoản trên chuỗi khối NEAR. Các khóa hiện có của bạn không bao giờ được gửi đi và vẫn hoạt động cho tới khi bạn chọn gỡ bỏ chúng.",
             "title": "Khóa Meteor đã sẵn sàng"
         },
+        "recommended": "Được đề xuất",
         "recovery": {
             "archive": "Đóng bản ghi này",
             "archiveRefused": "Khóa của Meteor Wallet vẫn còn trên tài khoản. Hãy chờ chuỗi khối NEAR xác nhận việc gỡ rồi thử lại.",

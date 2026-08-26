@@ -126,7 +126,7 @@
     },
     "accountExport": {
         "banner": {
-            "description": "MyNearWallet sta per essere dismesso. Esporta i tuoi account per continuare ad accedervi in sicurezza.",
+            "description": "MyNearWallet è in fase di dismissione e verrà completamente chiuso entro la fine del 2026. Migra i tuoi account a Meteor Wallet per continuare ad accedervi in sicurezza.",
             "export": "Esporta gli account",
             "resume": "Riprendi il trasferimento degli account",
             "title": "MyNearWallet sta chiudendo"
@@ -140,8 +140,11 @@
             "accountLabel": "Account {{index}}",
             "back": "Indietro",
             "backToWallet": "Torna al wallet",
+            "copy": "Copia",
             "credentialsFailed": "MyNearWallet non è riuscito a caricare le credenziali dei tuoi account.",
+            "loadingCredentials": "Caricamento credenziali…",
             "privateKeyLabel": "Chiave privata",
+            "reveal": "Mostra",
             "subtitle": "Rivela e copia la chiave privata degli account selezionati.",
             "title": "Esporta manualmente",
             "warning": "Mantieni riservate queste informazioni. Chiunque abbia accesso a queste credenziali può accedere ai tuoi account e controllarli."
@@ -162,7 +165,8 @@
             "cancel": "Annulla",
             "checking": "Verifica dei tuoi account…",
             "exportSelected": "Esporta gli account selezionati",
-            "subtitle": "Controlla gli account che verranno esportati in modo sicuro.",
+            "sharedRecoveryPhraseWarning": "Tutti gli account selezionati useranno un'unica frase di recupero condivisa in Meteor Wallet.",
+            "subtitle": "Seleziona e controlla gli account che vuoi esportare.",
             "title": "Esporta gli account"
         },
         "success": {
@@ -748,21 +752,24 @@
             "keep": "Mantienili per ora",
             "listTitle": "Account protetti",
             "loadingTitle": "Stato del trasferimento",
+            "removalRisk": "La rimozione di una chiave ad accesso completo è un'operazione ad alto rischio. Fallo solo dopo aver confermato che i tuoi account sono stati migrati.",
+            "removalWarning": "Dopo aver confermato l'accesso ai tuoi account, puoi rimuovere le vecchie chiavi di accesso direttamente in Meteor Wallet.",
             "remove": "Rimuovi gli account da MyNearWallet",
             "sourceKeyRemoved": "Vecchie chiavi già rimosse tramite Meteor Wallet: {{count}}",
-            "subtitle": "Tutti gli account sono protetti: Meteor Wallet ha verificato ogni nuova chiave on-chain, confermato per intero la frase di recupero e importato l'account. Verifica di poter accedere ai tuoi account in Meteor Wallet prima di rimuovere qualcosa qui.",
+            "subtitle": "Tutti gli account sono protetti. Meteor Wallet ha verificato ogni nuova chiave on-chain, confermato la frase di recupero e importato correttamente i tuoi account.",
             "title": "Account protetti in Meteor Wallet",
             "unconfirmedTitle": "Ancora in fase di protezione"
         },
         "activation": {
+            "activatedStatusTitle": "Account attivati",
+            "activatedTitle": "Chiavi Meteor attivate",
             "cancel": "Torna al mio wallet",
             "checkStatus": "Verifica stato",
             "finishLater": "Continua più tardi",
-            "keepOpen": "Tieni aperta questa pagina finché tutti gli account non sono confermati.",
             "progress": "{{completed}} di {{total}} completati",
             "retry": "Riprova",
             "statusTitle": "Stato degli account",
-            "subtitle": "Le nuove chiavi Meteor vengono aggiunte agli account selezionati.",
+            "subtitle": "Le nuove chiavi Meteor vengono aggiunte agli account selezionati. Tieni aperta questa pagina finché tutti gli account non sono confermati.",
             "title": "Attivazione delle chiavi Meteor",
             "verifyKeys": "Verifica chiavi",
             "viewSecured": "Vedi gli account protetti ({{count}})"
@@ -869,20 +876,27 @@
             "importIncomplete": "Meteor Wallet sta ancora completando l'importazione di questo account. Usa Verifica stato tra poco.",
             "livenessCheckFailed": "La transazione di prova di Meteor Wallet per questo account non è riuscita. Usa Verifica stato per riprovare."
         },
+        "progressLabel": "Avanzamento del trasferimento degli account",
+        "progressSteps": {
+            "activated": "Verifica chiavi",
+            "activating": "Attiva chiavi",
+            "ready": "Inizio",
+            "secured": "Fine"
+        },
         "ready": {
             "acceptedTitle": "Account pronti per l’attivazione",
             "activate": "Attiva le nuove chiavi",
             "cancel": "Torna al mio wallet",
             "cancelTransfer": "Annulla questo trasferimento",
-            "explainer": "L’attivazione aggiunge la nuova chiave di Meteor a ogni account sulla blockchain NEAR. Le tue chiavi attuali non vengono inviate da nessuna parte e continuano a funzionare finché non decidi tu di rimuoverle.",
             "finishLater": "Continua più tardi",
             "noneSubtitle": "Meteor Wallet non è riuscito a preparare nessuno degli account selezionati. Risolvi i motivi indicati qui sotto e riprova.",
             "noneTitle": "Nessun account è stato preparato",
             "refusedTitle": "Non inclusi in questo trasferimento",
             "startOver": "Torna alla selezione degli account",
-            "subtitle": "Meteor Wallet ha creato una nuova chiave di accesso per ciascuno degli account qui sotto. Attivale per completare il trasferimento.",
+            "subtitle": "Meteor Wallet ha creato una nuova chiave di accesso per ciascun account qui sotto. L'attivazione aggiunge la nuova chiave di Meteor a ogni account sulla blockchain NEAR. Le tue chiavi esistenti non vengono mai inviate e continuano a funzionare finché non scegli di rimuoverle.",
             "title": "Le chiavi Meteor sono pronte"
         },
+        "recommended": "Consigliato",
         "recovery": {
             "archive": "Chiudi questo registro",
             "archiveRefused": "La chiave di Meteor Wallet è ancora sull’account. Attendi che la blockchain NEAR confermi la rimozione e riprova.",

@@ -149,8 +149,11 @@
             "accountLabel": "Account {{index}}",
             "back": "Back",
             "backToWallet": "Back to wallet",
+            "copy": "Copy",
             "credentialsFailed": "MyNearWallet could not load your account credentials.",
+            "loadingCredentials": "Loading credentials…",
             "privateKeyLabel": "Private key",
+            "reveal": "Reveal",
             "subtitle": "Reveal and copy the private key for your selected accounts.",
             "title": "Export Manually",
             "warning": "Keep this information private. Anyone with access to these credentials can access and control your accounts."

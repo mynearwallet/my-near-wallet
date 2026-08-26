@@ -173,8 +173,9 @@ const CredentialRow = ({
     onCopy,
     onToggle,
 }) => {
+    const { t } = useTranslation();
     const canCopy = isCopyable && Boolean(copyValue) && !isLoading;
-    const displayValue = isLoading ? 'Loading credentials…' : value;
+    const displayValue = isLoading ? t('accountExport.manual.loadingCredentials') : value;
 
     return (
         <Credential>
@@ -183,10 +184,10 @@ const CredentialRow = ({
                 {canCopy ? (
                     <CopyControl copy={copyValue} onClick={onCopy}>
                         <CopyIcon />
-                        Copy
+                        {t('accountExport.manual.copy')}
                     </CopyControl>
                 ) : (
-                    <UnavailableCopy>Copy</UnavailableCopy>
+                    <UnavailableCopy>{t('accountExport.manual.copy')}</UnavailableCopy>
                 )}
             </CredentialHeader>
             <CredentialValue
@@ -212,7 +213,7 @@ const CredentialRow = ({
                                 strokeWidth='2'
                             />
                         </svg>
-                        Reveal
+                        {t('accountExport.manual.reveal')}
                     </RevealOverlay>
                 )}
             </CredentialValue>

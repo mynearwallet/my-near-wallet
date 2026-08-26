@@ -135,7 +135,7 @@
     },
     "accountExport": {
         "banner": {
-            "description": "MyNearWallet 即将停止服务。请导出你的账户，以便继续安全地使用它们。",
+            "description": "MyNearWallet 正在逐步停止服务，并将于 2026 年底前全面关闭。请将账户迁移到 Meteor Wallet，以继续安全访问。",
             "export": "导出账户",
             "resume": "继续账户转移",
             "title": "MyNearWallet 即将停止服务"
@@ -149,8 +149,11 @@
             "accountLabel": "账户 {{index}}",
             "back": "返回",
             "backToWallet": "返回钱包",
+            "copy": "复制",
             "credentialsFailed": "MyNearWallet 无法加载你的账户凭据。",
+            "loadingCredentials": "正在加载凭据…",
             "privateKeyLabel": "私钥",
+            "reveal": "显示",
             "subtitle": "显示并复制所选账户的私钥。",
             "title": "手动导出",
             "warning": "请妥善保管这些信息。任何拿到这些凭据的人都能访问并控制你的账户。"
@@ -171,7 +174,8 @@
             "cancel": "取消",
             "checking": "正在检查你的账户…",
             "exportSelected": "导出所选账户",
-            "subtitle": "请确认将被安全导出的账户。",
+            "sharedRecoveryPhraseWarning": "所有选定账户将在 Meteor Wallet 中共用一个恢复短语。",
+            "subtitle": "请选择并检查要导出的账户。",
             "title": "导出账户"
         },
         "success": {
@@ -849,21 +853,24 @@
             "keep": "暂时保留",
             "listTitle": "已妥善保管的账户",
             "loadingTitle": "转移状态",
+            "removalRisk": "移除完全访问密钥属于高风险操作。请仅在确认账户已完成迁移后执行。",
+            "removalWarning": "确认可以访问账户后，你可以直接在 Meteor Wallet 中移除旧的访问密钥。",
             "remove": "从 MyNearWallet 移除账户",
             "sourceKeyRemoved": "已通过 Meteor Wallet 移除的旧密钥：{{count}}",
-            "subtitle": "每个账户都已妥善保管：Meteor Wallet 已在链上证明每个新密钥、完整确认其恢复短语并导入账户。在此处移除任何内容之前，请先确认您能在 Meteor Wallet 中访问您的账户。",
+            "subtitle": "所有账户都已受到保护。Meteor Wallet 已在链上验证每个新密钥、确认恢复短语，并成功导入你的账户。",
             "title": "账户已在 Meteor Wallet 中妥善保管",
             "unconfirmedTitle": "仍在保管中"
         },
         "activation": {
+            "activatedStatusTitle": "已激活账户",
+            "activatedTitle": "Meteor 密钥已激活",
             "cancel": "返回我的钱包",
             "checkStatus": "检查状态",
             "finishLater": "稍后完成",
-            "keepOpen": "在所有账户确认完成前，请保持本页面打开。",
             "progress": "已完成 {{completed}} / {{total}}",
             "retry": "重试",
             "statusTitle": "账户状态",
-            "subtitle": "正在把新的 Meteor 密钥添加到你选择的账户。",
+            "subtitle": "正在把新的 Meteor 密钥添加到你选择的账户。在所有账户确认完成前，请保持本页面打开。",
             "title": "正在激活 Meteor 密钥",
             "verifyKeys": "验证密钥",
             "viewSecured": "查看已妥善保管的账户（{{count}}）"
@@ -970,20 +977,27 @@
             "importIncomplete": "Meteor Wallet 仍在完成此账户的导入。请稍后使用“检查状态”。",
             "livenessCheckFailed": "Meteor Wallet 对此账户的测试交易失败。请使用“检查状态”重试。"
         },
+        "progressLabel": "账户转移进度",
+        "progressSteps": {
+            "activated": "验证密钥",
+            "activating": "激活密钥",
+            "ready": "开始",
+            "secured": "完成"
+        },
         "ready": {
             "acceptedTitle": "可激活的账户",
             "activate": "激活新密钥",
             "cancel": "返回我的钱包",
             "cancelTransfer": "取消此转移",
-            "explainer": "激活会把 Meteor 的新密钥添加到 NEAR 区块链上的每个账户。你现有的密钥不会被发送到任何地方，并会一直有效，直到你自己选择移除它们。",
             "finishLater": "稍后完成",
             "noneSubtitle": "Meteor Wallet 无法准备你选择的任何账户。请解决下方列出的原因后重试。",
             "noneTitle": "没有账户可以准备",
             "refusedTitle": "未包含在本次转移中",
             "startOver": "返回账户选择",
-            "subtitle": "Meteor Wallet 已为下列每个账户创建了一把新的访问密钥。激活它们即可完成转移。",
+            "subtitle": "Meteor Wallet 已为下列每个账户创建了一把新的访问密钥。激活会把 Meteor 的新密钥添加到 NEAR 区块链上的每个账户。你现有的密钥绝不会被发送到任何地方，并会一直有效，直到你选择移除它们。",
             "title": "Meteor 密钥已就绪"
         },
+        "recommended": "推荐",
         "recovery": {
             "archive": "关闭这条记录",
             "archiveRefused": "Meteor Wallet 的密钥仍在该账户上。请等待 NEAR 区块链确认移除后重试。",

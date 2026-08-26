@@ -135,7 +135,7 @@
     },
     "accountExport": {
         "banner": {
-            "description": "MyNearWallet 即將停止服務。請導出你的賬戶，以便繼續安全地使用它們。",
+            "description": "MyNearWallet 正在逐步停止服務，並將於 2026 年底前全面關閉。請將帳戶遷移到 Meteor Wallet，以繼續安全存取。",
             "export": "導出賬戶",
             "resume": "繼續賬戶轉移",
             "title": "MyNearWallet 即將停止服務"
@@ -149,8 +149,11 @@
             "accountLabel": "賬戶 {{index}}",
             "back": "返回",
             "backToWallet": "返回錢包",
+            "copy": "複製",
             "credentialsFailed": "MyNearWallet 無法加載你的賬戶凭據。",
+            "loadingCredentials": "正在載入憑證…",
             "privateKeyLabel": "私鑰",
+            "reveal": "顯示",
             "subtitle": "顯示並復製所選賬戶的私鑰。",
             "title": "手動導出",
             "warning": "請妥善保管這些信息。任何拿到這些凭據的人都能訪問並控製你的賬戶。"
@@ -171,7 +174,8 @@
             "cancel": "取消",
             "checking": "正在檢查你的賬戶…",
             "exportSelected": "導出所選賬戶",
-            "subtitle": "請確認將被安全導出的賬戶。",
+            "sharedRecoveryPhraseWarning": "所有選定帳戶將在 Meteor Wallet 中共用一個復原字詞。",
+            "subtitle": "請選擇並檢查要匯出的帳戶。",
             "title": "導出賬戶"
         },
         "success": {
@@ -849,21 +853,24 @@
             "keep": "暫時保留",
             "listTitle": "已妥善保管的帳戶",
             "loadingTitle": "轉移狀態",
+            "removalRisk": "移除完全存取金鑰屬於高風險操作。請僅在確認帳戶已完成遷移後執行。",
+            "removalWarning": "確認可以存取帳戶後，你可以直接在 Meteor Wallet 中移除舊的存取金鑰。",
             "remove": "從 MyNearWallet 移除賬戶",
             "sourceKeyRemoved": "已透過 Meteor Wallet 移除的舊金鑰：{{count}}",
-            "subtitle": "每個帳戶都已妥善保管：Meteor Wallet 已在鏈上證明每個新金鑰、完整確認其復原字詞並匯入帳戶。在此處移除任何內容之前，請先確認您能在 Meteor Wallet 中存取您的帳戶。",
+            "subtitle": "所有帳戶都已受到保護。Meteor Wallet 已在鏈上驗證每個新金鑰、確認復原字詞，並成功匯入你的帳戶。",
             "title": "帳戶已在 Meteor Wallet 中妥善保管",
             "unconfirmedTitle": "仍在保管中"
         },
         "activation": {
+            "activatedStatusTitle": "已啟用帳戶",
+            "activatedTitle": "Meteor 金鑰已啟用",
             "cancel": "返回我的錢包",
             "checkStatus": "檢查狀態",
             "finishLater": "稍後完成",
-            "keepOpen": "在所有賬戶確認完成前，請保持本頁面打開。",
             "progress": "已完成 {{completed}} / {{total}}",
             "retry": "重試",
             "statusTitle": "賬戶狀態",
-            "subtitle": "正在把新的 Meteor 密鑰添加到你選擇的賬戶。",
+            "subtitle": "正在把新的 Meteor 金鑰新增到你選擇的帳戶。在所有帳戶確認完成前，請保持本頁面開啟。",
             "title": "正在激活 Meteor 密鑰",
             "verifyKeys": "驗證密鑰",
             "viewSecured": "查看已妥善保管的帳戶（{{count}}）"
@@ -970,20 +977,27 @@
             "importIncomplete": "Meteor Wallet 仍在完成此帳戶的匯入。請稍後使用「檢查狀態」。",
             "livenessCheckFailed": "Meteor Wallet 對此帳戶的測試交易失敗。請使用「檢查狀態」重試。"
         },
+        "progressLabel": "帳戶轉移進度",
+        "progressSteps": {
+            "activated": "驗證金鑰",
+            "activating": "啟用金鑰",
+            "ready": "開始",
+            "secured": "完成"
+        },
         "ready": {
             "acceptedTitle": "可激活的賬戶",
             "activate": "激活新密鑰",
             "cancel": "返回我的錢包",
             "cancelTransfer": "取消此轉移",
-            "explainer": "激活會把 Meteor 的新密鑰添加到 NEAR 區塊鏈上的每個賬戶。你現有的密鑰不會被發送到任何地方，並會一直有效，直到你自己選擇移除它們。",
             "finishLater": "稍後完成",
             "noneSubtitle": "Meteor Wallet 無法準備你選擇的任何賬戶。請解決下方列出的原因後重試。",
             "noneTitle": "沒有賬戶可以準備",
             "refusedTitle": "未包含在本次轉移中",
             "startOver": "返回賬戶選擇",
-            "subtitle": "Meteor Wallet 已為下列每個賬戶創立了一把新的訪問密鑰。激活它們即可完成轉移。",
+            "subtitle": "Meteor Wallet 已為下列每個帳戶建立一把新的存取金鑰。啟用會把 Meteor 的新金鑰新增到 NEAR 區塊鏈上的每個帳戶。你現有的金鑰絕不會被傳送到任何地方，並會一直有效，直到你選擇移除它們。",
             "title": "Meteor 密鑰已就绪"
         },
+        "recommended": "推薦",
         "recovery": {
             "archive": "關閉這條記錄",
             "archiveRefused": "Meteor Wallet 的密鑰仍在該賬戶上。請等待 NEAR 區塊鏈確認移除後重試。",

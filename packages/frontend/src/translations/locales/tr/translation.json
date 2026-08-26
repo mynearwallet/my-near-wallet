@@ -112,7 +112,7 @@
     },
     "accountExport": {
         "banner": {
-            "description": "MyNearWallet kapatılıyor. Hesaplarınıza güvenle erişmeye devam etmek için onları dışa aktarın.",
+            "description": "MyNearWallet aşamalı olarak kullanımdan kaldırılıyor ve 2026 sonuna kadar tamamen kapatılacak. Hesaplarınıza güvenle erişmeye devam etmek için onları Meteor Wallet'a taşıyın.",
             "export": "Hesapları dışa aktar",
             "resume": "Hesap aktarımına devam et",
             "title": "MyNearWallet kapanıyor"
@@ -126,8 +126,11 @@
             "accountLabel": "Hesap {{index}}",
             "back": "Geri",
             "backToWallet": "Cüzdana dön",
+            "copy": "Kopyala",
             "credentialsFailed": "MyNearWallet hesap kimlik bilgilerinizi yükleyemedi.",
+            "loadingCredentials": "Kimlik bilgileri yükleniyor…",
             "privateKeyLabel": "Özel anahtar",
+            "reveal": "Göster",
             "subtitle": "Seçtiğiniz hesapların özel anahtarını görüntüleyip kopyalayın.",
             "title": "Elle dışa aktar",
             "warning": "Bu bilgileri gizli tutun. Bu kimlik bilgilerine erişen herkes hesaplarınıza erişebilir ve onları kontrol edebilir."
@@ -148,7 +151,8 @@
             "cancel": "İptal",
             "checking": "Hesaplarınız kontrol ediliyor…",
             "exportSelected": "Seçili hesapları dışa aktar",
-            "subtitle": "Güvenle dışa aktarılacak hesapları gözden geçirin.",
+            "sharedRecoveryPhraseWarning": "Seçilen tüm hesaplar Meteor Wallet'ta tek bir ortak kurtarma ifadesi kullanacak.",
+            "subtitle": "Dışa aktarmak istediğiniz hesapları seçip gözden geçirin.",
             "title": "Hesapları dışa aktar"
         },
         "success": {
@@ -700,21 +704,24 @@
             "keep": "Şimdilik kalsın",
             "listTitle": "Güvence altındaki hesaplar",
             "loadingTitle": "Aktarım durumu",
+            "removalRisk": "Tam erişim anahtarını kaldırmak yüksek riskli bir işlemdir. Bunu yalnızca hesaplarınızın taşındığını doğruladıktan sonra yapın.",
+            "removalWarning": "Hesaplarınıza erişebildiğinizi doğruladıktan sonra eski erişim anahtarlarını doğrudan Meteor Wallet'tan kaldırabilirsiniz.",
             "remove": "Hesapları MyNearWallet'tan kaldır",
             "sourceKeyRemoved": "Meteor Wallet üzerinden zaten kaldırılan eski anahtarlar: {{count}}",
-            "subtitle": "Tüm hesaplar güvence altında: Meteor Wallet her yeni anahtarı zincirde kanıtladı, kurtarma ifadesini eksiksiz doğruladı ve hesabı içe aktardı. Burada bir şey kaldırmadan önce hesaplarınıza Meteor Wallet'tan erişebildiğinizi doğrulayın.",
+            "subtitle": "Tüm hesaplar güvence altında. Meteor Wallet her yeni anahtarı zincirde doğruladı, kurtarma ifadesini onayladı ve hesaplarınızı başarıyla içe aktardı.",
             "title": "Hesaplar Meteor Wallet'ta güvence altında",
             "unconfirmedTitle": "Hâlâ güvence altına alınıyor"
         },
         "activation": {
+            "activatedStatusTitle": "Etkinleştirilen hesaplar",
+            "activatedTitle": "Meteor anahtarları etkinleştirildi",
             "cancel": "Cüzdanıma dön",
             "checkStatus": "Durumu kontrol et",
             "finishLater": "Sonra tamamla",
-            "keepOpen": "Tüm hesaplar doğrulanana kadar bu sayfayı açık tutun.",
             "progress": "{{total}} hesabın {{completed}} tanesi tamamlandı",
             "retry": "Yeniden dene",
             "statusTitle": "Hesap durumu",
-            "subtitle": "Yeni Meteor anahtarları seçtiğiniz hesaplara ekleniyor.",
+            "subtitle": "Yeni Meteor anahtarları seçtiğiniz hesaplara ekleniyor. Tüm hesaplar doğrulanana kadar bu sayfayı açık tutun.",
             "title": "Meteor anahtarları etkinleştiriliyor",
             "verifyKeys": "Anahtarları doğrula",
             "viewSecured": "Güvence altındaki hesapları gör ({{count}})"
@@ -821,20 +828,27 @@
             "importIncomplete": "Meteor Wallet bu hesabın içe aktarımını hâlâ tamamlıyor. Birazdan Durumu kontrol et'i kullanın.",
             "livenessCheckFailed": "Meteor Wallet'ın bu hesap için test işlemi başarısız oldu. Yeniden denemek için Durumu kontrol et'i kullanın."
         },
+        "progressLabel": "Hesap aktarımı ilerlemesi",
+        "progressSteps": {
+            "activated": "Anahtarları doğrula",
+            "activating": "Anahtarları etkinleştir",
+            "ready": "Başlangıç",
+            "secured": "Bitti"
+        },
         "ready": {
             "acceptedTitle": "Etkinleştirmeye hazır hesaplar",
             "activate": "Yeni anahtarları etkinleştir",
             "cancel": "Cüzdanıma dön",
             "cancelTransfer": "Bu aktarımı iptal et",
-            "explainer": "Etkinleştirme, Meteor'un yeni anahtarını NEAR blok zincirindeki her hesaba ekler. Mevcut anahtarlarınız hiçbir yere gönderilmez ve siz kaldırmayı seçene kadar çalışmaya devam eder.",
             "finishLater": "Sonra tamamla",
             "noneSubtitle": "Meteor Wallet seçilen hesapların hiçbirini hazırlayamadı. Aşağıdaki nedenleri giderip yeniden deneyin.",
             "noneTitle": "Hiçbir hesap hazırlanamadı",
             "refusedTitle": "Bu aktarıma dahil edilmedi",
             "startOver": "Hesap seçimine dön",
-            "subtitle": "Meteor Wallet aşağıdaki her hesap için yeni bir erişim anahtarı oluşturdu. Aktarımı tamamlamak için bunları etkinleştirin.",
+            "subtitle": "Meteor Wallet aşağıdaki her hesap için yeni bir erişim anahtarı oluşturdu. Etkinleştirme, Meteor'un yeni anahtarını NEAR blok zincirindeki her hesaba ekler. Mevcut anahtarlarınız hiçbir yere gönderilmez ve siz kaldırmayı seçene kadar çalışmaya devam eder.",
             "title": "Meteor anahtarları hazır"
         },
+        "recommended": "Önerilen",
         "recovery": {
             "archive": "Bu kaydı kapat",
             "archiveRefused": "Meteor Wallet'ın anahtarı hâlâ hesapta. NEAR blok zincirinin kaldırmayı onaylamasını bekleyip yeniden deneyin.",
