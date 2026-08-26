@@ -207,8 +207,8 @@ const setEvery = (accountIds, status) =>
     Object.fromEntries(accountIds.map((accountId) => [accountId, status]));
 
 /**
- * Step 2 and 3: this wallet signs and broadcasts an AddKey for every accepted account, then Meteor
- * proves each key is live on-chain and imports the account.
+ * Step 2 and 3: this wallet signs and broadcasts an AddKey for every accepted account, then waits
+ * for an explicit user click before asking Meteor to prove each key is live and import the account.
  *
  * Both steps run under the SDK's crash-safe AddKey journal, so this screen never decides what is
  * safe to redo — it asks. `hasJournaledMeteorNewKeyVerification` is what makes a reload here
@@ -229,6 +229,7 @@ export default function AccountExportNewKeyActivation() {
     /** Per-account SD13 fact: Meteor additionally confirmed a real signed test transfer. */
     const [livenessFacts, setLivenessFacts] = useState({});
     const [isRunning, setIsRunning] = useState(false);
+    const [isReadyToVerify, setIsReadyToVerify] = useState(false);
     const [failureMessage, setFailureMessage] = useState('');
     const hasAutoStarted = useRef(false);
     const statusesRef = useRef({});
@@ -253,7 +254,7 @@ export default function AccountExportNewKeyActivation() {
     );
 
     const runActivation = useCallback(
-        async (transferSessionId, accountIds) => {
+        async (transferSessionId, accountIds, shouldVerify = false) => {
             trackMigrationActivationStarted({
                 accounts:
                     summary?.accepted || accountIds.map((accountId) => ({ accountId })),
@@ -264,7 +265,11 @@ export default function AccountExportNewKeyActivation() {
             setPendingFacts({});
             let activationStage = 'add_keys';
             try {
-                if (!(await hasJournaledMeteorNewKeyVerification(transferSessionId))) {
+                const hasVerificationProof = await hasJournaledMeteorNewKeyVerification(
+                    transferSessionId
+                );
+                if (!hasVerificationProof) {
+                    setIsReadyToVerify(false);
                     updateStatuses(setEvery(accountIds, 'waiting'));
                     await runMeteorNewKeyAddKeys({
                         transferSessionId,
@@ -282,8 +287,17 @@ export default function AccountExportNewKeyActivation() {
                                 return next;
                             }),
                     });
-                    updateStatuses(setEvery(accountIds, 'added'));
                 }
+                updateStatuses(setEvery(accountIds, 'added'));
+                setIsReadyToVerify(true);
+
+                // Opening Meteor must be initiated by the user. The AddKey pass (including an
+                // automatic crash-safe resume) therefore stops here; the Verify Keys button
+                // starts the wallet turn in a separate run.
+                if (!shouldVerify) {
+                    return;
+                }
+
                 activationStage = 'verification';
                 updateStatuses(setEvery(accountIds, 'verifying'));
 
@@ -375,7 +389,7 @@ export default function AccountExportNewKeyActivation() {
             return;
         }
         hasAutoStarted.current = true;
-        void runActivation(transferSessionId, acceptedIds);
+        void runActivation(transferSessionId, acceptedIds, false);
         // `acceptedIds` is rebuilt on every render; the ref is what makes this run once.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transferSessionId]);
@@ -483,7 +497,8 @@ export default function AccountExportNewKeyActivation() {
                             onClick={() =>
                                 void runActivation(
                                     summary.transferSessionId,
-                                    accounts.map((account) => account.accountId)
+                                    accounts.map((account) => account.accountId),
+                                    isReadyToVerify
                                 )
                             }
                         >
@@ -493,6 +508,8 @@ export default function AccountExportNewKeyActivation() {
                                 // implying the on-chain work will run again.
                                 hasPendingWalletRows || summary.isAwaitingWalletCompletion
                                     ? 'newKeyTransfer.activation.checkStatus'
+                                    : isReadyToVerify
+                                    ? 'newKeyTransfer.activation.verifyKeys'
                                     : 'newKeyTransfer.activation.retry'
                             )}
                         </FormButton>

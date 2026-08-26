@@ -865,6 +865,7 @@
             "statusTitle": "账户状态",
             "subtitle": "正在把新的 Meteor 密钥添加到你选择的账户。",
             "title": "正在激活 Meteor 密钥",
+            "verifyKeys": "验证密钥",
             "viewSecured": "查看已妥善保管的账户（{{count}}）"
         },
         "activationIssue": {

@@ -739,6 +739,7 @@
             "statusTitle": "Status das contas",
             "subtitle": "As novas chaves da Meteor estão sendo adicionadas às contas selecionadas.",
             "title": "Ativando as chaves da Meteor",
+            "verifyKeys": "Verificar chaves",
             "viewSecured": "Ver contas protegidas ({{count}})"
         },
         "activationIssue": {

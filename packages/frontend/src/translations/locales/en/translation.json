@@ -980,6 +980,7 @@
             "statusTitle": "Account Status",
             "subtitle": "The new Meteor keys are being added to your selected accounts.",
             "title": "Activating Meteor Keys",
+            "verifyKeys": "Verify Keys",
             "viewSecured": "View secured accounts ({{count}})"
         },
         "activationIssue": {

@@ -669,6 +669,7 @@
             "statusTitle": "Состояние аккаунтов",
             "subtitle": "Новые ключи Meteor добавляются к выбранным аккаунтам.",
             "title": "Активация ключей Meteor",
+            "verifyKeys": "Проверить ключи",
             "viewSecured": "Показать защищённые аккаунты ({{count}})"
         },
         "activationIssue": {

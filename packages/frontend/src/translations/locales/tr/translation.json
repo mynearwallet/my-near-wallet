@@ -716,6 +716,7 @@
             "statusTitle": "Hesap durumu",
             "subtitle": "Yeni Meteor anahtarları seçtiğiniz hesaplara ekleniyor.",
             "title": "Meteor anahtarları etkinleştiriliyor",
+            "verifyKeys": "Anahtarları doğrula",
             "viewSecured": "Güvence altındaki hesapları gör ({{count}})"
         },
         "activationIssue": {

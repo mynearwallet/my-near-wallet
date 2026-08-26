@@ -697,6 +697,7 @@
             "statusTitle": "Trạng thái tài khoản",
             "subtitle": "Các khóa Meteor mới đang được thêm vào những tài khoản bạn đã chọn.",
             "title": "Đang kích hoạt khóa Meteor",
+            "verifyKeys": "Xác minh khóa",
             "viewSecured": "Xem các tài khoản đã bảo đảm ({{count}})"
         },
         "activationIssue": {

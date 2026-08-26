@@ -778,6 +778,7 @@
             "statusTitle": "Стан акаунтів",
             "subtitle": "Нові ключі Meteor додаються до вибраних акаунтів.",
             "title": "Активація ключів Meteor",
+            "verifyKeys": "Перевірити ключі",
             "viewSecured": "Переглянути захищені акаунти ({{count}})"
         },
         "activationIssue": {

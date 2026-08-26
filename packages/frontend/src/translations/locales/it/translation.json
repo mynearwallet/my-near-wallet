@@ -764,6 +764,7 @@
             "statusTitle": "Stato degli account",
             "subtitle": "Le nuove chiavi Meteor vengono aggiunte agli account selezionati.",
             "title": "Attivazione delle chiavi Meteor",
+            "verifyKeys": "Verifica chiavi",
             "viewSecured": "Vedi gli account protetti ({{count}})"
         },
         "activationIssue": {

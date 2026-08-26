@@ -865,6 +865,7 @@
             "statusTitle": "賬戶狀態",
             "subtitle": "正在把新的 Meteor 密鑰添加到你選擇的賬戶。",
             "title": "正在激活 Meteor 密鑰",
+            "verifyKeys": "驗證密鑰",
             "viewSecured": "查看已妥善保管的帳戶（{{count}}）"
         },
         "activationIssue": {
