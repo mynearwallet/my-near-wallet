@@ -372,11 +372,16 @@ export const resolveNewKeyStartReplayPlan = ({ stored, inputFingerprint }) => {
     return { clientTransferId: undefined, isReplay: false };
 };
 
-/** A stable fingerprint of what a start attempt asks for, for replay matching only. */
-export const newKeyStartInputFingerprint = ({ accounts, networkId, targetPlatform }) =>
+/**
+ * A stable fingerprint of what a start attempt asks for, for replay matching only.
+ *
+ * Deliberately platform-free: the destination wallet is chosen inside the SDK popup, not by this
+ * wallet, so the same selection of accounts is the same request — a replay resumes cleanly
+ * against whatever platform was (or is about to be) chosen there.
+ */
+export const newKeyStartInputFingerprint = ({ accounts, networkId }) =>
     JSON.stringify({
         networkId,
-        targetPlatform,
         accounts: [...accounts]
             .map(({ accountId, sourcePublicKey }) => `${accountId}::${sourcePublicKey}`)
             .sort(),

@@ -891,13 +891,6 @@
         "continueExistingSecret": "繼續使用現有密鑰轉移",
         "continueTitle": "繼續轉移到 Meteor Wallet",
         "description": "建薦方式。Meteor 會為每個賬戶創立一把新密鑰；任何私鑰或助記詞都不會離開本錢包。",
-        "destination": {
-            "heading": "這些帳戶應轉移到哪裡？",
-            "mobileDescription": "在 Meteor 行動應用程式中開啟轉移。",
-            "mobileTitle": "Meteor 行動版",
-            "webDescription": "在瀏覽器中的 Meteor Wallet 開啟轉移。",
-            "webTitle": "Meteor 網頁版"
-        },
         "eligibility": {
             "algorithmUnsupported": "僅支持 Ed25519 來源密鑰。",
             "ledgerUnsupported": "本次轉移不支持基於 Ledger 的來源賬戶。",
@@ -967,7 +960,6 @@
         },
         "livenessConfirmed": "測試轉帳已確認",
         "loading": "正在加載轉移…",
-        "localDevTarget": "發送到本地運作的 Meteor Wallet（開發）",
         "manualDescription": "顯示並復製你的私鑰。",
         "manualTitle": "手動導出",
         "methodHeading": "你希望如何導出？",

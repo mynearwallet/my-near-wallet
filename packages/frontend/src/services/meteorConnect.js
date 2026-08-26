@@ -321,15 +321,15 @@ const writePendingStart = (value) => {
  * Ask Meteor to mint destination keys for these accounts. Returns the SDK session; the caller
  * reads which accounts were accepted from `session.startOutput`.
  *
- * A failed attempt leaves its id stashed; calling this again with the SAME accounts and target
- * replays that id (SD7), so a bridge expiry while the user was mid-confirmation in Meteor costs
- * nothing. The interim screen's "Continue" button is exactly this call, repeated.
+ * No target platform is pinned here: the SDK popup owns the destination choice (Meteor Web /
+ * Meteor Mobile / dev-gated local wallet) and records what was chosen on the session, which the
+ * verify turn is then pinned to.
+ *
+ * A failed attempt leaves its id stashed; calling this again with the SAME accounts replays that
+ * id (SD7), so a bridge expiry while the user was mid-confirmation in Meteor costs nothing. The
+ * interim screen's "Continue" button is exactly this call, repeated.
  */
-export const startMeteorNewKeyAccountTransfer = async ({
-    accounts,
-    networkId,
-    targetPlatform,
-}) => {
+export const startMeteorNewKeyAccountTransfer = async ({ accounts, networkId }) => {
     await initializeMeteorConnect();
     if (accounts.length === 0 || accounts.length > MAX_NEW_KEY_TRANSFER_ACCOUNTS) {
         throw new Error(
@@ -339,7 +339,6 @@ export const startMeteorNewKeyAccountTransfer = async ({
     const inputFingerprint = newKeyStartInputFingerprint({
         accounts,
         networkId,
-        targetPlatform,
     });
     const plan = resolveNewKeyStartReplayPlan({
         stored: readPendingStart(),
@@ -353,7 +352,6 @@ export const startMeteorNewKeyAccountTransfer = async ({
     }
 
     const request = {
-        targetPlatform,
         ...(plan.clientTransferId != null
             ? { clientTransferId: plan.clientTransferId }
             : {}),

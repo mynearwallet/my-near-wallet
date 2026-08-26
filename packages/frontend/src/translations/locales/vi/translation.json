@@ -723,13 +723,6 @@
         "continueExistingSecret": "Tiếp tục chuyển bằng khóa hiện có",
         "continueTitle": "Tiếp tục chuyển sang Meteor Wallet",
         "description": "Được khuyến nghị. Meteor tạo một khóa mới cho từng tài khoản; không có khóa riêng tư hay cụm từ khôi phục nào rời khỏi ví này.",
-        "destination": {
-            "heading": "Các tài khoản này nên chuyển đến đâu?",
-            "mobileDescription": "Mở lần chuyển trong ứng dụng di động Meteor.",
-            "mobileTitle": "Meteor Mobile",
-            "webDescription": "Mở lần chuyển trong Meteor Wallet trên trình duyệt của bạn.",
-            "webTitle": "Meteor Web"
-        },
         "eligibility": {
             "algorithmUnsupported": "Chỉ hỗ trợ khóa nguồn Ed25519.",
             "ledgerUnsupported": "Phiên chuyển này không hỗ trợ tài khoản nguồn dùng Ledger.",
@@ -799,7 +792,6 @@
         },
         "livenessConfirmed": "đã xác nhận giao dịch thử",
         "loading": "Đang tải phiên chuyển…",
-        "localDevTarget": "Gửi tới Meteor Wallet chạy cục bộ (phát triển)",
         "manualDescription": "Hiện và sao chép khóa riêng tư của bạn.",
         "manualTitle": "Xuất thủ công",
         "methodHeading": "Bạn muốn xuất bằng cách nào?",

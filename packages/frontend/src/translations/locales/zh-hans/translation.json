@@ -891,13 +891,6 @@
         "continueExistingSecret": "继续使用现有密钥转移",
         "continueTitle": "继续转移到 Meteor Wallet",
         "description": "推荐方式。Meteor 会为每个账户创建一把新密钥；任何私钥或助记词都不会离开本钱包。",
-        "destination": {
-            "heading": "这些账户应转移到哪里？",
-            "mobileDescription": "在 Meteor 移动应用中打开转移。",
-            "mobileTitle": "Meteor 移动版",
-            "webDescription": "在浏览器中的 Meteor Wallet 打开转移。",
-            "webTitle": "Meteor 网页版"
-        },
         "eligibility": {
             "algorithmUnsupported": "仅支持 Ed25519 来源密钥。",
             "ledgerUnsupported": "本次转移不支持基于 Ledger 的来源账户。",
@@ -967,7 +960,6 @@
         },
         "livenessConfirmed": "测试转账已确认",
         "loading": "正在加载转移…",
-        "localDevTarget": "发送到本地运行的 Meteor Wallet（开发）",
         "manualDescription": "显示并复制你的私钥。",
         "manualTitle": "手动导出",
         "methodHeading": "你希望如何导出？",

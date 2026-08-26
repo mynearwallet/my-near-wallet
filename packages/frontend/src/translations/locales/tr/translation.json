@@ -742,13 +742,6 @@
         "continueExistingSecret": "Mevcut anahtarla aktarıma devam et",
         "continueTitle": "Meteor Wallet'a aktarıma devam et",
         "description": "Önerilen. Meteor her hesap için yeni bir anahtar oluşturur; hiçbir özel anahtar veya kurtarma ifadesi bu cüzdandan çıkmaz.",
-        "destination": {
-            "heading": "Bu hesaplar nereye gitmeli?",
-            "mobileDescription": "Aktarımı Meteor mobil uygulamasında açın.",
-            "mobileTitle": "Meteor Mobil",
-            "webDescription": "Aktarımı tarayıcınızda Meteor Wallet'ta açın.",
-            "webTitle": "Meteor Web"
-        },
         "eligibility": {
             "algorithmUnsupported": "Yalnızca Ed25519 kaynak anahtarları destekleniyor.",
             "ledgerUnsupported": "Ledger tabanlı kaynak hesaplar bu aktarımda desteklenmiyor.",
@@ -818,7 +811,6 @@
         },
         "livenessConfirmed": "test transferi doğrulandı",
         "loading": "Aktarım yükleniyor…",
-        "localDevTarget": "Yerel olarak çalışan bir Meteor Wallet'a gönder (geliştirme)",
         "manualDescription": "Özel anahtarlarınızı görüntüleyip kopyalayın.",
         "manualTitle": "Elle dışa aktar",
         "methodHeading": "Nasıl dışa aktarmak istersiniz?",

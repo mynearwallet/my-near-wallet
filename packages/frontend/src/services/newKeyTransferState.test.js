@@ -405,7 +405,6 @@ describe('stabilization SD7 start replay plan', () => {
             { accountId: 'bob.testnet', sourcePublicKey: 'ed25519:BBB' },
         ],
         networkId: 'testnet',
-        targetPlatform: 'web',
     });
 
     it('replays a stashed id for the identical request, and only then', () => {
@@ -433,15 +432,13 @@ describe('stabilization SD7 start replay plan', () => {
                 { accountId: 'alice.testnet', sourcePublicKey: 'ed25519:AAA' },
             ],
             networkId: 'testnet',
-            targetPlatform: 'web',
         });
         expect(reordered).toBe(fingerprint);
-        const differentTarget = newKeyStartInputFingerprint({
+        const differentSelection = newKeyStartInputFingerprint({
             accounts: [{ accountId: 'alice.testnet', sourcePublicKey: 'ed25519:AAA' }],
             networkId: 'testnet',
-            targetPlatform: 'mobile',
         });
-        expect(differentTarget).not.toBe(fingerprint);
+        expect(differentSelection).not.toBe(fingerprint);
     });
 });
 

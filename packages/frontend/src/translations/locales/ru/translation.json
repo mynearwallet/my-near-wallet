@@ -695,13 +695,6 @@
         "continueExistingSecret": "Продолжить перенос с существующими ключами",
         "continueTitle": "Продолжить перенос в Meteor Wallet",
         "description": "Рекомендуется. Meteor создаёт новый ключ для каждого аккаунта; ни приватный ключ, ни фраза восстановления никогда не покидают этот кошелёк.",
-        "destination": {
-            "heading": "Куда перенести эти аккаунты?",
-            "mobileDescription": "Откройте перенос в мобильном приложении Meteor.",
-            "mobileTitle": "Meteor Mobile",
-            "webDescription": "Откройте перенос в Meteor Wallet в браузере.",
-            "webTitle": "Meteor Web"
-        },
         "eligibility": {
             "algorithmUnsupported": "Поддерживаются только исходные ключи Ed25519.",
             "ledgerUnsupported": "Исходные аккаунты на Ledger этим переносом не поддерживаются.",
@@ -771,7 +764,6 @@
         },
         "livenessConfirmed": "тестовый перевод подтверждён",
         "loading": "Загрузка переноса…",
-        "localDevTarget": "Отправить в локально запущенный Meteor Wallet (разработка)",
         "manualDescription": "Показать и скопировать ваши приватные ключи.",
         "manualTitle": "Экспортировать вручную",
         "methodHeading": "Как вы хотите экспортировать?",

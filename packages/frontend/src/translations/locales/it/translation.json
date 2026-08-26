@@ -790,13 +790,6 @@
         "continueExistingSecret": "Continua con il trasferimento delle chiavi esistenti",
         "continueTitle": "Continua il trasferimento a Meteor Wallet",
         "description": "Consigliato. Meteor crea una nuova chiave per ogni account; nessuna chiave privata o frase di recupero lascia mai questo wallet.",
-        "destination": {
-            "heading": "Dove devono andare questi account?",
-            "mobileDescription": "Apri il trasferimento nell'app mobile Meteor.",
-            "mobileTitle": "Meteor Mobile",
-            "webDescription": "Apri il trasferimento in Meteor Wallet nel browser.",
-            "webTitle": "Meteor Web"
-        },
         "eligibility": {
             "algorithmUnsupported": "Sono supportate solo le chiavi di origine Ed25519.",
             "ledgerUnsupported": "Gli account di origine basati su Ledger non sono supportati da questo trasferimento.",
@@ -866,7 +859,6 @@
         },
         "livenessConfirmed": "trasferimento di prova confermato",
         "loading": "Caricamento del trasferimento…",
-        "localDevTarget": "Invia a un Meteor Wallet servito localmente (sviluppo)",
         "manualDescription": "Rivela e copia le tue chiavi private.",
         "manualTitle": "Esporta manualmente",
         "methodHeading": "Come vuoi esportare?",

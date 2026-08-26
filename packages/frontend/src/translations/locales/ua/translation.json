@@ -804,13 +804,6 @@
         "continueExistingSecret": "Продовжити перенесення з наявними ключами",
         "continueTitle": "Продовжити перенесення до Meteor Wallet",
         "description": "Рекомендовано. Meteor створює новий ключ для кожного акаунта; жоден приватний ключ чи фраза відновлення не залишає цей гаманець.",
-        "destination": {
-            "heading": "Куди перенести ці акаунти?",
-            "mobileDescription": "Відкрийте перенесення в мобільному застосунку Meteor.",
-            "mobileTitle": "Meteor Mobile",
-            "webDescription": "Відкрийте перенесення в Meteor Wallet у браузері.",
-            "webTitle": "Meteor Web"
-        },
         "eligibility": {
             "algorithmUnsupported": "Підтримуються лише вихідні ключі Ed25519.",
             "ledgerUnsupported": "Вихідні акаунти на Ledger цим перенесенням не підтримуються.",
@@ -880,7 +873,6 @@
         },
         "livenessConfirmed": "тестовий переказ підтверджено",
         "loading": "Завантаження перенесення…",
-        "localDevTarget": "Надіслати до локально запущеного Meteor Wallet (розробка)",
         "manualDescription": "Показати та скопіювати ваші приватні ключі.",
         "manualTitle": "Експортувати вручну",
         "methodHeading": "Як ви хочете експортувати?",

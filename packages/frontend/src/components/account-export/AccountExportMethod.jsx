@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import CONFIG from '../../config';
 import {
     hasPendingMeteorNewKeyStart,
     meteorNetworkId,
@@ -16,7 +15,6 @@ import {
     NEW_KEY_TRANSFER_RECOVERY_ROUTE,
     newKeyTransferEligibilityKey,
 } from '../../services/newKeyTransferState';
-import Checkbox from '../common/Checkbox';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import MeteorConnectIcon from '../svg/MeteorConnectIcon';
@@ -145,72 +143,6 @@ const DiscardPendingRow = styled.div`
     text-align: center;
 `;
 
-const DestinationChoice = styled.div`
-    margin-top: 32px;
-
-    .destination-heading {
-        color: #24272a;
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 20px;
-        text-align: center;
-    }
-
-    .destination-options {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-top: 12px;
-    }
-`;
-
-const DestinationButton = styled.button`
-    background-color: #ffffff;
-    border: 1px solid ${(props) => (props.isSelected ? '#0072ce' : '#e5e5e6')};
-    border-radius: 8px;
-    box-shadow: ${(props) => (props.isSelected ? '0 0 0 1px #0072ce' : 'none')};
-    color: #24272a;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 20px;
-    min-width: 180px;
-    padding: 12px 16px;
-    text-align: left;
-
-    &:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .destination-title {
-        display: block;
-        font-weight: 600;
-    }
-
-    .destination-description {
-        color: #72727a;
-        display: block;
-        font-size: 13px;
-        margin-top: 2px;
-    }
-`;
-
-const DevTarget = styled.label`
-    align-items: center;
-    color: #72727a;
-    cursor: pointer;
-    display: flex;
-    font-size: 13px;
-    gap: 10px;
-    justify-content: center;
-    line-height: 20px;
-    margin-top: 24px;
-
-    > div {
-        flex: 0 0 20px;
-    }
-`;
-
 // const Advanced = styled.div`
 //     margin-top: 40px;
 //     text-align: center;
@@ -261,22 +193,6 @@ export default function AccountExportMethod() {
      * (REVIEW-consumer-implementation B-04/M-03).
      */
     const [isFencedError, setIsFencedError] = useState(false);
-    /**
-     * Which Meteor Wallet receives the accounts. Both are real destinations now that the V2
-     * mobile app implements the new-key transfer wallet side; the SDK turns this into the app id
-     * the bridge link opens ("mobile" → the configured mobile wallet, "web" → the matching web
-     * wallet for this environment), so it must be chosen BEFORE `start()` — the link is minted
-     * there and cannot be repointed afterwards.
-     */
-    const [destination, setDestination] = useState('web');
-    /** A development build may retarget a WEB transfer at a locally served wallet. */
-    const [useLocalDevWallet, setUseLocalDevWallet] = useState(false);
-    /**
-     * The dev local-wallet override only exists for the web destination — a locally served page
-     * is not something the mobile app can be pointed at.
-     */
-    const targetPlatform =
-        destination === 'mobile' ? 'mobile' : useLocalDevWallet ? 'web_local_dev' : 'web';
     // const [showAdvanced, setShowAdvanced] = useState(false);
 
     useEffect(() => {
@@ -297,9 +213,9 @@ export default function AccountExportMethod() {
 
     /**
      * Drop the interrupted attempt entirely — stash, wallet-side session, and any crash-window
-     * start result — so the next click starts a genuinely fresh transfer to whatever destination
-     * is selected. (Merely selecting different accounts or a different destination also starts
-     * fresh — the replay is fingerprint-matched — but the user should never have to know that.)
+     * start result — so the next click starts a genuinely fresh transfer. (Merely selecting
+     * different accounts also starts fresh — the replay is fingerprint-matched — but the user
+     * should never have to know that.)
      */
     const discardInterruptedStart = async () => {
         setIsExporting(true);
@@ -330,10 +246,12 @@ export default function AccountExportMethod() {
         setIsFencedError(false);
         try {
             const accounts = await loadNewKeyTransferAccounts(accountIds);
+            // No target platform is pinned here: the SDK popup asks the user to choose the
+            // destination wallet (Meteor Web / Meteor Mobile, plus the dev-gated local wallet),
+            // and records what was actually chosen on the session for the verify turn.
             const session = await startMeteorNewKeyAccountTransfer({
                 accounts,
                 networkId: meteorNetworkId,
-                targetPlatform,
             });
             // Meteor has answered and its destination keys are journaled; which accounts it
             // accepted is read from the session on the next screen, not passed through history.
@@ -487,55 +405,6 @@ export default function AccountExportMethod() {
                             {t('newKeyTransfer.startOver.discardPending')}
                         </FormButton>
                     </DiscardPendingRow>
-                )}
-
-                <DestinationChoice>
-                    <div className='destination-heading'>
-                        {t('newKeyTransfer.destination.heading')}
-                    </div>
-                    <div className='destination-options'>
-                        <DestinationButton
-                            disabled={isExporting}
-                            aria-pressed={destination === 'web'}
-                            isSelected={destination === 'web'}
-                            onClick={() => setDestination('web')}
-                            type='button'
-                        >
-                            <span className='destination-title'>
-                                {t('newKeyTransfer.destination.webTitle')}
-                            </span>
-                            <span className='destination-description'>
-                                {t('newKeyTransfer.destination.webDescription')}
-                            </span>
-                        </DestinationButton>
-                        <DestinationButton
-                            disabled={isExporting}
-                            aria-pressed={destination === 'mobile'}
-                            isSelected={destination === 'mobile'}
-                            onClick={() => setDestination('mobile')}
-                            type='button'
-                        >
-                            <span className='destination-title'>
-                                {t('newKeyTransfer.destination.mobileTitle')}
-                            </span>
-                            <span className='destination-description'>
-                                {t('newKeyTransfer.destination.mobileDescription')}
-                            </span>
-                        </DestinationButton>
-                    </div>
-                </DestinationChoice>
-
-                {CONFIG.IS_DEVELOPMENT && destination === 'web' && (
-                    <DevTarget>
-                        <Checkbox
-                            checked={useLocalDevWallet}
-                            disabled={isExporting}
-                            onChange={(event) =>
-                                setUseLocalDevWallet(event.target.checked)
-                            }
-                        />
-                        <span>{t('newKeyTransfer.localDevTarget')}</span>
-                    </DevTarget>
                 )}
 
                 {errorMessage && (

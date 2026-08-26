@@ -1005,13 +1005,6 @@
         "continueExistingSecret": "Continue with existing-secret transfer",
         "continueTitle": "Continue transfer to Meteor Wallet",
         "description": "Recommended. Meteor creates a fresh key for each account; no private key or recovery phrase ever leaves this wallet.",
-        "destination": {
-            "heading": "Where should these accounts go?",
-            "mobileDescription": "Open the transfer in the Meteor mobile app.",
-            "mobileTitle": "Meteor Mobile",
-            "webDescription": "Open the transfer in Meteor Wallet in your browser.",
-            "webTitle": "Meteor Web"
-        },
         "eligibility": {
             "algorithmUnsupported": "Only Ed25519 source keys are supported.",
             "ledgerUnsupported": "Ledger-backed source accounts are not supported by this transfer.",
@@ -1081,7 +1074,6 @@
         },
         "livenessConfirmed": "test transfer confirmed",
         "loading": "Loading transfer…",
-        "localDevTarget": "Send to a locally served Meteor Wallet (development)",
         "manualDescription": "Reveal and copy your private keys.",
         "manualTitle": "Export Manually",
         "methodHeading": "How would you like to export?",
