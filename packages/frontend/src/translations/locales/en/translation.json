@@ -171,6 +171,7 @@
             "cancel": "Cancel",
             "checking": "Checking your accounts…",
             "exportSelected": "Export Selected Accounts",
+            "sharedRecoveryPhraseWarning": "All selected accounts will use one shared recovery phrase in Meteor Wallet.",
             "subtitle": "Review the accounts that will be securely exported.",
             "title": "Export Accounts"
         },

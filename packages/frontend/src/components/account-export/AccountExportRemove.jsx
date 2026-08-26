@@ -9,8 +9,8 @@ import { wallet } from '../../utils/wallet';
 import FormButton from '../common/FormButton';
 import Checkbox from '../common/Checkbox';
 import Container from '../common/styled/Container.css';
-import ExportAccountRemovalWarningIcon from '../svg/ExportAccountRemovalWarningIcon';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
+import AccountExportNotice from './AccountExportNotice';
 import {
     trackMigrationLocalRemovalFailed,
     trackMigrationLocalRemovalSucceeded,
@@ -27,35 +27,6 @@ const AccountExportRemovePage = styled(Container)`
         h1 {
             text-align: center !important;
         }
-    }
-`;
-
-const WarningBox = styled.section`
-    align-items: center;
-    background: #ffdbdb;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 32px;
-    margin-top: 28px;
-    padding: 28px 24px;
-    text-align: center;
-
-    .warning-icon {
-        height: 56px;
-        margin-bottom: 20px;
-        width: 64px;
-    }
-
-    p {
-        color: #dc1f25;
-        font-weight: 400;
-        line-height: 22px;
-        margin: 0;
-    }
-
-    p + p {
-        margin-top: 14px;
     }
 `;
 
@@ -173,11 +144,10 @@ export default function AccountExportRemove() {
         <AccountExportRemovePage className='small-centered'>
             <div className='send-theme'>
                 <h1>{t('accountExport.remove.title')}</h1>
-                <WarningBox>
-                    <ExportAccountRemovalWarningIcon className='warning-icon' />
+                <AccountExportNotice variant='error'>
                     <p>{t('accountExport.remove.warningConfirmFirst')}</p>
                     <p>{t('accountExport.remove.warningPermanent')}</p>
-                </WarningBox>
+                </AccountExportNotice>
                 <AccountExportSelectedAccountList
                     accountIds={accountIds}
                     title={t('accountExport.remove.listTitle')}
