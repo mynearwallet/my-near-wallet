@@ -2097,10 +2097,10 @@
   resolved "https://registry.yarnpkg.com/@meteorwallet/meteor-near-sdk/-/meteor-near-sdk-3.4.0.tgz#71bb9a4e1ad3b592ec79d148079031593dfcde7f"
   integrity sha512-ZM/aJ7bhA6xpDr4SyUstwcfJScWEL5n6evbWdb9w58EGh+BeM9J307onZs5ZDnvAcPECrw3pkq2UTCd9DnyP1A==
 
-"@meteorwallet/sdk@3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-3.5.0.tgz#3bb199e04636603ebc6d960107481c0ef17c0d27"
-  integrity sha512-Cqfqrp+TqtKI5sVUNeYYG6mP02/22hPShsdDyySE9j/Km1VFULuRJbN6ZRiwkv+zZNXFcSN7ipB2guF7SA+7qg==
+"@meteorwallet/sdk@3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-3.6.0.tgz#36d4951abff1679a651db84653457977bb0fa39d"
+  integrity sha512-nKmpR0XKnC6LnK8OK5kPdrJAy3JR8cekHpk4XK07saXqTJfmBulp8SX4x7sU8RWp+CU5pt+6dz21aRpr90EKpg==
   dependencies:
     "@lit/context" "1.1.6"
     "@lit/task" "1.0.3"
