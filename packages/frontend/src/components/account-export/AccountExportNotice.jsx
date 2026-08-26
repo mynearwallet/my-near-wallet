@@ -1,22 +1,35 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ExportAccountRemovalWarningIcon from '../svg/ExportAccountRemovalWarningIcon';
+import InfoIconRounded from '../svg/InfoIconRounded.js';
 
 const Notice = styled.section`
     align-items: center;
     background: ${(props) => (props.$variant === 'error' ? '#ffdbdb' : '#fff3df')};
     border-radius: 12px;
     display: flex;
-    flex-direction: column;
+    gap: 16px;
     margin: 28px 0 32px;
-    padding: 28px 24px;
-    text-align: center;
+    padding: 20px 24px;
+    text-align: left;
 
     .notice-icon {
-        height: 56px;
-        margin-bottom: 20px;
-        width: 64px;
+        align-items: center;
+        display: flex;
+        flex: none;
+        height: 32px;
+        justify-content: center;
+        width: 32px;
+
+        svg {
+            height: 32px;
+            width: 32px;
+        }
+    }
+
+    .notice-content {
+        flex: 1;
+        min-width: 0;
     }
 
     p {
@@ -27,20 +40,24 @@ const Notice = styled.section`
     }
 
     p + p {
-        margin-top: 14px;
+        margin-top: 6px;
     }
 `;
 
 export default function AccountExportNotice({ children, variant = 'warning' }) {
     const isError = variant === 'error';
+    const backgroundColor = isError ? '#ffdbdb' : '#fff3df';
 
     return (
         <Notice $variant={variant} role={isError ? 'alert' : 'note'}>
-            <ExportAccountRemovalWarningIcon
-                className='notice-icon'
-                color={isError ? '#E5484D' : '#EF860D'}
-            />
-            {children}
+            <span className='notice-icon'>
+                <InfoIconRounded
+                    color={isError ? '#E5484D' : '#EF860D'}
+                    filled
+                    glyphColor={backgroundColor}
+                />
+            </span>
+            <div className='notice-content'>{children}</div>
         </Notice>
     );
 }

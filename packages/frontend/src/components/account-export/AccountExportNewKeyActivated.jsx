@@ -10,11 +10,13 @@ import {
 import { describeNewKeyTransferError } from '../../services/newKeyTransferState';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import AccountExportNotice from './AccountExportNotice';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
 import {
     trackMigrationCleanupSelected,
     trackNewKeyMigrationCompleted,
 } from './accountExportAnalytics';
+import NewKeyTransferProgress from './NewKeyTransferProgress';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const ActivatedPage = styled(Container)`
@@ -162,6 +164,7 @@ export default function AccountExportNewKeyActivated() {
         return (
             <ActivatedPage className='small-centered'>
                 <div className='send-theme'>
+                    <NewKeyTransferProgress activeStep={4} />
                     {/* No premature "transfer complete" heading while the transfer itself could
                         not even be loaded (MNW-4). */}
                     <h1>{t('newKeyTransfer.activated.loadingTitle')}</h1>
@@ -179,6 +182,7 @@ export default function AccountExportNewKeyActivated() {
     return (
         <ActivatedPage className='small-centered'>
             <div className='send-theme'>
+                <NewKeyTransferProgress activeStep={4} />
                 <h1>
                     {t(
                         isComplete
@@ -193,6 +197,13 @@ export default function AccountExportNewKeyActivated() {
                             : 'newKeyTransfer.activated.inProgressSubtitle'
                     )}
                 </h2>
+
+                {isComplete && (
+                    <AccountExportNotice variant='error'>
+                        <p>{t('newKeyTransfer.activated.removalWarning')}</p>
+                        <p>{t('newKeyTransfer.activated.removalRisk')}</p>
+                    </AccountExportNotice>
+                )}
 
                 {secured.length > 0 && (
                     <AccountExportSelectedAccountList

@@ -24,6 +24,7 @@ import {
     trackMigrationActivationStarted,
 } from './accountExportAnalytics';
 import NewKeyTransferStartOverControl from './NewKeyTransferStartOverControl';
+import NewKeyTransferProgress from './NewKeyTransferProgress';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const ActivationPage = styled(Container)`
@@ -140,14 +141,6 @@ const StatusIconSlot = styled.span`
     }
 `;
 
-const KeepOpenNote = styled.p`
-    color: #72727a;
-    font-size: 14px;
-    line-height: 20px;
-    margin: 20px 0 0;
-    text-align: center;
-`;
-
 const ErrorMessage = styled.p`
     color: #dc1f25;
     margin: 20px 0 0;
@@ -166,19 +159,6 @@ const Buttons = styled.div`
         margin-top: 8px;
     }
 `;
-
-/** How full the bar is for one account. `failed` contributes nothing — it is not progress.
- * `pendingWallet` (stabilization SD4) is close but deliberately not full: the key is proven, and
- * Meteor still owes completion work that Check status converges. */
-const STATUS_WEIGHT = {
-    waiting: 0,
-    adding: 0.25,
-    added: 0.6,
-    verifying: 0.8,
-    pendingWallet: 0.9,
-    confirmed: 1,
-    failed: 0,
-};
 
 const statusIcon = (status) => {
     if (status === 'confirmed') {
@@ -398,6 +378,7 @@ export default function AccountExportNewKeyActivation() {
         return (
             <ActivationPage className='small-centered'>
                 <div className='send-theme'>
+                    <NewKeyTransferProgress activeStep={2} />
                     <h1>{t('newKeyTransfer.activation.title')}</h1>
                     <h2>{errorMessage || t('newKeyTransfer.loading')}</h2>
                 </div>
@@ -406,9 +387,9 @@ export default function AccountExportNewKeyActivation() {
     }
 
     const accounts = summary.accepted;
-    const confirmedCount = accounts.filter(
-        (account) => statuses[account.accountId] === 'confirmed'
-    ).length;
+    const activatedCount = isReadyToVerify
+        ? accounts.length
+        : accounts.filter((account) => statuses[account.accountId] === 'added').length;
     const hasPendingWalletRows = accounts.some(
         (account) => statuses[account.accountId] === 'pendingWallet'
     );
@@ -416,20 +397,19 @@ export default function AccountExportNewKeyActivation() {
     // affordance must too.
     const securedCount = summary.securedCount;
     const completionPercentage =
-        accounts.length === 0
-            ? 0
-            : (accounts.reduce(
-                  (total, account) =>
-                      total + (STATUS_WEIGHT[statuses[account.accountId]] || 0),
-                  0
-              ) /
-                  accounts.length) *
-              100;
+        accounts.length === 0 ? 0 : (activatedCount / accounts.length) * 100;
 
     return (
         <ActivationPage className='small-centered'>
             <div className='send-theme'>
-                <h1>{t('newKeyTransfer.activation.title')}</h1>
+                <NewKeyTransferProgress activeStep={isReadyToVerify ? 3 : 2} />
+                <h1>
+                    {t(
+                        isReadyToVerify
+                            ? 'newKeyTransfer.activation.activatedTitle'
+                            : 'newKeyTransfer.activation.title'
+                    )}
+                </h1>
                 <h2>{t('newKeyTransfer.activation.subtitle')}</h2>
 
                 <ActivationProgress>
@@ -440,7 +420,7 @@ export default function AccountExportNewKeyActivation() {
                     </ActivationProgressTrack>
                     <ActivationProgressLabel>
                         {t('newKeyTransfer.activation.progress', {
-                            completed: confirmedCount,
+                            completed: activatedCount,
                             total: accounts.length,
                         })}
                     </ActivationProgressLabel>
@@ -448,7 +428,11 @@ export default function AccountExportNewKeyActivation() {
 
                 <AccountSection>
                     <AccountSectionTitle>
-                        {t('newKeyTransfer.activation.statusTitle')}
+                        {t(
+                            isReadyToVerify
+                                ? 'newKeyTransfer.activation.activatedStatusTitle'
+                                : 'newKeyTransfer.activation.statusTitle'
+                        )}
                     </AccountSectionTitle>
                     {accounts.map((account) => {
                         const status = statuses[account.accountId] || 'waiting';
@@ -486,9 +470,6 @@ export default function AccountExportNewKeyActivation() {
                     })}
                 </AccountSection>
 
-                {isRunning && (
-                    <KeepOpenNote>{t('newKeyTransfer.activation.keepOpen')}</KeepOpenNote>
-                )}
                 {failureMessage && <ErrorMessage>{failureMessage}</ErrorMessage>}
 
                 {!isRunning && (

@@ -17,17 +17,17 @@ const AccountExportBannerContainer = styled.section`
 
 const AccountExportBannerContent = styled.div`
     align-items: center;
-    background: linear-gradient(105deg, #6686f4 0%, #65bfe0 100%);
+    background: linear-gradient(105deg, #d33838 0%, #f96868 100%);
     border-radius: 16px;
     display: flex;
     justify-content: space-between;
-    padding: 32px 42px;
+    padding: 26px 42px;
 
     @media (max-width: 600px) {
         align-items: stretch;
         border-radius: 12px;
         flex-direction: column;
-        padding: 16px 20px;
+        padding: 14px 20px;
     }
 `;
 

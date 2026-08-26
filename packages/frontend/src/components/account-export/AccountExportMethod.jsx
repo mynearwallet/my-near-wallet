@@ -116,6 +116,17 @@ const MethodButton = styled.button`
         margin-top: 8px;
     }
 
+    .method-tag {
+        background: #fff;
+        border-radius: 999px;
+        color: #5380f5;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 18px;
+        margin-top: 16px;
+        padding: 4px 12px;
+    }
+
     .method-status {
         font-size: 14px;
         line-height: 21px;
@@ -363,6 +374,9 @@ export default function AccountExportMethod() {
                                     ? 'newKeyTransfer.continueDescription'
                                     : 'newKeyTransfer.description'
                             )}
+                        </span>
+                        <span className='method-tag'>
+                            {t('newKeyTransfer.recommended')}
                         </span>
                         {isExporting && (
                             <span className='method-status'>

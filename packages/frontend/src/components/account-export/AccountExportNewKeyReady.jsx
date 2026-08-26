@@ -15,6 +15,7 @@ import {
 } from '../../services/newKeyTransferState';
 import { trackMigrationActivationRequested } from './accountExportAnalytics';
 import NewKeyTransferStartOverControl from './NewKeyTransferStartOverControl';
+import NewKeyTransferProgress from './NewKeyTransferProgress';
 import useNewKeyTransfer from './useNewKeyTransfer';
 
 const NewKeyReadyPage = styled(Container)`
@@ -26,14 +27,6 @@ const NewKeyReadyPage = styled(Container)`
             text-align: center !important;
         }
     }
-`;
-
-const Explainer = styled.p`
-    color: #72727a;
-    font-size: 14px;
-    line-height: 20px;
-    margin: 24px 0 0;
-    text-align: center;
 `;
 
 const RefusedSection = styled.section`
@@ -160,6 +153,7 @@ export default function AccountExportNewKeyReady() {
         return (
             <NewKeyReadyPage className='small-centered'>
                 <div className='send-theme'>
+                    <NewKeyTransferProgress activeStep={1} />
                     <h1>{t('newKeyTransfer.ready.title')}</h1>
                     <h2>{errorMessage || t('newKeyTransfer.loading')}</h2>
                 </div>
@@ -172,6 +166,7 @@ export default function AccountExportNewKeyReady() {
     return (
         <NewKeyReadyPage className='small-centered'>
             <div className='send-theme'>
+                <NewKeyTransferProgress activeStep={1} />
                 <h1>
                     {t(
                         acceptedNothing
@@ -213,9 +208,6 @@ export default function AccountExportNewKeyReady() {
                     </RefusedSection>
                 )}
 
-                {!acceptedNothing && (
-                    <Explainer>{t('newKeyTransfer.ready.explainer')}</Explainer>
-                )}
                 {errorMessage && (
                     <ErrorMessage>
                         {errorMessage}
