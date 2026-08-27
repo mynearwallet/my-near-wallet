@@ -781,6 +781,7 @@
             "ledgerUnsupported": "Contas de origem com Ledger não são suportadas por esta transferência.",
             "noLocalKey": "Não há uma chave de assinatura local simples disponível.",
             "notFullAccess": "Chave de acesso total não encontrada.",
+            "notFunded": "Esta conta implícita ainda não foi financiada.",
             "twoFactorUnsupported": "Contas com 2FA/multiassinatura não são suportadas. Desative a 2FA primeiro ou use a exportação manual.",
             "verificationFailed": "Não foi possível verificar as chaves da conta neste momento (problema de rede) — nada foi alterado na conta. Tente novamente em instantes."
         },

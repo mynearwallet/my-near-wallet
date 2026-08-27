@@ -806,6 +806,7 @@
             "ledgerUnsupported": "Gli account di origine basati su Ledger non sono supportati da questo trasferimento.",
             "noLocalKey": "Non è disponibile una chiave di firma locale semplice.",
             "notFullAccess": "Chiave ad accesso completo non trovata.",
+            "notFunded": "Questo account implicito non è ancora stato finanziato.",
             "twoFactorUnsupported": "Gli account con 2FA/multisig non sono supportati. Disattiva prima la 2FA oppure usa l’esportazione manuale.",
             "verificationFailed": "Non è stato possibile controllare le chiavi dell account in questo momento (problema di rete): nulla è stato modificato sull account. Riprova tra un momento."
         },

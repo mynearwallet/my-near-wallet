@@ -739,6 +739,7 @@
             "ledgerUnsupported": "Phiên chuyển này không hỗ trợ tài khoản nguồn dùng Ledger.",
             "noLocalKey": "Không có khóa ký cục bộ thông thường khả dụng.",
             "notFullAccess": "Không tìm thấy khóa toàn quyền.",
+            "notFunded": "Tài khoản ẩn này chưa được cấp tiền.",
             "twoFactorUnsupported": "Không hỗ trợ tài khoản dùng 2FA/đa chữ ký. Hãy tắt 2FA trước hoặc dùng xuất thủ công.",
             "verificationFailed": "Hiện không thể kiểm tra các khóa của tài khoản (sự cố mạng) — không có gì trên tài khoản bị thay đổi. Vui lòng thử lại sau giây lát."
         },

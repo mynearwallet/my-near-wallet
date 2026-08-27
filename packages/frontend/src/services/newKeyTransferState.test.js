@@ -267,6 +267,9 @@ describe('newKeyTransferEligibilityKey', () => {
         expect(newKeyTransferEligibilityKey('verification_failed')).toBe(
             'newKeyTransfer.eligibility.verificationFailed'
         );
+        expect(newKeyTransferEligibilityKey('not_funded')).toBe(
+            'newKeyTransfer.eligibility.notFunded'
+        );
         expect(newKeyTransferEligibilityKey('ledger_unsupported')).toBe(
             'newKeyTransfer.eligibility.ledgerUnsupported'
         );

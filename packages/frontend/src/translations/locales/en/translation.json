@@ -1021,6 +1021,7 @@
             "ledgerUnsupported": "Ledger-backed source accounts are not supported by this transfer.",
             "noLocalKey": "No plain local signing key is available.",
             "notFullAccess": "Full access key not found.",
+            "notFunded": "This implicit account has not been funded yet.",
             "twoFactorUnsupported": "2FA/multisig accounts are not supported. Disable 2FA first or use manual export.",
             "verificationFailed": "The account keys could not be checked right now (network issue) — nothing on the account was changed. Try again in a moment."
         },

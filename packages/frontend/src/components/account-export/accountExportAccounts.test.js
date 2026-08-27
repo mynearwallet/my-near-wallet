@@ -112,6 +112,28 @@ describe('new-key account-transfer eligibility', () => {
         expect(mockWallet.isFullAccessKey).toHaveBeenCalledTimes(2);
     });
 
+    it('reports an unfunded implicit account without retrying it as a network error', async () => {
+        const implicitAccountId = 'a'.repeat(64);
+        const accountMissing = Object.assign(
+            new Error(`Account ${implicitAccountId} does not exist while viewing`),
+            { type: 'AccountDoesNotExist' }
+        );
+        mockWallet.keyStore.getAccounts.mockResolvedValue([implicitAccountId]);
+        mockWallet.getLocalKeyPair.mockResolvedValue(
+            makeKeyPair(`ed25519:${implicitAccountId}`)
+        );
+        mockWallet.hasTwoFactorEnabled.mockRejectedValue(accountMissing);
+
+        await expect(loadExportableAccounts()).resolves.toEqual([
+            {
+                accountId: implicitAccountId,
+                sourcePublicKey: `ed25519:${implicitAccountId}`,
+                availability: 'not_funded',
+            },
+        ]);
+        expect(mockWallet.hasTwoFactorEnabled).toHaveBeenCalledTimes(1);
+    });
+
     it('refuses staging when the exact selected source key changes after eligibility', async () => {
         mockWallet.keyStore.getAccounts.mockResolvedValue(['alice.testnet']);
         mockWallet.getLocalKeyPair

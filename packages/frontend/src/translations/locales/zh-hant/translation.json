@@ -907,6 +907,7 @@
             "ledgerUnsupported": "本次轉移不支持基於 Ledger 的來源賬戶。",
             "noLocalKey": "沒有可用的普透本地簽名密鑰。",
             "notFullAccess": "未找到完全訪問權限密鑰。",
+            "notFunded": "此隱式帳戶尚未注資。",
             "twoFactorUnsupported": "不支持啟用 2FA/多簽的賬戶。請先關閉 2FA，或改用手動導出。",
             "verificationFailed": "暫時無法檢查該帳戶的金鑰（網路問題）——帳戶沒有任何變更。請稍後重試。"
         },

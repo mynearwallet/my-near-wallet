@@ -1,14 +1,27 @@
 import CONFIG from '../../config';
+import { isImplicitAccount } from '../../utils/account';
 import { getKeyMeta, wallet } from '../../utils/wallet';
 
 export const MAX_EXPORTABLE_ACCOUNTS = 30;
 
 /**
- * One probe attempt for one account. Throws on any failed READ (RPC/network); the thrown error
- * carries `sourcePublicKey` when the local key was resolved before the failure. A missing on-chain
- * key does NOT throw — `isFullAccessKey` answers `false` and the row says `not_full_access` — so a
- * throw here always means "could not check", never "checked and found missing".
+ * The RPC uses an error response for an implicit account that has not been funded and therefore
+ * does not exist on-chain yet. That is a known account state, not a network failure.
  */
+const isAccountDoesNotExistError = (error) =>
+    /AccountDoesNotExist|does not exist while viewing/.test(
+        [
+            error?.type,
+            error?.name,
+            error?.message,
+            error?.cause?.type,
+            error?.cause?.name,
+            error?.cause?.message,
+        ]
+            .filter(Boolean)
+            .join(' ')
+    );
+
 const probeExportability = async (accountId) => {
     let sourcePublicKey;
     try {
@@ -47,6 +60,13 @@ const probeExportability = async (accountId) => {
             availability: hasFullAccessKey ? 'available' : 'not_full_access',
         };
     } catch (error) {
+        if (isImplicitAccount(accountId) && isAccountDoesNotExistError(error)) {
+            return {
+                accountId,
+                ...(sourcePublicKey ? { sourcePublicKey } : {}),
+                availability: 'not_funded',
+            };
+        }
         if (error instanceof Error && sourcePublicKey != null) {
             error.sourcePublicKey = sourcePublicKey;
         }
