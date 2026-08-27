@@ -26,6 +26,13 @@ import {
 import CONFIG from '../config';
 
 /**
+ * The NEAR network the transferred accounts live on. Deliberately SEPARATE from
+ * `meteorConnectEnvironment` below: a mainnet staging build transfers real mainnet accounts over
+ * the development bridge, so the network and the bridge environment no longer move together.
+ */
+export const meteorNetworkId =
+    CONFIG.CURRENT_NEAR_NETWORK === 'mainnet' ? 'mainnet' : 'testnet';
+/**
  * Which Meteor Connect environment this build belongs to — ONE decision that both the bridge
  * backend and the Meteor wallet app id are derived from, immediately below.
  *
