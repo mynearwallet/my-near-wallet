@@ -167,6 +167,9 @@ const statusIcon = (status) => {
     if (status === 'failed') {
         return <ExportAccountUnavailableIcon />;
     }
+    if (status === 'added') {
+        return <ExportAccountSelectedIcon />;
+    }
     if (status === 'waiting') {
         return null;
     }
