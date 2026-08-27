@@ -1,4 +1,7 @@
-import { resolveMeteorConnectEnvironment } from './meteorConnectEnvironment';
+import {
+    resolveMeteorConnectEnvironment,
+    resolveMeteorWalletWebUrl,
+} from './meteorConnectEnvironment';
 
 /**
  * The regression this guards: a staging deployment that asked for the DEV Meteor wallet while
@@ -18,6 +21,24 @@ describe('resolveMeteorConnectEnvironment', () => {
         // with real key material.
         for (const value of ['', 'Mainnet', 'MAINNET', 'localnet', undefined, null]) {
             expect(resolveMeteorConnectEnvironment(value)).toBe('development');
+        }
+    });
+
+    it('opens production Meteor only from the production MyNearWallet hostname', () => {
+        expect(resolveMeteorWalletWebUrl('app.mynearwallet.com')).toBe(
+            'https://wallet.meteorwallet.app/'
+        );
+        for (const hostname of [
+            'testnet.mynearwallet.com',
+            'staging.mynearwallet.com',
+            'localhost',
+            'app.mynearwallet.com.evil.example',
+            '',
+            undefined,
+        ]) {
+            expect(resolveMeteorWalletWebUrl(hostname)).toBe(
+                'https://wallet-dev.meteorwallet.app/'
+            );
         }
     });
 

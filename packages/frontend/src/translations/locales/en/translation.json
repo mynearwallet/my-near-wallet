@@ -972,6 +972,7 @@
             "removalWarning": "Once you’ve confirmed access to your accounts, you can remove the old access keys directly in Meteor Wallet.",
             "remove": "Remove accounts from MyNearWallet",
             "sourceKeyRemoved": "Old keys already removed via Meteor Wallet: {{count}}",
+            "startUsingMeteor": "Start Using Meteor",
             "subtitle": "All accounts are secured. Meteor Wallet verified each new key on-chain, confirmed the recovery phrase, and successfully imported your accounts.",
             "title": "Accounts Secured in Meteor Wallet",
             "unconfirmedTitle": "Still Being Secured"
@@ -1013,7 +1014,7 @@
         "continueDescription": "An earlier transfer was interrupted before it finished. Continue it — Meteor Wallet picks up exactly where you left off.",
         "continueExistingSecret": "Continue with existing-secret transfer",
         "continueTitle": "Continue transfer to Meteor Wallet",
-        "description": "Recommended. Meteor creates a fresh key for each account; no private key or recovery phrase ever leaves this wallet.",
+        "description": "Meteor creates one fresh key for all selected accounts; no private key or recovery phrase ever leaves this wallet.",
         "eligibility": {
             "algorithmUnsupported": "Only Ed25519 source keys are supported.",
             "ledgerUnsupported": "Ledger-backed source accounts are not supported by this transfer.",
@@ -1144,8 +1145,9 @@
             "supportReferenceLabel": "Support reference",
             "title": "Resolve an Unfinished Key Change"
         },
+        "selectedAccounts": "Selected Accounts",
         "showAdvanced": "Show advanced existing-secret transfer",
-        "start": "Transfer to Meteor Wallet",
+        "start": "Start transfer",
         "starting": "Opening Meteor Wallet…",
         "startOver": {
             "confirm": "Remove new keys and start over",

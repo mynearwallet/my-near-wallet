@@ -690,6 +690,7 @@
             "removalWarning": "Sau khi xác nhận có thể truy cập các tài khoản, bạn có thể gỡ các khóa truy cập cũ trực tiếp trong Meteor Wallet.",
             "remove": "Gỡ tài khoản khỏi MyNearWallet",
             "sourceKeyRemoved": "Khóa cũ đã được gỡ qua Meteor Wallet: {{count}}",
+            "startUsingMeteor": "Bắt đầu sử dụng Meteor",
             "subtitle": "Mọi tài khoản đều đã được bảo đảm. Meteor Wallet đã xác minh từng khóa mới trên chuỗi, xác nhận cụm từ khôi phục và nhập thành công các tài khoản của bạn.",
             "title": "Tài khoản đã được bảo đảm trong Meteor Wallet",
             "unconfirmedTitle": "Vẫn đang được bảo đảm"
@@ -731,7 +732,7 @@
         "continueDescription": "Một lần chuyển trước đó đã bị gián đoạn trước khi hoàn tất. Hãy tiếp tục — Meteor Wallet sẽ tiếp nối đúng chỗ bạn dừng lại.",
         "continueExistingSecret": "Tiếp tục chuyển bằng khóa hiện có",
         "continueTitle": "Tiếp tục chuyển sang Meteor Wallet",
-        "description": "Được khuyến nghị. Meteor tạo một khóa mới cho từng tài khoản; không có khóa riêng tư hay cụm từ khôi phục nào rời khỏi ví này.",
+        "description": "Meteor tạo một khóa mới duy nhất cho tất cả tài khoản đã chọn; không có khóa riêng tư hay cụm từ khôi phục nào rời khỏi ví này.",
         "eligibility": {
             "algorithmUnsupported": "Chỉ hỗ trợ khóa nguồn Ed25519.",
             "ledgerUnsupported": "Phiên chuyển này không hỗ trợ tài khoản nguồn dùng Ledger.",
@@ -862,8 +863,9 @@
             "supportReferenceLabel": "Mã tham chiếu hỗ trợ",
             "title": "Xử lý thay đổi khóa còn dang dở"
         },
+        "selectedAccounts": "Tài khoản đã chọn",
         "showAdvanced": "Hiện cách chuyển nâng cao bằng khóa hiện có",
-        "start": "Chuyển sang Meteor Wallet",
+        "start": "Bắt đầu chuyển",
         "starting": "Đang mở Meteor Wallet…",
         "startOver": {
             "confirm": "Xóa các khóa mới và bắt đầu lại",

@@ -858,6 +858,7 @@
             "removalWarning": "确认可以访问账户后，你可以直接在 Meteor Wallet 中移除旧的访问密钥。",
             "remove": "从 MyNearWallet 移除账户",
             "sourceKeyRemoved": "已通过 Meteor Wallet 移除的旧密钥：{{count}}",
+            "startUsingMeteor": "开始使用 Meteor",
             "subtitle": "所有账户都已受到保护。Meteor Wallet 已在链上验证每个新密钥、确认恢复短语，并成功导入你的账户。",
             "title": "账户已在 Meteor Wallet 中妥善保管",
             "unconfirmedTitle": "仍在保管中"
@@ -899,7 +900,7 @@
         "continueDescription": "先前的转移在完成前被中断。继续即可——Meteor Wallet 会从您上次停下的地方接着进行。",
         "continueExistingSecret": "继续使用现有密钥转移",
         "continueTitle": "继续转移到 Meteor Wallet",
-        "description": "推荐方式。Meteor 会为每个账户创建一把新密钥；任何私钥或助记词都不会离开本钱包。",
+        "description": "Meteor 会为所有已选账户创建同一把新密钥；任何私钥或助记词都不会离开本钱包。",
         "eligibility": {
             "algorithmUnsupported": "仅支持 Ed25519 来源密钥。",
             "ledgerUnsupported": "本次转移不支持基于 Ledger 的来源账户。",
@@ -1030,8 +1031,9 @@
             "supportReferenceLabel": "支持编号",
             "title": "处理一次未完成的密钥更改"
         },
+        "selectedAccounts": "已选账户",
         "showAdvanced": "显示使用现有密钥的高级转移",
-        "start": "转移到 Meteor Wallet",
+        "start": "开始转移",
         "starting": "正在打开 Meteor Wallet…",
         "startOver": {
             "confirm": "移除新密钥并重新开始",

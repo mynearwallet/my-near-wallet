@@ -23,3 +23,9 @@
  */
 export const resolveMeteorConnectEnvironment = (networkId) =>
     networkId === 'mainnet' ? 'production' : 'development';
+
+/** Production MyNearWallet is the only host that sends users to production Meteor Wallet. */
+export const resolveMeteorWalletWebUrl = (hostname) =>
+    hostname === 'app.mynearwallet.com' || hostname === 'testnet.mynearwallet.com'
+        ? 'https://wallet.meteorwallet.app/'
+        : 'https://wallet-dev.meteorwallet.app/';

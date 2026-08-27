@@ -732,6 +732,7 @@
             "removalWarning": "Depois de confirmar o acesso às suas contas, você pode remover as chaves de acesso antigas diretamente na Meteor Wallet.",
             "remove": "Remover contas da MyNearWallet",
             "sourceKeyRemoved": "Chaves antigas já removidas através da Meteor Wallet: {{count}}",
+            "startUsingMeteor": "Começar a usar a Meteor",
             "subtitle": "Todas as contas estão protegidas. A Meteor Wallet verificou cada nova chave on-chain, confirmou a frase de recuperação e importou suas contas com sucesso.",
             "title": "Contas protegidas na Meteor Wallet",
             "unconfirmedTitle": "Ainda a ser protegidas"
@@ -773,7 +774,7 @@
         "continueDescription": "Uma transferência anterior foi interrompida antes de terminar. Continue-a — a Meteor Wallet retoma exatamente de onde parou.",
         "continueExistingSecret": "Continuar com a transferência de chaves existentes",
         "continueTitle": "Continuar a transferência para a Meteor Wallet",
-        "description": "Recomendado. A Meteor cria uma nova chave para cada conta; nenhuma chave privada ou frase de recuperação sai desta carteira.",
+        "description": "A Meteor cria uma única nova chave para todas as contas selecionadas; nenhuma chave privada ou frase de recuperação sai desta carteira.",
         "eligibility": {
             "algorithmUnsupported": "Somente chaves de origem Ed25519 são suportadas.",
             "ledgerUnsupported": "Contas de origem com Ledger não são suportadas por esta transferência.",
@@ -904,8 +905,9 @@
             "supportReferenceLabel": "Referência de suporte",
             "title": "Resolver uma alteração de chave inacabada"
         },
+        "selectedAccounts": "Contas selecionadas",
         "showAdvanced": "Mostrar transferência avançada com chaves existentes",
-        "start": "Transferir para a Meteor Wallet",
+        "start": "Iniciar transferência",
         "starting": "Abrindo a Meteor Wallet…",
         "startOver": {
             "confirm": "Remover as novas chaves e recomeçar",

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import {
     // archiveMeteorNewKeyTransfer,
     isMeteorNewKeySourceKeyAbsent,
+    meteorWalletWebUrl,
 } from '../../services/meteorConnect';
 import accountImportedSuccess from '../../images/account-imported-success.svg';
 // import { describeNewKeyTransferError } from '../../services/newKeyTransferState';
@@ -86,7 +87,8 @@ const Buttons = styled.div`
     margin-top: 48px;
     text-align: center;
 
-    > button {
+    > button,
+    .secondary > button {
         width: 100%;
     }
 
@@ -269,19 +271,24 @@ export default function AccountExportNewKeyActivated() {
                             >
                                 {t('newKeyTransfer.activated.remove')}
                             </FormButton> */}
-                            <FormButton
-                                color='blue'
-                                disabled={removable.length === 0}
-                                onClick={() => {
-                                    trackMigrationCleanupSelected({
-                                        action: 'keep',
-                                        accounts: secured,
-                                    });
-                                    history.replace('/');
-                                }}
-                            >
-                                {t('newKeyTransfer.activated.done')}
+                            <FormButton color='blue' linkTo={meteorWalletWebUrl}>
+                                {t('newKeyTransfer.activated.startUsingMeteor')}
                             </FormButton>
+                            <div className='secondary'>
+                                <FormButton
+                                    className='link'
+                                    color='gray'
+                                    onClick={() => {
+                                        trackMigrationCleanupSelected({
+                                            action: 'keep',
+                                            accounts: secured,
+                                        });
+                                        history.replace('/');
+                                    }}
+                                >
+                                    {t('newKeyTransfer.activated.done')}
+                                </FormButton>
+                            </div>
                         </>
                     ) : (
                         <FormButton

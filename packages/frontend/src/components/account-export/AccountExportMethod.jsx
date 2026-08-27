@@ -1,35 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-    hasPendingMeteorNewKeyStart,
-    meteorNetworkId,
-    // promptMeteorAccountTransfer,
-    startMeteorNewKeyAccountTransfer,
-    startOverMeteorNewKeyTransfer,
-} from '../../services/meteorConnect';
-import {
-    describeNewKeyTransferError,
-    NEW_KEY_TRANSFER_RECOVERY_ROUTE,
-    newKeyTransferEligibilityKey,
-} from '../../services/newKeyTransferState';
-import FormButton from '../common/FormButton';
+import { hasPendingMeteorNewKeyStart } from '../../services/meteorConnect';
 import Container from '../common/styled/Container.css';
 import MeteorConnectIcon from '../svg/MeteorConnectIcon';
 import exportManualIcon from '../svg/Vector.svg';
-import {
-    trackMigrationMethodSelected,
-    trackNewKeyPrepareFailed,
-    trackNewKeyPrepareStarted,
-    trackNewKeyPrepareSucceeded,
-} from './accountExportAnalytics';
-import {
-    // loadExportAccountSecrets,
-    loadNewKeyTransferAccounts,
-} from './accountExportAccounts';
-// import { saveAccountExportSuccess } from './accountExportSuccessState';
+import { trackMigrationMethodSelected } from './accountExportAnalytics';
 
 const ExportMethodPage = styled(Container)`
     &.method-page {
@@ -149,11 +127,6 @@ const MethodButton = styled.button`
     }
 `;
 
-const DiscardPendingRow = styled.div`
-    margin-top: 8px;
-    text-align: center;
-`;
-
 // const Advanced = styled.div`
 //     margin-top: 40px;
 //     text-align: center;
@@ -171,40 +144,11 @@ const DiscardPendingRow = styled.div`
 //     }
 // `;
 
-const ErrorMessage = styled.div`
-    color: #dc1f25;
-    margin: 20px 0 0;
-    text-align: center;
-`;
-
-/** The raw SDK id. Support searches for it; a user never has to read it. */
-const SupportCode = styled.div`
-    color: #72727a;
-    font-family: monospace;
-    font-size: 12px;
-    line-height: 18px;
-    margin-top: 6px;
-    overflow-wrap: anywhere;
-    user-select: all;
-    word-break: break-all;
-`;
-
 export default function AccountExportMethod() {
     const { t } = useTranslation();
     const history = useHistory();
     const location = useLocation();
     const accountIds = location.state?.accountIds;
-    const [isExporting, setIsExporting] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    /** The raw SDK id behind `errorMessage`, shown as fine print so support can search for it. */
-    const [errorCode, setErrorCode] = useState('');
-    /**
-     * Whether the failure is the global fence. Offering "try again" here is offering something the
-     * SDK guarantees will fail — the only real route forward is reconciliation
-     * (REVIEW-consumer-implementation B-04/M-03).
-     */
-    const [isFencedError, setIsFencedError] = useState(false);
-    // const [showAdvanced, setShowAdvanced] = useState(false);
 
     useEffect(() => {
         if (!Array.isArray(accountIds) || accountIds.length === 0) {
@@ -218,91 +162,11 @@ export default function AccountExportMethod() {
      * (typically mid-way through confirming the recovery phrase) instead of minting a second set
      * of destination keys. The button below says "Continue" when that is what a click will do.
      */
-    const [hasInterruptedStart, setHasInterruptedStart] = useState(() =>
-        hasPendingMeteorNewKeyStart()
-    );
+    const hasInterruptedStart = hasPendingMeteorNewKeyStart();
 
-    /**
-     * Drop the interrupted attempt entirely — stash, wallet-side session, and any crash-window
-     * start result — so the next click starts a genuinely fresh transfer. (Merely selecting
-     * different accounts also starts fresh — the replay is fingerprint-matched — but the user
-     * should never have to know that.)
-     */
-    const discardInterruptedStart = async () => {
-        setIsExporting(true);
-        setErrorMessage('');
-        setErrorCode('');
-        setIsFencedError(false);
-        try {
-            await startOverMeteorNewKeyTransfer();
-        } catch (error) {
-            const { i18nKey, fallback, code, isFenced } =
-                describeNewKeyTransferError(error);
-            setErrorMessage(
-                i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError')
-            );
-            setErrorCode(code);
-            setIsFencedError(isFenced);
-        }
-        setHasInterruptedStart(hasPendingMeteorNewKeyStart());
-        setIsExporting(false);
-    };
-
-    const handleNewKeyTransfer = async () => {
+    const handleNewKeyTransfer = () => {
         trackMigrationMethodSelected('new_key', accountIds);
-        trackNewKeyPrepareStarted(accountIds);
-        setIsExporting(true);
-        setErrorMessage('');
-        setErrorCode('');
-        setIsFencedError(false);
-        try {
-            const accounts = await loadNewKeyTransferAccounts(accountIds);
-            // No target platform is pinned here: the SDK popup asks the user to choose the
-            // destination wallet (Meteor Web / Meteor Mobile, plus the dev-gated local wallet),
-            // and records what was actually chosen on the session for the verify turn.
-            const session = await startMeteorNewKeyAccountTransfer({
-                accounts,
-                networkId: meteorNetworkId,
-            });
-            // Meteor has answered and its destination keys are journaled; which accounts it
-            // accepted is read from the session on the next screen, not passed through history.
-            const rows = session.startOutput?.accounts || [];
-            trackNewKeyPrepareSucceeded({
-                accounts,
-                accepted: rows.filter(({ ok }) => ok),
-                refused: rows.filter(({ ok }) => !ok),
-            });
-            history.push('/export-accounts/new-key-ready', {
-                clientTransferId: session.clientTransferId,
-            });
-        } catch (error) {
-            trackNewKeyPrepareFailed({
-                stage: error?.availability != null ? 'eligibility' : 'meteor_start',
-                error,
-            });
-            if (error?.availability != null) {
-                // Local eligibility, decided before Meteor was asked anything — name the account
-                // and the actual reason rather than a generic transfer failure.
-                setErrorMessage(
-                    t('newKeyTransfer.ineligible', {
-                        accountId: error.accountId,
-                        reason: t(newKeyTransferEligibilityKey(error.availability)),
-                    })
-                );
-            } else {
-                const { i18nKey, fallback, code, isFenced } =
-                    describeNewKeyTransferError(error);
-                setErrorMessage(
-                    i18nKey ? t(i18nKey) : fallback || t('newKeyTransfer.genericError')
-                );
-                setErrorCode(code);
-                setIsFencedError(isFenced);
-            }
-            // The failed attempt's durable id (if any) is stashed by the service; re-clicking
-            // replays it, and the copy should say so.
-            setHasInterruptedStart(hasPendingMeteorNewKeyStart());
-            setIsExporting(false);
-        }
+        history.push('/export-accounts/new-key-start', { accountIds });
     };
 
     // const handleExistingSecretTransfer = async () => {
@@ -355,8 +219,7 @@ export default function AccountExportMethod() {
                 <MethodList>
                     <MethodButton
                         className='meteor-connect'
-                        disabled={isExporting}
-                        onClick={() => void handleNewKeyTransfer()}
+                        onClick={handleNewKeyTransfer}
                     >
                         <span className='method-icon-slot'>
                             <MeteorConnectIcon className='method-icon meteor-connect-icon' />
@@ -378,15 +241,9 @@ export default function AccountExportMethod() {
                         <span className='method-tag'>
                             {t('newKeyTransfer.recommended')}
                         </span>
-                        {isExporting && (
-                            <span className='method-status'>
-                                {t('newKeyTransfer.starting')}
-                            </span>
-                        )}
                     </MethodButton>
                     <MethodButton
                         className='manual-export'
-                        disabled={isExporting}
                         onClick={() => {
                             trackMigrationMethodSelected('manual', accountIds);
                             history.push('/export-accounts/manual', { accountIds });
@@ -407,40 +264,6 @@ export default function AccountExportMethod() {
                         </span>
                     </MethodButton>
                 </MethodList>
-
-                {hasInterruptedStart && (
-                    <DiscardPendingRow>
-                        <FormButton
-                            className='link'
-                            color='red'
-                            disabled={isExporting}
-                            onClick={() => void discardInterruptedStart()}
-                        >
-                            {t('newKeyTransfer.startOver.discardPending')}
-                        </FormButton>
-                    </DiscardPendingRow>
-                )}
-
-                {errorMessage && (
-                    <ErrorMessage>
-                        {errorMessage}
-                        {errorCode && (
-                            <SupportCode>
-                                {t('newKeyTransfer.supportCode', { code: errorCode })}
-                            </SupportCode>
-                        )}
-                        {isFencedError && (
-                            <FormButton
-                                className='link'
-                                onClick={() =>
-                                    history.push(NEW_KEY_TRANSFER_RECOVERY_ROUTE)
-                                }
-                            >
-                                {t('newKeyTransfer.error.resolveNow')}
-                            </FormButton>
-                        )}
-                    </ErrorMessage>
-                )}
 
                 {/* <Advanced>
                     <FormButton

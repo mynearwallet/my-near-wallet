@@ -757,6 +757,7 @@
             "removalWarning": "Dopo aver confermato l'accesso ai tuoi account, puoi rimuovere le vecchie chiavi di accesso direttamente in Meteor Wallet.",
             "remove": "Rimuovi gli account da MyNearWallet",
             "sourceKeyRemoved": "Vecchie chiavi già rimosse tramite Meteor Wallet: {{count}}",
+            "startUsingMeteor": "Inizia a usare Meteor",
             "subtitle": "Tutti gli account sono protetti. Meteor Wallet ha verificato ogni nuova chiave on-chain, confermato la frase di recupero e importato correttamente i tuoi account.",
             "title": "Account protetti in Meteor Wallet",
             "unconfirmedTitle": "Ancora in fase di protezione"
@@ -798,7 +799,7 @@
         "continueDescription": "Un trasferimento precedente è stato interrotto prima di terminare. Continualo: Meteor Wallet riprende esattamente da dove eri rimasto.",
         "continueExistingSecret": "Continua con il trasferimento delle chiavi esistenti",
         "continueTitle": "Continua il trasferimento a Meteor Wallet",
-        "description": "Consigliato. Meteor crea una nuova chiave per ogni account; nessuna chiave privata o frase di recupero lascia mai questo wallet.",
+        "description": "Meteor crea una sola nuova chiave per tutti gli account selezionati; nessuna chiave privata o frase di recupero lascia mai questo wallet.",
         "eligibility": {
             "algorithmUnsupported": "Sono supportate solo le chiavi di origine Ed25519.",
             "ledgerUnsupported": "Gli account di origine basati su Ledger non sono supportati da questo trasferimento.",
@@ -929,8 +930,9 @@
             "supportReferenceLabel": "Riferimento assistenza",
             "title": "Risolvi una modifica di chiave incompleta"
         },
+        "selectedAccounts": "Account selezionati",
         "showAdvanced": "Mostra il trasferimento avanzato con chiavi esistenti",
-        "start": "Trasferisci a Meteor Wallet",
+        "start": "Avvia trasferimento",
         "starting": "Apertura di Meteor Wallet…",
         "startOver": {
             "confirm": "Rimuovi le nuove chiavi e ricomincia",

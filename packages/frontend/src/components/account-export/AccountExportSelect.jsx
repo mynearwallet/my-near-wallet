@@ -7,7 +7,7 @@ import FormButton from '../common/FormButton';
 import LoadingDots from '../common/loader/LoadingDots';
 import Container from '../common/styled/Container.css';
 import AccountExportAccountList from './AccountExportAccountList';
-import AccountExportNotice from './AccountExportNotice';
+// import AccountExportNotice from './AccountExportNotice';
 import {
     trackMigrationAccountsScanned,
     trackMigrationAccountsScanFailed,
@@ -153,9 +153,9 @@ export default function AccountExportSelect() {
                 <div className='send-theme'>
                     <h1>{t('accountExport.select.title')}</h1>
                     <h2>{t('accountExport.select.subtitle')}</h2>
-                    <AccountExportNotice>
+                    {/* <AccountExportNotice>
                         <p>{t('accountExport.select.sharedRecoveryPhraseWarning')}</p>
-                    </AccountExportNotice>
+                    </AccountExportNotice> */}
                     {isLoading ? (
                         <LoadingState>
                             <LoadingDots />

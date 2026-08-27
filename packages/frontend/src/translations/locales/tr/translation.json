@@ -709,6 +709,7 @@
             "removalWarning": "Hesaplarınıza erişebildiğinizi doğruladıktan sonra eski erişim anahtarlarını doğrudan Meteor Wallet'tan kaldırabilirsiniz.",
             "remove": "Hesapları MyNearWallet'tan kaldır",
             "sourceKeyRemoved": "Meteor Wallet üzerinden zaten kaldırılan eski anahtarlar: {{count}}",
+            "startUsingMeteor": "Meteor'u kullanmaya başla",
             "subtitle": "Tüm hesaplar güvence altında. Meteor Wallet her yeni anahtarı zincirde doğruladı, kurtarma ifadesini onayladı ve hesaplarınızı başarıyla içe aktardı.",
             "title": "Hesaplar Meteor Wallet'ta güvence altında",
             "unconfirmedTitle": "Hâlâ güvence altına alınıyor"
@@ -750,7 +751,7 @@
         "continueDescription": "Önceki bir aktarım tamamlanmadan kesildi. Devam edin — Meteor Wallet kaldığınız yerden sürdürür.",
         "continueExistingSecret": "Mevcut anahtarla aktarıma devam et",
         "continueTitle": "Meteor Wallet'a aktarıma devam et",
-        "description": "Önerilen. Meteor her hesap için yeni bir anahtar oluşturur; hiçbir özel anahtar veya kurtarma ifadesi bu cüzdandan çıkmaz.",
+        "description": "Meteor seçilen tüm hesaplar için tek bir yeni anahtar oluşturur; hiçbir özel anahtar veya kurtarma ifadesi bu cüzdandan çıkmaz.",
         "eligibility": {
             "algorithmUnsupported": "Yalnızca Ed25519 kaynak anahtarları destekleniyor.",
             "ledgerUnsupported": "Ledger tabanlı kaynak hesaplar bu aktarımda desteklenmiyor.",
@@ -881,8 +882,9 @@
             "supportReferenceLabel": "Destek referansı",
             "title": "Tamamlanmamış bir anahtar değişikliğini çöz"
         },
+        "selectedAccounts": "Seçilen hesaplar",
         "showAdvanced": "Mevcut anahtarla gelişmiş aktarımı göster",
-        "start": "Meteor Wallet'a aktar",
+        "start": "Aktarımı başlat",
         "starting": "Meteor Wallet açılıyor…",
         "startOver": {
             "confirm": "Yeni anahtarları kaldır ve baştan başla",

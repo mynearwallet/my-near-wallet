@@ -81,17 +81,15 @@ const BannerLink = styled(Link)`
 `;
 
 /**
- * Where an unfinished transfer picks up. Once an AddKey intent is journaled the destination keys
- * may already be live on-chain, so resuming belongs on the activation screen — which asks the
- * journal what is actually left rather than re-offering keys that are already in flight.
+ * Where an unfinished transfer picks up. A resolved start moves directly into step 2, whether or
+ * not an AddKey intent has been journaled yet; the activation screen asks the journal what work is
+ * actually left and begins any pending AddKeys automatically.
  */
 const resumeRoute = (summary) =>
     summary == null
         ? '/export-accounts/select'
         : {
-              pathname: summary.hasAddKeyIntent
-                  ? '/export-accounts/new-key-activation'
-                  : '/export-accounts/new-key-ready',
+              pathname: '/export-accounts/new-key-activation',
               state: { clientTransferId: summary.clientTransferId },
           };
 

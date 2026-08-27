@@ -14,7 +14,10 @@ import {
     removeDestinationKeyWithSourceSigner,
     waitForDestinationKeyAbsence,
 } from './meteorConnectAddKeyChain';
-import { resolveMeteorConnectEnvironment } from './meteorConnectEnvironment';
+import {
+    resolveMeteorConnectEnvironment,
+    resolveMeteorWalletWebUrl,
+} from './meteorConnectEnvironment';
 import {
     newKeyStartInputFingerprint,
     resolveNewKeyStartOverPlan,
@@ -46,6 +49,9 @@ export const meteorNetworkId =
  * mapping is on the network and not on "is this a staging deployment".
  */
 const meteorConnectEnvironment = resolveMeteorConnectEnvironment(meteorNetworkId);
+export const meteorWalletWebUrl = resolveMeteorWalletWebUrl(
+    typeof window === 'undefined' ? '' : window.location.hostname
+);
 
 const meteorConnect = new MeteorConnect();
 
