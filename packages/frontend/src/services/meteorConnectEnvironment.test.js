@@ -24,15 +24,18 @@ describe('resolveMeteorConnectEnvironment', () => {
         }
     });
 
-    it('opens production Meteor only from the production MyNearWallet hostname', () => {
-        expect(resolveMeteorWalletWebUrl('app.mynearwallet.com')).toBe(
-            'https://wallet.meteorwallet.app/'
-        );
+    it('opens production Meteor from the app and testnet MyNearWallet hosts', () => {
+        for (const hostname of ['app.mynearwallet.com', 'testnet.mynearwallet.com']) {
+            expect(resolveMeteorWalletWebUrl(hostname)).toBe(
+                'https://wallet.meteorwallet.app/'
+            );
+        }
+
         for (const hostname of [
-            'testnet.mynearwallet.com',
             'staging.mynearwallet.com',
             'localhost',
             'app.mynearwallet.com.evil.example',
+            'testnet.mynearwallet.com.evil.example',
             '',
             undefined,
         ]) {
