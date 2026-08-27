@@ -848,6 +848,7 @@
         "activated": {
             "archive": "归档此转移记录",
             "checkStatus": "检查转移状态",
+            "done": "完成",
             "inProgressSubtitle": "您的新密钥已在链上激活，但 Meteor Wallet 尚未完成对每个账户的保管。请在 Meteor Wallet 中完成剩余步骤，然后使用“检查状态”。在每个账户都妥善保管之前，移除旧密钥保持锁定。",
             "inProgressTitle": "密钥已激活——正在 Meteor Wallet 中完成",
             "keep": "暂时保留",

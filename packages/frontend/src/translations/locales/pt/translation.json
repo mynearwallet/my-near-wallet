@@ -722,6 +722,7 @@
         "activated": {
             "archive": "Arquivar este registo de transferência",
             "checkStatus": "Verificar o estado da transferência",
+            "done": "Concluído",
             "inProgressSubtitle": "As suas novas chaves estão ativas on-chain, mas a Meteor Wallet ainda não terminou de proteger todas as contas. Conclua os passos restantes na Meteor Wallet e depois use Verificar estado. A remoção das chaves antigas fica bloqueada até todas as contas estarem protegidas.",
             "inProgressTitle": "Chaves ativas — a concluir na Meteor Wallet",
             "keep": "Manter por enquanto",

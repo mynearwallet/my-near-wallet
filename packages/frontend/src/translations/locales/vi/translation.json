@@ -680,6 +680,7 @@
         "activated": {
             "archive": "Lưu trữ bản ghi chuyển này",
             "checkStatus": "Kiểm tra trạng thái chuyển",
+            "done": "Xong",
             "inProgressSubtitle": "Các khóa mới của bạn đã hoạt động trên chuỗi, nhưng Meteor Wallet chưa hoàn tất việc bảo đảm mọi tài khoản. Hãy hoàn thành các bước còn lại trong Meteor Wallet, rồi dùng Kiểm tra trạng thái. Việc gỡ khóa cũ vẫn bị khóa cho đến khi mọi tài khoản được bảo đảm.",
             "inProgressTitle": "Khóa đã hoạt động — đang hoàn tất trong Meteor Wallet",
             "keep": "Tạm giữ lại",

@@ -4,10 +4,10 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-    archiveMeteorNewKeyTransfer,
+    // archiveMeteorNewKeyTransfer,
     isMeteorNewKeySourceKeyAbsent,
 } from '../../services/meteorConnect';
-import { describeNewKeyTransferError } from '../../services/newKeyTransferState';
+// import { describeNewKeyTransferError } from '../../services/newKeyTransferState';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import AccountExportNotice from './AccountExportNotice';
@@ -67,11 +67,11 @@ const FactNote = styled.p`
     text-align: center;
 `;
 
-const ErrorMessage = styled.p`
-    color: #dc1f25;
-    margin: 20px 0 0;
-    text-align: center;
-`;
+// const ErrorMessage = styled.p`
+//     color: #dc1f25;
+//     margin: 20px 0 0;
+//     text-align: center;
+// `;
 
 const Buttons = styled.div`
     margin-top: 48px;
@@ -109,8 +109,8 @@ export default function AccountExportNewKeyActivated() {
     const didTrackCompletion = useRef(false);
     /** accountId → true once the exact source key is proven absent at finality. */
     const [absentSourceKeys, setAbsentSourceKeys] = useState({});
-    const [archiveError, setArchiveError] = useState('');
-    const [isArchiving, setIsArchiving] = useState(false);
+    // const [archiveError, setArchiveError] = useState('');
+    // const [isArchiving, setIsArchiving] = useState(false);
 
     const isComplete = summary?.isFullySecured === true;
 
@@ -233,29 +233,44 @@ export default function AccountExportNewKeyActivated() {
                     </UnconfirmedSection>
                 )}
 
-                {(errorMessage || archiveError) && (
+                {/* {(errorMessage || archiveError) && (
                     <ErrorMessage>{errorMessage || archiveError}</ErrorMessage>
-                )}
+                )} */}
 
                 <Buttons>
                     {isComplete ? (
-                        <FormButton
-                            color='blue'
-                            disabled={removable.length === 0}
-                            onClick={() => {
-                                trackMigrationCleanupSelected({
-                                    action: 'remove',
-                                    accounts: removable,
-                                });
-                                history.push('/export-accounts/remove', {
-                                    accountIds: removable.map(
-                                        (account) => account.accountId
-                                    ),
-                                });
-                            }}
-                        >
-                            {t('newKeyTransfer.activated.remove')}
-                        </FormButton>
+                        <>
+                            {/* <FormButton
+                                color='blue'
+                                disabled={removable.length === 0}
+                                onClick={() => {
+                                    trackMigrationCleanupSelected({
+                                        action: 'remove',
+                                        accounts: removable,
+                                    });
+                                    history.push('/export-accounts/remove', {
+                                        accountIds: removable.map(
+                                            (account) => account.accountId
+                                        ),
+                                    });
+                                }}
+                            >
+                                {t('newKeyTransfer.activated.remove')}
+                            </FormButton> */}
+                            <FormButton
+                                color='blue'
+                                disabled={removable.length === 0}
+                                onClick={() => {
+                                    trackMigrationCleanupSelected({
+                                        action: 'keep',
+                                        accounts: secured,
+                                    });
+                                    history.replace('/');
+                                }}
+                            >
+                                {t('newKeyTransfer.activated.done')}
+                            </FormButton>
+                        </>
                     ) : (
                         <FormButton
                             color='blue'
@@ -268,7 +283,7 @@ export default function AccountExportNewKeyActivated() {
                             {t('newKeyTransfer.activated.checkStatus')}
                         </FormButton>
                     )}
-                    {isComplete && (
+                    {/* {isComplete && (
                         <div className='secondary'>
                             <FormButton
                                 className='link'
@@ -299,8 +314,8 @@ export default function AccountExportNewKeyActivated() {
                                 {t('newKeyTransfer.activated.archive')}
                             </FormButton>
                         </div>
-                    )}
-                    <div className='secondary'>
+                    )} */}
+                    {/* <div className='secondary'>
                         <FormButton
                             className='link'
                             color='gray'
@@ -314,7 +329,7 @@ export default function AccountExportNewKeyActivated() {
                         >
                             {t('newKeyTransfer.activated.keep')}
                         </FormButton>
-                    </div>
+                    </div> */}
                 </Buttons>
             </div>
         </ActivatedPage>

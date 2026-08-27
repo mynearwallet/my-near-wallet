@@ -848,6 +848,7 @@
         "activated": {
             "archive": "封存此轉移記錄",
             "checkStatus": "檢查轉移狀態",
+            "done": "完成",
             "inProgressSubtitle": "您的新金鑰已在鏈上啟用，但 Meteor Wallet 尚未完成對每個帳戶的保管。請在 Meteor Wallet 中完成剩餘步驟，然後使用「檢查狀態」。在每個帳戶都妥善保管之前，移除舊金鑰保持鎖定。",
             "inProgressTitle": "金鑰已啟用——正在 Meteor Wallet 中完成",
             "keep": "暫時保留",

@@ -962,6 +962,7 @@
         "activated": {
             "archive": "Archive this transfer record",
             "checkStatus": "Check transfer status",
+            "done": "Done",
             "inProgressSubtitle": "Your new keys are active on-chain, but Meteor Wallet has not finished securing every account. Finish the remaining steps in Meteor Wallet, then use Check status. Removing old keys stays locked until every account is secured.",
             "inProgressTitle": "Keys Active — Finishing in Meteor Wallet",
             "keep": "Keep them for now",

@@ -514,7 +514,7 @@ export default function AccountExportNewKeyActivation() {
                                 </FormButton>
                             </div>
                         )}
-                        <div className='secondary'>
+                        {/* <div className='secondary'>
                             <FormButton
                                 className='link'
                                 color='gray'
@@ -522,7 +522,7 @@ export default function AccountExportNewKeyActivation() {
                             >
                                 {t('newKeyTransfer.activation.finishLater')}
                             </FormButton>
-                        </div>
+                        </div> */}
                         {/* The honest late-cancel: remove the new keys with the source signer,
                             then discard — so a user is never locked into a destination wallet
                             by a transfer that has not secured anything yet. Renders nothing

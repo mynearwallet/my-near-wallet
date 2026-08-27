@@ -699,6 +699,7 @@
         "activated": {
             "archive": "Bu aktarım kaydını arşivle",
             "checkStatus": "Aktarım durumunu kontrol et",
+            "done": "Tamam",
             "inProgressSubtitle": "Yeni anahtarlarınız zincirde etkin, ancak Meteor Wallet henüz her hesabı güvence altına almayı bitirmedi. Kalan adımları Meteor Wallet'ta tamamlayın, sonra Durumu kontrol et'i kullanın. Eski anahtarları kaldırma, her hesap güvence altına alınana dek kilitli kalır.",
             "inProgressTitle": "Anahtarlar etkin — Meteor Wallet'ta tamamlanıyor",
             "keep": "Şimdilik kalsın",

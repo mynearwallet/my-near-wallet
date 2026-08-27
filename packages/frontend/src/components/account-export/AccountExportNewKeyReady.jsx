@@ -248,7 +248,7 @@ export default function AccountExportNewKeyReady() {
                             >
                                 {t('newKeyTransfer.ready.activate')}
                             </FormButton>
-                            <div className='secondary'>
+                            {/* <div className='secondary'>
                                 <FormButton
                                     className='link'
                                     color='gray'
@@ -256,7 +256,7 @@ export default function AccountExportNewKeyReady() {
                                 >
                                     {t('newKeyTransfer.ready.finishLater')}
                                 </FormButton>
-                            </div>
+                            </div> */}
                             {/* Before an AddKey intent is journaled, cancelling costs nothing
                                 and clears immediately. Once the intent exists the destination
                                 key may be live on-chain, so the plain discard stays withheld
