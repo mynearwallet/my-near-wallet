@@ -7,6 +7,7 @@ import {
     // archiveMeteorNewKeyTransfer,
     isMeteorNewKeySourceKeyAbsent,
 } from '../../services/meteorConnect';
+import accountImportedSuccess from '../../images/account-imported-success.svg';
 // import { describeNewKeyTransferError } from '../../services/newKeyTransferState';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
@@ -65,6 +66,14 @@ const FactNote = styled.p`
     line-height: 19px;
     margin: 12px 0 0;
     text-align: center;
+`;
+
+const CompletionIllustration = styled.img`
+    display: block;
+    height: auto;
+    margin: 0 auto 56px;
+    max-width: 100%;
+    width: 224px;
 `;
 
 // const ErrorMessage = styled.p`
@@ -183,6 +192,9 @@ export default function AccountExportNewKeyActivated() {
         <ActivatedPage className='small-centered'>
             <div className='send-theme'>
                 <NewKeyTransferProgress activeStep={4} />
+                {isComplete && (
+                    <CompletionIllustration src={accountImportedSuccess} alt='' />
+                )}
                 <h1>
                     {t(
                         isComplete
