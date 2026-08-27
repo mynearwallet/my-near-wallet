@@ -25,30 +25,23 @@ import {
 } from './newKeyTransferState';
 import CONFIG from '../config';
 
-export const meteorNetworkId =
-    CONFIG.CURRENT_NEAR_NETWORK === 'mainnet' ? 'mainnet' : 'testnet';
 /**
  * Which Meteor Connect environment this build belongs to — ONE decision that both the bridge
  * backend and the Meteor wallet app id are derived from, immediately below.
  *
- * They have to agree, and previously they could not: the app id followed the NEAR network while
- * the backend followed the BUILD MODE (`NODE_ENV`). A staging build is bundled with
- * `NODE_ENV=production`, so it dialled the production bridge while still asking for the dev
- * Meteor wallet — and the production bridge answers new sessions with a non-retryable
- * `session_disabled` (503) until the rollout gate opens. Nothing worked, and the reason was
- * invisible.
+ * They have to agree: the bridge issues the link that opens the Meteor wallet, so a session
+ * created on one environment can only be claimed by the wallet of that same environment.
  *
- * The environment follows the NEAR network because the wallet app id already did, and the two are
- * genuinely coupled: the bridge issues the link that opens the Meteor wallet, so a session created
- * on one environment can only be claimed by the wallet of that same environment.
+ *   mainnet (app.mynearwallet.com)  → production bridge   +  production Meteor wallet
+ *   everything else — every staging → development bridge  +  dev Meteor wallet
+ *   deploy, testnet, local dev         (wallet-dev.meteorwallet.app)
  *
- *   testnet  → development bridge  +  dev Meteor wallet  (wallet-dev.meteorwallet.app)
- *   mainnet  → production bridge   +  production Meteor wallet  (wallet.meteorwallet.app)
- *
- * This also keeps real mainnet key material away from the development bridge, which is why the
- * mapping is on the network and not on "is this a staging deployment".
+ * The decision follows the DEPLOYED environment (`NEAR_WALLET_ENV`), not the NEAR network and not
+ * the build mode (2026-08-27): staging builds — mainnet staging included — must exercise the
+ * transfer flow end-to-end against our own development stack without depending on the production
+ * rollout state. See `meteorConnectEnvironment.js` for the accepted trade-off.
  */
-const meteorConnectEnvironment = resolveMeteorConnectEnvironment(meteorNetworkId);
+const meteorConnectEnvironment = resolveMeteorConnectEnvironment(CONFIG.NEAR_WALLET_ENV);
 export const meteorWalletWebUrl = resolveMeteorWalletWebUrl(
     typeof window === 'undefined' ? '' : window.location.hostname
 );
