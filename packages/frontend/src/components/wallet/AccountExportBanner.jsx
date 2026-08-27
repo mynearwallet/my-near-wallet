@@ -17,7 +17,7 @@ const AccountExportBannerContainer = styled.section`
 
 const AccountExportBannerContent = styled.div`
     align-items: center;
-    background: linear-gradient(105deg, #d33838 0%, #f96868 100%);
+    background: linear-gradient(105deg, #ffd39a 0%, #ffe5bb 100%);
     border-radius: 16px;
     display: flex;
     justify-content: space-between;
@@ -37,7 +37,7 @@ const BannerCopy = styled.div`
 `;
 
 const BannerTitle = styled.div`
-    color: #fff;
+    color: #000;
     font-size: 20px;
     font-weight: 700;
     line-height: 26px;
@@ -45,7 +45,7 @@ const BannerTitle = styled.div`
 `;
 
 const BannerDescription = styled.div`
-    color: #fff;
+    color: #000;
     font-size: 14px;
     font-weight: 400;
     line-height: 21px;
