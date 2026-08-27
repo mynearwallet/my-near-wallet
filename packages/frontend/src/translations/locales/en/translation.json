@@ -980,15 +980,16 @@
         "activation": {
             "activatedStatusTitle": "Activated Accounts",
             "activatedTitle": "Meteor Keys Activated",
+            "activateKey": "Activate Key",
             "cancel": "Back to my wallet",
             "checkStatus": "Check status",
             "finishLater": "Finish later",
             "progress": "{{completed}} of {{total}} Completed",
             "retry": "Try Again",
             "statusTitle": "Account Status",
-            "subtitle": "The new Meteor keys are being added to your selected accounts. Keep this page open until every account is confirmed.",
-            "title": "Activating Meteor Keys",
-            "verifyKeys": "Verify Keys",
+            "subtitle": "The new Meteor keys will be added to your selected accounts. Keep this page open until every account is confirmed.",
+            "title": "Activate Meteor Keys",
+            "verifyKey": "Verify Key",
             "viewSecured": "View secured accounts ({{count}})"
         },
         "activationIssue": {

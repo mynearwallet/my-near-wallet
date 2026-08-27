@@ -698,15 +698,16 @@
         "activation": {
             "activatedStatusTitle": "Tài khoản đã kích hoạt",
             "activatedTitle": "Khóa Meteor đã được kích hoạt",
+            "activateKey": "Kích hoạt khóa",
             "cancel": "Quay lại ví của tôi",
             "checkStatus": "Kiểm tra trạng thái",
             "finishLater": "Hoàn tất sau",
             "progress": "Đã xong {{completed}}/{{total}}",
             "retry": "Thử lại",
             "statusTitle": "Trạng thái tài khoản",
-            "subtitle": "Các khóa Meteor mới đang được thêm vào những tài khoản bạn đã chọn. Hãy giữ trang này mở cho tới khi mọi tài khoản được xác nhận.",
-            "title": "Đang kích hoạt khóa Meteor",
-            "verifyKeys": "Xác minh khóa",
+            "subtitle": "Các khóa Meteor mới sẽ được thêm vào những tài khoản bạn đã chọn. Hãy giữ trang này mở cho tới khi mọi tài khoản được xác nhận.",
+            "title": "Kích hoạt khóa Meteor",
+            "verifyKey": "Xác minh khóa",
             "viewSecured": "Xem các tài khoản đã bảo đảm ({{count}})"
         },
         "activationIssue": {

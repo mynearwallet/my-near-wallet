@@ -21,6 +21,7 @@ import ExportAccountUnavailableIcon from '../svg/ExportAccountUnavailableIcon';
 import {
     trackMigrationActivationFailed,
     trackMigrationActivationFinished,
+    trackMigrationActivationRequested,
     trackMigrationActivationStarted,
 } from './accountExportAnalytics';
 import NewKeyTransferStartOverControl from './NewKeyTransferStartOverControl';
@@ -190,8 +191,8 @@ const setEvery = (accountIds, status) =>
     Object.fromEntries(accountIds.map((accountId) => [accountId, status]));
 
 /**
- * Step 2 and 3: this wallet signs and broadcasts an AddKey for every accepted account, then waits
- * for an explicit user click before asking Meteor to prove each key is live and import the account.
+ * Step 2 and 3 are both explicit: Activate Key signs and broadcasts the AddKeys, then Verify Key
+ * asks Meteor to prove each key is live and import the accounts.
  *
  * Both steps run under the SDK's crash-safe AddKey journal, so this screen never decides what is
  * safe to redo — it asks. `hasJournaledMeteorNewKeyVerification` is what makes a reload here
@@ -214,7 +215,6 @@ export default function AccountExportNewKeyActivation() {
     const [isRunning, setIsRunning] = useState(false);
     const [isReadyToVerify, setIsReadyToVerify] = useState(false);
     const [failureMessage, setFailureMessage] = useState('');
-    const hasAutoStarted = useRef(false);
     const statusesRef = useRef({});
 
     const updateStatuses = useCallback((nextOrUpdater) => {
@@ -364,18 +364,34 @@ export default function AccountExportNewKeyActivation() {
 
     useEffect(() => {
         if (
-            hasAutoStarted.current ||
             transferSessionId == null ||
             acceptedIds == null ||
             acceptedIds.length === 0
         ) {
             return;
         }
-        hasAutoStarted.current = true;
-        void runActivation(transferSessionId, acceptedIds, false);
-        // `acceptedIds` is rebuilt on every render; the ref is what makes this run once.
+        let isActive = true;
+        // Loading step 2 may inspect the durable journal, but it must never sign or broadcast.
+        // A completed AddKey pass (for example after a reload) resumes at Verify Keys.
+        void hasJournaledMeteorNewKeyVerification(transferSessionId)
+            .then((hasVerificationProof) => {
+                if (!isActive || !hasVerificationProof) {
+                    return;
+                }
+                updateStatuses(setEvery(acceptedIds, 'added'));
+                setIsReadyToVerify(true);
+            })
+            .catch((error) => {
+                if (isActive) {
+                    setFailureMessage(describeFailure(error));
+                }
+            });
+        return () => {
+            isActive = false;
+        };
+        // `acceptedIds` is rebuilt on every render; the transfer id identifies this account set.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [transferSessionId]);
+    }, [describeFailure, transferSessionId, updateStatuses]);
 
     if (isLoading || summary == null) {
         return (
@@ -475,49 +491,54 @@ export default function AccountExportNewKeyActivation() {
 
                 {failureMessage && <ErrorMessage>{failureMessage}</ErrorMessage>}
 
-                {!isRunning && (
-                    <Buttons>
-                        <FormButton
-                            onClick={() =>
-                                void runActivation(
-                                    summary.transferSessionId,
-                                    accounts.map((account) => account.accountId),
-                                    isReadyToVerify
-                                )
+                <Buttons>
+                    <FormButton
+                        disabled={isRunning}
+                        onClick={() => {
+                            if (!isReadyToVerify) {
+                                trackMigrationActivationRequested(accounts);
                             }
-                        >
-                            {t(
-                                // Once the AddKeys are journaled-complete, this button only
-                                // re-asks Meteor (stabilization SD8) — say so, instead of
-                                // implying the on-chain work will run again.
-                                hasPendingWalletRows || summary.isAwaitingWalletCompletion
-                                    ? 'newKeyTransfer.activation.checkStatus'
-                                    : isReadyToVerify
-                                    ? 'newKeyTransfer.activation.verifyKeys'
-                                    : 'newKeyTransfer.activation.retry'
-                            )}
-                        </FormButton>
-                        {securedCount > 0 && (
-                            <div className='secondary'>
-                                <FormButton
-                                    className='link'
-                                    onClick={() =>
-                                        history.push(
-                                            '/export-accounts/new-key-activated',
-                                            {
-                                                clientTransferId:
-                                                    summary.clientTransferId,
-                                            }
-                                        )
-                                    }
-                                >
-                                    {t('newKeyTransfer.activation.viewSecured', {
-                                        count: securedCount,
-                                    })}
-                                </FormButton>
-                            </div>
+                            void runActivation(
+                                summary.transferSessionId,
+                                accounts.map((account) => account.accountId),
+                                isReadyToVerify
+                            );
+                        }}
+                    >
+                        {t(
+                            // Once the AddKeys are journaled-complete, this button only
+                            // re-asks Meteor (stabilization SD8) — say so, instead of
+                            // implying the on-chain work will run again.
+                            hasPendingWalletRows || summary.isAwaitingWalletCompletion
+                                ? 'newKeyTransfer.activation.checkStatus'
+                                : isReadyToVerify
+                                ? 'newKeyTransfer.activation.verifyKey'
+                                : 'newKeyTransfer.activation.activateKey'
                         )}
-                        {/* <div className='secondary'>
+                    </FormButton>
+                    {!isRunning && (
+                        <>
+                            {securedCount > 0 && (
+                                <div className='secondary'>
+                                    <FormButton
+                                        className='link'
+                                        onClick={() =>
+                                            history.push(
+                                                '/export-accounts/new-key-activated',
+                                                {
+                                                    clientTransferId:
+                                                        summary.clientTransferId,
+                                                }
+                                            )
+                                        }
+                                    >
+                                        {t('newKeyTransfer.activation.viewSecured', {
+                                            count: securedCount,
+                                        })}
+                                    </FormButton>
+                                </div>
+                            )}
+                            {/* <div className='secondary'>
                             <FormButton
                                 className='link'
                                 color='gray'
@@ -526,13 +547,14 @@ export default function AccountExportNewKeyActivation() {
                                 {t('newKeyTransfer.activation.finishLater')}
                             </FormButton>
                         </div> */}
-                        {/* The honest late-cancel: remove the new keys with the source signer,
+                            {/* The honest late-cancel: remove the new keys with the source signer,
                             then discard — so a user is never locked into a destination wallet
                             by a transfer that has not secured anything yet. Renders nothing
                             once any account is secured. */}
-                        <NewKeyTransferStartOverControl summary={summary} />
-                    </Buttons>
-                )}
+                            <NewKeyTransferStartOverControl summary={summary} />
+                        </>
+                    )}
+                </Buttons>
             </div>
         </ActivationPage>
     );

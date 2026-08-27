@@ -717,15 +717,16 @@
         "activation": {
             "activatedStatusTitle": "Etkinleştirilen hesaplar",
             "activatedTitle": "Meteor anahtarları etkinleştirildi",
+            "activateKey": "Anahtarı etkinleştir",
             "cancel": "Cüzdanıma dön",
             "checkStatus": "Durumu kontrol et",
             "finishLater": "Sonra tamamla",
             "progress": "{{total}} hesabın {{completed}} tanesi tamamlandı",
             "retry": "Yeniden dene",
             "statusTitle": "Hesap durumu",
-            "subtitle": "Yeni Meteor anahtarları seçtiğiniz hesaplara ekleniyor. Tüm hesaplar doğrulanana kadar bu sayfayı açık tutun.",
-            "title": "Meteor anahtarları etkinleştiriliyor",
-            "verifyKeys": "Anahtarları doğrula",
+            "subtitle": "Yeni Meteor anahtarları seçtiğiniz hesaplara eklenecek. Tüm hesaplar doğrulanana kadar bu sayfayı açık tutun.",
+            "title": "Meteor anahtarlarını etkinleştir",
+            "verifyKey": "Anahtarı doğrula",
             "viewSecured": "Güvence altındaki hesapları gör ({{count}})"
         },
         "activationIssue": {

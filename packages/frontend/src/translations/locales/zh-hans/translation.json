@@ -866,15 +866,16 @@
         "activation": {
             "activatedStatusTitle": "已激活账户",
             "activatedTitle": "Meteor 密钥已激活",
+            "activateKey": "激活密钥",
             "cancel": "返回我的钱包",
             "checkStatus": "检查状态",
             "finishLater": "稍后完成",
             "progress": "已完成 {{completed}} / {{total}}",
             "retry": "重试",
             "statusTitle": "账户状态",
-            "subtitle": "正在把新的 Meteor 密钥添加到你选择的账户。在所有账户确认完成前，请保持本页面打开。",
-            "title": "正在激活 Meteor 密钥",
-            "verifyKeys": "验证密钥",
+            "subtitle": "新的 Meteor 密钥将添加到你选择的账户。在所有账户确认完成前，请保持本页面打开。",
+            "title": "激活 Meteor 密钥",
+            "verifyKey": "验证密钥",
             "viewSecured": "查看已妥善保管的账户（{{count}}）"
         },
         "activationIssue": {

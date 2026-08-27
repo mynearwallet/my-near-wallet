@@ -740,15 +740,16 @@
         "activation": {
             "activatedStatusTitle": "Contas ativadas",
             "activatedTitle": "Chaves da Meteor ativadas",
+            "activateKey": "Ativar chave",
             "cancel": "Voltar para minha carteira",
             "checkStatus": "Verificar estado",
             "finishLater": "Concluir mais tarde",
             "progress": "{{completed}} de {{total}} concluídas",
             "retry": "Tentar novamente",
             "statusTitle": "Status das contas",
-            "subtitle": "As novas chaves da Meteor estão sendo adicionadas às contas selecionadas. Mantenha esta página aberta até que todas as contas estejam confirmadas.",
-            "title": "Ativando as chaves da Meteor",
-            "verifyKeys": "Verificar chaves",
+            "subtitle": "As novas chaves da Meteor serão adicionadas às contas selecionadas. Mantenha esta página aberta até que todas as contas estejam confirmadas.",
+            "title": "Ativar as chaves da Meteor",
+            "verifyKey": "Verificar chave",
             "viewSecured": "Ver contas protegidas ({{count}})"
         },
         "activationIssue": {

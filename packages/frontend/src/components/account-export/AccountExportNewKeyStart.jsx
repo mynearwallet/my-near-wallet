@@ -17,7 +17,6 @@ import {
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import {
-    trackMigrationActivationRequested,
     trackNewKeyPrepareFailed,
     trackNewKeyPrepareStarted,
     trackNewKeyPrepareSucceeded,
@@ -122,7 +121,6 @@ export default function AccountExportNewKeyStart() {
                 return;
             }
 
-            trackMigrationActivationRequested(accepted);
             history.replace('/export-accounts/new-key-activation', {
                 clientTransferId: session.clientTransferId,
             });
