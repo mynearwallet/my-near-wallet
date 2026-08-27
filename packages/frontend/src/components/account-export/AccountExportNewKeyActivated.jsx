@@ -199,7 +199,7 @@ export default function AccountExportNewKeyActivated() {
                 </h2>
 
                 {isComplete && (
-                    <AccountExportNotice variant='error'>
+                    <AccountExportNotice variant='info'>
                         <p>{t('newKeyTransfer.activated.removalWarning')}</p>
                         <p>{t('newKeyTransfer.activated.removalRisk')}</p>
                     </AccountExportNotice>

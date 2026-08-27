@@ -3,9 +3,29 @@ import styled from 'styled-components';
 
 import InfoIconRounded from '../svg/InfoIconRounded.js';
 
+const NOTICE_COLORS = {
+    warning: {
+        background: '#fff3df',
+        icon: '#EF860D',
+        text: '#a15600',
+    },
+    error: {
+        background: '#ffdbdb',
+        icon: '#E5484D',
+        text: '#dc1f25',
+    },
+    info: {
+        background: '#E2EEFF',
+        icon: '#5380F5',
+        text: '#2757D5',
+    },
+};
+
+const colorsFor = (variant) => NOTICE_COLORS[variant] || NOTICE_COLORS.warning;
+
 const Notice = styled.section`
     align-items: center;
-    background: ${(props) => (props.$variant === 'error' ? '#ffdbdb' : '#fff3df')};
+    background: ${(props) => colorsFor(props.$variant).background};
     border-radius: 12px;
     display: flex;
     gap: 16px;
@@ -33,7 +53,7 @@ const Notice = styled.section`
     }
 
     p {
-        color: ${(props) => (props.$variant === 'error' ? '#dc1f25' : '#a15600')};
+        color: ${(props) => colorsFor(props.$variant).text};
         font-weight: 400;
         line-height: 22px;
         margin: 0;
@@ -46,15 +66,15 @@ const Notice = styled.section`
 
 export default function AccountExportNotice({ children, variant = 'warning' }) {
     const isError = variant === 'error';
-    const backgroundColor = isError ? '#ffdbdb' : '#fff3df';
+    const colors = colorsFor(variant);
 
     return (
         <Notice $variant={variant} role={isError ? 'alert' : 'note'}>
             <span className='notice-icon'>
                 <InfoIconRounded
-                    color={isError ? '#E5484D' : '#EF860D'}
+                    color={colors.icon}
                     filled
-                    glyphColor={backgroundColor}
+                    glyphColor={colors.background}
                 />
             </span>
             <div className='notice-content'>{children}</div>
