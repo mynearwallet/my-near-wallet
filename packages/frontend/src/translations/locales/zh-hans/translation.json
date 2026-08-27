@@ -907,6 +907,7 @@
             "ledgerUnsupported": "本次转移不支持基于 Ledger 的来源账户。",
             "noLocalKey": "没有可用的普通本地签名密钥。",
             "notFullAccess": "未找到完全访问权限密钥。",
+            "notFunded": "此隐式账户尚未注资。",
             "twoFactorUnsupported": "不支持启用 2FA/多签的账户。请先关闭 2FA，或改用手动导出。",
             "verificationFailed": "暂时无法检查该账户的密钥（网络问题）——账户没有任何更改。请稍后重试。"
         },

@@ -321,6 +321,8 @@ export const newKeyTransferEligibilityKey = (availability) => {
             return 'newKeyTransfer.eligibility.algorithmUnsupported';
         case 'no_local_key':
             return 'newKeyTransfer.eligibility.noLocalKey';
+        case 'not_funded':
+            return 'newKeyTransfer.eligibility.notFunded';
         default:
             return 'newKeyTransfer.eligibility.notFullAccess';
     }
