@@ -66,6 +66,34 @@ const Buttons = styled.div`
     }
 `;
 
+const RefusedList = styled.div`
+    margin-top: 16px;
+    text-align: left;
+`;
+
+const RefusedRow = styled.div`
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 12px 16px;
+
+    & + & {
+        margin-top: 8px;
+    }
+
+    .account-id {
+        font-weight: 600;
+        overflow-wrap: anywhere;
+        word-break: break-all;
+    }
+
+    .reason {
+        color: #dc1f25;
+        font-size: 13px;
+        line-height: 18px;
+        margin-top: 4px;
+    }
+`;
+
 /** Step 1A: explain the transfer and wait for a user gesture before opening Meteor Wallet. */
 export default function AccountExportNewKeyStart() {
     const { t } = useTranslation();
@@ -76,6 +104,7 @@ export default function AccountExportNewKeyStart() {
     const [errorMessage, setErrorMessage] = useState('');
     const [errorCode, setErrorCode] = useState('');
     const [isFencedError, setIsFencedError] = useState(false);
+    const [refusedRows, setRefusedRows] = useState([]);
     const [hasInterruptedStart, setHasInterruptedStart] = useState(() =>
         hasPendingMeteorNewKeyStart()
     );
@@ -90,6 +119,7 @@ export default function AccountExportNewKeyStart() {
         setErrorMessage('');
         setErrorCode('');
         setIsFencedError(false);
+        setRefusedRows([]);
     };
 
     const startTransfer = async () => {
@@ -115,8 +145,11 @@ export default function AccountExportNewKeyStart() {
 
             // A resolved request can still contain only refusals. There is no step-2 work in
             // that case, so keep the user here instead of rendering an empty activation screen.
+            // The subtitle promises "the reasons below" — the refused rows ARE those reasons,
+            // so they must actually be shown, per account.
             if (accepted.length === 0) {
                 setErrorMessage(t('newKeyTransfer.ready.noneSubtitle'));
+                setRefusedRows(refused);
                 setIsStarting(false);
                 return;
             }
@@ -217,6 +250,22 @@ export default function AccountExportNewKeyStart() {
                             </FormButton>
                         )}
                     </ErrorMessage>
+                )}
+
+                {refusedRows.length > 0 && (
+                    <RefusedList>
+                        {refusedRows.map((row) => (
+                            <RefusedRow key={`${row.networkId}:${row.accountId}`}>
+                                <div className='account-id'>{row.accountId}</div>
+                                <div className='reason'>
+                                    {t([
+                                        `newKeyTransfer.issue.${row.issue}`,
+                                        'newKeyTransfer.issue.unknown',
+                                    ])}
+                                </div>
+                            </RefusedRow>
+                        ))}
+                    </RefusedList>
                 )}
 
                 <Buttons>
