@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -13,6 +13,21 @@ import { describeNewKeyTransferError } from '../../services/newKeyTransferState'
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import ExportAccountUnavailableIcon from '../svg/ExportAccountUnavailableIcon';
+import {
+    trackMigrationRecoveryArchiveFailed,
+    trackMigrationRecoveryArchiveRequested,
+    trackMigrationRecoveryArchiveSucceeded,
+    trackMigrationRecoveryCheckFailed,
+    trackMigrationRecoveryCheckFinished,
+    trackMigrationRecoveryCheckRequested,
+    trackMigrationRecoveryFinishLater,
+    trackMigrationRecoveryReportFailed,
+    trackMigrationRecoveryReportLoaded,
+    trackMigrationRecoveryResolved,
+    trackMigrationRecoveryRevokeFailed,
+    trackMigrationRecoveryRevokeRequested,
+    trackMigrationRecoveryRevokeSucceeded,
+} from './accountExportAnalytics';
 
 /**
  * Resolve a transfer this device is fenced on.
@@ -175,13 +190,31 @@ export default function AccountExportNewKeyRecovery() {
     const [errorMessage, setErrorMessage] = useState('');
     /** Per-operation: the last SDK status, and whether a step is in flight. */
     const [operationState, setOperationState] = useState({});
+    const attempts = useRef({});
+    const didTrackResolved = useRef(false);
+
+    const nextAttempt = (operation, action) => {
+        const key = `${operationKey(operation)}::${action}`;
+        attempts.current[key] = (attempts.current[key] || 0) + 1;
+        return attempts.current[key];
+    };
 
     const reload = useCallback(async () => {
+        const startedAt = Date.now();
         setIsLoading(true);
         try {
-            setReport(await getMeteorNewKeyReconciliationReport());
+            const nextReport = await getMeteorNewKeyReconciliationReport();
+            setReport(nextReport);
+            trackMigrationRecoveryReportLoaded({
+                report: nextReport,
+                durationMs: Date.now() - startedAt,
+            });
             setErrorMessage('');
         } catch (error) {
+            trackMigrationRecoveryReportFailed({
+                error,
+                durationMs: Date.now() - startedAt,
+            });
             const { i18nKey, fallback } = describeNewKeyTransferError(error);
             setErrorMessage(i18nKey ? t(i18nKey) : fallback);
         } finally {
@@ -193,6 +226,13 @@ export default function AccountExportNewKeyRecovery() {
         void reload();
     }, [reload]);
 
+    useEffect(() => {
+        if (report?.fenced === false && !didTrackResolved.current) {
+            didTrackResolved.current = true;
+            trackMigrationRecoveryResolved();
+        }
+    }, [report]);
+
     const updateOperation = (operation, patch) =>
         setOperationState((state) => ({
             ...state,
@@ -201,15 +241,30 @@ export default function AccountExportNewKeyRecovery() {
 
     /** One pass of the SDK state machine. Reads the chain; never signs and never broadcasts. */
     const checkOperation = async (operation) => {
+        const attemptNumber = nextAttempt(operation, 'check');
+        const startedAt = Date.now();
+        trackMigrationRecoveryCheckRequested({ operation, attemptNumber });
         updateOperation(operation, { isBusy: true, error: '' });
         try {
             const result = await reconcileMeteorNewKeyFencedOperation(operation);
+            trackMigrationRecoveryCheckFinished({
+                operation,
+                result,
+                attemptNumber,
+                durationMs: Date.now() - startedAt,
+            });
             updateOperation(operation, { status: result.status, detail: result.detail });
             // A resolved operation may have lifted the whole fence.
             if (result.status === 'finalized' || result.status === 'not_found') {
                 await reload();
             }
         } catch (error) {
+            trackMigrationRecoveryCheckFailed({
+                operation,
+                error,
+                attemptNumber,
+                durationMs: Date.now() - startedAt,
+            });
             const { i18nKey, fallback } = describeNewKeyTransferError(error);
             updateOperation(operation, { error: i18nKey ? t(i18nKey) : fallback });
         } finally {
@@ -223,18 +278,65 @@ export default function AccountExportNewKeyRecovery() {
      * finality has not caught up, it refuses and the user tries again.
      */
     const revokeAndArchive = async (operation) => {
+        const revokeAttempt = nextAttempt(operation, 'revoke');
+        const revokeStartedAt = Date.now();
+        let archiveAttempt;
+        let archiveStartedAt;
+        let action = 'revoke';
+        trackMigrationRecoveryRevokeRequested({
+            operation,
+            attemptNumber: revokeAttempt,
+        });
         updateOperation(operation, { isBusy: true, error: '' });
         try {
             await removeMeteorNewKeyDestinationKey(operation);
+            trackMigrationRecoveryRevokeSucceeded({
+                operation,
+                attemptNumber: revokeAttempt,
+                durationMs: Date.now() - revokeStartedAt,
+            });
+            action = 'archive';
+            archiveAttempt = nextAttempt(operation, 'archive');
+            archiveStartedAt = Date.now();
+            trackMigrationRecoveryArchiveRequested({
+                operation,
+                attemptNumber: archiveAttempt,
+            });
             const archived = await archiveMeteorNewKeyFencedOperation(operation);
             if (!archived) {
+                trackMigrationRecoveryArchiveFailed({
+                    operation,
+                    errorCode: 'archive_refused',
+                    attemptNumber: archiveAttempt,
+                    durationMs: Date.now() - archiveStartedAt,
+                });
                 updateOperation(operation, {
                     error: t('newKeyTransfer.recovery.archiveRefused'),
                 });
                 return;
             }
+            trackMigrationRecoveryArchiveSucceeded({
+                operation,
+                attemptNumber: archiveAttempt,
+                durationMs: Date.now() - archiveStartedAt,
+            });
             await reload();
         } catch (error) {
+            if (action === 'archive') {
+                trackMigrationRecoveryArchiveFailed({
+                    operation,
+                    error,
+                    attemptNumber: archiveAttempt,
+                    durationMs: Date.now() - archiveStartedAt,
+                });
+            } else {
+                trackMigrationRecoveryRevokeFailed({
+                    operation,
+                    error,
+                    attemptNumber: revokeAttempt,
+                    durationMs: Date.now() - revokeStartedAt,
+                });
+            }
             const { i18nKey, fallback } = describeNewKeyTransferError(error);
             updateOperation(operation, { error: i18nKey ? t(i18nKey) : fallback });
         } finally {
@@ -244,17 +346,37 @@ export default function AccountExportNewKeyRecovery() {
 
     /** The transaction can never land and the key is not there: retire the record. */
     const archiveOperation = async (operation) => {
+        const attemptNumber = nextAttempt(operation, 'archive');
+        const startedAt = Date.now();
+        trackMigrationRecoveryArchiveRequested({ operation, attemptNumber });
         updateOperation(operation, { isBusy: true, error: '' });
         try {
             const archived = await archiveMeteorNewKeyFencedOperation(operation);
             if (!archived) {
+                trackMigrationRecoveryArchiveFailed({
+                    operation,
+                    errorCode: 'archive_refused',
+                    attemptNumber,
+                    durationMs: Date.now() - startedAt,
+                });
                 updateOperation(operation, {
                     error: t('newKeyTransfer.recovery.archiveRefused'),
                 });
                 return;
             }
+            trackMigrationRecoveryArchiveSucceeded({
+                operation,
+                attemptNumber,
+                durationMs: Date.now() - startedAt,
+            });
             await reload();
         } catch (error) {
+            trackMigrationRecoveryArchiveFailed({
+                operation,
+                error,
+                attemptNumber,
+                durationMs: Date.now() - startedAt,
+            });
             const { i18nKey, fallback } = describeNewKeyTransferError(error);
             updateOperation(operation, { error: i18nKey ? t(i18nKey) : fallback });
         } finally {
@@ -280,7 +402,9 @@ export default function AccountExportNewKeyRecovery() {
                     <h1>{t('newKeyTransfer.recovery.resolvedTitle')}</h1>
                     <h2>{t('newKeyTransfer.recovery.resolvedSubtitle')}</h2>
                     <Buttons>
-                        <FormButton onClick={() => history.replace('/export-accounts/select')}>
+                        <FormButton
+                            onClick={() => history.replace('/export-accounts/select')}
+                        >
                             {t('newKeyTransfer.recovery.continue')}
                         </FormButton>
                     </Buttons>
@@ -298,7 +422,9 @@ export default function AccountExportNewKeyRecovery() {
                 <h2>{t('newKeyTransfer.recovery.subtitle')}</h2>
 
                 {report?.reason === 'journal_unreadable' && (
-                    <Explainer>{t('newKeyTransfer.recovery.journalUnreadable')}</Explainer>
+                    <Explainer>
+                        {t('newKeyTransfer.recovery.journalUnreadable')}
+                    </Explainer>
                 )}
 
                 {report?.supportReference && (
@@ -317,14 +443,18 @@ export default function AccountExportNewKeyRecovery() {
                             <div className='heading'>
                                 <ExportAccountUnavailableIcon className='icon' />
                                 <div>
-                                    <div className='account-id'>{operation.accountId}</div>
+                                    <div className='account-id'>
+                                        {operation.accountId}
+                                    </div>
                                     <div className='network'>{operation.networkId}</div>
                                 </div>
                             </div>
                             <dl>
                                 <dt>{t('newKeyTransfer.recovery.fieldTransaction')}</dt>
                                 <dd>{operation.transactionHash}</dd>
-                                <dt>{t('newKeyTransfer.recovery.fieldDestinationKey')}</dt>
+                                <dt>
+                                    {t('newKeyTransfer.recovery.fieldDestinationKey')}
+                                </dt>
                                 <dd>{operation.destinationPublicKey}</dd>
                                 <dt>{t('newKeyTransfer.recovery.fieldSourceKey')}</dt>
                                 <dd>{operation.sourcePublicKey}</dd>
@@ -376,7 +506,16 @@ export default function AccountExportNewKeyRecovery() {
                 <Explainer>{t('newKeyTransfer.recovery.supportExplainer')}</Explainer>
 
                 <Buttons>
-                    <FormButton className='link' color='gray' onClick={() => history.replace('/')}>
+                    <FormButton
+                        className='link'
+                        color='gray'
+                        onClick={() => {
+                            trackMigrationRecoveryFinishLater({
+                                operationCount: operations.length,
+                            });
+                            history.replace('/');
+                        }}
+                    >
                         {t('newKeyTransfer.recovery.finishLater')}
                     </FormButton>
                 </Buttons>

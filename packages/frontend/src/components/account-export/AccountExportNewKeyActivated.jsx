@@ -15,7 +15,9 @@ import Container from '../common/styled/Container.css';
 import AccountExportNotice from './AccountExportNotice';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
 import {
-    trackMigrationCleanupSelected,
+    trackMigrationCheckStatusOpened,
+    trackMigrationDoneClicked,
+    trackMigrationStartUsingMeteorClicked,
     trackNewKeyMigrationCompleted,
 } from './accountExportAnalytics';
 import NewKeyTransferProgress from './NewKeyTransferProgress';
@@ -135,6 +137,7 @@ export default function AccountExportNewKeyActivated() {
         trackNewKeyMigrationCompleted({
             confirmed: summary.accepted.filter((account) => account.isSecured),
             unconfirmed: summary.accepted.filter((account) => !account.isSecured),
+            summary,
         });
     }, [summary, isComplete]);
 
@@ -254,24 +257,13 @@ export default function AccountExportNewKeyActivated() {
                 <Buttons>
                     {isComplete ? (
                         <>
-                            {/* <FormButton
+                            <FormButton
                                 color='blue'
-                                disabled={removable.length === 0}
-                                onClick={() => {
-                                    trackMigrationCleanupSelected({
-                                        action: 'remove',
-                                        accounts: removable,
-                                    });
-                                    history.push('/export-accounts/remove', {
-                                        accountIds: removable.map(
-                                            (account) => account.accountId
-                                        ),
-                                    });
-                                }}
+                                linkTo={meteorWalletWebUrl}
+                                onClick={() =>
+                                    trackMigrationStartUsingMeteorClicked(summary)
+                                }
                             >
-                                {t('newKeyTransfer.activated.remove')}
-                            </FormButton> */}
-                            <FormButton color='blue' linkTo={meteorWalletWebUrl}>
                                 {t('newKeyTransfer.activated.startUsingMeteor')}
                             </FormButton>
                             <div className='secondary'>
@@ -279,10 +271,7 @@ export default function AccountExportNewKeyActivated() {
                                     className='link'
                                     color='gray'
                                     onClick={() => {
-                                        trackMigrationCleanupSelected({
-                                            action: 'keep',
-                                            accounts: secured,
-                                        });
+                                        trackMigrationDoneClicked(summary);
                                         history.replace('/');
                                     }}
                                 >
@@ -293,11 +282,12 @@ export default function AccountExportNewKeyActivated() {
                     ) : (
                         <FormButton
                             color='blue'
-                            onClick={() =>
+                            onClick={() => {
+                                trackMigrationCheckStatusOpened(summary);
                                 history.replace('/export-accounts/new-key-activation', {
                                     clientTransferId: summary.clientTransferId,
-                                })
-                            }
+                                });
+                            }}
                         >
                             {t('newKeyTransfer.activated.checkStatus')}
                         </FormButton>
@@ -334,21 +324,6 @@ export default function AccountExportNewKeyActivated() {
                             </FormButton>
                         </div>
                     )} */}
-                    {/* <div className='secondary'>
-                        <FormButton
-                            className='link'
-                            color='gray'
-                            onClick={() => {
-                                trackMigrationCleanupSelected({
-                                    action: 'keep',
-                                    accounts: secured,
-                                });
-                                history.replace('/');
-                            }}
-                        >
-                            {t('newKeyTransfer.activated.keep')}
-                        </FormButton>
-                    </div> */}
                 </Buttons>
             </div>
         </ActivatedPage>

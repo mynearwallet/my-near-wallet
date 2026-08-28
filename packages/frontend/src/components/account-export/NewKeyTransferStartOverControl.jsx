@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -9,6 +9,13 @@ import {
     NEW_KEY_TRANSFER_RECOVERY_ROUTE,
 } from '../../services/newKeyTransferState';
 import FormButton from '../common/FormButton';
+import {
+    trackMigrationStartOverCancelled,
+    trackMigrationStartOverFailed,
+    trackMigrationStartOverPrompted,
+    trackMigrationStartOverRequested,
+    trackMigrationStartOverSucceeded,
+} from './accountExportAnalytics';
 
 const WarningPanel = styled.div`
     background: #fff6f6;
@@ -76,12 +83,16 @@ export default function NewKeyTransferStartOverControl({ summary, disabled }) {
     const [progress, setProgress] = useState(null);
     const [isWorking, setIsWorking] = useState(false);
     const [failure, setFailure] = useState(null);
+    const attempt = useRef(0);
 
     if (summary == null || summary.securedCount > 0) {
         return null;
     }
 
     const startOver = async () => {
+        const attemptNumber = ++attempt.current;
+        const startedAt = Date.now();
+        trackMigrationStartOverRequested({ summary, attemptNumber });
         setIsWorking(true);
         setFailure(null);
         setProgress(null);
@@ -91,6 +102,12 @@ export default function NewKeyTransferStartOverControl({ summary, disabled }) {
                 onProgress: ({ index, total }) => setProgress({ index, total }),
             });
         } catch (error) {
+            trackMigrationStartOverFailed({
+                summary,
+                error,
+                attemptNumber,
+                durationMs: Date.now() - startedAt,
+            });
             const { i18nKey, fallback, code, isFenced } =
                 describeNewKeyTransferError(error);
             setFailure({
@@ -104,6 +121,11 @@ export default function NewKeyTransferStartOverControl({ summary, disabled }) {
             setProgress(null);
             return;
         }
+        trackMigrationStartOverSucceeded({
+            summary,
+            attemptNumber,
+            durationMs: Date.now() - startedAt,
+        });
         history.replace('/export-accounts/select');
     };
 
@@ -114,7 +136,10 @@ export default function NewKeyTransferStartOverControl({ summary, disabled }) {
                     className='link'
                     color='red'
                     disabled={disabled || isWorking}
-                    onClick={() => setIsConfirming(true)}
+                    onClick={() => {
+                        trackMigrationStartOverPrompted(summary);
+                        setIsConfirming(true);
+                    }}
                 >
                     {t('newKeyTransfer.startOver.link')}
                 </FormButton>
@@ -151,6 +176,7 @@ export default function NewKeyTransferStartOverControl({ summary, disabled }) {
                                     className='link'
                                     color='gray'
                                     onClick={() => {
+                                        trackMigrationStartOverCancelled(summary);
                                         setIsConfirming(false);
                                         setFailure(null);
                                     }}

@@ -300,6 +300,23 @@ export const describeNewKeyTransferError = (error) => {
         : { fallback: message, code: message, isFenced };
 };
 
+/** A stable analytics-safe code for errors this wallet explicitly understands. */
+export const safeNewKeyTransferErrorCode = (error) => {
+    const versionSkewId = versionSkewIdOf(error);
+    if (versionSkewId != null) {
+        return versionSkewId;
+    }
+    if (
+        error != null &&
+        error.name === 'AddKeyJournalError' &&
+        ADD_KEY_JOURNAL_ERROR_KEYS[error.code] != null
+    ) {
+        return error.code;
+    }
+    const message = error instanceof Error ? error.message : String(error || '');
+    return ERROR_MESSAGE_KEYS[message] != null ? message : undefined;
+};
+
 /** Per-account refusal reasons Meteor may return from the start turn. */
 export const newKeyTransferIssueKey = (issue) =>
     `newKeyTransfer.issue.${issue || 'unknown'}`;

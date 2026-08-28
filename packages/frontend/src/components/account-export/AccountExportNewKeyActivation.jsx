@@ -23,6 +23,12 @@ import {
     trackMigrationActivationFinished,
     trackMigrationActivationRequested,
     trackMigrationActivationStarted,
+    trackMigrationCheckStatusRequested,
+    trackMigrationVerificationFailed,
+    trackMigrationVerificationFinished,
+    trackMigrationVerificationRequested,
+    trackMigrationVerificationStarted,
+    trackMigrationViewSecuredClicked,
 } from './accountExportAnalytics';
 import NewKeyTransferStartOverControl from './NewKeyTransferStartOverControl';
 import NewKeyTransferProgress from './NewKeyTransferProgress';
@@ -203,7 +209,7 @@ const setEvery = (accountIds, status) =>
 export default function AccountExportNewKeyActivation() {
     const { t } = useTranslation();
     const history = useHistory();
-    const { summary, isLoading, errorMessage, reload } = useNewKeyTransfer({
+    const { summary, isLoading, errorMessage, reload, isResume } = useNewKeyTransfer({
         redirectWhenVerified: true,
     });
     const [statuses, setStatuses] = useState({});
@@ -216,6 +222,8 @@ export default function AccountExportNewKeyActivation() {
     const [isReadyToVerify, setIsReadyToVerify] = useState(false);
     const [failureMessage, setFailureMessage] = useState('');
     const statusesRef = useRef({});
+    const activationAttempt = useRef(0);
+    const verificationAttempt = useRef(0);
 
     const updateStatuses = useCallback((nextOrUpdater) => {
         setStatuses((current) => {
@@ -237,16 +245,30 @@ export default function AccountExportNewKeyActivation() {
     );
 
     const runActivation = useCallback(
-        async (transferSessionId, accountIds, shouldVerify = false) => {
-            trackMigrationActivationStarted({
-                accounts:
-                    summary?.accepted || accountIds.map((accountId) => ({ accountId })),
-            });
+        async (
+            transferSessionId,
+            accountIds,
+            shouldVerify = false,
+            attemptNumber = 1
+        ) => {
+            const accounts =
+                summary?.accepted || accountIds.map((accountId) => ({ accountId }));
+            const startedAt = Date.now();
+            const operation = {
+                accounts,
+                summary,
+                attemptNumber,
+                isResume,
+            };
+            if (shouldVerify) {
+                trackMigrationVerificationStarted(operation);
+            } else {
+                trackMigrationActivationStarted(operation);
+            }
             setIsRunning(true);
             setFailureMessage('');
             setIssues({});
             setPendingFacts({});
-            let activationStage = 'add_keys';
             try {
                 const hasVerificationProof = await hasJournaledMeteorNewKeyVerification(
                     transferSessionId
@@ -278,10 +300,13 @@ export default function AccountExportNewKeyActivation() {
                 // automatic crash-safe resume) therefore stops here; the Verify Keys button
                 // starts the wallet turn in a separate run.
                 if (!shouldVerify) {
+                    trackMigrationActivationFinished({
+                        ...operation,
+                        durationMs: Date.now() - startedAt,
+                    });
                     return;
                 }
 
-                activationStage = 'verification';
                 updateStatuses(setEvery(accountIds, 'verifying'));
 
                 const { output } = await verifyMeteorNewKeyAccountTransfer({
@@ -317,9 +342,10 @@ export default function AccountExportNewKeyActivation() {
                 setIssues(nextIssues);
                 setPendingFacts(nextPendingFacts);
                 setLivenessFacts(nextLiveness);
-                trackMigrationActivationFinished({
-                    accounts: summary?.accepted,
+                trackMigrationVerificationFinished({
+                    ...operation,
                     outputAccounts: output.accounts,
+                    durationMs: Date.now() - startedAt,
                 });
 
                 if (accountIds.every((id) => nextStatuses[id] === 'confirmed')) {
@@ -345,18 +371,27 @@ export default function AccountExportNewKeyActivation() {
                     ])
                 );
                 updateStatuses(failureStatuses);
-                trackMigrationActivationFailed({
-                    stage: activationStage,
-                    error,
-                    statuses: failureStatuses,
-                    accounts: summary?.accepted,
-                });
+                if (shouldVerify) {
+                    trackMigrationVerificationFailed({
+                        ...operation,
+                        error,
+                        statuses: failureStatuses,
+                        durationMs: Date.now() - startedAt,
+                    });
+                } else {
+                    trackMigrationActivationFailed({
+                        ...operation,
+                        error,
+                        statuses: failureStatuses,
+                        durationMs: Date.now() - startedAt,
+                    });
+                }
             } finally {
                 setIsRunning(false);
                 await reload();
             }
         },
-        [describeFailure, history, reload, summary, updateStatuses]
+        [describeFailure, history, isResume, reload, summary, updateStatuses]
     );
 
     const acceptedIds = summary?.accepted.map((account) => account.accountId);
@@ -495,13 +530,34 @@ export default function AccountExportNewKeyActivation() {
                     <FormButton
                         disabled={isRunning}
                         onClick={() => {
-                            if (!isReadyToVerify) {
-                                trackMigrationActivationRequested(accounts);
+                            let attemptNumber;
+                            if (isReadyToVerify) {
+                                attemptNumber = ++verificationAttempt.current;
+                                const tracker =
+                                    hasPendingWalletRows ||
+                                    summary.isAwaitingWalletCompletion
+                                        ? trackMigrationCheckStatusRequested
+                                        : trackMigrationVerificationRequested;
+                                tracker({
+                                    accounts,
+                                    summary,
+                                    attemptNumber,
+                                    isResume,
+                                });
+                            } else {
+                                attemptNumber = ++activationAttempt.current;
+                                trackMigrationActivationRequested({
+                                    accounts,
+                                    summary,
+                                    attemptNumber,
+                                    isResume,
+                                });
                             }
                             void runActivation(
                                 summary.transferSessionId,
                                 accounts.map((account) => account.accountId),
-                                isReadyToVerify
+                                isReadyToVerify,
+                                attemptNumber
                             );
                         }}
                     >
@@ -522,15 +578,16 @@ export default function AccountExportNewKeyActivation() {
                                 <div className='secondary'>
                                     <FormButton
                                         className='link'
-                                        onClick={() =>
+                                        onClick={() => {
+                                            trackMigrationViewSecuredClicked(summary);
                                             history.push(
                                                 '/export-accounts/new-key-activated',
                                                 {
                                                     clientTransferId:
                                                         summary.clientTransferId,
                                                 }
-                                            )
-                                        }
+                                            );
+                                        }}
                                     >
                                         {t('newKeyTransfer.activation.viewSecured', {
                                             count: securedCount,

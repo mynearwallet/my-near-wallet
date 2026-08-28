@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -17,9 +17,13 @@ import {
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import {
+    trackNewKeyPrepareAllRefused,
     trackNewKeyPrepareFailed,
     trackNewKeyPrepareStarted,
     trackNewKeyPrepareSucceeded,
+    trackPendingStartDiscardFailed,
+    trackPendingStartDiscardRequested,
+    trackPendingStartDiscardSucceeded,
 } from './accountExportAnalytics';
 import { loadNewKeyTransferAccounts } from './accountExportAccounts';
 import AccountExportSelectedAccountList from './AccountExportSelectedAccountList';
@@ -108,6 +112,8 @@ export default function AccountExportNewKeyStart() {
     const [hasInterruptedStart, setHasInterruptedStart] = useState(() =>
         hasPendingMeteorNewKeyStart()
     );
+    const prepareAttempt = useRef(0);
+    const discardAttempt = useRef(0);
 
     useEffect(() => {
         if (!Array.isArray(accountIds) || accountIds.length === 0) {
@@ -123,7 +129,10 @@ export default function AccountExportNewKeyStart() {
     };
 
     const startTransfer = async () => {
-        trackNewKeyPrepareStarted(accountIds);
+        const attemptNumber = ++prepareAttempt.current;
+        const isResume = hasInterruptedStart;
+        const startedAt = Date.now();
+        trackNewKeyPrepareStarted(accountIds, { attemptNumber, isResume });
         setIsStarting(true);
         resetError();
         try {
@@ -141,6 +150,10 @@ export default function AccountExportNewKeyStart() {
                 accounts,
                 accepted,
                 refused,
+                session,
+                attemptNumber,
+                isResume,
+                durationMs: Date.now() - startedAt,
             });
 
             // A resolved request can still contain only refusals. There is no step-2 work in
@@ -148,6 +161,13 @@ export default function AccountExportNewKeyStart() {
             // The subtitle promises "the reasons below" — the refused rows ARE those reasons,
             // so they must actually be shown, per account.
             if (accepted.length === 0) {
+                trackNewKeyPrepareAllRefused({
+                    session,
+                    refused,
+                    attemptNumber,
+                    isResume,
+                    durationMs: Date.now() - startedAt,
+                });
                 setErrorMessage(t('newKeyTransfer.ready.noneSubtitle'));
                 setRefusedRows(refused);
                 setIsStarting(false);
@@ -161,6 +181,9 @@ export default function AccountExportNewKeyStart() {
             trackNewKeyPrepareFailed({
                 stage: error?.availability != null ? 'eligibility' : 'meteor_start',
                 error,
+                attemptNumber,
+                isResume,
+                durationMs: Date.now() - startedAt,
             });
             if (error?.availability != null) {
                 setErrorMessage(
@@ -184,12 +207,26 @@ export default function AccountExportNewKeyStart() {
     };
 
     const discardInterruptedStart = async () => {
+        const attemptNumber = ++discardAttempt.current;
+        const startedAt = Date.now();
+        trackPendingStartDiscardRequested({ attemptNumber, isResume: true });
         setIsStarting(true);
         resetError();
         try {
             await startOverMeteorNewKeyTransfer();
+            trackPendingStartDiscardSucceeded({
+                attemptNumber,
+                isResume: true,
+                durationMs: Date.now() - startedAt,
+            });
             setHasInterruptedStart(false);
         } catch (error) {
+            trackPendingStartDiscardFailed({
+                error,
+                attemptNumber,
+                isResume: true,
+                durationMs: Date.now() - startedAt,
+            });
             const { i18nKey, fallback, code, isFenced } =
                 describeNewKeyTransferError(error);
             setErrorMessage(

@@ -3,12 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { getMeteorNewKeyTransferSessions } from '../../services/meteorConnect';
+import {
+    getMeteorNewKeyTransferSessions,
+    hasJournaledMeteorNewKeyVerification,
+} from '../../services/meteorConnect';
 import {
     findResumableNewKeyTransfer,
     summarizeNewKeyTransferSession,
 } from '../../services/newKeyTransferState';
-import { trackMigrationEntryClicked } from '../account-export/accountExportAnalytics';
+import {
+    trackMigrationEntryClicked,
+    trackMigrationEntryLoadFailed,
+} from '../account-export/accountExportAnalytics';
 
 const AccountExportBannerContainer = styled.section`
     margin-bottom: 28px;
@@ -83,19 +89,20 @@ const BannerLink = styled(Link)`
 /**
  * Where an unfinished transfer picks up. A resolved start moves directly into step 2, whether or
  * not an AddKey intent has been journaled yet; the activation screen asks the journal what work is
- * actually left and begins any pending AddKeys automatically.
+ * actually left and waits for the corresponding user action.
  */
 const resumeRoute = (summary) =>
     summary == null
         ? '/export-accounts/select'
         : {
               pathname: '/export-accounts/new-key-activation',
-              state: { clientTransferId: summary.clientTransferId },
+              state: { clientTransferId: summary.clientTransferId, isResume: true },
           };
 
 export default function AccountExportBanner() {
     const { t } = useTranslation();
     const [pendingSummary, setPendingSummary] = useState(null);
+    const [resumeStage, setResumeStage] = useState(undefined);
 
     useEffect(() => {
         let isActive = true;
@@ -103,10 +110,28 @@ export default function AccountExportBanner() {
             try {
                 const sessions = await getMeteorNewKeyTransferSessions();
                 const resumable = findResumableNewKeyTransfer(sessions);
-                if (isActive) {
-                    setPendingSummary(summarizeNewKeyTransferSession(resumable));
+                const summary = summarizeNewKeyTransferSession(resumable);
+                let nextResumeStage;
+                if (summary?.isAwaitingWalletCompletion) {
+                    nextResumeStage = 'wallet_completion';
+                } else if (summary != null) {
+                    try {
+                        nextResumeStage = (await hasJournaledMeteorNewKeyVerification(
+                            summary.transferSessionId
+                        ))
+                            ? 'verify_keys'
+                            : 'activate_keys';
+                    } catch (error) {
+                        trackMigrationEntryLoadFailed(error);
+                        nextResumeStage = 'activate_keys';
+                    }
                 }
-            } catch {
+                if (isActive) {
+                    setPendingSummary(summary);
+                    setResumeStage(nextResumeStage);
+                }
+            } catch (error) {
+                trackMigrationEntryLoadFailed(error);
                 // A journal this banner cannot read is not something to shout about here; the
                 // export screens report it properly. Offer the ordinary entry point.
             }
@@ -130,9 +155,7 @@ export default function AccountExportBanner() {
                     onClick={() =>
                         trackMigrationEntryClicked({
                             entry: pendingSummary ? 'resume' : 'start',
-                            resumeStage: pendingSummary?.hasAddKeyIntent
-                                ? 'activation'
-                                : 'ready',
+                            resumeStage,
                         })
                     }
                 >

@@ -9,6 +9,8 @@ import Container from '../common/styled/Container.css';
 import AccountExportAccountList from './AccountExportAccountList';
 // import AccountExportNotice from './AccountExportNotice';
 import {
+    trackMigrationAccountSelectionCancelled,
+    trackMigrationAccountSelectionChanged,
     trackMigrationAccountsScanned,
     trackMigrationAccountsScanFailed,
     trackMigrationAccountsSubmitted,
@@ -126,6 +128,10 @@ export default function AccountExportSelect() {
     const handleAccountSelection = (accountId) => {
         setSelectedAccountIds((currentSelectedAccountIds) => {
             if (currentSelectedAccountIds.includes(accountId)) {
+                trackMigrationAccountSelectionChanged({
+                    account: accounts.find((account) => account.accountId === accountId),
+                    selected: false,
+                });
                 return currentSelectedAccountIds.filter((id) => id !== accountId);
             }
 
@@ -133,6 +139,10 @@ export default function AccountExportSelect() {
                 return currentSelectedAccountIds;
             }
 
+            trackMigrationAccountSelectionChanged({
+                account: accounts.find((account) => account.accountId === accountId),
+                selected: true,
+            });
             return [...currentSelectedAccountIds, accountId];
         });
     };
@@ -181,7 +191,12 @@ export default function AccountExportSelect() {
                     <FormButton
                         className='link'
                         color='gray'
-                        onClick={() => history.push('/')}
+                        onClick={() => {
+                            trackMigrationAccountSelectionCancelled({
+                                selectedCount: selectedAccountIds.length,
+                            });
+                            history.push('/');
+                        }}
                     >
                         {t('accountExport.select.cancel')}
                     </FormButton>

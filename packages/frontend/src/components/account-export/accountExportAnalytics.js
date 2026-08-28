@@ -1,20 +1,62 @@
 import { Mixpanel } from '../../mixpanel';
+import CONFIG from '../../config';
+import {
+    describeNewKeyTransferActivationRow,
+    safeNewKeyTransferErrorCode,
+} from '../../services/newKeyTransferState';
 
 const EVENTS = {
     ENTRY_CLICKED: 'wallet_migration_entry_clicked',
     ACCOUNTS_SCANNED: 'wallet_migration_accounts_scanned',
     ACCOUNTS_SCAN_FAILED: 'wallet_migration_accounts_scan_failed',
+    ACCOUNT_SELECTED: 'wallet_migration_account_selected',
+    ACCOUNT_DESELECTED: 'wallet_migration_account_deselected',
+    ACCOUNT_SELECTION_CANCELLED: 'wallet_migration_account_selection_cancelled',
     ACCOUNTS_SUBMITTED: 'wallet_migration_accounts_submitted',
     METHOD_SELECTED: 'wallet_migration_method_selected',
+    METHOD_EXITED: 'wallet_migration_method_exited',
     NEW_KEY_PREPARE_STARTED: 'wallet_migration_new_key_prepare_started',
     NEW_KEY_PREPARE_SUCCEEDED: 'wallet_migration_new_key_prepare_succeeded',
     NEW_KEY_PREPARE_FAILED: 'wallet_migration_new_key_prepare_failed',
+    NEW_KEY_PREPARE_ALL_REFUSED: 'wallet_migration_new_key_prepare_all_refused',
+    PENDING_START_DISCARD_REQUESTED: 'wallet_migration_pending_start_discard_requested',
+    PENDING_START_DISCARD_SUCCEEDED: 'wallet_migration_pending_start_discard_succeeded',
+    PENDING_START_DISCARD_FAILED: 'wallet_migration_pending_start_discard_failed',
     ACTIVATION_REQUESTED: 'wallet_migration_activation_requested',
     ACTIVATION_STARTED: 'wallet_migration_activation_started',
     ACTIVATION_FINISHED: 'wallet_migration_activation_finished',
     ACTIVATION_FAILED: 'wallet_migration_activation_failed',
+    VERIFICATION_REQUESTED: 'wallet_migration_verification_requested',
+    VERIFICATION_STARTED: 'wallet_migration_verification_started',
+    VERIFICATION_FINISHED: 'wallet_migration_verification_finished',
+    VERIFICATION_FAILED: 'wallet_migration_verification_failed',
+    CHECK_STATUS_REQUESTED: 'wallet_migration_check_status_requested',
+    CHECK_STATUS_OPENED: 'wallet_migration_check_status_opened',
     NEW_KEY_COMPLETED: 'wallet_migration_new_key_completed',
-    CLEANUP_SELECTED: 'wallet_migration_cleanup_selected',
+    START_USING_METEOR_CLICKED: 'wallet_migration_start_using_meteor_clicked',
+    DONE_CLICKED: 'wallet_migration_done_clicked',
+    VIEW_SECURED_CLICKED: 'wallet_migration_view_secured_clicked',
+    START_OVER_PROMPTED: 'wallet_migration_start_over_prompted',
+    START_OVER_CANCELLED: 'wallet_migration_start_over_cancelled',
+    START_OVER_REQUESTED: 'wallet_migration_start_over_requested',
+    START_OVER_SUCCEEDED: 'wallet_migration_start_over_succeeded',
+    START_OVER_FAILED: 'wallet_migration_start_over_failed',
+    ENTRY_LOAD_FAILED: 'wallet_migration_entry_load_failed',
+    SESSION_LOAD_FAILED: 'wallet_migration_session_load_failed',
+    SESSION_REDIRECTED: 'wallet_migration_session_redirected',
+    RECOVERY_REPORT_LOADED: 'wallet_migration_recovery_report_loaded',
+    RECOVERY_REPORT_FAILED: 'wallet_migration_recovery_report_failed',
+    RECOVERY_CHECK_REQUESTED: 'wallet_migration_recovery_check_requested',
+    RECOVERY_CHECK_FINISHED: 'wallet_migration_recovery_check_finished',
+    RECOVERY_CHECK_FAILED: 'wallet_migration_recovery_check_failed',
+    RECOVERY_REVOKE_REQUESTED: 'wallet_migration_recovery_revoke_requested',
+    RECOVERY_REVOKE_SUCCEEDED: 'wallet_migration_recovery_revoke_succeeded',
+    RECOVERY_REVOKE_FAILED: 'wallet_migration_recovery_revoke_failed',
+    RECOVERY_ARCHIVE_REQUESTED: 'wallet_migration_recovery_archive_requested',
+    RECOVERY_ARCHIVE_SUCCEEDED: 'wallet_migration_recovery_archive_succeeded',
+    RECOVERY_ARCHIVE_FAILED: 'wallet_migration_recovery_archive_failed',
+    RECOVERY_RESOLVED: 'wallet_migration_recovery_resolved',
+    RECOVERY_FINISH_LATER: 'wallet_migration_recovery_finish_later',
     LOCAL_REMOVAL_SUCCEEDED: 'wallet_migration_local_removal_succeeded',
     LOCAL_REMOVAL_FAILED: 'wallet_migration_local_removal_failed',
     MANUAL_OPENED: 'wallet_migration_manual_opened',
@@ -31,6 +73,7 @@ const ELIGIBILITY_REASONS = [
     'algorithm_unsupported',
     'two_factor_unsupported',
     'not_full_access',
+    'not_funded',
     'verification_failed',
 ];
 
@@ -54,23 +97,36 @@ const ACTIVATION_ISSUES = [
     'source_signer_mismatch',
 ];
 
-const KNOWN_ERROR_CODES = new Set([
-    'new_key_transfer_unavailable',
-    'new_key_transfer_session_not_found',
-    'new_key_transfer_no_accounts_ready',
-    'new_key_transfer_start_result_journal_missing',
-    'new_key_transfer_start_result_conflict',
-    'new_key_transfer_orphaned_add_key_recovery',
-    'new_key_transfer_recovery_required',
-    'new_key_transfer_journal_corrupt',
-    'new_key_transfer_wallet_binding_missing',
-    'new_key_transfer_client_id_conflict',
-    'new_key_transfer_verification_proof_missing',
-]);
-
 const count = (items) => (Array.isArray(items) ? items.length : 0);
 
-const track = (eventName, properties) => Mixpanel.track(eventName, properties);
+const migrationNetworkId =
+    CONFIG.CURRENT_NEAR_NETWORK === 'mainnet' ? 'mainnet' : 'testnet';
+
+const track = (eventName, properties = {}) =>
+    Mixpanel.track(eventName, { network_id: migrationNetworkId, ...properties });
+
+const transferProperties = (transfer, operation = {}) => ({
+    ...(transfer?.clientTransferId != null
+        ? { client_transfer_id: transfer.clientTransferId }
+        : {}),
+    ...(transfer?.transferSessionId != null
+        ? { transfer_session_id: transfer.transferSessionId }
+        : transfer?.startOutput?.transferSessionId != null
+        ? { transfer_session_id: transfer.startOutput.transferSessionId }
+        : {}),
+    ...(Array.isArray(transfer?.accepted)
+        ? { account_count: transfer.accepted.length }
+        : Array.isArray(transfer?.startOutput?.accounts)
+        ? {
+              account_count: transfer.startOutput.accounts.filter((row) => row.ok).length,
+          }
+        : {}),
+    ...(operation.attemptNumber != null
+        ? { attempt_number: operation.attemptNumber }
+        : {}),
+    ...(operation.isResume != null ? { is_resume: operation.isResume } : {}),
+    ...(operation.durationMs != null ? { duration_ms: operation.durationMs } : {}),
+});
 
 const publicAccounts = (accounts) =>
     (accounts || [])
@@ -123,11 +179,12 @@ export const safeMigrationErrorCode = (error) => {
         return `eligibility_${error.availability}`;
     }
 
+    const knownNewKeyCode = safeNewKeyTransferErrorCode(error);
+    if (knownNewKeyCode != null) {
+        return knownNewKeyCode;
+    }
     const message =
         error instanceof Error ? error.message : typeof error === 'string' ? error : '';
-    if (KNOWN_ERROR_CODES.has(message)) {
-        return message;
-    }
     if (message.includes('does not have enough available NEAR')) {
         return 'insufficient_balance';
     }
@@ -147,10 +204,11 @@ export const safeMigrationErrorCode = (error) => {
 export const trackMigrationEntryClicked = ({ entry, resumeStage }) =>
     track(EVENTS.ENTRY_CLICKED, {
         entry: entry === 'resume' ? 'resume' : 'start',
-        ...(entry === 'resume'
-            ? { resume_stage: resumeStage === 'activation' ? 'activation' : 'ready' }
-            : {}),
+        ...(entry === 'resume' ? { resume_stage: resumeStage } : {}),
     });
+
+export const trackMigrationEntryLoadFailed = (error) =>
+    track(EVENTS.ENTRY_LOAD_FAILED, { error_code: safeMigrationErrorCode(error) });
 
 export const trackMigrationAccountsScanned = (accounts) => {
     const eligibleCount = (accounts || []).filter(
@@ -173,6 +231,14 @@ export const trackMigrationAccountsScanFailed = (error) =>
         error_code: safeMigrationErrorCode(error),
     });
 
+export const trackMigrationAccountSelectionChanged = ({ account, selected }) =>
+    track(selected ? EVENTS.ACCOUNT_SELECTED : EVENTS.ACCOUNT_DESELECTED, {
+        accounts: publicAccounts([account]),
+    });
+
+export const trackMigrationAccountSelectionCancelled = ({ selectedCount }) =>
+    track(EVENTS.ACCOUNT_SELECTION_CANCELLED, { selected_count: selectedCount });
+
 export const trackMigrationAccountsSubmitted = (accounts) =>
     track(EVENTS.ACCOUNTS_SUBMITTED, {
         selected_count: count(accounts),
@@ -185,13 +251,26 @@ export const trackMigrationMethodSelected = (method, accountIds) =>
         account_ids: accountIds,
     });
 
-export const trackNewKeyPrepareStarted = (accountIds) =>
-    track(EVENTS.NEW_KEY_PREPARE_STARTED, {
+export const trackMigrationMethodExited = (accountIds) =>
+    track(EVENTS.METHOD_EXITED, {
         selected_count: count(accountIds),
         account_ids: accountIds,
     });
 
-export const trackNewKeyPrepareSucceeded = ({ accounts, accepted, refused }) =>
+export const trackNewKeyPrepareStarted = (accountIds, operation) =>
+    track(EVENTS.NEW_KEY_PREPARE_STARTED, {
+        selected_count: count(accountIds),
+        account_ids: accountIds,
+        ...transferProperties(undefined, operation),
+    });
+
+export const trackNewKeyPrepareSucceeded = ({
+    accounts,
+    accepted,
+    refused,
+    session,
+    ...operation
+}) =>
     track(EVENTS.NEW_KEY_PREPARE_SUCCEEDED, {
         selected_count: count(accounts),
         accepted_count: count(accepted),
@@ -200,63 +279,306 @@ export const trackNewKeyPrepareSucceeded = ({ accounts, accepted, refused }) =>
             mergeAccountIdentity(accounts, [...(accepted || []), ...(refused || [])])
         ),
         ...reasonCounts(refused, 'issue', REFUSAL_REASONS, 'refused'),
+        ...transferProperties(session, operation),
     });
 
-export const trackNewKeyPrepareFailed = ({ stage, error }) =>
+export const trackNewKeyPrepareFailed = ({ stage, error, ...operation }) =>
     track(EVENTS.NEW_KEY_PREPARE_FAILED, {
         stage: stage === 'eligibility' ? 'eligibility' : 'meteor_start',
         error_code: safeMigrationErrorCode(error),
+        ...transferProperties(undefined, operation),
     });
 
-export const trackMigrationActivationRequested = (accounts) =>
+export const trackNewKeyPrepareAllRefused = ({ session, refused, ...operation }) =>
+    track(EVENTS.NEW_KEY_PREPARE_ALL_REFUSED, {
+        refused_count: count(refused),
+        ...reasonCounts(refused, 'issue', REFUSAL_REASONS, 'refused'),
+        ...transferProperties(session, operation),
+    });
+
+export const trackPendingStartDiscardRequested = (operation) =>
+    track(
+        EVENTS.PENDING_START_DISCARD_REQUESTED,
+        transferProperties(undefined, operation)
+    );
+
+export const trackPendingStartDiscardSucceeded = (operation) =>
+    track(
+        EVENTS.PENDING_START_DISCARD_SUCCEEDED,
+        transferProperties(undefined, operation)
+    );
+
+export const trackPendingStartDiscardFailed = ({ error, ...operation }) =>
+    track(EVENTS.PENDING_START_DISCARD_FAILED, {
+        error_code: safeMigrationErrorCode(error),
+        ...transferProperties(undefined, operation),
+    });
+
+export const trackMigrationActivationRequested = ({ accounts, summary, ...operation }) =>
     track(EVENTS.ACTIVATION_REQUESTED, {
         account_count: count(accounts),
         accounts: publicAccounts(accounts),
+        ...transferProperties(summary, operation),
     });
 
-export const trackMigrationActivationStarted = ({ accounts }) =>
+export const trackMigrationActivationStarted = ({ accounts, summary, ...operation }) =>
     track(EVENTS.ACTIVATION_STARTED, {
         account_count: count(accounts),
         accounts: publicAccounts(accounts),
+        ...transferProperties(summary, operation),
     });
 
-export const trackMigrationActivationFinished = ({ accounts, outputAccounts }) => {
-    const failed = (outputAccounts || []).filter(
-        ({ activation }) => activation !== 'verified'
-    );
+export const trackMigrationActivationFinished = ({ accounts, summary, ...operation }) =>
     track(EVENTS.ACTIVATION_FINISHED, {
-        confirmed_count: count(outputAccounts) - failed.length,
-        failed_count: failed.length,
-        accounts: publicAccounts(mergeAccountIdentity(accounts, outputAccounts)),
-        ...reasonCounts(failed, 'issue', ACTIVATION_ISSUES, 'activation_issue'),
+        activated_count: count(accounts),
+        accounts: publicAccounts(accounts),
+        ...transferProperties(summary, operation),
     });
-};
 
-export const trackMigrationActivationFailed = ({ stage, error, statuses, accounts }) => {
+export const trackMigrationActivationFailed = ({
+    error,
+    statuses,
+    accounts,
+    summary,
+    ...operation
+}) => {
     const values = Object.values(statuses || {});
     track(EVENTS.ACTIVATION_FAILED, {
-        stage: stage === 'verification' ? 'verification' : 'add_keys',
         error_code: safeMigrationErrorCode(error),
         accounts: publicAccounts(accounts),
         confirmed_count: values.filter((status) => status === 'confirmed').length,
         added_count: values.filter((status) => status === 'added').length,
         failed_count: values.filter((status) => status === 'failed').length,
+        ...transferProperties(summary, operation),
     });
 };
 
-export const trackNewKeyMigrationCompleted = ({ confirmed, unconfirmed }) =>
+export const trackMigrationVerificationRequested = ({
+    accounts,
+    summary,
+    ...operation
+}) =>
+    track(EVENTS.VERIFICATION_REQUESTED, {
+        account_count: count(accounts),
+        accounts: publicAccounts(accounts),
+        ...transferProperties(summary, operation),
+    });
+
+export const trackMigrationCheckStatusRequested = ({ accounts, summary, ...operation }) =>
+    track(EVENTS.CHECK_STATUS_REQUESTED, {
+        account_count: count(accounts),
+        accounts: publicAccounts(accounts),
+        ...transferProperties(summary, operation),
+    });
+
+export const trackMigrationCheckStatusOpened = (summary) =>
+    track(EVENTS.CHECK_STATUS_OPENED, transferProperties(summary));
+
+export const trackMigrationVerificationStarted = ({ accounts, summary, ...operation }) =>
+    track(EVENTS.VERIFICATION_STARTED, {
+        account_count: count(accounts),
+        accounts: publicAccounts(accounts),
+        ...transferProperties(summary, operation),
+    });
+
+export const trackMigrationVerificationFinished = ({
+    accounts,
+    outputAccounts,
+    summary,
+    ...operation
+}) => {
+    const described = (outputAccounts || []).map((row) => ({
+        ...row,
+        analyticsStatus: describeNewKeyTransferActivationRow(row).status,
+    }));
+    const secured = described.filter(
+        ({ analyticsStatus }) => analyticsStatus === 'confirmed'
+    );
+    const pending = described.filter(
+        ({ analyticsStatus }) => analyticsStatus === 'pendingWallet'
+    );
+    const failed = described.filter(
+        ({ analyticsStatus }) => analyticsStatus === 'failed'
+    );
+    track(EVENTS.VERIFICATION_FINISHED, {
+        secured_count: secured.length,
+        pending_wallet_count: pending.length,
+        failed_count: failed.length,
+        accounts: publicAccounts(mergeAccountIdentity(accounts, outputAccounts)),
+        ...reasonCounts(failed, 'issue', ACTIVATION_ISSUES, 'activation_issue'),
+        ...transferProperties(summary, operation),
+    });
+};
+
+export const trackMigrationVerificationFailed = ({
+    error,
+    statuses,
+    accounts,
+    summary,
+    ...operation
+}) => {
+    const values = Object.values(statuses || {});
+    track(EVENTS.VERIFICATION_FAILED, {
+        error_code: safeMigrationErrorCode(error),
+        accounts: publicAccounts(accounts),
+        secured_count: values.filter((status) => status === 'confirmed').length,
+        pending_wallet_count: values.filter((status) => status === 'pendingWallet')
+            .length,
+        failed_count: values.filter((status) => status === 'failed').length,
+        ...transferProperties(summary, operation),
+    });
+};
+
+export const trackNewKeyMigrationCompleted = ({ confirmed, unconfirmed, summary }) =>
     track(EVENTS.NEW_KEY_COMPLETED, {
         confirmed_count: count(confirmed),
         unconfirmed_count: count(unconfirmed),
         accounts: publicAccounts([...(confirmed || []), ...(unconfirmed || [])]),
+        ...transferProperties(summary),
+        ...(summary?.clientTransferId
+            ? {
+                  $insert_id: summary.clientTransferId,
+              }
+            : {}),
     });
 
-export const trackMigrationCleanupSelected = ({ action, accounts }) =>
-    track(EVENTS.CLEANUP_SELECTED, {
-        action: action === 'remove' ? 'remove' : 'keep',
-        account_count: count(accounts),
-        accounts: publicAccounts(accounts),
+export const trackMigrationStartUsingMeteorClicked = (summary) =>
+    track(EVENTS.START_USING_METEOR_CLICKED, transferProperties(summary));
+
+export const trackMigrationDoneClicked = (summary) =>
+    track(EVENTS.DONE_CLICKED, transferProperties(summary));
+
+export const trackMigrationViewSecuredClicked = (summary) =>
+    track(EVENTS.VIEW_SECURED_CLICKED, {
+        secured_count: summary?.securedCount || 0,
+        ...transferProperties(summary),
     });
+
+export const trackMigrationStartOverPrompted = (summary) =>
+    track(EVENTS.START_OVER_PROMPTED, transferProperties(summary));
+
+export const trackMigrationStartOverCancelled = (summary) =>
+    track(EVENTS.START_OVER_CANCELLED, transferProperties(summary));
+
+export const trackMigrationStartOverRequested = ({ summary, ...operation }) =>
+    track(EVENTS.START_OVER_REQUESTED, transferProperties(summary, operation));
+
+export const trackMigrationStartOverSucceeded = ({ summary, ...operation }) =>
+    track(EVENTS.START_OVER_SUCCEEDED, transferProperties(summary, operation));
+
+export const trackMigrationStartOverFailed = ({ summary, error, ...operation }) =>
+    track(EVENTS.START_OVER_FAILED, {
+        error_code: safeMigrationErrorCode(error),
+        ...transferProperties(summary, operation),
+    });
+
+export const trackMigrationSessionLoadFailed = ({ error, requestedId, durationMs }) =>
+    track(EVENTS.SESSION_LOAD_FAILED, {
+        error_code: safeMigrationErrorCode(error),
+        ...(requestedId != null ? { client_transfer_id: requestedId } : {}),
+        duration_ms: durationMs,
+    });
+
+export const trackMigrationSessionRedirected = ({ destination, summary }) =>
+    track(EVENTS.SESSION_REDIRECTED, {
+        destination,
+        ...transferProperties(summary),
+    });
+
+export const trackMigrationRecoveryReportLoaded = ({ report, durationMs }) =>
+    track(EVENTS.RECOVERY_REPORT_LOADED, {
+        fenced: report?.fenced === true,
+        operation_count: count(report?.operations),
+        duration_ms: durationMs,
+    });
+
+export const trackMigrationRecoveryReportFailed = ({ error, durationMs }) =>
+    track(EVENTS.RECOVERY_REPORT_FAILED, {
+        error_code: safeMigrationErrorCode(error),
+        duration_ms: durationMs,
+    });
+
+const recoveryOperationProperties = (operation, extra = {}) => ({
+    client_transfer_id: operation.clientTransferId,
+    transfer_session_id: operation.transferSessionId,
+    account_id: operation.accountId,
+    account_count: 1,
+    ...extra,
+});
+
+export const trackMigrationRecoveryCheckRequested = ({ operation, ...extra }) =>
+    track(EVENTS.RECOVERY_CHECK_REQUESTED, recoveryOperationProperties(operation, extra));
+
+export const trackMigrationRecoveryCheckFinished = ({ operation, result, ...extra }) =>
+    track(
+        EVENTS.RECOVERY_CHECK_FINISHED,
+        recoveryOperationProperties(operation, {
+            result_status: result.status,
+            ...(result.detail != null ? { result_detail: result.detail } : {}),
+            ...extra,
+        })
+    );
+
+export const trackMigrationRecoveryCheckFailed = ({ operation, error, ...extra }) =>
+    track(
+        EVENTS.RECOVERY_CHECK_FAILED,
+        recoveryOperationProperties(operation, {
+            error_code: safeMigrationErrorCode(error),
+            ...extra,
+        })
+    );
+
+export const trackMigrationRecoveryRevokeRequested = ({ operation, ...extra }) =>
+    track(
+        EVENTS.RECOVERY_REVOKE_REQUESTED,
+        recoveryOperationProperties(operation, extra)
+    );
+
+export const trackMigrationRecoveryRevokeSucceeded = ({ operation, ...extra }) =>
+    track(
+        EVENTS.RECOVERY_REVOKE_SUCCEEDED,
+        recoveryOperationProperties(operation, extra)
+    );
+
+export const trackMigrationRecoveryRevokeFailed = ({ operation, error, ...extra }) =>
+    track(
+        EVENTS.RECOVERY_REVOKE_FAILED,
+        recoveryOperationProperties(operation, {
+            error_code: safeMigrationErrorCode(error),
+            ...extra,
+        })
+    );
+
+export const trackMigrationRecoveryArchiveRequested = ({ operation, ...extra }) =>
+    track(
+        EVENTS.RECOVERY_ARCHIVE_REQUESTED,
+        recoveryOperationProperties(operation, extra)
+    );
+
+export const trackMigrationRecoveryArchiveSucceeded = ({ operation, ...extra }) =>
+    track(
+        EVENTS.RECOVERY_ARCHIVE_SUCCEEDED,
+        recoveryOperationProperties(operation, extra)
+    );
+
+export const trackMigrationRecoveryArchiveFailed = ({
+    operation,
+    error,
+    errorCode,
+    ...extra
+}) =>
+    track(
+        EVENTS.RECOVERY_ARCHIVE_FAILED,
+        recoveryOperationProperties(operation, {
+            error_code: errorCode || safeMigrationErrorCode(error),
+            ...extra,
+        })
+    );
+
+export const trackMigrationRecoveryResolved = () => track(EVENTS.RECOVERY_RESOLVED);
+
+export const trackMigrationRecoveryFinishLater = ({ operationCount }) =>
+    track(EVENTS.RECOVERY_FINISH_LATER, { operation_count: operationCount });
 
 export const trackMigrationLocalRemovalSucceeded = ({ accountIds, remainingCount }) =>
     track(EVENTS.LOCAL_REMOVAL_SUCCEEDED, {

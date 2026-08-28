@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -7,7 +7,10 @@ import { hasPendingMeteorNewKeyStart } from '../../services/meteorConnect';
 import Container from '../common/styled/Container.css';
 import MeteorConnectIcon from '../svg/MeteorConnectIcon';
 import exportManualIcon from '../svg/Vector.svg';
-import { trackMigrationMethodSelected } from './accountExportAnalytics';
+import {
+    trackMigrationMethodExited,
+    trackMigrationMethodSelected,
+} from './accountExportAnalytics';
 
 const ExportMethodPage = styled(Container)`
     &.method-page {
@@ -149,12 +152,26 @@ export default function AccountExportMethod() {
     const history = useHistory();
     const location = useLocation();
     const accountIds = location.state?.accountIds;
+    const didSelectMethod = useRef(false);
 
     useEffect(() => {
         if (!Array.isArray(accountIds) || accountIds.length === 0) {
             history.replace('/export-accounts/select');
         }
     }, [accountIds, history]);
+
+    useEffect(
+        () => () => {
+            if (
+                !didSelectMethod.current &&
+                Array.isArray(accountIds) &&
+                accountIds.length > 0
+            ) {
+                trackMigrationMethodExited(accountIds);
+            }
+        },
+        [accountIds]
+    );
 
     /**
      * Stabilization SD7: a start interrupted by bridge/session expiry left its durable id
@@ -165,6 +182,7 @@ export default function AccountExportMethod() {
     const hasInterruptedStart = hasPendingMeteorNewKeyStart();
 
     const handleNewKeyTransfer = () => {
+        didSelectMethod.current = true;
         trackMigrationMethodSelected('new_key', accountIds);
         history.push('/export-accounts/new-key-start', { accountIds });
     };
@@ -245,6 +263,7 @@ export default function AccountExportMethod() {
                     <MethodButton
                         className='manual-export'
                         onClick={() => {
+                            didSelectMethod.current = true;
                             trackMigrationMethodSelected('manual', accountIds);
                             history.push('/export-accounts/manual', { accountIds });
                         }}

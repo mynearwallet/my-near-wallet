@@ -9,6 +9,10 @@ import {
     findSecuredNewKeyTransfer,
     summarizeNewKeyTransferSession,
 } from '../../services/newKeyTransferState';
+import {
+    trackMigrationSessionLoadFailed,
+    trackMigrationSessionRedirected,
+} from './accountExportAnalytics';
 
 /**
  * Load the transfer a new-key export screen is about.
@@ -31,6 +35,7 @@ export default function useNewKeyTransfer({
     const history = useHistory();
     const location = useLocation();
     const requestedId = location.state?.clientTransferId;
+    const isResume = location.state?.isResume === true || requestedId == null;
     const [session, setSession] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
@@ -38,6 +43,7 @@ export default function useNewKeyTransfer({
     const hasRedirected = useRef(false);
 
     const reload = useCallback(async () => {
+        const startedAt = Date.now();
         try {
             const sessions = await getMeteorNewKeyTransferSessions();
             const found =
@@ -52,6 +58,11 @@ export default function useNewKeyTransfer({
             setErrorMessage('');
             return { session: found || null, failed: false };
         } catch (error) {
+            trackMigrationSessionLoadFailed({
+                error,
+                requestedId,
+                durationMs: Date.now() - startedAt,
+            });
             const { i18nKey, fallback: message } = describeNewKeyTransferError(error);
             setErrorMessage(i18nKey ? t(i18nKey) : message);
             // A journal this screen could not read is not the same as no transfer to show. Say so
@@ -71,11 +82,16 @@ export default function useNewKeyTransfer({
             }
             if (found == null) {
                 hasRedirected.current = true;
+                trackMigrationSessionRedirected({ destination: 'account_selection' });
                 history.replace('/export-accounts/select');
                 return;
             }
             if (redirectWhenVerified && found.phase === 'destination_keys_verified') {
                 hasRedirected.current = true;
+                trackMigrationSessionRedirected({
+                    destination: 'completed',
+                    summary: summarizeNewKeyTransferSession(found),
+                });
                 history.replace('/export-accounts/new-key-activated', {
                     clientTransferId: found.clientTransferId,
                 });
@@ -93,5 +109,6 @@ export default function useNewKeyTransfer({
         errorMessage,
         setErrorMessage,
         reload,
+        isResume,
     };
 }
