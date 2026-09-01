@@ -8,3 +8,12 @@
         display: inline-block;
     }
 }
+
+/*
+ * Parcel's dev server appends a fullscreen error overlay with this id on every build error
+ * and offers no option to turn it off. The same diagnostics are already printed to the
+ * browser console, so hide the overlay; the element never exists in production builds.
+ */
+#__parcel__error__overlay__ {
+    display: none !important;
+}
