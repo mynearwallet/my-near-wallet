@@ -2056,10 +2056,10 @@
     "@types/mdx" "^2.0.0"
     "@types/react" ">=16"
 
-"@meteorwallet/connect-shared@0.21.0":
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/connect-shared/-/connect-shared-0.21.0.tgz#6be17d93808e0851f60a5fc35095d50e507764e3"
-  integrity sha512-/6dHJjibGJp1IPcJM4UmOpHlU2HqdJCUiqcfgwBAgAEArVWcLdNMcfZwqxF8m8LscVYpV8A0dMYPApunT9LlPQ==
+"@meteorwallet/connect-shared@0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/connect-shared/-/connect-shared-0.22.0.tgz#6f82be2a5e4da8bb3fb1cd6759232d6ae59dbba5"
+  integrity sha512-PQbYKXmZqg1herYkTYc8svKGtvzhCnf0mP1lGADViTID4HwAYujV5mc6FbuWSmqw0BSGKpBNsOGgaW3A4HZcEw==
   dependencies:
     "@meteorwallet/utils" "^1.31.0"
     "@nice-code/action" "0.89.0"
@@ -2074,12 +2074,12 @@
     http-status-codes "^2.3.0"
     valibot "^1.4.2"
 
-"@meteorwallet/connect@0.21.0":
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/connect/-/connect-0.21.0.tgz#a4c8048dbed84061e1d344c2dd70534a6a0e21bf"
-  integrity sha512-CP096fME/BC1imSy2S/lGTppxE91Z76anuRArEkrJ1AB9xi+QVQBYLIp1GB7PiIVPCCy+JLsakhaam7k8CFbDQ==
+"@meteorwallet/connect@0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/connect/-/connect-0.22.0.tgz#824bfc4c06297bb5c7deb5bd9627421e5850ea3b"
+  integrity sha512-pFOO9UvvUJawTxoGfSEt9WTVtiSYhaCBeOKiwmIcDOpkjYpDbd68LygHoLMXhfbJumX0dkfkziT8tIFHpUXwRQ==
   dependencies:
-    "@meteorwallet/connect-shared" "0.21.0"
+    "@meteorwallet/connect-shared" "0.22.0"
     "@nice-code/action" "0.89.0"
     "@nice-code/common-errors" "0.89.0"
     "@nice-code/error" "0.89.0"
@@ -2097,15 +2097,15 @@
   resolved "https://registry.yarnpkg.com/@meteorwallet/meteor-near-sdk/-/meteor-near-sdk-3.4.0.tgz#71bb9a4e1ad3b592ec79d148079031593dfcde7f"
   integrity sha512-ZM/aJ7bhA6xpDr4SyUstwcfJScWEL5n6evbWdb9w58EGh+BeM9J307onZs5ZDnvAcPECrw3pkq2UTCd9DnyP1A==
 
-"@meteorwallet/sdk@3.15.0":
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-3.15.0.tgz#27b98b3ee43bc13a17a95db16351739f07527ee1"
-  integrity sha512-02IBCNJeyRd3dprYajF+ZWbyo0ETWzFcJPvfS1sNM/udfgyiXtqQCRX2oLxpFhr7bxL80/jLB9x0fOMRyZUhWA==
+"@meteorwallet/sdk@3.16.0":
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-3.16.0.tgz#2b7a65ed3f2750b6435ed05197345fa182d110f2"
+  integrity sha512-gDW457W2EMPCE7pVQVjtl6iFD2GdHItsIrcW3OvxixyVSGiBldxfqwkSsKitQnjINTnySAaWBvYtmD2RGK1EeA==
   dependencies:
     "@lit/context" "1.1.6"
     "@lit/task" "1.0.3"
-    "@meteorwallet/connect" "0.21.0"
-    "@meteorwallet/connect-shared" "0.21.0"
+    "@meteorwallet/connect" "0.22.0"
+    "@meteorwallet/connect-shared" "0.22.0"
     "@near-js/accounts" "2.2.5"
     "@near-js/crypto" "2.2.5"
     "@near-js/keystores" "2.2.5"
