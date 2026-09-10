@@ -17,24 +17,6 @@ const CardFrame = styled.div`
     @media (prefers-reduced-motion: reduce) {
         transition: none;
     }
-
-    .new-option {
-        position: absolute;
-        z-index: 1;
-        top: 0;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 4px 12px;
-        border-radius: 999px;
-        background: #7865e8;
-        color: #fff;
-        font-size: 9px;
-        font-weight: 700;
-        line-height: 12px;
-        letter-spacing: 1px;
-        white-space: nowrap;
-        text-transform: uppercase;
-    }
 `;
 
 const TransferButton = styled.button`
@@ -128,7 +110,6 @@ function PasskeyIcon() {
 export function NearDotComMethod({ onSelect }) {
     return (
         <CardFrame>
-            <span className='new-option'>New option</span>
             <TransferButton type='button' onClick={() => onSelect('near-com')}>
                 <PasskeyIcon />
                 <span className='near-com-title'>Transfer to near.com</span>
