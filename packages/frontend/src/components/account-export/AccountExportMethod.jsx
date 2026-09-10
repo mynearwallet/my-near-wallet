@@ -1,20 +1,24 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
+import meteorLoader from '../../images/wallet-migration/meteor-loader.gif';
 import { hasPendingMeteorNewKeyStart } from '../../services/meteorConnect';
 import Container from '../common/styled/Container.css';
-import MeteorConnectIcon from '../svg/MeteorConnectIcon';
 import exportManualIcon from '../svg/Vector.svg';
 import {
     trackMigrationMethodExited,
     trackMigrationMethodSelected,
 } from './accountExportAnalytics';
+import { NearDotComMethod } from './NearDotComMethod';
 
 const ExportMethodPage = styled(Container)`
     &.method-page {
-        max-width: 900px;
+        width: 100%;
+        max-width: 1140px;
+        box-sizing: border-box;
+        padding-inline: 24px;
     }
 
     &&& {
@@ -28,12 +32,95 @@ const ExportMethodPage = styled(Container)`
 const MethodList = styled.div`
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     margin-top: 56px;
+
+    @media (max-width: 1064px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
     @media (max-width: 600px) {
         grid-template-columns: 1fr;
     }
+`;
+
+const MeteorCardFrame = styled.div`
+    position: relative;
+    display: flex;
+    min-width: 0;
+    margin-block: -12px;
+    border-radius: 24px;
+    box-shadow: 0 8px 20px rgb(30 24 66 / 25%);
+    transition: transform 150ms;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+
+    @media (max-width: 600px) {
+        margin-block: 0;
+    }
+
+    .meteor-recommended {
+        background: #fffa38;
+        border-radius: 999px;
+        box-shadow: 0 3px 8px rgb(30 24 66 / 18%);
+        font-size: 12px;
+        line-height: 18px;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin-top: 0;
+        padding: 6px 16px;
+        color: #111;
+        text-transform: uppercase;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+`;
+
+const shootingStar = keyframes`
+    0% {
+        opacity: 0;
+        transform: rotate(135deg) translateX(0);
+    }
+    4% {
+        opacity: 0.65;
+    }
+    20% {
+        opacity: 0;
+        transform: rotate(135deg) translateX(240px);
+    }
+    100% {
+        opacity: 0;
+        transform: rotate(135deg) translateX(240px);
+    }
+`;
+
+// Stable scattered positions keep the backdrop from jumping on re-renders.
+const backgroundStars = Array.from({ length: 18 }, (_, index) => ({
+    left: `${((index * 37 + 11) % 96) + 2}%`,
+    top: `${((index * 53 + 7) % 94) + 3}%`,
+    size: `${index % 3 === 0 ? 3 : 2}px`,
+    duration: `${4 + (index % 5) * 0.7}s`,
+    delay: `${-index * 1.3}s`,
+}));
+
+const starTwinkle = keyframes`
+    0%, 100% { opacity: 0.08; transform: scale(0.65); }
+    50% { opacity: 0.6; transform: scale(1); }
+`;
+
+const lightSweep = keyframes`
+    0%, 15% { opacity: 0; transform: translateX(-100%) skewX(-20deg); }
+    30% { opacity: 0.65; }
+    60%, 100% { opacity: 0; transform: translateX(350%) skewX(-20deg); }
 `;
 
 const MethodButton = styled.button`
@@ -50,7 +137,7 @@ const MethodButton = styled.button`
     transition: transform 150ms, box-shadow 150ms;
 
     &:hover:not(:disabled) {
-        box-shadow: 0 8px 20px rgb(36 39 42 / 15%);
+        box-shadow: 0 8px 20px rgb(36 39 42 / 20%);
         transform: translateY(-2px);
     }
 
@@ -76,8 +163,10 @@ const MethodButton = styled.button`
     }
 
     .meteor-connect-icon {
-        height: 65px;
-        width: 68px;
+        /* The GIF includes whitespace around the logo inside its 300px canvas. */
+        height: 130px;
+        width: 130px;
+        max-width: none;
     }
 
     .manual-export-icon {
@@ -116,8 +205,121 @@ const MethodButton = styled.button`
     }
 
     &.meteor-connect {
-        background: #5380f5;
+        &:hover:not(:disabled) {
+            transform: none;
+        }
+
+        position: relative;
+        isolation: isolate;
+        flex: 1;
+        min-width: 0;
+        border: 2px solid #fff;
+        border-radius: 24px;
+        padding: 40px 24px 28px;
+        background: radial-gradient(ellipse at 100% 0%, #a18aff 0%, transparent 55%),
+            radial-gradient(ellipse at 0% 100%, #8058ff 0%, transparent 60%),
+            linear-gradient(145deg, #471be8 0%, #4013ed 100%);
         color: #fff;
+
+        .meteor-stars {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .meteor-twinkle {
+            position: absolute;
+            left: var(--star-left);
+            top: var(--star-top);
+            width: var(--star-size);
+            height: var(--star-size);
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 5px rgb(255 255 255 / 50%);
+            animation: ${starTwinkle} var(--star-duration) ease-in-out var(--star-delay)
+                infinite;
+        }
+
+        .meteor-shine {
+            position: absolute;
+            top: -30%;
+            left: 0;
+            width: 45%;
+            height: 160%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgb(255 255 255 / 14%),
+                transparent
+            );
+            opacity: 0;
+            animation: ${lightSweep} 12s ease-in-out infinite;
+        }
+
+        .meteor-star {
+            position: absolute;
+            top: 12px;
+            left: 70%;
+            width: 72px;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent, rgb(255 255 255 / 85%));
+            box-shadow: 0 0 6px rgb(222 213 255 / 50%);
+            opacity: 0;
+            animation: ${shootingStar} 7s linear infinite;
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: -1px;
+                top: -1px;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: #fff;
+                box-shadow: 0 0 8px #fff;
+            }
+
+            &:nth-child(2) {
+                top: 48px;
+                left: 100%;
+                width: 48px;
+                animation-delay: 2.3s;
+            }
+
+            &:nth-child(3) {
+                top: -12px;
+                left: 38%;
+                width: 56px;
+                animation-delay: 4.6s;
+            }
+        }
+
+        .method-tag {
+            margin-top: 24px;
+            padding: 4px 18px;
+            color: #471be8;
+            font-weight: 700;
+        }
+
+        &:focus-visible {
+            outline: 3px solid #471be8;
+            outline-offset: 5px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+
+        .meteor-star,
+        .meteor-twinkle,
+        .meteor-shine {
+            animation: none;
+            display: none;
+        }
     }
 
     &.manual-export {
@@ -235,31 +437,72 @@ export default function AccountExportMethod() {
                 <h1>{t('newKeyTransfer.methodHeading')}</h1>
                 <h2>{t('newKeyTransfer.methodSubheading')}</h2>
                 <MethodList>
-                    <MethodButton
-                        className='meteor-connect'
-                        onClick={handleNewKeyTransfer}
-                    >
-                        <span className='method-icon-slot'>
-                            <MeteorConnectIcon className='method-icon meteor-connect-icon' />
-                        </span>
-                        <span className='method-title'>
-                            {t(
-                                hasInterruptedStart
-                                    ? 'newKeyTransfer.continueTitle'
-                                    : 'newKeyTransfer.title'
-                            )}
-                        </span>
-                        <span className='method-description'>
-                            {t(
-                                hasInterruptedStart
-                                    ? 'newKeyTransfer.continueDescription'
-                                    : 'newKeyTransfer.description'
-                            )}
-                        </span>
-                        <span className='method-tag'>
+                    <MeteorCardFrame>
+                        <span className='meteor-recommended'>
                             {t('newKeyTransfer.recommended')}
                         </span>
-                    </MethodButton>
+                        <MethodButton
+                            className='meteor-connect'
+                            onClick={handleNewKeyTransfer}
+                        >
+                            <span className='meteor-stars' aria-hidden='true'>
+                                <span className='meteor-star' />
+                                <span className='meteor-star' />
+                                <span className='meteor-star' />
+                                {backgroundStars.map((star, index) => (
+                                    <span
+                                        key={index}
+                                        className='meteor-twinkle'
+                                        style={{
+                                            '--star-left': star.left,
+                                            '--star-top': star.top,
+                                            '--star-size': star.size,
+                                            '--star-duration': star.duration,
+                                            '--star-delay': star.delay,
+                                        }}
+                                    />
+                                ))}
+                                <span className='meteor-shine' />
+                            </span>
+                            <span className='method-icon-slot'>
+                                <img
+                                    alt=''
+                                    className='method-icon meteor-connect-icon'
+                                    src={meteorLoader}
+                                />
+                            </span>
+                            <span className='method-title'>
+                                {t(
+                                    hasInterruptedStart
+                                        ? 'newKeyTransfer.continueTitle'
+                                        : 'newKeyTransfer.title'
+                                )}
+                            </span>
+                            <span className='method-description'>
+                                {t(
+                                    hasInterruptedStart
+                                        ? 'newKeyTransfer.continueDescription'
+                                        : 'newKeyTransfer.description'
+                                )}
+                            </span>
+                            <span className='method-tag'>
+                                {t('newKeyTransfer.easiest')}
+                            </span>
+                        </MethodButton>
+                    </MeteorCardFrame>
+
+                    <NearDotComMethod
+                        onSelect={() => {
+                            didSelectMethod.current = true;
+                            trackMigrationMethodSelected('near_com', accountIds);
+                            window.open(
+                                '/export-accounts/neardotcom/guide',
+                                '_blank',
+                                'noopener,noreferrer'
+                            );
+                        }}
+                    />
+
                     <MethodButton
                         className='manual-export'
                         onClick={() => {

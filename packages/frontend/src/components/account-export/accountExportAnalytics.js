@@ -247,7 +247,7 @@ export const trackMigrationAccountsSubmitted = (accounts) =>
 
 export const trackMigrationMethodSelected = (method, accountIds) =>
     track(EVENTS.METHOD_SELECTED, {
-        method: method === 'manual' ? 'manual' : 'new_key',
+        method: ['manual', 'near_com'].includes(method) ? method : 'new_key',
         account_ids: accountIds,
     });
 

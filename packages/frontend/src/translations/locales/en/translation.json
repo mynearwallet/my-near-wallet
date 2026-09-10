@@ -1016,6 +1016,7 @@
         "continueExistingSecret": "Continue with existing-secret transfer",
         "continueTitle": "Continue transfer to Meteor Wallet",
         "description": "Meteor creates one fresh key for all selected accounts; no private key or recovery phrase ever leaves this wallet.",
+        "easiest": "Easiest",
         "eligibility": {
             "algorithmUnsupported": "Only Ed25519 source keys are supported.",
             "ledgerUnsupported": "Ledger-backed source accounts are not supported by this transfer.",

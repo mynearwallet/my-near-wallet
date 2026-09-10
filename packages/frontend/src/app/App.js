@@ -65,6 +65,7 @@ import WalletMigration from '../components/wallet-migration/WalletMigration';
 import AccountExportSelect from '../components/account-export/AccountExportSelect';
 import AccountExportSuccess from '../components/account-export/AccountExportSuccess';
 import AccountExportMethod from '../components/account-export/AccountExportMethod';
+import NearDotComGuide from '../components/account-export/NearDotComGuide';
 import AccountExportManual from '../components/account-export/AccountExportManual';
 import AccountExportRemove from '../components/account-export/AccountExportRemove';
 import AccountExportNewKeyStart from '../components/account-export/AccountExportNewKeyStart';
@@ -298,6 +299,13 @@ class Routing extends Component {
             hash,
             pathname,
         } = this.props.router.location;
+        if (pathname.replace(/\/$/, '') === '/export-accounts/neardotcom/guide') {
+            return (
+                <ConnectedRouter basename={PATH_PREFIX} history={this.props.history}>
+                    <NearDotComGuide />
+                </ConnectedRouter>
+            );
+        }
         const { account } = this.props;
         const setTab = (nextTab) => {
             if (tab !== nextTab) {

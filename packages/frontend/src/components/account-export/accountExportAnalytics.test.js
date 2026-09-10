@@ -10,6 +10,7 @@ import {
     safeMigrationErrorCode,
     trackManualCredentialsLoaded,
     trackMigrationAccountsScanned,
+    trackMigrationMethodSelected,
     trackMigrationVerificationFinished,
     trackMigrationVerificationRequested,
     trackNewKeyMigrationCompleted,
@@ -20,6 +21,18 @@ describe('account export analytics', () => {
     beforeEach(() => {
         mockTrack.mockClear();
     });
+
+    it.each(['new_key', 'manual', 'near_com'])(
+        'preserves the selected %s method',
+        (method) => {
+            trackMigrationMethodSelected(method, ['alice.near']);
+
+            expect(mockTrack).toHaveBeenCalledWith(
+                'wallet_migration_method_selected',
+                expect.objectContaining({ method, account_ids: ['alice.near'] })
+            );
+        }
+    );
 
     it('reports account eligibility with public account identity', () => {
         trackMigrationAccountsScanned([
