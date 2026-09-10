@@ -734,6 +734,7 @@
         "continueExistingSecret": "Tiếp tục chuyển bằng khóa hiện có",
         "continueTitle": "Tiếp tục chuyển sang Meteor Wallet",
         "description": "Meteor tạo một khóa mới duy nhất cho tất cả tài khoản đã chọn; không có khóa riêng tư hay cụm từ khôi phục nào rời khỏi ví này.",
+        "easiest": "Dễ nhất",
         "eligibility": {
             "algorithmUnsupported": "Chỉ hỗ trợ khóa nguồn Ed25519.",
             "ledgerUnsupported": "Phiên chuyển này không hỗ trợ tài khoản nguồn dùng Ledger.",

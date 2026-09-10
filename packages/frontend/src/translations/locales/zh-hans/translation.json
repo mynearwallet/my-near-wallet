@@ -902,6 +902,7 @@
         "continueExistingSecret": "继续使用现有密钥转移",
         "continueTitle": "继续转移到 Meteor Wallet",
         "description": "Meteor 会为所有已选账户创建同一把新密钥；任何私钥或助记词都不会离开本钱包。",
+        "easiest": "最简单",
         "eligibility": {
             "algorithmUnsupported": "仅支持 Ed25519 来源密钥。",
             "ledgerUnsupported": "本次转移不支持基于 Ledger 的来源账户。",

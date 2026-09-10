@@ -776,6 +776,7 @@
         "continueExistingSecret": "Continuar com a transferência de chaves existentes",
         "continueTitle": "Continuar a transferência para a Meteor Wallet",
         "description": "A Meteor cria uma única nova chave para todas as contas selecionadas; nenhuma chave privada ou frase de recuperação sai desta carteira.",
+        "easiest": "Mais fácil",
         "eligibility": {
             "algorithmUnsupported": "Somente chaves de origem Ed25519 são suportadas.",
             "ledgerUnsupported": "Contas de origem com Ledger não são suportadas por esta transferência.",

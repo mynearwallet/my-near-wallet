@@ -753,6 +753,7 @@
         "continueExistingSecret": "Mevcut anahtarla aktarıma devam et",
         "continueTitle": "Meteor Wallet'a aktarıma devam et",
         "description": "Meteor seçilen tüm hesaplar için tek bir yeni anahtar oluşturur; hiçbir özel anahtar veya kurtarma ifadesi bu cüzdandan çıkmaz.",
+        "easiest": "En kolay",
         "eligibility": {
             "algorithmUnsupported": "Yalnızca Ed25519 kaynak anahtarları destekleniyor.",
             "ledgerUnsupported": "Ledger tabanlı kaynak hesaplar bu aktarımda desteklenmiyor.",

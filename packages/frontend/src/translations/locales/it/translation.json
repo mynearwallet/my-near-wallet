@@ -801,6 +801,7 @@
         "continueExistingSecret": "Continua con il trasferimento delle chiavi esistenti",
         "continueTitle": "Continua il trasferimento a Meteor Wallet",
         "description": "Meteor crea una sola nuova chiave per tutti gli account selezionati; nessuna chiave privata o frase di recupero lascia mai questo wallet.",
+        "easiest": "Il più semplice",
         "eligibility": {
             "algorithmUnsupported": "Sono supportate solo le chiavi di origine Ed25519.",
             "ledgerUnsupported": "Gli account di origine basati su Ledger non sono supportati da questo trasferimento.",
