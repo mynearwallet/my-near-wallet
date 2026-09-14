@@ -39,9 +39,9 @@ export const meteorNetworkId =
  * They have to agree: the bridge issues the link that opens the Meteor wallet, so a session
  * created on one environment can only be claimed by the wallet of that same environment.
  *
- *   mainnet (app.mynearwallet.com)  → production bridge   +  production Meteor wallet
- *   everything else — every staging → development bridge  +  dev Meteor wallet
- *   deploy, testnet, local dev         (wallet-dev.meteorwallet.app)
+ *   mainnet and testnet              → production bridge   +  production Meteor wallet
+ *   every staging deploy, local dev  → development bridge  +  dev Meteor wallet
+ *                                      (wallet-dev.meteorwallet.app)
  *
  * The decision follows the DEPLOYED environment (`NEAR_WALLET_ENV`), not the NEAR network and not
  * the build mode (2026-08-27): staging builds — mainnet staging included — must exercise the

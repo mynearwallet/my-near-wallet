@@ -10,7 +10,7 @@ import {
  *    while the mapping followed the NEAR network, and every transfer died on the bridge answer
  *    (`session_disabled`, or a handshake refusal from an older production build) with the reason
  *    invisible from the page.
- * 2. Only the real production mainnet build may reach the production bridge — an unexpected value
+ * 2. Only production mainnet and testnet builds may reach the production bridge — an unexpected value
  *    must fail safe to development, never be read as production.
  *
  * The bridge issues the link that opens the Meteor wallet, so backend and wallet app id must come
@@ -20,15 +20,11 @@ import {
 describe('resolveMeteorConnectEnvironment', () => {
     it('routes each deployed NEAR_WALLET_ENV to the intended bridge', () => {
         expect(resolveMeteorConnectEnvironment('mainnet')).toBe('production');
+        expect(resolveMeteorConnectEnvironment('testnet')).toBe('production');
 
         // Every staging deployment — mainnet staging included — belongs to the development
         // bridge, and in turn to the dev Meteor wallet (wallet-dev.meteorwallet.app).
-        for (const walletEnv of [
-            'development',
-            'testnet',
-            'testnet_STAGING',
-            'mainnet_STAGING',
-        ]) {
+        for (const walletEnv of ['development', 'testnet_STAGING', 'mainnet_STAGING']) {
             expect(resolveMeteorConnectEnvironment(walletEnv)).toBe('development');
         }
     });

@@ -14,7 +14,7 @@
  * network: every staging deployment — mainnet staging included — belongs to the development
  * bridge and therefore links to the dev Meteor wallet (wallet-dev.meteorwallet.app), so staging
  * exercises the whole transfer flow without depending on the production rollout state. Only the
- * real production mainnet build (app.mynearwallet.com) dials the production bridge. The trade-off
+ * production mainnet and testnet builds dial the production bridge. The trade-off
  * is deliberate and accepted: mainnet staging sends real mainnet key material through the
  * development bridge, which is our own deployed backend.
  */
@@ -28,7 +28,9 @@
  * @returns {TMeteorConnectEnvironment}
  */
 export const resolveMeteorConnectEnvironment = (nearWalletEnv) =>
-    nearWalletEnv === 'mainnet' ? 'production' : 'development';
+    nearWalletEnv === 'mainnet' || nearWalletEnv === 'testnet'
+        ? 'production'
+        : 'development';
 
 /** Production MyNearWallet is the only host that sends users to production Meteor Wallet. */
 export const resolveMeteorWalletWebUrl = (hostname) =>
