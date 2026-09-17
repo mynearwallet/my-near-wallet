@@ -350,7 +350,7 @@ export default function AccountExportMethod() {
     const history = useHistory();
     const location = useLocation();
     const accountIds = location.state?.accountIds;
-    const showNearDotComMethod = !['testnet', 'testnet_staging'].includes(
+    const showNearDotComMethod = !['testnet', 'testnet_STAGING'].includes(
         CONFIG.NEAR_WALLET_ENV
     );
     const didSelectMethod = useRef(false);
