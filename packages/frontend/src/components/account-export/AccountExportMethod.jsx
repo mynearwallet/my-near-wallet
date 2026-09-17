@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
+import CONFIG from '../../config';
 import meteorLoader from '../../images/wallet-migration/meteor-loader.gif';
 import { hasPendingMeteorNewKeyStart } from '../../services/meteorConnect';
 import Container from '../common/styled/Container.css';
@@ -32,7 +33,7 @@ const ExportMethodPage = styled(Container)`
 const MethodList = styled.div`
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(${({ $methodCount }) => $methodCount}, minmax(0, 1fr));
     margin-top: 56px;
 
     @media (max-width: 1064px) {
@@ -48,7 +49,6 @@ const MeteorCardFrame = styled.div`
     position: relative;
     display: flex;
     min-width: 0;
-    margin-block: -12px;
     border-radius: 24px;
     box-shadow: 0 8px 20px rgb(30 24 66 / 25%);
     transition: transform 150ms;
@@ -59,10 +59,6 @@ const MeteorCardFrame = styled.div`
 
     @media (prefers-reduced-motion: reduce) {
         transition: none;
-    }
-
-    @media (max-width: 600px) {
-        margin-block: 0;
     }
 
     .meteor-recommended {
@@ -354,6 +350,9 @@ export default function AccountExportMethod() {
     const history = useHistory();
     const location = useLocation();
     const accountIds = location.state?.accountIds;
+    const showNearDotComMethod = !['testnet', 'testnet_staging'].includes(
+        CONFIG.NEAR_WALLET_ENV
+    );
     const didSelectMethod = useRef(false);
 
     useEffect(() => {
@@ -436,11 +435,8 @@ export default function AccountExportMethod() {
             <div className='send-theme'>
                 <h1>{t('newKeyTransfer.methodHeading')}</h1>
                 <h2>{t('newKeyTransfer.methodSubheading')}</h2>
-                <MethodList>
+                <MethodList $methodCount={showNearDotComMethod ? 3 : 2}>
                     <MeteorCardFrame>
-                        <span className='meteor-recommended'>
-                            {t('newKeyTransfer.recommended')}
-                        </span>
                         <MethodButton
                             className='meteor-connect'
                             onClick={handleNewKeyTransfer}
@@ -491,17 +487,19 @@ export default function AccountExportMethod() {
                         </MethodButton>
                     </MeteorCardFrame>
 
-                    <NearDotComMethod
-                        onSelect={() => {
-                            didSelectMethod.current = true;
-                            trackMigrationMethodSelected('near_com', accountIds);
-                            window.open(
-                                '/export-accounts/neardotcom/guide',
-                                '_blank',
-                                'noopener,noreferrer'
-                            );
-                        }}
-                    />
+                    {showNearDotComMethod && (
+                        <NearDotComMethod
+                            onSelect={() => {
+                                didSelectMethod.current = true;
+                                trackMigrationMethodSelected('near_com', accountIds);
+                                window.open(
+                                    '/export-accounts/neardotcom/guide',
+                                    '_blank',
+                                    'noopener,noreferrer'
+                                );
+                            }}
+                        />
+                    )}
 
                     <MethodButton
                         className='manual-export'
