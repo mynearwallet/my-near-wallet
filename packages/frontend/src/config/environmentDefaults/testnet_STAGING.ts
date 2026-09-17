@@ -6,6 +6,8 @@ export default {
     ACCOUNT_ID_SUFFIX: 'testnet',
     ACCESS_KEY_FUNDING_AMOUNT: nearApiJs.utils.format.parseNearAmount('0.25'),
     BROWSER_MIXPANEL_TOKEN: '778bd24eec7329cf885f0cecfc3d4f5d',
+    BROWSER_POSTHOG_KEY: 'phc_kTpFpgwjy7JEwN58YJDZtuZhTjNbzPxhZSNMxpxj3ztU',
+    BROWSER_POSTHOG_HOST: 'https://eu.i.posthog.com',
     DISABLE_CREATE_ACCOUNT: false,
     EXPLORE_APPS_URL: 'https://awesomenear.com/',
     EXPLORE_DEFI_URL: 'https://awesomenear.com/categories/defi/',

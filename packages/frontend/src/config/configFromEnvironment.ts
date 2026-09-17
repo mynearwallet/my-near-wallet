@@ -18,8 +18,13 @@ assert(
 
 export default {
     ACCOUNT_ID_SUFFIX: process.env.REACT_APP_ACCOUNT_ID_SUFFIX,
+    // Dev-only default for the Meteor Connect bridge backend override (e.g. "local");
+    // only read by development builds — see meteorConnect.js resolveBridgeBackendUrl.
+    MC_BACKEND_DEFAULT: process.env.REACT_APP_MC_BACKEND,
     ACCESS_KEY_FUNDING_AMOUNT: process.env.REACT_APP_ACCESS_KEY_FUNDING_AMOUNT,
     BROWSER_MIXPANEL_TOKEN: process.env.BROWSER_MIXPANEL_TOKEN,
+    BROWSER_POSTHOG_KEY: process.env.BROWSER_POSTHOG_KEY,
+    BROWSER_POSTHOG_HOST: process.env.BROWSER_POSTHOG_HOST,
     DISABLE_CREATE_ACCOUNT: parseBooleanFromShell(process.env.DISABLE_CREATE_ACCOUNT),
     EXPLORE_APPS_URL: process.env.EXPLORE_APPS_URL,
     EXPLORE_DEFI_URL: process.env.EXPLORE_DEFI_URL,
@@ -28,6 +33,7 @@ export default {
     HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL: parseBooleanFromShell(
         process.env.HIDE_SIGN_IN_WITH_LEDGER_ENTER_ACCOUNT_ID_MODAL
     ),
+    IS_DEVELOPMENT: process.env.NODE_ENV === 'development',
     IS_MAINNET: [ENVIRONMENT.MAINNET, ENVIRONMENT.MAINNET_STAGING].some(
         (env) => env === NEAR_WALLET_ENV
     ),
