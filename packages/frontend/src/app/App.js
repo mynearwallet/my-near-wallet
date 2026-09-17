@@ -62,8 +62,19 @@ import StakingContainer from '../components/staking/StakingContainer';
 import Terms from '../components/terms/Terms';
 import './index.css';
 import WalletMigration from '../components/wallet-migration/WalletMigration';
+import AccountExportSelect from '../components/account-export/AccountExportSelect';
+import AccountExportSuccess from '../components/account-export/AccountExportSuccess';
+import AccountExportMethod from '../components/account-export/AccountExportMethod';
+import NearDotComGuide from '../components/account-export/NearDotComGuide';
+import AccountExportManual from '../components/account-export/AccountExportManual';
+import AccountExportRemove from '../components/account-export/AccountExportRemove';
+import AccountExportNewKeyStart from '../components/account-export/AccountExportNewKeyStart';
+import AccountExportNewKeyRecovery from '../components/account-export/AccountExportNewKeyRecovery';
+import AccountExportNewKeyActivation from '../components/account-export/AccountExportNewKeyActivation';
+import AccountExportNewKeyActivated from '../components/account-export/AccountExportNewKeyActivated';
 import CONFIG from '../config';
 import { Mixpanel } from '../mixpanel/index';
+import { PostHog } from '../posthog';
 import TokenSwap from '../pages/TokenSwap';
 import TransactionHistory from '../pages/TransactionHistory';
 import * as accountActions from '../redux/actions/account';
@@ -237,6 +248,7 @@ class Routing extends Component {
         refreshAccount();
 
         history.listen(async () => {
+            PostHog.capturePageview();
             handleRedirectUrl(this.props.router.location);
             handleClearUrl();
             if (
@@ -287,6 +299,13 @@ class Routing extends Component {
             hash,
             pathname,
         } = this.props.router.location;
+        if (pathname.replace(/\/$/, '') === '/export-accounts/neardotcom/guide') {
+            return (
+                <ConnectedRouter basename={PATH_PREFIX} history={this.props.history}>
+                    <NearDotComGuide />
+                </ConnectedRouter>
+            );
+        }
         const { account } = this.props;
         const setTab = (nextTab) => {
             if (tab !== nextTab) {
@@ -576,6 +595,51 @@ class Routing extends Component {
                                 exact
                                 path='/batch-ledger-export'
                                 component={BatchLedgerExport}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/select'
+                                component={AccountExportSelect}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/success'
+                                component={AccountExportSuccess}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/remove'
+                                component={AccountExportRemove}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/method'
+                                component={AccountExportMethod}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-start'
+                                component={AccountExportNewKeyStart}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-activation'
+                                component={AccountExportNewKeyActivation}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-activated'
+                                component={AccountExportNewKeyActivated}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/new-key-recovery'
+                                component={AccountExportNewKeyRecovery}
+                            />
+                            <PasswordProtectedRoute
+                                exact
+                                path='/export-accounts/manual'
+                                component={AccountExportManual}
                             />
                             <PasswordProtectedRoute
                                 exact

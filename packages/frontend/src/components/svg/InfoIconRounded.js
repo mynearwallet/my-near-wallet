@@ -2,6 +2,29 @@ import React from 'react';
 
 const InfoIconRounded = (props) => {
     const color = props.color || '#A1A1A9';
+    const glyphColor = props.glyphColor || '#FFFFFF';
+
+    if (props.filled) {
+        return (
+            <svg
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+                className='rounded-info-icon'
+            >
+                <circle cx='12' cy='12' r='10' fill={color} />
+                <path
+                    d='M12 16V12'
+                    stroke={glyphColor}
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                />
+                <circle cx='12' cy='8' r='1' fill={glyphColor} />
+            </svg>
+        );
+    }
 
     return (
         <svg

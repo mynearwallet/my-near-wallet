@@ -10,6 +10,7 @@ import AllTokensTotalBalanceUSD from './AllTokensTotalBalanceUSD';
 import CreateCustomNameModal from './CreateCustomNameModal';
 import CreateFromImplicitSuccessModal from './CreateFromImplicitSuccessModal';
 import DepositNearBanner from './DepositNearBanner';
+import AccountExportBanner from './AccountExportBanner';
 import LinkDropSuccessModal from './LinkDropSuccessModal';
 import NFTs from './NFTs';
 import SidebarLight from './SidebarLight';
@@ -336,6 +337,8 @@ export function Wallet({
                         </Link>
                     </AlertBanner>
                 )}
+
+                <AccountExportBanner />
 
                 <div className='split'>
                     <div className='left'>
