@@ -21,6 +21,14 @@ as outlined above.
 The environment must be set at bundle time rather than run time. If you wish to run the frontend package with a different
 environment, please run `yarn pre-build` first.
 
+On mainnet, Swap compares SmartRouter V2 and existing Ref quotes; direct NEAR/wNEAR
+conversions keep the existing wrap flow. After a confirmed V2 failure, the result
+screen checks for tokens held by the V2 contract and offers withdrawal when a
+balance exists.
+
+Swap remembers the last selected token pair in browser storage for each network.
+After a reload it resolves the selection from the current token list; unavailable
+tokens use available defaults. Amounts and quotes are not restored.
 
 Netlify
 ===

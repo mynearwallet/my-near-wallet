@@ -39,7 +39,7 @@ const slippageMarks = [0.5, 1, 3];
 
 export default function FtSwapDetails({ minAmountOut, swapFeeAmount, estimatedFee }) {
     const {
-        swapState: { tokenIn, tokenOut, swapFee, priceImpactPercent, slippage },
+        swapState: { tokenIn, tokenOut, swapFee, priceImpactPercent, slippage, swapPending },
         events: { setSlippage },
     } = useSwapData();
 
@@ -50,6 +50,7 @@ export default function FtSwapDetails({ minAmountOut, swapFeeAmount, estimatedFe
                 value={slippage}
                 setSlippage={setSlippage}
                 marks={slippageMarks}
+                disabled={swapPending}
             />
             <RowWrapper className='detailsRow'>
                 <span>

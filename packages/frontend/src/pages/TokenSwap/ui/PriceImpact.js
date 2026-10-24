@@ -27,7 +27,7 @@ export default function PriceImpact({ percent = '-' }) {
 
     return (
         <PriceImpactWrapper className={className}>
-            {percent <= 0 ? '< 0.01' : percent} %
+            {percent <= 0 ? '< 0.01' : Number(percent).toFixed(2)} %
         </PriceImpactWrapper>
     );
 }

@@ -1,121 +1,117 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import usePools from './usePools';
 import useDebouncedValue from '../../../../hooks/useDebouncedValue';
 import fungibleTokenExchange from '../../../../services/tokenExchange';
 import { useSwapData } from '../../model/Swap';
-import { SWAP_INFO_DELAY, IMPOSSIBLE_POOL_ID, NOTIFICATION_TYPE } from '../constants';
+import { SWAP_INFO_DELAY, NOTIFICATION_TYPE } from '../constants';
 
 export default function useSwapInfo({
     account,
     tokenIn,
-    amountIn = 0,
+    amountIn = '',
     tokenOut,
+    slippage,
     delay = SWAP_INFO_DELAY,
+    enabled = true,
+    refreshInterval = 0,
 }) {
     const {
-        events: {
-            setAmountOut,
-            setSwapPoolId,
-            setSwapFee,
-            setPriceImpactPercent,
-            setIsNearTransformation,
-        },
+        events: { setSwapEstimate, setIsNearTransformation },
     } = useSwapData();
-
+    const { pools } = usePools({ tokenIn, tokenOut });
+    const isNearTransformation = useMemo(() => tokenIn && tokenOut &&
+        fungibleTokenExchange.isNearTransformation({ tokenIn, tokenOut }), [tokenIn, tokenOut]);
+    useEffect(() => setIsNearTransformation(!!isNearTransformation), [isNearTransformation]);
+    const debouncedAmountIn = useDebouncedValue(amountIn, delay);
     const [loading, setLoading] = useState(false);
-    const debounceAmountIn = useDebouncedValue(amountIn, delay);
-    const isNearTransformation = useMemo(() => {
-        if (tokenIn && tokenOut) {
-            return fungibleTokenExchange.isNearTransformation({ tokenIn, tokenOut });
-        }
-
-        return false;
-    }, [tokenIn, tokenOut]);
-
-    useEffect(
-        () => setIsNearTransformation(isNearTransformation),
-        [isNearTransformation]
-    );
-
-    const { pools, poolsLoading, poolsError } = usePools({
-        tokenIn,
-        tokenOut,
-    });
-
+    const [refreshVersion, setRefreshVersion] = useState(0);
     const [swapNotification, setSwapNotification] = useState(null);
 
     useEffect(() => {
-        if (tokenIn && tokenOut && !pools && !poolsLoading && !isNearTransformation) {
-            setAmountOut('');
-            setSwapNotification({
-                id: 'swap.noPoolAvailable',
-                type: NOTIFICATION_TYPE.warning,
-                data: {
-                    tokenIn: tokenIn.onChainFTMetadata.symbol,
-                    tokenOut: tokenOut.onChainFTMetadata.symbol,
-                },
-            });
-        } else if (poolsError) {
-            setSwapNotification({
-                id: 'swap.poolsError',
-                type: NOTIFICATION_TYPE.error,
-            });
-        } else if (swapNotification) {
+        const controller = new AbortController();
+        let cancelled = false;
+
+        if (
+            !enabled ||
+            !account ||
+            !tokenIn ||
+            !tokenOut ||
+            amountIn !== debouncedAmountIn ||
+            !Number(debouncedAmountIn)
+        ) {
+            setLoading(false);
             setSwapNotification(null);
+            return () => controller.abort();
         }
-    }, [tokenIn, tokenOut, pools, poolsLoading, poolsError, isNearTransformation]);
 
-    useEffect(() => {
-        let cancelledRequest = false;
-
-        const fetch = async () => {
-            if (
-                tokenIn &&
-                tokenOut &&
-                (pools || isNearTransformation) &&
-                debounceAmountIn > 0
-            ) {
-                setLoading(true);
-
-                try {
-                    const { amountOut, poolId, swapFee, priceImpactPercent } =
-                        await fungibleTokenExchange.estimate({
-                            account,
-                            poolsByIds: pools,
-                            tokenIn,
-                            amountIn: debounceAmountIn,
-                            tokenOut,
-                        });
-
-                    if (!cancelledRequest) {
-                        setSwapPoolId(poolId);
-                        setAmountOut(amountOut);
-                        setSwapFee(swapFee);
-                        setPriceImpactPercent(priceImpactPercent);
-                    }
-                } catch (error) {
-                    console.error('Fail to get swap info', error);
+        setLoading(true);
+        setSwapNotification(null);
+        fungibleTokenExchange
+            .estimate({
+                account,
+                tokenIn,
+                tokenOut,
+                amountIn: debouncedAmountIn,
+                slippage,
+                poolsByIds: pools,
+                signal: controller.signal,
+            })
+            .then((quote) => {
+                if (!cancelled) {
+                    setSwapEstimate(quote);
+                    console.info(`[Swap] ${quote.v2Quote ? 'SmartRouter V2' : isNearTransformation ? 'NEAR wrap/unwrap' : 'Ref (legacy)'}`, {
+                        tokenIn: tokenIn.contractName,
+                        tokenOut: tokenOut.contractName,
+                        amountIn: debouncedAmountIn,
+                        amountOut: quote.amountOut,
+                        minAmountOut: quote.v2Quote?.minAmountOut,
+                        slippage,
+                    });
                 }
-
-                setLoading(false);
-            } else if (debounceAmountIn <= 0) {
-                setSwapPoolId(IMPOSSIBLE_POOL_ID);
-                setSwapFee(0);
-                setAmountOut('');
-                setPriceImpactPercent('');
-            }
-        };
-
-        fetch();
+            })
+            .catch((error) => {
+                if (cancelled) {
+                    return;
+                }
+                setSwapEstimate(null);
+                setSwapNotification({
+                    id:
+                        error?.code === 'NO_ROUTE'
+                            ? 'swap.noPoolAvailable'
+                            : 'swap.poolsError',
+                    type:
+                        error?.code === 'NO_ROUTE'
+                            ? NOTIFICATION_TYPE.warning
+                            : NOTIFICATION_TYPE.error,
+                    data: {
+                        tokenIn: tokenIn.onChainFTMetadata.symbol,
+                        tokenOut: tokenOut.onChainFTMetadata.symbol,
+                    },
+                });
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setLoading(false);
+                }
+            });
 
         return () => {
-            cancelledRequest = true;
+            cancelled = true;
+            controller.abort();
         };
-    }, [debounceAmountIn, account, pools, tokenIn, tokenOut, isNearTransformation]);
+    }, [account, tokenIn, tokenOut, amountIn, debouncedAmountIn, slippage, pools, enabled, refreshVersion]);
+
+    useEffect(() => {
+        if (!enabled || !refreshInterval || loading || !Number(amountIn)) {
+            return;
+        }
+        const timer = setTimeout(() => setRefreshVersion((value) => value + 1), refreshInterval);
+        return () => clearTimeout(timer);
+    }, [enabled, refreshInterval, loading, amountIn, refreshVersion]);
 
     return {
         swapNotification,
-        loading,
+        loading: loading || amountIn !== debouncedAmountIn,
     };
 }

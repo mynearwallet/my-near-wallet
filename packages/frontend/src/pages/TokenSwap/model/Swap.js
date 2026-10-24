@@ -23,6 +23,7 @@ const initialState = {
     amountIn: '',
     tokenOut: null,
     amountOut: '',
+    v2Quote: null,
     swapFee: 0,
     estimatedFee: 0,
     slippage: DEFAULT_SLIPPAGE_PERCENT,
@@ -39,6 +40,7 @@ const ACTION = {
     SET_TOKEN_OUT: 'setTokenOut',
     SET_AMOUNT_IN: 'setAmountIn',
     SET_AMOUNT_OUT: 'setAmountOut',
+    SET_SWAP_ESTIMATE: 'setSwapEstimate',
     SET_SWAP_POOL_ID: 'setSwapPoolId',
     SET_SWAP_FEE: 'setSwapFee',
     SET_ESTIMATED_FEE: 'setEstimatedFee',
@@ -56,13 +58,32 @@ function swapReducer(state, action) {
         case ACTION.SET_VIEW_STATE:
             return { ...state, viewState: payload };
         case ACTION.SET_TOKEN_IN:
-            return { ...state, tokenIn: payload };
+            return {
+                ...state,
+                tokenIn: payload,
+                ...(state.tokenIn?.contractName !== payload?.contractName
+                    ? { amountOut: '', v2Quote: null } : {}),
+            };
         case ACTION.SET_TOKEN_OUT:
-            return { ...state, tokenOut: payload };
+            return {
+                ...state,
+                tokenOut: payload,
+                ...(state.tokenOut?.contractName !== payload?.contractName
+                    ? { amountOut: '', v2Quote: null } : {}),
+            };
         case ACTION.SET_AMOUNT_IN:
-            return { ...state, amountIn: payload };
+            return { ...state, amountIn: payload, amountOut: '', v2Quote: null };
         case ACTION.SET_AMOUNT_OUT:
             return { ...state, amountOut: payload };
+        case ACTION.SET_SWAP_ESTIMATE:
+            return {
+                ...state,
+                amountOut: payload?.amountOut || '',
+                swapPoolId: payload?.poolId,
+                swapFee: payload?.swapFee,
+                priceImpactPercent: payload?.priceImpactPercent || '',
+                v2Quote: payload?.v2Quote || null,
+            };
         case ACTION.SET_SWAP_POOL_ID:
             return { ...state, swapPoolId: payload };
         case ACTION.SET_SWAP_FEE:
@@ -70,7 +91,7 @@ function swapReducer(state, action) {
         case ACTION.SET_ESTIMATED_FEE:
             return { ...state, estimatedFee: payload };
         case ACTION.SET_SLIPPAGE:
-            return { ...state, slippage: payload };
+            return { ...state, slippage: payload, amountOut: '', v2Quote: null };
         case ACTION.SET_PRICE_IMPACT_PERCENT:
             return { ...state, priceImpactPercent: payload };
         case ACTION.SET_IS_NEAR_TRANSFORMATION:
@@ -138,6 +159,9 @@ export function SwapProvider({ children }) {
             },
             setAmountOut(payload) {
                 dispatchIfMounted(ACTION.SET_AMOUNT_OUT, payload);
+            },
+            setSwapEstimate(payload) {
+                dispatchIfMounted(ACTION.SET_SWAP_ESTIMATE, payload);
             },
             setSwapPoolId(payload) {
                 dispatchIfMounted(ACTION.SET_SWAP_POOL_ID, payload);

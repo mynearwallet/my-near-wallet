@@ -18,11 +18,11 @@ import { NEAR_DECIMALS } from '../../../utils/constants';
 import isMobile from '../../../utils/isMobile';
 import { useSwapData, VIEW_STATE } from '../model/Swap';
 import {
-    DEFAULT_OUTPUT_TOKEN_ID,
     PRICE_IMPACT_THRESHOLD,
     NOTIFICATION_TYPE,
 } from '../utils/constants';
 import useSwapInfo from '../utils/hooks/useSwapInfo';
+import useTokenPair from '../utils/hooks/useTokenPair';
 import LoadingDots from '../../../components/common/loader/LoadingDots';
 
 const mobile = isMobile();
@@ -95,7 +95,7 @@ const tokenSelectState = {
 
 const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
     const availableBalance = useSelector(selectAvailableBalance);
-    const { tokensIn, listOfTokensIn, tokensOut, listOfTokensOut } = tokensConfig;
+    const { listOfTokensIn, listOfTokensOut } = tokensConfig;
     const [zeroAmountOut, setZeroAmountOut] = useState(false);
     const {
         swapState: {
@@ -106,29 +106,15 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
             amountOut,
             swapPoolId,
             estimatedFee,
+            v2Quote,
+            slippage,
             priceImpactPercent,
         },
         events: { setViewState, setTokenIn, setTokenOut, setAmountIn, setAmountOut },
     } = useSwapData();
 
-    useEffect(() => {
-        if (!tokenIn && listOfTokensIn[0]) {
-            setTokenIn(listOfTokensIn[0]);
-        } else {
-            const newTokenIn =
-                tokensIn[tokenIn?.contractName] || tokensOut[tokenIn?.contractName];
-
-            setTokenIn(newTokenIn);
-        }
-    }, [listOfTokensIn]);
-
-    useEffect(() => {
-        if (!tokenOut) {
-            setTokenOut(tokensOut[DEFAULT_OUTPUT_TOKEN_ID] || listOfTokensOut[1]);
-        } else {
-            setTokenOut(tokensOut[tokenOut?.contractName]);
-        }
-    }, [listOfTokensOut]);
+    useTokenPair(tokensConfig);
+    const requiredNearBalance = v2Quote?.requiredNearBalance || estimatedFee;
 
     const onClickReview = () => setViewState(VIEW_STATE.preview);
 
@@ -178,6 +164,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
         tokenIn,
         amountIn,
         tokenOut,
+        slippage,
     });
 
     const [notification, setNotification] = useState(null);
@@ -189,7 +176,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
 
         if (swapNotification) {
             setNotification(swapNotification);
-        } else if (estimatedFee && availableBalance) {
+        } else if (requiredNearBalance && availableBalance) {
             const formattedBalance = formatTokenAmount(
                 availableBalance,
                 NEAR_DECIMALS,
@@ -200,20 +187,20 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
             if (
                 tokenIn?.contractName === CONFIG.NEAR_ID &&
                 amountIn &&
-                Big(estimatedFee).plus(amountIn).gt(formattedBalance)
+                Big(requiredNearBalance).plus(amountIn).gt(formattedBalance)
             ) {
                 setNotification({
                     id: 'swap.insufficientBalanceForAmountAndFee',
                     type: NOTIFICATION_TYPE.warning,
                 });
-            } else if (Big(estimatedFee).gt(formattedBalance)) {
+            } else if (Big(requiredNearBalance).gt(formattedBalance)) {
                 setNotification({
                     id: 'swap.insufficientBalanceForFee',
                     type: NOTIFICATION_TYPE.warning,
                 });
             }
         }
-    }, [tokenIn, amountIn, availableBalance, estimatedFee, swapNotification]);
+    }, [tokenIn, amountIn, availableBalance, requiredNearBalance, swapNotification]);
 
     const flipInputsData = () => {
         setTokenIn(tokenOut);
@@ -230,7 +217,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
         const formIsFilled = Boolean(
             tokenIn &&
                 tokenOut &&
-                (swapPoolId || isNearTransformation) &&
+                (v2Quote || swapPoolId != null || isNearTransformation) &&
                 amountIn &&
                 amountOut
         );
@@ -243,7 +230,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
                 NEAR_DECIMALS,
                 NEAR_DECIMALS
             );
-            const isInsufficientBalance = Big(estimatedFee)
+            const isInsufficientBalance = Big(requiredNearBalance)
                 .plus(tokenIn?.contractName === CONFIG.NEAR_ID ? amountIn : 0)
                 .gt(formattedBalance);
 
@@ -265,7 +252,8 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
         amountOut,
         isNearTransformation,
         isValidInput,
-        estimatedFee,
+        requiredNearBalance,
+        v2Quote,
         availableBalance,
     ]);
 
@@ -341,14 +329,11 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
 
                         {priceImpactPercent > PRICE_IMPACT_THRESHOLD.error ? (
                             <div className='p-3 mt-2 border-red-600 text-red-600 text-md bg-red-100 rounded-lg border-solid border-1'>
-                                The price impact is {priceImpactPercent}%. To protect you
-                                from potential asset loss, we have disabled the swap. We
-                                recommend using https://app.ref.finance.
+                                Price impact is {Number(priceImpactPercent).toFixed(2)}%. Swap unavailable.
                             </div>
                         ) : priceImpactPercent > PRICE_IMPACT_THRESHOLD.warning ? (
                             <div className='p-3 mt-2 border-yellow-800 text-yellow-800 text-md bg-yellow-100 rounded-lg border-solid border-1'>
-                                The price impact is {priceImpactPercent}%. For a better
-                                swap, please consider using https://app.ref.finance.
+                                Price impact is {Number(priceImpactPercent).toFixed(2)}%.
                             </div>
                         ) : (
                             <></>
@@ -357,6 +342,7 @@ const SwapForm = memo(({ onGoBack, account, tokensConfig }) => {
                         <FormButton
                             disabled={
                                 !canSwap ||
+                                loading ||
                                 priceImpactPercent > PRICE_IMPACT_THRESHOLD.error
                             }
                             onClick={onClickReview}

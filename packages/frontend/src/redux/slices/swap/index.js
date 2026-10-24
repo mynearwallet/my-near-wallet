@@ -45,13 +45,17 @@ const updateTokensBalance = createAsyncThunk(
         try {
             await Promise.allSettled(
                 tokenIds.map(async (contractName) => {
+                    const token = all[contractName];
+                    if (!token) {
+                        return;
+                    }
                     const balance = await FungibleTokens.getBalanceOf({
                         contractName,
                         accountId,
                     });
 
                     updatedTokens[contractName] = {
-                        ...all[contractName],
+                        ...token,
                         balance,
                     };
                 })
@@ -228,8 +232,10 @@ const selectPools = (state) => state[SLICE_NAME].pools;
 
 export const selectAllTokens = createSelector(selectTokens, ({ all }) => all);
 export const selectTokensWithBalance = createSelector(
-    selectTokens,
-    ({ withBalance }) => withBalance
+    selectAllTokens,
+    (tokens) => Object.fromEntries(
+        Object.entries(tokens).filter(([, token]) => token.balance > 0)
+    )
 );
 export const selectAllTokensLoading = createSelector(
     selectAllTokenLoading,

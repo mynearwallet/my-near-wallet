@@ -21,6 +21,7 @@ export default function SwapDetails() {
             slippage,
             swapFee,
             estimatedFee,
+            v2Quote,
             isNearTransformation,
         },
     } = useSwapData();
@@ -33,12 +34,15 @@ export default function SwapDetails() {
         amountIn,
         swapFee,
     });
-    const minAmountOut = getMinAmountOut({
+    const minAmountOut = v2Quote?.minAmountOut || getMinAmountOut({
         tokenOut,
         amountOut,
         slippage,
     });
-    const minAmountOutToShow = toSignificantDecimals(minAmountOut, DECIMALS_TO_SAFE);
+    const minAmountOutToShow = toSignificantDecimals(
+        v2Quote ? Big(minAmountOut).toPrecision(DECIMALS_TO_SAFE, Big.roundDown) : minAmountOut,
+        DECIMALS_TO_SAFE
+    );
 
     const isVisible = tokenIn && tokenOut && Number(amountIn);
     let price = '-';
@@ -68,13 +72,13 @@ export default function SwapDetails() {
                 {isNearTransformation ? (
                     <NearTransformationDetails
                         minAmountOut={amountIn}
-                        estimatedFee={estimatedFee}
+                        estimatedFee={v2Quote?.estimatedFee || estimatedFee}
                     />
                 ) : (
                     <FtSwapDetails
                         minAmountOut={minAmountOutToShow}
                         swapFeeAmount={swapFeeAmount}
-                        estimatedFee={estimatedFee}
+                        estimatedFee={v2Quote?.estimatedFee || estimatedFee}
                     />
                 )}
             </Accordion>
