@@ -88,7 +88,7 @@ export default ({ accountId, appName }) => {
                 />
             </h2>
             <div className='account signer'>
-                <Translate id='verifyOwner.summary.infoMessage' data={{ appName }} />
+                <SafeTranslate id='verifyOwner.summary.infoMessage' data={{ appName }} />
             </div>
             <div className='account permissions'>
                 <div className='check'>

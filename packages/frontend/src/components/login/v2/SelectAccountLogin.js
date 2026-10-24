@@ -11,6 +11,7 @@ import FormButtonGroup from '../../common/FormButtonGroup';
 import LoadingDots from '../../common/loader/LoadingDots';
 import Container from '../../common/styled/Container.css';
 import DepositNearBanner from '../../wallet/DepositNearBanner';
+import SafeTranslate from '../../SafeTranslate';
 
 export default ({
     signedInAccountId,
@@ -94,7 +95,7 @@ const LoginHeader = ({ loginAccessType, privateShardInfo }) => {
             <div className='desc' data-test-id={`type-${loginAccessType}`}>
                 <Translate>
                     {({ translate }) => (
-                        <Translate
+                        <SafeTranslate
                             id={descId}
                             data={{
                                 accessType: translate(
