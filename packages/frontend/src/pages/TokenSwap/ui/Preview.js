@@ -1,15 +1,28 @@
+import Big from 'big.js';
 import React from 'react';
 import { Translate } from 'react-localize-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import PreviewInfo from './PreviewInfo';
 import BackArrowButton from '../../../components/common/BackArrowButton';
 import FormButton from '../../../components/common/FormButton';
-import { removeTrailingZeros } from '../../../utils/amounts';
+import Notification from '../../../components/common/Notification';
+import CONFIG from '../../../config';
+import { selectAvailableBalance } from '../../../redux/slices/account';
+import { QUOTE_REFRESH_INTERVAL_MS } from '../../../services/tokenExchange/quotes';
+import { formatTokenAmount, removeTrailingZeros } from '../../../utils/amounts';
+import { NEAR_DECIMALS } from '../../../utils/constants';
 import { useSwapData } from '../model/Swap';
 import { PRICE_IMPACT_THRESHOLD } from '../utils/constants';
+import useSwapInfo from '../utils/hooks/useSwapInfo';
 
 const StyledContainer = styled.div`
+    &[aria-busy='true'] .back-arrow-button {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
     h4 {
         font-family: 'Inter';
         font-style: normal;
@@ -65,6 +78,7 @@ const getFontSize = (charLength) => {
 };
 
 export default function Preview({
+    account,
     onClickGoBack,
     amountTokenFrom,
     amountTokenTo,
@@ -73,25 +87,44 @@ export default function Preview({
     startSwap,
     swappingToken,
 }) {
+    const availableBalance = useSelector(selectAvailableBalance);
     const tokenFromFiatPrice = activeTokenFrom?.fiatValueMetadata?.usd;
     const tokenFromFiatAmount = tokenFromFiatPrice
         ? amountTokenFrom * tokenFromFiatPrice
         : null;
 
     const handleSwap = () => {
-        if (typeof startSwap === 'function') {
+        if (!swappingToken && typeof startSwap === 'function') {
             startSwap();
         }
     };
 
     const {
-        swapState: { priceImpactPercent },
+        swapState: { v2Quote, amountIn, amountOut, estimatedFee, priceImpactPercent, slippage },
     } = useSwapData();
+    const { loading, swapNotification } = useSwapInfo({
+        account,
+        tokenIn: activeTokenFrom,
+        tokenOut: activeTokenTo,
+        amountIn,
+        slippage,
+        enabled: !swappingToken,
+        refreshInterval: QUOTE_REFRESH_INTERVAL_MS,
+    });
+    const insufficientBalance = Big(v2Quote?.requiredNearBalance || estimatedFee || 0)
+        .plus(activeTokenFrom.contractName === CONFIG.NEAR_ID ? amountIn || 0 : 0)
+        .gt(formatTokenAmount(availableBalance || '0', NEAR_DECIMALS, NEAR_DECIMALS));
+    const notification = swapNotification || (insufficientBalance ? {
+        type: 'warning',
+        id: activeTokenFrom.contractName === CONFIG.NEAR_ID
+            ? 'swap.insufficientBalanceForAmountAndFee'
+            : 'swap.insufficientBalanceForFee',
+    } : null);
 
     return (
-        <StyledContainer>
+        <StyledContainer aria-busy={swappingToken}>
             <div className='header'>
-                <BackArrowButton onClick={onClickGoBack} />
+                <BackArrowButton onClick={swappingToken ? undefined : onClickGoBack} />
                 <h4>
                     <Translate id='swap.reviewInfo' />
                 </h4>
@@ -123,21 +156,22 @@ export default function Preview({
                 amountTokenTo={amountTokenTo}
             />
 
-            {}
+            {notification && (
+                <Notification type={notification.type}>
+                    <Translate id={notification.id} data={notification.data} />
+                </Notification>
+            )}
 
             {priceImpactPercent > PRICE_IMPACT_THRESHOLD.error ? (
                 <div
                     className='p-3 mt-2 border-red-600 text-red-600 text-md bg-red-100 rounded-lg border-solid border-1'
                     data-test-id='swapPriceDisabledWarning'
                 >
-                    The price impact is {priceImpactPercent}%. To protect you from
-                    potential asset loss, we have disabled the swap. We recommend using
-                    https://app.ref.finance.
+                    Price impact is {Number(priceImpactPercent).toFixed(2)}%. Swap unavailable.
                 </div>
             ) : priceImpactPercent > PRICE_IMPACT_THRESHOLD.warning ? (
                 <div className='p-3 mt-2 border-yellow-800 text-yellow-800 text-md bg-yellow-100 rounded-lg border-solid border-1'>
-                    The price impact is {priceImpactPercent}%. For a better swap, please
-                    consider using https://app.ref.finance.
+                    Price impact is {Number(priceImpactPercent).toFixed(2)}%.
                 </div>
             ) : (
                 <></>
@@ -147,6 +181,9 @@ export default function Preview({
                 color='blue width100'
                 disabled={
                     swappingToken === true ||
+                    loading ||
+                    !amountOut ||
+                    insufficientBalance ||
                     priceImpactPercent > PRICE_IMPACT_THRESHOLD.error
                 }
                 sending={swappingToken === true}
@@ -158,7 +195,11 @@ export default function Preview({
             </FormButton>
 
             <div className='flexCenterButton'>
-                <FormButton color='gray link' onClick={onClickGoBack}>
+                <FormButton
+                    color='gray link'
+                    onClick={onClickGoBack}
+                    disabled={swappingToken}
+                >
                     <Translate id='button.cancel' />
                 </FormButton>
             </div>

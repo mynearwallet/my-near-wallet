@@ -26,6 +26,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             amountIn,
             tokenOut,
             amountOut,
+            v2Quote,
             swapPoolId,
             slippage,
             isNearTransformation,
@@ -36,10 +37,13 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
     } = useSwapData();
 
     useEffect(() => {
+        if (v2Quote) {
+            return;
+        }
         const fetch = async () => {
             const fee = await getSwapCost({ account, tokenIn, tokenOut });
 
-            if (isMounted) {
+            if (isMounted()) {
                 setEstimatedFee(
                     removeTrailingZeros(
                         formatTokenAmount(fee, CONFIG.NEAR_DECIMALS, CONFIG.NEAR_DECIMALS)
@@ -49,7 +53,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         };
 
         fetch();
-    }, [tokenIn, tokenOut, isMounted]);
+    }, [tokenIn, tokenOut, isMounted, v2Quote]);
 
     const goHome = () => history.push('/');
     const showForm = () => setViewState(VIEW_STATE.inputForm);
@@ -58,7 +62,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         setViewState(VIEW_STATE.inputForm);
     };
 
-    const minAmountOut = getMinAmountOut({
+    const minAmountOut = v2Quote?.minAmountOut || getMinAmountOut({
         tokenOut,
         amountOut,
         slippage,
@@ -72,10 +76,12 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         tokenOut,
         minAmountOut,
         isNearTransformation,
+        v2Quote,
+        slippage,
     });
 
     const handleSwap = () => {
-        if (swap) {
+        if (swap && !swapPending) {
             Mixpanel.track('Click Confirm & Swap on Swap page');
             swap();
         }
@@ -94,6 +100,7 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
         <SwapForm onGoBack={goHome} account={account} tokensConfig={tokensConfig} />
     ) : viewState === VIEW_STATE.preview ? (
         <Preview
+            account={account}
             onClickGoBack={showForm}
             activeTokenFrom={tokenIn}
             amountTokenFrom={amountInToShow}
@@ -103,6 +110,6 @@ export default memo(function SwapWrapper({ history, account, tokensConfig }) {
             swappingToken={swapPending}
         />
     ) : viewState === VIEW_STATE.result ? (
-        <Success onClickContinue={updateForm} onClickGoToExplorer={openTransaction} />
+        <Success account={account} onClickContinue={updateForm} onClickGoToExplorer={openTransaction} />
     ) : null;
 });

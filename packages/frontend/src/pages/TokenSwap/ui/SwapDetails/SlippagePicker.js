@@ -39,7 +39,13 @@ const MarksWrapper = styled.div`
     }
 `;
 
-export default function SlippagePicker({ value, setSlippage, marks, className = '' }) {
+export default function SlippagePicker({
+    value,
+    setSlippage,
+    marks,
+    className = '',
+    disabled = false,
+}) {
     return (
         <StyledContainer className={className}>
             <Translate id='swap.slippage' />
@@ -50,6 +56,7 @@ export default function SlippagePicker({ value, setSlippage, marks, className = 
                     <button
                         key={mark}
                         className={value === mark ? 'active' : ''}
+                        disabled={disabled}
                         onClick={() => setSlippage(mark)}
                     >
                         {mark}%

@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CONFIG from '../../../../config';
@@ -56,20 +56,30 @@ export default function useSwap({
     tokenOut,
     minAmountOut,
     isNearTransformation,
+    v2Quote,
+    slippage,
 }) {
     const nearConfig = useSelector((state) =>
         selectNEARAsTokenWithMetadata(state, { includeNearContractName: true })
     );
     const dispatch = useDispatch();
     const {
-        events: { setSwapPending, setCompletedSwapState, setViewState },
+        events: { setSwapPending, setCompletedSwapState, setViewState, setSwapEstimate },
     } = useSwapData();
+
+    const current = useRef();
+    const inFlight = useRef(false);
+    const mounted = useRef(true);
+    current.current = { account, amountIn, tokenIn, tokenOut, slippage, v2Quote };
+    useEffect(() => () => {
+        mounted.current = false;
+    }, []);
 
     const swap = useMemo(() => {
         if (
             !account ||
             !amountIn ||
-            (!isNearTransformation && !poolId) ||
+            (!v2Quote && !isNearTransformation && poolId == null) ||
             !tokenIn ||
             !tokenOut ||
             !minAmountOut
@@ -77,7 +87,17 @@ export default function useSwap({
             return null;
         }
 
+        const isCurrent = () => mounted.current &&
+            current.current.account?.accountId === account.accountId &&
+            current.current.amountIn === amountIn &&
+            current.current.tokenIn?.contractName === tokenIn.contractName &&
+            current.current.tokenOut?.contractName === tokenOut.contractName &&
+            current.current.slippage === slippage && current.current.v2Quote === v2Quote;
         return async () => {
+            if (inFlight.current || !isCurrent()) {
+                return;
+            }
+            inFlight.current = true;
             setSwapPending(true);
 
             const statisticalParameters = {
@@ -95,7 +115,7 @@ export default function useSwap({
             };
 
             try {
-                const { swapTxHash, success, failReason, retry } =
+                const result =
                     await fungibleTokenExchange.swap({
                         account,
                         amountIn,
@@ -103,11 +123,24 @@ export default function useSwap({
                         tokenIn,
                         tokenOut,
                         minAmountOut,
+                        v2Quote,
+                        slippage,
+                        isCurrent,
                     });
+                const { swapTxHash, success, failReason, retry, unconfirmed } = result;
+                if (result.reviewRequired) {
+                    if (isCurrent()) {
+                        setSwapEstimate(result.quote);
+                        dispatch(showCustomAlert({
+                            success: false,
+                            messageCodeHeader: 'swap.review',
+                            errorMessage: 'Price changed. Review the updated quote before confirming.',
+                        }));
+                    }
+                    return;
+                }
 
                 if (retry) {
-                    setViewState(VIEW_STATE.preview);
-                    setSwapPending(false);
                     return;
                 }
 
@@ -116,7 +149,7 @@ export default function useSwap({
                     ...statisticalParameters,
                 });
 
-                dispatch(
+                await dispatch(
                     updateTokensBalance({
                         accountId: account.accountId,
                         tokenIds: [
@@ -131,13 +164,22 @@ export default function useSwap({
                 );
                 setCompletedSwapState({
                     success,
+                    unconfirmed,
+                    accountId: account.accountId,
+                    quote: result.quote,
+                    amountOut: result.amountOut,
                     hash: swapTxHash,
                     failReason,
                     tokenIn: tokenIn.onChainFTMetadata.symbol,
                     tokenOut: tokenOut.onChainFTMetadata.symbol,
                 });
-                setViewState(VIEW_STATE.result);
+                if (mounted.current && current.current.account?.accountId === account.accountId) {
+                    setViewState(VIEW_STATE.result);
+                }
             } catch (error) {
+                if (!isCurrent()) {
+                    return;
+                }
                 Mixpanel.track('Swap:failed', {
                     failReason: error.message,
                     ...statisticalParameters,
@@ -149,9 +191,12 @@ export default function useSwap({
                         errorMessage: error.message,
                     })
                 );
+            } finally {
+                inFlight.current = false;
+                if (mounted.current) {
+                    setSwapPending(false);
+                }
             }
-
-            setSwapPending(false);
         };
     }, [
         dispatch,
@@ -162,6 +207,8 @@ export default function useSwap({
         tokenOut,
         minAmountOut,
         isNearTransformation,
+        v2Quote,
+        slippage,
     ]);
 
     return swap;

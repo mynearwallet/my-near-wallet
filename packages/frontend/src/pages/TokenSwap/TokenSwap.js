@@ -20,6 +20,7 @@ const TokenSwap = ({ history }) => {
 
         if (accountId) {
             const updateAccount = async () => {
+                setAccount(null);
                 dispatch(swapActions.fetchSwapData({ accountId }));
                 const instance = await wallet.getAccount(accountId, true);
 
@@ -38,10 +39,10 @@ const TokenSwap = ({ history }) => {
 
     return (
         <Container className='small-centered'>
-            <SwapProvider>
+            <SwapProvider key={accountId}>
                 <SwapWrapper
                     history={history}
-                    account={account}
+                    account={account?.accountId === accountId ? account : null}
                     tokensConfig={tokensConfig}
                 />
             </SwapProvider>
