@@ -1994,7 +1994,8 @@
         },
         "landing": {
             "existingAccount": "已有帳戶？您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用。",
-            "noNewAccounts": "MyNearWallet 不再建立新帳戶。初次使用 NEAR？請從 Meteor Wallet 開始。"
+            "noNewAccounts": "MyNearWallet 不再建立新帳戶。初次使用 NEAR？請從 Meteor Wallet 開始。",
+            "otherWallets": "其他 NEAR 錢包"
         },
         "manualExport": {
             "findingAccounts": "正在尋找此錢包持有金鑰的帳戶…",

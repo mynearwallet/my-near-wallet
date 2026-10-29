@@ -1734,7 +1734,8 @@
         },
         "landing": {
             "existingAccount": "Zaten bir hesabınız var mı? Kurtarma ifadeniz, özel anahtarınız veya Ledger cihazınız doğrudan Meteor Wallet'ta çalışır.",
-            "noNewAccounts": "MyNearWallet artık yeni hesap oluşturmuyor. NEAR'da yeni misiniz? Meteor Wallet ile başlayın."
+            "noNewAccounts": "MyNearWallet artık yeni hesap oluşturmuyor. NEAR'da yeni misiniz? Meteor Wallet ile başlayın.",
+            "otherWallets": "Diğer NEAR cüzdanları"
         },
         "manualExport": {
             "findingAccounts": "Bu cüzdanın anahtarlarını tuttuğu hesaplar aranıyor…",

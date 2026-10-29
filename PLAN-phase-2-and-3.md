@@ -21,7 +21,7 @@
 
 Deviations from this plan:
 - **`/setup-ledger-new-account` is fully retired** rather than keeping its redirect branch. Existing Ledger users connect their Ledger in Meteor Wallet.
-- **Guests are never offered an import into MyNearWallet** (decided 29 Oct). From Phase 2 the guest landing and the retired page offer only *Get Meteor Wallet*, which opens meteorwallet.app so users choose a platform there, and the landing adds "your recovery phrase, private key or Ledger works directly in Meteor Wallet". The import routes stay open by URL (rule 4), and signed-in users keep *Import account* in the account switcher. The e2e recover specs open `/recover-account` directly.
+- **Guests are never offered an import into MyNearWallet** (decided 29 Oct). From Phase 2 the guest landing and the retired page offer *Get Meteor Wallet*, which opens meteorwallet.app so users choose a platform there (the landing also has a secondary *Other NEAR wallets* text link to wallet.near.org), and the landing adds "your recovery phrase, private key or Ledger works directly in Meteor Wallet". The import routes stay open by URL (rule 4), and signed-in users keep *Import account* in the account switcher. The e2e recover specs open `/recover-account` directly.
 - **Send and Receive get no inline notice.** The global sunset bar already appears there, and two prompts on one page is noise.
 - **Staking pages hide the bar** because they carry their own, more specific notice.
 - **Interim 2FA handling keeps MNW's existing "Disable 2FA"** and links to it from the guidance ("Turn off 2FA" switches to that account and opens Profile). Hiding it if NEAR's helper turns out to be down is **not** built yet; that needs the helper status first.
@@ -368,7 +368,7 @@ Replace the flag's check with the `createAccount` capability, and keep the flag 
 
 | Location | Change |
 | --- | --- |
-| [GuestLanding.js](packages/frontend/src/components/landing/GuestLanding.js) | **"Get Meteor Wallet"** becomes the only CTA (no import button). Add "MyNearWallet no longer creates new accounts. New to NEAR? Get Meteor Wallet" and "Already have an account? Your recovery phrase, private key or Ledger device works directly in Meteor Wallet." |
+| [GuestLanding.js](packages/frontend/src/components/landing/GuestLanding.js) | **"Get Meteor Wallet"** becomes the only CTA (no import button), with a secondary "Other NEAR wallets" text link to wallet.near.org. Add "MyNearWallet no longer creates new accounts. New to NEAR? Get Meteor Wallet" and "Already have an account? Your recovery phrase, private key or Ledger device works directly in Meteor Wallet." |
 | [CreateAccountBtn.js](packages/frontend/src/components/navigation/CreateAccountBtn.js) (`DesktopMenu.js`, `MobileContainer.js`) | Hide |
 | [CreateCustomNameLightBanner.js](packages/frontend/src/components/wallet/CreateCustomNameLightBanner.js), [CreateCustomNameModal.js](packages/frontend/src/components/wallet/CreateCustomNameModal.js) | Hide / suppress |
 | [AutoImport.js](packages/frontend/src/components/accounts/auto_import/AutoImport.js) failure "Create New Account" | Replace with "Try another import method" → `/recover-account` |
@@ -549,7 +549,7 @@ Phase 2 has been announced. Still needed for Release A:
   - Balances, Collectibles and Activity stay read-only. The account ID copy control stays.
 - [ ] **Nav:** Wallet · Migrate · Staking (read-only) · Account · Support. The account switcher keeps "Import account".
 - [ ] **Modal and bar:** Phase 3 copy. The modal shows once per session.
-- [ ] **Guest landing:** "MyNearWallet is in limited mode" + "Get Meteor Wallet" (no import button, as in Phase 2).
+- [ ] **Guest landing:** "MyNearWallet is in limited mode" + "Get Meteor Wallet" + "Other NEAR wallets" link (no import button, as in Phase 2).
 - [ ] **Import screens:** "You don't need MyNearWallet to get into your account. Your recovery phrase or private key works directly in Meteor Wallet." Import into MNW still works underneath.
 - [ ] **Translations** for every new Phase 3 string, in all locales.
 - [ ] *Optional:* a reload prompt for stale tabs. Emit `version.json` at build and compare it on route change ("MyNearWallet has been updated. Reload to continue."), so tabs left open across the Phase 3 deployment don't keep Phase 2 behaviour indefinitely.
@@ -876,7 +876,7 @@ Guards: Pub = `PublicRoute`, Pwd = `PasswordProtectedRoute`, Priv = `PrivateRout
 
 | Route | Guard | Phase 2 (Release A) | Phase 3 (Release B) |
 | --- | --- | --- | --- |
-| `/` | GuestLanding / Wallet | Guest: Get Meteor Wallet only. Wallet: banner and notices; Swap and Top Up hidden | Action row hidden; Phase 3 banner with Migrate and Export (C: Migration Hub) |
+| `/` | GuestLanding / Wallet | Guest: Get Meteor Wallet (+ Other NEAR wallets link), no import. Wallet: banner and notices; Swap and Top Up hidden | Action row hidden; Phase 3 banner with Migrate and Export (C: Migration Hub) |
 | `/set-password`, `/change-password` | Rt / Pwd | ✅ | ✅ |
 | `/linkdrop/:fc/:fk` | Rt | Claim to existing account ✅; "new account" hidden | ⛔ (D9) |
 | `/create`, `/create/:fc/:fk`, `/create-from/:id` | Pwd | ⛔ | ⛔ |

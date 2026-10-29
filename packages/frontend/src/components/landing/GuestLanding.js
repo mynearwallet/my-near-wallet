@@ -4,7 +4,11 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import LandingBackground from './LandingBackground';
-import { isSunsetCapabilityEnabled, METEOR_WALLET_SITE_URL } from '../../config/sunset';
+import {
+    isSunsetCapabilityEnabled,
+    METEOR_WALLET_SITE_URL,
+    NEAR_WALLETS_URL,
+} from '../../config/sunset';
 import iPhoneMockup from '../../images/iphone-mockup.png';
 import AccountExportNotice from '../account-export/AccountExportNotice';
 import FormButton from '../common/FormButton';
@@ -122,6 +126,11 @@ const StyledContainer = styled.div`
             @media (min-width: 768px) {
                 flex-direction: row;
             }
+
+            /* No "or" separator between these two, so space them directly. */
+            &.sunset-buttons {
+                gap: 12px 40px;
+            }
         }
 
         .img-wrapper {
@@ -200,12 +209,19 @@ export function GuestLanding() {
                                 <p>{t('sunset.landing.existingAccount')}</p>
                             </AccountExportNotice>
                         </div>
-                        <div className='buttons'>
+                        <div className='buttons sunset-buttons'>
                             <FormButton
                                 linkTo={METEOR_WALLET_SITE_URL}
                                 trackingId='Click get Meteor Wallet link'
                             >
                                 {t('sunset.common.getMeteor')}
+                            </FormButton>
+                            <FormButton
+                                className='link'
+                                linkTo={NEAR_WALLETS_URL}
+                                trackingId='Click other NEAR wallets link'
+                            >
+                                {t('sunset.landing.otherWallets')}
                             </FormButton>
                         </div>
                     </>

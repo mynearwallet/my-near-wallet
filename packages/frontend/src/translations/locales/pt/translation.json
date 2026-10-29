@@ -1776,7 +1776,8 @@
         },
         "landing": {
             "existingAccount": "Já tem uma conta? Sua frase de recuperação, chave privada ou dispositivo Ledger funciona diretamente na Meteor Wallet.",
-            "noNewAccounts": "A MyNearWallet não cria mais novas contas. Novo na NEAR? Comece com a Meteor Wallet."
+            "noNewAccounts": "A MyNearWallet não cria mais novas contas. Novo na NEAR? Comece com a Meteor Wallet.",
+            "otherWallets": "Outras carteiras NEAR"
         },
         "manualExport": {
             "findingAccounts": "Procurando as contas cujas chaves esta carteira guarda…",

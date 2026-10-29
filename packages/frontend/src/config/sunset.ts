@@ -87,6 +87,9 @@ export const SUNSET_LEARN_MORE_URL = 'https://www.mynearwallet.com/sunset';
  */
 export const METEOR_WALLET_SITE_URL = 'https://meteorwallet.app';
 
+/** NEAR's directory of wallets, offered as the secondary choice next to Meteor Wallet. */
+export const NEAR_WALLETS_URL = 'https://wallet.near.org';
+
 export const isSunsetPhase = (value: unknown): value is SunsetPhase =>
     value === 1 || value === 2 || value === 3;
 

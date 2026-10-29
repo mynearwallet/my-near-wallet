@@ -2155,7 +2155,8 @@
         },
         "landing": {
             "existingAccount": "Already have an account? Your recovery phrase, private key or Ledger device works directly in Meteor Wallet.",
-            "noNewAccounts": "MyNearWallet no longer creates new accounts. New to NEAR? Get started with Meteor Wallet."
+            "noNewAccounts": "MyNearWallet no longer creates new accounts. New to NEAR? Get started with Meteor Wallet.",
+            "otherWallets": "Other NEAR wallets"
         },
         "manualExport": {
             "findingAccounts": "Finding the accounts this wallet holds keys for…",

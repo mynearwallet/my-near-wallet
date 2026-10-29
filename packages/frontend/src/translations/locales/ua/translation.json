@@ -1872,7 +1872,8 @@
         },
         "landing": {
             "existingAccount": "Уже маєте акаунт? Ваша фраза відновлення, приватний ключ або пристрій Ledger працюють безпосередньо в Meteor Wallet.",
-            "noNewAccounts": "MyNearWallet більше не створює нові акаунти. Вперше в NEAR? Почніть із Meteor Wallet."
+            "noNewAccounts": "MyNearWallet більше не створює нові акаунти. Вперше в NEAR? Почніть із Meteor Wallet.",
+            "otherWallets": "Інші гаманці NEAR"
         },
         "manualExport": {
             "findingAccounts": "Шукаємо акаунти, ключі яких зберігає цей гаманець…",

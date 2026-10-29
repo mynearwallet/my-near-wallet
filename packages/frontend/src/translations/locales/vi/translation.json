@@ -1710,7 +1710,8 @@
         },
         "landing": {
             "existingAccount": "Đã có tài khoản? Cụm từ khôi phục, khóa riêng tư hoặc thiết bị Ledger của bạn dùng được trực tiếp trong Meteor Wallet.",
-            "noNewAccounts": "MyNearWallet không còn tạo tài khoản mới. Mới dùng NEAR? Hãy bắt đầu với Meteor Wallet."
+            "noNewAccounts": "MyNearWallet không còn tạo tài khoản mới. Mới dùng NEAR? Hãy bắt đầu với Meteor Wallet.",
+            "otherWallets": "Các ví NEAR khác"
         },
         "manualExport": {
             "findingAccounts": "Đang tìm các tài khoản mà ví này giữ khóa…",
