@@ -74,11 +74,11 @@ export default function SunsetInlineNotice({
 }
 
 function MigrateLink({ newTab, t }) {
-    const { to } = useMigrationEntry();
+    const { to, href } = useMigrationEntry();
 
     if (newTab) {
         return (
-            <a href='/export-accounts/select' target='_blank' rel='noopener noreferrer'>
+            <a href={href} target='_blank' rel='noopener noreferrer'>
                 {t('sunset.inline.migrateLink')}
             </a>
         );

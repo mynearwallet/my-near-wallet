@@ -1678,7 +1678,14 @@
             "returningToApp": "Đang quay lại ứng dụng…",
             "returningToHost": "Đang quay lại {{host}}…",
             "returnToApp": "Quay lại ứng dụng",
-            "returnToHost": "Quay lại {{host}}"
+            "returnToHost": "Quay lại {{host}}",
+            "signedOut": {
+                "body": "Không có tài khoản MyNearWallet nào đăng nhập trên trình duyệt này, và MyNearWallet đang ngừng hoạt động, nên không thể phê duyệt yêu cầu này tại đây.",
+                "bodyWithHost": "{{host}} đã gửi một yêu cầu, nhưng không có tài khoản MyNearWallet nào đăng nhập trên trình duyệt này. MyNearWallet đang ngừng hoạt động, nên không thể phê duyệt yêu cầu này tại đây.",
+                "hint": "Tài khoản và tiền của bạn vẫn an toàn. Cụm từ khôi phục, khóa riêng tư hoặc thiết bị Ledger của bạn dùng được trực tiếp trong Meteor Wallet: hãy thêm tài khoản vào đó, rồi chọn Meteor Wallet trong ứng dụng.",
+                "hintWithHost": "Tài khoản và tiền của bạn vẫn an toàn. Cụm từ khôi phục, khóa riêng tư hoặc thiết bị Ledger của bạn dùng được trực tiếp trong Meteor Wallet: hãy thêm tài khoản vào đó, rồi chọn Meteor Wallet trong {{host}}.",
+                "title": "Không có tài khoản MyNearWallet trên trình duyệt này"
+            }
         },
         "existingAccountGate": {
             "checking": "Đang kiểm tra tài khoản của bạn…",
@@ -1720,7 +1727,7 @@
             "notes": {
                 "notFullAccess": "Khóa này không thể kiểm soát hoàn toàn tài khoản. Nếu có, hãy dùng cụm từ khôi phục gốc trong ví mới.",
                 "notFunded": "Địa chỉ này chưa từng nhận tiền nên chưa tồn tại trên NEAR. Khóa của nó vẫn kiểm soát địa chỉ nếu sau này có tiền gửi đến.",
-                "twoFactor": "Tài khoản này đang bật 2FA. Khóa này có thể nắm toàn quyền kiểm soát tài khoản, vì vậy hãy giữ nó an toàn như cụm từ khôi phục."
+                "twoFactor": "Tài khoản này đang bật 2FA, nên riêng khóa này có thể không chuyển được tài khoản. Hãy tắt 2FA trước, hoặc dùng cụm từ khôi phục 12 từ nếu bạn đã thiết lập. Hãy giữ khóa này an toàn như cụm từ khôi phục."
             },
             "recoveryPhraseStillWorks": "Nếu bạn đã lưu cụm từ khôi phục 12 từ khi tạo tài khoản, cụm từ đó vẫn dùng được trong mọi ví NEAR."
         },

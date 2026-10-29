@@ -63,6 +63,11 @@ const Container = styled.div`
         border-top: 1px solid #f0f0f1;
         margin: 16px 0 20px;
     }
+
+    .not-now {
+        margin-top: 12px;
+        text-align: center;
+    }
 `;
 
 function cadenceStore() {
@@ -184,6 +189,21 @@ function SunsetNoticeModal({ onClose }) {
                         </FormButton>
                     )}
                 </FormButtonGroup>
+                {offerMigration && (
+                    // The backdrop is unreachable once the modal goes full screen on a phone.
+                    <div className='not-now'>
+                        <FormButton
+                            className='link'
+                            color='gray'
+                            onClick={() => {
+                                trackSunsetNoticeCtaClicked({ variant, cta: 'continue' });
+                                onClose();
+                            }}
+                        >
+                            {t('sunset.notice.continue')}
+                        </FormButton>
+                    </div>
+                )}
             </Container>
         </Modal>
     );

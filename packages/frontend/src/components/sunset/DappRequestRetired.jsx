@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { SUNSET_LEARN_MORE_URL } from '../../config/sunset';
+import {
+    isSunsetCapabilityEnabled,
+    METEOR_WALLET_SITE_URL,
+    SUNSET_LEARN_MORE_URL,
+} from '../../config/sunset';
+import { selectPendingExternalRedirectUrl } from '../../redux/slices/externalRedirect';
 import AccountExportNotice from '../account-export/AccountExportNotice';
-import useMigrationEntry, {
-    MIGRATION_START_ROUTE,
-} from '../account-export/useMigrationEntry';
+import useMigrationEntry from '../account-export/useMigrationEntry';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
 import {
@@ -95,6 +98,9 @@ const CAPABILITY_BY_KIND = {
  * What a dApp request MyNearWallet no longer serves shows instead. The user always gets a way to
  * send the app a proper failure, so neither popup nor redirect integrations are left hanging.
  * It never redirects on its own: the user needs to read why first.
+ *
+ * It also answers requests that are still served, but reach a browser with no account signed in:
+ * guests are no longer offered an import, so they could not get to the approval screen.
  */
 export default function DappRequestRetired({ kind }) {
     const { t } = useTranslation();
@@ -104,21 +110,43 @@ export default function DappRequestRetired({ kind }) {
     const heading = useRef(null);
     const migration = useMigrationEntry();
     const [isReturning, setIsReturning] = useState(false);
+    const pendingRedirect = useSelector(selectPendingExternalRedirectUrl);
+    const hadPendingRedirect = useRef(false);
 
     const request = readDappRequest(kind, location.search);
     const host = safeHost(request.hostUrl);
     const canReturn = isUsableCallbackUrl(request.callbackUrl);
     const isSignedIn = hasActiveAccount();
-    const copy = kind === 'login' ? 'sunset.dapp.login' : 'sunset.dapp.approval';
+    const isSignedOutRequest =
+        kind !== 'login' &&
+        !isSignedIn &&
+        isSunsetCapabilityEnabled(CAPABILITY_BY_KIND[kind]);
+    const copy =
+        kind === 'login'
+            ? 'sunset.dapp.login'
+            : isSignedOutRequest
+            ? 'sunset.dapp.signedOut'
+            : 'sunset.dapp.approval';
 
     useEffect(() => {
         heading.current?.focus({ preventScroll: true });
         trackSunsetFeatureBlocked({
             capability: CAPABILITY_BY_KIND[kind],
-            entry: 'route',
+            entry: isSignedOutRequest ? 'signed_out' : 'route',
             route: location.pathname,
         });
     }, [kind]);
+
+    // Cancelling "You're leaving MyNearWallet" clears the pending redirect without leaving, so
+    // let the user try again instead of leaving the button stuck on "Returning…".
+    useEffect(() => {
+        if (pendingRedirect) {
+            hadPendingRedirect.current = true;
+        } else if (hadPendingRedirect.current) {
+            hadPendingRedirect.current = false;
+            setIsReturning(false);
+        }
+    }, [pendingRedirect]);
 
     const returnToApp = () => {
         const failure = {
@@ -151,10 +179,18 @@ export default function DappRequestRetired({ kind }) {
         });
         if (isPopupRequest()) {
             // Keep the popup, and with it the app's channel, open.
-            window.open(MIGRATION_START_ROUTE, '_blank', 'noopener,noreferrer');
+            window.open(migration.href, '_blank', 'noopener,noreferrer');
             return;
         }
         history.push(migration.to);
+    };
+
+    const openMeteor = () => {
+        trackSunsetRetiredCtaClicked({
+            capability: CAPABILITY_BY_KIND[kind],
+            cta: 'get_meteor',
+        });
+        window.open(METEOR_WALLET_SITE_URL, '_blank', 'noopener,noreferrer');
     };
 
     const body = request.isCli
@@ -174,6 +210,10 @@ export default function DappRequestRetired({ kind }) {
                 <p>
                     {request.isCli
                         ? t('sunset.dapp.cli.hint')
+                        : isSignedOutRequest
+                        ? host
+                            ? t('sunset.dapp.signedOut.hintWithHost', { host })
+                            : t('sunset.dapp.signedOut.hint')
                         : host
                         ? t('sunset.dapp.hintWithHost', { host })
                         : t('sunset.dapp.hint')}
@@ -210,6 +250,17 @@ export default function DappRequestRetired({ kind }) {
                                     ? 'sunset.common.resume'
                                     : 'sunset.common.migrate'
                             )}
+                        </FormButton>
+                    </div>
+                )}
+                {!isSignedIn && !request.isCli && (
+                    <div className={canReturn ? 'secondary' : undefined}>
+                        <FormButton
+                            className={canReturn ? 'link' : undefined}
+                            color={canReturn ? 'gray' : 'blue'}
+                            onClick={openMeteor}
+                        >
+                            {t('sunset.common.getMeteor')}
                         </FormButton>
                     </div>
                 )}

@@ -1744,7 +1744,14 @@
             "returningToApp": "Voltando ao app…",
             "returningToHost": "Voltando para {{host}}…",
             "returnToApp": "Voltar ao app",
-            "returnToHost": "Voltar para {{host}}"
+            "returnToHost": "Voltar para {{host}}",
+            "signedOut": {
+                "body": "Nenhuma conta MyNearWallet está conectada neste navegador, e a MyNearWallet está sendo descontinuada, então não pode aprovar esta solicitação aqui.",
+                "bodyWithHost": "{{host}} enviou uma solicitação, mas nenhuma conta MyNearWallet está conectada neste navegador. A MyNearWallet está sendo descontinuada, então não pode aprovar esta solicitação aqui.",
+                "hint": "Suas contas e fundos estão seguros. Sua frase de recuperação, chave privada ou dispositivo Ledger funciona diretamente na Meteor Wallet: adicione sua conta lá e depois escolha a Meteor Wallet no app.",
+                "hintWithHost": "Suas contas e fundos estão seguros. Sua frase de recuperação, chave privada ou dispositivo Ledger funciona diretamente na Meteor Wallet: adicione sua conta lá e depois escolha a Meteor Wallet em {{host}}.",
+                "title": "Nenhuma conta MyNearWallet neste navegador"
+            }
         },
         "existingAccountGate": {
             "checking": "Verificando sua conta…",
@@ -1786,7 +1793,7 @@
             "notes": {
                 "notFullAccess": "Esta chave não consegue controlar totalmente a conta. Use sua frase de recuperação original na nova carteira, se a tiver.",
                 "notFunded": "Este endereço nunca recebeu fundos, então ainda não existe na NEAR. A chave continua controlando-o se fundos chegarem depois.",
-                "twoFactor": "Esta conta tem 2FA ativada. Esta chave pode assumir o controle total da conta, então guarde-a com o mesmo cuidado que uma frase de recuperação."
+                "twoFactor": "Esta conta tem 2FA ativada, então esta chave pode não conseguir movê-la sozinha. Desative a 2FA primeiro ou use sua frase de recuperação de 12 palavras, se tiver configurado uma. Guarde esta chave com o mesmo cuidado que uma frase de recuperação."
             },
             "recoveryPhraseStillWorks": "Se você salvou uma frase de recuperação de 12 palavras ao criar uma conta, essa frase também continua funcionando em qualquer carteira NEAR."
         },

@@ -4,6 +4,9 @@ const mockWallet = {
     getAccountBasic: jest.fn(),
 };
 const mockIsSunsetCapabilityEnabled = jest.fn();
+const mockConfirmNoAccountIds = jest.fn();
+const mockGetLedgerPublicKey = jest.fn();
+const mockKeyPair = { getPublicKey: () => 'ed25519:phrase-key' };
 const mockTrackBlocked = jest.fn();
 
 jest.mock('.', () => ({ SLICE_NAME: 'importZeroBalanceAccount' }));
@@ -21,23 +24,29 @@ jest.mock('../../actions/status', () => ({
     clearGlobalAlert: () => ({ type: 'CLEAR_GLOBAL_ALERT' }),
     showCustomAlert: (payload) => ({ type: 'SHOW_CUSTOM_ALERT', payload }),
 }));
-jest.mock('../../actions/account', () => ({ getLedgerPublicKey: jest.fn() }));
+jest.mock('../../actions/account', () => ({
+    getLedgerPublicKey: (...args) => mockGetLedgerPublicKey(...args),
+}));
+jest.mock('../../../utils/helper-api', () => ({
+    confirmNoAccountIdsForPublicKey: (...args) => mockConfirmNoAccountIds(...args),
+}));
 jest.mock('../../../utils/localStorage', () => ({ setLedgerHdPath: jest.fn() }));
 jest.mock('../../../utils/parseSeedPhrase', () => ({
     getImplicitAccountIdFromSeedPhrase: () => 'implicit-account',
-    getKeyPairFromSeedPhrase: () => 'key-pair',
+    getKeyPairFromSeedPhrase: () => mockKeyPair,
 }));
 
 // eslint-disable-next-line import/first
-import { importZeroBalanceAccountPhrase } from './importAccountThunks';
+import {
+    importZeroBalanceAccountLedger,
+    importZeroBalanceAccountPhrase,
+} from './importAccountThunks';
 
-const run = async () => {
-    const dispatch = jest.fn();
-    const action = await importZeroBalanceAccountPhrase('some seed phrase')(
-        dispatch,
-        () => ({}),
-        undefined
+const run = async (thunk = importZeroBalanceAccountPhrase('some seed phrase')) => {
+    const dispatch = jest.fn((dispatched) =>
+        typeof dispatched === 'function' ? dispatched(dispatch) : dispatched
     );
+    const action = await thunk(dispatch, () => ({}), undefined);
     const alerts = dispatch.mock.calls
         .map(([dispatched]) => dispatched)
         .filter((dispatched) => dispatched.type === 'SHOW_CUSTOM_ALERT')
@@ -49,6 +58,7 @@ describe('importing a key with no on-chain account', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockWallet.importZeroBalanceAccount.mockResolvedValue(undefined);
+        mockConfirmNoAccountIds.mockResolvedValue(true);
     });
 
     it('still imports while the capability is available (Phase 1)', async () => {
@@ -58,7 +68,7 @@ describe('importing a key with no on-chain account', () => {
         expect(mockWallet.accountExists).not.toHaveBeenCalled();
         expect(mockWallet.importZeroBalanceAccount).toHaveBeenCalledWith(
             'implicit-account',
-            'key-pair'
+            mockKeyPair
         );
     });
 
@@ -69,6 +79,39 @@ describe('importing a key with no on-chain account', () => {
         expect(result).toEqual({ imported: false, blocked: true });
         expect(alerts).toEqual(['sunset.importBlocked.noAccount']);
         expect(mockTrackBlocked).toHaveBeenCalledWith({ method: 'phrase' });
+        expect(mockConfirmNoAccountIds).toHaveBeenCalledWith('ed25519:phrase-key');
+        expect(mockWallet.importZeroBalanceAccount).not.toHaveBeenCalled();
+    });
+
+    it('asks for a retry, never "no account", when the indexers cannot confirm it', async () => {
+        // Every indexer down looks like an empty lookup, which sends a named account's key here.
+        mockIsSunsetCapabilityEnabled.mockReturnValue(false);
+        mockWallet.accountExists.mockResolvedValue(false);
+        mockConfirmNoAccountIds.mockResolvedValue(false);
+        const { result, alerts } = await run();
+        expect(result).toEqual({ imported: false, blocked: true });
+        expect(alerts).toEqual(['sunset.importBlocked.checkFailed']);
+        expect(mockTrackBlocked).not.toHaveBeenCalled();
+        expect(mockWallet.importZeroBalanceAccount).not.toHaveBeenCalled();
+    });
+
+    it('applies the same confirmation to a Ledger with no account', async () => {
+        mockIsSunsetCapabilityEnabled.mockReturnValue(false);
+        mockGetLedgerPublicKey.mockReturnValue(() => ({
+            data: Buffer.from('ab', 'hex'),
+            toString: () => 'ed25519:ledger-key',
+        }));
+        mockWallet.getAccountBasic.mockReturnValue({
+            state: () =>
+                Promise.reject(new Error('account ab does not exist while viewing')),
+        });
+        mockConfirmNoAccountIds.mockResolvedValue(false);
+        const { result, alerts } = await run(
+            importZeroBalanceAccountLedger('ledger-hd-path')
+        );
+        expect(result).toEqual({ imported: false, blocked: true });
+        expect(alerts).toEqual(['sunset.importBlocked.checkFailed']);
+        expect(mockConfirmNoAccountIds).toHaveBeenCalledWith('ed25519:ledger-key');
         expect(mockWallet.importZeroBalanceAccount).not.toHaveBeenCalled();
     });
 

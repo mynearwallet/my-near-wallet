@@ -13,6 +13,8 @@ concurrency:
 
 jobs:
   mainnet-deploy:
+    # A manual run can pick any branch; only the mainnet branch may reach production mainnet.
+    if: github.ref == 'refs/heads/mainnet'
     uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: mainnet

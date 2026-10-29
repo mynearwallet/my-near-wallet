@@ -767,7 +767,20 @@ class Routing extends Component {
                                 path='/profile/:accountId?'
                                 component={Profile}
                             />
-                            <PrivateRoute exact path='/sign' component={SignWrapper} />
+                            {/*
+                              Signing stays open to signed-in users. A browser with no account
+                              would be sent to the guest landing, which no longer offers import,
+                              and the app would wait forever: answer it instead.
+                            */}
+                            <SunsetGatedRoute
+                                capability='dappConnect'
+                                retireIf={() => !hasActiveAccount()}
+                                guard={PrivateRoute}
+                                exact
+                                path='/sign'
+                                component={SignWrapper}
+                                retired={() => <DappRequestRetired kind='sign' />}
+                            />
                             <PrivateRoute
                                 path='/staking'
                                 render={() => (
@@ -806,16 +819,26 @@ class Routing extends Component {
                                 component={Privacy}
                                 indexBySearchEngines={true}
                             />
-                            <PrivateRoute
+                            <SunsetGatedRoute
+                                capability='dappConnect'
+                                retireIf={() => !hasActiveAccount()}
+                                guard={PrivateRoute}
                                 exact
                                 path='/sign-message'
                                 component={SignMessageWrapper}
+                                retired={() => <DappRequestRetired kind='signMessage' />}
                             />
                             {WEB3AUTH_FEATURE_ENABLED && (
-                                <PrivateRoute
+                                <SunsetGatedRoute
+                                    capability='dappConnect'
+                                    retireIf={() => !hasActiveAccount()}
+                                    guard={PrivateRoute}
                                     exact
                                     path='/verify-owner'
                                     component={VerifyOwnerWrapper}
+                                    retired={() => (
+                                        <DappRequestRetired kind='verifyOwner' />
+                                    )}
                                 />
                             )}
                             <PrivateRoute component={PageNotFound} />

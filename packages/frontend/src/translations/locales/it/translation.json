@@ -1810,7 +1810,14 @@
             "returningToApp": "Ritorno all'app…",
             "returningToHost": "Ritorno a {{host}}…",
             "returnToApp": "Torna all'app",
-            "returnToHost": "Torna a {{host}}"
+            "returnToHost": "Torna a {{host}}",
+            "signedOut": {
+                "body": "Nessun account MyNearWallet è connesso su questo browser e MyNearWallet è in fase di dismissione, quindi qui non può approvare questa richiesta.",
+                "bodyWithHost": "{{host}} ha inviato una richiesta, ma nessun account MyNearWallet è connesso su questo browser. MyNearWallet è in fase di dismissione, quindi qui non può approvare questa richiesta.",
+                "hint": "I tuoi account e i tuoi fondi sono al sicuro. La tua frase di recupero, la chiave privata o il dispositivo Ledger funzionano direttamente in Meteor Wallet: aggiungi lì il tuo account, poi scegli Meteor Wallet nell'app.",
+                "hintWithHost": "I tuoi account e i tuoi fondi sono al sicuro. La tua frase di recupero, la chiave privata o il dispositivo Ledger funzionano direttamente in Meteor Wallet: aggiungi lì il tuo account, poi scegli Meteor Wallet in {{host}}.",
+                "title": "Nessun account MyNearWallet su questo browser"
+            }
         },
         "existingAccountGate": {
             "checking": "Verifica del tuo account…",
@@ -1852,7 +1859,7 @@
             "notes": {
                 "notFullAccess": "Questa chiave non può controllare completamente l'account. Se ce l'hai, usa la tua frase di recupero originale nel nuovo wallet.",
                 "notFunded": "Questo indirizzo non ha mai ricevuto fondi, quindi non esiste ancora su NEAR. La sua chiave lo controlla comunque se in futuro arrivano fondi.",
-                "twoFactor": "Questo account ha la 2FA attiva. Questa chiave può assumere il pieno controllo dell'account, quindi custodiscila come una frase di recupero."
+                "twoFactor": "Questo account ha la 2FA attiva, quindi questa chiave potrebbe non bastare per trasferirlo. Disattiva prima la 2FA, oppure usa la tua frase di recupero di 12 parole se ne hai impostata una. Custodisci questa chiave come una frase di recupero."
             },
             "recoveryPhraseStillWorks": "Se hai salvato una frase di recupero di 12 parole quando hai creato un account, quella frase funziona ancora in qualsiasi wallet NEAR."
         },

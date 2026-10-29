@@ -82,8 +82,9 @@ const SignInLedgerWrapper = (props) => {
                 const imported = await dispatch(
                     importZeroBalanceAccountLedger(ledgerHdPath)
                 );
-                if (imported?.payload?.blocked) {
-                    // The sunset refused it and already explained why.
+                if (!imported?.payload?.imported) {
+                    // Refused or failed, and the alert already says why. Stay here so the user
+                    // can retry: the guest landing no longer leads back to import.
                     dispatch(clearSignInWithLedgerModalState());
                     return;
                 }

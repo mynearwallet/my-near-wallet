@@ -1702,7 +1702,14 @@
             "returningToApp": "Uygulamaya dönülüyor…",
             "returningToHost": "{{host}} sitesine dönülüyor…",
             "returnToApp": "Uygulamaya dön",
-            "returnToHost": "{{host}} sitesine dön"
+            "returnToHost": "{{host}} sitesine dön",
+            "signedOut": {
+                "body": "Bu tarayıcıda oturum açmış bir MyNearWallet hesabı yok ve MyNearWallet kullanımdan kaldırılıyor; bu yüzden bu isteği burada onaylayamaz.",
+                "bodyWithHost": "{{host}} bir istek gönderdi, ancak bu tarayıcıda oturum açmış bir MyNearWallet hesabı yok. MyNearWallet kullanımdan kaldırılıyor; bu yüzden bu isteği burada onaylayamaz.",
+                "hint": "Hesaplarınız ve fonlarınız güvende. Kurtarma ifadeniz, özel anahtarınız veya Ledger cihazınız doğrudan Meteor Wallet'ta çalışır: hesabınızı oraya ekleyin, ardından uygulamada Meteor Wallet'ı seçin.",
+                "hintWithHost": "Hesaplarınız ve fonlarınız güvende. Kurtarma ifadeniz, özel anahtarınız veya Ledger cihazınız doğrudan Meteor Wallet'ta çalışır: hesabınızı oraya ekleyin, ardından {{host}} içinde Meteor Wallet'ı seçin.",
+                "title": "Bu tarayıcıda MyNearWallet hesabı yok"
+            }
         },
         "existingAccountGate": {
             "checking": "Hesabınız kontrol ediliyor…",
@@ -1744,7 +1751,7 @@
             "notes": {
                 "notFullAccess": "Bu anahtar hesabı tam olarak kontrol edemez. Varsa orijinal kurtarma ifadenizi yeni cüzdanınızda kullanın.",
                 "notFunded": "Bu adres hiç fon almadı, bu yüzden henüz NEAR'da yok. Fon daha sonra gelirse anahtarı onu yine kontrol eder.",
-                "twoFactor": "Bu hesapta 2FA açık. Bu anahtar hesabın tam kontrolünü alabilir; bu yüzden onu bir kurtarma ifadesi kadar güvenli saklayın."
+                "twoFactor": "Bu hesapta 2FA açık, bu yüzden bu anahtar hesabı tek başına taşıyamayabilir. Önce 2FA'yı kapatın veya oluşturduysanız 12 kelimelik kurtarma ifadenizi kullanın. Bu anahtarı bir kurtarma ifadesi kadar güvenli saklayın."
             },
             "recoveryPhraseStillWorks": "Bir hesap oluştururken 12 kelimelik bir kurtarma ifadesi kaydettiyseniz, bu ifade her NEAR cüzdanında çalışmaya devam eder."
         },

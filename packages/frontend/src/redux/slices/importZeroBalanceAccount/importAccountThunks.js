@@ -4,6 +4,7 @@ import { KeyPair } from 'near-api-js';
 import { SLICE_NAME } from '.';
 import { trackSunsetImportNonExistentBlocked } from '../../../components/sunset/sunsetAnalytics';
 import { isSunsetCapabilityEnabled } from '../../../config/sunset';
+import { confirmNoAccountIdsForPublicKey } from '../../../utils/helper-api';
 import { setLedgerHdPath } from '../../../utils/localStorage';
 import {
     getImplicitAccountIdFromSeedPhrase,
@@ -13,7 +14,34 @@ import { wallet, setKeyMeta } from '../../../utils/wallet';
 import { getLedgerPublicKey } from '../../actions/account';
 import { clearGlobalAlert, showCustomAlert } from '../../actions/status';
 
-const showImportBlocked = ({ dispatch, method }) => {
+const showImportCheckFailed = ({ dispatch, errorMessage }) => {
+    dispatch(clearGlobalAlert());
+    dispatch(
+        showCustomAlert({
+            success: false,
+            messageCodeHeader: 'error',
+            messageCode: 'sunset.importBlocked.checkFailed',
+            errorMessage,
+        })
+    );
+};
+
+/**
+ * Says "no account" only once the indexers confirm it. Recovery reaches the implicit account when
+ * the indexer lookup comes back empty, and it comes back empty when every indexer is down too:
+ * a named account behind this key would then be told it does not exist.
+ */
+const showImportBlocked = async ({ dispatch, method, publicKey }) => {
+    let confirmed = false;
+    try {
+        confirmed = await confirmNoAccountIdsForPublicKey(publicKey);
+    } catch {
+        confirmed = false;
+    }
+    if (!confirmed) {
+        showImportCheckFailed({ dispatch, errorMessage: 'Account lookup unavailable' });
+        return;
+    }
     trackSunsetImportNonExistentBlocked({ method });
     dispatch(clearGlobalAlert());
     dispatch(
@@ -27,12 +55,17 @@ const showImportBlocked = ({ dispatch, method }) => {
 
 /**
  * Importing a key with no account on chain quietly creates a new implicit account, which the
- * sunset retires. Only a definite "does not exist" from the chain blocks the import: an existing
- * account still imports, and a failed check asks for a retry rather than claiming there is no
- * account. Either refusal comes back as `{ blocked: true }`, so callers stay on the import screen
- * with the alert instead of redirecting.
+ * sunset retires. Only a definite "does not exist" from the chain, confirmed by the indexers,
+ * blocks the import: an existing account still imports, and a failed check asks for a retry
+ * rather than claiming there is no account. Either refusal comes back as `{ blocked: true }`, so
+ * callers stay on the import screen with the alert instead of redirecting.
  */
-const mayImportImplicitAccount = async ({ implicitAccountId, method, dispatch }) => {
+const mayImportImplicitAccount = async ({
+    implicitAccountId,
+    publicKey,
+    method,
+    dispatch,
+}) => {
     if (isSunsetCapabilityEnabled('importNonExistentAccount')) {
         return true;
     }
@@ -40,19 +73,11 @@ const mayImportImplicitAccount = async ({ implicitAccountId, method, dispatch })
     try {
         exists = await wallet.accountExists(implicitAccountId);
     } catch (e) {
-        dispatch(clearGlobalAlert());
-        dispatch(
-            showCustomAlert({
-                success: false,
-                messageCodeHeader: 'error',
-                messageCode: 'sunset.importBlocked.checkFailed',
-                errorMessage: e.message,
-            })
-        );
+        showImportCheckFailed({ dispatch, errorMessage: e.message });
         return false;
     }
     if (!exists) {
-        showImportBlocked({ dispatch, method });
+        await showImportBlocked({ dispatch, method, publicKey });
     }
     return exists;
 };
@@ -82,7 +107,11 @@ export const importZeroBalanceAccountLedger = createAsyncThunk(
             } catch (e) {
                 if (e.message.includes('does not exist while viewing')) {
                     if (!isSunsetCapabilityEnabled('importNonExistentAccount')) {
-                        showImportBlocked({ dispatch, method: 'ledger' });
+                        await showImportBlocked({
+                            dispatch,
+                            method: 'ledger',
+                            publicKey: ledgerPublicKey.toString(),
+                        });
                         return { imported: false, blocked: true };
                     }
                     console.log(
@@ -120,6 +149,7 @@ export const importZeroBalanceAccountPhrase = createAsyncThunk(
         if (
             !(await mayImportImplicitAccount({
                 implicitAccountId,
+                publicKey: recoveryKeyPair.getPublicKey().toString(),
                 method: 'phrase',
                 dispatch,
             }))
@@ -154,6 +184,7 @@ export const importZeroBalanceAccountPrivateKey = createAsyncThunk(
         if (
             !(await mayImportImplicitAccount({
                 implicitAccountId,
+                publicKey: recoveryKeyPair.getPublicKey().toString(),
                 method: 'private_key',
                 dispatch,
             }))

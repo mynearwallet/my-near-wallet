@@ -9,6 +9,7 @@ import { FinalExecutionStatus } from 'near-api-js/lib/providers';
 import { useParams } from 'react-router';
 
 import FormButton from '../../common/FormButton';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import ArrowCircleIcon from '../../svg/ArrowCircleIcon';
 import ValidatorBoxItem from '../components/ValidatorBoxItem';
 import AmountInput from '../components/AmountInput';
@@ -243,14 +244,17 @@ const UnstakeForm = () => {
                     <h4>
                         <Translate id={'staking.unstake.stakeWith'} />
                     </h4>
-                    <FormButton
-                        className='small'
-                        color='light-blue'
-                        linkTo='/staking/validators'
-                        trackingId='STAKE Go to validators list page'
-                    >
-                        <Translate id='button.edit' />
-                    </FormButton>
+                    {/* The validator list is retired along with new staking. */}
+                    {isSunsetCapabilityEnabled('stakeDeposit') && (
+                        <FormButton
+                            className='small'
+                            color='light-blue'
+                            linkTo='/staking/validators'
+                            trackingId='STAKE Go to validators list page'
+                        >
+                            <Translate id='button.edit' />
+                        </FormButton>
+                    )}
                 </div>
                 <ValidatorBoxItem validatorId={METAPOOL_CONTRACT_ID} active />
                 <FormButton

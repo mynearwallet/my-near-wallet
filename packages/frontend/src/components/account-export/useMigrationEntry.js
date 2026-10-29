@@ -73,6 +73,12 @@ export default function useMigrationEntry() {
 
     return {
         to: resumeRoute(pendingSummary),
+        // For a new tab, which cannot carry router state: the activation screen picks up the
+        // same resumable transfer on its own when it is opened without one.
+        href:
+            pendingSummary == null
+                ? MIGRATION_START_ROUTE
+                : '/export-accounts/new-key-activation',
         isResume: pendingSummary != null,
         resumeStage,
     };

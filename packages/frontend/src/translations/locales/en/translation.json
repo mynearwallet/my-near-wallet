@@ -2123,7 +2123,14 @@
             "returningToApp": "Returning to the app…",
             "returningToHost": "Returning to {{host}}…",
             "returnToApp": "Return to the app",
-            "returnToHost": "Return to {{host}}"
+            "returnToHost": "Return to {{host}}",
+            "signedOut": {
+                "body": "No MyNearWallet account is signed in on this browser, and MyNearWallet is being retired, so it can't approve this request here.",
+                "bodyWithHost": "{{host}} sent a request, but no MyNearWallet account is signed in on this browser. MyNearWallet is being retired, so it can't approve this request here.",
+                "hint": "Your accounts and funds are safe. Your recovery phrase, private key or Ledger device works directly in Meteor Wallet: add your account there, then choose Meteor Wallet in the app.",
+                "hintWithHost": "Your accounts and funds are safe. Your recovery phrase, private key or Ledger device works directly in Meteor Wallet: add your account there, then choose Meteor Wallet in {{host}}.",
+                "title": "No MyNearWallet account on this browser"
+            }
         },
         "existingAccountGate": {
             "checking": "Checking your account…",
@@ -2165,7 +2172,7 @@
             "notes": {
                 "notFullAccess": "This key can't fully control the account. Use your original recovery phrase in your new wallet if you have it.",
                 "notFunded": "This address has never received funds, so it doesn't exist on NEAR yet. Its key still controls it if funds arrive later.",
-                "twoFactor": "This account has 2FA turned on. This key can take full control of the account, so keep it as safe as a recovery phrase."
+                "twoFactor": "This account has 2FA turned on, so this key may not move it on its own. Turn off 2FA first, or use your 12-word recovery phrase if you set one up. Keep this key as safe as a recovery phrase."
             },
             "recoveryPhraseStillWorks": "If you saved a 12-word recovery phrase when you created an account, that phrase still works in any NEAR wallet too."
         },

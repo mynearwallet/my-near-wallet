@@ -13,6 +13,8 @@ concurrency:
 
 jobs:
   testnet-live-deploy:
+    # A manual run can pick any branch; only the testnet branch may reach production testnet.
+    if: github.ref == 'refs/heads/testnet'
     uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: testnet

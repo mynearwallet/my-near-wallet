@@ -1962,7 +1962,14 @@
             "returningToApp": "正在返回應用程式…",
             "returningToHost": "正在返回 {{host}}…",
             "returnToApp": "返回應用程式",
-            "returnToHost": "返回 {{host}}"
+            "returnToHost": "返回 {{host}}",
+            "signedOut": {
+                "body": "此瀏覽器上沒有登入任何 MyNearWallet 帳戶，而 MyNearWallet 即將停止服務，因此無法在這裡核准此請求。",
+                "bodyWithHost": "{{host}} 傳送了一個請求，但此瀏覽器上沒有登入任何 MyNearWallet 帳戶。MyNearWallet 即將停止服務，因此無法在這裡核准此請求。",
+                "hint": "您的帳戶和資金是安全的。您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用：請先在那裡新增帳戶，然後在應用程式中選擇 Meteor Wallet。",
+                "hintWithHost": "您的帳戶和資金是安全的。您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用：請先在那裡新增帳戶，然後在 {{host}} 中選擇 Meteor Wallet。",
+                "title": "此瀏覽器上沒有 MyNearWallet 帳戶"
+            }
         },
         "existingAccountGate": {
             "checking": "正在檢查您的帳戶…",
@@ -2004,7 +2011,7 @@
             "notes": {
                 "notFullAccess": "此金鑰無法完全控制該帳戶。如果您有原始助記詞，請在新錢包中使用它。",
                 "notFunded": "此地址從未收到過資金，因此尚未在 NEAR 上存在。如果之後有資金轉入，該金鑰仍可控制它。",
-                "twoFactor": "此帳戶已開啟 2FA。此金鑰可以完全控制該帳戶，請像保管助記詞一樣妥善保管。"
+                "twoFactor": "此帳戶已開啟 2FA，僅憑此金鑰可能無法遷移該帳戶。請先關閉 2FA，或使用您設定過的 12 個單字助記詞。請像保管助記詞一樣妥善保管此金鑰。"
             },
             "recoveryPhraseStillWorks": "如果您在建立帳戶時儲存了 12 個單字的助記詞，該助記詞在任何 NEAR 錢包中仍然有效。"
         },

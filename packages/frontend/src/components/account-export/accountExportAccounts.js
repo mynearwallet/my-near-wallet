@@ -53,6 +53,15 @@ const probeExportability = async (accountId) => {
             };
         }
         const hasFullAccessKey = await wallet.isFullAccessKey(accountId, keyPair);
+        // A Ledger account's local key is only the wallet's metadata key; the key that controls
+        // the account stays on the device, so the local key is never the one to move.
+        if (!hasFullAccessKey && (await wallet.getLedgerKey(accountId))) {
+            return {
+                accountId,
+                sourcePublicKey,
+                availability: 'ledger_unsupported',
+            };
+        }
 
         return {
             accountId,
