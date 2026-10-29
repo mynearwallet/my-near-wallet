@@ -81,6 +81,12 @@ export const SUNSET_PHASE_3_DATE = '2026-11-01';
 
 export const SUNSET_LEARN_MORE_URL = 'https://www.mynearwallet.com/sunset';
 
+/**
+ * Where links that offer Meteor Wallet as an alternative send the user: the Meteor site, not the
+ * web wallet, so they can pick the platform (web, extension or mobile) themselves.
+ */
+export const METEOR_WALLET_SITE_URL = 'https://meteorwallet.app';
+
 export const isSunsetPhase = (value: unknown): value is SunsetPhase =>
     value === 1 || value === 2 || value === 3;
 

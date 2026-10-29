@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { METEOR_WALLET_SITE_URL } from '../../config/sunset';
 import { switchAccount } from '../../redux/actions/account';
-import { resolveMeteorWalletWebUrl } from '../../services/meteorConnectEnvironment';
 import { newKeyTransferEligibilityKey } from '../../services/newKeyTransferState';
 import { trackSunsetIneligibleGuidanceClicked } from '../sunset/sunsetAnalytics';
 import ExportAccountSelectedIcon from '../svg/ExportAccountSelectedIcon';
@@ -203,11 +203,7 @@ const UnavailableAccountRow = ({ accountId, availability, isRetrying, onRetry, t
                 availabilityById: { [accountId]: availability },
             });
         } else if (action === 'open_meteor') {
-            window.open(
-                resolveMeteorWalletWebUrl(window.location.hostname),
-                '_blank',
-                'noopener,noreferrer'
-            );
+            window.open(METEOR_WALLET_SITE_URL, '_blank', 'noopener,noreferrer');
         } else if (action === 'retry') {
             onRetry?.(accountId);
         }

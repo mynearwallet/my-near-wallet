@@ -4,9 +4,8 @@ import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
 import LandingBackground from './LandingBackground';
-import { isSunsetCapabilityEnabled } from '../../config/sunset';
+import { isSunsetCapabilityEnabled, METEOR_WALLET_SITE_URL } from '../../config/sunset';
 import iPhoneMockup from '../../images/iphone-mockup.png';
-import { resolveMeteorWalletWebUrl } from '../../services/meteorConnectEnvironment';
 import AccountExportNotice from '../account-export/AccountExportNotice';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
@@ -213,9 +212,7 @@ export function GuestLanding() {
                             </span>
                             <FormButton
                                 className='link'
-                                linkTo={resolveMeteorWalletWebUrl(
-                                    window.location.hostname
-                                )}
+                                linkTo={METEOR_WALLET_SITE_URL}
                                 trackingId='Click get Meteor Wallet link'
                             >
                                 {t('sunset.common.getMeteor')}

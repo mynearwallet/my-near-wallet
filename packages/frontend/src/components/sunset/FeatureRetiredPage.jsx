@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { SUNSET_LEARN_MORE_URL } from '../../config/sunset';
-import { resolveMeteorWalletWebUrl } from '../../services/meteorConnectEnvironment';
+import { METEOR_WALLET_SITE_URL, SUNSET_LEARN_MORE_URL } from '../../config/sunset';
 import { KEY_ACTIVE_ACCOUNT_ID } from '../../utils/wallet';
 import AccountExportNotice from '../account-export/AccountExportNotice';
 import useMigrationEntry from '../account-export/useMigrationEntry';
@@ -145,9 +144,7 @@ export default function FeatureRetiredPage({ capability, route }) {
                                 color='gray'
                                 onClick={onCta('get_meteor', () =>
                                     window.open(
-                                        resolveMeteorWalletWebUrl(
-                                            window.location.hostname
-                                        ),
+                                        METEOR_WALLET_SITE_URL,
                                         '_blank',
                                         'noopener,noreferrer'
                                     )
