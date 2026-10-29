@@ -1934,7 +1934,6 @@
             "backToWallet": "返回錢包",
             "exportKeys": "匯出我的金鑰",
             "getMeteor": "取得 Meteor Wallet",
-            "importExisting": "匯入現有帳戶",
             "migrate": "遷移我的帳戶",
             "resume": "繼續帳戶轉移",
             "retry": "重試",
@@ -1994,6 +1993,7 @@
             "staking": "新的質押已結束。在 {{date}} 之前，您仍可在此解除質押並提領。您質押的 NEAR 仍在您的帳戶中，可在新錢包中管理。解除質押大約需要 2–3 天。"
         },
         "landing": {
+            "existingAccount": "已有帳戶？您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用。",
             "noNewAccounts": "MyNearWallet 不再建立新帳戶。初次使用 NEAR？請從 Meteor Wallet 開始。"
         },
         "manualExport": {
@@ -2040,7 +2040,7 @@
                 "title": "購買 NEAR 功能已無法使用"
             },
             "createAccount": {
-                "fundedHint": "已經開始建立帳戶並儲值了？請透過「匯入現有帳戶」使用助記詞匯入。您的資金是安全的。",
+                "fundedHint": "已經開始建立帳戶並儲值了？請使用助記詞將其匯入 Meteor Wallet。您的資金是安全的。",
                 "hint": "初次使用 NEAR？您可以使用 Meteor Wallet 建立錢包。",
                 "title": "已停止建立新帳戶"
             },

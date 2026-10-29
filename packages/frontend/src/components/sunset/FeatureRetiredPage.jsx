@@ -68,7 +68,7 @@ export const hasActiveAccount = () => {
 
 /**
  * What a retired feature shows instead of itself: why it is gone, that funds are safe, and the
- * way forward, which is migrating for a signed-in user or importing for a guest.
+ * way forward, which is migrating for a signed-in user or getting Meteor Wallet for a guest.
  */
 export default function FeatureRetiredPage({ capability, route }) {
     const { t } = useTranslation();
@@ -130,30 +130,17 @@ export default function FeatureRetiredPage({ capability, route }) {
                         </div>
                     </>
                 ) : (
-                    <>
-                        <FormButton
-                            onClick={onCta('import', () =>
-                                history.push('/recover-account')
-                            )}
-                        >
-                            {t('sunset.common.importExisting')}
-                        </FormButton>
-                        <div className='secondary'>
-                            <FormButton
-                                className='link'
-                                color='gray'
-                                onClick={onCta('get_meteor', () =>
-                                    window.open(
-                                        METEOR_WALLET_SITE_URL,
-                                        '_blank',
-                                        'noopener,noreferrer'
-                                    )
-                                )}
-                            >
-                                {t('sunset.common.getMeteor')}
-                            </FormButton>
-                        </div>
-                    </>
+                    <FormButton
+                        onClick={onCta('get_meteor', () =>
+                            window.open(
+                                METEOR_WALLET_SITE_URL,
+                                '_blank',
+                                'noopener,noreferrer'
+                            )
+                        )}
+                    >
+                        {t('sunset.common.getMeteor')}
+                    </FormButton>
                 )}
                 <a
                     className='learn-more'

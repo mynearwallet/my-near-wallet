@@ -2095,7 +2095,6 @@
             "backToWallet": "Back to wallet",
             "exportKeys": "Export my keys",
             "getMeteor": "Get Meteor Wallet",
-            "importExisting": "Import existing account",
             "migrate": "Migrate my accounts",
             "resume": "Resume account transfer",
             "retry": "Try again",
@@ -2155,6 +2154,7 @@
             "staking": "New staking has ended. You can still unstake and withdraw here until {{date}}. Your staked NEAR stays in your account and can be managed from your new wallet. Unstaking takes about 2–3 days."
         },
         "landing": {
+            "existingAccount": "Already have an account? Your recovery phrase, private key or Ledger device works directly in Meteor Wallet.",
             "noNewAccounts": "MyNearWallet no longer creates new accounts. New to NEAR? Get started with Meteor Wallet."
         },
         "manualExport": {
@@ -2201,7 +2201,7 @@
                 "title": "Buying NEAR is no longer available"
             },
             "createAccount": {
-                "fundedHint": "Started creating an account and already funded it? Import it with your recovery phrase using Import existing account. Your funds are safe.",
+                "fundedHint": "Started creating an account and already funded it? Import it into Meteor Wallet with your recovery phrase. Your funds are safe.",
                 "hint": "New to NEAR? You can create a wallet with Meteor Wallet.",
                 "title": "Creating new accounts has ended"
             },

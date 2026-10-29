@@ -1934,7 +1934,6 @@
             "backToWallet": "返回钱包",
             "exportKeys": "导出我的密钥",
             "getMeteor": "获取 Meteor Wallet",
-            "importExisting": "导入现有账户",
             "migrate": "迁移我的账户",
             "resume": "继续账户转移",
             "retry": "重试",
@@ -1994,6 +1993,7 @@
             "staking": "新的质押已结束。在 {{date}} 之前，您仍可在此解除质押并提取。您质押的 NEAR 仍在您的账户中，可在新钱包中管理。解除质押大约需要 2–3 天。"
         },
         "landing": {
+            "existingAccount": "已有账户？您的助记词、私钥或 Ledger 设备可直接在 Meteor Wallet 中使用。",
             "noNewAccounts": "MyNearWallet 不再创建新账户。初次使用 NEAR？请从 Meteor Wallet 开始。"
         },
         "manualExport": {
@@ -2040,7 +2040,7 @@
                 "title": "购买 NEAR 功能已不可用"
             },
             "createAccount": {
-                "fundedHint": "已经开始创建账户并充值了？请通过“导入现有账户”使用助记词导入。您的资金是安全的。",
+                "fundedHint": "已经开始创建账户并充值了？请使用助记词将其导入 Meteor Wallet。您的资金是安全的。",
                 "hint": "初次使用 NEAR？您可以使用 Meteor Wallet 创建钱包。",
                 "title": "已停止创建新账户"
             },

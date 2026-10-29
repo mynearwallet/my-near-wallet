@@ -197,21 +197,11 @@ export function GuestLanding() {
                         <div className='sunset-notice'>
                             <AccountExportNotice variant='info'>
                                 <p>{t('sunset.landing.noNewAccounts')}</p>
+                                <p>{t('sunset.landing.existingAccount')}</p>
                             </AccountExportNotice>
                         </div>
                         <div className='buttons'>
                             <FormButton
-                                data-test-id='homePageImportAccountButton'
-                                linkTo='/recover-account'
-                                trackingId='Click import existing link'
-                            >
-                                <Translate id='button.importExistingAccount' />
-                            </FormButton>
-                            <span>
-                                <Translate id='landing.or' />
-                            </span>
-                            <FormButton
-                                className='link'
                                 linkTo={METEOR_WALLET_SITE_URL}
                                 trackingId='Click get Meteor Wallet link'
                             >

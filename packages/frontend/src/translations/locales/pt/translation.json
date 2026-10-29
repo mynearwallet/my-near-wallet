@@ -1716,7 +1716,6 @@
             "backToWallet": "Voltar à carteira",
             "exportKeys": "Exportar minhas chaves",
             "getMeteor": "Obter a Meteor Wallet",
-            "importExisting": "Importar conta existente",
             "migrate": "Migrar minhas contas",
             "resume": "Retomar transferência",
             "retry": "Tentar novamente",
@@ -1776,6 +1775,7 @@
             "staking": "Novos stakings foram encerrados. Você ainda pode fazer unstake e sacar aqui até {{date}}. Seus NEAR em staking continuam na sua conta e podem ser gerenciados pela nova carteira. O unstake leva cerca de 2–3 dias."
         },
         "landing": {
+            "existingAccount": "Já tem uma conta? Sua frase de recuperação, chave privada ou dispositivo Ledger funciona diretamente na Meteor Wallet.",
             "noNewAccounts": "A MyNearWallet não cria mais novas contas. Novo na NEAR? Comece com a Meteor Wallet."
         },
         "manualExport": {
@@ -1822,7 +1822,7 @@
                 "title": "A compra de NEAR não está mais disponível"
             },
             "createAccount": {
-                "fundedHint": "Começou a criar uma conta e já depositou fundos nela? Importe-a com sua frase de recuperação em Importar conta existente. Seus fundos estão seguros.",
+                "fundedHint": "Começou a criar uma conta e já depositou fundos nela? Importe-a na Meteor Wallet com sua frase de recuperação. Seus fundos estão seguros.",
                 "hint": "Novo na NEAR? Você pode criar uma carteira com a Meteor Wallet.",
                 "title": "A criação de novas contas foi encerrada"
             },

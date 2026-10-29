@@ -1674,7 +1674,6 @@
             "backToWallet": "Cüzdana dön",
             "exportKeys": "Anahtarlarımı dışa aktar",
             "getMeteor": "Meteor Wallet'ı edinin",
-            "importExisting": "Mevcut hesabı içe aktar",
             "migrate": "Hesaplarımı taşı",
             "resume": "Aktarıma devam et",
             "retry": "Tekrar dene",
@@ -1734,6 +1733,7 @@
             "staking": "Yeni stake sona erdi. {{date}} tarihine kadar burada unstake ve çekim yapabilirsiniz. Stake edilen NEAR'ınız hesabınızda kalır ve yeni cüzdanınızdan yönetilebilir. Unstake işlemi yaklaşık 2–3 gün sürer."
         },
         "landing": {
+            "existingAccount": "Zaten bir hesabınız var mı? Kurtarma ifadeniz, özel anahtarınız veya Ledger cihazınız doğrudan Meteor Wallet'ta çalışır.",
             "noNewAccounts": "MyNearWallet artık yeni hesap oluşturmuyor. NEAR'da yeni misiniz? Meteor Wallet ile başlayın."
         },
         "manualExport": {
@@ -1780,7 +1780,7 @@
                 "title": "NEAR satın alma artık kullanılamıyor"
             },
             "createAccount": {
-                "fundedHint": "Bir hesap oluşturmaya başlayıp ona zaten fon mu yatırdınız? Mevcut hesabı içe aktar seçeneğiyle kurtarma ifadenizi kullanarak içe aktarın. Fonlarınız güvende.",
+                "fundedHint": "Bir hesap oluşturmaya başlayıp ona zaten fon mu yatırdınız? Kurtarma ifadenizle Meteor Wallet'a içe aktarın. Fonlarınız güvende.",
                 "hint": "NEAR'da yeni misiniz? Meteor Wallet ile bir cüzdan oluşturabilirsiniz.",
                 "title": "Yeni hesap oluşturma sona erdi"
             },
