@@ -1188,6 +1188,7 @@
             "error": "",
             "success": ""
         },
+        "SunsetCapabilityRetired": "Bu artık MyNearWallet'ta kullanılamıyor. Lütfen hesabınızı desteklenen bir cüzdana taşıyın.",
         "TRANSFER_ALL_FROM_LOCKUP": {
             "error": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
             "success": "Kilitli hesabınızdan tokenleri başarıyla aktardınız!"
@@ -1642,6 +1643,172 @@
     },
     "stakingPoolUnstaked": "Bu NEAR şu anda bir katılım havuzundadır ancak katılım sağlanmamıştır. Hazırlanan tutar durumunda da olabilir.",
     "success": "Başarılı",
+    "sunset": {
+        "autoImport": {
+            "tryAnotherMethod": "Başka bir içe aktarma yöntemi dene"
+        },
+        "banner": {
+            "cta": "Hesapları taşı",
+            "exportKeys": "Ya da özel anahtarlarınızı dışa aktarın",
+            "phase2": {
+                "description": "Gönderim, stake ve uygulama onayları {{date}} tarihinde duracak. Tam erişimi korumak için hesaplarınızı şimdi Meteor Wallet'a taşıyın. Fonlarınız güvende.",
+                "title": "MyNearWallet {{date}} tarihinde sınırlı moda geçiyor"
+            },
+            "phase3": {
+                "description": "Bakiyeleri görüntüleyebilir, anahtarlarınızı dışa aktarabilir ve hesaplarınızı taşıyabilirsiniz. Fonlarınız güvende.",
+                "title": "MyNearWallet artık sınırlı modda"
+            }
+        },
+        "bar": {
+            "cta": "Şimdi taşı",
+            "phase2": {
+                "description": "Bundan sonra gönderim, stake ve uygulama onayları duracak. Hesaplarınızı şimdi taşıyın.",
+                "title": "MyNearWallet {{date}} tarihinde sınırlı moda geçiyor."
+            },
+            "phase3": {
+                "description": "Bakiyeleri görüntüleyebilir, anahtarlarınızı dışa aktarabilir ve hesaplarınızı taşıyabilirsiniz.",
+                "title": "MyNearWallet sınırlı modda."
+            }
+        },
+        "common": {
+            "backToWallet": "Cüzdana dön",
+            "exportKeys": "Anahtarlarımı dışa aktar",
+            "getMeteor": "Meteor Wallet'ı edinin",
+            "migrate": "Hesaplarımı taşı",
+            "resume": "Aktarıma devam et",
+            "retry": "Tekrar dene",
+            "whyIsThisHappening": "Bu neden oluyor?"
+        },
+        "dapp": {
+            "approval": {
+                "body": "MyNearWallet kullanımdan kaldırılıyor ve artık uygulamalardan gelen istekleri onaylamıyor.",
+                "bodyWithHost": "{{host}} bir istek gönderdi, ancak MyNearWallet kullanımdan kaldırılıyor ve artık uygulamalardan gelen istekleri onaylamıyor.",
+                "title": "MyNearWallet artık uygulama isteklerini onaylayamıyor"
+            },
+            "cli": {
+                "body": "MyNearWallet kullanımdan kaldırıldığı için MyNearWallet ile NEAR CLI girişi artık desteklenmiyor.",
+                "hint": "Özel anahtarınızı MyNearWallet'tan dışa aktarıp NEAR CLI'ye içe aktarın veya NEAR CLI'ye başka bir cüzdanla giriş yapın.",
+                "title": "NEAR CLI girişi artık desteklenmiyor"
+            },
+            "closeWindow": "Bu pencereyi kapatabilirsiniz.",
+            "errorMessage": "MyNearWallet kullanımdan kaldırılıyor ve artık bu isteği kabul etmiyor. Lütfen başka bir cüzdan seçin.",
+            "hint": "Hesaplarınız ve fonlarınız güvende. Uygulamada başka bir cüzdan seçin veya önce hesabınızı Meteor Wallet'a taşıyıp onunla bağlanın.",
+            "hintWithHost": "Hesaplarınız ve fonlarınız güvende. {{host}} içinde başka bir cüzdan seçin veya önce hesabınızı Meteor Wallet'a taşıyıp onunla bağlanın.",
+            "login": {
+                "body": "MyNearWallet kullanımdan kaldırılıyor ve artık yeni uygulama bağlantılarını kabul etmiyor.",
+                "bodyWithHost": "{{host}} bağlanmak istedi, ancak MyNearWallet kullanımdan kaldırılıyor ve artık yeni uygulama bağlantılarını kabul etmiyor.",
+                "title": "MyNearWallet artık uygulamalara bağlanamıyor"
+            },
+            "returningToApp": "Uygulamaya dönülüyor…",
+            "returningToHost": "{{host}} sitesine dönülüyor…",
+            "returnToApp": "Uygulamaya dön",
+            "returnToHost": "{{host}} sitesine dön",
+            "signedOut": {
+                "body": "Bu tarayıcıda oturum açmış bir MyNearWallet hesabı yok ve MyNearWallet kullanımdan kaldırılıyor; bu yüzden bu isteği burada onaylayamaz.",
+                "bodyWithHost": "{{host}} bir istek gönderdi, ancak bu tarayıcıda oturum açmış bir MyNearWallet hesabı yok. MyNearWallet kullanımdan kaldırılıyor; bu yüzden bu isteği burada onaylayamaz.",
+                "hint": "Hesaplarınız ve fonlarınız güvende. Kurtarma ifadeniz, özel anahtarınız veya Ledger cihazınız doğrudan Meteor Wallet'ta çalışır: hesabınızı oraya ekleyin, ardından uygulamada Meteor Wallet'ı seçin.",
+                "hintWithHost": "Hesaplarınız ve fonlarınız güvende. Kurtarma ifadeniz, özel anahtarınız veya Ledger cihazınız doğrudan Meteor Wallet'ta çalışır: hesabınızı oraya ekleyin, ardından {{host}} içinde Meteor Wallet'ı seçin.",
+                "title": "Bu tarayıcıda MyNearWallet hesabı yok"
+            }
+        },
+        "existingAccountGate": {
+            "checking": "Hesabınız kontrol ediliyor…",
+            "errorBody": "Bu hesabı doğrulamak için NEAR ağına ulaşılamadı. Hiçbir şey değişmedi. Lütfen tekrar deneyin.",
+            "errorTitle": "Bu hesap kontrol edilemedi"
+        },
+        "guidance": {
+            "actions": {
+                "exportKey": "Anahtarı dışa aktar",
+                "openMeteor": "Meteor Wallet'ı aç",
+                "turnOff2fa": "2FA'yı kapat"
+            },
+            "algorithmUnsupported": "Bu anahtar türü otomatik olarak aktarılamaz. Anahtarı dışa aktarın ve onu destekleyen bir cüzdana içe aktarın.",
+            "ledger": "Bu hesap Ledger cihazınızla korunuyor. Aynı Ledger'ı Meteor Wallet'a veya Ledger uyumlu herhangi bir NEAR cüzdanına bağlayın. Hiçbir anahtarın taşınması gerekmez.",
+            "noLocalKey": "MyNearWallet bu tarayıcıda bu hesap için bir anahtar tutmuyor. Yeni cüzdanınızda orijinal kurtarma ifadenizi veya cihazınızı kullanın.",
+            "notFullAccess": "Bu tarayıcıdaki anahtar bu hesabı tam olarak kontrol edemez. Yeni cüzdanınızda orijinal kurtarma ifadenizi kullanın.",
+            "notFunded": "Bu adres hiç fon almadı, bu yüzden henüz aktarılacak bir şey yok. Fon daha sonra gelirse erişiminizi korumak için anahtarını dışa aktarın.",
+            "twoFactor": "Hesap ayarlarınızdan 2FA'yı kapatın, ardından bu hesabı taşımak için geri dönün. Bu hesap için 12 kelimelik bir kurtarma ifadesi oluşturduysanız, bu ifade hâlâ tam erişime sahiptir ve doğrudan Meteor Wallet'ta çalışır."
+        },
+        "importBlocked": {
+            "checkFailed": "Bu hesabı kontrol etmek için NEAR ağına ulaşılamadı. Hiçbir şey değişmedi. Lütfen tekrar deneyin.",
+            "noAccount": "Bu kurtarma ifadesi veya anahtar için bir NEAR hesabı bulunamadı. MyNearWallet artık yeni hesap oluşturamıyor. Doğru girdiğinizi kontrol edin. Meteor Wallet'ta ve diğer NEAR cüzdanlarında da çalışır."
+        },
+        "inline": {
+            "dappApproval": "MyNearWallet'taki uygulama onayları {{date}} tarihinde sona eriyor. Uygulamaları kullanmaya devam etmek için hesabınızı desteklenen bir cüzdana taşıyın.",
+            "dappApprovalWithHost": "MyNearWallet'taki uygulama onayları {{date}} tarihinde sona eriyor. {{host}} kullanmaya devam etmek için hesabınızı taşıyın.",
+            "migrateLink": "Şimdi taşı",
+            "staking": "Yeni stake sona erdi. {{date}} tarihine kadar burada unstake ve çekim yapabilirsiniz. Stake edilen NEAR'ınız hesabınızda kalır ve yeni cüzdanınızdan yönetilebilir. Unstake işlemi yaklaşık 2–3 gün sürer."
+        },
+        "landing": {
+            "existingAccount": "Zaten bir hesabınız var mı? Kurtarma ifadeniz, özel anahtarınız veya Ledger cihazınız doğrudan Meteor Wallet'ta çalışır.",
+            "noNewAccounts": "MyNearWallet artık yeni hesap oluşturmuyor. NEAR'da yeni misiniz? Meteor Wallet ile başlayın.",
+            "otherWallets": "Diğer NEAR cüzdanları"
+        },
+        "manualExport": {
+            "findingAccounts": "Bu cüzdanın anahtarlarını tuttuğu hesaplar aranıyor…",
+            "howToImport": "Yeni cüzdanınızda Özel anahtarı içe aktar seçeneğini seçin ve aşağıdaki özel anahtarı yapıştırın (anahtar ed25519: ile başlar).",
+            "noKeys": "Bu tarayıcıda dışa aktarılacak özel anahtar yok.",
+            "notes": {
+                "notFullAccess": "Bu anahtar hesabı tam olarak kontrol edemez. Varsa orijinal kurtarma ifadenizi yeni cüzdanınızda kullanın.",
+                "notFunded": "Bu adres hiç fon almadı, bu yüzden henüz NEAR'da yok. Fon daha sonra gelirse anahtarı onu yine kontrol eder.",
+                "twoFactor": "Bu hesapta 2FA açık, bu yüzden bu anahtar hesabı tek başına taşıyamayabilir. Önce 2FA'yı kapatın veya oluşturduysanız 12 kelimelik kurtarma ifadenizi kullanın. Bu anahtarı bir kurtarma ifadesi kadar güvenli saklayın."
+            },
+            "recoveryPhraseStillWorks": "Bir hesap oluştururken 12 kelimelik bir kurtarma ifadesi kaydettiyseniz, bu ifade her NEAR cüzdanında çalışmaya devam eder."
+        },
+        "nav": {
+            "migrate": "Taşı"
+        },
+        "notice": {
+            "antiPhishing": "Kurtarma ifadenizi veya özel anahtarınızı asla e-posta, özel mesaj ya da başka bir web sitesi üzerinden istemeyiz. Taşıma yalnızca app.mynearwallet.com içinde yapılır.",
+            "continue": "Devam et",
+            "learnMore": "Daha fazla bilgi",
+            "migrateNow": "Şimdi taşı",
+            "phase1": {
+                "p1": "MyNearWallet, NEAR ekosistemindeki geçişin bir parçası olarak kademeli olarak kullanımdan kaldırılacak.",
+                "p2": "Fonlarınız güvende ve hemen bir işlem yapmanız gerekmiyor.",
+                "p3": "Önümüzdeki aylarda desteklenen NEAR cüzdanlarına rehberli taşıma seçenekleri sunacağız.",
+                "title": "MyNearWallet kullanımdan kaldırılıyor"
+            },
+            "phase2": {
+                "p1": "Hesap oluşturma, takas, NEAR satın alma, yeni stake ve yeni uygulama bağlantıları kapatıldı.",
+                "p2": "{{date}} tarihinden itibaren gönderim, stake ve uygulama onayları da duracak. Bakiyelerinizi görüntülemeye, anahtarlarınızı dışa aktarmaya ve hesaplarınızı taşımaya devam edebileceksiniz.",
+                "p3": "Fonlarınız güvende. Tam erişimi korumak için hesaplarınızı şimdi Meteor Wallet'a taşıyın.",
+                "title": "MyNearWallet {{date}} tarihinde sınırlı moda geçiyor"
+            },
+            "phase3": {
+                "p1": "Gönderim, stake, takas ve uygulama onayları sona erdi. Bakiyelerinizi görüntülemeye, anahtarlarınızı dışa aktarmaya ve hesaplarınızı taşımaya devam edebilirsiniz.",
+                "p2": "Fonlarınız güvende. Tam erişimi korumak için hesaplarınızı Meteor Wallet'a taşıyın.",
+                "title": "MyNearWallet artık sınırlı modda"
+            }
+        },
+        "retired": {
+            "body": "MyNearWallet kullanımdan kaldırılıyor. Hesaplarınızı desteklenen bir cüzdana taşımaya odaklanabilmeniz için bu özellik kapatıldı. Fonlarınız NEAR'daki hesabınızda güvende.",
+            "buy": {
+                "hint": "Hesabınız taşındıktan sonra Meteor Wallet'ta veya bir borsada NEAR satın alabilirsiniz.",
+                "title": "NEAR satın alma artık kullanılamıyor"
+            },
+            "createAccount": {
+                "fundedHint": "Bir hesap oluşturmaya başlayıp ona zaten fon mu yatırdınız? Kurtarma ifadenizle Meteor Wallet'a içe aktarın. Fonlarınız güvende.",
+                "hint": "NEAR'da yeni misiniz? Meteor Wallet ile bir cüzdan oluşturabilirsiniz.",
+                "title": "Yeni hesap oluşturma sona erdi"
+            },
+            "enableTwoFactor": {
+                "hint": "2FA'yı şimdi açmak hesabınızı taşımayı zorlaştırır. Hesabınızın mevcut güvenliği değişmez.",
+                "title": "İki faktörlü kimlik doğrulama artık açılamaz"
+            },
+            "stakeDeposit": {
+                "hint": "Mevcut stake'iniz güvende. {{date}} tarihine kadar MyNearWallet'ta unstake ve çekim yapabilir ya da stake'inizi istediğiniz zaman yeni cüzdanınızdan yönetebilirsiniz.",
+                "title": "Yeni stake artık kullanılamıyor"
+            },
+            "swap": {
+                "hint": "Hesabınızı taşıdıktan sonra Meteor Wallet'ta token takası yapabilirsiniz.",
+                "title": "Takas artık kullanılamıyor"
+            }
+        },
+        "select": {
+            "exportKeysInstead": "Bunun yerine özel anahtarları dışa aktar"
+        }
+    },
     "swap": {
         "available": "Kullanılabilir: ${amount} ${symbol}",
         "confirm": "Onayla ve Değiştir",

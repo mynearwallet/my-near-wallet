@@ -8,6 +8,7 @@ import AlertBanner from './AlertBanner';
 import AmountInput from './AmountInput';
 import StakeConfirmModal from './StakeConfirmModal';
 import ValidatorBox from './ValidatorBox';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import { onKeyDown } from '../../../hooks/eventListeners';
 import { Mixpanel } from '../../../mixpanel/index';
 import { showCustomAlert } from '../../../redux/actions/status';
@@ -223,14 +224,17 @@ export default function StakingAction({
                     <h4>
                         <Translate id={`staking.${action}.stakeWith`} />
                     </h4>
-                    <FormButton
-                        className='small'
-                        color='light-blue'
-                        linkTo='/staking/validators'
-                        trackingId='STAKE Go to validators list page'
-                    >
-                        <Translate id='button.edit' />
-                    </FormButton>
+                    {/* The validator list is retired along with new staking. */}
+                    {isSunsetCapabilityEnabled('stakeDeposit') && (
+                        <FormButton
+                            className='small'
+                            color='light-blue'
+                            linkTo='/staking/validators'
+                            trackingId='STAKE Go to validators list page'
+                        >
+                            <Translate id='button.edit' />
+                        </FormButton>
+                    )}
                 </div>
                 {validator && (
                     <ValidatorBox

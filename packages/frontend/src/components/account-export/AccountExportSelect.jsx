@@ -15,7 +15,11 @@ import {
     trackMigrationAccountsScanFailed,
     trackMigrationAccountsSubmitted,
 } from './accountExportAnalytics';
-import { loadExportableAccounts, MAX_EXPORTABLE_ACCOUNTS } from './accountExportAccounts';
+import {
+    loadExportableAccount,
+    loadExportableAccounts,
+    MAX_EXPORTABLE_ACCOUNTS,
+} from './accountExportAccounts';
 
 const AccountExportPage = styled(Container)`
     &&& {
@@ -84,6 +88,7 @@ export default function AccountExportSelect() {
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+    const [retryingAccountIds, setRetryingAccountIds] = useState([]);
 
     useEffect(() => {
         let isMounted = true;
@@ -147,6 +152,27 @@ export default function AccountExportSelect() {
         });
     };
 
+    const handleRetryAccount = async (accountId) => {
+        setRetryingAccountIds((ids) => [...ids, accountId]);
+        try {
+            const refreshed = await loadExportableAccount(accountId);
+            setAccounts((current) =>
+                current.map((account) =>
+                    account.accountId === accountId ? refreshed : account
+                )
+            );
+            if (refreshed.availability === 'available') {
+                setSelectedAccountIds((ids) =>
+                    ids.includes(accountId) || ids.length >= MAX_EXPORTABLE_ACCOUNTS
+                        ? ids
+                        : [...ids, accountId]
+                );
+            }
+        } finally {
+            setRetryingAccountIds((ids) => ids.filter((id) => id !== accountId));
+        }
+    };
+
     const handleExportSelectedAccounts = () => {
         const selectedAccounts = accounts.filter(({ accountId }) =>
             selectedAccountIds.includes(accountId)
@@ -177,6 +203,10 @@ export default function AccountExportSelect() {
                             unavailableAccounts={unavailableAccounts}
                             selectedAccountIds={selectedAccountIds}
                             onAccountSelection={handleAccountSelection}
+                            onRetryAccount={(accountId) =>
+                                void handleRetryAccount(accountId)
+                            }
+                            retryingAccountIds={retryingAccountIds}
                         />
                     )}
                     {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
@@ -187,6 +217,14 @@ export default function AccountExportSelect() {
                         onClick={() => void handleExportSelectedAccounts()}
                     >
                         {t('accountExport.select.exportSelected')}
+                    </FormButton>
+                    <FormButton
+                        className='link'
+                        onClick={() =>
+                            history.push('/export-accounts/manual', { exportAll: true })
+                        }
+                    >
+                        {t('sunset.select.exportKeysInstead')}
                     </FormButton>
                     <FormButton
                         className='link'

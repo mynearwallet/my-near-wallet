@@ -1378,6 +1378,7 @@
             "error": "",
             "success": ""
         },
+        "SunsetCapabilityRetired": "MyNearWallet 已不再提供此功能。請將您的帳戶遷移到受支援的錢包。",
         "TRANSFER_ALL_FROM_LOCKUP": {
             "error": "出現問題，請重試。",
             "success": "成功從鎖定賬戶轉移通證！"
@@ -1902,6 +1903,172 @@
     },
     "stakingPoolUnstaked": "這部分 NEAR 目前在質押池中，但未贖回。可能仍在請求釋放的階段。",
     "success": "成功",
+    "sunset": {
+        "autoImport": {
+            "tryAnotherMethod": "嘗試其他匯入方式"
+        },
+        "banner": {
+            "cta": "遷移帳戶",
+            "exportKeys": "或匯出您的私鑰",
+            "phase2": {
+                "description": "轉帳、質押和應用程式核准將於 {{date}} 停止。請立即將帳戶遷移到 Meteor Wallet，以保留完整存取權限。您的資金是安全的。",
+                "title": "MyNearWallet 將於 {{date}} 進入受限模式"
+            },
+            "phase3": {
+                "description": "您可以查看餘額、匯出金鑰和遷移帳戶。您的資金是安全的。",
+                "title": "MyNearWallet 現已進入受限模式"
+            }
+        },
+        "bar": {
+            "cta": "立即遷移",
+            "phase2": {
+                "description": "屆時轉帳、質押和應用程式核准將停止。請立即遷移您的帳戶。",
+                "title": "MyNearWallet 將於 {{date}} 進入受限模式。"
+            },
+            "phase3": {
+                "description": "您可以查看餘額、匯出金鑰和遷移帳戶。",
+                "title": "MyNearWallet 處於受限模式。"
+            }
+        },
+        "common": {
+            "backToWallet": "返回錢包",
+            "exportKeys": "匯出我的金鑰",
+            "getMeteor": "取得 Meteor Wallet",
+            "migrate": "遷移我的帳戶",
+            "resume": "繼續帳戶轉移",
+            "retry": "重試",
+            "whyIsThisHappening": "為什麼會這樣？"
+        },
+        "dapp": {
+            "approval": {
+                "body": "MyNearWallet 即將停止服務，不再核准應用程式的請求。",
+                "bodyWithHost": "{{host}} 傳送了一個請求，但 MyNearWallet 即將停止服務，不再核准應用程式的請求。",
+                "title": "MyNearWallet 已無法核准應用程式請求"
+            },
+            "cli": {
+                "body": "由於 MyNearWallet 即將停止服務，已不再支援使用 MyNearWallet 登入 NEAR CLI。",
+                "hint": "請從 MyNearWallet 匯出私鑰並匯入 NEAR CLI，或使用其他錢包登入 NEAR CLI。",
+                "title": "已不再支援 NEAR CLI 登入"
+            },
+            "closeWindow": "您可以關閉此視窗。",
+            "errorMessage": "MyNearWallet 即將停止服務，不再接受此請求。請選擇其他錢包。",
+            "hint": "您的帳戶和資金是安全的。請在應用程式中選擇其他錢包，或先將帳戶遷移到 Meteor Wallet 再用它連線。",
+            "hintWithHost": "您的帳戶和資金是安全的。請在 {{host}} 中選擇其他錢包，或先將帳戶遷移到 Meteor Wallet 再用它連線。",
+            "login": {
+                "body": "MyNearWallet 即將停止服務，不再接受新的應用程式連線。",
+                "bodyWithHost": "{{host}} 要求連線，但 MyNearWallet 即將停止服務，不再接受新的應用程式連線。",
+                "title": "MyNearWallet 已無法連接應用程式"
+            },
+            "returningToApp": "正在返回應用程式…",
+            "returningToHost": "正在返回 {{host}}…",
+            "returnToApp": "返回應用程式",
+            "returnToHost": "返回 {{host}}",
+            "signedOut": {
+                "body": "此瀏覽器上沒有登入任何 MyNearWallet 帳戶，而 MyNearWallet 即將停止服務，因此無法在這裡核准此請求。",
+                "bodyWithHost": "{{host}} 傳送了一個請求，但此瀏覽器上沒有登入任何 MyNearWallet 帳戶。MyNearWallet 即將停止服務，因此無法在這裡核准此請求。",
+                "hint": "您的帳戶和資金是安全的。您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用：請先在那裡新增帳戶，然後在應用程式中選擇 Meteor Wallet。",
+                "hintWithHost": "您的帳戶和資金是安全的。您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用：請先在那裡新增帳戶，然後在 {{host}} 中選擇 Meteor Wallet。",
+                "title": "此瀏覽器上沒有 MyNearWallet 帳戶"
+            }
+        },
+        "existingAccountGate": {
+            "checking": "正在檢查您的帳戶…",
+            "errorBody": "無法連線 NEAR 網路來確認此帳戶。沒有任何變更。請重試。",
+            "errorTitle": "無法檢查此帳戶"
+        },
+        "guidance": {
+            "actions": {
+                "exportKey": "匯出金鑰",
+                "openMeteor": "開啟 Meteor Wallet",
+                "turnOff2fa": "關閉 2FA"
+            },
+            "algorithmUnsupported": "此類型的金鑰無法自動轉移。請匯出金鑰並匯入支援它的錢包。",
+            "ledger": "此帳戶由您的 Ledger 裝置保護。請在 Meteor Wallet 或任何支援 Ledger 的 NEAR 錢包中連接同一台 Ledger。無需轉移任何金鑰。",
+            "noLocalKey": "MyNearWallet 在此瀏覽器中沒有此帳戶的金鑰。請在新錢包中使用原始助記詞或裝置。",
+            "notFullAccess": "此瀏覽器中的金鑰無法完全控制此帳戶。請在新錢包中使用原始助記詞。",
+            "notFunded": "此地址從未收到過資金，因此暫時沒有可轉移的內容。請匯出其金鑰，以便之後有資金轉入時仍能存取。",
+            "twoFactor": "請在帳戶設定中關閉 2FA，然後返回遷移此帳戶。如果您為它設定了 12 個單字的助記詞，該助記詞仍擁有完整權限，可直接在 Meteor Wallet 中使用。"
+        },
+        "importBlocked": {
+            "checkFailed": "無法連線 NEAR 網路來檢查此帳戶。沒有任何變更。請重試。",
+            "noAccount": "找不到與此助記詞或金鑰對應的 NEAR 帳戶。MyNearWallet 已無法建立新帳戶。請檢查輸入是否正確。它也可以在 Meteor Wallet 和其他 NEAR 錢包中使用。"
+        },
+        "inline": {
+            "dappApproval": "MyNearWallet 中的應用程式核准將於 {{date}} 結束。請將帳戶遷移到受支援的錢包以繼續使用應用程式。",
+            "dappApprovalWithHost": "MyNearWallet 中的應用程式核准將於 {{date}} 結束。請遷移帳戶以繼續使用 {{host}}。",
+            "migrateLink": "立即遷移",
+            "staking": "新的質押已結束。在 {{date}} 之前，您仍可在此解除質押並提領。您質押的 NEAR 仍在您的帳戶中，可在新錢包中管理。解除質押大約需要 2–3 天。"
+        },
+        "landing": {
+            "existingAccount": "已有帳戶？您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用。",
+            "noNewAccounts": "MyNearWallet 不再建立新帳戶。初次使用 NEAR？請從 Meteor Wallet 開始。",
+            "otherWallets": "其他 NEAR 錢包"
+        },
+        "manualExport": {
+            "findingAccounts": "正在尋找此錢包持有金鑰的帳戶…",
+            "howToImport": "在新錢包中選擇「匯入私鑰」，然後貼上下方的私鑰（私鑰以 ed25519: 開頭）。",
+            "noKeys": "此瀏覽器中沒有可匯出的私鑰。",
+            "notes": {
+                "notFullAccess": "此金鑰無法完全控制該帳戶。如果您有原始助記詞，請在新錢包中使用它。",
+                "notFunded": "此地址從未收到過資金，因此尚未在 NEAR 上存在。如果之後有資金轉入，該金鑰仍可控制它。",
+                "twoFactor": "此帳戶已開啟 2FA，僅憑此金鑰可能無法遷移該帳戶。請先關閉 2FA，或使用您設定過的 12 個單字助記詞。請像保管助記詞一樣妥善保管此金鑰。"
+            },
+            "recoveryPhraseStillWorks": "如果您在建立帳戶時儲存了 12 個單字的助記詞，該助記詞在任何 NEAR 錢包中仍然有效。"
+        },
+        "nav": {
+            "migrate": "遷移"
+        },
+        "notice": {
+            "antiPhishing": "我們絕不會透過電子郵件、私訊或任何其他網站索取您的助記詞或私鑰。遷移只會在 app.mynearwallet.com 內進行。",
+            "continue": "繼續",
+            "learnMore": "了解更多",
+            "migrateNow": "立即遷移",
+            "phase1": {
+                "p1": "作為 NEAR 生態系統轉型的一部分，MyNearWallet 將逐步停止服務。",
+                "p2": "您的資金仍然安全，無需立即採取任何行動。",
+                "p3": "在接下來的幾個月裡，我們將提供遷移到受支援 NEAR 錢包的引導選項。",
+                "title": "MyNearWallet 即將停止服務"
+            },
+            "phase2": {
+                "p1": "建立帳戶、兌換、購買 NEAR、新的質押和新的應用程式連線已關閉。",
+                "p2": "從 {{date}} 起，轉帳、質押和應用程式核准也將停止。您仍然可以查看餘額、匯出金鑰和遷移帳戶。",
+                "p3": "您的資金是安全的。請立即將帳戶遷移到 Meteor Wallet，以保留完整存取權限。",
+                "title": "MyNearWallet 將於 {{date}} 進入受限模式"
+            },
+            "phase3": {
+                "p1": "轉帳、質押、兌換和應用程式核准已結束。您仍然可以查看餘額、匯出金鑰和遷移帳戶。",
+                "p2": "您的資金是安全的。請將帳戶遷移到 Meteor Wallet，以保留完整存取權限。",
+                "title": "MyNearWallet 現已進入受限模式"
+            }
+        },
+        "retired": {
+            "body": "MyNearWallet 即將停止服務。此功能已關閉，讓您專注於將帳戶遷移到受支援的錢包。您的資金在 NEAR 上的帳戶中是安全的。",
+            "buy": {
+                "hint": "帳戶遷移後，您可以在 Meteor Wallet 或交易所購買 NEAR。",
+                "title": "購買 NEAR 功能已無法使用"
+            },
+            "createAccount": {
+                "fundedHint": "已經開始建立帳戶並儲值了？請使用助記詞將其匯入 Meteor Wallet。您的資金是安全的。",
+                "hint": "初次使用 NEAR？您可以使用 Meteor Wallet 建立錢包。",
+                "title": "已停止建立新帳戶"
+            },
+            "enableTwoFactor": {
+                "hint": "現在開啟 2FA 會讓帳戶遷移更困難。您帳戶目前的安全設定不會改變。",
+                "title": "已無法開啟雙重驗證"
+            },
+            "stakeDeposit": {
+                "hint": "您現有的質押是安全的。在 {{date}} 之前，您仍可在 MyNearWallet 中解除質押並提領，也可以隨時在新錢包中管理質押。",
+                "title": "新的質押已無法使用"
+            },
+            "swap": {
+                "hint": "遷移帳戶後，您可以在 Meteor Wallet 中兌換代幣。",
+                "title": "兌換功能已無法使用"
+            }
+        },
+        "select": {
+            "exportKeysInstead": "改為匯出私鑰"
+        }
+    },
     "swap": {
         "available": "可用: ${amount} ${symbol}",
         "confirm": "確認並兌換",

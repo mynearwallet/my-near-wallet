@@ -203,7 +203,7 @@ export const safeMigrationErrorCode = (error) => {
 
 export const trackMigrationEntryClicked = ({ entry, resumeStage }) =>
     track(EVENTS.ENTRY_CLICKED, {
-        entry: entry === 'resume' ? 'resume' : 'start',
+        entry: entry === 'resume' || entry === 'export_keys' ? entry : 'start',
         ...(entry === 'resume' ? { resume_stage: resumeStage } : {}),
     });
 

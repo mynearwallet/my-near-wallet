@@ -3,6 +3,7 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import AccountDropdown from '../../common/AccountDropdown';
 import Balance from '../../common/balance/Balance';
 import FormButton from '../../common/FormButton';
@@ -114,17 +115,21 @@ const NearDropLanding = ({
                     <Translate id='linkdropLanding.ctaLogin' />
                 </FormButton>
             )}
-            <div className='or'>
-                <Translate id='linkdropLanding.or' />
-            </div>
-            <FormButton
-                data-test-id='linkdropCreateAccountToClaim'
-                color='gray-blue'
-                disabled={claimingDrop}
-                linkTo={`/create/${fundingContract}/${fundingKey}`}
-            >
-                <Translate id='linkdropLanding.ctaNew' />
-            </FormButton>
+            {isSunsetCapabilityEnabled('createAccount') && (
+                <>
+                    <div className='or'>
+                        <Translate id='linkdropLanding.or' />
+                    </div>
+                    <FormButton
+                        data-test-id='linkdropCreateAccountToClaim'
+                        color='gray-blue'
+                        disabled={claimingDrop}
+                        linkTo={`/create/${fundingContract}/${fundingKey}`}
+                    >
+                        <Translate id='linkdropLanding.ctaNew' />
+                    </FormButton>
+                </>
+            )}
         </StyledContainer>
     );
 };

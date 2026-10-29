@@ -94,7 +94,13 @@ const RecoverAccountPrivateKey = () => {
             },
             async (e) => {
                 if (e.data?.errorCode === 'accountNotExist') {
-                    await dispatch(importZeroBalanceAccountPrivateKey(privateKey));
+                    const imported = await dispatch(
+                        importZeroBalanceAccountPrivateKey(privateKey)
+                    );
+                    if (imported?.payload?.blocked) {
+                        // The sunset refused it and already explained why.
+                        throw e;
+                    }
                     dispatch(setZeroBalanceAccountImportMethod('privateKey'));
                     dispatch(clearGlobalAlert());
                     dispatch(redirectToApp());

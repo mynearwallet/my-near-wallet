@@ -5,6 +5,18 @@ const parseBooleanFromShell = (envVal) =>
 
 const NEAR_WALLET_ENV = process.env.NEAR_WALLET_ENV;
 
+// Mirrors parseSunsetPhaseFromShell in src/config/envParsers.ts, so a bad value fails the build
+// instead of shipping a bundle that throws on load. Blank means "use the environment default".
+const parseSunsetPhase = (envVal) => {
+    if (!envValIsSet(envVal) || envVal.trim() === '') {
+        return undefined;
+    }
+    if (!['1', '2', '3'].includes(envVal.trim())) {
+        throw new Error(`Invalid SUNSET_PHASE "${envVal}": expected 1, 2 or 3`);
+    }
+    return Number(envVal.trim());
+};
+
 module.exports = {
     BRANCH: process.env.BRANCH,
     CLOUDFLARE_BASE_URL: process.env.CLOUDFLARE_BASE_URL,
@@ -27,5 +39,6 @@ module.exports = {
         (parseBooleanFromShell(process.env.RENDER) &&
             `render:${process.env.RENDER_SERVICE_NAME}:${process.env.RENDER_GIT_BRANCH}:${process.env.RENDER_GIT_COMMIT}`),
     SHOULD_USE_CLOUDFLARE: parseBooleanFromShell(process.env.USE_CLOUDFLARE),
+    SUNSET_PHASE: parseSunsetPhase(process.env.SUNSET_PHASE),
     TRAVIS: parseBooleanFromShell(process.env.TRAVIS),
 };

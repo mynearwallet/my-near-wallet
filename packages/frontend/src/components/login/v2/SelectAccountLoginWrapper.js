@@ -17,9 +17,8 @@ import {
     selectAccountUrlPrivateShard,
 } from '../../../redux/slices/account';
 import { selectAvailableAccounts } from '../../../redux/slices/availableAccounts';
-import { actions as externalRedirectActions } from '../../../redux/slices/externalRedirect';
 import { isUrlNotJavascriptProtocol } from '../../../utils/helper-api';
-import convertUrlToSendMessage from '../../../utils/convertUrlToSendMessage';
+import { sendLoginFailure } from '../../sunset/dappFailure';
 
 export default ({
     loginAccessType,
@@ -57,22 +56,10 @@ export default ({
             contractIdUrl={contractIdUrl}
             onClickCancel={() => {
                 Mixpanel.track('LOGIN Click deny button');
-                if (failureUrl && failureAndSuccessUrlsAreValid) {
-                    if (window.opener) {
-                        setTimeout(() => {
-                            dispatch(externalRedirectActions.showExternalRedirect(failureUrl));
-                        }, 3000);
-                        return window.opener.postMessage(
-                            {
-                                status: 'failure',
-                                errorCode: 'USER_CANCELLED',
-                                errorMessage: 'User cancelled the Action',
-                            },
-                            convertUrlToSendMessage(failureUrl)
-                        );
-                    }
-                    dispatch(externalRedirectActions.showExternalRedirect(failureUrl));
-                } else {
+                if (
+                    !failureAndSuccessUrlsAreValid ||
+                    !sendLoginFailure({ dispatch, failureUrl })
+                ) {
                     dispatch(redirectToApp());
                 }
             }}

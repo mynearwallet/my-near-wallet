@@ -1,6 +1,7 @@
 import { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types';
 import {
     AbstractCoreIndexer,
+    CoreIndexerNoResultError,
     E_CoreIndexerAvailableMethods,
 } from './AbstractCoreIndexer';
 import { NearBlocksBlockData } from '../types/nearblocksV1Indexer.type';
@@ -42,6 +43,10 @@ export class NearblocksV3Indexer extends AbstractCoreIndexer {
         const result = (await response.json()) as I_getAccountIdListFromPublicKey_Output;
         if (result.keys && result.keys instanceof Array && result.keys.length > 0) {
             return result.keys.map((item) => item.account_id);
+        } else if (result.keys instanceof Array) {
+            throw new CoreIndexerNoResultError(
+                `Nearblocks V3 found no account ids for public key: ${publicKey}`
+            );
         } else {
             throw new Error(
                 `Error: Nearblocks V3 failed to capture account ids from public key: ${publicKey}`

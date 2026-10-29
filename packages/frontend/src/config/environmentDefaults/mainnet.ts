@@ -51,6 +51,8 @@ export default {
     SHOW_PRERELEASE_WARNING: false,
     SMS_BLACKLIST: ['CN', 'VN', 'TH'],
     STAKING_GAS_BASE: '25000000000000', // 25 Tgas
+    // MyNearWallet sunset phase (src/config/sunset.ts). Overridable per deploy via SUNSET_PHASE.
+    SUNSET_PHASE: 2,
     WHITELISTED_CONTRACTS: [
         'berryclub.ek.near',
         'wrap.near',

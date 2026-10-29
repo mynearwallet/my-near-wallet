@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 
 import UserIcon from '../../svg/UserIcon';
 import FormButton from '../../common/FormButton';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 
 type Props = {
     validatorId: string;
@@ -93,7 +94,7 @@ const ValidatorBoxItem = ({
                         </div>
                     </div>
                 </div>
-                {isSelectable && (
+                {isSelectable && isSunsetCapabilityEnabled('stakeDeposit') && (
                     <FormButton
                         className='validator-select-button gray-blue'
                         linkTo={`/liquid-staking/${validatorId}/stake`}
@@ -119,14 +120,16 @@ const ValidatorBoxItem = ({
                     >
                         Unstake
                     </FormButton>
-                    <FormButton
-                        style={buttonStyle}
-                        onClick={() => {
-                            history.push(`/liquid-staking/${validatorId}/stake`);
-                        }}
-                    >
-                        Stake More
-                    </FormButton>
+                    {isSunsetCapabilityEnabled('stakeDeposit') && (
+                        <FormButton
+                            style={buttonStyle}
+                            onClick={() => {
+                                history.push(`/liquid-staking/${validatorId}/stake`);
+                            }}
+                        >
+                            Stake More
+                        </FormButton>
+                    )}
                 </CtaWrapper>
             )}
         </Container>

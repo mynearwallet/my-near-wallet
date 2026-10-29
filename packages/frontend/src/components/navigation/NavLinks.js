@@ -1,12 +1,16 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { SUNSET_PHASE } from '../../config/sunset';
 import { Mixpanel } from '../../mixpanel/index';
 import { GleapService } from '../../services/gleap/gleap.service';
+import useMigrationEntry from '../account-export/useMigrationEntry';
 import ExploreIcon from '../svg/ExploreIcon';
 import HelpIcon from '../svg/HelpIcon';
+import MigrateIcon from '../svg/MigrateIcon';
 import UserIcon from '../svg/UserIcon';
 import VaultIcon from '../svg/VaultIcon';
 import WalletIcon from '../svg/WalletIcon';
@@ -112,6 +116,27 @@ const Container = styled.div`
     }
 `;
 
+const isMigrationPath = (match, location) =>
+    location.pathname.startsWith('/export-accounts');
+
+const MigrateNavLink = () => {
+    const { t } = useTranslation();
+    const { to } = useMigrationEntry();
+
+    return (
+        <NavLink
+            data-test-id='migrate_navlink'
+            to={to}
+            isActive={isMigrationPath}
+            activeClassName='selected'
+            onClick={() => Mixpanel.track('Click Migrate button on nav')}
+        >
+            <MigrateIcon />
+            {t('sunset.nav.migrate')}
+        </NavLink>
+    );
+};
+
 const NavLinks = () => (
     <Container className='nav-links'>
         <NavLink
@@ -132,15 +157,20 @@ const NavLinks = () => (
             <VaultIcon />
             <Translate id='link.staking' />
         </NavLink>
-        <NavLink
-            data-test-id='explore_navlink'
-            to='/explore'
-            activeClassName='selected'
-            onClick={() => Mixpanel.track('Click Explore button on nav')}
-        >
-            <ExploreIcon />
-            <Translate id='link.explore' />
-        </NavLink>
+        {/* From Phase 2 the Explore slot points users at migration instead. */}
+        {SUNSET_PHASE >= 2 ? (
+            <MigrateNavLink />
+        ) : (
+            <NavLink
+                data-test-id='explore_navlink'
+                to='/explore'
+                activeClassName='selected'
+                onClick={() => Mixpanel.track('Click Explore button on nav')}
+            >
+                <ExploreIcon />
+                <Translate id='link.explore' />
+            </NavLink>
+        )}
         <NavLink
             to='/profile'
             className='account-details-link'
