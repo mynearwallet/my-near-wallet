@@ -77,36 +77,46 @@ const probeExportability = async (accountId) => {
 /** How long to wait before the single probe retry — enough for a rate-limit burst to drain. */
 const PROBE_RETRY_DELAY_MILLIS = 800;
 
+export const loadExportableAccount = async (accountId) => {
+    try {
+        return await probeExportability(accountId);
+    } catch {
+        // One retry before giving up: the probe fires several RPC reads per account (and
+        // the flows that lead here — a cancel above all — burst their own), so a single
+        // failed read is far more often rate limiting than anything about the account.
+        // Rendering that as "cannot be transferred" scared users about their keys.
+        await new Promise((resolve) => setTimeout(resolve, PROBE_RETRY_DELAY_MILLIS));
+    }
+    try {
+        return await probeExportability(accountId);
+    } catch (error) {
+        return {
+            accountId,
+            ...(error?.sourcePublicKey ? { sourcePublicKey: error.sourcePublicKey } : {}),
+            availability: 'verification_failed',
+        };
+    }
+};
+
 export const loadExportableAccounts = async () => {
     const accountIds = await wallet.keyStore.getAccounts(CONFIG.NETWORK_ID);
 
-    return Promise.all(
-        accountIds.map(async (accountId) => {
-            try {
-                return await probeExportability(accountId);
-            } catch {
-                // One retry before giving up: the probe fires several RPC reads per account (and
-                // the flows that lead here — a cancel above all — burst their own), so a single
-                // failed read is far more often rate limiting than anything about the account.
-                // Rendering that as "cannot be transferred" scared users about their keys.
-                await new Promise((resolve) =>
-                    setTimeout(resolve, PROBE_RETRY_DELAY_MILLIS)
-                );
-            }
-            try {
-                return await probeExportability(accountId);
-            } catch (error) {
-                return {
-                    accountId,
-                    ...(error?.sourcePublicKey
-                        ? { sourcePublicKey: error.sourcePublicKey }
-                        : {}),
-                    availability: 'verification_failed',
-                };
-            }
-        })
-    );
+    return Promise.all(accountIds.map(loadExportableAccount));
 };
+
+/**
+ * Accounts whose private key manual export can show: every account this wallet holds a plain
+ * local key for, whether or not it can use the Meteor transfer. Ledger accounts have no
+ * exportable key, and `no_local_key` accounts have none here at all.
+ */
+export const MANUAL_EXPORT_EXCLUDED_AVAILABILITY = ['ledger_unsupported', 'no_local_key'];
+
+export const canManuallyExport = ({ availability, sourcePublicKey }) =>
+    !MANUAL_EXPORT_EXCLUDED_AVAILABILITY.includes(availability) &&
+    (availability !== 'verification_failed' || sourcePublicKey != null);
+
+export const loadManualExportAccounts = async () =>
+    (await loadExportableAccounts()).filter(canManuallyExport);
 
 export const loadNewKeyTransferAccounts = async (accountIds) => {
     const eligible = await loadExportableAccounts();

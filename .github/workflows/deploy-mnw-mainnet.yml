@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - mainnet
+  # Manual redeploys, e.g. after changing the SUNSET_PHASE environment variable.
+  workflow_dispatch:
 
 concurrency:
   group: 'mainnet'

@@ -9,7 +9,9 @@ import {
     handleGetLockup,
 } from './staking';
 import { showCustomAlert } from './status';
+import { guardSunsetCapability } from '../../components/sunset/sunsetGuard';
 import CONFIG from '../../config';
+import { isSunsetCapabilityEnabled } from '../../config/sunset';
 import { actions as activeAccountActions } from '../../redux/slices/activeAccount';
 import { actions as externalRedirectActions } from '../../redux/slices/externalRedirect';
 import { showAlert } from '../../utils/alerts';
@@ -166,7 +168,14 @@ export const handleRefreshUrl = (prevRouter) => (dispatch, getState) => {
         ) {
             saveState(parsedUrl);
             dispatch(refreshUrl(parsedUrl));
-            dispatch(checkContractId(isPrivateShard));
+            // A retired login is answered without connecting, so skip the contract RPC check and
+            // its redirect to the invalid-contract page.
+            if (
+                currentPage !== WALLET_LOGIN_URL ||
+                isSunsetCapabilityEnabled('dappConnect')
+            ) {
+                dispatch(checkContractId(isPrivateShard));
+            }
         } else {
             dispatch(refreshUrl(loadState()));
         }
@@ -252,6 +261,7 @@ export const redirectToApp = (fallback) => async (dispatch, getState) => {
 };
 
 export const allowLogin = () => async (dispatch, getState) => {
+    guardSunsetCapability('dappConnect');
     try {
         dispatch(activeAccountActions.setLoginError({ isError: false }));
         const contractId = selectAccountUrlContractId(getState());
@@ -445,7 +455,11 @@ export const {
         () => ({}),
     ],
     DEPLOY_MULTISIG: [
-        () => new TwoFactor(wallet, wallet.accountId).deployMultisig(),
+        // Async so a refusal rejects the action's promise like any other failure.
+        async () => {
+            guardSunsetCapability('enableTwoFactor');
+            return new TwoFactor(wallet, wallet.accountId).deployMultisig();
+        },
         () => showAlert(),
     ],
     DISABLE_MULTISIG: [
@@ -559,6 +573,7 @@ const handleFundCreateAccountRedirect =
 
 export const fundCreateAccount =
     (accountId, recoveryKeyPair, recoveryMethod) => async (dispatch) => {
+        guardSunsetCapability('createAccount');
         await wallet.keyStore.setKey(
             wallet.connection.networkId,
             accountId,
@@ -584,6 +599,7 @@ export const fundCreateAccount =
 
 export const fundCreateAccountLedger =
     (accountId, ledgerPublicKey) => async (dispatch) => {
+        guardSunsetCapability('createAccount');
         await setKeyMeta(ledgerPublicKey, { type: 'ledger' });
         const implicitAccountId = Buffer.from(ledgerPublicKey.data).toString('hex');
         const recoveryMethod = 'ledger';
@@ -600,6 +616,7 @@ export const fundCreateAccountLedger =
 // TODO: Refactor common code with setupRecoveryMessageNewAccount
 export const handleCreateAccountWithSeedPhrase =
     (accountId, recoveryKeyPair, fundingOptions, recaptchaToken) => async (dispatch) => {
+        guardSunsetCapability('createAccount');
         // Coin-op verify account flow
         if (
             CONFIG.DISABLE_CREATE_ACCOUNT &&
@@ -651,7 +668,11 @@ export const finishAccountSetup = () => async (dispatch, getState) => {
 
     if (redirectUrl) {
         if (isUrlNotJavascriptProtocol(redirectUrl)) {
-            dispatch(externalRedirectActions.showExternalRedirect(`${redirectUrl}?accountId=${accountId}`));
+            dispatch(
+                externalRedirectActions.showExternalRedirect(
+                    `${redirectUrl}?accountId=${accountId}`
+                )
+            );
         } else {
             dispatch(handleRefreshUrl());
             dispatch(

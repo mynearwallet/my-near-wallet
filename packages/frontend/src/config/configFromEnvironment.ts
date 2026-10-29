@@ -7,6 +7,7 @@ import {
     envValIsSet,
     parseBooleanFromShell,
     parseCommaSeperatedStringAsArrayFromShell,
+    parseSunsetPhaseFromShell,
 } from './envParsers';
 
 const NEAR_WALLET_ENV = process.env.NEAR_WALLET_ENV as ENVIRONMENT;
@@ -84,6 +85,8 @@ export default {
           )
         : undefined,
     STAKING_GAS_BASE: process.env.REACT_APP_STAKING_GAS_BASE,
+    // Build flag for the MyNearWallet sunset; see src/config/sunset.ts
+    SUNSET_PHASE: parseSunsetPhaseFromShell(process.env.SUNSET_PHASE),
     WHITELISTED_CONTRACTS: parseCommaSeperatedStringAsArrayFromShell(
         process.env.TOKEN_CONTRACTS
     ),

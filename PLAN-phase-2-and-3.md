@@ -10,6 +10,25 @@
 
 ---
 
+## Implementation status (29 Oct)
+
+**Release A (Phase 2) is implemented on `paul/sunset-phase-3`, uncommitted, pending the QA matrix ([§9.2](#92-qa-matrix-release-a-phase-2)) and safety sign-off ([§6.8](#68-phase-2-safety-review)).**
+
+- **Checks:** Jest 205/205 passing (57 new); `tsc` clean; ESLint shows only the 2 pre-existing errors; production Parcel build succeeds.
+- **Visual check:** the main screens were checked visually against a local testnet build.
+- **Code:** `src/config/sunset.ts` holds the flag and capability model; `src/components/sunset/` holds the UI.
+- **Default phase:** every deployed environment now defaults to `SUNSET_PHASE: 2`, so the next deploy of `master` (staging), `testnet` or `mainnet` ships Phase 2.
+
+Deviations from this plan:
+- **`/setup-ledger-new-account` is fully retired** rather than keeping its redirect branch. Existing Ledger users import through *Import existing account → Ledger*.
+- **Send and Receive get no inline notice.** The global sunset bar already appears there, and two prompts on one page is noise.
+- **Staking pages hide the bar** because they carry their own, more specific notice.
+- **Interim 2FA handling keeps MNW's existing "Disable 2FA"** and links to it from the guidance ("Turn off 2FA" switches to that account and opens Profile). Hiding it if NEAR's helper turns out to be down is **not** built yet; that needs the helper status first.
+- **Not built (the "can follow" items in §6.0):** account-switcher status chips, bar progress counts, the post-migration balance checklist, and automatic activation of a funded implicit account on the old creation routes. The creation retired page tells those users to import instead.
+- **e2e specs are not updated yet** (Release C, §8.8).
+
+---
+
 ## 0. Timeline and delivery strategy
 
 | Release | What | When | How |

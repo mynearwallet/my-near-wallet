@@ -21,6 +21,7 @@ import {
     setKeyMeta,
 } from '../../../utils/wallet';
 import { WalletError } from '../../../utils/walletError';
+import { guardSunsetCapability } from '../../../components/sunset/sunsetGuard';
 import { finishAccountSetup } from '../../actions/account';
 import { showCustomAlert } from '../../actions/status';
 
@@ -89,6 +90,7 @@ export const createIdentityFundedAccount = createAsyncThunk(
         },
         { dispatch }
     ) => {
+        guardSunsetCapability('createAccount');
         await wallet.checkNewAccount(accountId);
         await sendJson('POST', IDENTITY_FUNDED_ACCOUNT_CREATE_URL, {
             kind,
@@ -121,6 +123,7 @@ export const createNewAccount = createAsyncThunk(
         },
         { dispatch }
     ) => {
+        guardSunsetCapability('createAccount');
         const {
             fundingContract,
             fundingKey,
@@ -185,6 +188,7 @@ export const createNewAccount = createAsyncThunk(
 export const createAccountFromImplicit = createAsyncThunk(
     `${SLICE_NAME}/createAccountFromImplicit`,
     async ({ accountId, implicitAccountId, recoveryMethod }, { dispatch }) => {
+        guardSunsetCapability('createAccount');
         const recoveryKeyPair = await wallet.keyStore.getKey(
             wallet.connection.networkId,
             implicitAccountId
@@ -210,6 +214,7 @@ export const createAccountWithSeedPhrase = createAsyncThunk(
         { accountId, recoveryKeyPair, fundingOptions = {}, recaptchaToken },
         { dispatch }
     ) => {
+        guardSunsetCapability('createAccount');
         const recoveryMethod = 'phrase';
         const previousAccountId = wallet.accountId;
         await wallet.saveAccount(accountId, recoveryKeyPair);
@@ -234,6 +239,7 @@ export const createNewAccountWithCurrentActiveAccount = createAsyncThunk(
         { newAccountId, implicitAccountId, newInitialBalance, recoveryMethod },
         { dispatch }
     ) => {
+        guardSunsetCapability('createAccount');
         await wallet.checkNewAccount(newAccountId);
         const newPublicKey = new PublicKey({
             keyType: KeyType.ED25519,
@@ -307,6 +313,7 @@ export const finishLocalSetupForZeroBalanceAccount = createAsyncThunk(
 export const initiateSetupForZeroBalanceAccountPhrase = createAsyncThunk(
     `${SLICE_NAME}/initiateSetupForZeroBalanceAccountPhrase`,
     async ({ implicitAccountId, recoveryKeyPair }, { dispatch }) => {
+        guardSunsetCapability('createAccount');
         try {
             try {
                 await sendJson(
@@ -346,6 +353,7 @@ export const initiateSetupForZeroBalanceAccountPhrase = createAsyncThunk(
 export const initiateSetupForZeroBalanceAccountLedger = createAsyncThunk(
     `${SLICE_NAME}/initiateSetupForZeroBalanceAccountLedger`,
     async ({ implicitAccountId, ledgerPublicKey, ledgerHdPath }, { dispatch }) => {
+        guardSunsetCapability('createAccount');
         try {
             try {
                 await sendJson(

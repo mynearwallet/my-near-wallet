@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const Config = require('./config');
 const ParcelBundler = require('./ParcelBundler');
 const DIST_PATH = path.join(__dirname, '../dist');
 const WASM_PATH = path.join(__dirname, '../src/wasm/');
@@ -22,6 +23,13 @@ const runBundler = async () => {
             argMap[key] = value;
             return argMap;
         }, {});
+    console.log(
+        `SUNSET_PHASE: ${
+            Config.SUNSET_PHASE === undefined
+                ? `not set, using the ${Config.NEAR_WALLET_ENV} default`
+                : Config.SUNSET_PHASE
+        }`
+    );
     const bundler = new ParcelBundler(args);
     bundler.initializeBundlerInstance();
 

@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-    getMeteorNewKeyTransferSessions,
-    hasJournaledMeteorNewKeyVerification,
-} from '../../services/meteorConnect';
-import {
-    findResumableNewKeyTransfer,
-    summarizeNewKeyTransferSession,
-} from '../../services/newKeyTransferState';
-import {
-    trackMigrationEntryClicked,
-    trackMigrationEntryLoadFailed,
-} from '../account-export/accountExportAnalytics';
+import { SUNSET_PHASE } from '../../config/sunset';
+import { trackMigrationEntryClicked } from '../account-export/accountExportAnalytics';
+import useMigrationEntry from '../account-export/useMigrationEntry';
+import { usePhase3Date } from '../sunset/sunsetDates';
 
 const AccountExportBannerContainer = styled.section`
     margin-bottom: 28px;
@@ -58,6 +50,21 @@ const BannerDescription = styled.div`
     margin: 6px 0 0;
 `;
 
+const BannerSecondaryLink = styled(Link)`
+    color: #000;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 21px;
+    margin-top: 8px;
+    text-decoration: underline;
+
+    &:hover {
+        color: #000;
+        opacity: 0.75;
+    }
+`;
+
 const BannerLink = styled(Link)`
     align-items: center;
     background: #fff;
@@ -86,82 +93,59 @@ const BannerLink = styled(Link)`
     }
 `;
 
-/**
- * Where an unfinished transfer picks up. A resolved start moves directly into step 2, whether or
- * not an AddKey intent has been journaled yet; the activation screen asks the journal what work is
- * actually left and waits for the corresponding user action.
- */
-const resumeRoute = (summary) =>
-    summary == null
-        ? '/export-accounts/select'
-        : {
-              pathname: '/export-accounts/new-key-activation',
-              state: { clientTransferId: summary.clientTransferId, isResume: true },
-          };
-
 export default function AccountExportBanner() {
     const { t } = useTranslation();
-    const [pendingSummary, setPendingSummary] = useState(null);
-    const [resumeStage, setResumeStage] = useState(undefined);
-
-    useEffect(() => {
-        let isActive = true;
-        void (async () => {
-            try {
-                const sessions = await getMeteorNewKeyTransferSessions();
-                const resumable = findResumableNewKeyTransfer(sessions);
-                const summary = summarizeNewKeyTransferSession(resumable);
-                let nextResumeStage;
-                if (summary?.isAwaitingWalletCompletion) {
-                    nextResumeStage = 'wallet_completion';
-                } else if (summary != null) {
-                    try {
-                        nextResumeStage = (await hasJournaledMeteorNewKeyVerification(
-                            summary.transferSessionId
-                        ))
-                            ? 'verify_keys'
-                            : 'activate_keys';
-                    } catch (error) {
-                        trackMigrationEntryLoadFailed(error);
-                        nextResumeStage = 'activate_keys';
-                    }
-                }
-                if (isActive) {
-                    setPendingSummary(summary);
-                    setResumeStage(nextResumeStage);
-                }
-            } catch (error) {
-                trackMigrationEntryLoadFailed(error);
-                // A journal this banner cannot read is not something to shout about here; the
-                // export screens report it properly. Offer the ordinary entry point.
-            }
-        })();
-        return () => {
-            isActive = false;
-        };
-    }, []);
+    const phase3Date = usePhase3Date();
+    const { to, isResume, resumeStage } = useMigrationEntry();
+    const copy =
+        SUNSET_PHASE >= 3
+            ? 'sunset.banner.phase3'
+            : SUNSET_PHASE === 2
+            ? 'sunset.banner.phase2'
+            : null;
 
     return (
         <AccountExportBannerContainer>
             <AccountExportBannerContent>
                 <BannerCopy>
-                    <BannerTitle>{t('accountExport.banner.title')}</BannerTitle>
+                    <BannerTitle>
+                        {copy
+                            ? t(`${copy}.title`, { date: phase3Date })
+                            : t('accountExport.banner.title')}
+                    </BannerTitle>
                     <BannerDescription>
-                        {t('accountExport.banner.description')}
+                        {copy
+                            ? t(`${copy}.description`, { date: phase3Date })
+                            : t('accountExport.banner.description')}
                     </BannerDescription>
+                    {copy && (
+                        <BannerSecondaryLink
+                            to={{
+                                pathname: '/export-accounts/manual',
+                                state: { exportAll: true },
+                            }}
+                            onClick={() =>
+                                trackMigrationEntryClicked({ entry: 'export_keys' })
+                            }
+                        >
+                            {t('sunset.banner.exportKeys')}
+                        </BannerSecondaryLink>
+                    )}
                 </BannerCopy>
                 <BannerLink
-                    to={resumeRoute(pendingSummary)}
+                    to={to}
                     onClick={() =>
                         trackMigrationEntryClicked({
-                            entry: pendingSummary ? 'resume' : 'start',
+                            entry: isResume ? 'resume' : 'start',
                             resumeStage,
                         })
                     }
                 >
                     {t(
-                        pendingSummary
+                        isResume
                             ? 'accountExport.banner.resume'
+                            : copy
+                            ? 'sunset.banner.cta'
                             : 'accountExport.banner.export'
                     )}
                 </BannerLink>

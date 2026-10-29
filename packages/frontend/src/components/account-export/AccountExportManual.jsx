@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import ClickToCopy from '../common/ClickToCopy';
 import FormButton from '../common/FormButton';
+import LoadingDots from '../common/loader/LoadingDots';
 import Container from '../common/styled/Container.css';
 import CopyIcon from '../svg/CopyIcon';
 import {
@@ -14,8 +15,13 @@ import {
     trackManualMigrationOpened,
     trackManualPrivateKeyRevealed,
 } from './accountExportAnalytics';
-import { loadExportAccountSecrets } from './accountExportAccounts';
+import {
+    loadExportAccountSecrets,
+    loadManualExportAccounts,
+} from './accountExportAccounts';
 import { createPrivateKeyMask } from './accountExportManual.utils';
+import { markAccountKeyExported } from './accountExportMarker';
+import AccountExportNotice from './AccountExportNotice';
 
 const ManualExportPage = styled(Container)`
     max-width: 500px;
@@ -48,8 +54,10 @@ const Warning = styled.p`
     text-align: center;
 `;
 
+// The how-to-import notice above carries 32px of bottom margin; together they keep the
+// original 56px gap between the warning and the list.
 const AccountList = styled.div`
-    margin-top: 56px;
+    margin-top: 24px;
 `;
 
 const AccountCard = styled.section`
@@ -161,6 +169,34 @@ const ErrorMessage = styled.p`
     text-align: center;
 `;
 
+const AccountNote = styled.p`
+    color: #a15600;
+    font-size: 13px;
+    line-height: 19px;
+    margin: 14px 0 0;
+`;
+
+const ListState = styled.div`
+    align-items: center;
+    color: #72727a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 140px;
+    text-align: center;
+
+    p {
+        margin: 12px 0 0;
+    }
+`;
+
+// Extra context for keys whose account cannot use the Meteor transfer as-is.
+const ACCOUNT_NOTE_KEYS = {
+    two_factor_unsupported: 'sunset.manualExport.notes.twoFactor',
+    not_funded: 'sunset.manualExport.notes.notFunded',
+    not_full_access: 'sunset.manualExport.notes.notFullAccess',
+};
+
 const HIDDEN_VALUE = '••••••••••••••••••••••••••••••••';
 
 const CredentialRow = ({
@@ -223,7 +259,30 @@ const CredentialRow = ({
 
 export default function AccountExportManual({ history, location }) {
     const { t } = useTranslation();
-    const accountIds = location.state?.accountIds;
+    // `exportAll` (from the home banner) lists every account this wallet holds a key for,
+    // including those the Meteor transfer cannot take.
+    const isExportAll = location.state?.exportAll === true;
+    const [exportAllAccounts, setExportAllAccounts] = useState(null);
+    const accountIds = useMemo(
+        () =>
+            isExportAll
+                ? exportAllAccounts?.map(({ accountId }) => accountId)
+                : location.state?.accountIds,
+        [isExportAll, exportAllAccounts, location.state?.accountIds]
+    );
+    const availabilityById = useMemo(
+        () =>
+            isExportAll
+                ? Object.fromEntries(
+                      (exportAllAccounts || []).map(({ accountId, availability }) => [
+                          accountId,
+                          availability,
+                      ])
+                  )
+                : location.state?.availabilityById || {},
+        [isExportAll, exportAllAccounts, location.state?.availabilityById]
+    );
+    const isListingAccounts = isExportAll && exportAllAccounts === null;
     const [credentialsByAccountId, setCredentialsByAccountId] = useState({});
     const [revealedCredentials, setRevealedCredentials] = useState({});
     const [isLoadingCredentials, setIsLoadingCredentials] = useState(true);
@@ -233,15 +292,43 @@ export default function AccountExportManual({ history, location }) {
     const trackedCopies = useRef(new Set());
 
     useEffect(() => {
+        if (!isExportAll) {
+            return undefined;
+        }
+        let isMounted = true;
+        loadManualExportAccounts()
+            .then((accounts) => {
+                if (isMounted) {
+                    setExportAllAccounts(accounts);
+                }
+            })
+            .catch((error) => {
+                if (isMounted) {
+                    trackManualCredentialsFailed(error);
+                    setExportAllAccounts([]);
+                    setErrorMessage(t('accountExport.manual.credentialsFailed'));
+                }
+            });
+        return () => {
+            isMounted = false;
+        };
+    }, [isExportAll]);
+
+    useEffect(() => {
+        if (isListingAccounts) {
+            return;
+        }
         if (!Array.isArray(accountIds) || accountIds.length === 0) {
-            history.replace('/export-accounts/select');
+            if (!isExportAll) {
+                history.replace('/export-accounts/select');
+            }
             return;
         }
         if (!didTrackOpen.current) {
             didTrackOpen.current = true;
             trackManualMigrationOpened(accountIds);
         }
-    }, [accountIds, history]);
+    }, [accountIds, history, isExportAll, isListingAccounts]);
 
     useEffect(() => {
         let isMounted = true;
@@ -311,6 +398,10 @@ export default function AccountExportManual({ history, location }) {
             return;
         }
 
+        if (credentialName === 'privateKey') {
+            markAccountKeyExported(accountId);
+        }
+
         if (credentialName === 'privateKey' && !trackedReveals.current.has(accountId)) {
             trackedReveals.current.add(accountId);
             trackManualPrivateKeyRevealed({
@@ -329,6 +420,9 @@ export default function AccountExportManual({ history, location }) {
     };
 
     const trackCredentialCopyOnce = (accountId, credentialType) => {
+        if (credentialType === 'private_key') {
+            markAccountKeyExported(accountId);
+        }
         const identity = `${accountId}:${credentialType}`;
         if (trackedCopies.current.has(identity)) {
             return;
@@ -343,7 +437,7 @@ export default function AccountExportManual({ history, location }) {
         });
     };
 
-    if (!Array.isArray(accountIds) || accountIds.length === 0) {
+    if (!isExportAll && (!Array.isArray(accountIds) || accountIds.length === 0)) {
         return null;
     }
 
@@ -354,9 +448,24 @@ export default function AccountExportManual({ history, location }) {
                     <h1>{t('accountExport.manual.title')}</h1>
                     <h2>{t('accountExport.manual.subtitle')}</h2>
                     <Warning>{t('accountExport.manual.warning')}</Warning>
+                    <AccountExportNotice variant='info'>
+                        <p>{t('sunset.manualExport.howToImport')}</p>
+                        <p>{t('sunset.manualExport.recoveryPhraseStillWorks')}</p>
+                    </AccountExportNotice>
                     {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+                    {isListingAccounts && (
+                        <ListState role='status'>
+                            <LoadingDots />
+                            <p>{t('sunset.manualExport.findingAccounts')}</p>
+                        </ListState>
+                    )}
+                    {isExportAll && !isListingAccounts && accountIds?.length === 0 && (
+                        <ListState>
+                            <p>{t('sunset.manualExport.noKeys')}</p>
+                        </ListState>
+                    )}
                     <AccountList>
-                        {accountIds.map((accountId, index) => {
+                        {(accountIds || []).map((accountId, index) => {
                             const credentials = credentialsByAccountId[accountId];
                             const isPrivateKeyRevealed =
                                 revealedCredentials[accountId]?.privateKey;
@@ -399,6 +508,15 @@ export default function AccountExportManual({ history, location }) {
                                                   HIDDEN_VALUE
                                         }
                                     />
+                                    {ACCOUNT_NOTE_KEYS[availabilityById[accountId]] && (
+                                        <AccountNote>
+                                            {t(
+                                                ACCOUNT_NOTE_KEYS[
+                                                    availabilityById[accountId]
+                                                ]
+                                            )}
+                                        </AccountNote>
+                                    )}
                                 </AccountCard>
                             );
                         })}

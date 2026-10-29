@@ -29,6 +29,7 @@ import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
 import { store, addAccountReducer } from '..';
 import CONFIG from '../config';
+import { assertSunsetCapability } from '../config/sunset';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
@@ -794,6 +795,7 @@ export default class Wallet {
     }
 
     async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
+        assertSunsetCapability('createAccount');
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
         const account = new FundingAccount(
             this.connectionIgnoringLedger,

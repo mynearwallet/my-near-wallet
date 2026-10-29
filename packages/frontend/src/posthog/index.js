@@ -1,6 +1,7 @@
 import posthog from 'posthog-js';
 
 import CONFIG from '../config';
+import { SUNSET_PHASE } from '../config/sunset';
 
 // Strip seed phrases, hashes and keys out of anything URL-shaped before it
 // leaves the browser. Mirrors the sanitization used by src/mixpanel/index.js.
@@ -51,7 +52,10 @@ if (CONFIG.BROWSER_POSTHOG_KEY) {
         sanitize_properties: sanitizeProperties,
         persistence: 'localStorage+cookie',
     });
-    posthog.register({ wallet_environment: CONFIG.NEAR_WALLET_ENV });
+    posthog.register({
+        wallet_environment: CONFIG.NEAR_WALLET_ENV,
+        sunset_phase: SUNSET_PHASE,
+    });
 
     PostHog = {
         get_distinct_id: () => posthog.get_distinct_id(),

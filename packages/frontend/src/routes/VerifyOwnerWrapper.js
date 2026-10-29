@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import VerifyOwnerInvalid from '../components/verify-owner/VerifyOwnerInvalid';
 import VerifyOwnerSummaryWrapper from '../components/verify-owner/VerifyOwnerSummaryWrapper';
+import DappApprovalSunsetNotice from '../components/sunset/DappApprovalSunsetNotice';
 import { redirectTo } from '../redux/actions/account';
 import {
     selectAccountUrlCallbackUrl,
@@ -45,9 +46,16 @@ const VerifyOwnerWrapper = () => {
     useEffect(() => {
         if (verifyOwnerStatus === VERIFY_OWNER_STATUS.COMPLETED) {
             if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                dispatch(externalRedirectActions.showExternalRedirect(
-                    buildRedirectUrl(accountUrlCallbackUrl, accountUrlMeta, signedRequest, verifyOwnerError)
-                ));
+                dispatch(
+                    externalRedirectActions.showExternalRedirect(
+                        buildRedirectUrl(
+                            accountUrlCallbackUrl,
+                            accountUrlMeta,
+                            signedRequest,
+                            verifyOwnerError
+                        )
+                    )
+                );
             } else {
                 dispatch(redirectTo('/'));
             }
@@ -67,13 +75,16 @@ const VerifyOwnerWrapper = () => {
     }
 
     return (
-        <VerifyOwnerSummaryWrapper
-            onClickCancel={handleRejectRequest}
-            onClickApprove={handleApproveRequest}
-            signing={isSigning}
-            message={accountUrlMessage}
-            isValidCallbackUrl={isValidCallbackUrl}
-        />
+        <>
+            <DappApprovalSunsetNotice callbackUrl={accountUrlCallbackUrl} />
+            <VerifyOwnerSummaryWrapper
+                onClickCancel={handleRejectRequest}
+                onClickApprove={handleApproveRequest}
+                signing={isSigning}
+                message={accountUrlMessage}
+                isValidCallbackUrl={isValidCallbackUrl}
+            />
+        </>
     );
 };
 

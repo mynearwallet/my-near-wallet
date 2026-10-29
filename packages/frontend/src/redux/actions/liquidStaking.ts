@@ -8,8 +8,10 @@ import { fungibleTokensService } from '../../services/FungibleTokens';
 import { wallet } from '../../utils/wallet';
 import CONFIG from '../../config';
 import { functionCall } from 'near-api-js/lib/transaction';
+import { guardSunsetCapability } from '../../components/sunset/sunsetGuard';
 
 export const liquidStaking = async ({ contractId, amountInYocto, accountId }) => {
+    guardSunsetCapability('stakeDeposit');
     const isStorageDepositRequired = await fungibleTokensService.isStorageDepositRequired(
         {
             contractName: contractId,

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import SignMessageInvalid from '../components/sign-message/SignMessageInvalid';
 import SignMessageSummaryWrapper from '../components/sign-message/SignMessageSummaryWrapper';
+import DappApprovalSunsetNotice from '../components/sunset/DappApprovalSunsetNotice';
 import { redirectTo } from '../redux/actions/account';
 import {
     selectAccountUrlCallbackUrl,
@@ -56,9 +57,16 @@ const SignMessageWrapper = () => {
             if (window.opener) {
                 setTimeout(() => {
                     if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                        dispatch(externalRedirectActions.showExternalRedirect(
-                            buildRedirectUrl(accountUrlCallbackUrl, signedRequest, accountUrlState, verifyOwnerError)
-                        ));
+                        dispatch(
+                            externalRedirectActions.showExternalRedirect(
+                                buildRedirectUrl(
+                                    accountUrlCallbackUrl,
+                                    signedRequest,
+                                    accountUrlState,
+                                    verifyOwnerError
+                                )
+                            )
+                        );
                     } else {
                         dispatch(redirectTo('/'));
                     }
@@ -75,9 +83,16 @@ const SignMessageWrapper = () => {
                 );
             }
             if (accountUrlCallbackUrl && isValidCallbackUrl) {
-                dispatch(externalRedirectActions.showExternalRedirect(
-                    buildRedirectUrl(accountUrlCallbackUrl, signedRequest, accountUrlState, verifyOwnerError)
-                ));
+                dispatch(
+                    externalRedirectActions.showExternalRedirect(
+                        buildRedirectUrl(
+                            accountUrlCallbackUrl,
+                            signedRequest,
+                            accountUrlState,
+                            verifyOwnerError
+                        )
+                    )
+                );
             } else {
                 dispatch(redirectTo('/'));
             }
@@ -105,14 +120,17 @@ const SignMessageWrapper = () => {
     }
 
     return (
-        <SignMessageSummaryWrapper
-            onClickCancel={handleRejectRequest}
-            onClickApprove={handleApproveRequest}
-            signing={isSigning}
-            message={accountUrlMessage}
-            isValidCallbackUrl={isValidCallbackUrl}
-            isValidNonce={isValidNonce}
-        />
+        <>
+            <DappApprovalSunsetNotice callbackUrl={accountUrlCallbackUrl} />
+            <SignMessageSummaryWrapper
+                onClickCancel={handleRejectRequest}
+                onClickApprove={handleApproveRequest}
+                signing={isSigning}
+                message={accountUrlMessage}
+                isValidCallbackUrl={isValidCallbackUrl}
+                isValidNonce={isValidNonce}
+            />
+        </>
     );
 };
 

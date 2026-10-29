@@ -8,6 +8,7 @@ import { Translate } from 'react-localize-redux';
 
 import BalanceBox from '../components/BalanceBox';
 import FormButton from '../../common/FormButton';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import Container from '../../common/styled/Container.css';
 import { getMetapoolValidator } from './utils';
 import { selectAccountId } from '../../../redux/slices/account';
@@ -71,14 +72,16 @@ const ValidatorDetail = () => {
                     Validator: <br />
                     {validatorId}
                 </div>
-                <FormButton
-                    className='staking-button'
-                    trackingId='STAKE Click stake with validator button'
-                    linkTo={`/liquid-staking/${validatorId}/stake`}
-                    data-test-id='validatorPageStakeButton'
-                >
-                    <Translate id='staking.validator.button' />
-                </FormButton>
+                {isSunsetCapabilityEnabled('stakeDeposit') && (
+                    <FormButton
+                        className='staking-button'
+                        trackingId='STAKE Click stake with validator button'
+                        linkTo={`/liquid-staking/${validatorId}/stake`}
+                        data-test-id='validatorPageStakeButton'
+                    >
+                        <Translate id='staking.validator.button' />
+                    </FormButton>
+                )}
             </div>
             <FarmingAPY apy={liquidValidatorData?.apy} hideTooltip={true} />
             <BalanceBox

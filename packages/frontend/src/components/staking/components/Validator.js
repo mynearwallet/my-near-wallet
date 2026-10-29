@@ -30,6 +30,7 @@ import {
 import { selectContractsMetadata } from '../../../redux/slices/tokensMetadata';
 import StakingFarmContracts from '../../../services/StakingFarmContracts';
 import { FARMING_VALIDATOR_VERSION } from '../../../utils/constants';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import FormButton from '../../common/FormButton';
 import SafeTranslate from '../../SafeTranslate';
 import { useQuery } from '@tanstack/react-query';
@@ -224,14 +225,16 @@ export default function Validator({
                     data={{ validator: match.params.validator }}
                 />
             </h1>
-            <FormButton
-                linkTo={`/staking/${match.params.validator}/stake`}
-                disabled={stakeNotAllowed || !validator}
-                trackingId='STAKE Click stake with validator button'
-                data-test-id='validatorPageStakeButton'
-            >
-                <Translate id='staking.validator.button' />
-            </FormButton>
+            {isSunsetCapabilityEnabled('stakeDeposit') && (
+                <FormButton
+                    linkTo={`/staking/${match.params.validator}/stake`}
+                    disabled={stakeNotAllowed || !validator}
+                    trackingId='STAKE Click stake with validator button'
+                    data-test-id='validatorPageStakeButton'
+                >
+                    <Translate id='staking.validator.button' />
+                </FormButton>
+            )}
             {validator && (
                 <StakingFee fee={validatorFeeQuery.data || validator.fee.percentage} />
             )}
