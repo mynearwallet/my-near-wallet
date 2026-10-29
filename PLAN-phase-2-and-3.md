@@ -48,7 +48,7 @@ Every PR in this plan should be reviewed against this list. Each item gets an au
 
 1. **Users can always get their keys out.** Unlock, manual export and the Profile "export private key" keep working for every account that has a local key.
 2. **Migration flows are never gated.** All `/export-accounts/*` routes stay open, including resume, recovery, start-over, the NEAR.com guide and local removal. Their on-chain AddKey and DeleteKey calls (in [meteorConnectAddKeyChain.js](packages/frontend/src/services/meteorConnectAddKeyChain.js)) must never be blocked by a sunset guard.
-3. **Disabling 2FA always works.** Meteor's new-key transfer refuses 2FA accounts (`two_factor_unsupported`), so disabling 2FA is a required migration step. This also covers the seed-phrase route for bricked 2FA accounts.
+3. **Disabling 2FA always works, without NEAR's 2FA service.** Meteor's new-key transfer refuses 2FA accounts (`two_factor_unsupported`), so disabling 2FA is a required migration step. It must not depend on NEAR's helper (see [§6.6.1](#661-turning-off-2fa-without-nears-2fa-service)). This also covers the seed-phrase route for bricked 2FA accounts.
 4. **Getting in always works.** Log in, import, recover, password unlock, Ledger sign-in, `/batch-import` and `/recover-with-link` stay open.
 5. **Funds stay visible.** Balances, tokens, NFTs, staking positions, lockup balances and activity remain viewable, read-only where necessary.
 6. **Every dApp request gets an answer.** Each `/login`, `/sign`, `/sign-message` and `/verify-owner` request ends in a success or failure callback. None hangs, 404s, or drops into guest landing or an unlock screen with no way back.
@@ -141,7 +141,17 @@ Each has a recommendation, so the build can start on that default unless someone
 | D12 | Adding seed-phrase recovery in Phase 2 | **Keep** | It gives users a 12-word phrase that works in any wallet, which directly helps migration. Retire in Phase 3. |
 
 **External dependencies** (owners must confirm before Phase 3):
-- **NEAR helper (`helper.mainnet.near.org`) must stay up.** 2FA disable codes and confirmations depend on it, as do `deleteRecoveryMethod` and `/account/seedPhraseAdded`. If it goes away, 2FA users can only migrate through the seed-phrase route for bricked accounts.
+- **NEAR's helper (`helper.mainnet.near.org`) and its 2FA service.** **Both** of MNW's existing 2FA disable paths depend on it:
+  - `disableMultisig` needs its SMS/email confirmation.
+  - `disableWithFAK`, used by the bricked-account path, calls its `/2fa/getAccessKey`.
+  - Every 2FA transaction in MNW (send, unstake) also needs its confirmation.
+  - The [2fa-recovery](https://github.com/Meteor-Wallet/2fa-recovery) app describes this service as "retired". **Confirm its status now.** If it is down, MNW's 2FA users already can't send, unstake or disable 2FA, and §6.6.1 becomes their only route out.
+- **Meteor's 2FA confirm relay** (`meteor_backend_v2` `POST /api/relay/confirm_2fa`). §6.6.1 depends on it. **It must be hardened before MNW sends traffic to it:**
+  - **Reject any non-zero deposit.** On NEAR the relayer pays deposits attached inside a meta-transaction, and they land in the sender's account. Today anyone can drain the relayer account with a `confirm` carrying a deposit (verify on testnet with a tiny amount).
+  - Cap gas.
+  - Rate-limit.
+  - Check the target account's code hash, `get_num_confirmations == 2`, and that `request_id` exists before spending gas. Today it only checks the shape of the request.
+  - Alert on the relayer's balance.
 - **The Meteor Connect production bridge and Meteor's new-key import** must stay available through Phase 3.
 - **Meteor feature support** for lockup accounts (D7), Ledger accounts, staking and liquid-staking views, and linkdrop claims (D9).
 - **Indexers** (FastNear, Nearblocks) for account discovery during import.
@@ -380,9 +390,44 @@ Tasks:
 
 ### 6.6 Account security actions
 - [ ] Retire **Enable 2FA**: `/enable-two-factor` and the Profile 2FA enable entry. Assert in `deployMultisig`. Enabling 2FA now would block the user's own migration.
-- [ ] **Promote "Disable 2FA"** in [TwoFactorAuth.js](packages/frontend/src/components/profile/two_factor/TwoFactorAuth.js) from Profile into the migration flow (§6.8). Keep the existing 15-minute retry messaging.
-- [ ] **Make the bricked-2FA recovery reachable.** [AccountLock.jsx](packages/frontend/src/components/wallet-migration/AccountLock.jsx) (seed phrase → `TwoFactor.disableMultisigWithFAK`) is dead code today. Mount it from the 2FA guidance step when `isAccountBricked()` is true.
+- [ ] **Replace "Disable 2FA" with the helper-free flow** in §6.6.1, and put it in the migration flow (§6.8), not only in [TwoFactorAuth.js](packages/frontend/src/components/profile/two_factor/TwoFactorAuth.js) under Profile.
+- [ ] **Make the bricked-2FA recovery reachable and helper-free.** [AccountLock.jsx](packages/frontend/src/components/wallet-migration/AccountLock.jsx) (seed phrase → `TwoFactor.disableMultisigWithFAK`) is dead code today. Mount it from the 2FA guidance step when `isAccountBricked()` is true.
+  - Bricked contract state makes `add_request_and_confirm` fail, so these accounts still need a full-access seed phrase.
+  - Replace `disableWithFAK`'s helper lookup (`/2fa/getAccessKey`) with the on-chain lookup described in §6.6.1.
 - [ ] Seed-phrase recovery, Ledger enable/disable and key revocation: unchanged in Phase 2 (D12, D8).
+
+#### 6.6.1 Turning off 2FA without NEAR's 2FA service
+
+**How the [2fa-recovery](https://github.com/Meteor-Wallet/2fa-recovery) app works:**
+- The legacy multisig contract needs 2 confirmations, counted by **signing public key**. Normally the second one comes from NEAR's helper after an SMS or email code.
+- The contract's `confirm` only checks that the call comes from the account itself. When `confirm` is wrapped in a NEP-366 meta-transaction and submitted by a relayer:
+  - the call comes from the user's account, so that check passes;
+  - the signing key is the relayer's, so it counts as a second, different key.
+- So the user's own key plus any relayer satisfy 2-of-2 with no code. The app uses this to add a new full-access key, and Meteor's backend relays the `confirm`.
+
+**Who it covers:**
+- It supports code hash `55E7imniT2uuYrECn17qJAk9fLcwQW4ftNSwmCJL5Di` with 2 confirmations. That is **exactly the contract MNW deploys** ([src/wasm/multisig.wasm](packages/frontend/src/wasm/multisig.wasm), unchanged since 2021), so every account that turned on 2FA through MNW qualifies.
+- The four older hashes in `MULTISIG_CONTRACT_HASHES` are not covered.
+
+**Security consequence:** on these accounts, any one of the 4-method 2FA keys can take full control of the account. This is true with any relayer, not only Meteor's. Treat exported 2FA keys and old email/SMS recovery phrases as full-control secrets. The old keys must be removed once the account is in the new wallet.
+
+Tasks:
+- [ ] **"Turn off 2FA" step for `two_factor_unsupported` accounts on the supported contract.** It uses the local key MNW already holds and never shows it to the user.
+  1. **Preflight.** Same checks as the app's [preflight.ts](https://github.com/Meteor-Wallet/2fa-recovery/blob/main/apps/web/src/preflight.ts): code hash, `get_num_confirmations == 2`, local key has the 4 multisig methods and allowance left, and enough balance for one ~100 Tgas call plus request storage.
+  2. **Build the request.** It is the same request MNW's `disable()` builds today: state cleanup if needed, delete the confirm-only key, convert the 4-method keys back to full access, deploy `main.wasm`. The one change: find the confirm-only key on-chain (the account's function-call key limited to `['confirm']`) instead of asking the helper's `/2fa/getAccessKey`.
+  3. **Submit and confirm.**
+     - Submit the request with `add_request_and_confirm`.
+     - Sign a `confirm` meta-transaction, with gas sized for the cleanup; test 300 Tgas.
+     - Post it to the Meteor relay.
+     - Poll until the account's code hash is `main.wasm` (`E8jZ1giWcVrps8PcV75ATauu6gFRkcwjNtKp7NKmipZG`) and the local key has full access.
+  4. **Result.** It is now a normal account and MNW's own key has full access again. It shows as `available` and goes through the normal Meteor transfer. There is no code to enter, no new phrase to save, and no NEAR helper involved.
+  - Copy the app's protection against ambiguous submissions: never resubmit `add_request_and_confirm` blindly; reconcile from `list_request_ids` / `get_request`.
+- [ ] **Fallback if the combined request fails on testnet** (for example, not enough gas for state cleanup under one relayed `confirm`):
+  - Do what the app does: a single-AddKey request for a new key that MNW generates and stores in its keystore.
+  - Change eligibility so an account whose local key has full access can be transferred even with the contract still deployed. Check first that Meteor handles accounts that still have the multisig contract.
+- [ ] **Unsupported contract versions** (older hash, or a threshold other than 2): offer manual export and the support macro. Don't show a button that will fail.
+- [ ] **Link the standalone app** from the sunset page, FAQ and support macros. It is the path for anyone who no longer has MNW but holds a 2FA key or an old email/SMS recovery phrase, including after Phase 4. Host it on a recognisable Meteor or MNW domain, not a bare `github.io` URL.
+- [ ] **Blocked until the relay hardening in §4 ships.**
 
 ### 6.7 Migration prompts throughout the wallet
 
@@ -407,7 +452,7 @@ Today, accounts that aren't `available` get a reason and nothing else. Give each
 
 | `availability` | What we tell the user | Action |
 | --- | --- | --- |
-| `two_factor_unsupported` | "This account has 2FA turned on. Turn off 2FA first; it takes about 15 minutes and a code sent to your email or phone." | **"Turn off 2FA"** → guided disable, then return to selection. If bricked → AccountLock seed-phrase path. |
+| `two_factor_unsupported` | "This account has 2FA turned on. MyNearWallet can turn it off for you; it takes about a minute and no code is needed." | **"Turn off 2FA"** → helper-free flow (§6.6.1), then return to selection. Bricked → AccountLock seed-phrase path. Unsupported contract → manual export and support. |
 | `ledger_unsupported` | "This account is secured by your Ledger device. You don't need to move a key: connect the same Ledger in Meteor Wallet (or any Ledger-compatible NEAR wallet)." | "How to use my Ledger in Meteor" guide link. Mark it as done once the user confirms. |
 | `not_funded` | "This address has never received funds, so it doesn't exist on NEAR yet. Its key still controls it if funds arrive later." | **"Export key"** (manual export allowed; §6.8.1) |
 | `no_local_key` | "MyNearWallet doesn't hold a key for this account in this browser (for example, it was added with a Ledger or on another device). Use the original recovery phrase or device in your new wallet." | Link to the "other wallets" guide |
@@ -416,7 +461,7 @@ Today, accounts that aren't `available` get a reason and nothing else. Give each
 | `verification_failed` | Existing copy (temporary network issue) | **"Retry"** button, which re-probes that one account |
 
 #### 6.8.1 Manual export for every local key
-- [ ] [AccountExportManual.jsx](packages/frontend/src/components/account-export/AccountExportManual.jsx) and `loadExportAccountSecrets` accept any keystore account with a local key, not just `available` ones. Show warnings specific to each reason; for 2FA: "This key alone can't move funds while 2FA is on."
+- [ ] [AccountExportManual.jsx](packages/frontend/src/components/account-export/AccountExportManual.jsx) and `loadExportAccountSecrets` accept any keystore account with a local key, not just `available` ones. Show warnings specific to each reason. For 2FA: "This key can take full control of this account. Keep it as safe as a recovery phrase." (see §6.6.1)
 - [ ] Add a **"Export keys" secondary entry** on the selection screen so users can reach manual export without picking the Meteor path first.
 - [ ] **Label keys clearly:** "Private key (starts with `ed25519:`). In your new wallet, choose *Import private key*." Add: "If you saved a 12-word recovery phrase when you created this account, that phrase still works too."
 - [ ] Write the `mnw:sunset:exported` marker (§5.4) when a key is revealed or copied.
@@ -542,7 +587,7 @@ The broadest app-level point is the **lockup decorator's** `signAndSendTransacti
 
 - [ ] Add a pure function `assertSunsetAllowsTransaction({ accountId, receiverId, actions, phase })`. In Phase 3 it allows only:
   1. `DeleteKey` on the user's own account (app-key revocation).
-  2. The **2FA-disable shapes**: `delete_request` calls and the multisig request containing `DeployContract` (main/state-cleanup wasm) + `clean` + `DeleteKey` + `AddKey(FAK)`. Match exactly against what `TwoFactor.disableMultisig` builds.
+  2. The **2FA-disable shapes**: `delete_request` calls, and `add_request_and_confirm` carrying the disable request (`DeployContract` of main or state-cleanup wasm + `clean` + `DeleteKey` + `AddKey(FAK)`). Match exactly against what §6.6.1 builds. The relayed `confirm` is a meta-transaction signed outside the decorator.
   3. The lockup transfer to the owner, **if** D7 keeps it.
 - [ ] Call it at the top of the decorator's `signAndSendTransaction` and in `transactionExecutor.ts`.
 - [ ] **Leave the Meteor migration signer alone.** It uses its own one-key `InMemorySigner` and raw `send_tx`, so it is naturally out of scope. Add a test asserting it never goes through the guard.
@@ -554,7 +599,7 @@ Skip this if time is short. Layers 1–3 are the required protection; this layer
 ### 7.9 Phase 3 release checklist
 - [ ] Every Phase 3 row in §3 is covered by layers 1–3, plus layer 4 if built.
 - [ ] D7 and D9 are settled using Meteor's confirmed capabilities.
-- [ ] The NEAR helper commitment for 2FA disable is confirmed (§4, external dependencies).
+- [ ] The helper-free 2FA disable (§6.6.1) is validated on testnet against a real MNW-created 2FA account, and the Meteor relay hardening (§4) is live.
 - [ ] The 14-day in-app notice has run (§6.9).
 - [ ] The near-connect manifest removal PR is open or merged, and the dApp announcement is sent.
 - [ ] The QA matrix (§8.3) has passed in Phase 3 on testnet and mainnet staging, **in particular every "must still work" row**.
@@ -651,7 +696,8 @@ Make specs phase-aware (read `SUNSET_PHASE` from the test env) rather than delet
 | Risk | Likelihood / impact | Mitigation |
 | --- | --- | --- |
 | A user can't migrate because their account type is unsupported (Ledger, 2FA, lockup) | Med / High | Guidance per reason (§6.8), manual export for every local key, reachable AccountLock path, the D7 lockup decision. Track `sunset_ineligible_guidance_clicked`. |
-| NEAR helper retired, so 2FA disable is impossible | Low / High | Get written confirmation (§4). Fallback: the seed-phrase `disableMultisigWithFAK` path. Communicate early to 2FA users. |
+| NEAR's 2FA service is retired or unreliable | High / High | Helper-free relayed disable (§6.6.1). The remaining exposure is older contract versions and bricked accounts without a full-access phrase. Communicate early to 2FA users. |
+| Meteor's 2FA relay is abused (deposit drain, gas griefing) | High until fixed / Med | The relay hardening in §4 must ship before §6.6.1 or the standalone app is promoted. |
 | Meteor bridge outage during the Phase 3 window | Low / Med | Manual export is always available. The Feature Retired page links to both. |
 | dApps show broken states after Phase 2 | Med / Med | The terminator always answers. Advance developer announcement; manifest and wallet-selector deprecation; target dApps found in analytics. |
 | An entry point is missed and a "retired" action still runs | Med / Low | Action-layer asserts, a Sentry alert, and the optional transaction guard. |
@@ -675,7 +721,7 @@ Make specs phase-aware (read `SUNSET_PHASE` from the test env) rather than delet
 | 3 | dApp terminator: shared failure helpers, `/login` gating, CLI copy, double-encoding fix | 2 | 2 |
 | 4 | Account creation: routes, shared-route logic, CTAs, linkdrop, funded-implicit completion, import-nonexistent block, thunk asserts | 2 | 2 |
 | 5 | Swap, Buy, Explore nav slot → Migrate | 2 | 2 |
-| 6 | Staking: deposit retirement, withdraw auto-claim fix, banner; 2FA enable retirement; AccountLock reachable | 2 | 2 |
+| 6 | Staking: deposit retirement, withdraw auto-claim fix, banner; 2FA enable retirement; helper-free 2FA disable (§6.6.1); AccountLock reachable without the helper | 2 | 2, plus the Meteor relay hardening |
 | 7 | Migration status service, global bar, contextual nudges, switcher chips, eligibility guidance, manual export for all local keys, balance checklist, Phase 3 advance notice | 2 | 1, 2 |
 | 8 | e2e phase-awareness, new specs, QA pass → **Phase 2 release** | 2 | 3–7 |
 | 9 | Phase 3 capabilities: send, NFT, receive, linkdrop, explore, profile actions, Ledger metadata no-op | 3 | 8 |
