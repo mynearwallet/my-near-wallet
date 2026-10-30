@@ -1757,7 +1757,6 @@
         },
         "banner": {
             "cta": "Migra gli account",
-            "exportKeys": "Oppure esporta le tue chiavi private",
             "phase2": {
                 "description": "Invii, staking e approvazioni delle app si fermano il {{date}}. Trasferisci ora i tuoi account su Meteor Wallet per mantenere l'accesso completo. I tuoi fondi sono al sicuro.",
                 "title": "MyNearWallet entra in modalità limitata il {{date}}"
@@ -1782,6 +1781,7 @@
             "backToWallet": "Torna al wallet",
             "exportKeys": "Esporta le mie chiavi",
             "getMeteor": "Scarica Meteor Wallet",
+            "learnMore": "Scopri di più",
             "migrate": "Migra i miei account",
             "resume": "Riprendi il trasferimento",
             "retry": "Riprova",

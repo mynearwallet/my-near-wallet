@@ -1649,7 +1649,6 @@
         },
         "banner": {
             "cta": "Hesapları taşı",
-            "exportKeys": "Ya da özel anahtarlarınızı dışa aktarın",
             "phase2": {
                 "description": "Gönderim, stake ve uygulama onayları {{date}} tarihinde duracak. Tam erişimi korumak için hesaplarınızı şimdi Meteor Wallet'a taşıyın. Fonlarınız güvende.",
                 "title": "MyNearWallet {{date}} tarihinde sınırlı moda geçiyor"
@@ -1674,6 +1673,7 @@
             "backToWallet": "Cüzdana dön",
             "exportKeys": "Anahtarlarımı dışa aktar",
             "getMeteor": "Meteor Wallet'ı edinin",
+            "learnMore": "Daha fazla bilgi",
             "migrate": "Hesaplarımı taşı",
             "resume": "Aktarıma devam et",
             "retry": "Tekrar dene",

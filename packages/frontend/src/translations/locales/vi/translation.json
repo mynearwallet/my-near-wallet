@@ -1625,7 +1625,6 @@
         },
         "banner": {
             "cta": "Chuyển tài khoản",
-            "exportKeys": "Hoặc xuất khóa riêng tư của bạn",
             "phase2": {
                 "description": "Gửi tiền, staking và phê duyệt ứng dụng sẽ dừng vào {{date}}. Hãy chuyển tài khoản sang Meteor Wallet ngay để giữ toàn quyền truy cập. Tiền của bạn vẫn an toàn.",
                 "title": "MyNearWallet chuyển sang chế độ giới hạn vào {{date}}"
@@ -1650,6 +1649,7 @@
             "backToWallet": "Quay lại ví",
             "exportKeys": "Xuất khóa của tôi",
             "getMeteor": "Tải Meteor Wallet",
+            "learnMore": "Tìm hiểu thêm",
             "migrate": "Chuyển tài khoản của tôi",
             "resume": "Tiếp tục chuyển tài khoản",
             "retry": "Thử lại",

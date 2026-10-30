@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { SUNSET_PHASE } from '../../config/sunset';
+import { SUNSET_LEARN_MORE_URL, SUNSET_PHASE } from '../../config/sunset';
 import { trackMigrationEntryClicked } from '../account-export/accountExportAnalytics';
 import useMigrationEntry from '../account-export/useMigrationEntry';
+import { trackSunsetNoticeCtaClicked } from '../sunset/sunsetAnalytics';
 import { usePhase3Date } from '../sunset/sunsetDates';
 
 const AccountExportBannerContainer = styled.section`
@@ -50,18 +51,39 @@ const BannerDescription = styled.div`
     margin: 6px 0 0;
 `;
 
-const BannerSecondaryLink = styled(Link)`
-    color: #000;
-    display: inline-block;
+const BannerActions = styled.div`
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 32px;
+    min-width: 250px;
+
+    @media (max-width: 600px) {
+        margin: 20px 0 0;
+        min-width: 0;
+        width: 100%;
+    }
+`;
+
+const BannerSecondaryAction = styled.a`
+    align-items: center;
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: 50px;
+    color: #24272a;
+    display: flex;
     font-size: 14px;
     font-weight: 600;
+    height: 40px;
+    justify-content: center;
     line-height: 21px;
-    margin-top: 8px;
-    text-decoration: underline;
+    text-align: center;
+    text-decoration: none;
 
     &:hover {
-        color: #000;
-        opacity: 0.75;
+        background: rgba(255, 255, 255, 0.7);
+        color: #24272a;
+        text-decoration: none;
     }
 `;
 
@@ -77,19 +99,12 @@ const BannerLink = styled(Link)`
     height: 48px;
     justify-content: center;
     line-height: 24px;
-    margin-left: 32px;
-    min-width: 250px;
     text-align: center;
 
     &:hover {
         background: #f5f8ff;
         border-color: #f5f8ff;
         color: #0063b4;
-    }
-
-    @media (max-width: 600px) {
-        margin: 20px 0 0;
-        width: 100%;
     }
 `;
 
@@ -118,37 +133,41 @@ export default function AccountExportBanner() {
                             ? t(`${copy}.description`, { date: phase3Date })
                             : t('accountExport.banner.description')}
                     </BannerDescription>
+                </BannerCopy>
+                <BannerActions>
+                    <BannerLink
+                        to={to}
+                        onClick={() =>
+                            trackMigrationEntryClicked({
+                                entry: isResume ? 'resume' : 'start',
+                                resumeStage,
+                            })
+                        }
+                    >
+                        {t(
+                            isResume
+                                ? 'accountExport.banner.resume'
+                                : copy
+                                ? 'sunset.banner.cta'
+                                : 'accountExport.banner.export'
+                        )}
+                    </BannerLink>
                     {copy && (
-                        <BannerSecondaryLink
-                            to={{
-                                pathname: '/export-accounts/manual',
-                                state: { exportAll: true },
-                            }}
+                        <BannerSecondaryAction
+                            href={SUNSET_LEARN_MORE_URL}
+                            target='_blank'
+                            rel='noopener noreferrer'
                             onClick={() =>
-                                trackMigrationEntryClicked({ entry: 'export_keys' })
+                                trackSunsetNoticeCtaClicked({
+                                    variant: 'home_banner',
+                                    cta: 'learn_more',
+                                })
                             }
                         >
-                            {t('sunset.banner.exportKeys')}
-                        </BannerSecondaryLink>
+                            {t('sunset.common.learnMore')}
+                        </BannerSecondaryAction>
                     )}
-                </BannerCopy>
-                <BannerLink
-                    to={to}
-                    onClick={() =>
-                        trackMigrationEntryClicked({
-                            entry: isResume ? 'resume' : 'start',
-                            resumeStage,
-                        })
-                    }
-                >
-                    {t(
-                        isResume
-                            ? 'accountExport.banner.resume'
-                            : copy
-                            ? 'sunset.banner.cta'
-                            : 'accountExport.banner.export'
-                    )}
-                </BannerLink>
+                </BannerActions>
             </AccountExportBannerContent>
         </AccountExportBannerContainer>
     );

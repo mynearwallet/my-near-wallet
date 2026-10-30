@@ -8,11 +8,13 @@ import {
     isSunsetCapabilityEnabled,
     METEOR_WALLET_SITE_URL,
     NEAR_WALLETS_URL,
+    SUNSET_LEARN_MORE_URL,
 } from '../../config/sunset';
 import iPhoneMockup from '../../images/iphone-mockup.png';
 import AccountExportNotice from '../account-export/AccountExportNotice';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import { trackSunsetNoticeCtaClicked } from '../sunset/sunsetAnalytics';
 
 const StyledContainer = styled.div`
     &&& {
@@ -58,6 +60,21 @@ const StyledContainer = styled.div`
                 opacity: 1;
                 z-index: auto;
                 width: 32px;
+            }
+
+            .learn-more-line {
+                margin-top: 10px;
+            }
+
+            .learn-more {
+                color: inherit;
+                font-weight: 600;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+
+                :hover {
+                    text-decoration: none;
+                }
             }
         }
 
@@ -207,6 +224,22 @@ export function GuestLanding() {
                             <AccountExportNotice variant='info'>
                                 <p>{t('sunset.landing.noNewAccounts')}</p>
                                 <p>{t('sunset.landing.existingAccount')}</p>
+                                <p className='learn-more-line'>
+                                    <a
+                                        className='learn-more'
+                                        href={SUNSET_LEARN_MORE_URL}
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        onClick={() =>
+                                            trackSunsetNoticeCtaClicked({
+                                                variant: 'guest_landing',
+                                                cta: 'learn_more',
+                                            })
+                                        }
+                                    >
+                                        {t('sunset.common.learnMore')}
+                                    </a>
+                                </p>
                             </AccountExportNotice>
                         </div>
                         <div className='buttons sunset-buttons'>

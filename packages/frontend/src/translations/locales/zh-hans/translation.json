@@ -1909,7 +1909,6 @@
         },
         "banner": {
             "cta": "迁移账户",
-            "exportKeys": "或导出您的私钥",
             "phase2": {
                 "description": "转账、质押和应用批准将于 {{date}} 停止。请立即将账户迁移到 Meteor Wallet，以保留完整访问权限。您的资金是安全的。",
                 "title": "MyNearWallet 将于 {{date}} 进入受限模式"
@@ -1934,6 +1933,7 @@
             "backToWallet": "返回钱包",
             "exportKeys": "导出我的密钥",
             "getMeteor": "获取 Meteor Wallet",
+            "learnMore": "了解更多",
             "migrate": "迁移我的账户",
             "resume": "继续账户转移",
             "retry": "重试",
