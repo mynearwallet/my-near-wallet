@@ -1,5 +1,6 @@
 import * as nearAPI from 'near-api-js';
 
+import { guardSunsetCapability } from '../components/sunset/sunsetGuard';
 import CONFIG from '../config';
 import { wallet } from '../utils/wallet';
 
@@ -139,6 +140,7 @@ export default class NonFungibleTokens {
     };
 
     static transfer = async ({ accountId, contractId, tokenId, receiverId }) => {
+        guardSunsetCapability('nftTransfer');
         const account = await wallet.getAccount(accountId);
         return account.signAndSendTransaction({
             receiverId: contractId,

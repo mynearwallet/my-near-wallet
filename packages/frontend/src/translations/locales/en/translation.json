@@ -2081,6 +2081,10 @@
         },
         "bar": {
             "cta": "Migrate now",
+            "import": {
+                "description": "Your recovery phrase, private key or Ledger device works directly in Meteor Wallet.",
+                "title": "You don't need MyNearWallet to get into your account."
+            },
             "phase2": {
                 "description": "Sending, staking and app approvals stop then. Move your accounts now.",
                 "title": "MyNearWallet enters limited mode on {{date}}."
@@ -2158,10 +2162,15 @@
             "dappApproval": "App approvals in MyNearWallet end on {{date}}. Move your account to a supported wallet to keep using apps.",
             "dappApprovalWithHost": "App approvals in MyNearWallet end on {{date}}. Move your account to keep using {{host}}.",
             "migrateLink": "Migrate now",
-            "staking": "New staking has ended. You can still unstake and withdraw here until {{date}}. Your staked NEAR stays in your account and can be managed from your new wallet. Unstaking takes about 2–3 days."
+            "staking": "New staking has ended. You can still unstake and withdraw here until {{date}}. Your staked NEAR stays in your account and can be managed from your new wallet. Unstaking takes about 2–3 days.",
+            "stakingEnded": "Staking actions have ended in MyNearWallet. Your stake is safe and is still shown here. Manage it from your new wallet after you move your account."
         },
         "landing": {
             "existingAccount": "Already have an account? Your recovery phrase, private key or Ledger device works directly in Meteor Wallet.",
+            "limitedMode": {
+                "description": "Sending, staking and app approvals have ended. Your accounts and funds remain safe on NEAR.",
+                "title": "MyNearWallet is in limited mode"
+            },
             "noNewAccounts": "MyNearWallet no longer creates new accounts. New to NEAR? Get started with Meteor Wallet.",
             "otherWallets": "Other NEAR wallets"
         },
@@ -2203,6 +2212,10 @@
             }
         },
         "retired": {
+            "addRecoveryMethod": {
+                "hint": "Your existing recovery phrase and keys keep working. After you move your account, you can manage its keys in your new wallet.",
+                "title": "Adding keys and recovery methods is no longer available"
+            },
             "body": "MyNearWallet is being retired. This feature has been switched off so you can focus on moving your accounts to a supported wallet. Your funds are safe in your account on NEAR.",
             "buy": {
                 "hint": "Once your account has moved, you can buy NEAR in Meteor Wallet or on an exchange.",
@@ -2217,9 +2230,34 @@
                 "hint": "Turning on 2FA now would make moving your account harder. Your account's current security is unchanged.",
                 "title": "Two-factor authentication can no longer be turned on"
             },
+            "explore": {
+                "hint": "After you move your account, you can discover NEAR apps from Meteor Wallet.",
+                "title": "The Explore page is no longer available"
+            },
+            "linkdropClaim": {
+                "hint": "Claim this link with Meteor Wallet or another NEAR wallet. Until it is claimed, the funds stay with the link.",
+                "title": "NEAR links can no longer be claimed here"
+            },
+            "manageLedger": {
+                "hint": "If your account is already secured by a Ledger, connect the same Ledger in Meteor Wallet or any Ledger-compatible NEAR wallet. No key needs to move.",
+                "title": "Ledger setup is no longer available"
+            },
+            "receive": {
+                "hint": "Receiving through MyNearWallet has ended. Your account still exists on NEAR, so anything sent to it arrives on-chain and is available in whichever wallet you move to.",
+                "title": "The Receive page is no longer available"
+            },
+            "send": {
+                "hint": "After you move your account, you can send NEAR and tokens from Meteor Wallet. Until then, your funds are safe in your account.",
+                "title": "Sending is no longer available"
+            },
             "stakeDeposit": {
                 "hint": "Your existing stake is safe. You can still unstake and withdraw in MyNearWallet until {{date}}, or manage your stake from your new wallet at any time.",
+                "phase3Hint": "Your existing stake is safe in your account. After you move your account, you can manage it from your new wallet.",
                 "title": "New staking is no longer available"
+            },
+            "stakeManage": {
+                "hint": "Your stake is safe in your account, and you can still see it in MyNearWallet. After you move your account, you can unstake, withdraw and claim rewards from your new wallet.",
+                "title": "Staking actions are no longer available"
             },
             "swap": {
                 "hint": "After you move your account, you can swap tokens in Meteor Wallet.",

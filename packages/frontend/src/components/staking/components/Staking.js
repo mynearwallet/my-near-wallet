@@ -11,7 +11,7 @@ import ValidatorBox from './ValidatorBox';
 import selectCollectedAvailableForClaimData from '../../../redux/crossStateSelectors/selectCollectedAvailableForClaimData';
 import selectNEARAsTokenWithMetadata from '../../../redux/selectors/crossStateSelectors/selectNEARAsTokenWithMetadata';
 import { selectFarmValidatorDataIsLoading } from '../../../redux/slices/staking/farmValidators';
-import { isSunsetCapabilityEnabled } from '../../../config/sunset';
+import { isSunsetCapabilityEnabled, SUNSET_PHASE } from '../../../config/sunset';
 import FormButton from '../../common/FormButton';
 import SkeletonLoading from '../../common/SkeletonLoading';
 import Tooltip from '../../common/Tooltip';
@@ -38,6 +38,8 @@ export default function Staking({
     const NEARAsTokenWithMetadata = useSelector(selectNEARAsTokenWithMetadata);
     const collectedFarmData = useSelector(selectCollectedAvailableForClaimData);
     const farmValidatorDataIsLoading = useSelector(selectFarmValidatorDataIsLoading);
+    // Positions stay visible; only the actions that change them are retired.
+    const canManageStake = isSunsetCapabilityEnabled('stakeManage');
     return (
         <>
             <h1>
@@ -46,7 +48,13 @@ export default function Staking({
             <h2>
                 <Translate id='staking.staking.desc' />
             </h2>
-            <SunsetInlineNotice messageKey='sunset.inline.staking' />
+            <SunsetInlineNotice
+                messageKey={
+                    SUNSET_PHASE >= 3
+                        ? 'sunset.inline.stakingEnded'
+                        : 'sunset.inline.staking'
+                }
+            />
             {multipleAccounts && (
                 <div className='select-account-title'>
                     <Translate id='staking.staking.selectAccount' />
@@ -89,7 +97,7 @@ export default function Staking({
                         info='staking.balanceBox.staked.info'
                         token={{ ...NEARAsTokenWithMetadata, balance: totalStaked }}
                         button={
-                            new BN(totalStaked).isZero()
+                            !canManageStake || new BN(totalStaked).isZero()
                                 ? null
                                 : 'staking.balanceBox.staked.button'
                         }
@@ -122,7 +130,7 @@ export default function Staking({
                         info='staking.balanceBox.available.info'
                         token={{ ...NEARAsTokenWithMetadata, balance: totalAvailable }}
                         button={
-                            new BN(totalAvailable).isZero()
+                            !canManageStake || new BN(totalAvailable).isZero()
                                 ? null
                                 : 'staking.balanceBox.available.button'
                         }

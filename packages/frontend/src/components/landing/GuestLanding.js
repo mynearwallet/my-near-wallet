@@ -9,6 +9,7 @@ import {
     METEOR_WALLET_SITE_URL,
     NEAR_WALLETS_URL,
     SUNSET_LEARN_MORE_URL,
+    SUNSET_PHASE,
 } from '../../config/sunset';
 import iPhoneMockup from '../../images/iphone-mockup.png';
 import AccountExportNotice from '../account-export/AccountExportNotice';
@@ -186,16 +187,25 @@ const StyledContainer = styled.div`
 export function GuestLanding() {
     const { t } = useTranslation();
     const canCreateAccount = isSunsetCapabilityEnabled('createAccount');
+    const isLimitedMode = SUNSET_PHASE >= 3;
 
     return (
         <StyledContainer>
             <LandingBackground />
             <Container className='small-centered'>
                 <h1>
-                    <Translate id='landing.title' />
+                    {isLimitedMode ? (
+                        t('sunset.landing.limitedMode.title')
+                    ) : (
+                        <Translate id='landing.title' />
+                    )}
                 </h1>
                 <h3>
-                    <Translate id='landing.desc' />
+                    {isLimitedMode ? (
+                        t('sunset.landing.limitedMode.description')
+                    ) : (
+                        <Translate id='landing.desc' />
+                    )}
                 </h3>
                 {canCreateAccount ? (
                     <div className='buttons'>

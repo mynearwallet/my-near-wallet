@@ -19,6 +19,7 @@ import {
     actions as recoveryMethodsActions,
     selectRecoveryMethodsStatus,
 } from '../../../redux/slices/recoveryMethods';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import FormButton from '../../common/FormButton';
 import SkeletonLoading from '../../common/SkeletonLoading';
 import ConfirmDisable from '../ConfirmDisable';
@@ -83,8 +84,13 @@ const HardwareDevices = ({
         });
     };
 
+    // Once Ledger management is retired the section only reports the device's status.
+    const canManageLedger = isSunsetCapabilityEnabled('manageLedger');
+
     const getActionButton = () => {
-        if (ledgerIsConnected) {
+        if (!canManageLedger) {
+            return null;
+        } else if (ledgerIsConnected) {
             return (
                 <FormButton
                     disabled={!hasOtherMethods}
@@ -134,17 +140,17 @@ const HardwareDevices = ({
                             </Authorized>
                         )}
                     </Device>
-                    {!hasOtherMethods && ledgerIsConnected && (
+                    {canManageLedger && !hasOtherMethods && ledgerIsConnected && (
                         <i>
                             <Translate id='hardwareDevices.ledger.disclaimer' />
                         </i>
                     )}
-                    {hasLedgerButNotConnected && (
+                    {canManageLedger && hasLedgerButNotConnected && (
                         <div className='color-red'>
                             <Translate id='hardwareDevices.ledger.connect' />
                         </div>
                     )}
-                    {!hasLedger && (
+                    {canManageLedger && !hasLedger && (
                         <i>
                             <Translate id='hardwareDevices.desc' />
                         </i>

@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 
+import { guardSunsetCapability } from '../components/sunset/sunsetGuard';
 import CONFIG from '../config';
 import {
     parseTokenAmount,
@@ -156,6 +157,7 @@ export default class FungibleTokens {
     }
 
     async transfer({ accountId, contractName, amount, receiverId, memo }) {
+        guardSunsetCapability('send');
         // Ensure our awareness of 2FA being enabled is accurate before we submit any transaction(s)
         const account = await wallet.getAccount(accountId);
 

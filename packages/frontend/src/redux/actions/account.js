@@ -481,16 +481,25 @@ export const {
     GET_LEDGER_KEY: [(...args) => wallet.getLedgerKey(...args), () => ({})],
     GET_LEDGER_PUBLIC_KEY: [(...args) => wallet.getLedgerPublicKey(...args), () => ({})],
     SETUP_RECOVERY_MESSAGE: [
-        (...args) => wallet.setupRecoveryMessage(...args),
+        async (...args) => {
+            guardSunsetCapability('addRecoveryMethod');
+            return wallet.setupRecoveryMessage(...args);
+        },
         () => showAlert(),
     ],
     DELETE_RECOVERY_METHOD: [
-        (...args) => wallet.deleteRecoveryMethod(...args),
+        async (...args) => {
+            guardSunsetCapability('removeFullAccessKey');
+            return wallet.deleteRecoveryMethod(...args);
+        },
         () => showAlert(),
     ],
     CHECK_LINKDROP_INFO: [(...args) => wallet.checkLinkdropInfo(...args), () => ({})],
     CLAIM_LINKDROP_TO_ACCOUNT: [
-        (...args) => wallet.claimLinkdropToAccount(...args),
+        async (...args) => {
+            guardSunsetCapability('linkdropClaim');
+            return wallet.claimLinkdropToAccount(...args);
+        },
         () => showAlert({ onlyError: true }),
     ],
     CHECK_IS_NEW: [
@@ -523,16 +532,28 @@ export const {
         () => showAlert({ onlyError: true }),
     ],
     ADD_LEDGER_ACCESS_KEY: [
-        (...args) => wallet.addLedgerAccessKey(...args),
+        async (...args) => {
+            guardSunsetCapability('manageLedger');
+            return wallet.addLedgerAccessKey(...args);
+        },
         () => showAlert({ onlyError: true }),
     ],
     SEND_IDENTITY_VERIFICATION_METHOD_CODE: [
         (...args) => wallet.sendIdentityVerificationMethodCode(...args),
         () => showAlert({ localAlert: true }),
     ],
-    DISABLE_LEDGER: [(...args) => wallet.disableLedger(...args), () => ({})],
+    DISABLE_LEDGER: [
+        async (...args) => {
+            guardSunsetCapability('manageLedger');
+            return wallet.disableLedger(...args);
+        },
+        () => ({}),
+    ],
     REMOVE_NON_LEDGER_ACCESS_KEYS: [
-        (...args) => wallet.removeNonLedgerAccessKeys(...args),
+        async (...args) => {
+            guardSunsetCapability('manageLedger');
+            return wallet.removeNonLedgerAccessKeys(...args);
+        },
         () => ({}),
     ],
 });
@@ -705,6 +726,7 @@ export const { addAccessKey, addAccessKeySeedPhrase, addShardAccessKey } = creat
     ],
     ADD_ACCESS_KEY_SEED_PHRASE: [
         async (accountId, recoveryKeyPair) => {
+            guardSunsetCapability('addRecoveryMethod');
             const publicKey = recoveryKeyPair.publicKey.toString();
             const contractName = null;
             const fullAccess = true;
@@ -765,7 +787,10 @@ export const { recoverAccountSecretKey } = createActions({
 
 export const { sendMoney, transferAllFromLockup } = createActions({
     SEND_MONEY: [
-        (...args) => wallet.sendMoney(...args),
+        async (...args) => {
+            guardSunsetCapability('send');
+            return wallet.sendMoney(...args);
+        },
         () => showAlert({ onlyError: true }),
     ],
     TRANSFER_ALL_FROM_LOCKUP: [

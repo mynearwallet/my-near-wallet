@@ -1,6 +1,7 @@
 import { createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 
+import { guardSunsetCapability } from '../../../components/sunset/sunsetGuard';
 import { wallet } from '../../../utils/wallet';
 import { showCustomAlert } from '../../actions/status';
 import { selectAccountId } from '../account';
@@ -37,6 +38,7 @@ export const handleAuthorizationRequestRejected = createAction(
 export const handleAuthorizationRequestConfirmed = createAsyncThunk(
     `${SLICE_NAME}/handleAuthorizationRequestConfirmed`,
     async (message, thunkAPI) => {
+        guardSunsetCapability('dappSignMessage');
         const { dispatch, getState } = thunkAPI;
         try {
             const accountId = selectAccountId(getState());

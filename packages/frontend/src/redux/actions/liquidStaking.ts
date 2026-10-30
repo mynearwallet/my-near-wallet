@@ -45,6 +45,7 @@ export const liquidStaking = async ({ contractId, amountInYocto, accountId }) =>
 };
 
 export const liquidUnStake = async ({ contractId, amountInYocto, minExpectInYocto }) => {
+    guardSunsetCapability('stakeManage');
     const result = await dispatchTransactionExecutor({
         receiverId: contractId,
         actions: [
@@ -63,6 +64,7 @@ export const liquidUnStake = async ({ contractId, amountInYocto, minExpectInYoct
 };
 
 export const delayedUnstake = async ({ contractId, amountInYocto }) => {
+    guardSunsetCapability('stakeManage');
     const result = await dispatchTransactionExecutor({
         receiverId: contractId,
         actions: [
@@ -80,6 +82,7 @@ export const delayedUnstake = async ({ contractId, amountInYocto }) => {
 };
 
 export const liquidWithdrawAll = async ({ contractId }) => {
+    guardSunsetCapability('stakeManage');
     const result = await dispatchTransactionExecutor({
         receiverId: contractId,
         actions: [functionCall('withdraw_all', {}, new BN(METAPOOL_STAKING_GAS), '0')],

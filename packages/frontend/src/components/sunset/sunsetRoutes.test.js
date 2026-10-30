@@ -1,5 +1,6 @@
 import {
     hasOwnSunsetNotice,
+    isSunsetImportPath,
     isSunsetPromptFreePath,
     normalizePathname,
 } from './sunsetRoutes';
@@ -27,6 +28,26 @@ describe('sunset prompt placement', () => {
         'allows prompts on %s',
         (path) => {
             expect(isSunsetPromptFreePath(path)).toBe(false);
+        }
+    );
+
+    it.each([
+        '/recover-account',
+        '/recover-seed-phrase/alice.near',
+        '/recover-with-link/alice.near/phrase',
+        '/recover-private-key',
+        '/auto-import-seed-phrase',
+        '/auto-import-secret-key',
+        '/sign-in-ledger',
+        '/batch-import',
+    ])('treats %s as an import screen', (path) => {
+        expect(isSunsetImportPath(path)).toBe(true);
+    });
+
+    it.each(['/', '/profile', '/export-accounts/manual', '/recover', '/sign'])(
+        'does not treat %s as an import screen',
+        (path) => {
+            expect(isSunsetImportPath(path)).toBe(false);
         }
     );
 

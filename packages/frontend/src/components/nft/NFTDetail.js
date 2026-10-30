@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { NFTMedia } from './NFTMedia';
 import NFTTransferModal from './NFTTransferModal';
 import CONFIG from '../../config';
+import { isSunsetCapabilityEnabled } from '../../config/sunset';
 import UserIconGrey from '../../images/UserIconGrey';
 import BackArrowButton from '../common/BackArrowButton';
 import FormButton from '../common/FormButton';
@@ -261,18 +262,19 @@ export function NFTDetail({ nft, accountId, nearBalance, ownerId, history }) {
                         </div>
                     </div>
 
-                    {ownerId === accountId && (
-                        <FormButton
-                            className='transfer-btn'
-                            color='gray-gray'
-                            data-test-id='nft-transfer-button'
-                            disabled={!hasSufficientBalance}
-                            onClick={() => setTransferNftDetail(nft)}
-                        >
-                            <SendIcon />
-                            <Translate id='NFTDetail.transfer' />
-                        </FormButton>
-                    )}
+                    {ownerId === accountId &&
+                        isSunsetCapabilityEnabled('nftTransfer') && (
+                            <FormButton
+                                className='transfer-btn'
+                                color='gray-gray'
+                                data-test-id='nft-transfer-button'
+                                disabled={!hasSufficientBalance}
+                                onClick={() => setTransferNftDetail(nft)}
+                            >
+                                <SendIcon />
+                                <Translate id='NFTDetail.transfer' />
+                            </FormButton>
+                        )}
                     {transferNftDetail && (
                         <NFTTransferModal
                             onClose={() => setTransferNftDetail()}

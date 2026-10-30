@@ -1920,6 +1920,10 @@
         },
         "bar": {
             "cta": "立即遷移",
+            "import": {
+                "description": "您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用。",
+                "title": "您無需 MyNearWallet 即可存取您的帳戶。"
+            },
             "phase2": {
                 "description": "屆時轉帳、質押和應用程式核准將停止。請立即遷移您的帳戶。",
                 "title": "MyNearWallet 將於 {{date}} 進入受限模式。"
@@ -1997,10 +2001,15 @@
             "dappApproval": "MyNearWallet 中的應用程式核准將於 {{date}} 結束。請將帳戶遷移到受支援的錢包以繼續使用應用程式。",
             "dappApprovalWithHost": "MyNearWallet 中的應用程式核准將於 {{date}} 結束。請遷移帳戶以繼續使用 {{host}}。",
             "migrateLink": "立即遷移",
-            "staking": "新的質押已結束。在 {{date}} 之前，您仍可在此解除質押並提領。您質押的 NEAR 仍在您的帳戶中，可在新錢包中管理。解除質押大約需要 2–3 天。"
+            "staking": "新的質押已結束。在 {{date}} 之前，您仍可在此解除質押並提領。您質押的 NEAR 仍在您的帳戶中，可在新錢包中管理。解除質押大約需要 2–3 天。",
+            "stakingEnded": "MyNearWallet 中的質押操作已結束。您的質押是安全的，並且仍會顯示在此處。遷移帳戶後，請在新錢包中管理它。"
         },
         "landing": {
             "existingAccount": "已有帳戶？您的助記詞、私鑰或 Ledger 裝置可直接在 Meteor Wallet 中使用。",
+            "limitedMode": {
+                "description": "轉帳、質押和應用程式核准已結束。您的帳戶和資金在 NEAR 上依然安全。",
+                "title": "MyNearWallet 處於受限模式"
+            },
             "noNewAccounts": "MyNearWallet 不再建立新帳戶。初次使用 NEAR？請從 Meteor Wallet 開始。",
             "otherWallets": "其他 NEAR 錢包"
         },
@@ -2042,6 +2051,10 @@
             }
         },
         "retired": {
+            "addRecoveryMethod": {
+                "hint": "您現有的助記詞和金鑰仍然有效。遷移帳戶後，您可以在新錢包中管理其金鑰。",
+                "title": "已無法新增金鑰和恢復方式"
+            },
             "body": "MyNearWallet 即將停止服務。此功能已關閉，讓您專注於將帳戶遷移到受支援的錢包。您的資金在 NEAR 上的帳戶中是安全的。",
             "buy": {
                 "hint": "帳戶遷移後，您可以在 Meteor Wallet 或交易所購買 NEAR。",
@@ -2056,9 +2069,34 @@
                 "hint": "現在開啟 2FA 會讓帳戶遷移更困難。您帳戶目前的安全設定不會改變。",
                 "title": "已無法開啟雙重驗證"
             },
+            "explore": {
+                "hint": "遷移帳戶後，您可以在 Meteor Wallet 中探索 NEAR 應用程式。",
+                "title": "Explore 頁面已無法使用"
+            },
+            "linkdropClaim": {
+                "hint": "請使用 Meteor Wallet 或其他 NEAR 錢包領取此連結。在領取之前，資金會一直保留在該連結中。",
+                "title": "已無法在此領取 NEAR 連結"
+            },
+            "manageLedger": {
+                "hint": "如果您的帳戶已由 Ledger 保護，請在 Meteor Wallet 或任何支援 Ledger 的 NEAR 錢包中連接同一台 Ledger。無需轉移任何金鑰。",
+                "title": "Ledger 設定已無法使用"
+            },
+            "receive": {
+                "hint": "透過 MyNearWallet 接收已結束。您的帳戶仍然存在於 NEAR 上，因此傳送到該帳戶的任何資產都會在鏈上到帳，並可在您遷移到的錢包中使用。",
+                "title": "接收頁面已無法使用"
+            },
+            "send": {
+                "hint": "遷移帳戶後，您可以在 Meteor Wallet 中傳送 NEAR 和代幣。在此之前，您的資金安全地保存在您的帳戶中。",
+                "title": "轉帳功能已無法使用"
+            },
             "stakeDeposit": {
                 "hint": "您現有的質押是安全的。在 {{date}} 之前，您仍可在 MyNearWallet 中解除質押並提領，也可以隨時在新錢包中管理質押。",
+                "phase3Hint": "您現有的質押安全地保存在您的帳戶中。遷移帳戶後，您可以在新錢包中管理它。",
                 "title": "新的質押已無法使用"
+            },
+            "stakeManage": {
+                "hint": "您的質押安全地保存在帳戶中，您仍可在 MyNearWallet 中查看。遷移帳戶後，您可以在新錢包中解除質押、提領和領取獎勵。",
+                "title": "質押操作已無法使用"
             },
             "swap": {
                 "hint": "遷移帳戶後，您可以在 Meteor Wallet 中兌換代幣。",

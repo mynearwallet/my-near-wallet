@@ -6,7 +6,7 @@
 | **Scope** | Phase 2 (Migration-Focused Experience) now. Phase 3 (Limited Functionality Mode) is prepared behind a build flag and deployed on 1 November. |
 | **Codebase** | `packages/frontend`, from `master` @ `4d6cad0a3`; working branch `paul/sunset-phase-3` |
 | **Prepared** | Thursday 29 October 2026. Revised for a manual, flag-based Phase 3 deployment. |
-| **Status** | **Current focus: Release A (Phase 2): complete, safe, deployable.** Decisions marked *before Release A* in [§4](#4-decisions) need confirming first. |
+| **Status** | Release A (Phase 2) is live. **Release B (Phase 3) is implemented behind the flag (30 Oct)**, pending the dress rehearsal ([§7.2](#72-readiness-checklist-saturday)) and the Phase 3 QA matrix ([§9.3](#93-qa-matrix-release-b-phase-3)). |
 
 ---
 
@@ -29,6 +29,26 @@ Deviations from this plan:
 - **Interim 2FA handling keeps MNW's existing "Disable 2FA"** and links to it from the guidance ("Turn off 2FA" switches to that account and opens Profile). Hiding it if NEAR's helper turns out to be down is **not** built yet; that needs the helper status first.
 - **Not built (the "can follow" items in §6.0):** account-switcher status chips, bar progress counts, the post-migration balance checklist, and automatic activation of a funded implicit account on the old creation routes. The creation retired page tells those users to import into Meteor Wallet instead.
 - **e2e specs are not updated yet** (Release C, §8.8).
+
+## Implementation status (30 Oct): Release B (Phase 3)
+
+**Release B is implemented and inert at `SUNSET_PHASE=2`.** Every change is gated on a capability that retires in Phase 3, so a Phase 2 build behaves as before.
+
+- **Checks:** Jest green apart from `rpc-provider.spec.ts`, which calls the public mainnet RPC and fails when it rate-limits (unrelated); `tsc` and ESLint clean on the changed files; a production Parcel build with `SUNSET_PHASE=3` succeeds.
+- **Visual check:** a local testnet build at phase 3 was checked in a headless browser: home, staking, retired routes, the dApp terminator, guest landing and import screens.
+- **Routes:** `/send-money`, `/receive-money`, `/explore`, `/linkdrop/*`, `/setup-ledger-success` and `/batch-ledger-export` are gated. `/set-recovery/*` and `/setup-seed-phrase/*` (`addRecoveryMethod`) and `/setup-ledger/*` (`manageLedger`) are retired for every account. `/sign`, `/sign-message` and `/verify-owner` go to the terminator. Staking retires `/staking/unstake`, `/staking/withdraw`, `/staking/:validator/unstake`, `/staking/:validator/claim` and `/liquid-staking/:id/unstake`.
+- **Entry points:** home loses its action row and side banner; the nav becomes Wallet · Migrate · Staking · Account · Support; the staking overview and validator pages keep balances but hide unstake, withdraw and claim; NFT transfer is hidden; Profile shows the recovery phrase and Ledger state without actions; Full Access Keys hides *Add key* and *Deauthorize*.
+- **Action guards:** `send` (FT/NEAR transfer, `sendMoney`), `nftTransfer`, `stakeManage` (`handleStakingAction` for unstake/withdraw, `claimFarmRewards`, liquid unstake/withdraw), `dappSign` (`handleSignTransactions`), `dappSignMessage` (sign-message and verify-owner thunks), `linkdropClaim`, `addRecoveryMethod` (seed-phrase key, recovery message), `removeFullAccessKey` (delete recovery method, deauthorize), `manageLedger` (add/disable Ledger, remove non-Ledger keys). `addWalletMetadataAccessKeyIfNeeded` is a no-op under `ledgerMetadataKey`. Revoking app keys, lockup transfer, Disable 2FA, export and migration are untouched.
+- **Copy:** new `sunset.*` strings in all 9 locales; Phase 3 hints replace Phase 2 wording that named 1 November (`retired.stakeDeposit.phase3Hint`, `inline.stakingEnded`).
+
+Deviations from §7.1:
+- **Home banner keeps *Migrate accounts* + *Learn more*** (decided 30 Oct) instead of *Export keys*. Key export stays reachable from the migration screen (*Export private keys instead*) and Profile.
+- **The import-screen notice is the global bar's import variant.** On `/recover-*`, `/auto-import-*`, `/sign-in-ledger` and `/batch-import` the bar reads "You don't need MyNearWallet to get into your account…" with *Get Meteor Wallet*, for guests too. One prompt per surface.
+- **Guest landing:** the heading becomes "MyNearWallet is in limited mode" with a one-line explanation; the existing notice and CTAs stay.
+- **Full Access Keys keeps *Rotate key*.** It only replaces the key stored in this browser, nothing on-chain.
+- **The sign-path helper switch and the Appendix A bugs 4 and 5 are not done.** In Phase 3 those wrappers never render, and Phase 2 deliberately leaves them unchanged.
+- **Ledger sign-in in Phase 3 stores no local key**, so the account shows balances but does not appear on the migration selection screen (it lists keystore accounts). Its path is connecting the Ledger in Meteor Wallet. Needs QA with a real Ledger.
+- **Not built:** the optional stale-tab reload prompt.
 
 ---
 

@@ -658,9 +658,7 @@ export const handleStakingUpdateLockup = (exAccountId) => async (dispatch, getSt
 
 export const handleStakingAction =
     (action, validatorId, amount) => async (dispatch, getState) => {
-        if (action === 'stake') {
-            guardSunsetCapability('stakeDeposit');
-        }
+        guardSunsetCapability(action === 'stake' ? 'stakeDeposit' : 'stakeManage');
         const accountId = selectStakingMainAccountId(getState());
         const currentAccountId = selectStakingCurrentAccountAccountId(getState());
 
@@ -774,6 +772,7 @@ export const getValidatorFarmData = createAsyncThunk(
 );
 
 export const claimFarmRewards = (validatorId, token_id) => async (dispatch, getState) => {
+    guardSunsetCapability('stakeManage');
     try {
         const accountId = selectStakingMainAccountId(getState());
         const currentAccountId = selectStakingCurrentAccountAccountId(getState());

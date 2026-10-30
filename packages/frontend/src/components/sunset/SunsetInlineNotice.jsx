@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { SUNSET_PHASE } from '../../config/sunset';
+import { METEOR_WALLET_SITE_URL, SUNSET_PHASE } from '../../config/sunset';
 import AccountExportNotice from '../account-export/AccountExportNotice';
 import useMigrationEntry from '../account-export/useMigrationEntry';
 import Container from '../common/styled/Container.css';
@@ -32,9 +32,10 @@ const CenteredContainer = styled(Container)`
 
 /**
  * A contextual sunset message for pages whose feature still works but is going away. Renders
- * nothing before Phase 2. `migrateLink` opens the migration flow in a new tab where the page must
- * not be left (dApp approvals in a popup). `centered` sizes it like the bordered request cards it
- * sits above.
+ * nothing before `minPhase` (Phase 2 by default). `migrateLink` opens the migration flow in a new
+ * tab where the page must not be left (dApp approvals in a popup), or links to Meteor Wallet
+ * instead (`'meteor'`) where the reader may have no account here. `centered` sizes it like the
+ * bordered request cards it sits above.
  */
 export default function SunsetInlineNotice({
     messageKey,
@@ -42,11 +43,12 @@ export default function SunsetInlineNotice({
     migrateLink = 'same-tab',
     compact = false,
     centered = false,
+    minPhase = 2,
 }) {
     const { t } = useTranslation();
     const phase3Date = usePhase3Date();
 
-    if (SUNSET_PHASE < 2) {
+    if (SUNSET_PHASE < minPhase) {
         return null;
     }
 
@@ -55,11 +57,24 @@ export default function SunsetInlineNotice({
             <AccountExportNotice variant='info'>
                 <p>
                     {t(messageKey, { date: phase3Date, ...values })}
-                    {migrateLink !== 'none' && (
+                    {migrateLink === 'meteor' ? (
                         <>
                             {' '}
-                            <MigrateLink newTab={migrateLink === 'new-tab'} t={t} />
+                            <a
+                                href={METEOR_WALLET_SITE_URL}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                            >
+                                {t('sunset.common.getMeteor')}
+                            </a>
                         </>
+                    ) : (
+                        migrateLink !== 'none' && (
+                            <>
+                                {' '}
+                                <MigrateLink newTab={migrateLink === 'new-tab'} t={t} />
+                            </>
+                        )
                     )}
                 </p>
             </AccountExportNotice>

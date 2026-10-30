@@ -305,6 +305,23 @@ const StakingContainer = ({ history }) => {
                                 )}
                             />
                         )}
+                        {!isSunsetCapabilityEnabled('stakeManage') && (
+                            <Route
+                                exact
+                                path={[
+                                    '/staking/unstake',
+                                    '/staking/withdraw',
+                                    '/staking/:validator/unstake',
+                                    '/staking/:validator/claim',
+                                ]}
+                                render={({ match }) => (
+                                    <FeatureRetiredPage
+                                        capability='stakeManage'
+                                        route={match.path}
+                                    />
+                                )}
+                            />
+                        )}
                         <Route
                             exact
                             path='/staking/validators'

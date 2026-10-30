@@ -29,7 +29,7 @@ import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
 import { store, addAccountReducer } from '..';
 import CONFIG from '../config';
-import { assertSunsetCapability } from '../config/sunset';
+import { assertSunsetCapability, isSunsetCapabilityEnabled } from '../config/sunset';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
@@ -1111,6 +1111,12 @@ export default class Wallet {
     }
 
     async addWalletMetadataAccessKeyIfNeeded(accountId, localAccessKey) {
+        // In limited mode signing in with a Ledger sends nothing on-chain. The account is still
+        // recognised as a Ledger account without this key (see getLedgerKey).
+        if (!isSunsetCapabilityEnabled('ledgerMetadataKey')) {
+            return null;
+        }
+
         if (
             !localAccessKey ||
             !localAccessKey.access_key.permission.FunctionCall ||
