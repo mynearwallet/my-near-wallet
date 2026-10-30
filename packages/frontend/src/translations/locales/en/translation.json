@@ -2092,6 +2092,11 @@
             "phase3": {
                 "description": "You can view balances, export your keys and move your accounts.",
                 "title": "MyNearWallet is in limited mode."
+            },
+            "reload": {
+                "cta": "Reload",
+                "description": "Reload to continue with the latest version.",
+                "title": "MyNearWallet has been updated."
             }
         },
         "common": {

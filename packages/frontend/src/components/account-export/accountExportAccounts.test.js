@@ -8,6 +8,7 @@ const mockWallet = {
     hasTwoFactorEnabled: jest.fn(),
     isFullAccessKey: jest.fn(),
     getLedgerKey: jest.fn(),
+    getAccountsLocalStorage: jest.fn(),
 };
 const mockGetKeyMeta = jest.fn();
 
@@ -31,6 +32,7 @@ describe('new-key account-transfer eligibility', () => {
         mockWallet.hasTwoFactorEnabled.mockResolvedValue(false);
         mockWallet.isFullAccessKey.mockResolvedValue(true);
         mockWallet.getLedgerKey.mockResolvedValue(null);
+        mockWallet.getAccountsLocalStorage.mockReturnValue({});
         mockGetKeyMeta.mockResolvedValue({ type: 'software' });
     });
 
@@ -85,6 +87,32 @@ describe('new-key account-transfer eligibility', () => {
         expect(
             rows.find((row) => row.accountId === 'ready.testnet').sourcePublicKey
         ).toBe('ed25519:ready.testnet');
+    });
+
+    it('lists Ledger accounts that have no local key, and only those', async () => {
+        // A Ledger sign-in in limited mode adds no metadata key, so the account is only in the
+        // wallet's account list.
+        mockWallet.keyStore.getAccounts.mockResolvedValue(['ready.testnet']);
+        mockWallet.getAccountsLocalStorage.mockReturnValue({
+            'ready.testnet': true,
+            'ledger-only.testnet': true,
+            'keyless.testnet': true,
+        });
+        mockWallet.getLocalKeyPair.mockImplementation(async (accountId) =>
+            accountId === 'ready.testnet' ? makeKeyPair('ed25519:ready') : null
+        );
+        mockWallet.getLedgerKey.mockImplementation(async (accountId) =>
+            accountId === 'ledger-only.testnet' ? 'ed25519:device' : null
+        );
+
+        await expect(loadExportableAccounts()).resolves.toEqual([
+            {
+                accountId: 'ready.testnet',
+                sourcePublicKey: 'ed25519:ready',
+                availability: 'available',
+            },
+            { accountId: 'ledger-only.testnet', availability: 'ledger_unsupported' },
+        ]);
     });
 
     it('carries the eligibility reason when an account cannot be transferred', async () => {

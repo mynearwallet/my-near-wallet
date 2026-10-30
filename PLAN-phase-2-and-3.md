@@ -32,14 +32,16 @@ Deviations from this plan:
 
 ## Implementation status (30 Oct): Release B (Phase 3)
 
-**Release B is implemented and inert at `SUNSET_PHASE=2`.** Every change is gated on a capability that retires in Phase 3, so a Phase 2 build behaves as before.
+**Release B is implemented and inert at `SUNSET_PHASE=2`.** Every change is gated on a capability that retires in Phase 3, so a Phase 2 build behaves as before. The two exceptions are meant to run in Phase 2 as well: the stale-tab reload prompt, and listing keyless Ledger accounts on the migration screen.
 
-- **Checks:** Jest green apart from `rpc-provider.spec.ts`, which calls the public mainnet RPC and fails when it rate-limits (unrelated); `tsc` and ESLint clean on the changed files; a production Parcel build with `SUNSET_PHASE=3` succeeds.
+- **Checks:** Jest 242/242 (`rpc-provider.spec.ts` calls the public mainnet RPC and can fail when it rate-limits, which is unrelated); `tsc` and ESLint clean on the changed files; a production Parcel build with `SUNSET_PHASE=3` succeeds.
 - **Visual check:** a local testnet build at phase 3 was checked in a headless browser: home, staking, retired routes, the dApp terminator, guest landing and import screens.
 - **Routes:** `/send-money`, `/receive-money`, `/explore`, `/linkdrop/*`, `/setup-ledger-success` and `/batch-ledger-export` are gated. `/set-recovery/*` and `/setup-seed-phrase/*` (`addRecoveryMethod`) and `/setup-ledger/*` (`manageLedger`) are retired for every account. `/sign`, `/sign-message` and `/verify-owner` go to the terminator. Staking retires `/staking/unstake`, `/staking/withdraw`, `/staking/:validator/unstake`, `/staking/:validator/claim` and `/liquid-staking/:id/unstake`.
 - **Entry points:** home loses its action row and side banner; the nav becomes Wallet · Migrate · Staking · Account · Support; the staking overview and validator pages keep balances but hide unstake, withdraw and claim; NFT transfer is hidden; Profile shows the recovery phrase and Ledger state without actions; Full Access Keys hides *Add key* and *Deauthorize*.
 - **Action guards:** `send` (FT/NEAR transfer, `sendMoney`), `nftTransfer`, `stakeManage` (`handleStakingAction` for unstake/withdraw, `claimFarmRewards`, liquid unstake/withdraw), `dappSign` (`handleSignTransactions`), `dappSignMessage` (sign-message and verify-owner thunks), `linkdropClaim`, `addRecoveryMethod` (seed-phrase key, recovery message), `removeFullAccessKey` (delete recovery method, deauthorize), `manageLedger` (add/disable Ledger, remove non-Ledger keys). `addWalletMetadataAccessKeyIfNeeded` is a no-op under `ledgerMetadataKey`. Revoking app keys, lockup transfer, Disable 2FA, export and migration are untouched.
 - **Copy:** new `sunset.*` strings in all 9 locales; Phase 3 hints replace Phase 2 wording that named 1 November (`retired.stakeDeposit.phase3Hint`, `inline.stakingEnded`).
+- **Stale-tab reload prompt (decided 30 Oct):** `ci/runBundler.js` gives every build a random ID, inlines it as `CONFIG.BUILD_ID` and publishes it as `/version.json`. `useNewBuildAvailable` fetches that file on page changes, when the tab comes back into view, and every 5 minutes (at most once a minute, never in the first minute). When it differs, the sunset bar becomes "MyNearWallet has been updated. Reload to continue with the latest version." with *Reload*, on every page, for guests too. The dev server has no ID, so it never checks. **It only reaches tabs whose bundle has the checker, so this code must be live on mainnet at Phase 2 before the flip** (§7.2).
+- **Keyless Ledger accounts on the migration screen (decided 30 Oct):** a Ledger sign-in in Phase 3 adds no metadata key, so the account is in the wallet's account list but has no local key. `loadExportableAccounts` now also probes those accounts and lists the ones whose on-chain key is marked as Ledger, with the existing Ledger guidance (*Open Meteor Wallet*). Other keyless accounts stay hidden.
 
 Deviations from §7.1:
 - **Home banner keeps *Migrate accounts* + *Learn more*** (decided 30 Oct) instead of *Export keys*. Key export stays reachable from the migration screen (*Export private keys instead*) and Profile.
@@ -47,8 +49,7 @@ Deviations from §7.1:
 - **Guest landing:** the heading becomes "MyNearWallet is in limited mode" with a one-line explanation; the existing notice and CTAs stay.
 - **Full Access Keys keeps *Rotate key*.** It only replaces the key stored in this browser, nothing on-chain.
 - **The sign-path helper switch and the Appendix A bugs 4 and 5 are not done.** In Phase 3 those wrappers never render, and Phase 2 deliberately leaves them unchanged.
-- **Ledger sign-in in Phase 3 stores no local key**, so the account shows balances but does not appear on the migration selection screen (it lists keystore accounts). Its path is connecting the Ledger in Meteor Wallet. Needs QA with a real Ledger.
-- **Not built:** the optional stale-tab reload prompt.
+- **Ledger sign-in in Phase 3 stores no local key.** The account shows balances and is listed on the migration screen with the Ledger guidance (see above). Needs QA with a real Ledger.
 
 ---
 
@@ -183,7 +184,7 @@ Each decision has a default that the build uses unless someone objects.
 ### Before Release B (by Saturday)
 | # | Decision | Default | Why |
 | --- | --- | --- | --- |
-| D1 | **Phase 3 deployment time on Sun 1 Nov**, and who is on call | **08:00–10:00 UTC** | By then it is 1 November in almost every populated time zone, matching "after 31 October", and the team is awake for monitoring. |
+| D1 | **Phase 3 deployment time on Sun 1 Nov**, and who is on call | **08:00–10:00 UTC** (time confirmed 30 Oct; on-call still to name) | By then it is 1 November in almost every populated time zone, matching "after 31 October", and the team is awake for monitoring. |
 | D6 | Receive in Phase 3 | Retire `/receive-money`. **Keep the account ID visible and copyable.** | Users need their address to verify migration. Funds sent later still arrive on-chain. |
 | D7 | Lockup "transfer to wallet" in Phase 3 | **Keep it allowed** until Meteor confirms it supports lockup accounts | It moves funds into the user's own main account, which can then be migrated. |
 | D8 | Key management in Phase 3 | **Keep revoking app keys. Retire adding and removing full-access keys.** | Revoking improves security. Removing full-access keys is high-risk and belongs in the new wallet. |
@@ -578,13 +579,15 @@ Phase 2 has been announced. Still needed for Release A:
 
 ### 7.2 Readiness checklist (Saturday)
 - [ ] All Release B PRs merged to `master`. **Mainnet staging and testnet staging redeployed with `SUNSET_PHASE=2` and checked to be unchanged** (invariant 8).
+- [ ] **Release B live on `mainnet` and `testnet` at `SUNSET_PHASE=2` by Saturday.** The reload prompt only reaches tabs whose bundle has it; tabs opened before this deploy keep Phase 2 until they reload. Check `/version.json` is served on both.
 - [ ] **Dress rehearsal:**
   - Set `vars.SUNSET_PHASE=3` on `mainnet-staging` and `testnet`, and redeploy both through `workflow_dispatch`.
   - Run the Phase 3 QA matrix (§9.3).
+  - Rehearse the reload prompt: keep a staging tab open from the Phase 2 deploy, flip to 3, and check that tab shows *Reload* on its next page change and comes back in Phase 3.
   - Then rehearse the rollback: a Cloudflare rollback on testnet back to the phase 2 deployment, and confirm phase 2 behaviour returns.
 - [ ] D1 (time and on-call) and D6–D9 confirmed.
 - [ ] Phase 3 support macros, the sunset-page update, the near-connect "remove signing" PR and the dApp developer notice are ready to publish when the deployment happens.
-- [ ] Note the Cloudflare deployment ID of the live Release A on mainnet (the Phase 3 rollback target).
+- [ ] Note the Cloudflare deployment ID of the Release B Phase 2 deployment on mainnet (the Phase 3 rollback target). Rolling back to Release A also restores Phase 2, but it has no `/version.json`, so open Phase 3 tabs would not be prompted to reload.
 
 ### 7.3 Deployment runbook (Sun 1 Nov)
 1. Confirm `mainnet` points at the commit that was QA'd on staging with `SUNSET_PHASE=3`, and that no unreviewed commits are pending.
@@ -602,7 +605,7 @@ Phase 2 has been announced. Still needed for Release A:
 8. Next working day: commit `SUNSET_PHASE: 3` as the default in `environmentDefaults/mainnet.ts` (and the other environments), so an unset variable can never bring Phase 2 back.
 
 ### 7.4 Rollback
-- **Immediate:** Cloudflare Pages "rollback to previous deployment", to the Release A deployment noted in §7.2. This restores Phase 2 behaviour at once; no build is needed.
+- **Immediate:** Cloudflare Pages "rollback to previous deployment", to the Release B Phase 2 deployment noted in §7.2. This restores Phase 2 behaviour at once; no build is needed, and open Phase 3 tabs are prompted to reload.
 - **Then, straight away:** set `vars.SUNSET_PHASE=2` on `mainnet`. Otherwise the **next push to `mainnet` redeploys Phase 3.**
 - **Fix forward:** a Phase 3 bug that doesn't need a full rollback is hotfixed on `master` → `mainnet` with the flag still at 3.
 
@@ -831,7 +834,7 @@ For 72 hours after each release, watch:
 | A user is told "no account found" during an RPC outage | Low / High | Block only on a definite `AccountDoesNotExist` after a successful indexer lookup (S3). |
 | dApps hang or break | Med / Med | The terminator always answers (S4); `/sign` is unchanged in Phase 2 (S5); developer notice; manifest and wallet-selector deprecation. |
 | **Phase 3 code leaks into Phase 2 behaviour** | Low / High | Capability model; route-gating table at phase 2 on every PR; staging check at phase 2 after the Release B merges (§7.2). |
-| The Phase 3 deployment misbehaves | Med / Med | Saturday dress rehearsal; Sunday runbook with verification; Cloudflare rollback to the Release A deployment, **then reset the flag to 2** (§7.4). |
+| The Phase 3 deployment misbehaves | Med / Med | Saturday dress rehearsal; Sunday runbook with verification; Cloudflare rollback to the Release B Phase 2 deployment, **then reset the flag to 2** (§7.4). |
 | The flag reverts to Phase 2 by accident later (unset variable) | Low / Med | Commit the default `3` after the deployment (§7.3 step 8). Treat `''` as unset (S10). |
 | 2FA users stuck until §8.1 lands | High / High | Interim guidance (§6.5); full-access recovery phrases still work. §8.1 is first in Release C. Contact 2FA users directly if analytics show many. |
 | NEAR's 2FA service is retired or unreliable | High / High | Helper-free disable (§8.1). Remaining exposure: older contract versions and bricked accounts without a full-access phrase. |
@@ -839,7 +842,7 @@ For 72 hours after each release, watch:
 | Unsupported account types (Ledger, lockup) | Med / High | Guidance per reason (§6.7), manual export for every local key, D7 keeps lockup transfer. |
 | Machine translations read badly | Med / Low | Native review in Release C; the copy is short and calm. |
 | Phishing ("migrate your MNW wallet here") | High / High | Anti-phishing line in-app, on the sunset page and in macros; a single official path; the standalone 2FA app only on an official domain. |
-| Stale tabs keep old-phase behaviour | Med / Low | Acceptable; optional reload prompt in Release B (§7.1). |
+| Stale tabs keep old-phase behaviour | Med / Low | Reload prompt built (Release B status); it needs Release B live at Phase 2 before the flip (§7.2). Tabs opened before that keep Phase 2 until they reload. |
 
 ---
 

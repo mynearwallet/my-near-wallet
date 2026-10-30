@@ -27,7 +27,13 @@ const probeExportability = async (accountId) => {
     try {
         const keyPair = await wallet.getLocalKeyPair(accountId);
         if (keyPair == null) {
-            return { accountId, availability: 'no_local_key' };
+            // A Ledger sign-in in limited mode adds no metadata key, so nothing is stored here.
+            return {
+                accountId,
+                availability: (await wallet.getLedgerKey(accountId))
+                    ? 'ledger_unsupported'
+                    : 'no_local_key',
+            };
         }
         sourcePublicKey = keyPair.getPublicKey().toString();
         const keyMeta = await getKeyMeta(sourcePublicKey);
@@ -109,8 +115,23 @@ export const loadExportableAccount = async (accountId) => {
 
 export const loadExportableAccounts = async () => {
     const accountIds = await wallet.keyStore.getAccounts(CONFIG.NETWORK_ID);
+    // Ledger accounts signed in during limited mode are only in the wallet's account list, with
+    // no key here. They are listed so the user gets the Ledger guidance instead of a gap.
+    const keylessAccountIds = Object.keys(wallet.getAccountsLocalStorage() || {}).filter(
+        (accountId) => !accountIds.includes(accountId)
+    );
 
-    return Promise.all(accountIds.map(loadExportableAccount));
+    const [accounts, keylessAccounts] = await Promise.all([
+        Promise.all(accountIds.map(loadExportableAccount)),
+        Promise.all(keylessAccountIds.map(loadExportableAccount)),
+    ]);
+
+    return [
+        ...accounts,
+        ...keylessAccounts.filter(
+            ({ availability }) => availability === 'ledger_unsupported'
+        ),
+    ];
 };
 
 /**

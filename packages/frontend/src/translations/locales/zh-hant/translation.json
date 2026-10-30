@@ -1931,6 +1931,11 @@
             "phase3": {
                 "description": "您可以查看餘額、匯出金鑰和遷移帳戶。",
                 "title": "MyNearWallet 處於受限模式。"
+            },
+            "reload": {
+                "cta": "重新載入",
+                "description": "請重新載入頁面，以繼續使用最新版本。",
+                "title": "MyNearWallet 已更新。"
             }
         },
         "common": {

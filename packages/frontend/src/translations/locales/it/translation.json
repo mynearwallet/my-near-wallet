@@ -1779,6 +1779,11 @@
             "phase3": {
                 "description": "Puoi visualizzare i saldi, esportare le chiavi e trasferire i tuoi account.",
                 "title": "MyNearWallet è in modalità limitata."
+            },
+            "reload": {
+                "cta": "Ricarica",
+                "description": "Ricarica la pagina per continuare con la versione più recente.",
+                "title": "MyNearWallet è stato aggiornato."
             }
         },
         "common": {

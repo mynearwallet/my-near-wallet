@@ -1647,6 +1647,11 @@
             "phase3": {
                 "description": "Bạn có thể xem số dư, xuất khóa và chuyển tài khoản.",
                 "title": "MyNearWallet đang ở chế độ giới hạn."
+            },
+            "reload": {
+                "cta": "Tải lại",
+                "description": "Hãy tải lại trang để tiếp tục với phiên bản mới nhất.",
+                "title": "MyNearWallet đã được cập nhật."
             }
         },
         "common": {

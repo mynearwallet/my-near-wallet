@@ -24,6 +24,8 @@ export default {
     MC_BACKEND_DEFAULT: process.env.REACT_APP_MC_BACKEND,
     ACCESS_KEY_FUNDING_AMOUNT: process.env.REACT_APP_ACCESS_KEY_FUNDING_AMOUNT,
     BROWSER_MIXPANEL_TOKEN: process.env.BROWSER_MIXPANEL_TOKEN,
+    // Set by ci/runBundler.js and published as /version.json; unset on the dev server.
+    BUILD_ID: process.env.MNW_BUILD_ID,
     BROWSER_POSTHOG_KEY: process.env.BROWSER_POSTHOG_KEY,
     BROWSER_POSTHOG_HOST: process.env.BROWSER_POSTHOG_HOST,
     DISABLE_CREATE_ACCOUNT: parseBooleanFromShell(process.env.DISABLE_CREATE_ACCOUNT),

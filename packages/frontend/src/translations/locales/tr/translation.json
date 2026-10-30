@@ -1671,6 +1671,11 @@
             "phase3": {
                 "description": "Bakiyeleri görüntüleyebilir, anahtarlarınızı dışa aktarabilir ve hesaplarınızı taşıyabilirsiniz.",
                 "title": "MyNearWallet sınırlı modda."
+            },
+            "reload": {
+                "cta": "Yeniden yükle",
+                "description": "En son sürümle devam etmek için sayfayı yeniden yükleyin.",
+                "title": "MyNearWallet güncellendi."
             }
         },
         "common": {

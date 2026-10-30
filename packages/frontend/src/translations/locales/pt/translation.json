@@ -1713,6 +1713,11 @@
             "phase3": {
                 "description": "Você pode ver saldos, exportar suas chaves e mover suas contas.",
                 "title": "A MyNearWallet está em modo limitado."
+            },
+            "reload": {
+                "cta": "Recarregar",
+                "description": "Recarregue a página para continuar com a versão mais recente.",
+                "title": "A MyNearWallet foi atualizada."
             }
         },
         "common": {
