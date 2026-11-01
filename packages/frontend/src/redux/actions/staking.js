@@ -5,6 +5,7 @@ import { createActions } from 'redux-actions';
 import uniq from 'lodash.uniq';
 
 import { getBalance } from './account';
+import { guardSunsetCapability } from '../../components/sunset/sunsetGuard';
 import CONFIG from '../../config';
 import { fungibleTokensService } from '../../services/FungibleTokens';
 import StakingFarmContracts from '../../services/StakingFarmContracts';
@@ -657,6 +658,7 @@ export const handleStakingUpdateLockup = (exAccountId) => async (dispatch, getSt
 
 export const handleStakingAction =
     (action, validatorId, amount) => async (dispatch, getState) => {
+        guardSunsetCapability(action === 'stake' ? 'stakeDeposit' : 'stakeManage');
         const accountId = selectStakingMainAccountId(getState());
         const currentAccountId = selectStakingCurrentAccountAccountId(getState());
 
@@ -770,6 +772,7 @@ export const getValidatorFarmData = createAsyncThunk(
 );
 
 export const claimFarmRewards = (validatorId, token_id) => async (dispatch, getState) => {
+    guardSunsetCapability('stakeManage');
     try {
         const accountId = selectStakingMainAccountId(getState());
         const currentAccountId = selectStakingCurrentAccountAccountId(getState());

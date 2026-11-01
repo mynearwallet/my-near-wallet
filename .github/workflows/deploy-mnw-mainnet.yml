@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - mainnet
+  # Manual redeploys, e.g. after changing the SUNSET_PHASE environment variable.
+  workflow_dispatch:
 
 concurrency:
   group: 'mainnet'
@@ -11,6 +13,8 @@ concurrency:
 
 jobs:
   mainnet-deploy:
+    # A manual run can pick any branch; only the mainnet branch may reach production mainnet.
+    if: github.ref == 'refs/heads/mainnet'
     uses: ./.github/workflows/cloudflare-pages-deploy.yml
     with:
       environment: mainnet

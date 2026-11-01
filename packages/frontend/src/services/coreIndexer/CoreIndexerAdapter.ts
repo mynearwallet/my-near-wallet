@@ -2,6 +2,7 @@ import { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common
 import {
     AbstractCoreIndexer,
     E_CoreIndexerAvailableMethods,
+    isCoreIndexerNoResult,
 } from './indexers/AbstractCoreIndexer';
 import { FastNearIndexer } from './indexers/FastNearIndexer';
 import { NearblocksV3Indexer } from './indexers/NearblocksV3Indexer';
@@ -116,6 +117,45 @@ export class CoreIndexerAdapter {
                 masterResolve(uniq(flattenResults));
             }
         });
+    }
+
+    /**
+     * Whether the indexers confirm that no account uses this public key: at least one indexer
+     * answered and none found an account. `fetchAccountIdsByPublicKeyFromAllIndexers` returns
+     * `[]` both for that and for every indexer failing (outage, rate limit, ad-blocker), so a
+     * caller about to tell the user "no account" must ask this first. A timeout is no answer.
+     */
+    async confirmNoAccountIdsForPublicKey(
+        publicKey: string,
+        timeoutMs = 10000
+    ): Promise<boolean> {
+        const results = await Promise.allSettled(
+            this.indexersInQueue
+                .filter((indexer) =>
+                    indexer.methodsSupported.includes(
+                        E_CoreIndexerAvailableMethods.getAccountIdListFromPublicKey
+                    )
+                )
+                .map((indexer) =>
+                    Promise.race([
+                        indexer.getAccountIdListFromPublicKey(publicKey),
+                        new Promise<string[]>((_, reject) =>
+                            setTimeout(
+                                () => reject(new Error('Indexer timed out')),
+                                timeoutMs
+                            )
+                        ),
+                    ])
+                )
+        );
+        const foundAccounts = results.some(
+            (result) => result.status === 'fulfilled' && result.value.length > 0
+        );
+        const answered = results.some(
+            (result) =>
+                result.status === 'fulfilled' || isCoreIndexerNoResult(result.reason)
+        );
+        return answered && !foundAccounts;
     }
 
     async fetchAccountValidatorIds(accountId): Promise<string[]> {

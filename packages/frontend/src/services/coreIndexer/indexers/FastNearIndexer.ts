@@ -1,6 +1,7 @@
 import { PublicKey } from 'near-api-js/lib/utils';
 import {
     AbstractCoreIndexer,
+    CoreIndexerNoResultError,
     E_CoreIndexerAvailableMethods,
 } from './AbstractCoreIndexer';
 import { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/common/core/modules/blockchains/near/core/types/near_basic_types';
@@ -40,6 +41,10 @@ export class FastNearIndexer extends AbstractCoreIndexer {
         ).then((r) => r.json());
         if (result.account_ids && result.account_ids.length > 0) {
             return result.account_ids;
+        } else if (Array.isArray(result.account_ids)) {
+            throw new CoreIndexerNoResultError(
+                `FastNear found no account ids for public key: ${publicKey}`
+            );
         } else {
             throw new Error(
                 `Error: FastNear failed to capture account ids from public key: ${publicKey}`

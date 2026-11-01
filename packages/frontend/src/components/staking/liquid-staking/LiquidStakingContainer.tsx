@@ -9,6 +9,8 @@ import StakingForm from './StakingForm';
 import { getBalance } from '../../../redux/actions/account';
 import ValidatorDetail from './ValidatorDetail';
 import UnstakeForm from './UnstakeForm';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
+import FeatureRetiredPage from '../../sunset/FeatureRetiredPage';
 
 const LiquidStakingContainer = () => {
     const accountId = useSelector(selectAccountId);
@@ -32,12 +34,30 @@ const LiquidStakingContainer = () => {
                 <Route
                     exact
                     path='/liquid-staking/:validatorId/stake'
-                    render={(props) => <StakingForm {...props} />}
+                    render={(props) =>
+                        isSunsetCapabilityEnabled('stakeDeposit') ? (
+                            <StakingForm {...props} />
+                        ) : (
+                            <FeatureRetiredPage
+                                capability='stakeDeposit'
+                                route='/liquid-staking/:validatorId/stake'
+                            />
+                        )
+                    }
                 />
                 <Route
                     exact
                     path='/liquid-staking/:validatorId/unstake'
-                    render={(props) => <UnstakeForm {...props} />}
+                    render={(props) =>
+                        isSunsetCapabilityEnabled('stakeManage') ? (
+                            <UnstakeForm {...props} />
+                        ) : (
+                            <FeatureRetiredPage
+                                capability='stakeManage'
+                                route='/liquid-staking/:validatorId/unstake'
+                            />
+                        )
+                    }
                 />
             </Switch>
         </ConnectedRouter>

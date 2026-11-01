@@ -135,7 +135,11 @@ class RecoverAccountSeedPhrase extends Component {
             },
             async (e) => {
                 if (e.data?.errorCode === 'accountNotExist') {
-                    await importZeroBalanceAccountPhrase(seedPhrase);
+                    const imported = await importZeroBalanceAccountPhrase(seedPhrase);
+                    if (imported?.payload?.blocked) {
+                        // The sunset refused it and already explained why.
+                        throw e;
+                    }
                     setZeroBalanceAccountImportMethod('phrase');
                     clearGlobalAlert();
                     redirectToApp();

@@ -79,7 +79,15 @@ const SignInLedgerWrapper = (props) => {
         if (signInWithLedgerStatus === LEDGER_MODAL_STATUS.ENTER_ACCOUNTID) {
             const handleImportZeroBalanceAccountLedger = async () => {
                 dispatch(clearGlobalAlert());
-                await dispatch(importZeroBalanceAccountLedger(ledgerHdPath));
+                const imported = await dispatch(
+                    importZeroBalanceAccountLedger(ledgerHdPath)
+                );
+                if (!imported?.payload?.imported) {
+                    // Refused or failed, and the alert already says why. Stay here so the user
+                    // can retry: the guest landing no longer leads back to import.
+                    dispatch(clearSignInWithLedgerModalState());
+                    return;
+                }
                 // TODO: Provide ledger public key as prop to avoid asking for it again
                 dispatch(setZeroBalanceAccountImportMethod('ledger'));
                 dispatch(clearAccountState());

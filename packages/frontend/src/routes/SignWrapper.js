@@ -8,6 +8,7 @@ import SignTransferMultipleAccounts from '../components/sign/SignTransferMultipl
 import SignTransferRetry from '../components/sign/SignTransferRetry';
 import SignTransactionDetailsWrapper from '../components/sign/v2/SignTransactionDetailsWrapper';
 import SignTransactionSummaryWrapper from '../components/sign/v2/SignTransactionSummaryWrapper';
+import DappApprovalSunsetNotice from '../components/sunset/DappApprovalSunsetNotice';
 import { Mixpanel } from '../mixpanel';
 import { switchAccount, redirectTo } from '../redux/actions/account';
 import { selectAccountId, selectAccountUrlPrivateShard } from '../redux/slices/account';
@@ -253,17 +254,22 @@ const SignWrapper = () => {
     }
 
     return (
-        <SignTransactionSummaryWrapper
-            onClickCancel={handleCancelTransaction}
-            onClickApprove={handleApproveTransaction}
-            submittingTransaction={submittingTransaction}
-            signGasFee={signGasFee}
-            onClickMoreInformation={() => setCurrentDisplay(DISPLAY.TRANSACTION_DETAILS)}
-            onClickEditAccount={() => setCurrentDisplay(DISPLAY.ACCOUNT_SELECTION)}
-            isSignerValid={isSignerValid}
-            isValidCallbackUrl={isValidCallbackUrl}
-            privateShardInfo={privateShardInfo}
-        />
+        <>
+            <DappApprovalSunsetNotice callbackUrl={signCallbackUrl} />
+            <SignTransactionSummaryWrapper
+                onClickCancel={handleCancelTransaction}
+                onClickApprove={handleApproveTransaction}
+                submittingTransaction={submittingTransaction}
+                signGasFee={signGasFee}
+                onClickMoreInformation={() =>
+                    setCurrentDisplay(DISPLAY.TRANSACTION_DETAILS)
+                }
+                onClickEditAccount={() => setCurrentDisplay(DISPLAY.ACCOUNT_SELECTION)}
+                isSignerValid={isSignerValid}
+                isValidCallbackUrl={isValidCallbackUrl}
+                privateShardInfo={privateShardInfo}
+            />
+        </>
     );
 };
 

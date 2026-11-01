@@ -73,6 +73,7 @@ import AccountExportNewKeyRecovery from '../components/account-export/AccountExp
 import AccountExportNewKeyActivation from '../components/account-export/AccountExportNewKeyActivation';
 import AccountExportNewKeyActivated from '../components/account-export/AccountExportNewKeyActivated';
 import CONFIG from '../config';
+import { isSunsetCapabilityEnabled } from '../config/sunset';
 import { Mixpanel } from '../mixpanel/index';
 import { PostHog } from '../posthog';
 import TokenSwap from '../pages/TokenSwap';
@@ -113,6 +114,14 @@ import {
     WALLET_SEND_MONEY_URL,
 } from '../utils/wallet';
 import TransactionExecutorModal from '../components/transactions/ExecutorModal/TransactionExecutorModal';
+import DappRequestRetired from '../components/sunset/DappRequestRetired';
+import ExistingAccountGate from '../components/sunset/ExistingAccountGate';
+import FeatureRetiredPage, {
+    hasActiveAccount,
+} from '../components/sunset/FeatureRetiredPage';
+import SunsetBar from '../components/sunset/SunsetBar';
+import SunsetGatedRoute from '../components/sunset/SunsetGatedRoute';
+import SunsetQaChip from '../components/sunset/SunsetQaChip';
 import LiquidStakingContainer from '../components/staking/liquid-staking/LiquidStakingContainer';
 
 const { getTokenWhiteList } = tokenFiatValueActions;
@@ -352,7 +361,9 @@ class Routing extends Component {
                         <NetworkBanner account={account} />
                         <NavigationWrapper />
                         <GlobalAlert />
+                        <SunsetBar />
                         <SunsetNotice />
+                        <SunsetQaChip />
                         <WalletMigration
                             open={this.state.openTransferPopup}
                             history={this.props.history}
@@ -416,17 +427,22 @@ class Routing extends Component {
                                 path='/change-password'
                                 component={ChangePasswordPage}
                             />
-                            <Route
+                            <SunsetGatedRoute
+                                capability='linkdropClaim'
                                 exact
                                 path='/linkdrop/:fundingContract/:fundingKey'
                                 component={LinkdropLandingWithRouter}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/create/:fundingContract/:fundingKey'
                                 component={CreateAccountWithRouter}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/create'
                                 render={(props) =>
@@ -437,77 +453,159 @@ class Routing extends Component {
                                     )
                                 }
                             />
-                            <PasswordProtectedRoute
-                                exact
-                                path='/create'
-                                component={CreateAccountWithRouter}
-                            />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path={'/create-from/:fundingAccountId'}
                                 component={CreateAccountWithRouter}
                             />
-                            <PasswordProtectedRoute
+                            {/*
+                              These routes also serve new accounts, which the createAccount gates
+                              below handle. Once adding keys and Ledger devices is retired as well,
+                              they are retired for every account, so answer them first.
+                            */}
+                            {!isSunsetCapabilityEnabled('addRecoveryMethod') && (
+                                <Route
+                                    exact
+                                    path={[
+                                        '/set-recovery/:accountId/:fundingContract?/:fundingKey?',
+                                        '/setup-seed-phrase/:accountId/:step',
+                                    ]}
+                                    render={({ match }) => (
+                                        <FeatureRetiredPage
+                                            capability='addRecoveryMethod'
+                                            route={match.path}
+                                        />
+                                    )}
+                                />
+                            )}
+                            {!isSunsetCapabilityEnabled('manageLedger') && (
+                                <Route
+                                    exact
+                                    path='/setup-ledger/:accountId'
+                                    render={({ match }) => (
+                                        <FeatureRetiredPage
+                                            capability='manageLedger'
+                                            route={match.path}
+                                        />
+                                    )}
+                                />
+                            )}
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                retireIf={() => !hasActiveAccount()}
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/set-recovery/:accountId/:fundingContract?/:fundingKey?'
-                                component={SetupRecoveryMethodWithRouter}
+                                render={(props) => (
+                                    <ExistingAccountGate
+                                        accountId={props.match.params.accountId}
+                                        fundingContract={
+                                            props.match.params.fundingContract
+                                        }
+                                        route='/set-recovery/:accountId'
+                                    >
+                                        <SetupRecoveryMethodWithRouter {...props} />
+                                    </ExistingAccountGate>
+                                )}
                             />
-                            <PublicRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PublicRoute}
                                 exact
                                 path='/set-recovery-implicit-account'
                                 component={SetupRecoveryImplicitAccountWrapper}
                             />
-                            <PublicRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PublicRoute}
                                 exact
                                 path='/setup-passphrase-new-account'
                                 component={SetupPassphraseNewAccountWrapper}
                             />
-                            <PublicRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PublicRoute}
                                 exact
                                 path='/setup-ledger-new-account'
                                 component={SetupLedgerNewAccountWrapper}
                             />
-                            <PublicRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PublicRoute}
                                 exact
                                 path='/create-implicit-account'
                                 component={CreateImplicitAccountWrapper}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                retireIf={() => !hasActiveAccount()}
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/setup-seed-phrase/:accountId/:step'
-                                component={SetupSeedPhraseWithRouter}
+                                render={(props) => (
+                                    <ExistingAccountGate
+                                        accountId={props.match.params.accountId}
+                                        route='/setup-seed-phrase/:accountId/:step'
+                                    >
+                                        <SetupSeedPhraseWithRouter {...props} />
+                                    </ExistingAccountGate>
+                                )}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/verify-account'
                                 component={VerifyAccountWrapper}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/initial-deposit'
                                 component={InitialDepositWrapper}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/fund-with-existing-account'
                                 component={ExistingAccountWrapper}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/fund-create-account/:accountId/:implicitAccountId/:recoveryMethod'
                                 component={SetupImplicitWithRouter}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='createAccount'
+                                retireIf={() => !hasActiveAccount()}
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/setup-ledger/:accountId'
-                                component={SetupLedgerWithRouter}
+                                render={(props) => (
+                                    <ExistingAccountGate
+                                        accountId={props.match.params.accountId}
+                                        route='/setup-ledger/:accountId'
+                                    >
+                                        <SetupLedgerWithRouter {...props} />
+                                    </ExistingAccountGate>
+                                )}
                             />
-                            <PrivateRoute
+                            <SunsetGatedRoute
+                                capability='manageLedger'
+                                guard={PrivateRoute}
                                 exact
                                 path='/setup-ledger-success'
                                 component={SetupLedgerSuccessWithRouter}
                             />
-                            <PrivateRoute
+                            <SunsetGatedRoute
+                                capability='enableTwoFactor'
+                                guard={PrivateRoute}
                                 exact
                                 path='/enable-two-factor'
                                 component={EnableTwoFactor}
@@ -591,7 +689,9 @@ class Routing extends Component {
                                     />
                                 )}
                             />
-                            <PasswordProtectedRoute
+                            <SunsetGatedRoute
+                                capability='manageLedger'
+                                guard={PasswordProtectedRoute}
                                 exact
                                 path='/batch-ledger-export'
                                 component={BatchLedgerExport}
@@ -646,7 +746,14 @@ class Routing extends Component {
                                 path='/sign-in-ledger'
                                 component={SignInLedgerWrapper}
                             />
-                            <PrivateRoute path='/login' component={LoginWrapper} />
+                            {/* Not exact: near-api-js opens `/login/`. */}
+                            <SunsetGatedRoute
+                                capability='dappConnect'
+                                guard={PrivateRoute}
+                                path='/login'
+                                component={LoginWrapper}
+                                retired={() => <DappRequestRetired kind='login' />}
+                            />
                             <PrivateRoute
                                 exact
                                 path='/authorized-apps'
@@ -661,7 +768,9 @@ class Routing extends Component {
                                     <AccessKeysWrapper type='full-access-keys' />
                                 )}
                             />
-                            <PrivateRoute
+                            <SunsetGatedRoute
+                                capability='send'
+                                guard={PrivateRoute}
                                 exact
                                 path='/send-money/:accountId?'
                                 component={SendContainerWrapper}
@@ -671,13 +780,27 @@ class Routing extends Component {
                                 path='/nft-detail/:contractId/:tokenId'
                                 component={NFTDetailWrapper}
                             />
-                            <PrivateRoute
+                            <SunsetGatedRoute
+                                capability='receive'
+                                guard={PrivateRoute}
                                 exact
                                 path='/receive-money'
                                 component={ReceiveContainerWrapper}
                             />
-                            <PrivateRoute exact path='/buy' component={BuyNear} />
-                            <PrivateRoute exact path='/swap' component={TokenSwap} />
+                            <SunsetGatedRoute
+                                capability='buy'
+                                guard={PrivateRoute}
+                                exact
+                                path='/buy'
+                                component={BuyNear}
+                            />
+                            <SunsetGatedRoute
+                                capability='swap'
+                                guard={PrivateRoute}
+                                exact
+                                path='/swap'
+                                component={TokenSwap}
+                            />
                             <PasswordProtectedRoute
                                 exact
                                 path='/profile/:accountId'
@@ -688,7 +811,23 @@ class Routing extends Component {
                                 path='/profile/:accountId?'
                                 component={Profile}
                             />
-                            <PrivateRoute exact path='/sign' component={SignWrapper} />
+                            {/*
+                              Until Phase 3, signing stays open to signed-in users. A browser with
+                              no account would be sent to the guest landing, which no longer offers
+                              import, and the app would wait forever: answer it instead.
+                            */}
+                            <SunsetGatedRoute
+                                capability='dappConnect'
+                                retireIf={() =>
+                                    !isSunsetCapabilityEnabled('dappSign') ||
+                                    !hasActiveAccount()
+                                }
+                                guard={PrivateRoute}
+                                exact
+                                path='/sign'
+                                component={SignWrapper}
+                                retired={() => <DappRequestRetired kind='sign' />}
+                            />
                             <PrivateRoute
                                 path='/staking'
                                 render={() => (
@@ -704,7 +843,9 @@ class Routing extends Component {
                                 path='/transaction-history'
                                 component={TransactionHistory}
                             />
-                            <PrivateRoute
+                            <SunsetGatedRoute
+                                capability='explore'
+                                guard={PrivateRoute}
                                 exact
                                 path='/explore'
                                 component={ExploreContainer}
@@ -727,16 +868,32 @@ class Routing extends Component {
                                 component={Privacy}
                                 indexBySearchEngines={true}
                             />
-                            <PrivateRoute
+                            <SunsetGatedRoute
+                                capability='dappConnect'
+                                retireIf={() =>
+                                    !isSunsetCapabilityEnabled('dappSignMessage') ||
+                                    !hasActiveAccount()
+                                }
+                                guard={PrivateRoute}
                                 exact
                                 path='/sign-message'
                                 component={SignMessageWrapper}
+                                retired={() => <DappRequestRetired kind='signMessage' />}
                             />
                             {WEB3AUTH_FEATURE_ENABLED && (
-                                <PrivateRoute
+                                <SunsetGatedRoute
+                                    capability='dappConnect'
+                                    retireIf={() =>
+                                        !isSunsetCapabilityEnabled('dappSignMessage') ||
+                                        !hasActiveAccount()
+                                    }
+                                    guard={PrivateRoute}
                                     exact
                                     path='/verify-owner'
                                     component={VerifyOwnerWrapper}
+                                    retired={() => (
+                                        <DappRequestRetired kind='verifyOwner' />
+                                    )}
                                 />
                             )}
                             <PrivateRoute component={PageNotFound} />

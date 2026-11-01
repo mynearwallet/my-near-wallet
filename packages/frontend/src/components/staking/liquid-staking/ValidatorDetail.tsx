@@ -8,6 +8,8 @@ import { Translate } from 'react-localize-redux';
 
 import BalanceBox from '../components/BalanceBox';
 import FormButton from '../../common/FormButton';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
+import SunsetInlineNotice from '../../sunset/SunsetInlineNotice';
 import Container from '../../common/styled/Container.css';
 import { getMetapoolValidator } from './utils';
 import { selectAccountId } from '../../../redux/slices/account';
@@ -64,6 +66,9 @@ const ValidatorDetail = () => {
         },
     });
 
+    // Positions stay visible; only the actions that change them are retired.
+    const canManageStake = isSunsetCapabilityEnabled('stakeManage');
+
     return (
         <StyledContainer className='small-centered'>
             <div className='head-section'>
@@ -71,14 +76,20 @@ const ValidatorDetail = () => {
                     Validator: <br />
                     {validatorId}
                 </div>
-                <FormButton
-                    className='staking-button'
-                    trackingId='STAKE Click stake with validator button'
-                    linkTo={`/liquid-staking/${validatorId}/stake`}
-                    data-test-id='validatorPageStakeButton'
-                >
-                    <Translate id='staking.validator.button' />
-                </FormButton>
+                <SunsetInlineNotice
+                    messageKey='sunset.inline.stakingEnded'
+                    minPhase={3}
+                />
+                {isSunsetCapabilityEnabled('stakeDeposit') && (
+                    <FormButton
+                        className='staking-button'
+                        trackingId='STAKE Click stake with validator button'
+                        linkTo={`/liquid-staking/${validatorId}/stake`}
+                        data-test-id='validatorPageStakeButton'
+                    >
+                        <Translate id='staking.validator.button' />
+                    </FormButton>
+                )}
             </div>
             <FarmingAPY apy={liquidValidatorData?.apy} hideTooltip={true} />
             <BalanceBox
@@ -96,10 +107,16 @@ const ValidatorDetail = () => {
                 loading={isLoading}
                 button='staking.balanceBox.staked.button'
                 buttonColor='gray-red'
-                onClick={() => {
-                    dispatch(redirectTo(`/liquid-staking/${validatorId}/unstake`));
-                    Mixpanel.track('UNSTAKE Click unstake button');
-                }}
+                onClick={
+                    canManageStake
+                        ? () => {
+                              dispatch(
+                                  redirectTo(`/liquid-staking/${validatorId}/unstake`)
+                              );
+                              Mixpanel.track('UNSTAKE Click unstake button');
+                          }
+                        : undefined
+                }
             />
             <BalanceBox
                 title='staking.balanceBox.pending.title'
@@ -126,9 +143,13 @@ const ValidatorDetail = () => {
                 buttonColor='gray-blue'
                 loading={isLoading}
                 button='staking.balanceBox.available.button'
-                onClick={() => {
-                    setShowConfirmModal(true);
-                }}
+                onClick={
+                    canManageStake
+                        ? () => {
+                              setShowConfirmModal(true);
+                          }
+                        : undefined
+                }
             />
             {showConfirmModal && (
                 <StakeConfirmModal

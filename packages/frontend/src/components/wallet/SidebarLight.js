@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import CreateCustomNameLightBanner from './CreateCustomNameLightBanner';
 import ExploreNativeBanner from './ExploreNativeBanner';
+import { isSunsetCapabilityEnabled } from '../../config/sunset';
 
 const StyledContainer = styled.div`
     background-color: transparent;
@@ -43,17 +44,24 @@ const StyledBanner = styled.div`
 
 export default ({ availableAccounts }) => {
     const [activeComponent, setActiveComponent] = useState('ExploreApps');
+    // The custom-name slide creates a new named account, which the sunset retires.
+    const canCreateAccount = isSunsetCapabilityEnabled('createAccount');
+
+    // Explore is the last slide left; once it is retired too there is nothing to show.
+    if (!isSunsetCapabilityEnabled('explore')) {
+        return null;
+    }
 
     return (
         <StyledContainer>
             <StyledBanner>
-                {activeComponent === 'ExploreApps' ? (
+                {activeComponent === 'ExploreApps' || !canCreateAccount ? (
                     <ExploreNativeBanner />
                 ) : (
                     <CreateCustomNameLightBanner />
                 )}
             </StyledBanner>
-            {availableAccounts && (
+            {availableAccounts && canCreateAccount && (
                 <div className='dots'>
                     <div
                         className={`dot ${

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
 import SafeTranslate from '../../SafeTranslate';
@@ -20,6 +22,15 @@ const StyledContainer = styled(Container)`
         }
     }
 `;
+
+const TryAnotherImportMethodButton = () => {
+    const { t } = useTranslation();
+    return (
+        <FormButton color='gray-blue' linkTo='/recover-account'>
+            {t('sunset.autoImport.tryAnotherMethod')}
+        </FormButton>
+    );
+};
 
 const AutoImport = ({
     accountId,
@@ -43,10 +54,12 @@ const AutoImport = ({
                     <FormButton color='gray-blue' onClick={onCancel}>
                         <Translate id='button.cancel' />
                     </FormButton>
-                ) : (
+                ) : isSunsetCapabilityEnabled('createAccount') ? (
                     <FormButton color='gray-blue' linkTo='/create'>
                         <Translate id='button.createNewAccount' />
                     </FormButton>
+                ) : (
+                    <TryAnotherImportMethodButton />
                 )}
             </>
         ) : (

@@ -5,12 +5,14 @@ import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ClaimSuccess } from './components/ClaimSuccess';
+import FeatureRetiredPage from '../sunset/FeatureRetiredPage';
 import Staking from './components/Staking';
 import StakingAction from './components/StakingAction';
 import Unstake from './components/Unstake';
 import Validator from './components/Validator';
 import Validators from './components/Validators';
 import Withdraw from './components/Withdraw';
+import { isSunsetCapabilityEnabled } from '../../config/sunset';
 import { Mixpanel } from '../../mixpanel/index';
 import { getBalance } from '../../redux/actions/account';
 import {
@@ -288,6 +290,38 @@ const StakingContainer = ({ history }) => {
                                 />
                             )}
                         />
+                        {!isSunsetCapabilityEnabled('stakeDeposit') && (
+                            <Route
+                                exact
+                                path={[
+                                    '/staking/validators',
+                                    '/staking/:validator/stake',
+                                ]}
+                                render={({ match }) => (
+                                    <FeatureRetiredPage
+                                        capability='stakeDeposit'
+                                        route={match.path}
+                                    />
+                                )}
+                            />
+                        )}
+                        {!isSunsetCapabilityEnabled('stakeManage') && (
+                            <Route
+                                exact
+                                path={[
+                                    '/staking/unstake',
+                                    '/staking/withdraw',
+                                    '/staking/:validator/unstake',
+                                    '/staking/:validator/claim',
+                                ]}
+                                render={({ match }) => (
+                                    <FeatureRetiredPage
+                                        capability='stakeManage'
+                                        route={match.path}
+                                    />
+                                )}
+                            />
+                        )}
                         <Route
                             exact
                             path='/staking/validators'

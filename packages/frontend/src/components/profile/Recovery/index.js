@@ -7,6 +7,7 @@ import { formatCreatedAt } from './lib/format';
 import { createUserRecoveryMethodsMap } from './lib/recovery-methods';
 import { DisablePasswordEncryptionModal } from './password_encryption/DisablePasswordEncryptionModal';
 import RecoveryMethod from './RecoveryMethod';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import { Mixpanel } from '../../../mixpanel';
 import { deleteRecoveryMethod, redirectTo } from '../../../redux/actions/account';
 import { selectAccountLedgerKey } from '../../../redux/slices/account';
@@ -120,7 +121,7 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
                 <Tooltip translate='profile.security.mostSecureDesc' icon='icon-lg' />
             </h4>
 
-            {!twoFactor && (
+            {!twoFactor && (hasLedger || isSunsetCapabilityEnabled('manageLedger')) && (
                 <HardwareDevices
                     recoveryMethods={userRecoveryMethods}
                     hasLedger={hasLedger}
@@ -170,8 +171,16 @@ export const Recovery = ({ account, userRecoveryMethods, twoFactor }) => {
                     }
                     methodEnabled={phraseMethod?.confirmed}
                     skeleton={loadingStatus.isInitialized ? undefined : '80px'}
-                    onEnable={handleEnableSeedPhrase}
-                    onDisable={handleDisablePassPhrase}
+                    onEnable={
+                        isSunsetCapabilityEnabled('addRecoveryMethod')
+                            ? handleEnableSeedPhrase
+                            : undefined
+                    }
+                    onDisable={
+                        isSunsetCapabilityEnabled('removeFullAccessKey')
+                            ? handleDisablePassPhrase
+                            : undefined
+                    }
                 />
                 {showPhraseDisabling && (
                     <ConfirmDisableMethod

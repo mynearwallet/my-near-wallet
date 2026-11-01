@@ -16,6 +16,7 @@ import NFTs from './NFTs';
 import SidebarLight from './SidebarLight';
 import Tokens from './Tokens';
 import { ZeroBalanceAccountImportedModal } from './ZeroBalanceAccountImportedModal';
+import { isSunsetCapabilityEnabled } from '../../config/sunset';
 import getCurrentLanguage from '../../hooks/getCurrentLanguage';
 import { selectPasswordProtectionSlice } from '../../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
 import classNames from '../../utils/classNames';
@@ -388,7 +389,7 @@ export function Wallet({
                         accountId={accountId}
                     />
                 )}
-                {createCustomName && (
+                {createCustomName && isSunsetCapabilityEnabled('createAccount') && (
                     <CreateCustomNameModal
                         onClose={handleSetCreateCustomName}
                         isOpen={createCustomName}
@@ -435,53 +436,62 @@ const FungibleTokens = ({ accountExists }) => {
                 <Translate id='wallet.availableBalance' />{' '}
                 <Tooltip translate='availableBalanceInfo' />
             </div>
-            <div className='buttons'>
-                <FormButton
-                    color='dark-gray'
-                    linkTo='/send-money'
-                    trackingId='Click Send on Wallet page'
-                    data-test-id='balancesTab.send'
-                >
-                    <div>
-                        <SendIcon />
-                    </div>
-                    <Translate id='button.send' />
-                </FormButton>
-                <FormButton
-                    color='dark-gray'
-                    linkTo='/receive-money'
-                    trackingId='Click Receive on Wallet page'
-                    data-test-id='balancesTab.receive'
-                >
-                    <div>
-                        <DownArrowIcon />
-                    </div>
-                    <Translate id='button.receive' />
-                </FormButton>
-                <FormButton
-                    color='dark-gray'
-                    linkTo='/buy'
-                    trackingId='Click Top Up on Wallet page'
-                    data-test-id='balancesTab.buy'
-                >
-                    <div>
-                        <TopUpIcon />
-                    </div>
-                    <Translate id='button.topUp' />
-                </FormButton>
-                <FormButton
-                    color='dark-gray'
-                    linkTo='/swap'
-                    trackingId='Click Swap on Wallet page'
-                    data-test-id='balancesTab.swap'
-                >
-                    <div>
-                        <WrapIcon color='white' />
-                    </div>
-                    <Translate id='button.swap' />
-                </FormButton>
-            </div>
-            {zeroBalanceAccount && (
+            {/* In limited mode every action here is retired, so the row goes too. */}
+            {isSunsetCapabilityEnabled('receive') && (
+                <div className='buttons'>
+                    {isSunsetCapabilityEnabled('send') && (
+                        <FormButton
+                            color='dark-gray'
+                            linkTo='/send-money'
+                            trackingId='Click Send on Wallet page'
+                            data-test-id='balancesTab.send'
+                        >
+                            <div>
+                                <SendIcon />
+                            </div>
+                            <Translate id='button.send' />
+                        </FormButton>
+                    )}
+                    <FormButton
+                        color='dark-gray'
+                        linkTo='/receive-money'
+                        trackingId='Click Receive on Wallet page'
+                        data-test-id='balancesTab.receive'
+                    >
+                        <div>
+                            <DownArrowIcon />
+                        </div>
+                        <Translate id='button.receive' />
+                    </FormButton>
+                    {isSunsetCapabilityEnabled('buy') && (
+                        <FormButton
+                            color='dark-gray'
+                            linkTo='/buy'
+                            trackingId='Click Top Up on Wallet page'
+                            data-test-id='balancesTab.buy'
+                        >
+                            <div>
+                                <TopUpIcon />
+                            </div>
+                            <Translate id='button.topUp' />
+                        </FormButton>
+                    )}
+                    {isSunsetCapabilityEnabled('swap') && (
+                        <FormButton
+                            color='dark-gray'
+                            linkTo='/swap'
+                            trackingId='Click Swap on Wallet page'
+                            data-test-id='balancesTab.swap'
+                        >
+                            <div>
+                                <WrapIcon color='white' />
+                            </div>
+                            <Translate id='button.swap' />
+                        </FormButton>
+                    )}
+                </div>
+            )}
+            {zeroBalanceAccount && isSunsetCapabilityEnabled('buy') && (
                 <div className='deposit-banner-wrapper'>
                     <DepositNearBanner />
                 </div>

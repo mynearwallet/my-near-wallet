@@ -3,6 +3,7 @@ import { Translate } from 'react-localize-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import creditcard from '../media/creditcard.svg';
 
 const StyledBannerLink = styled(Link)`
@@ -65,6 +66,10 @@ const StyledBannerBtn = styled.span`
 `;
 
 export default function () {
+    if (!isSunsetCapabilityEnabled('buy')) {
+        return null;
+    }
+
     return (
         <StyledBannerLink to='/buy'>
             <StyledBannerH2>

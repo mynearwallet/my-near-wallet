@@ -3,6 +3,7 @@ import BN from 'bn.js';
 import cloneDeep from 'lodash.clonedeep';
 import { createSelector } from 'reselect';
 
+import { guardSunsetCapability } from '../../../components/sunset/sunsetGuard';
 import { Mixpanel } from '../../../mixpanel';
 import Wallet, { wallet } from '../../../utils/wallet';
 import { showCustomAlert } from '../../actions/status';
@@ -28,6 +29,7 @@ export const updateSuccessHashes = createAction('updateSuccessHashes');
 export const handleSignTransactions = createAsyncThunk(
     `${SLICE_NAME}/handleSignTransactions`,
     async (_, thunkAPI) => {
+        guardSunsetCapability('dappSign');
         const { dispatch, getState } = thunkAPI;
         let transactionsHashes;
         const retryingTx = !!selectSignRetryTransactions(getState()).length;

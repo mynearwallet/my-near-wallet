@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import FormButton from '../../common/FormButton';
 import Container from '../../common/styled/Container.css';
+import FeatureRetiredPage from '../../sunset/FeatureRetiredPage';
 import NearGiftIcons from '../../svg/NearGiftIcons';
 
 const StyledContainer = styled(Container)`
@@ -26,6 +28,11 @@ const StyledContainer = styled(Container)`
 `;
 
 const TrialDropLanding = ({ fundingContract, fundingKey, claimingDrop, history }) => {
+    // Securing a trial account goes through account creation (create_account_and_claim).
+    if (!isSunsetCapabilityEnabled('createAccount')) {
+        return <FeatureRetiredPage capability='createAccount' route='/linkdrop/trial' />;
+    }
+
     const handleSecureAccount = async () => {
         let queryString = `?fundingOptions=${encodeURIComponent(
             JSON.stringify({

@@ -62,9 +62,13 @@ const ImportAccountWithLinkWrapper = () => {
                             'IE Recover with link',
                             async () => {
                                 if (isZeroBalanceAccount) {
-                                    await dispatch(
+                                    const imported = await dispatch(
                                         importZeroBalanceAccountPhrase(seedPhrase)
                                     );
+                                    if (imported?.payload?.blocked) {
+                                        // The sunset refused it and already explained why.
+                                        return;
+                                    }
                                     dispatch(setZeroBalanceAccountImportMethod('phrase'));
                                 } else {
                                     const shouldCreateFullAccessKey = false;

@@ -7,6 +7,8 @@ const mockWallet = {
     getLocalKeyPair: jest.fn(),
     hasTwoFactorEnabled: jest.fn(),
     isFullAccessKey: jest.fn(),
+    getLedgerKey: jest.fn(),
+    getAccountsLocalStorage: jest.fn(),
 };
 const mockGetKeyMeta = jest.fn();
 
@@ -29,6 +31,8 @@ describe('new-key account-transfer eligibility', () => {
         jest.clearAllMocks();
         mockWallet.hasTwoFactorEnabled.mockResolvedValue(false);
         mockWallet.isFullAccessKey.mockResolvedValue(true);
+        mockWallet.getLedgerKey.mockResolvedValue(null);
+        mockWallet.getAccountsLocalStorage.mockReturnValue({});
         mockGetKeyMeta.mockResolvedValue({ type: 'software' });
     });
 
@@ -37,6 +41,7 @@ describe('new-key account-transfer eligibility', () => {
             'ready.testnet',
             'missing.testnet',
             'ledger.testnet',
+            'ledger-signed-in.testnet',
             'secp.testnet',
             'two-factor.testnet',
             'function-call.testnet',
@@ -58,7 +63,13 @@ describe('new-key account-transfer eligibility', () => {
             async (accountId) => accountId === 'two-factor.testnet'
         );
         mockWallet.isFullAccessKey.mockImplementation(
-            async (accountId) => accountId !== 'function-call.testnet'
+            async (accountId) =>
+                accountId !== 'function-call.testnet' &&
+                accountId !== 'ledger-signed-in.testnet'
+        );
+        // A Ledger sign-in stores only a metadata key locally; the Ledger key is on chain.
+        mockWallet.getLedgerKey.mockImplementation(async (accountId) =>
+            accountId === 'ledger-signed-in.testnet' ? 'ed25519:device' : null
         );
 
         const rows = await loadExportableAccounts();
@@ -68,6 +79,7 @@ describe('new-key account-transfer eligibility', () => {
             'ready.testnet': 'available',
             'missing.testnet': 'no_local_key',
             'ledger.testnet': 'ledger_unsupported',
+            'ledger-signed-in.testnet': 'ledger_unsupported',
             'secp.testnet': 'algorithm_unsupported',
             'two-factor.testnet': 'two_factor_unsupported',
             'function-call.testnet': 'not_full_access',
@@ -75,6 +87,32 @@ describe('new-key account-transfer eligibility', () => {
         expect(
             rows.find((row) => row.accountId === 'ready.testnet').sourcePublicKey
         ).toBe('ed25519:ready.testnet');
+    });
+
+    it('lists Ledger accounts that have no local key, and only those', async () => {
+        // A Ledger sign-in in limited mode adds no metadata key, so the account is only in the
+        // wallet's account list.
+        mockWallet.keyStore.getAccounts.mockResolvedValue(['ready.testnet']);
+        mockWallet.getAccountsLocalStorage.mockReturnValue({
+            'ready.testnet': true,
+            'ledger-only.testnet': true,
+            'keyless.testnet': true,
+        });
+        mockWallet.getLocalKeyPair.mockImplementation(async (accountId) =>
+            accountId === 'ready.testnet' ? makeKeyPair('ed25519:ready') : null
+        );
+        mockWallet.getLedgerKey.mockImplementation(async (accountId) =>
+            accountId === 'ledger-only.testnet' ? 'ed25519:device' : null
+        );
+
+        await expect(loadExportableAccounts()).resolves.toEqual([
+            {
+                accountId: 'ready.testnet',
+                sourcePublicKey: 'ed25519:ready',
+                availability: 'available',
+            },
+            { accountId: 'ledger-only.testnet', availability: 'ledger_unsupported' },
+        ]);
     });
 
     it('carries the eligibility reason when an account cannot be transferred', async () => {

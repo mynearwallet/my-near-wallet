@@ -3,7 +3,6 @@ import type { ENearNetwork } from '@meteorwallet/meteor-near-sdk/dist/packages/c
 import { CalimeroWalletUtils } from 'calimero-wallet-utils';
 import isEqual from 'lodash.isequal';
 import * as nearApiJs from 'near-api-js';
-import type { AccessKeyList } from 'near-api-js/lib/providers/provider';
 import { generateSeedPhrase, parseSeedPhrase } from 'near-seed-phrase';
 
 import { decorateWithLockup } from './account-with-lockup';
@@ -23,12 +22,18 @@ import {
     removeLedgerHDPath,
     setLedgerHdPath,
 } from './localStorage';
-import { ConnectionInfo, RpcProvider } from './mnw-api-js';
+import {
+    AccessKeyListPage,
+    ConnectionInfo,
+    queryAccessKeyList,
+    RpcProvider,
+} from './mnw-api-js';
 import { ConnectionsStorage } from './storage';
 import { TwoFactor } from './twoFactor';
 import { WalletError } from './walletError';
 import { store, addAccountReducer } from '..';
 import CONFIG from '../config';
+import { assertSunsetCapability, isSunsetCapabilityEnabled } from '../config/sunset';
 import { makeAccountActive, redirectTo, switchAccount } from '../redux/actions/account';
 import { actions as ledgerActions } from '../redux/slices/ledger';
 import passwordProtectedWallet from '../redux/slices/passwordProtectedWallet/passwordProtectedWallet';
@@ -794,6 +799,7 @@ export default class Wallet {
     }
 
     async createNewAccountLinkdrop(accountId, fundingContract, fundingKey, publicKey) {
+        assertSunsetCapability('createAccount');
         const fundingKeyPair = nearApiJs.KeyPair.fromString(fundingKey);
         const account = new FundingAccount(
             this.connectionIgnoringLedger,
@@ -1109,6 +1115,12 @@ export default class Wallet {
     }
 
     async addWalletMetadataAccessKeyIfNeeded(accountId, localAccessKey) {
+        // In limited mode signing in with a Ledger sends nothing on-chain. The account is still
+        // recognised as a Ledger account without this key (see getLedgerKey).
+        if (!isSunsetCapabilityEnabled('ledgerMetadataKey')) {
+            return null;
+        }
+
         if (
             !localAccessKey ||
             !localAccessKey.access_key.permission.FunctionCall ||
@@ -1654,13 +1666,14 @@ export default class Wallet {
                     url: (this.connection.provider as nearApiJs.providers.JsonRpcProvider)
                         .connection.url,
                 });
-                const accessKeys = await provider
-                    .query<AccessKeyList>({
+                const accessKeys = await queryAccessKeyList(
+                    (params) => provider.query<AccessKeyListPage>(params),
+                    {
                         request_type: 'view_access_key_list',
                         finality: 'optimistic',
                         account_id: implicitAccountId,
-                    })
-                    .then((r) => r?.keys || []);
+                    }
+                ).then((r) => r?.keys || []);
 
                 const hasMatchedPublicKey = accessKeys.some(
                     ({ public_key }) => public_key === publicKey

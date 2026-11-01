@@ -14,6 +14,12 @@ export async function getAccountIds(publicKey, waitAllIndexer?: boolean) {
     );
 }
 
+export async function confirmNoAccountIdsForPublicKey(publicKey: string) {
+    return CoreIndexerAdapter.getInstance(
+        CONFIG.CURRENT_NEAR_NETWORK
+    ).confirmNoAccountIdsForPublicKey(publicKey);
+}
+
 export async function getAccountIdsBySeedPhrase(seedPhrase) {
     const { secretKey } = parseSeedPhrase(seedPhrase);
     const keyPair = nearApiJs.KeyPair.fromString(secretKey);

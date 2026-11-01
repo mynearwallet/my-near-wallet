@@ -2,6 +2,7 @@ import React from 'react';
 import { Translate } from 'react-localize-redux';
 import styled from 'styled-components';
 
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import FormButton from '../../common/FormButton';
 import NearCircleIcon from '../../svg/NearCircleIcon.js';
 
@@ -40,14 +41,16 @@ export default function NoValidators({ accountId }) {
             <div>
                 <Translate id='staking.noValidators.title' />
             </div>
-            <FormButton
-                disabled={!accountId}
-                className='gray-blue dark'
-                linkTo='/staking/validators'
-                trackingId='STAKE Click stake my tokens button : no validators'
-            >
-                <Translate id='staking.staking.button' />
-            </FormButton>
+            {isSunsetCapabilityEnabled('stakeDeposit') && (
+                <FormButton
+                    disabled={!accountId}
+                    className='gray-blue dark'
+                    linkTo='/staking/validators'
+                    trackingId='STAKE Click stake my tokens button : no validators'
+                >
+                    <Translate id='staking.staking.button' />
+                </FormButton>
+            )}
         </Container>
     );
 }

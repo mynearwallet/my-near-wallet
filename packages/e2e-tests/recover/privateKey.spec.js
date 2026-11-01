@@ -15,9 +15,8 @@ describe('Account Recovery Using Private Key', () => {
     });
 
     test('navigates to private key page successfully', async ({ page }) => {
-        await page.goto('/');
-
-        await page.click('data-test-id=homePageImportAccountButton');
+        // From Phase 2 the guest landing no longer links to import; the route stays open.
+        await page.goto('/recover-account');
 
         await createPassword(page);
 

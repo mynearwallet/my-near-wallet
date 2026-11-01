@@ -6,6 +6,7 @@ import {
     webpage_local_storage,
 } from '@meteorwallet/sdk';
 
+import { withBrowserStorageRoom } from './browserStorage';
 import {
     assertSelectionCanAffordAddKeys,
     createWalletAddKeyChain,
@@ -197,25 +198,27 @@ export const promptMeteorAccountTransfer = async ({ accounts, networkId }) => {
 
     await meteorConnect.transferAccounts.clearStaged();
 
-    try {
-        for (const account of accounts) {
-            const stageResult = await meteorConnect.transferAccounts.stage({
-                networkId,
-                accountId: account.accountId,
-                secretInput: account.privateKey,
-            });
+    return withBrowserStorageRoom(async () => {
+        try {
+            for (const account of accounts) {
+                const stageResult = await meteorConnect.transferAccounts.stage({
+                    networkId,
+                    accountId: account.accountId,
+                    secretInput: account.privateKey,
+                });
 
-            if (!stageResult.ok) {
-                throw new Error(
-                    `Could not prepare ${account.accountId} for export: ${stageResult.message}`
-                );
+                if (!stageResult.ok) {
+                    throw new Error(
+                        `Could not prepare ${account.accountId} for export: ${stageResult.message}`
+                    );
+                }
             }
-        }
 
-        return await meteorConnect.transferAccounts.prompt();
-    } finally {
-        await meteorConnect.transferAccounts.clearStaged();
-    }
+            return await meteorConnect.transferAccounts.prompt();
+        } finally {
+            await meteorConnect.transferAccounts.clearStaged();
+        }
+    });
 };
 
 /* ────────────────────────────────────────────────────────────────────────────────────────────
@@ -380,7 +383,9 @@ export const startMeteorNewKeyAccountTransfer = async ({ accounts, networkId }) 
                 inputFingerprint,
             });
         }
-        result = await newKeyTransfer().start(request);
+        // The SDK's first write here journals the request before Meteor is opened: a full origin
+        // refused exactly that write, so room is made first.
+        result = await withBrowserStorageRoom(() => newKeyTransfer().start(request));
     } catch (error) {
         if (plan.clientTransferId == null) {
             // First attempt failed and the SDK generated the id internally. If it journaled a
@@ -445,11 +450,13 @@ export const runMeteorNewKeyAddKeys = async ({ transferSessionId, onProgress }) 
                 .map((row) => row.accountId)
         );
     }
-    return newKeyTransfer().runAddKeys({
-        transferSessionId,
-        chain: createWalletAddKeyChain(),
-        onProgress,
-    });
+    return withBrowserStorageRoom(() =>
+        newKeyTransfer().runAddKeys({
+            transferSessionId,
+            chain: createWalletAddKeyChain(),
+            onProgress,
+        })
+    );
 };
 
 /**
@@ -480,10 +487,12 @@ export const verifyMeteorNewKeyAccountTransfer = async ({ transferSessionId }) =
     ) {
         throw new Error('new_key_transfer_verification_proof_missing');
     }
-    return newKeyTransfer().verifyActive({
-        transferSessionId,
-        activations: pendingVerification.activations,
-    });
+    return withBrowserStorageRoom(() =>
+        newKeyTransfer().verifyActive({
+            transferSessionId,
+            activations: pendingVerification.activations,
+        })
+    );
 };
 
 /**
