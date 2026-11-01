@@ -766,6 +766,7 @@
         "error": {
             "addKeyAccountMismatch": "Bu aktarım o hesabı kapsamıyor, bu yüzden hiçbir anahtar değiştirilmedi. Aktarımı hesap listenizden yeniden başlatın.",
             "addKeyChainRequired": "MyNearWallet anahtar değişikliğini imzalamak için NEAR ağına ulaşamadı. Bağlantınızı kontrol edip yeniden deneyin.",
+            "browserStorageFull": "Bu tarayıcıda MyNearWallet için depolama alanı kalmadı, bu yüzden aktarım bu cihazdaki ilerlemesini kaydedemedi. Hesaplarınız ve anahtarlarınız güvende. MyNearWallet güvenle boşaltabileceği alanı zaten boşalttı; geri kalanı bu site için saklanan başka veriler tarafından kullanılıyor. Aşağıdaki kodla destek ekibine başvurun veya “Bunun yerine özel anahtarları dışa aktar” seçeneğini kullanın. Her hesabın yedeği yoksa bu sitenin verilerini temizlemeyin; bu, bu tarayıcıda saklanan anahtarları siler.",
             "clientIdConflict": "Bu aktarım farklı hesaplarla başlatılmıştı. Hesap listenizden yeniden başlatın.",
             "insufficientBalanceForAddKeys": "Seçilen bazı hesaplarda Meteor'un anahtarını eklemek için yeterli kullanılabilir NEAR yok. Bakiye yükleyin veya seçimden çıkarın, sonra yeniden deneyin.",
             "journalCorrupt": "Bu cihazda saklanan aktarım kaydı güvenli biçimde okunamadı.",

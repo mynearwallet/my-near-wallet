@@ -2,6 +2,7 @@ import BN from 'bn.js';
 import * as nearApiJs from 'near-api-js';
 
 import CONFIG from '../config';
+import { queryAccessKeyList } from '../utils/mnw-api-js';
 import { wallet } from '../utils/wallet';
 
 /**
@@ -215,8 +216,11 @@ const isExpiredTransactionError = (error) => {
 };
 
 export const createWalletAddKeyChain = () => ({
+    // Paged, at FINAL finality: the SDK decides from the WHOLE list (source key present and full
+    // access, destination key present or not), and nodes refuse the unpaginated list for an
+    // account with more than 100 keys — which made such an account impossible to transfer.
     getAccessKeys: (job) =>
-        wallet.connection.provider.query({
+        queryAccessKeyList((params) => wallet.connection.provider.query(params), {
             request_type: 'view_access_key_list',
             account_id: job.accountId,
             finality: 'final',

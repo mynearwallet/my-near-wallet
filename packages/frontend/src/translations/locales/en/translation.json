@@ -1029,6 +1029,7 @@
         "error": {
             "addKeyAccountMismatch": "This transfer does not cover that account, so no key change was made. Start the transfer again from your account list.",
             "addKeyChainRequired": "MyNearWallet could not reach the NEAR network to sign the key change. Check your connection and try again.",
+            "browserStorageFull": "This browser has no storage space left for MyNearWallet, so the transfer could not save its progress on this device. Your accounts and keys are safe. MyNearWallet has already freed the space it safely can; the rest is held by other data stored for this site. Please contact support with the code below, or use Export private keys instead. Do not clear this site's data unless every account is backed up, because that deletes the keys stored in this browser.",
             "clientIdConflict": "This transfer was started with different accounts. Start it again from your account list.",
             "insufficientBalanceForAddKeys": "Some selected accounts do not have enough available NEAR to add Meteor's key. Top them up or deselect them, then retry.",
             "journalCorrupt": "The transfer record stored on this device could not be read safely.",

@@ -789,6 +789,7 @@
         "error": {
             "addKeyAccountMismatch": "Esta transferência não abrange essa conta, portanto nenhuma chave foi alterada. Inicie a transferência novamente pela sua lista de contas.",
             "addKeyChainRequired": "A MyNearWallet não conseguiu acessar a rede NEAR para assinar a alteração de chave. Verifique sua conexão e tente novamente.",
+            "browserStorageFull": "Este navegador não tem mais espaço de armazenamento para a MyNearWallet, por isso a transferência não conseguiu salvar seu progresso neste dispositivo. Suas contas e chaves estão seguras. A MyNearWallet já liberou o espaço que podia liberar com segurança; o restante está ocupado por outros dados salvos para este site. Entre em contato com o suporte informando o código abaixo ou use “Exportar chaves privadas em vez disso”. Não limpe os dados deste site a menos que todas as contas tenham backup, pois isso apaga as chaves armazenadas neste navegador.",
             "clientIdConflict": "Esta transferência foi iniciada com outras contas. Inicie-a novamente pela sua lista de contas.",
             "insufficientBalanceForAddKeys": "Algumas contas selecionadas não têm NEAR disponível suficiente para adicionar a chave da Meteor. Carregue-as ou desmarque-as e tente novamente.",
             "journalCorrupt": "O registro da transferência armazenado neste dispositivo não pôde ser lido com segurança.",

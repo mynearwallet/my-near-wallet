@@ -174,8 +174,21 @@ export const calculateAPY = (poolSummary, tokenPrices) => {
     }
 };
 
+/** The validator lists, holding only the account id every reader takes from them. */
+type EpochValidatorIds = Record<
+    'current_proposals' | 'current_validators' | 'next_validators' | 'prev_epoch_kickout',
+    Array<{ account_id: string }>
+>;
+
+const toEpochValidatorIds = (info: EpochValidatorInfo): EpochValidatorIds => ({
+    current_proposals: info.current_proposals.map(({ account_id }) => ({ account_id })),
+    current_validators: info.current_validators.map(({ account_id }) => ({ account_id })),
+    next_validators: info.next_validators.map(({ account_id }) => ({ account_id })),
+    prev_epoch_kickout: info.prev_epoch_kickout.map(({ account_id }) => ({ account_id })),
+});
+
 function getUniqueAccountIdsFromEpochValidatorInfo(
-    epochValidatorInfo: EpochValidatorInfo
+    epochValidatorInfo: EpochValidatorIds
 ): string[] {
     try {
         const allAccountIds: string[] = [];
@@ -204,10 +217,16 @@ function getUniqueAccountIdsFromEpochValidatorInfo(
     }
 }
 
-export const getRecentEpochValidators = async () => {
+/**
+ * Persisted as account ids only. The full `validators` answer is ~400K characters on mainnet, and
+ * persisting it for a week took that much of this origin's localStorage — the same storage the
+ * Meteor transfer journal must write to. A new key, so the old full entry is never read again.
+ */
+export const getRecentEpochValidators = async (): Promise<EpochValidatorIds> => {
     return await queryClient.fetchQuery({
-        queryKey: ['recent_provider_validators', 'persist'],
-        queryFn: () => wallet.connection.provider.validators(null),
+        queryKey: ['recent_provider_validator_ids', 'persist'],
+        queryFn: async () =>
+            toEpochValidatorIds(await wallet.connection.provider.validators(null)),
         staleTime: 1000 * 60 * 60 * 24, // 1 day
     });
 };

@@ -747,6 +747,7 @@
         "error": {
             "addKeyAccountMismatch": "Phiên chuyển này không bao gồm tài khoản đó, nên không có khóa nào bị thay đổi. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
             "addKeyChainRequired": "MyNearWallet không kết nối được tới mạng NEAR để ký thay đổi khóa. Hãy kiểm tra kết nối và thử lại.",
+            "browserStorageFull": "Trình duyệt này đã hết dung lượng lưu trữ dành cho MyNearWallet, nên lần chuyển không thể lưu tiến trình trên thiết bị này. Tài khoản và khóa của bạn vẫn an toàn. MyNearWallet đã giải phóng phần dung lượng có thể giải phóng an toàn; phần còn lại đang bị dữ liệu khác của trang này chiếm giữ. Hãy liên hệ bộ phận hỗ trợ kèm mã bên dưới, hoặc chọn “Xuất khóa riêng tư thay thế”. Đừng xóa dữ liệu của trang này trừ khi mọi tài khoản đều đã được sao lưu, vì thao tác đó sẽ xóa các khóa được lưu trong trình duyệt này.",
             "clientIdConflict": "Phiên chuyển này đã được bắt đầu với các tài khoản khác. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
             "insufficientBalanceForAddKeys": "Một số tài khoản được chọn không đủ NEAR khả dụng để thêm khóa của Meteor. Hãy nạp thêm hoặc bỏ chọn chúng, rồi thử lại.",
             "journalCorrupt": "Không thể đọc an toàn bản ghi phiên chuyển được lưu trên thiết bị này.",

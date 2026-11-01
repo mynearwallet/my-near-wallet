@@ -915,6 +915,7 @@
         "error": {
             "addKeyAccountMismatch": "本次转移不包含该账户，因此没有更改任何密钥。请从账户列表重新开始转移。",
             "addKeyChainRequired": "MyNearWallet 无法连接 NEAR 网络来签署密钥更改。请检查网络连接后重试。",
+            "browserStorageFull": "此浏览器为 MyNearWallet 提供的存储空间已用完，因此转移无法在此设备上保存进度。你的账户和密钥是安全的。MyNearWallet 已释放所有可以安全释放的空间；其余空间被此网站存储的其他数据占用。请附上下方代码联系支持团队，或选择“改为导出私钥”。除非每个账户都已备份，否则请不要清除此网站的数据，因为这会删除存储在此浏览器中的密钥。",
             "clientIdConflict": "本次转移最初使用的是其他账户。请从账户列表重新开始。",
             "insufficientBalanceForAddKeys": "部分所选账户没有足够的可用 NEAR 来添加 Meteor 的密钥。请为其充值或取消选择后重试。",
             "journalCorrupt": "无法安全读取本设备上保存的转移记录。",
