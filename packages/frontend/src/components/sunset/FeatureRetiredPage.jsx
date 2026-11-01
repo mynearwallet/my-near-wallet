@@ -125,7 +125,13 @@ export default function FeatureRetiredPage({ capability, route }) {
             <h1 ref={heading} tabIndex={-1}>
                 {t(`sunset.retired.${capability}.title`)}
             </h1>
-            <h2>{t('sunset.retired.body')}</h2>
+            <h2>
+                {t(
+                    SUNSET_PHASE >= 3
+                        ? ['sunset.retired.phase3Body', 'sunset.retired.body']
+                        : 'sunset.retired.body'
+                )}
+            </h2>
             <AccountExportNotice variant='info'>
                 {notices.map((notice) => (
                     <p key={notice}>{notice}</p>

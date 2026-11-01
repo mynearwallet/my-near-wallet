@@ -1833,8 +1833,7 @@
                 "title": "A MyNearWallet entra em modo limitado em {{date}}"
             },
             "phase3": {
-                "p1": "Envios, staking, trocas e aprovações de apps foram encerrados. Você ainda pode ver seus saldos, exportar suas chaves e mover suas contas.",
-                "p2": "Seus fundos estão seguros. Mova suas contas para a Meteor Wallet para manter o acesso completo.",
+                "p1": "Envios, staking e aprovações de apps foram encerrados. Seus fundos estão seguros, e você ainda pode ver seus saldos e mover suas contas para a Meteor Wallet.",
                 "title": "A MyNearWallet agora está em modo limitado"
             }
         },
@@ -1869,6 +1868,7 @@
                 "hint": "Se sua conta já é protegida por um Ledger, conecte o mesmo Ledger na Meteor Wallet ou em qualquer carteira NEAR compatível com Ledger. Nenhuma chave precisa ser movida.",
                 "title": "A configuração do Ledger não está mais disponível"
             },
+            "phase3Body": "A MyNearWallet agora está em modo limitado.",
             "receive": {
                 "hint": "O recebimento pela MyNearWallet foi encerrado. Sua conta continua existindo na NEAR, então tudo o que for enviado a ela chega on-chain e fica disponível na carteira para a qual você se mudar.",
                 "title": "A página Receber não está mais disponível"

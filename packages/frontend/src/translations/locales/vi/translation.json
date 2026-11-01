@@ -1767,8 +1767,7 @@
                 "title": "MyNearWallet chuyển sang chế độ giới hạn vào {{date}}"
             },
             "phase3": {
-                "p1": "Gửi tiền, staking, hoán đổi và phê duyệt ứng dụng đã kết thúc. Bạn vẫn có thể xem số dư, xuất khóa và chuyển tài khoản.",
-                "p2": "Tiền của bạn vẫn an toàn. Hãy chuyển tài khoản sang Meteor Wallet để giữ toàn quyền truy cập.",
+                "p1": "Gửi tiền, staking và phê duyệt ứng dụng đã kết thúc. Tiền của bạn vẫn an toàn, và bạn vẫn có thể xem số dư cũng như chuyển tài khoản sang Meteor Wallet.",
                 "title": "MyNearWallet hiện đang ở chế độ giới hạn"
             }
         },
@@ -1803,6 +1802,7 @@
                 "hint": "Nếu tài khoản của bạn đã được bảo vệ bằng Ledger, hãy kết nối cùng thiết bị Ledger đó trong Meteor Wallet hoặc bất kỳ ví NEAR nào hỗ trợ Ledger. Không cần chuyển khóa nào.",
                 "title": "Thiết lập Ledger không còn khả dụng"
             },
+            "phase3Body": "MyNearWallet hiện đang ở chế độ giới hạn.",
             "receive": {
                 "hint": "Việc nhận tiền qua MyNearWallet đã kết thúc. Tài khoản của bạn vẫn tồn tại trên NEAR, nên mọi thứ gửi đến đều được ghi on-chain và có sẵn trong ví mà bạn chuyển sang.",
                 "title": "Trang Nhận không còn khả dụng"

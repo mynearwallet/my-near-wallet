@@ -2051,8 +2051,7 @@
                 "title": "MyNearWallet 將於 {{date}} 進入受限模式"
             },
             "phase3": {
-                "p1": "轉帳、質押、兌換和應用程式核准已結束。您仍然可以查看餘額、匯出金鑰和遷移帳戶。",
-                "p2": "您的資金是安全的。請將帳戶遷移到 Meteor Wallet，以保留完整存取權限。",
+                "p1": "轉帳、質押和應用程式核准已結束。您的資金是安全的，您仍然可以查看餘額，並將帳戶遷移到 Meteor Wallet。",
                 "title": "MyNearWallet 現已進入受限模式"
             }
         },
@@ -2087,6 +2086,7 @@
                 "hint": "如果您的帳戶已由 Ledger 保護，請在 Meteor Wallet 或任何支援 Ledger 的 NEAR 錢包中連接同一台 Ledger。無需轉移任何金鑰。",
                 "title": "Ledger 設定已無法使用"
             },
+            "phase3Body": "MyNearWallet 現已進入受限模式。",
             "receive": {
                 "hint": "透過 MyNearWallet 接收已結束。您的帳戶仍然存在於 NEAR 上，因此傳送到該帳戶的任何資產都會在鏈上到帳，並可在您遷移到的錢包中使用。",
                 "title": "接收頁面已無法使用"

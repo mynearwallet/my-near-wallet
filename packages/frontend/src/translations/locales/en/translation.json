@@ -2212,8 +2212,7 @@
                 "title": "MyNearWallet enters limited mode on {{date}}"
             },
             "phase3": {
-                "p1": "Sending, staking, swaps and app approvals have ended. You can still view your balances, export your keys and move your accounts.",
-                "p2": "Your funds are safe. Move your accounts to Meteor Wallet to keep full access.",
+                "p1": "Sending, staking and app approvals have ended. Your funds are safe, and you can still view your balances and move your accounts to Meteor Wallet.",
                 "title": "MyNearWallet is now in limited mode"
             }
         },
@@ -2248,6 +2247,7 @@
                 "hint": "If your account is already secured by a Ledger, connect the same Ledger in Meteor Wallet or any Ledger-compatible NEAR wallet. No key needs to move.",
                 "title": "Ledger setup is no longer available"
             },
+            "phase3Body": "MyNearWallet is now in limited mode.",
             "receive": {
                 "hint": "Receiving through MyNearWallet has ended. Your account still exists on NEAR, so anything sent to it arrives on-chain and is available in whichever wallet you move to.",
                 "title": "The Receive page is no longer available"
