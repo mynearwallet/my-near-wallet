@@ -1791,8 +1791,7 @@
                 "title": "MyNearWallet {{date}} tarihinde sınırlı moda geçiyor"
             },
             "phase3": {
-                "p1": "Gönderim, stake, takas ve uygulama onayları sona erdi. Bakiyelerinizi görüntülemeye, anahtarlarınızı dışa aktarmaya ve hesaplarınızı taşımaya devam edebilirsiniz.",
-                "p2": "Fonlarınız güvende. Tam erişimi korumak için hesaplarınızı Meteor Wallet'a taşıyın.",
+                "p1": "Gönderim, stake ve uygulama onayları sona erdi. Fonlarınız güvende; bakiyelerinizi görüntüleyebilir ve hesaplarınızı Meteor Wallet'a taşıyabilirsiniz.",
                 "title": "MyNearWallet artık sınırlı modda"
             }
         },
@@ -1827,6 +1826,7 @@
                 "hint": "Hesabınız zaten bir Ledger ile korunuyorsa, aynı Ledger'ı Meteor Wallet'a veya Ledger uyumlu herhangi bir NEAR cüzdanına bağlayın. Hiçbir anahtarın taşınması gerekmez.",
                 "title": "Ledger kurulumu artık kullanılamıyor"
             },
+            "phase3Body": "MyNearWallet artık sınırlı modda.",
             "receive": {
                 "hint": "MyNearWallet üzerinden alma sona erdi. Hesabınız NEAR'da var olmaya devam ediyor; bu nedenle ona gönderilen her şey zincire ulaşır ve geçtiğiniz cüzdanda kullanılabilir olur.",
                 "title": "Alma sayfası artık kullanılamıyor"

@@ -2051,8 +2051,7 @@
                 "title": "MyNearWallet 将于 {{date}} 进入受限模式"
             },
             "phase3": {
-                "p1": "转账、质押、兑换和应用批准已结束。您仍然可以查看余额、导出密钥和迁移账户。",
-                "p2": "您的资金是安全的。请将账户迁移到 Meteor Wallet，以保留完整访问权限。",
+                "p1": "转账、质押和应用批准已结束。您的资金是安全的，您仍然可以查看余额，并将账户迁移到 Meteor Wallet。",
                 "title": "MyNearWallet 现已进入受限模式"
             }
         },
@@ -2087,6 +2086,7 @@
                 "hint": "如果您的账户已由 Ledger 保护，请在 Meteor Wallet 或任何支持 Ledger 的 NEAR 钱包中连接同一台 Ledger。无需转移任何密钥。",
                 "title": "Ledger 设置已不可用"
             },
+            "phase3Body": "MyNearWallet 现已进入受限模式。",
             "receive": {
                 "hint": "通过 MyNearWallet 接收已结束。您的账户仍然存在于 NEAR 上，因此发送到该账户的任何资产都会在链上到账，并可在您迁移到的钱包中使用。",
                 "title": "接收页面已不可用"
