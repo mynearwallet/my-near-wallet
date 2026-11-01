@@ -71,6 +71,12 @@ describe('sunset capability model', () => {
         );
     });
 
+    it('retires everything but the lockup transfer in phase 3', () => {
+        expect(capabilities.filter((c) => isSunsetCapabilityEnabled(c, 3))).toEqual([
+            'lockupTransfer',
+        ]);
+    });
+
     it('keeps phase 3-only capabilities available in phase 2', () => {
         for (const capability of [
             'send',
@@ -81,6 +87,10 @@ describe('sunset capability model', () => {
             'nftTransfer',
             'linkdropClaim',
             'explore',
+            'addRecoveryMethod',
+            'manageLedger',
+            'removeFullAccessKey',
+            'ledgerMetadataKey',
         ] as SunsetCapability[]) {
             expect(isSunsetCapabilityEnabled(capability, 2)).toBe(true);
             expect(isSunsetCapabilityEnabled(capability, 3)).toBe(false);

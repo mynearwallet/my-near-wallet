@@ -1,14 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { METEOR_WALLET_SITE_URL, SUNSET_LEARN_MORE_URL } from '../../config/sunset';
+import {
+    METEOR_WALLET_SITE_URL,
+    SUNSET_LEARN_MORE_URL,
+    SUNSET_PHASE,
+} from '../../config/sunset';
+import { selectAccountId } from '../../redux/slices/account';
 import { KEY_ACTIVE_ACCOUNT_ID } from '../../utils/wallet';
 import AccountExportNotice from '../account-export/AccountExportNotice';
 import useMigrationEntry from '../account-export/useMigrationEntry';
 import FormButton from '../common/FormButton';
 import Container from '../common/styled/Container.css';
+import AccountId from '../receive-money/components/AccountId';
 import {
     trackSunsetFeatureBlocked,
     trackSunsetRetiredCtaClicked,
@@ -34,6 +41,11 @@ const RetiredPage = styled(Container)`
     .retired-notice {
         margin: 28px 0 0;
     }
+
+    .account-id {
+        margin-top: 24px;
+        text-align: left;
+    }
 `;
 
 const Buttons = styled.div`
@@ -58,13 +70,15 @@ const Buttons = styled.div`
     }
 `;
 
-export const hasActiveAccount = () => {
+const readActiveAccountId = () => {
     try {
-        return !!localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID);
+        return localStorage.getItem(KEY_ACTIVE_ACCOUNT_ID) || '';
     } catch {
-        return false;
+        return '';
     }
 };
+
+export const hasActiveAccount = () => !!readActiveAccountId();
 
 /**
  * What a retired feature shows instead of itself: why it is gone, that funds are safe, and the
@@ -77,6 +91,8 @@ export default function FeatureRetiredPage({ capability, route }) {
     const migration = useMigrationEntry();
     const phase3Date = usePhase3Date();
     const isSignedIn = hasActiveAccount();
+    // Retired pages skip the sign-in guards, so the account may not be loaded into state yet.
+    const accountId = useSelector(selectAccountId) || readActiveAccountId();
 
     useEffect(() => {
         heading.current?.focus({ preventScroll: true });
@@ -88,8 +104,16 @@ export default function FeatureRetiredPage({ capability, route }) {
         action();
     };
 
+    // A hint written for Phase 2 can name something that ends in Phase 3, so Phase 3 prefers its
+    // own wording where one exists.
+    const hintKey = `sunset.retired.${capability}.hint`;
     const notices = [
-        t(`sunset.retired.${capability}.hint`, { date: phase3Date }),
+        t(
+            SUNSET_PHASE >= 3
+                ? [`sunset.retired.${capability}.phase3Hint`, hintKey]
+                : hintKey,
+            { date: phase3Date }
+        ),
         capability === 'createAccount'
             ? t('sunset.retired.createAccount.fundedHint')
             : null,
@@ -107,6 +131,12 @@ export default function FeatureRetiredPage({ capability, route }) {
                     <p key={notice}>{notice}</p>
                 ))}
             </AccountExportNotice>
+            {/* The address stays the same in any wallet, so receiving users still need it. */}
+            {capability === 'receive' && accountId && (
+                <div className='account-id'>
+                    <AccountId accountId={accountId} />
+                </div>
+            )}
             <Buttons>
                 {isSignedIn ? (
                     <>

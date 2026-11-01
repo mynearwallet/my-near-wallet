@@ -747,6 +747,7 @@
         "error": {
             "addKeyAccountMismatch": "Phiên chuyển này không bao gồm tài khoản đó, nên không có khóa nào bị thay đổi. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
             "addKeyChainRequired": "MyNearWallet không kết nối được tới mạng NEAR để ký thay đổi khóa. Hãy kiểm tra kết nối và thử lại.",
+            "browserStorageFull": "Trình duyệt này đã hết dung lượng lưu trữ dành cho MyNearWallet, nên lần chuyển không thể lưu tiến trình trên thiết bị này. Tài khoản và khóa của bạn vẫn an toàn. MyNearWallet đã giải phóng phần dung lượng có thể giải phóng an toàn; phần còn lại đang bị dữ liệu khác của trang này chiếm giữ. Hãy liên hệ bộ phận hỗ trợ kèm mã bên dưới, hoặc chọn “Xuất khóa riêng tư thay thế”. Đừng xóa dữ liệu của trang này trừ khi mọi tài khoản đều đã được sao lưu, vì thao tác đó sẽ xóa các khóa được lưu trong trình duyệt này.",
             "clientIdConflict": "Phiên chuyển này đã được bắt đầu với các tài khoản khác. Hãy bắt đầu lại từ danh sách tài khoản của bạn.",
             "insufficientBalanceForAddKeys": "Một số tài khoản được chọn không đủ NEAR khả dụng để thêm khóa của Meteor. Hãy nạp thêm hoặc bỏ chọn chúng, rồi thử lại.",
             "journalCorrupt": "Không thể đọc an toàn bản ghi phiên chuyển được lưu trên thiết bị này.",
@@ -1625,7 +1626,6 @@
         },
         "banner": {
             "cta": "Chuyển tài khoản",
-            "exportKeys": "Hoặc xuất khóa riêng tư của bạn",
             "phase2": {
                 "description": "Gửi tiền, staking và phê duyệt ứng dụng sẽ dừng vào {{date}}. Hãy chuyển tài khoản sang Meteor Wallet ngay để giữ toàn quyền truy cập. Tiền của bạn vẫn an toàn.",
                 "title": "MyNearWallet chuyển sang chế độ giới hạn vào {{date}}"
@@ -1637,6 +1637,10 @@
         },
         "bar": {
             "cta": "Chuyển ngay",
+            "import": {
+                "description": "Cụm từ khôi phục, khóa riêng tư hoặc thiết bị Ledger của bạn dùng được trực tiếp trong Meteor Wallet.",
+                "title": "Bạn không cần MyNearWallet để truy cập tài khoản của mình."
+            },
             "phase2": {
                 "description": "Từ lúc đó, gửi tiền, staking và phê duyệt ứng dụng sẽ dừng. Hãy chuyển tài khoản ngay.",
                 "title": "MyNearWallet chuyển sang chế độ giới hạn vào {{date}}."
@@ -1644,12 +1648,18 @@
             "phase3": {
                 "description": "Bạn có thể xem số dư, xuất khóa và chuyển tài khoản.",
                 "title": "MyNearWallet đang ở chế độ giới hạn."
+            },
+            "reload": {
+                "cta": "Tải lại",
+                "description": "Hãy tải lại trang để tiếp tục với phiên bản mới nhất.",
+                "title": "MyNearWallet đã được cập nhật."
             }
         },
         "common": {
             "backToWallet": "Quay lại ví",
             "exportKeys": "Xuất khóa của tôi",
             "getMeteor": "Tải Meteor Wallet",
+            "learnMore": "Tìm hiểu thêm",
             "migrate": "Chuyển tài khoản của tôi",
             "resume": "Tiếp tục chuyển tài khoản",
             "retry": "Thử lại",
@@ -1713,10 +1723,15 @@
             "dappApproval": "Phê duyệt ứng dụng trong MyNearWallet kết thúc vào {{date}}. Hãy chuyển tài khoản sang một ví được hỗ trợ để tiếp tục dùng ứng dụng.",
             "dappApprovalWithHost": "Phê duyệt ứng dụng trong MyNearWallet kết thúc vào {{date}}. Hãy chuyển tài khoản để tiếp tục dùng {{host}}.",
             "migrateLink": "Chuyển ngay",
-            "staking": "Đã ngừng staking mới. Bạn vẫn có thể hủy stake và rút tiền tại đây đến {{date}}. NEAR đang stake vẫn nằm trong tài khoản của bạn và có thể quản lý từ ví mới. Việc hủy stake mất khoảng 2–3 ngày."
+            "staking": "Đã ngừng staking mới. Bạn vẫn có thể hủy stake và rút tiền tại đây đến {{date}}. NEAR đang stake vẫn nằm trong tài khoản của bạn và có thể quản lý từ ví mới. Việc hủy stake mất khoảng 2–3 ngày.",
+            "stakingEnded": "Các thao tác staking trong MyNearWallet đã kết thúc. Khoản stake của bạn vẫn an toàn và vẫn hiển thị tại đây. Hãy quản lý nó từ ví mới sau khi chuyển tài khoản."
         },
         "landing": {
             "existingAccount": "Đã có tài khoản? Cụm từ khôi phục, khóa riêng tư hoặc thiết bị Ledger của bạn dùng được trực tiếp trong Meteor Wallet.",
+            "limitedMode": {
+                "description": "Gửi tiền, staking và phê duyệt ứng dụng đã kết thúc. Tài khoản và tiền của bạn vẫn an toàn trên NEAR.",
+                "title": "MyNearWallet đang ở chế độ giới hạn"
+            },
             "noNewAccounts": "MyNearWallet không còn tạo tài khoản mới. Mới dùng NEAR? Hãy bắt đầu với Meteor Wallet.",
             "otherWallets": "Các ví NEAR khác"
         },
@@ -1758,6 +1773,10 @@
             }
         },
         "retired": {
+            "addRecoveryMethod": {
+                "hint": "Cụm từ khôi phục và các khóa hiện có của bạn vẫn hoạt động. Sau khi chuyển tài khoản, bạn có thể quản lý khóa của tài khoản trong ví mới.",
+                "title": "Không còn có thể thêm khóa và phương thức khôi phục"
+            },
             "body": "MyNearWallet đang ngừng hoạt động. Tính năng này đã được tắt để bạn tập trung chuyển tài khoản sang một ví được hỗ trợ. Tiền của bạn vẫn an toàn trong tài khoản trên NEAR.",
             "buy": {
                 "hint": "Sau khi chuyển tài khoản, bạn có thể mua NEAR trong Meteor Wallet hoặc trên sàn giao dịch.",
@@ -1772,9 +1791,34 @@
                 "hint": "Bật 2FA lúc này sẽ khiến việc chuyển tài khoản khó hơn. Mức bảo mật hiện tại của tài khoản không thay đổi.",
                 "title": "Không thể bật xác thực hai yếu tố nữa"
             },
+            "explore": {
+                "hint": "Sau khi chuyển tài khoản, bạn có thể khám phá các ứng dụng NEAR từ Meteor Wallet.",
+                "title": "Trang Explore không còn khả dụng"
+            },
+            "linkdropClaim": {
+                "hint": "Hãy nhận liên kết này bằng Meteor Wallet hoặc một ví NEAR khác. Cho đến khi được nhận, tiền vẫn gắn với liên kết.",
+                "title": "Không còn có thể nhận liên kết NEAR tại đây"
+            },
+            "manageLedger": {
+                "hint": "Nếu tài khoản của bạn đã được bảo vệ bằng Ledger, hãy kết nối cùng thiết bị Ledger đó trong Meteor Wallet hoặc bất kỳ ví NEAR nào hỗ trợ Ledger. Không cần chuyển khóa nào.",
+                "title": "Thiết lập Ledger không còn khả dụng"
+            },
+            "receive": {
+                "hint": "Việc nhận tiền qua MyNearWallet đã kết thúc. Tài khoản của bạn vẫn tồn tại trên NEAR, nên mọi thứ gửi đến đều được ghi on-chain và có sẵn trong ví mà bạn chuyển sang.",
+                "title": "Trang Nhận không còn khả dụng"
+            },
+            "send": {
+                "hint": "Sau khi chuyển tài khoản, bạn có thể gửi NEAR và token từ Meteor Wallet. Cho đến lúc đó, tiền của bạn vẫn an toàn trong tài khoản.",
+                "title": "Gửi tiền không còn khả dụng"
+            },
             "stakeDeposit": {
                 "hint": "Khoản stake hiện tại của bạn vẫn an toàn. Bạn vẫn có thể hủy stake và rút tiền trong MyNearWallet đến {{date}}, hoặc quản lý khoản stake từ ví mới bất cứ lúc nào.",
+                "phase3Hint": "Khoản stake hiện tại của bạn vẫn an toàn trong tài khoản. Sau khi chuyển tài khoản, bạn có thể quản lý nó từ ví mới.",
                 "title": "Không còn staking mới được nữa"
+            },
+            "stakeManage": {
+                "hint": "Khoản stake của bạn vẫn an toàn trong tài khoản và bạn vẫn có thể xem nó trong MyNearWallet. Sau khi chuyển tài khoản, bạn có thể hủy stake, rút tiền và nhận phần thưởng từ ví mới.",
+                "title": "Các thao tác staking không còn khả dụng"
             },
             "swap": {
                 "hint": "Sau khi chuyển tài khoản, bạn có thể hoán đổi token trong Meteor Wallet.",

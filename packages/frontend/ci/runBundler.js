@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
@@ -30,10 +31,22 @@ const runBundler = async () => {
                 : Config.SUNSET_PHASE
         }`
     );
+    // Inlined into the bundle and published as version.json, so a tab left open on an older
+    // deployment can tell a newer one is live (src/components/sunset/useNewBuildAvailable.js).
+    const buildId = crypto.randomUUID();
+    // Parcel inlines process.env into the bundle; src/config/configFromEnvironment.ts reads it.
+    // eslint-disable-next-line no-process-env
+    process.env.MNW_BUILD_ID = buildId;
+
     const bundler = new ParcelBundler(args);
     bundler.initializeBundlerInstance();
 
     await bundler.bundle();
+
+    fs.writeFileSync(
+        path.join(path.resolve(bundler.distDir), 'version.json'),
+        JSON.stringify({ buildId })
+    );
 
     fs.copyFileSync(
         buildWasmSourcePath('multisig.wasm'),

@@ -47,6 +47,11 @@ export default ({ availableAccounts }) => {
     // The custom-name slide creates a new named account, which the sunset retires.
     const canCreateAccount = isSunsetCapabilityEnabled('createAccount');
 
+    // Explore is the last slide left; once it is retired too there is nothing to show.
+    if (!isSunsetCapabilityEnabled('explore')) {
+        return null;
+    }
+
     return (
         <StyledContainer>
             <StyledBanner>

@@ -10,6 +10,7 @@ import styled from 'styled-components';
 
 import makePublicKeyNameStorage from './makePublicKeyNameStorage';
 import CONFIG from '../../../config';
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import {
     getAccessKeys,
     recoverAccountSecretKey,
@@ -24,6 +25,7 @@ import {
 import { wallet } from '../../../utils/wallet';
 import FormButton from '../../common/FormButton';
 import FormButtonGroup from '../../common/FormButtonGroup';
+import { guardSunsetCapability } from '../../sunset/sunsetGuard';
 
 const Container = styled.div`
     &&& {
@@ -202,6 +204,7 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
         setDeAuthorizing(true);
 
         try {
+            guardSunsetCapability('removeFullAccessKey');
             let inputSecretKey;
 
             if (ed25519PrivateKeyPattern.test(inputSeedPhrase.trim())) {
@@ -562,18 +565,20 @@ const FullAccessKeyRotation = ({ fullAccessKey }) => {
                                 >
                                     <Translate id='button.rotateKey' />
                                 </FormButton>{' '}
-                                <FormButton
-                                    color='gray-red'
-                                    className='small'
-                                    onClick={() => {
-                                        setConfirmDeAuthorize(true);
-                                    }}
-                                    disabled={deAuthorizing}
-                                    sending={deAuthorizing}
-                                    sendingString='button.deAuthorizing'
-                                >
-                                    <Translate id='button.deauthorize' />
-                                </FormButton>
+                                {isSunsetCapabilityEnabled('removeFullAccessKey') && (
+                                    <FormButton
+                                        color='gray-red'
+                                        className='small'
+                                        onClick={() => {
+                                            setConfirmDeAuthorize(true);
+                                        }}
+                                        disabled={deAuthorizing}
+                                        sending={deAuthorizing}
+                                        sendingString='button.deAuthorizing'
+                                    >
+                                        <Translate id='button.deauthorize' />
+                                    </FormButton>
+                                )}
                             </div>
                         )}
                     </div>

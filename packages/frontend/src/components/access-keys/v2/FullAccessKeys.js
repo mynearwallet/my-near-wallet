@@ -6,6 +6,7 @@ import { Translate } from 'react-localize-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import Container from '../../common/styled/Container.css';
 import FullAccessKeyRotation from '../../profile/full_access_key_rotations/FullAccessKeyRotation';
 
@@ -84,9 +85,11 @@ export default ({ fullAccessKeys, accountId }) => {
                     ))
                 )}
             </div>
-            <Link to={`/set-recovery/${accountId}?addKey=true`}>
-                <Translate id='fullAccessKeys.addKey' />
-            </Link>
+            {isSunsetCapabilityEnabled('addRecoveryMethod') && (
+                <Link to={`/set-recovery/${accountId}?addKey=true`}>
+                    <Translate id='fullAccessKeys.addKey' />
+                </Link>
+            )}
         </StyledContainer>
     );
 };

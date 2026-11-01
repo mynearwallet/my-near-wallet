@@ -5,6 +5,8 @@
  * unit tests can both reason about a transfer's state without initializing Meteor Connect.
  */
 
+import { BROWSER_STORAGE_FULL_CODE, isBrowserStorageFullError } from './browserStorage';
+
 /**
  * The protocol's account identity string, which `addKeyIntentAccounts` and `verifiedAccounts` are
  * lists of. Re-stated here rather than imported: the SDK keeps its helper on an `/internal`
@@ -283,6 +285,18 @@ export const describeNewKeyTransferError = (error) => {
             isFenced: false,
         };
     }
+    // Before AddKeyJournalError and the SDK codes: a full browser storage can reach here as any of
+    // them (or as the browser's raw DOMException), and only freeing space resolves it. The usage
+    // breakdown rides along in the support code, so support can see what holds the space.
+    if (isBrowserStorageFullError(error)) {
+        return {
+            i18nKey: 'newKeyTransfer.error.browserStorageFull',
+            code: [BROWSER_STORAGE_FULL_CODE, error?.storageUsage]
+                .filter(Boolean)
+                .join(' · '),
+            isFenced: false,
+        };
+    }
     // AddKeyJournalError carries a typed `code` beside a host-neutral English message; the code,
     // not the message, is what this wallet localizes (MNW-11).
     if (error != null && error.name === 'AddKeyJournalError' && error.code != null) {
@@ -305,6 +319,9 @@ export const safeNewKeyTransferErrorCode = (error) => {
     const versionSkewId = versionSkewIdOf(error);
     if (versionSkewId != null) {
         return versionSkewId;
+    }
+    if (isBrowserStorageFullError(error)) {
+        return BROWSER_STORAGE_FULL_CODE;
     }
     if (
         error != null &&

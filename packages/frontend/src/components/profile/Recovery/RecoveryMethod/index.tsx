@@ -18,8 +18,9 @@ const RecoveryMethod = ({
     description?: string;
     skeleton?: any;
     methodEnabled: boolean;
-    onEnable: () => void;
-    onDisable: () => void;
+    /** Leave out to show the method's state without the action. */
+    onEnable?: () => void;
+    onDisable?: () => void;
     children?: React.Component;
 }) => {
     if (skeleton) {
@@ -27,21 +28,27 @@ const RecoveryMethod = ({
         return <SkeletonLoading height={skeleton} show />;
     }
 
+    const onClick = methodEnabled ? onDisable : onEnable;
+
     return (
         <Container>
             <Main>
                 <TitleWrapper>
                     <Title>{title}</Title>
                 </TitleWrapper>
-                <FormButton
-                    {...{
-                        type: 'submit',
-                        color: methodEnabled ? 'gray-red small' : 'blue small',
-                        onClick: methodEnabled ? onDisable : onEnable,
-                    }}
-                >
-                    <Translate id={methodEnabled ? 'button.disable' : 'button.enable'} />
-                </FormButton>
+                {onClick && (
+                    <FormButton
+                        {...{
+                            type: 'submit',
+                            color: methodEnabled ? 'gray-red small' : 'blue small',
+                            onClick,
+                        }}
+                    >
+                        <Translate
+                            id={methodEnabled ? 'button.disable' : 'button.enable'}
+                        />
+                    </FormButton>
+                )}
             </Main>
             {description && <Description>{description}</Description>}
             <>{children}</>

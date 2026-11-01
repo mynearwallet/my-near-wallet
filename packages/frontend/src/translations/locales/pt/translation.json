@@ -789,6 +789,7 @@
         "error": {
             "addKeyAccountMismatch": "Esta transferência não abrange essa conta, portanto nenhuma chave foi alterada. Inicie a transferência novamente pela sua lista de contas.",
             "addKeyChainRequired": "A MyNearWallet não conseguiu acessar a rede NEAR para assinar a alteração de chave. Verifique sua conexão e tente novamente.",
+            "browserStorageFull": "Este navegador não tem mais espaço de armazenamento para a MyNearWallet, por isso a transferência não conseguiu salvar seu progresso neste dispositivo. Suas contas e chaves estão seguras. A MyNearWallet já liberou o espaço que podia liberar com segurança; o restante está ocupado por outros dados salvos para este site. Entre em contato com o suporte informando o código abaixo ou use “Exportar chaves privadas em vez disso”. Não limpe os dados deste site a menos que todas as contas tenham backup, pois isso apaga as chaves armazenadas neste navegador.",
             "clientIdConflict": "Esta transferência foi iniciada com outras contas. Inicie-a novamente pela sua lista de contas.",
             "insufficientBalanceForAddKeys": "Algumas contas selecionadas não têm NEAR disponível suficiente para adicionar a chave da Meteor. Carregue-as ou desmarque-as e tente novamente.",
             "journalCorrupt": "O registro da transferência armazenado neste dispositivo não pôde ser lido com segurança.",
@@ -1691,7 +1692,6 @@
         },
         "banner": {
             "cta": "Migrar contas",
-            "exportKeys": "Ou exporte suas chaves privadas",
             "phase2": {
                 "description": "Envios, staking e aprovações de apps param em {{date}}. Mova suas contas para a Meteor Wallet agora para manter o acesso completo. Seus fundos estão seguros.",
                 "title": "A MyNearWallet entra em modo limitado em {{date}}"
@@ -1703,6 +1703,10 @@
         },
         "bar": {
             "cta": "Migrar agora",
+            "import": {
+                "description": "Sua frase de recuperação, chave privada ou dispositivo Ledger funciona diretamente na Meteor Wallet.",
+                "title": "Você não precisa da MyNearWallet para acessar sua conta."
+            },
             "phase2": {
                 "description": "A partir daí, envios, staking e aprovações de apps param. Mova suas contas agora.",
                 "title": "A MyNearWallet entra em modo limitado em {{date}}."
@@ -1710,12 +1714,18 @@
             "phase3": {
                 "description": "Você pode ver saldos, exportar suas chaves e mover suas contas.",
                 "title": "A MyNearWallet está em modo limitado."
+            },
+            "reload": {
+                "cta": "Recarregar",
+                "description": "Recarregue a página para continuar com a versão mais recente.",
+                "title": "A MyNearWallet foi atualizada."
             }
         },
         "common": {
             "backToWallet": "Voltar à carteira",
             "exportKeys": "Exportar minhas chaves",
             "getMeteor": "Obter a Meteor Wallet",
+            "learnMore": "Saiba mais",
             "migrate": "Migrar minhas contas",
             "resume": "Retomar transferência",
             "retry": "Tentar novamente",
@@ -1779,10 +1789,15 @@
             "dappApproval": "As aprovações de apps na MyNearWallet terminam em {{date}}. Mova sua conta para uma carteira compatível para continuar usando apps.",
             "dappApprovalWithHost": "As aprovações de apps na MyNearWallet terminam em {{date}}. Mova sua conta para continuar usando {{host}}.",
             "migrateLink": "Migrar agora",
-            "staking": "Novos stakings foram encerrados. Você ainda pode fazer unstake e sacar aqui até {{date}}. Seus NEAR em staking continuam na sua conta e podem ser gerenciados pela nova carteira. O unstake leva cerca de 2–3 dias."
+            "staking": "Novos stakings foram encerrados. Você ainda pode fazer unstake e sacar aqui até {{date}}. Seus NEAR em staking continuam na sua conta e podem ser gerenciados pela nova carteira. O unstake leva cerca de 2–3 dias.",
+            "stakingEnded": "As ações de staking na MyNearWallet foram encerradas. Seu staking está seguro e continua visível aqui. Gerencie-o pela nova carteira depois de mover sua conta."
         },
         "landing": {
             "existingAccount": "Já tem uma conta? Sua frase de recuperação, chave privada ou dispositivo Ledger funciona diretamente na Meteor Wallet.",
+            "limitedMode": {
+                "description": "Envios, staking e aprovações de apps foram encerrados. Suas contas e fundos continuam seguros na NEAR.",
+                "title": "A MyNearWallet está em modo limitado"
+            },
             "noNewAccounts": "A MyNearWallet não cria mais novas contas. Novo na NEAR? Comece com a Meteor Wallet.",
             "otherWallets": "Outras carteiras NEAR"
         },
@@ -1824,6 +1839,10 @@
             }
         },
         "retired": {
+            "addRecoveryMethod": {
+                "hint": "Sua frase de recuperação e suas chaves atuais continuam funcionando. Depois de mover sua conta, você pode gerenciar as chaves dela na nova carteira.",
+                "title": "Não é mais possível adicionar chaves e métodos de recuperação"
+            },
             "body": "A MyNearWallet está sendo descontinuada. Este recurso foi desativado para que você possa se concentrar em mover suas contas para uma carteira compatível. Seus fundos estão seguros na sua conta na NEAR.",
             "buy": {
                 "hint": "Depois que sua conta for movida, você pode comprar NEAR na Meteor Wallet ou em uma corretora.",
@@ -1838,9 +1857,34 @@
                 "hint": "Ativar a 2FA agora tornaria mais difícil mover sua conta. A segurança atual da sua conta não muda.",
                 "title": "A autenticação de dois fatores não pode mais ser ativada"
             },
+            "explore": {
+                "hint": "Depois de mover sua conta, você pode descobrir apps NEAR pela Meteor Wallet.",
+                "title": "A página Explore não está mais disponível"
+            },
+            "linkdropClaim": {
+                "hint": "Resgate este link com a Meteor Wallet ou outra carteira NEAR. Até ser resgatado, os fundos continuam vinculados ao link.",
+                "title": "Links NEAR não podem mais ser resgatados aqui"
+            },
+            "manageLedger": {
+                "hint": "Se sua conta já é protegida por um Ledger, conecte o mesmo Ledger na Meteor Wallet ou em qualquer carteira NEAR compatível com Ledger. Nenhuma chave precisa ser movida.",
+                "title": "A configuração do Ledger não está mais disponível"
+            },
+            "receive": {
+                "hint": "O recebimento pela MyNearWallet foi encerrado. Sua conta continua existindo na NEAR, então tudo o que for enviado a ela chega on-chain e fica disponível na carteira para a qual você se mudar.",
+                "title": "A página Receber não está mais disponível"
+            },
+            "send": {
+                "hint": "Depois de mover sua conta, você pode enviar NEAR e tokens pela Meteor Wallet. Até lá, seus fundos ficam seguros na sua conta.",
+                "title": "Os envios não estão mais disponíveis"
+            },
             "stakeDeposit": {
                 "hint": "Seu staking atual está seguro. Você ainda pode fazer unstake e sacar na MyNearWallet até {{date}}, ou gerenciar seu staking pela nova carteira a qualquer momento.",
+                "phase3Hint": "Seu staking atual está seguro na sua conta. Depois de mover sua conta, você pode gerenciá-lo pela nova carteira.",
                 "title": "Novos stakings não estão mais disponíveis"
+            },
+            "stakeManage": {
+                "hint": "Seu staking está seguro na sua conta e você ainda pode vê-lo na MyNearWallet. Depois de mover sua conta, você pode fazer unstake, sacar e resgatar recompensas pela nova carteira.",
+                "title": "As ações de staking não estão mais disponíveis"
             },
             "swap": {
                 "hint": "Depois de mover sua conta, você pode trocar tokens na Meteor Wallet.",

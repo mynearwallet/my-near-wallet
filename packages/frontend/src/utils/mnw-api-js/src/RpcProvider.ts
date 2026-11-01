@@ -1,10 +1,12 @@
 import { JsonRpcProvider, TypedError } from 'near-api-js/lib/providers';
+import { QueryResponseKind } from 'near-api-js/lib/providers/provider';
 import {
     parseRpcError,
     getErrorTypeFromErrorMessage,
 } from 'near-api-js/lib/utils/rpc_errors';
 import fetch from 'node-fetch';
 
+import { isUnpaginatedAccessKeyListQuery, queryAccessKeyList } from './accessKeyList';
 import { ConnectionInfo, RpcRetryConfig } from './type';
 import { RpcRotator } from '..';
 
@@ -58,6 +60,23 @@ export class RpcProvider extends JsonRpcProvider {
         super(rotator.getConnection(0));
         this.rotator = rotator;
         this.retryConfig = retryConfig;
+    }
+
+    /**
+     * An unpaginated `view_access_key_list` is read page by page instead (`queryAccessKeyList`),
+     * and answered in the same shape. Done here, not at each call site, because near-api-js reads
+     * the list itself (`Account.getAccessKeys`, the 2FA/multisig accounts) and every one of those
+     * reads failed for an account with more than 100 keys.
+     */
+    async query<T extends QueryResponseKind>(...args: any[]): Promise<T> {
+        if (args.length === 1 && isUnpaginatedAccessKeyListQuery(args[0])) {
+            const list = await queryAccessKeyList(
+                (params) => super.query(params),
+                args[0]
+            );
+            return list as unknown as T;
+        }
+        return super.query<T>(...args);
     }
 
     async sendJsonRpc<T>(method: string, params: object): Promise<T> {

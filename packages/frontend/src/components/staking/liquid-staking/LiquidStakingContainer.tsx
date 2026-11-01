@@ -48,7 +48,16 @@ const LiquidStakingContainer = () => {
                 <Route
                     exact
                     path='/liquid-staking/:validatorId/unstake'
-                    render={(props) => <UnstakeForm {...props} />}
+                    render={(props) =>
+                        isSunsetCapabilityEnabled('stakeManage') ? (
+                            <UnstakeForm {...props} />
+                        ) : (
+                            <FeatureRetiredPage
+                                capability='stakeManage'
+                                route='/liquid-staking/:validatorId/unstake'
+                            />
+                        )
+                    }
                 />
             </Switch>
         </ConnectedRouter>

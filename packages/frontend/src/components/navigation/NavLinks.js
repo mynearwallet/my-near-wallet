@@ -148,6 +148,8 @@ const NavLinks = () => (
             <WalletIcon />
             <Translate id='link.wallet' />
         </NavLink>
+        {/* In limited mode migrating is the main thing left to do, so it moves up. */}
+        {SUNSET_PHASE >= 3 && <MigrateNavLink />}
         <NavLink
             data-test-id='staking_navlink'
             to='/staking'
@@ -157,10 +159,9 @@ const NavLinks = () => (
             <VaultIcon />
             <Translate id='link.staking' />
         </NavLink>
-        {/* From Phase 2 the Explore slot points users at migration instead. */}
-        {SUNSET_PHASE >= 2 ? (
-            <MigrateNavLink />
-        ) : (
+        {/* In Phase 2 the Explore slot points users at migration instead. */}
+        {SUNSET_PHASE === 2 && <MigrateNavLink />}
+        {SUNSET_PHASE < 2 && (
             <NavLink
                 data-test-id='explore_navlink'
                 to='/explore'

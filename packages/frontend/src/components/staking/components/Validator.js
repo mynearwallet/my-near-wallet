@@ -33,6 +33,7 @@ import { FARMING_VALIDATOR_VERSION } from '../../../utils/constants';
 import { isSunsetCapabilityEnabled } from '../../../config/sunset';
 import FormButton from '../../common/FormButton';
 import SafeTranslate from '../../SafeTranslate';
+import SunsetInlineNotice from '../../sunset/SunsetInlineNotice';
 import { useQuery } from '@tanstack/react-query';
 import { Contract } from 'near-api-js';
 import { wallet } from '../../../utils/wallet';
@@ -67,15 +68,18 @@ const renderFarmUi = ({
                     balance,
                     contractName: token_id,
                 }}
-                onClick={() => {
-                    openModal({
-                        onChainFTMetadata: currentTokenContractMetadata,
-                        fiatValueMetadata,
-                        balance,
-                        contractName: token_id,
-                        isWhiteListed,
-                    });
-                }}
+                onClick={
+                    openModal &&
+                    (() => {
+                        openModal({
+                            onChainFTMetadata: currentTokenContractMetadata,
+                            fiatValueMetadata,
+                            balance,
+                            contractName: token_id,
+                            isWhiteListed,
+                        });
+                    })
+                }
                 button='staking.balanceBox.farm.button'
                 hideBorder={farmList.length > 1 && i < farmList.length - 1}
             />
@@ -122,6 +126,8 @@ export default function Validator({
     };
 
     const isFarmingValidator = validator?.version === FARMING_VALIDATOR_VERSION;
+    // Positions stay visible; only the actions that change them are retired.
+    const canManageStake = isSunsetCapabilityEnabled('stakeManage');
 
     const handleStakeAction = async () => {
         if (showConfirmModal && !loading) {
@@ -225,6 +231,7 @@ export default function Validator({
                     data={{ validator: match.params.validator }}
                 />
             </h1>
+            <SunsetInlineNotice messageKey='sunset.inline.stakingEnded' minPhase={3} />
             {isSunsetCapabilityEnabled('stakeDeposit') && (
                 <FormButton
                     linkTo={`/staking/${match.params.validator}/stake`}
@@ -248,12 +255,18 @@ export default function Validator({
                             ...NEARAsTokenWithMetadata,
                             balance: validator.staked || '0',
                         }}
-                        onClick={() => {
-                            dispatch(
-                                redirectTo(`/staking/${match.params.validator}/unstake`)
-                            );
-                            Mixpanel.track('UNSTAKE Click unstake button');
-                        }}
+                        onClick={
+                            canManageStake
+                                ? () => {
+                                      dispatch(
+                                          redirectTo(
+                                              `/staking/${match.params.validator}/unstake`
+                                          )
+                                      );
+                                      Mixpanel.track('UNSTAKE Click unstake button');
+                                  }
+                                : undefined
+                        }
                         button='staking.balanceBox.staked.button'
                         buttonColor='gray-red'
                         loading={loading}
@@ -272,7 +285,7 @@ export default function Validator({
                         renderFarmUi({
                             farmList,
                             contractMetadataByContractId,
-                            openModal,
+                            openModal: canManageStake ? openModal : undefined,
                             tokenPriceMetadata,
                         })}
                     <BalanceBox
@@ -291,10 +304,14 @@ export default function Validator({
                             ...NEARAsTokenWithMetadata,
                             balance: validator.available || '0',
                         }}
-                        onClick={() => {
-                            setConfirm('withdraw');
-                            Mixpanel.track('WITHDRAW Click withdraw button');
-                        }}
+                        onClick={
+                            canManageStake
+                                ? () => {
+                                      setConfirm('withdraw');
+                                      Mixpanel.track('WITHDRAW Click withdraw button');
+                                  }
+                                : undefined
+                        }
                         button='staking.balanceBox.available.button'
                         loading={loading}
                     />
